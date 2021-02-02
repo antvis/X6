@@ -57,7 +57,7 @@ export default class Example extends React.Component {
       {
         delay: 5000,
         duration: 2000,
-        easing: 'easeInBounce',
+        timing: 'easeInBounce',
         interp: (
           start: { text: String; fontSize: number },
           end: { text: String; fontSize: number },

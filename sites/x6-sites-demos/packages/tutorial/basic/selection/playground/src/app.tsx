@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, StringExt, $ } from '@antv/x6'
+import { Graph, StringExt, JQuery } from '@antv/x6'
 import { Settings, State } from './settings'
 import './app.css'
 
@@ -68,7 +68,7 @@ export default class Example extends React.Component {
         : null,
     )
 
-    $(this.graph.selection.widget.container).toggleClass(
+    JQuery(this.graph.selection.widget.container).toggleClass(
       'my-selection',
       options.className,
     )
