@@ -415,14 +415,19 @@ rect.attr('body/title', 'Description of the rectangle')
 
 当提供的文本超出显示范围时，文本将被自动截断，如果 `ellipsis` 选项被设置为 `true` ，则在截断文本的末尾添加一个省略号 `...`。
 
+默认情况下，英文单词会被截断显示，如果不想一个完整的单词被截断可以设置 `breakWord: false`，此时为了显示完整单词，文本可能超出宽度范围。
+
 ```ts
 textWrap: {
   text: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-  width: -10,     // 宽度减少 10px
-  height: '50%',  // 高度为参照元素高度的一半
-  ellipsis: true, // 文本超出显示范围时，自动添加省略号
+  width: -10,      // 宽度减少 10px
+  height: '50%',   // 高度为参照元素高度的一半
+  ellipsis: true,  // 文本超出显示范围时，自动添加省略号
+  breakWord: true, // 是否截断单词
 }
 ```
+
+<iframe src="/demos/api/registry/attr/text-wrap"></iframe>
 
 ### textPath
 
@@ -687,7 +692,7 @@ node.attr({
 type QualifyFucntion = (
   this: CellView,         // 节点/边的视图
   val: ComplexAttrValue,  // 当前属性的属性值
-  options: {           
+  options: {
     elem: Element         // 当前属性应用的元素
     attrs: ComplexAttrs   // 应用到该元素的属性键值对
     cell: Cell            // 节点/边
