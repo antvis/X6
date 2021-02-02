@@ -357,44 +357,92 @@ export function text(
   elem.appendChild(containerNode)
 }
 
-function splitText(text: string, separator?: string) {
-  if (separator != null) {
-    const words = text.split(separator)
-    const seps = words.map((w) => separator)
-    seps.pop()
-    return { words, seps }
-  }
-
+function splitText(
+  text: string,
+  separator: string | RegExp | undefined | null,
+  eol: string,
+  hyphen: RegExp,
+) {
   const words: string[] = []
-  const seps: string[] = []
-  let word = ''
-  for (let i = 0, l = text.length; i < l; i += 1) {
-    const char = text[i]
+  const separators: string[] = []
 
-    if (char === ' ') {
-      words.push(word)
-      seps.push(' ')
-      word = ''
-    } else if (char.match(/[^\x00-\xff]/)) {
-      if (word.length) {
-        words.push(word)
-        seps.push('')
+  if (separator != null) {
+    const parts = text.split(separator)
+    words.push(...parts)
+    if (typeof separator === 'string') {
+      for (let i = 0, l = parts.length - 1; i < l; i += 1) {
+        separators.push(separator)
       }
-
-      words.push(char)
-      seps.push('')
-
-      word = ''
     } else {
-      word += char
+      const seps = text.match(new RegExp(separator, 'g'))
+      for (let i = 0, l = parts.length - 1; i < l; i += 1) {
+        separators.push(seps ? seps[i] : '')
+      }
+    }
+  } else {
+    let word = ''
+    for (let i = 0, l = text.length; i < l; i += 1) {
+      const char = text[i]
+
+      if (char === ' ') {
+        words.push(word)
+        separators.push(' ')
+        word = ''
+      } else if (char.match(/[^\x00-\xff]/)) {
+        // split double byte character
+        if (word.length) {
+          words.push(word)
+          separators.push('')
+        }
+
+        words.push(char)
+        separators.push('')
+
+        word = ''
+      } else {
+        word += char
+      }
+    }
+
+    if (word.length) {
+      words.push(word)
     }
   }
 
-  if (word.length) {
-    words.push(word)
+  // end-of-line
+  for (let i = 0; i < words.length; i += 1) {
+    const word = words[i]
+    if (word.indexOf(eol) >= 0 && word.length > 1) {
+      const parts = word.split(eol)
+      for (let j = 0, k = parts.length - 1; j < k; j += 1) {
+        parts.splice(2 * j + 1, 0, eol)
+      }
+
+      const valids = parts.filter((part) => part !== '')
+      words.splice(i, 1, ...valids)
+
+      const seps = valids.map(() => '')
+      seps.pop()
+      separators.splice(i, 0, ...seps)
+    }
   }
 
-  return { words, seps }
+  // hyphen
+  for (let i = 0; i < words.length; i += 1) {
+    const word = words[i]
+    const index = word.search(hyphen)
+    if (index > 0 && index < word.length - 1) {
+      words.splice(
+        i,
+        1,
+        word.substring(0, index + 1),
+        word.substring(index + 1),
+      )
+      separators.splice(i, 0, '')
+    }
+  }
+
+  return { words, separators }
 }
 
 export function breakText(
@@ -406,6 +454,7 @@ export function breakText(
     separator?: string
     eol?: string
     hyphen?: string
+    breakWord?: boolean
     svgDocument?: SVGSVGElement
   } = {},
 ) {
@@ -442,139 +491,132 @@ export function breakText(
   const eol = options.eol || '\n'
   const separator = options.separator || ' '
   const hyphen = options.hyphen ? new RegExp(options.hyphen) : /[^\w\d]/
+  const breakWord = options.breakWord !== false
+
+  console.log(breakWord, options)
 
   const full = []
+  const lineSeprators: { [index: number]: string } = {}
   let lines = []
   let partIndex
-  let hyphenIndex
+  // let hyphenIndex
   let lineHeight
+  let currentSeparator
 
-  const { words, seps } = splitText(text, options.separator)
-
+  const { words, separators } = splitText(text, options.separator, eol, hyphen)
   for (
     let wordIndex = 0, lineIndex = 0, wordCount = words.length;
     wordIndex < wordCount;
     wordIndex += 1
   ) {
     const word = words[wordIndex]
+
+    // empty word
     if (!word) {
       continue
     }
 
-    // word contains end-of-line character
-    if (eol && word.indexOf(eol) >= 0) {
-      if (word.length > 1) {
-        // separate word and continue cycle
-        const parts = word.split(eol)
-        for (let j = 0, m = parts.length - 1; j < m; j += 1) {
-          parts.splice(2 * j + 1, 0, eol)
-        }
-        words.splice(wordIndex, 1, ...parts.filter((word) => word !== ''))
-        wordIndex -= 1
-        wordCount = words.length
-      } else {
-        // creates a new line
-        lineIndex += 1
-        lines[lineIndex] = ''
-      }
+    // end of line
+    if (word === eol) {
+      full[lineIndex] = true
+      // start a new line
+      lineIndex += 1
+      lines[lineIndex] = ''
       continue
     }
 
     if (lines[lineIndex] != null) {
-      tnode.data = `${lines[lineIndex]}${seps.pop() || ''}${word}`
+      currentSeparator = separators[wordIndex - 1] || ''
+      tnode.data = `${lines[lineIndex]}${currentSeparator}${word}`
     } else {
       tnode.data = word
     }
 
     if (tspan.getComputedTextLength() <= width) {
+      // update line
       lines[lineIndex] = tnode.data
+      lineSeprators[lineIndex] = separators[wordIndex]
 
-      // We were partitioning. Put rest of the word onto next line
-      if (partIndex || hyphenIndex) {
+      // when is partitioning, put rest of the word onto next line
+      if (partIndex) {
         full[lineIndex] = true
         lineIndex += 1
-
-        // cancel partitioning and splitting by hyphens
         partIndex = 0
-        hyphenIndex = 0
       }
     } else {
-      if (!lines[lineIndex] || partIndex) {
-        const partition = !!partIndex
+      if (breakWord) {
+        // word is too long to put in one line or is partitioning
+        if (!lines[lineIndex] || partIndex) {
+          const isPartition = !!partIndex
+          const isCharacter = word.length === 1
 
-        partIndex = word.length - 1
+          partIndex = word.length - 1
 
-        if (partition || !partIndex) {
-          // word has only one character.
-          if (!partIndex) {
-            if (!lines[lineIndex]) {
-              // we won't fit this text within our rect
-              lines = []
-              break
+          if (isPartition || isCharacter) {
+            // word has only one character.
+            if (isCharacter) {
+              if (!lines[lineIndex]) {
+                // can't fit this text within our rect
+                lines = []
+                break
+              }
+
+              // partitioning didn't help on the non-empty line
+              // try again, but this time start with a new line
+
+              // cancel partitions created
+              words.splice(wordIndex, 2, word + words[wordIndex + 1])
+              separators.splice(wordIndex + 1, 1)
+              full[lineIndex] = true
+
+              lineIndex += 1
+              wordCount -= 1
+              wordIndex -= 1
+
+              continue
             }
 
-            // partitioning didn't help on the non-empty line
-            // try again, but this time start with a new line
-
-            // cancel partitions created
-            words.splice(wordIndex, 2, word + words[wordIndex + 1])
-
-            // adjust word length
-            wordCount -= 1
-
-            full[lineIndex] = true
-            lineIndex += 1
-            wordIndex -= 1
-
-            continue
-          }
-
-          // move last letter to the beginning of the next word
-          words[wordIndex] = word.substring(0, partIndex)
-          words[wordIndex + 1] =
-            word.substring(partIndex) + words[wordIndex + 1]
-        } else {
-          if (hyphenIndex) {
-            // cancel splitting and put the words together again
-            words.splice(wordIndex, 2, words[wordIndex] + words[wordIndex + 1])
-            hyphenIndex = 0
+            // update the partitioning words
+            words[wordIndex] = word.substring(0, partIndex)
+            words[wordIndex + 1] =
+              word.substring(partIndex) + words[wordIndex + 1]
           } else {
-            const hyphenIdx = word.search(hyphen)
-            if (hyphenIdx > 0 && hyphenIdx < word.length - 1) {
-              hyphenIndex = hyphenIdx + 1
-              partIndex = 0
-            }
-
-            // partitioning or splitting the long word into two words
+            // partitioning the long word into two words
             words.splice(
               wordIndex,
               1,
-              word.substring(0, hyphenIndex || partIndex),
-              word.substring(hyphenIndex || partIndex),
+              word.substring(0, partIndex),
+              word.substring(partIndex),
             )
-            // adjust words length
+            separators.splice(wordIndex, 0, '')
             wordCount += 1
+
+            // if the previous line is not full
+            if (lineIndex && !full[lineIndex - 1]) {
+              lineIndex -= 1
+            }
           }
 
-          // if the previous line is not full, try to fit max part of
-          // the current word there
-          if (lineIndex && !full[lineIndex - 1]) {
-            lineIndex -= 1
-          }
+          wordIndex -= 1
+          continue
         }
-
-        wordIndex -= 1
-        continue
+      } else {
+        if (!lines[lineIndex]) {
+          lines[lineIndex] = word
+          full[lineIndex] = true
+          lineIndex += 1
+          continue
+        }
       }
 
       lineIndex += 1
       wordIndex -= 1
     }
 
-    // if size.height is defined we have to check whether the height of the entire
-    // text exceeds the rect height
-    if (height !== undefined) {
-      if (lineHeight === undefined) {
+    // check whether the height of the entire text exceeds the rect height
+    if (height != null) {
+      // ensure line height
+      if (lineHeight == null) {
         let heightValue
 
         // use the same defaults as in V.prototype.text
@@ -597,12 +639,19 @@ export function breakText(
 
       if (lineHeight * lines.length > height) {
         // remove overflowing lines
-        const lastL = Math.floor(height / lineHeight) - 1
-        lines.splice(lastL + 1)
+        const lastLineIndex = Math.floor(height / lineHeight) - 1
+        const lastLine = lines[lastLineIndex]
+        const overflowLine = lines[lastLineIndex + 1]
+
+        lines.splice(lastLineIndex + 1)
+
+        if (lastLine == null) {
+          break
+        }
 
         // add ellipsis
         let ellipsis = options.ellipsis
-        if (!ellipsis || lastL < 0) {
+        if (!ellipsis) {
           break
         }
 
@@ -610,32 +659,31 @@ export function breakText(
           ellipsis = '\u2026'
         }
 
-        const lastLine = lines[lastL]
-        if (!lastLine) {
-          break
+        let fullLastLine = lastLine
+        if (overflowLine && breakWord) {
+          fullLastLine += currentSeparator + overflowLine
         }
 
-        let lastIndex = lastLine.length
-        let lastLineWithOmission
+        let lastCharIndex = fullLastLine.length
+        let fixedLastLine
         let lastChar
-        let separatorChar
+
         do {
-          lastChar = lastLine[lastIndex]
-          lastLineWithOmission = lastLine.substring(0, lastIndex)
+          lastChar = fullLastLine[lastCharIndex]
+          fixedLastLine = fullLastLine.substring(0, lastCharIndex)
           if (!lastChar) {
-            separatorChar = typeof separator === 'string' ? separator : ' '
-            lastLineWithOmission += separatorChar
+            fixedLastLine += lineSeprators[lastLineIndex]
           } else if (lastChar.match(separator)) {
-            lastLineWithOmission += lastChar
+            fixedLastLine += lastChar
           }
-          lastLineWithOmission += ellipsis
-          tnode.data = lastLineWithOmission
+          fixedLastLine += ellipsis
+          tnode.data = fixedLastLine
           if (tspan.getComputedTextLength() <= width) {
-            lines[lastL] = lastLineWithOmission
+            lines[lastLineIndex] = fixedLastLine
             break
           }
-          lastIndex -= 1
-        } while (lastIndex >= 0)
+          lastCharIndex -= 1
+        } while (lastCharIndex >= 0)
 
         break
       }
