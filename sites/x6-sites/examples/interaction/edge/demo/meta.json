@@ -15,6 +15,14 @@
         "en": "Create Edge Manually"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3krPSYB33VsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "selection.ts",
+      "title": {
+        "zh": "自定义选中样式",
+        "en": "Custom Selection Style"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*f3cZQLNyTpcAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
