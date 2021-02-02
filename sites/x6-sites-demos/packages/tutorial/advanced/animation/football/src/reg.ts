@@ -3,11 +3,11 @@ import { Graph, Node, Edge, NodeView, Point, Angle, Interp } from '@antv/x6'
 class BallView extends NodeView {
   protected speed: number = 0
   protected angle: number = 0
-  protected timerId: number = 0
+  protected stop: (() => void) | null
   protected edge: Edge | null
 
   protected init() {
-    this.timerId = this.cell.transition('attrs/label/opacity', 1, {
+    this.stop = this.cell.transition('attrs/label/opacity', 1, {
       delay: (1 + Math.random()) * 3000,
       duration: 3000,
       timing: 'inout',
@@ -103,9 +103,9 @@ class BallView extends NodeView {
     }
 
     // Cancel displaying 'drag me!' if dragging already starts.
-    if (this.timerId) {
-      clearTimeout(this.timerId)
-      this.timerId = 0
+    if (this.stop) {
+      this.stop()
+      this.stop = null
     }
 
     this.edge = this.graph.addEdge({

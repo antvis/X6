@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, $ } from '@antv/x6'
+import { Graph, JQuery } from '@antv/x6'
 import { Settings, State } from './settings'
 import './app.css'
 
@@ -64,7 +64,7 @@ export default class Example extends React.Component {
       this.graph.disableSnaplineOnResizing()
     }
 
-    $(this.graph.snapline.widget.container).toggleClass(
+    JQuery(this.graph.snapline.widget.container).toggleClass(
       'my-snapline',
       options.className != null,
     )
