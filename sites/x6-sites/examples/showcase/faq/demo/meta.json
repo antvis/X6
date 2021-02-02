@@ -23,6 +23,14 @@
         "en": "Limit Connected Edges"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*f_ztRpTun3AAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "text-wrap.ts",
+      "title": {
+        "zh": "文本换行",
+        "en": "Text Wrap"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-gIBRKiYraoAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
