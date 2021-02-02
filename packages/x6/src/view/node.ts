@@ -1057,14 +1057,16 @@ export class NodeView<
     y: number,
     cell: Cell,
   ) {
-    const cells = [cell]
+    let cells = [cell]
+
     const selection = this.graph.selection.widget
     if (selection && selection.options.movable) {
       const selectedCells = this.graph.getSelectedCells()
-      cells.push(
-        ...selectedCells.filter((c: Cell) => c.isNode() && c.id !== cell.id),
-      )
+      if (selectedCells.includes(cell)) {
+        cells = selectedCells.filter((c: Cell) => c.isNode())
+      }
     }
+    
     cells.forEach((c: Cell) => {
       this.notify(name, {
         e,
