@@ -115,6 +115,7 @@ export const textWrap: Attr.Definition = {
           svgDocument: view.graph.view.svg,
           ellipsis: info.ellipsis as string,
           hyphen: info.hyphen as string,
+          breakWord: info.breakWord as boolean,
         },
       )
     } else {
