@@ -150,17 +150,15 @@ export class Scroller extends View {
     graph.on('after:export', this.restoreScrollPosition, this)
 
     if (this.options.autoResize) {
-      if (graph.renderer.isAsync()) {
-        graph.on('render:done', this.onRenderDone, this)
-      } else {
-        graph.on('unfreeze', this.update, this)
-        model.on('reseted', this.update, this)
-        model.on('cell:added', this.update, this)
-        model.on('cell:removed', this.update, this)
-        model.on('cell:changed', this.update, this)
-        model.on('batch:stop', this.onBatchStop, this)
-      }
+      graph.on('render:done', this.onRenderDone, this)
+      graph.on('unfreeze', this.onUpdate, this)
+      model.on('reseted', this.onUpdate, this)
+      model.on('cell:added', this.onUpdate, this)
+      model.on('cell:removed', this.onUpdate, this)
+      model.on('cell:changed', this.onUpdate, this)
+      model.on('batch:stop', this.onBatchStop, this)
     }
+
     this.delegateBackgroundEvents()
   }
 
@@ -176,14 +174,31 @@ export class Scroller extends View {
     graph.off('afterexport', this.restoreScrollPosition, this)
 
     graph.off('render:done', this.onRenderDone, this)
-
-    graph.off('unfreeze', this.update, this)
-    model.off('reseted', this.update, this)
-    model.off('cell:added', this.update, this)
-    model.off('cell:removed', this.update, this)
-    model.off('cell:changed', this.update, this)
+    graph.off('unfreeze', this.onUpdate, this)
+    model.off('reseted', this.onUpdate, this)
+    model.off('cell:added', this.onUpdate, this)
+    model.off('cell:removed', this.onUpdate, this)
+    model.off('cell:changed', this.onUpdate, this)
     model.off('batch:stop', this.onBatchStop, this)
+
     this.undelegateBackgroundEvents()
+  }
+
+  protected onUpdate() {
+    if (this.graph.isAsync()) {
+      return
+    }
+    this.update()
+  }
+
+  onBatchStop(args: { name: Model.BatchName }) {
+    if (this.graph.isAsync()) {
+      return
+    }
+
+    if (Renderer.UPDATE_DELAYING_BATCHES.includes(args.name)) {
+      this.update()
+    }
   }
 
   protected delegateBackgroundEvents(events?: View.Events) {
@@ -344,12 +359,6 @@ export class Scroller extends View {
             .appendTo(this.pageBreak)
         }
       }
-    }
-  }
-
-  onBatchStop(args: { name: Model.BatchName }) {
-    if (Renderer.UPDATE_DELAYING_BATCHES.includes(args.name)) {
-      this.update()
     }
   }
 
