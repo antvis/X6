@@ -1,3 +1,10 @@
+## @antv/x6-sites-demos [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.2...@antv/x6-sites-demos@1.1.3) (2021-02-02)
+
+
+### Bug Fixes
+
+* add `placeholder` and `notFoundText` for stencil component ([#574](https://github.com/antvis/x6/issues/574)) ([c9100ab](https://github.com/antvis/x6/commit/c9100abb8576eaf55c5a9b0c5496f63c1796af5a)), closes [#555](https://github.com/antvis/x6/issues/555)
+
 ## @antv/x6-sites-demos [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.3...@antv/x6-sites-demos@1.1.4) (2021-02-01)
 
 
