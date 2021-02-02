@@ -75,7 +75,7 @@ export class DefsManager extends Base {
       })
 
       const markup = `<${type}>${arr.join('')}</${type}>`
-      const attrs = { id, ...options.attrs }
+      const attrs = { id, gradientUnits: 'userSpaceOnUse', ...options.attrs }
       Vector.create(markup, attrs).appendTo(this.defs)
     }
 
