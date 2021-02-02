@@ -46,9 +46,9 @@ class Example extends React.Component {
     }
   }
 
-  handleMouseup = (e: MouseEvent) => {
+  handleMouseDown = (e: MouseEvent) => {
     document.removeEventListener('mousemove', this.handleMouseMove)
-    document.removeEventListener('mouseup', this.handleMouseup)
+    document.removeEventListener('mousedown', this.handleMouseDown)
     const { clientX, clientY } = e
     const p = this.graph.clientToLocal({x: clientX, y: clientY})
     const node = this.graph.addNode({
@@ -82,7 +82,7 @@ class Example extends React.Component {
       }
     })
     document.addEventListener('mousemove', this.handleMouseMove)
-    document.addEventListener('mouseup', this.handleMouseup)
+    document.addEventListener('mousedown', this.handleMouseDown)
   }
 
   render() {
