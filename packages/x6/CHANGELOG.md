@@ -1,3 +1,14 @@
+## @antv/x6 [1.12.26](https://github.com/antvis/x6/compare/@antv/x6@1.12.25...@antv/x6@1.12.26) (2021-02-02)
+
+
+### Bug Fixes
+
+* 🐛 edge vertices can be point data array `[number, number][]` ([c7b0f0d](https://github.com/antvis/x6/commit/c7b0f0d811bbceb30365b683f69124ddf9d96008))
+* 🐛 linear gradient along edge path ([39619d3](https://github.com/antvis/x6/commit/39619d3baaab1af79cb0d2ecc08bb8859ef44065)), closes [#635](https://github.com/antvis/x6/issues/635)
+* 🐛 liner gradient not available on horizontal and vertical edges ([1817298](https://github.com/antvis/x6/commit/1817298f7788d0b5475cf53c516a0a9b177bfdd0)), closes [#635](https://github.com/antvis/x6/issues/635)
+* 🐛 should render vertices tool with lowest z-index ([da9ddf5](https://github.com/antvis/x6/commit/da9ddf5f068f84fbe1b359aad459252d49feab34)), closes [#638](https://github.com/antvis/x6/issues/638)
+* fix move event trigger error ([#643](https://github.com/antvis/x6/issues/643)) ([586fc1f](https://github.com/antvis/x6/commit/586fc1f08fff85dcc1c6c8637aef529e8bccb169))
+
 ## @antv/x6 [1.12.25](https://github.com/antvis/x6/compare/@antv/x6@1.12.24...@antv/x6@1.12.25) (2021-02-02)
 
 
