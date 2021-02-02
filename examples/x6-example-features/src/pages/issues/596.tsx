@@ -14,7 +14,7 @@ Graph.registerNode(
         refX: 0,
         textWrap: {
           width: 160,
-          height: 16,
+          height: 48,
           ellipsis: true,
         },
       },
@@ -32,7 +32,7 @@ const data = {
       y: 40,
       attrs: {
         label: {
-          text: 'hell o测试tes t测试f fg123ASDFGHJ',
+          text: 'hello-test-foo-bar-count-lint-jsvascriptjsvascriptjsvascript',
         },
       },
     },
@@ -43,7 +43,8 @@ const data = {
       y: 40,
       attrs: {
         label: {
-          text: 'asdfg测试测试测试sdfgh jkl asdfghjk',
+          text:
+            'testing测试测试测试thisisaveryveryveryveryveryverylongword jsvascriptjsvascriptjsvascript',
         },
       },
     },
