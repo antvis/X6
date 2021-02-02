@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.24](https://github.com/antvis/x6/compare/@antv/x6@1.12.23...@antv/x6@1.12.24) (2021-02-02)
+
+
+### Bug Fixes
+
+* 🐛 auto extend scroller's graph with `async` mode ([8cd3aa6](https://github.com/antvis/x6/commit/8cd3aa63e4bb6a556d4c259c3116f590f87d021c)), closes [#636](https://github.com/antvis/x6/issues/636)
+
 ## @antv/x6 [1.12.23](https://github.com/antvis/x6/compare/@antv/x6@1.12.22...@antv/x6@1.12.23) (2021-02-01)
 
 
