@@ -105,7 +105,6 @@ export class Scroller extends View {
         graphContainer.style[key] = ''
         this.container.style[key] = obj[key]
       })
-      console.log(obj)
     }
 
     this.content = document.createElement('div')
