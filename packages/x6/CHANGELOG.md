@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.25](https://github.com/antvis/x6/compare/@antv/x6@1.12.24...@antv/x6@1.12.25) (2021-02-02)
+
+
+### Bug Fixes
+
+* delete console.log, add no-console config ([#642](https://github.com/antvis/x6/issues/642)) ([024c01f](https://github.com/antvis/x6/commit/024c01f000545c0c0b50259510fc886b3aa9815b))
+
 ## @antv/x6 [1.12.24](https://github.com/antvis/x6/compare/@antv/x6@1.12.23...@antv/x6@1.12.24) (2021-02-02)
 
 
