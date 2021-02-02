@@ -80,8 +80,28 @@ export class ToolsView extends View {
     }
 
     this.tools = []
-    for (let i = 0; i < tools.length; i += 1) {
-      const meta = tools[i]
+
+    const normalizedTools: typeof tools = []
+
+    tools.forEach((meta) => {
+      if (ToolsView.ToolItem.isToolItem(meta)) {
+        if (meta.name === 'vertices') {
+          normalizedTools.unshift(meta)
+        } else {
+          normalizedTools.push(meta)
+        }
+      } else {
+        const name = typeof meta === 'object' ? meta.name : meta
+        if (name === 'vertices') {
+          normalizedTools.unshift(meta)
+        } else {
+          normalizedTools.push(meta)
+        }
+      }
+    })
+
+    for (let i = 0; i < normalizedTools.length; i += 1) {
+      const meta = normalizedTools[i]
       let tool: ToolsView.ToolItem | undefined
 
       if (ToolsView.ToolItem.isToolItem(meta)) {
