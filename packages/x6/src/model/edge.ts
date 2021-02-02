@@ -1000,7 +1000,7 @@ export namespace Edge {
     strategy?: StrategyData
     labels?: Label[] | string[]
     defaultLabel?: Label
-    vertices?: Point.PointLike[]
+    vertices?: (Point.PointLike | Point.PointData)[]
     toolMarkup?: Markup
     doubleToolMarkup?: Markup
     vertexMarkup?: Markup
@@ -1330,7 +1330,7 @@ export namespace Edge {
   Edge.config({
     shape,
     propHooks(metadata: Properties) {
-      const { label, ...others } = metadata
+      const { label, vertices, ...others } = metadata
       if (label) {
         if (others.labels == null) {
           others.labels = []
@@ -1339,6 +1339,13 @@ export namespace Edge {
           typeof label === 'string' ? parseStringLabel(label) : label
         others.labels.push(formated)
       }
+
+      if (vertices) {
+        if (Array.isArray(vertices)) {
+          others.vertices = vertices.map((item) => Point.create(item).toJSON())
+        }
+      }
+
       return others
     },
   })
