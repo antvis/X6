@@ -75,7 +75,7 @@ export class DefsManager extends Base {
       })
 
       const markup = `<${type}>${arr.join('')}</${type}>`
-      const attrs = { id, gradientUnits: 'userSpaceOnUse', ...options.attrs }
+      const attrs = { id, ...options.attrs }
       Vector.create(markup, attrs).appendTo(this.defs)
     }
 
@@ -133,6 +133,13 @@ export class DefsManager extends Base {
     }
 
     return markerId
+  }
+
+  remove(id: string) {
+    const elem = this.svg.getElementById(id)
+    if (elem && elem.parentNode) {
+      elem.parentNode.removeChild(elem)
+    }
   }
 }
 

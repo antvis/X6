@@ -14,8 +14,8 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      source: { x: 100, y: 100 },
-      target: { x: 400, y: 100 },
+      source: { x: 300, y: 240 },
+      target: { x: 460, y: 240 },
       attrs: {
         line: {
           strokeWidth: 8,
@@ -36,11 +36,13 @@ export default class Example extends React.Component {
           },
         },
       },
+      tools: ['target-arrowhead'],
     })
 
     graph.addEdge({
-      source: { x: 100, y: 200 },
-      target: { x: 400, y: 220 },
+      source: { x: 240, y: 40 },
+      target: { x: 40, y: 160 },
+      connector: 'smooth',
       attrs: {
         line: {
           strokeWidth: 8,
@@ -61,6 +63,7 @@ export default class Example extends React.Component {
           },
         },
       },
+      tools: ['target-arrowhead'],
     })
   }
 
