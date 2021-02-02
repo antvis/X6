@@ -129,7 +129,6 @@ export const Cylinder = Base.define({
         const max = bbox.height / 2
         const current = NumberExt.clamp(data.round + deltaY, min, max)
         if (current !== previous) {
-          console.log(current)
           node.attr({
             body: { lateral: current },
             top: {
