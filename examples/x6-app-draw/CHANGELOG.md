@@ -4,6 +4,16 @@
 ### Bug Fixes
 
 * change $ to JQuery ([3c4d229](https://github.com/antvis/x6/commit/3c4d22952b33d592791cdead017d860833f51608))
+* editableNode bugs of x6-app-draw ([4d33512](https://github.com/antvis/x6/commit/4d3351207736009cf5ee1ab7eee5991cc1ad2f84))
+* editableNode bugs of x6-app-draw ([15589f5](https://github.com/antvis/x6/commit/15589f5bae3c0e304a5a2efa0f17514bc63f8f4b))
+* port can connect multiple lines ([908bff2](https://github.com/antvis/x6/commit/908bff246c2b518a89dc7d4cc6d53fea3e447ac9))
+
+## @antv/x6-app-draw [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.2...@antv/x6-app-draw@1.1.3) (2021-02-03)
+
+
+### Bug Fixes
+
+* change $ to JQuery ([3c4d229](https://github.com/antvis/x6/commit/3c4d22952b33d592791cdead017d860833f51608))
 * port can connect multiple lines ([908bff2](https://github.com/antvis/x6/commit/908bff246c2b518a89dc7d4cc6d53fea3e447ac9))
 
 ## @antv/x6-app-draw [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.2...@antv/x6-app-draw@1.1.3) (2021-02-03)
