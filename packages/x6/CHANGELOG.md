@@ -1,3 +1,11 @@
+## @antv/x6 [1.12.27](https://github.com/antvis/x6/compare/@antv/x6@1.12.26...@antv/x6@1.12.27) (2021-02-03)
+
+
+### Bug Fixes
+
+* 🐛 do not generate new commands on redoing/undoing ([1696f51](https://github.com/antvis/x6/commit/1696f519056a2cd57189b19532a758b24af3fe2a)), closes [#627](https://github.com/antvis/x6/issues/627)
+* 🐛 should update inner reference when set "parent" and "children" by `prop()` ([f258522](https://github.com/antvis/x6/commit/f2585224689f4deb980d14f0e1f1a0c247bdcedc))
+
 ## @antv/x6 [1.12.26](https://github.com/antvis/x6/compare/@antv/x6@1.12.25...@antv/x6@1.12.26) (2021-02-02)
 
 
