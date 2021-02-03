@@ -1,3 +1,29 @@
+# @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-02-03)
+
+
+### Bug Fixes
+
+* 🐛 remove single tool by name or index ([#565](https://github.com/antvis/x6/issues/565)) ([f87dc43](https://github.com/antvis/x6/commit/f87dc43e439bfd13b7afe193db096bacd456bdcd)), closes [#552](https://github.com/antvis/x6/issues/552)
+* add `placeholder` and `notFoundText` for stencil component ([#574](https://github.com/antvis/x6/issues/574)) ([c9100ab](https://github.com/antvis/x6/commit/c9100abb8576eaf55c5a9b0c5496f63c1796af5a)), closes [#555](https://github.com/antvis/x6/issues/555)
+* fix can not create node when mouseup in demo ([#628](https://github.com/antvis/x6/issues/628)) ([3597737](https://github.com/antvis/x6/commit/35977378e55270771930fd6ccb78d0cac62bd180))
+* fix contextmenu show multiple times ([50ef056](https://github.com/antvis/x6/commit/50ef0562b0036dbfa43ed7ffbff1fade2f06d272))
+* fix path error in custom router demo ([#620](https://github.com/antvis/x6/issues/620)) ([15c1e05](https://github.com/antvis/x6/commit/15c1e05d56e38d2c3f456845ed81e21375e67e22))
+* fix trigger multiple moved event when close movable config ([f651181](https://github.com/antvis/x6/commit/f65118150178df82ee795f4fc292f5ce91c78b6b))
+* x6 support ie 11 ([#585](https://github.com/antvis/x6/issues/585)) ([8cb2f48](https://github.com/antvis/x6/commit/8cb2f489d2f913dd9fa80dab5c50e1fffe7f6939))
+
+
+### Features
+
+* ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.12.27
+
 # @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-02-02)
 
 
