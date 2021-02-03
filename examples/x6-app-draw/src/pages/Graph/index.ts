@@ -291,11 +291,16 @@ export default class FlowGraph {
       if (elem == null) { return }
       cell.attr('text/style/display', 'none')
       if (elem) {
+        elem.style.display = ''
+        elem.contentEditable = 'true'
         elem.innerText = oldText
         elem.focus()
       }
       const onBlur = () => {
         cell.attr('text/text', elem.innerText)
+        cell.attr('text/style/display', '')
+        elem.style.display = 'none'
+        elem.contentEditable = 'false'
       }
       elem.addEventListener('blur', () => {
         onBlur()
