@@ -25,7 +25,7 @@ export const FlowChartRect = Graph.registerNode('flow-chart-rect', {
       },
     },
     'edit-text': {
-      contenteditable: 'true',
+      contenteditable: 'false',
       class: 'x6-edit-text',
       style: {
         width: '100%',
