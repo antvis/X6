@@ -3,5 +3,5 @@
 /**
 * Auto generated version file, do not modify it!
 */
-const version = '1.12.26'
+const version = '1.12.27'
 export { version }
