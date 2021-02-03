@@ -9,6 +9,7 @@ export class HistoryManager
   extends Basecoat<HistoryManager.EventArgs>
   implements IDisablable {
   public readonly model: Model
+  public readonly graph: Graph
   public readonly options: HistoryManager.CommonOptions
   public readonly validator: HistoryManager.Validator
 
@@ -27,6 +28,7 @@ export class HistoryManager
 
   constructor(options: HistoryManager.Options) {
     super()
+    this.graph = options.graph
     this.model = options.graph.model
     this.options = Util.getOptions(options)
     this.validator = new HistoryManager.Validator({
@@ -370,6 +372,9 @@ export class HistoryManager
    * Changes are temporarily kept until `storeBatchCommand()` is called.
    */
   protected initBatchCommand(options: KeyValue) {
+    if (this.freezed) {
+      return
+    }
     if (this.batchCommands) {
       this.batchLevel += 1
     } else {
@@ -384,6 +389,10 @@ export class HistoryManager
    * function as many times as `initBatchCommand()` been called.
    */
   protected storeBatchCommand(options: KeyValue) {
+    if (this.freezed) {
+      return
+    }
+
     if (this.batchCommands && this.batchLevel <= 0) {
       const cmds = this.filterBatchCommand(this.batchCommands)
       if (0 < cmds.length) {
