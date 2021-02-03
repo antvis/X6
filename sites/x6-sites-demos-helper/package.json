@@ -33,7 +33,8 @@
     "antd": "^4.4.2",
     "chalk": "^4.1.0",
     "folder-hash": "^3.3.2",
-    "ora": "^5.0.0"
+    "ora": "^5.0.0",
+    "react-helmet": "^6.1.0"
   },
   "peerDependencies": {
     "antd": ">=4.4.2",
