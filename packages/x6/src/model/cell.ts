@@ -294,6 +294,19 @@ export class Cell<
     value: any,
     options: Cell.SetByPathOptions = {},
   ) {
+    if (this.model) {
+      // update inner reference
+      if (path === 'children') {
+        this._children = value
+          ? value
+              .map((id: string) => this.model!.getCell(id))
+              .filter((child: Cell) => child != null)
+          : null
+      } else if (path === 'parent') {
+        this._parent = value ? this.model.getCell(value) : null
+      }
+    }
+
     this.store.setByPath(path, value, options)
     return this
   }
