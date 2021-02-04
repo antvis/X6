@@ -97,12 +97,11 @@ export class TransformManager extends Base {
   }
 
   resize(width?: number, height?: number) {
-    const options = this.options
-    let w = width === undefined ? options.width : width
-    let h = height === undefined ? options.height : height
+    let w = width === undefined ? this.options.width : width
+    let h = height === undefined ? this.options.height : height
 
-    options.width = w
-    options.height = h
+    this.options.width = w
+    this.options.height = h
 
     if (typeof w === 'number') {
       w = Math.round(w)
@@ -120,9 +119,8 @@ export class TransformManager extends Base {
   }
 
   getComputedSize() {
-    const options = this.options
-    let w = options.width
-    let h = options.height
+    let w = this.options.width
+    let h = this.options.height
     if (!NumberExt.isNumber(w)) {
       w = this.container.clientWidth
     }
@@ -279,7 +277,7 @@ export class TransformManager extends Base {
       }
     }
 
-    const paddingValues = NumberExt.normalizeSides(padding)
+    const paddings = NumberExt.normalizeSides(padding)
 
     const area = options.contentArea
       ? Rectangle.create(options.contentArea)
@@ -309,7 +307,7 @@ export class TransformManager extends Base {
       options.allowNewOrigin === 'any'
     ) {
       tx = Math.ceil(-area.x / gridWidth) * gridWidth
-      tx += paddingValues.left
+      tx += paddings.left
       width += tx
     }
 
@@ -319,12 +317,12 @@ export class TransformManager extends Base {
       options.allowNewOrigin === 'any'
     ) {
       ty = Math.ceil(-area.y / gridHeight) * gridHeight
-      ty += paddingValues.top
+      ty += paddings.top
       height += ty
     }
 
-    width += paddingValues.right
-    height += paddingValues.bottom
+    width += paddings.right
+    height += paddings.bottom
 
     // Make sure the resulting width and height are greater than minimum.
     width = Math.max(width, options.minWidth || 0)
