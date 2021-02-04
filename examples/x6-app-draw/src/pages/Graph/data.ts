@@ -11,18 +11,18 @@ const graphData = {
         },
       },
     },
-    'id': '1d7b3699-bfb3-47a5-b586-0d157ec28c9a',
+    'id': '2d82cdc4-3057-4fca-8d9a-2351d064b74f',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': '8650a303-3568-4ff2-9fac-2fd3ae7e6f2a',
-      'port': '6541f8dc-e48b-4b8c-a105-2ab3a47f1f21',
+      'cell': '60436d0a-95d6-4e4f-8747-863bf16b2240',
+      'port': '0ed621ca-1c29-4c18-85cd-81fcf8911663',
     },
     'target': {
-      'cell': '7b6fd715-83e6-4053-8c2b-346e6a857bf3',
-      'port': 'd1346f43-969a-4201-af5d-d09b7ef79980',
+      'cell': 'f4085492-b598-432f-be76-6da6533241c1',
+      'port': 'ad7666b4-10f8-45a3-85a6-a9f33a5f429b',
     },
   }, {
     'shape': 'edge',
@@ -36,18 +36,18 @@ const graphData = {
         },
       },
     },
-    'id': 'd6d54ea1-41c8-47c9-8abe-cdede92f2c9b',
+    'id': '88a255b9-2a02-4cfc-a88b-c9846db21b66',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': '7b6fd715-83e6-4053-8c2b-346e6a857bf3',
-      'port': '0cbde5df-ef35-410e-b6c3-a6b1f5561e3f',
+      'cell': 'f4085492-b598-432f-be76-6da6533241c1',
+      'port': '116579ee-f00a-4c83-a14f-7923f15006b4',
     },
     'target': {
-      'cell': '762cbe4d-fd2b-4cb2-95bb-fae3cb9ef7fc',
-      'port': '089ce61a-4b17-4ed8-9c3f-5b905f484425',
+      'cell': 'fa27a1e8-ec12-4e16-a38e-396528005f7e',
+      'port': '5e2723ea-f6f0-4de8-9d36-bb9a96a8d964',
     },
   }, {
     'shape': 'edge',
@@ -61,18 +61,18 @@ const graphData = {
         },
       },
     },
-    'id': '3d6241e8-63bf-4204-acd2-67c951aece51',
+    'id': '2e536225-8b39-4878-9f1b-69e363dd09a5',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': '7b6fd715-83e6-4053-8c2b-346e6a857bf3',
-      'port': '2fceb955-f7af-41ac-ac02-5a2ea514544e',
+      'cell': 'f4085492-b598-432f-be76-6da6533241c1',
+      'port': '3911a67d-43b1-4a8a-9216-b7da25341de1',
     },
     'target': {
-      'cell': 'ef3865af-8a91-4164-8466-3f6b4315070f',
-      'port': 'c133349e-4a4a-4d7d-9b38-26c36b3e68c5',
+      'cell': '99e14e58-4fe2-4d3b-9154-c2bc4f8fc327',
+      'port': 'aeca5ed5-d0db-47ba-b415-df0df3d19403',
     },
   }, {
     'shape': 'edge',
@@ -86,18 +86,18 @@ const graphData = {
         },
       },
     },
-    'id': '6b8d6bbf-70c3-4760-9570-6381dcceb1c6',
+    'id': '2b175bf3-333f-424d-9b6d-8ad93b0e2c84',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': '7b6fd715-83e6-4053-8c2b-346e6a857bf3',
-      'port': 'd561926a-3a24-449a-abb1-0c20bc89947e',
+      'cell': 'f4085492-b598-432f-be76-6da6533241c1',
+      'port': 'd865df64-018a-4f0b-bb54-0ba8b3c9891f',
     },
     'target': {
-      'cell': '9be960d0-fb75-49b1-8131-abc05b5991bd',
-      'port': 'c133349e-4a4a-4d7d-9b38-26c36b3e68c5',
+      'cell': '23201ba3-0a31-429a-828d-332ff5d92bd3',
+      'port': 'aeca5ed5-d0db-47ba-b415-df0df3d19403',
     },
   }, {
     'shape': 'edge',
@@ -111,18 +111,18 @@ const graphData = {
         },
       },
     },
-    'id': '024bb71e-58be-41be-aaf7-106abd786167',
+    'id': '1a4f8cee-8de0-44af-a3de-9a80b408dbf5',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': 'ef3865af-8a91-4164-8466-3f6b4315070f',
-      'port': 'af190d15-b0f1-4f92-85bc-e0c4df83e2a7',
+      'cell': 'fa27a1e8-ec12-4e16-a38e-396528005f7e',
+      'port': '2e83a247-fe8d-416c-98da-aff70756e512',
     },
     'target': {
-      'cell': '762cbe4d-fd2b-4cb2-95bb-fae3cb9ef7fc',
-      'port': 'fbf8759a-1059-47bb-b556-f0a4477e48d3',
+      'cell': '765b2519-ca1e-4387-8945-0602413fd8e9',
+      'port': 'ad7666b4-10f8-45a3-85a6-a9f33a5f429b',
     },
   }, {
     'shape': 'edge',
@@ -136,18 +136,18 @@ const graphData = {
         },
       },
     },
-    'id': 'd6180def-ea97-4122-bacb-c6bf0841c4d5',
+    'id': '684e442e-c58a-4959-bb05-ceb408104699',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': '9be960d0-fb75-49b1-8131-abc05b5991bd',
-      'port': 'c241a7e4-12d3-4dde-9694-0f0e5f7b9a91',
+      'cell': '99e14e58-4fe2-4d3b-9154-c2bc4f8fc327',
+      'port': 'e943899d-a7e7-4440-b856-27aca334e291',
     },
     'target': {
-      'cell': '762cbe4d-fd2b-4cb2-95bb-fae3cb9ef7fc',
-      'port': 'fd4b8c95-d1eb-41ea-b3e1-15135814b292',
+      'cell': '765b2519-ca1e-4387-8945-0602413fd8e9',
+      'port': '3911a67d-43b1-4a8a-9216-b7da25341de1',
     },
   }, {
     'shape': 'edge',
@@ -161,18 +161,18 @@ const graphData = {
         },
       },
     },
-    'id': 'a598fcc0-36a0-44af-a717-f3791f879430',
+    'id': 'cbf94e89-1f39-4d53-a043-9f723d1d370d',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': '762cbe4d-fd2b-4cb2-95bb-fae3cb9ef7fc',
-      'port': '9bb8ec19-b1e2-432d-8735-b008da064948',
+      'cell': '23201ba3-0a31-429a-828d-332ff5d92bd3',
+      'port': 'e943899d-a7e7-4440-b856-27aca334e291',
     },
     'target': {
-      'cell': 'c7b4dfb0-2cc1-4ce1-839d-22b13bdf86e5',
-      'port': 'd1346f43-969a-4201-af5d-d09b7ef79980',
+      'cell': '765b2519-ca1e-4387-8945-0602413fd8e9',
+      'port': 'd865df64-018a-4f0b-bb54-0ba8b3c9891f',
     },
   }, {
     'shape': 'edge',
@@ -186,23 +186,23 @@ const graphData = {
         },
       },
     },
-    'id': 'd27aa601-d498-49fc-87de-1e520276daed',
+    'id': '35832a5a-e259-4462-9f3d-b704c38a8351',
     'router': {
       'name': 'manhattan',
     },
     'zIndex': 0,
     'source': {
-      'cell': 'c7b4dfb0-2cc1-4ce1-839d-22b13bdf86e5',
-      'port': '0cbde5df-ef35-410e-b6c3-a6b1f5561e3f',
+      'cell': '765b2519-ca1e-4387-8945-0602413fd8e9',
+      'port': '116579ee-f00a-4c83-a14f-7923f15006b4',
     },
     'target': {
-      'cell': '5ac48b64-d507-4006-954b-f8fbf8016ad2',
-      'port': '45726225-0a03-409e-8475-07da4b8533c5',
+      'cell': '6ac528e3-cd0e-431e-8653-7502db15ad46',
+      'port': '8689ec26-b6c3-4273-8043-77caac66660a',
     },
   }, {
     'position': {
-      'x': 420,
-      'y': 160,
+      'x': 240,
+      'y': 110,
     },
     'size': {
       'width': 80,
@@ -210,7 +210,9 @@ const graphData = {
     },
     'attrs': {
       'text': {
-        'text': '起始节点',
+        'textWrap': {
+          'text': '起始节点',
+        },
       },
       'body': {
         'rx': 24,
@@ -283,24 +285,147 @@ const graphData = {
       },
       'items': [{
         'group': 'top',
-        'id': '45726225-0a03-409e-8475-07da4b8533c5',
+        'id': '8689ec26-b6c3-4273-8043-77caac66660a',
       }, {
         'group': 'right',
-        'id': '06111939-bf01-48d9-9f54-6465d9d831c6',
+        'id': '65df26ff-6b9e-41e9-9d51-a5ba8f4ae4fa',
       }, {
         'group': 'bottom',
-        'id': '6541f8dc-e48b-4b8c-a105-2ab3a47f1f21',
+        'id': '0ed621ca-1c29-4c18-85cd-81fcf8911663',
       }, {
         'group': 'left',
-        'id': '54781206-573f-4982-a21e-5fac1e0e8a60',
+        'id': '6178d667-46b6-40f5-9e8f-833ee0b040c1',
       }],
     },
-    'id': '8650a303-3568-4ff2-9fac-2fd3ae7e6f2a',
+    'id': '60436d0a-95d6-4e4f-8747-863bf16b2240',
     'zIndex': 1,
   }, {
+    'angle': 45,
     'position': {
-      'x': 420,
-      'y': 250,
+      'x': 130,
+      'y': 360,
+    },
+    'size': {
+      'width': 52,
+      'height': 52,
+    },
+    'attrs': {
+      'text': {
+        'textWrap': {
+          'text': '判断节点',
+        },
+        'transform': 'rotate(-45deg)',
+      },
+      'edit-text': {
+        'style': {
+          'transform': 'rotate(-45deg)',
+        },
+      },
+    },
+    'shape': 'flow-chart-rect',
+    'ports': {
+      'groups': {
+        'top': {
+          'position': {
+            'name': 'top',
+            'args': {
+              'dx': -26,
+            },
+          },
+          'attrs': {
+            'circle': {
+              'r': 3,
+              'magnet': true,
+              'stroke': '#5F95FF',
+              'strokeWidth': 1,
+              'fill': '#fff',
+              'style': {
+                'visibility': 'hidden',
+              },
+            },
+          },
+        },
+        'right': {
+          'position': {
+            'name': 'right',
+            'args': {
+              'dy': -26,
+            },
+          },
+          'attrs': {
+            'circle': {
+              'r': 3,
+              'magnet': true,
+              'stroke': '#5F95FF',
+              'strokeWidth': 1,
+              'fill': '#fff',
+              'style': {
+                'visibility': 'hidden',
+              },
+            },
+          },
+        },
+        'bottom': {
+          'position': {
+            'name': 'bottom',
+            'args': {
+              'dx': 26,
+            },
+          },
+          'attrs': {
+            'circle': {
+              'r': 3,
+              'magnet': true,
+              'stroke': '#5F95FF',
+              'strokeWidth': 1,
+              'fill': '#fff',
+              'style': {
+                'visibility': 'hidden',
+              },
+            },
+          },
+        },
+        'left': {
+          'position': {
+            'name': 'left',
+            'args': {
+              'dy': 26,
+            },
+          },
+          'attrs': {
+            'circle': {
+              'r': 3,
+              'magnet': true,
+              'stroke': '#5F95FF',
+              'strokeWidth': 1,
+              'fill': '#fff',
+              'style': {
+                'visibility': 'hidden',
+              },
+            },
+          },
+        },
+      },
+      'items': [{
+        'group': 'top',
+        'id': 'aeca5ed5-d0db-47ba-b415-df0df3d19403',
+      }, {
+        'group': 'right',
+        'id': '4c9e98b4-a474-48b1-87bf-094124c70924',
+      }, {
+        'group': 'bottom',
+        'id': 'e943899d-a7e7-4440-b856-27aca334e291',
+      }, {
+        'group': 'left',
+        'id': '2299690d-7ed5-4f00-9fcd-aedcb1df5804',
+      }],
+    },
+    'id': '99e14e58-4fe2-4d3b-9154-c2bc4f8fc327',
+    'zIndex': 2,
+  }, {
+    'position': {
+      'x': 240,
+      'y': 234,
     },
     'size': {
       'width': 80,
@@ -308,7 +433,9 @@ const graphData = {
     },
     'attrs': {
       'text': {
-        'text': '流程节点',
+        'textWrap': {
+          'text': '流程节点',
+        },
       },
     },
     'shape': 'flow-chart-rect',
@@ -377,24 +504,24 @@ const graphData = {
       },
       'items': [{
         'group': 'top',
-        'id': 'd1346f43-969a-4201-af5d-d09b7ef79980',
+        'id': 'ad7666b4-10f8-45a3-85a6-a9f33a5f429b',
       }, {
         'group': 'right',
-        'id': 'd561926a-3a24-449a-abb1-0c20bc89947e',
+        'id': 'd865df64-018a-4f0b-bb54-0ba8b3c9891f',
       }, {
         'group': 'bottom',
-        'id': '0cbde5df-ef35-410e-b6c3-a6b1f5561e3f',
+        'id': '116579ee-f00a-4c83-a14f-7923f15006b4',
       }, {
         'group': 'left',
-        'id': '2fceb955-f7af-41ac-ac02-5a2ea514544e',
+        'id': '3911a67d-43b1-4a8a-9216-b7da25341de1',
       }],
     },
-    'id': '7b6fd715-83e6-4053-8c2b-346e6a857bf3',
-    'zIndex': 2,
+    'id': 'f4085492-b598-432f-be76-6da6533241c1',
+    'zIndex': 3,
   }, {
     'position': {
-      'x': 425,
-      'y': 371,
+      'x': 245,
+      'y': 331,
     },
     'size': {
       'width': 70,
@@ -402,7 +529,9 @@ const graphData = {
     },
     'attrs': {
       'text': {
-        'text': '链接节点',
+        'textWrap': {
+          'text': '链接节点',
+        },
       },
       'body': {
         'rx': 35,
@@ -475,25 +604,25 @@ const graphData = {
       },
       'items': [{
         'group': 'top',
-        'id': '089ce61a-4b17-4ed8-9c3f-5b905f484425',
+        'id': '5e2723ea-f6f0-4de8-9d36-bb9a96a8d964',
       }, {
         'group': 'right',
-        'id': 'fd4b8c95-d1eb-41ea-b3e1-15135814b292',
+        'id': '0d0c783e-d9aa-494d-af33-c82de65e08c9',
       }, {
         'group': 'bottom',
-        'id': '9bb8ec19-b1e2-432d-8735-b008da064948',
+        'id': '2e83a247-fe8d-416c-98da-aff70756e512',
       }, {
         'group': 'left',
-        'id': 'fbf8759a-1059-47bb-b556-f0a4477e48d3',
+        'id': '3ede7704-d0b0-4fa8-9ac1-d850b67f6889',
       }],
     },
-    'id': '762cbe4d-fd2b-4cb2-95bb-fae3cb9ef7fc',
+    'id': 'fa27a1e8-ec12-4e16-a38e-396528005f7e',
     'zIndex': 4,
   }, {
     'angle': 45,
     'position': {
-      'x': 310,
-      'y': 380,
+      'x': 376,
+      'y': 340,
     },
     'size': {
       'width': 52,
@@ -501,7 +630,9 @@ const graphData = {
     },
     'attrs': {
       'text': {
-        'text': '判断节点',
+        'textWrap': {
+          'text': '判断节点',
+        },
         'transform': 'rotate(-45deg)',
       },
       'edit-text': {
@@ -596,145 +727,24 @@ const graphData = {
       },
       'items': [{
         'group': 'top',
-        'id': 'c133349e-4a4a-4d7d-9b38-26c36b3e68c5',
+        'id': 'aeca5ed5-d0db-47ba-b415-df0df3d19403',
       }, {
         'group': 'right',
-        'id': 'af190d15-b0f1-4f92-85bc-e0c4df83e2a7',
+        'id': '4c9e98b4-a474-48b1-87bf-094124c70924',
       }, {
         'group': 'bottom',
-        'id': 'c51a4f3b-759b-47ed-9d80-fa4f6c114e64',
+        'id': 'e943899d-a7e7-4440-b856-27aca334e291',
       }, {
         'group': 'left',
-        'id': 'c241a7e4-12d3-4dde-9694-0f0e5f7b9a91',
+        'id': '2299690d-7ed5-4f00-9fcd-aedcb1df5804',
       }],
     },
-    'id': 'ef3865af-8a91-4164-8466-3f6b4315070f',
+    'id': '23201ba3-0a31-429a-828d-332ff5d92bd3',
     'zIndex': 5,
   }, {
-    'angle': 45,
     'position': {
-      'x': 566,
-      'y': 380,
-    },
-    'size': {
-      'width': 52,
-      'height': 52,
-    },
-    'attrs': {
-      'text': {
-        'text': '判断节点',
-        'transform': 'rotate(-45deg)',
-      },
-      'edit-text': {
-        'style': {
-          'transform': 'rotate(-45deg)',
-        },
-      },
-    },
-    'shape': 'flow-chart-rect',
-    'ports': {
-      'groups': {
-        'top': {
-          'position': {
-            'name': 'top',
-            'args': {
-              'dx': -26,
-            },
-          },
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'right': {
-          'position': {
-            'name': 'right',
-            'args': {
-              'dy': -26,
-            },
-          },
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'bottom': {
-          'position': {
-            'name': 'bottom',
-            'args': {
-              'dx': 26,
-            },
-          },
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'left': {
-          'position': {
-            'name': 'left',
-            'args': {
-              'dy': 26,
-            },
-          },
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-      },
-      'items': [{
-        'group': 'top',
-        'id': 'c133349e-4a4a-4d7d-9b38-26c36b3e68c5',
-      }, {
-        'group': 'right',
-        'id': 'af190d15-b0f1-4f92-85bc-e0c4df83e2a7',
-      }, {
-        'group': 'bottom',
-        'id': 'c51a4f3b-759b-47ed-9d80-fa4f6c114e64',
-      }, {
-        'group': 'left',
-        'id': 'c241a7e4-12d3-4dde-9694-0f0e5f7b9a91',
-      }],
-    },
-    'id': '9be960d0-fb75-49b1-8131-abc05b5991bd',
-    'zIndex': 9,
-  }, {
-    'position': {
-      'x': 420,
-      'y': 497,
+      'x': 240,
+      'y': 476,
     },
     'size': {
       'width': 80,
@@ -742,7 +752,9 @@ const graphData = {
     },
     'attrs': {
       'text': {
-        'text': '流程节点',
+        'textWrap': {
+          'text': '流程节点',
+        },
       },
     },
     'shape': 'flow-chart-rect',
@@ -811,24 +823,24 @@ const graphData = {
       },
       'items': [{
         'group': 'top',
-        'id': 'd1346f43-969a-4201-af5d-d09b7ef79980',
+        'id': 'ad7666b4-10f8-45a3-85a6-a9f33a5f429b',
       }, {
         'group': 'right',
-        'id': 'd561926a-3a24-449a-abb1-0c20bc89947e',
+        'id': 'd865df64-018a-4f0b-bb54-0ba8b3c9891f',
       }, {
         'group': 'bottom',
-        'id': '0cbde5df-ef35-410e-b6c3-a6b1f5561e3f',
+        'id': '116579ee-f00a-4c83-a14f-7923f15006b4',
       }, {
         'group': 'left',
-        'id': '2fceb955-f7af-41ac-ac02-5a2ea514544e',
+        'id': '3911a67d-43b1-4a8a-9216-b7da25341de1',
       }],
     },
-    'id': 'c7b4dfb0-2cc1-4ce1-839d-22b13bdf86e5',
-    'zIndex': 14,
+    'id': '765b2519-ca1e-4387-8945-0602413fd8e9',
+    'zIndex': 6,
   }, {
     'position': {
-      'x': 420,
-      'y': 616,
+      'x': 240,
+      'y': 609,
     },
     'size': {
       'width': 80,
@@ -836,7 +848,12 @@ const graphData = {
     },
     'attrs': {
       'text': {
-        'text': '结束节点',
+        'textWrap': {
+          'text': '结束节点',
+        },
+        'style': {
+          'display': '',
+        },
       },
       'body': {
         'rx': 24,
@@ -909,210 +926,20 @@ const graphData = {
       },
       'items': [{
         'group': 'top',
-        'id': '45726225-0a03-409e-8475-07da4b8533c5',
+        'id': '8689ec26-b6c3-4273-8043-77caac66660a',
       }, {
         'group': 'right',
-        'id': '06111939-bf01-48d9-9f54-6465d9d831c6',
+        'id': '65df26ff-6b9e-41e9-9d51-a5ba8f4ae4fa',
       }, {
         'group': 'bottom',
-        'id': '6541f8dc-e48b-4b8c-a105-2ab3a47f1f21',
+        'id': '0ed621ca-1c29-4c18-85cd-81fcf8911663',
       }, {
         'group': 'left',
-        'id': '54781206-573f-4982-a21e-5fac1e0e8a60',
+        'id': '6178d667-46b6-40f5-9e8f-833ee0b040c1',
       }],
     },
-    'id': '5ac48b64-d507-4006-954b-f8fbf8016ad2',
-    'zIndex': 16,
-  }, {
-    'position': {
-      'x': 660,
-      'y': 190,
-    },
-    'size': {
-      'width': 200,
-      'height': 60,
-    },
-    'shape': 'flow-chart-animate-text',
-    'id': '0698a6d6-4f48-42e3-ab59-5ff5713a63ea',
-    'zIndex': 20,
-  }, {
-    'position': {
-      'x': 660,
-      'y': 292,
-    },
-    'size': {
-      'width': 200,
-      'height': 60,
-    },
-    'shape': 'flow-chart-image-rect',
-    'ports': {
-      'groups': {
-        'top': {
-          'position': 'top',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'right': {
-          'position': 'right',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'bottom': {
-          'position': 'bottom',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'left': {
-          'position': 'left',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-      },
-      'items': [{
-        'group': 'top',
-        'id': 'a48f4c0f-fa60-4ea6-8a9c-1046a3cbf0a0',
-      }, {
-        'group': 'right',
-        'id': 'e05f9fde-c5f3-47ea-920c-a210c4fc3501',
-      }, {
-        'group': 'bottom',
-        'id': '183117cc-26d8-4241-95b4-d83d95010224',
-      }, {
-        'group': 'left',
-        'id': 'ad9ffaa5-9c34-4aa8-a311-4b58b56cd0f6',
-      }],
-    },
-    'id': '229d844a-be25-414a-b044-ae3a6c63ce74',
-    'zIndex': 21,
-  }, {
-    'position': {
-      'x': 660,
-      'y': 404,
-    },
-    'size': {
-      'width': 200,
-      'height': 68,
-    },
-    'shape': 'flow-chart-title-rect',
-    'ports': {
-      'groups': {
-        'top': {
-          'position': 'top',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'right': {
-          'position': 'right',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'bottom': {
-          'position': 'bottom',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-        'left': {
-          'position': 'left',
-          'attrs': {
-            'circle': {
-              'r': 3,
-              'magnet': true,
-              'stroke': '#5F95FF',
-              'strokeWidth': 1,
-              'fill': '#fff',
-              'style': {
-                'visibility': 'hidden',
-              },
-            },
-          },
-        },
-      },
-      'items': [{
-        'group': 'top',
-        'id': '739f9eec-ef8f-4f2e-b328-6b7e0793d582',
-      }, {
-        'group': 'right',
-        'id': '5786e655-df1d-419e-92e2-db91b3c4506c',
-      }, {
-        'group': 'bottom',
-        'id': 'e74c9676-4c27-474f-be96-be4568ed55d0',
-      }, {
-        'group': 'left',
-        'id': '007fa7ae-aa47-4faf-925c-779c35db4f5f',
-      }],
-    },
-    'id': '4197e369-2948-4209-8e13-0dd6dedd07b4',
-    'zIndex': 22,
+    'id': '6ac528e3-cd0e-431e-8653-7502db15ad46',
+    'zIndex': 7,
   }],
 }
 
