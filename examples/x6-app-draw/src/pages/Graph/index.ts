@@ -165,7 +165,9 @@ export default class FlowGraph {
           ry: 24,
         },
         text: {
-          text: '起始节点',
+          textWrap: {
+            text: '起始节点',
+          },
         },
       },
     })
@@ -173,7 +175,9 @@ export default class FlowGraph {
       shape: 'flow-chart-rect',
       attrs: {
         text: {
-          text: '流程节点',
+          textWrap: {
+            text: '流程节点',
+          },
         },
       },
     })
@@ -189,7 +193,9 @@ export default class FlowGraph {
           },
         },
         text: {
-          text: '判断节点',
+          textWrap: {
+            text: '判断节点',
+          },
           transform: 'rotate(-45deg)',
         },
       },
@@ -240,7 +246,9 @@ export default class FlowGraph {
           ry: 35,
         },
         text: {
-          text: '链接节点',
+          textWrap: {
+            text: '链接节点',
+          },
         },
       },
     })
@@ -286,7 +294,7 @@ export default class FlowGraph {
     const container = document.getElementById('container')!
 
     graph.on('node:contextmenu', ({ cell, view }) => {
-      const oldText = cell.attr('text/text') as string
+      const oldText = cell.attr('text/textWrap/text') as string
       const elem = view.container.querySelector('.x6-edit-text') as HTMLElement
       if (elem == null) { return }
       cell.attr('text/style/display', 'none')
@@ -297,7 +305,7 @@ export default class FlowGraph {
         elem.focus()
       }
       const onBlur = () => {
-        cell.attr('text/text', elem.innerText)
+        cell.attr('text/textWrap/text', elem.innerText)
         cell.attr('text/style/display', '')
         elem.style.display = 'none'
         elem.contentEditable = 'false'

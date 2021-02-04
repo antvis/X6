@@ -37,6 +37,10 @@ export const FlowChartRect = Graph.registerNode('flow-chart-rect', {
     text: {
       fontSize: 12,
       fill: 'rgba(0,0,0,0.85)',
+      textWrap: {
+        text: '',
+        width: -10,
+      },
     },
   },
   markup: [
