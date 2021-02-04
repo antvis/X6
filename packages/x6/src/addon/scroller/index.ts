@@ -19,7 +19,7 @@ export class Scroller extends View {
   public readonly backgroundManager: Scroller.Background
   protected readonly $background: JQuery<HTMLElement>
   protected readonly $content: JQuery<HTMLElement>
-  protected pageBreak: HTMLDivElement
+  protected pageBreak: HTMLDivElement | null
 
   public get graph() {
     return this.options.graph
@@ -38,28 +38,15 @@ export class Scroller extends View {
   protected cachedScrollTop: number | null
   protected cachedCenterPoint: Point.PointLike | null
   protected delegatedHandlers: { [name: string]: Function }
-  protected shouldUpdatePageWidth: boolean = false
-  protected shouldUpdatePageHeight: boolean = false
 
   constructor(options: Scroller.Options) {
     super()
 
     this.options = Util.getOptions(options)
 
-    const graph = this.graph
-    const scale = graph.transform.getScale()
+    const scale = this.graph.transform.getScale()
     this.sx = scale.sx
     this.sy = scale.sy
-
-    if (this.options.pageWidth == null) {
-      this.options.pageWidth = graph.options.width
-      this.shouldUpdatePageWidth = true
-    }
-
-    if (this.options.pageHeight == null) {
-      this.options.pageHeight = graph.options.height
-      this.shouldUpdatePageHeight = true
-    }
 
     const width = this.options.width || this.graph.options.width
     const height = this.options.height || this.graph.options.height
@@ -76,7 +63,7 @@ export class Scroller extends View {
       this.$container.addClass(this.options.className)
     }
 
-    const graphContainer = graph.container
+    const graphContainer = this.graph.container
 
     if (graphContainer.parentNode) {
       this.$container.insertBefore(graphContainer)
@@ -111,8 +98,8 @@ export class Scroller extends View {
     this.$content = this.$(this.content)
       .addClass(this.prefixClassName(Util.contentClass))
       .css({
-        width: graph.options.width,
-        height: graph.options.height,
+        width: this.graph.options.width,
+        height: this.graph.options.height,
       })
 
     // custom background
@@ -148,15 +135,13 @@ export class Scroller extends View {
     graph.on('after:print', this.restoreScrollPosition, this)
     graph.on('after:export', this.restoreScrollPosition, this)
 
-    if (this.options.autoResize) {
-      graph.on('render:done', this.onRenderDone, this)
-      graph.on('unfreeze', this.onUpdate, this)
-      model.on('reseted', this.onUpdate, this)
-      model.on('cell:added', this.onUpdate, this)
-      model.on('cell:removed', this.onUpdate, this)
-      model.on('cell:changed', this.onUpdate, this)
-      model.on('batch:stop', this.onBatchStop, this)
-    }
+    graph.on('render:done', this.onRenderDone, this)
+    graph.on('unfreeze', this.onUpdate, this)
+    model.on('reseted', this.onUpdate, this)
+    model.on('cell:added', this.onUpdate, this)
+    model.on('cell:removed', this.onUpdate, this)
+    model.on('cell:changed', this.onUpdate, this)
+    model.on('batch:stop', this.onBatchStop, this)
 
     this.delegateBackgroundEvents()
   }
@@ -184,14 +169,15 @@ export class Scroller extends View {
   }
 
   protected onUpdate() {
-    if (this.graph.isAsync()) {
+    if (this.graph.isAsync() || !this.options.autoResize) {
       return
     }
+
     this.update()
   }
 
   onBatchStop(args: { name: Model.BatchName }) {
-    if (this.graph.isAsync()) {
+    if (this.graph.isAsync() || !this.options.autoResize) {
       return
     }
 
@@ -239,20 +225,19 @@ export class Scroller extends View {
   }
 
   protected onBackgroundEvent(e: JQuery.TriggeredEvent) {
-    let shouldHnadleEvent = false
-
+    let valid = false
     const target = e.target
 
     if (!this.options.pageVisible) {
-      shouldHnadleEvent =
-        this.graph.view.background === target || this.graph.view.grid === target
+      const view = this.graph.view
+      valid = view.background === target || view.grid === target
     } else if (this.options.background) {
-      shouldHnadleEvent = this.background === target
+      valid = this.background === target
     } else {
-      shouldHnadleEvent = this.content === target
+      valid = this.content === target
     }
 
-    if (shouldHnadleEvent) {
+    if (valid) {
       const handler = this.delegatedHandlers[e.type]
       if (typeof handler === 'function') {
         handler.apply(this.graph, arguments)
@@ -261,7 +246,7 @@ export class Scroller extends View {
   }
 
   protected onRenderDone({ stats }: EventArgs['render:done']) {
-    if (stats.priority < 2) {
+    if (this.options.autoResize && stats.priority < 2) {
       this.update()
     }
   }
@@ -310,14 +295,16 @@ export class Scroller extends View {
     }
   }
 
-  public updatePageSize(width?: number, height?: number, force?: boolean) {
-    if (width != null && (this.shouldUpdatePageWidth || force)) {
+  public updatePageSize(width?: number, height?: number) {
+    if (width != null) {
       this.options.pageWidth = width
     }
 
-    if (height != null && (this.shouldUpdatePageHeight || force)) {
+    if (height != null) {
       this.options.pageHeight = height
     }
+
+    this.updatePageBreak()
   }
 
   protected updatePageBreak() {
@@ -325,24 +312,23 @@ export class Scroller extends View {
       this.pageBreak.parentNode.removeChild(this.pageBreak)
     }
 
-    const options = this.options
-    if (options.pageVisible && options.pageBreak) {
-      const graphWidth = Math.round(this.graph.options.width / this.sx)
-      const graphHeight = Math.round(this.graph.options.height / this.sy)
-      const pageWidth = options.pageWidth || graphWidth
-      const pageHeight = options.pageHeight || graphHeight
+    this.pageBreak = null
+
+    if (this.options.pageVisible && this.options.pageBreak) {
+      const graphWidth = this.graph.options.width
+      const graphHeight = this.graph.options.height
+      const pageWidth = this.options.pageWidth! * this.sx
+      const pageHeight = this.options.pageHeight! * this.sy
       if (graphWidth > pageWidth || graphHeight > pageHeight) {
-        this.pageBreak = document.createElement('div')
-        Dom.addClass(this.pageBreak, this.prefixClassName('graph-pagebreak'))
-        this.$(this.graph.view.grid).after(this.pageBreak)
+        let hasPageBreak = false
+        const container = document.createElement('div')
 
         for (let i = 1, l = Math.floor(graphWidth / pageWidth); i < l; i += 1) {
           this.$('<div/>')
             .addClass(this.prefixClassName(`graph-pagebreak-vertical`))
-            .css({
-              left: i * pageWidth,
-            })
-            .appendTo(this.pageBreak)
+            .css({ left: i * pageWidth })
+            .appendTo(container)
+          hasPageBreak = true
         }
 
         for (
@@ -352,10 +338,15 @@ export class Scroller extends View {
         ) {
           this.$('<div/>')
             .addClass(this.prefixClassName(`graph-pagebreak-horizontal`))
-            .css({
-              top: i * pageHeight,
-            })
-            .appendTo(this.pageBreak)
+            .css({ top: i * pageHeight })
+            .appendTo(container)
+          hasPageBreak = true
+        }
+
+        if (hasPageBreak) {
+          Dom.addClass(container, this.prefixClassName('graph-pagebreak'))
+          this.$(this.graph.view.grid).after(container)
+          this.pageBreak = container
         }
       }
     }
@@ -378,6 +369,7 @@ export class Scroller extends View {
       allowNewOrigin: 'negative',
       ...fitTocontentOptions,
     }
+
     this.graph.fitToContent(this.getFitToContentOptions(options))
   }
 
@@ -1262,6 +1254,15 @@ namespace Util {
   }
 
   export function getOptions(options: Scroller.Options) {
-    return ObjectExt.merge({}, defaultOptions, options)
+    const result = ObjectExt.merge({}, defaultOptions, options)
+
+    if (result.pageWidth == null) {
+      result.pageWidth = options.graph.options.width
+    }
+    if (result.pageHeight == null) {
+      result.pageHeight = options.graph.options.height
+    }
+
+    return result as Scroller.Options
   }
 }
