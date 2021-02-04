@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.28](https://github.com/antvis/x6/compare/@antv/x6@1.12.27...@antv/x6@1.12.28) (2021-02-04)
+
+
+### Bug Fixes
+
+* 🐛 do not update pagesize automatically when set graph size ([fcb5f11](https://github.com/antvis/x6/commit/fcb5f11195c9e0418091ad55bb684294b189979e)), closes [#644](https://github.com/antvis/x6/issues/644) [#564](https://github.com/antvis/x6/issues/564)
+
 ## @antv/x6 [1.12.27](https://github.com/antvis/x6/compare/@antv/x6@1.12.26...@antv/x6@1.12.27) (2021-02-03)
 
 
