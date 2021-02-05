@@ -269,9 +269,11 @@ export class Transform extends Widget<Transform.Options> {
       let clientY = e.clientY
 
       const scroller = this.graph.scroller.widget
+      const restrict = this.options.restrictedResizing
 
-      if (this.options.restrictedResizing) {
-        const fix = scroller ? 8 : 0
+      if (restrict === true || typeof restrict === 'number') {
+        const factor = restrict === true ? 0 : restrict
+        const fix = scroller ? Math.max(factor, 8) : factor
         const rect = this.graph.container.getBoundingClientRect()
         clientX = NumberExt.clamp(clientX, rect.left + fix, rect.right - fix)
         clientY = NumberExt.clamp(clientY, rect.top + fix, rect.bottom - fix)
@@ -527,7 +529,7 @@ export namespace Transform {
     rotatable?: boolean
     rotateGrid?: number
     orthogonalResizing?: boolean
-    restrictedResizing?: boolean
+    restrictedResizing?: boolean | number
     autoScrollOnResizing?: boolean
 
     /**

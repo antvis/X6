@@ -427,7 +427,9 @@ export namespace Options {
      * If set to `true`, the user will not be able to move nodes outside the
      * boundary of the graph area.
      */
-    restrict: boolean | OptionItem<CellView, Rectangle.RectangleLike | null>
+    restrict:
+      | boolean
+      | OptionItem<CellView, Rectangle.RectangleLike | number | null>
   }
 
   export interface RotatingRaw {
@@ -446,7 +448,14 @@ export namespace Options {
     minHeight?: number
     maxHeight?: number
     orthogonal?: boolean
-    restricted?: boolean
+    restrict?: boolean | number
+    /**
+     * **Deprecation Notice:** resizing option `restricted` is deprecated and
+     * will be moved in next major release. Use `restrict` instead.
+     *
+     * @deprecated
+     */
+    restricted?: boolean | number
     autoScroll?: boolean
     preserveAspectRatio?: boolean
   }

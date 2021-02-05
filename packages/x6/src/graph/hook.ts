@@ -238,7 +238,8 @@ export class Hook extends Base implements Hook.IHook {
       minHeight: resizing.minHeight,
       maxHeight: resizing.maxHeight,
       orthogonalResizing: resizing.orthogonal,
-      restrictedResizing: resizing.restricted,
+      restrictedResizing:
+        resizing.restrict != null ? resizing.restrict : resizing.restricted,
       autoScrollOnResizing: resizing.autoScroll,
       preserveAspectRatio: resizing.preserveAspectRatio,
 
@@ -631,16 +632,20 @@ export class Hook extends Base implements Hook.IHook {
 
   getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
     const restrict = this.options.translating.restrict
+    const area =
+      typeof restrict === 'function'
+        ? FunctionExt.call(restrict, this.graph, view!)
+        : restrict
 
-    if (typeof restrict === 'function') {
-      return FunctionExt.call(restrict, this.graph, view!)
+    if (typeof area === 'number') {
+      return this.graph.transform.getGraphArea().inflate(area)
     }
 
-    if (restrict === true) {
+    if (area === true) {
       return this.graph.transform.getGraphArea()
     }
 
-    return restrict || null
+    return area || null
   }
 
   @Decorator.after()
