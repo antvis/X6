@@ -1,3 +1,10 @@
+## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-02-05)
+
+
+### Bug Fixes
+
+* fix demo import path error ([f7817cc](https://github.com/antvis/x6/commit/f7817cc2111ce3f6838e0658a9b777529a7015a7))
+
 # @antv/x6-example-features [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.2.0) (2021-02-05)
 
 
