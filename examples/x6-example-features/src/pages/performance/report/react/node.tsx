@@ -1,7 +1,7 @@
 import React from 'react'
 import { Graph, Cell, Node } from '@antv/x6'
 import '@antv/x6-react-shape'
-import '../../index.less'
+import '../../../index.less'
 
 type Result = { [key: string]: number[] }
 

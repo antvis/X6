@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph, Cell, Node as N } from '@antv/x6'
-import '../../index.less'
+import '../../../index.less'
 
 type Result = { [key: string]: number[] }
 
