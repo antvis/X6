@@ -266,7 +266,10 @@ export class Scroller extends View {
       this.updatePageBreak()
     }
 
-    if (typeof this.options.fitTocontentOptions === 'function') {
+    const autoResizeOptions =
+      this.options.autoResizeOptions || this.options.fitTocontentOptions
+
+    if (typeof autoResizeOptions === 'function') {
       this.update()
     }
   }
@@ -358,16 +361,18 @@ export class Scroller extends View {
       size.width / 2,
       size.height / 2,
     )
-    let fitTocontentOptions = this.options.fitTocontentOptions
-    if (typeof fitTocontentOptions === 'function') {
-      fitTocontentOptions = FunctionExt.call(fitTocontentOptions, this, this)
+
+    let resizeOptions =
+      this.options.autoResizeOptions || this.options.fitTocontentOptions
+    if (typeof resizeOptions === 'function') {
+      resizeOptions = FunctionExt.call(resizeOptions, this, this)
     }
 
     const options: TransformManager.FitToContentFullOptions = {
       gridWidth: this.options.pageWidth,
       gridHeight: this.options.pageHeight,
       allowNewOrigin: 'negative',
-      ...fitTocontentOptions,
+      ...resizeOptions,
     }
 
     this.graph.fitToContent(this.getFitToContentOptions(options))
@@ -1066,7 +1071,7 @@ export class Scroller extends View {
   protected getPadding() {
     const padding = this.options.padding
     if (typeof padding === 'function') {
-      return NumberExt.normalizeSides(FunctionExt.call(padding, this))
+      return NumberExt.normalizeSides(FunctionExt.call(padding, this, this))
     }
 
     return NumberExt.normalizeSides(padding)
@@ -1144,8 +1149,20 @@ export namespace Scroller {
     autoResize?: boolean
     padding?:
       | NumberExt.SideOptions
-      | ((this: Scroller) => NumberExt.SideOptions)
+      | ((this: Scroller, scroller: Scroller) => NumberExt.SideOptions)
+    /**
+     * **Deprecation Notice:** Scroller option `fitTocontentOptions` is deprecated and will be
+     * moved in next major release. Use `autoResizeOptions` instead.
+     *
+     * @deprecated
+     */
     fitTocontentOptions?:
+      | TransformManager.FitToContentFullOptions
+      | ((
+          this: Scroller,
+          scroller: Scroller,
+        ) => TransformManager.FitToContentFullOptions)
+    autoResizeOptions?:
       | TransformManager.FitToContentFullOptions
       | ((
           this: Scroller,

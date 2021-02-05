@@ -35,12 +35,12 @@ interface ScrollerOptions {
   width?: number
   height?: number
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
-  cursor?: string
   pageWidth?: number
   pageHeight?: number
   pageVisible?: boolean
   pageBreak?: boolean
   autoResize?: boolean
+  resizeOptions?: TransformManager.FitToContentFullOptions | ((this: Scroller, scroller: Scroller) => TransformManager.FitToContentFullOptions)
   minVisibleWidth?: number
   minVisibleHeight?: number
   padding?: number | { top: number; right: number; bottom: number; left: number}
@@ -102,12 +102,6 @@ if (graph.isPannable()) {
 - `'alt&ctrl'` 表示同时按下 `'alt'` 和 `'ctrl'`。
 - `'alt|ctrl&shift'` 表示同时按下 `'alt'` 和 `'shift'` 或者同时按下 `'ctrl'` 和 `'shift'`。
 
-### cursor
-
-画布鼠标样式，默认为空。
-
-当 `cursor` 为空并开启拖拽时，将自动为画布设置 `grab` 鼠标样式。
-
 ### padding
 
 设置画布四周的 padding 边距。默认根据 `minVisibleWidth` 和 `minVisibleHeight` [自动计算](https://github.com/antvis/X6/blob/master/packages/x6/src/addon/scroller/index.ts#L1081-L1088)得到，保证画布滚动时，在宽度和高度方向至少有 `minVisibleWidth` 和 `minVisibleHeight` 大小的画布可见。 
@@ -139,6 +133,21 @@ if (graph.isPannable()) {
 ### autoResize
 
 是否自动扩充/缩小画布，默认为 `true`。开启后，移动节点/边时将自动计算需要的画布大小，当超出当前画布大小时，按照 `pageWidth` 和 `pageHeight` 自动扩充画布。反之，则自动缩小画布。
+
+### autoResizeOptions
+
+自动扩展画布的选项，支持如下选项。
+
+```ts
+interface {
+  minWidth?: number  // 画布最小宽度
+  minHeight?: number // 画布最小高度
+  maxWidth?: number  // 画布最大宽度
+  maxHeight?: number // 画布最大高度
+  border?: number    // 距离画布边缘多少位置时触发自动扩展画布，例如设置为 `20` 表示当节点移动到距离画布边缘 `20px` 内时触发自动扩展画布。
+}
+```
+
 
 ## 方法
 
