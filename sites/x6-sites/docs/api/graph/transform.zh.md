@@ -108,21 +108,6 @@ const graph = new Graph({
 
 缩放过程中是否保持节点的宽高比例，默认为 `false`。
 
-### translating
-
-配置节点的可移动区域，默认值为 `false`。
-
-```ts
-const graph = new Graph({
-  translating: {
-    restrict: true,
-  }
-})
-```
-`restrict` 支持以下两种类型：
-
-- `boolean`  设置为 `true`，节点无法超过画布区域
-- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定节点的移动区域
 
 ### rotating
 
@@ -170,11 +155,11 @@ const graph = new Graph({
   }
 })
 ```
-`restrict` 支持以下两种类型：
+`restrict` 支持以下几种类型：
 
-- `boolean`  设置为 `true`，节点无法超过画布区域
-- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定节点的移动区域
-
+- `boolean` 设置为 `true`，节点移动时无法超过画布区域。
+- `number` 将节点限制在画布区域扩展（正数）或收缩（负数）后的范围，通常设置为负数将节点限制在离画布边缘指定大小的区域内，如设置为 `-20` 表示将节点限制在距离画布边缘 `20px` 的区域内。
+- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定节点的移动区域。
 
 ## 方法
 
@@ -449,7 +434,7 @@ scaleContentToFit(options?: Transform.ScaleContentToFitOptions): this
 | options.maxScaleX           | number                  |      | -       | X 轴方向的最大缩放比例。                                                                       |
 | options.minScaleY           | number                  |      | -       | Y 轴方向的最小缩放比例。                                                                       |
 | options.maxScaleY           | number                  |      | -       | Y 轴方向的最大缩放比例。                                                                       |
-| options.preserveAspectRatio | boolean                 |      | `true` | 是否保持长宽比。                                                                               |
+| options.preserveAspectRatio | boolean                 |      | `true`  | 是否保持长宽比。                                                                               |
 | options.useCellGeometry     | boolean                 |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 
@@ -494,10 +479,10 @@ center(options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述             |
-|-------------------|-------------------|:----:|--------|----------------|
-| options.padding   | number \| Padding |      |   -    | 边距，在 scroller 画布中生效            |
-| options.animation | object            |      |   -    | JQuery 动画选项，在 scroller 画布中生效 |
+| 名称              | 类型              | 必选 | 默认值 | 描述                                   |
+|-------------------|-------------------|:----:|--------|--------------------------------------|
+| options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效            |
+| options.animation | object            |      | -      | JQuery 动画选项，在 scroller 画布中生效 |
 
 ### centerPoint(...)
 
@@ -509,12 +494,12 @@ centerPoint(x?: number | null, y?: number | null, options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                   |
-|-------------------|-------------------|:----:|--------|----------------------|
-| x                 | number            |      |    -    | 相对一画布的 x 轴坐标。 |
-| y                 | number            |      |    -    | 相对一画布的 y 轴坐标。 |
-| options.padding   | number \| Padding |      |    -    | 边距，在 scroller 画布中生效                  |
-| options.animation | object            |      |    -    | JQuery 动画选项，在 scroller 画布中生效       |
+| 名称              | 类型              | 必选 | 默认值 | 描述                                   |
+|-------------------|-------------------|:----:|--------|--------------------------------------|
+| x                 | number            |      | -      | 相对一画布的 x 轴坐标。                 |
+| y                 | number            |      | -      | 相对一画布的 y 轴坐标。                 |
+| options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效            |
+| options.animation | object            |      | -      | JQuery 动画选项，在 scroller 画布中生效 |
 
 <span class="tag-example">例如<span>
 
@@ -537,8 +522,8 @@ centerContent(options?: PositionContentOptions): this
 
 | 名称                    | 类型              | 必选 | 默认值  | 描述                                                                                            |
 |-------------------------|-------------------|:----:|---------|-----------------------------------------------------------------------------------------------|
-| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                                          |
-| options.animation       | object            |      | -       | JQuery 动画选项，在 scroller 画布中生效                                                                               |
+| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                     |
+| options.animation       | object            |      | -       | JQuery 动画选项，在 scroller 画布中生效                                                          |
 | options.useCellGeometry | boolean           |      | `false` | 是否通过节点/边的几何信息(Model)计算内容区域，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 <span class="tag-example">例如<span>
@@ -558,9 +543,9 @@ centerCell(options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述             |
-|-------------------|-------------------|:----:|--------|----------------|
-| cell              | Cell              |  ✓   |        | 节点/边。         |
+| 名称              | 类型              | 必选 | 默认值 | 描述                                   |
+|-------------------|-------------------|:----:|--------|--------------------------------------|
+| cell              | Cell              |  ✓   |        | 节点/边。                               |
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效            |
 | options.animation | object            |      | -      | JQuery 动画选项，在 scroller 画布中生效 |
 
@@ -585,8 +570,8 @@ positionContent(pos: Position, options?: PositionContentOptions): this
 | 名称                    | 类型              | 必选 | 默认值  | 描述                                                                                             |
 |-------------------------|-------------------|:----:|---------|------------------------------------------------------------------------------------------------|
 | pos                     | Position          |  ✓   |         | 对齐位置。                                                                                        |
-| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                                            |
-| options.animation       | object            |      | -       | JQuery 动画选项，在 scroller 画布中生效                                                                                 |
+| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                      |
+| options.animation       | object            |      | -       | JQuery 动画选项，在 scroller 画布中生效                                                           |
 | options.useCellGeometry | boolean           |      | `false` | 是否通过节点/边的几何信息(Model)计算内容区域，默认使用浏览器 API 获取每个节点和边(View)的包围盒。。 |
 
 支持的对齐位置有：
@@ -614,10 +599,10 @@ positionCell(cell: Cell, pos: Direction, options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述             |
-|-------------------|-------------------|:----:|--------|----------------|
-| cell              | Cell              |  ✓   |        | 节点/边。         |
-| pos               | Position          |  ✓   |        | 对齐位置。        |
+| 名称              | 类型              | 必选 | 默认值 | 描述                                   |
+|-------------------|-------------------|:----:|--------|--------------------------------------|
+| cell              | Cell              |  ✓   |        | 节点/边。                               |
+| pos               | Position          |  ✓   |        | 对齐位置。                              |
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效            |
 | options.animation | object            |      | -      | JQuery 动画选项，在 scroller 画布中生效 |
 
@@ -644,12 +629,12 @@ positionRect(rect: Rectangle.RectangleLike, pos: Direction, options?: CenterOpti
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型                    | 必选 | 默认值 | 描述             |
-|-------------------|-------------------------|:----:|--------|----------------|
-| rect              | Rectangle.RectangleLike |  ✓   |        | 矩形区域。        |
-| pos               | Position                |  ✓   |        | 对齐位置。        |
-| options.padding   | number \| Padding       |      |   -    | 边距，在 scroller 画布中生效            |
-| options.animation | object                  |      |   -    | JQuery 动画选项，在 scroller 画布中生效 |
+| 名称              | 类型                    | 必选 | 默认值 | 描述                                   |
+|-------------------|-------------------------|:----:|--------|--------------------------------------|
+| rect              | Rectangle.RectangleLike |  ✓   |        | 矩形区域。                              |
+| pos               | Position                |  ✓   |        | 对齐位置。                              |
+| options.padding   | number \| Padding       |      | -      | 边距，在 scroller 画布中生效            |
+| options.animation | object                  |      | -      | JQuery 动画选项，在 scroller 画布中生效 |
 
 ```ts
 type Position =     
@@ -674,13 +659,13 @@ positionPoint(point: Point.PointLike, x: number | string, y: number | string opt
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                          |
-|-------------------|-------------------|:----:|--------|-----------------------------|
-| point             | Point.PointLike   |  ✓   |        | 被对齐的点。                   |
-| x                 | number \| string  |  ✓   |        | 视口 x 位置，支持百分比和负值。 |
-| y                 | number \| string  |  ✓   |        | 视口 y 位置，支持百分比和负值。 |
-| options.padding   | number \| Padding |      |   -    | 边距，在 scroller 画布中生效                         |
-| options.animation | object            |      |   -    | JQuery 动画选项，在 scroller 画布中生效              |
+| 名称              | 类型              | 必选 | 默认值 | 描述                                   |
+|-------------------|-------------------|:----:|--------|--------------------------------------|
+| point             | Point.PointLike   |  ✓   |        | 被对齐的点。                            |
+| x                 | number \| string  |  ✓   |        | 视口 x 位置，支持百分比和负值。          |
+| y                 | number \| string  |  ✓   |        | 视口 y 位置，支持百分比和负值。          |
+| options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效            |
+| options.animation | object            |      | -      | JQuery 动画选项，在 scroller 画布中生效 |
 
 <span class="tag-example">例如<span>
 

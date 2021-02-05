@@ -278,45 +278,54 @@ export class TransformManager extends Base {
     }
 
     const paddings = NumberExt.normalizeSides(padding)
-
-    const area = options.contentArea
+    const border = options.border || 0
+    const contentArea = options.contentArea
       ? Rectangle.create(options.contentArea)
       : this.getContentArea(options)
+
+    if (border > 0) {
+      contentArea.inflate(border)
+    }
 
     const scale = this.getScale()
     const translate = this.getTranslation()
     const sx = scale.sx
     const sy = scale.sy
 
-    area.x *= sx
-    area.y *= sy
-    area.width *= sx
-    area.height *= sy
+    contentArea.x *= sx
+    contentArea.y *= sy
+    contentArea.width *= sx
+    contentArea.height *= sy
 
     let width =
-      Math.max(Math.ceil((area.width + area.x) / gridWidth), 1) * gridWidth
+      Math.max(Math.ceil((contentArea.width + contentArea.x) / gridWidth), 1) *
+      gridWidth
+
     let height =
-      Math.max(Math.ceil((area.height + area.y) / gridHeight), 1) * gridHeight
+      Math.max(
+        Math.ceil((contentArea.height + contentArea.y) / gridHeight),
+        1,
+      ) * gridHeight
 
     let tx = 0
     let ty = 0
 
     if (
-      (options.allowNewOrigin === 'negative' && area.x < 0) ||
-      (options.allowNewOrigin === 'positive' && area.x >= 0) ||
+      (options.allowNewOrigin === 'negative' && contentArea.x < 0) ||
+      (options.allowNewOrigin === 'positive' && contentArea.x >= 0) ||
       options.allowNewOrigin === 'any'
     ) {
-      tx = Math.ceil(-area.x / gridWidth) * gridWidth
+      tx = Math.ceil(-contentArea.x / gridWidth) * gridWidth
       tx += paddings.left
       width += tx
     }
 
     if (
-      (options.allowNewOrigin === 'negative' && area.y < 0) ||
-      (options.allowNewOrigin === 'positive' && area.y >= 0) ||
+      (options.allowNewOrigin === 'negative' && contentArea.y < 0) ||
+      (options.allowNewOrigin === 'positive' && contentArea.y >= 0) ||
       options.allowNewOrigin === 'any'
     ) {
-      ty = Math.ceil(-area.y / gridHeight) * gridHeight
+      ty = Math.ceil(-contentArea.y / gridHeight) * gridHeight
       ty += paddings.top
       height += ty
     }
@@ -584,6 +593,7 @@ export namespace TransformManager {
     maxWidth?: number
     maxHeight?: number
     contentArea?: Rectangle | Rectangle.RectangleLike
+    border?: number
     allowNewOrigin?: 'negative' | 'positive' | 'any'
   }
 
