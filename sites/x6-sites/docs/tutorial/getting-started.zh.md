@@ -170,7 +170,7 @@ graph.translate(80, 40)
 
 ### 使用图形
 
-在上面示例中，我们使用了默认图形 `rect` 来渲染节点，除此之外，我们在 X6 中也内置了 `circle`、`ellipse`、`polygon` 等[基础图形](basic/cell#内置节点)，可以通过 `shape` 属性为节点指定渲染的图形，例如： 
+在上面示例中，我们使用了默认图形 `rect` 来渲染节点，除此之外，我们在 X6 中也内置了 `circle`、`ellipse`、`polygon` 等[基础图形](basic/cell#内置节点)，可以通过 `shape` 属性为节点指定渲染的图形，如果你对 SVG 图形还不熟悉，可以参考 [SVG 图像入门教程](https://www.ruanyifeng.com/blog/2018/08/svg.html) 
 
 ```ts
 const data = {
