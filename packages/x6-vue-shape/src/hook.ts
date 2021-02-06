@@ -10,7 +10,7 @@ declare module '@antv/x6/lib/graph/hook' {
   }
 
   interface Hook {
-    getVueComponent(this: Hook, node: VueShape): Definition
+    getVueComponent(node: VueShape): Definition
   }
 }
 

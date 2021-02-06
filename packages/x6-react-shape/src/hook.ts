@@ -10,7 +10,7 @@ declare module '@antv/x6/lib/graph/hook' {
   }
 
   interface Hook {
-    getReactComponent(this: Hook, node: ReactShape): Definition
+    getReactComponent(node: ReactShape): Definition
   }
 }
 
