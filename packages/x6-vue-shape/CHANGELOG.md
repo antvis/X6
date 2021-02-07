@@ -1,3 +1,18 @@
+## @antv/x6-vue-shape [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.5...@antv/x6-vue-shape@1.1.6) (2021-02-07)
+
+
+### Bug Fixes
+
+* fix type error ([e419bd4](https://github.com/antvis/x6/commit/e419bd444952e298043da550a3de4528c7259d8e))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.12.30
+
 ## @antv/x6-vue-shape [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.1...@antv/x6-vue-shape@1.1.2) (2021-01-13)
 
 
