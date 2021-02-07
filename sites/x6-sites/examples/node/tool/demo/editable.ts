@@ -18,10 +18,12 @@ class EditableCellTool extends ToolsView.ToolItem<
     if (cell.isNode()) {
       const position = cell.position()
       const size = cell.size()
-      x = position.x
-      y = position.y
-      width = size.width
-      height = size.height
+      const pos = this.graph.localToGraph(position)
+      const zoom = this.graph.zoom()
+      x = pos.x
+      y = pos.y
+      width = size.width * zoom
+      height = size.height * zoom
     } else {
       x = this.options.x - 40
       y = this.options.y - 20
@@ -56,10 +58,10 @@ class EditableCellTool extends ToolsView.ToolItem<
   init = () => {
     const cell = this.cell
     if (cell.isNode()) {
-      const value = cell.attr('text/text') as string
+      const value = cell.attr('text/textWrap/text') as string
       if (value) {
-        this.editorContent.innerHTML = value
-        cell.attr('text/text', '')
+        this.editorContent.innerText = value
+        cell.attr('text/style/display', 'none')
       }
     }
     setTimeout(() => {
@@ -71,10 +73,11 @@ class EditableCellTool extends ToolsView.ToolItem<
   onMouseDown = (e: MouseEvent) => {
     if (e.target !== this.editorContent) {
       const cell = this.cell
-      const value = this.editorContent.innerHTML
+      const value = this.editorContent.innerText
       cell.removeTools()
       if (cell.isNode()) {
-        cell.attr('text/text', value)
+        cell.attr('text/textWrap/text', value)
+        cell.attr('text/style/display', '')
       } else if (cell.isEdge()) {
         cell.appendLabel({
           attrs: {
@@ -133,6 +136,12 @@ const source = graph.addNode({
       stroke: '#d9d9d9',
       strokeWidth: 1,
     },
+    text: {
+      textWrap: {
+        text: '',
+        width: -10,
+      }
+    }
   },
 })
 
@@ -147,6 +156,12 @@ const target = graph.addNode({
       stroke: '#d9d9d9',
       strokeWidth: 1,
     },
+    text: {
+      textWrap: {
+        text: '',
+        width: -10,
+      }
+    }
   },
 })
 
