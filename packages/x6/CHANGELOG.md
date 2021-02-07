@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.30](https://github.com/antvis/x6/compare/@antv/x6@1.12.29...@antv/x6@1.12.30) (2021-02-07)
+
+
+### Bug Fixes
+
+* change css selector foreignobject to foreignObject ([#664](https://github.com/antvis/x6/issues/664)) ([2fa99f0](https://github.com/antvis/x6/commit/2fa99f05a8692bef1e9a4c241db399cee258fbb6))
+
 ## @antv/x6 [1.12.29](https://github.com/antvis/x6/compare/@antv/x6@1.12.28...@antv/x6@1.12.29) (2021-02-05)
 
 ## @antv/x6 [1.12.28](https://github.com/antvis/x6/compare/@antv/x6@1.12.27...@antv/x6@1.12.28) (2021-02-04)
