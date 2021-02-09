@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.31](https://github.com/antvis/x6/compare/@antv/x6@1.12.30...@antv/x6@1.12.31) (2021-02-09)
+
+
+### Bug Fixes
+
+* fix spelling error ([2f33b99](https://github.com/antvis/x6/commit/2f33b99cae8559d3d98204fe427c1ad18ce94ac0))
+
 ## @antv/x6 [1.12.30](https://github.com/antvis/x6/compare/@antv/x6@1.12.29...@antv/x6@1.12.30) (2021-02-07)
 
 
