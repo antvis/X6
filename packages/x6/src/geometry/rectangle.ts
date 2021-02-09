@@ -28,7 +28,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return this.x + this.width
   }
 
-  get botom() {
+  get bottom() {
     return this.y + this.height
   }
 

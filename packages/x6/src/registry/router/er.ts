@@ -28,7 +28,7 @@ export const er: Router.Definition<ErRouterOptions> = function (
 
   if (direction == null) {
     let dx = targetBBox.left - sourceBBox.right
-    let dy = targetBBox.top - sourceBBox.botom
+    let dy = targetBBox.top - sourceBBox.bottom
 
     if (dx >= 0 && dy >= 0) {
       direction = dx >= dy ? 'L' : 'T'
@@ -40,7 +40,7 @@ export const er: Router.Definition<ErRouterOptions> = function (
         direction = 'T'
       }
     } else if (dx >= 0 && dy <= 0) {
-      dy = sourceBBox.top - targetBBox.botom
+      dy = sourceBBox.top - targetBBox.bottom
       if (dy >= 0) {
         direction = dx >= dy ? 'L' : 'B'
       } else {
@@ -48,7 +48,7 @@ export const er: Router.Definition<ErRouterOptions> = function (
       }
     } else {
       dx = sourceBBox.left - targetBBox.right
-      dy = sourceBBox.top - targetBBox.botom
+      dy = sourceBBox.top - targetBBox.bottom
       if (dx >= 0 && dy >= 0) {
         direction = dx >= dy ? 'R' : 'B'
       } else if (dx <= 0 && dy >= 0) {
@@ -73,9 +73,9 @@ export const er: Router.Definition<ErRouterOptions> = function (
     } else if (direction === 'R') {
       offset = (sourceBBox.left - targetBBox.right) / 2
     } else if (direction === 'T') {
-      offset = (targetBBox.top - sourceBBox.botom) / 2
+      offset = (targetBBox.top - sourceBBox.bottom) / 2
     } else if (direction === 'B') {
-      offset = (sourceBBox.top - targetBBox.botom) / 2
+      offset = (sourceBBox.top - targetBBox.bottom) / 2
     }
   }
 
