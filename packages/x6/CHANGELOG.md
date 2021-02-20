@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.32](https://github.com/antvis/x6/compare/@antv/x6@1.12.31...@antv/x6@1.12.32) (2021-02-20)
+
+
+### Bug Fixes
+
+* fix keyboard event not trigger ([4ea5f31](https://github.com/antvis/x6/commit/4ea5f3194e80125a68e25e71920526f5b6c86150))
+
 ## @antv/x6 [1.12.31](https://github.com/antvis/x6/compare/@antv/x6@1.12.30...@antv/x6@1.12.31) (2021-02-09)
 
 
