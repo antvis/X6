@@ -99,7 +99,7 @@ export class Keyboard extends Disposable implements IDisablable {
   protected isGraphEvent(e: KeyboardEvent) {
     const target = (e.srcElement || e.target) as Element
     if (target) {
-      if (target === this.target || target.parentElement === this.target) {
+      if (target === this.target || target === document.body) {
         return true
       }
 
