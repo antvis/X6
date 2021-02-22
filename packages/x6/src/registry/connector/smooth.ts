@@ -25,9 +25,13 @@ export const smooth: Connector.Definition<SmoothConnectorOptions> = function (
 
     path = new Path()
     path.appendSegment(Path.createSegment('M', sourcePoint))
-    
+
     if (!direction) {
-      direction = Math.abs(sourcePoint.x - targetPoint.x) >= Math.abs(sourcePoint.y - targetPoint.y) ? 'H' : 'V'
+      direction =
+        Math.abs(sourcePoint.x - targetPoint.x) >=
+        Math.abs(sourcePoint.y - targetPoint.y)
+          ? 'H'
+          : 'V'
     }
 
     if (direction === 'H') {
