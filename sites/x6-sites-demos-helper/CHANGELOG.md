@@ -1,3 +1,10 @@
+# @antv/x6-sites-demos-helper [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.1.2...@antv/x6-sites-demos-helper@1.2.0) (2021-02-23)
+
+
+### Features
+
+* ✨ add favicon for demos ([424662a](https://github.com/antvis/x6/commit/424662a9ccbbb21142b217bc256b9cc8242fb101))
+
 # @antv/x6-sites-demos-helper [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.1.2...@antv/x6-sites-demos-helper@1.2.0) (2021-02-22)
 
 
