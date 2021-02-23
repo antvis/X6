@@ -1,3 +1,10 @@
+# @antv/x6 [1.13.0](https://github.com/antvis/x6/compare/@antv/x6@1.12.32...@antv/x6@1.13.0) (2021-02-23)
+
+
+### Features
+
+* add following config for selection ([#687](https://github.com/antvis/x6/issues/687)) ([5b52433](https://github.com/antvis/x6/commit/5b52433709089280320cc6b13e6442f31c1dcf30))
+
 ## @antv/x6 [1.12.32](https://github.com/antvis/x6/compare/@antv/x6@1.12.31...@antv/x6@1.12.32) (2021-02-20)
 
 
