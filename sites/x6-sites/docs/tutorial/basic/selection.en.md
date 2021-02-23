@@ -134,6 +134,12 @@ if (graph.isRubberbandEnabled()) {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MD11S4oxIJIAAAAAAAAAAAAAARQnAQ" width="600px" height="300px" alt="movable"/>
 
+### following
+
+在多选情况下，选中的节点是否跟随鼠标实时移动，默认为 `true`。下图是设置为 `false` 下的表现：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*nt5KQqqZHDUAAAAAAAAAAAAAARQnAQ" width="600px" height="300px" alt="following"/>
+
 ### content
 
 设置附加显示的内容。
