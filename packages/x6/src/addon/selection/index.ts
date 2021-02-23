@@ -288,7 +288,8 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected stopSelecting(evt: JQuery.MouseUpEvent) {
     const graph = this.graph
-    const action = this.getEventData<EventData.Common>(evt).action
+    const eventData = this.getEventData<EventData.Common>(evt)
+    const action = eventData.action
     switch (action) {
       case 'selecting': {
         let width = this.$container.width()!
@@ -306,8 +307,15 @@ export class Selection extends View<Selection.EventArgs> {
       }
 
       case 'translating': {
-        this.graph.model.stopBatch('move-selection')
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
+        if (!this.options.following) {
+          const data = eventData as EventData.Translating
+          this.updateSelectedNodesPosition({
+            dx: data.clientX - data.originX,
+            dy: data.clientY - data.originY,
+          })
+        }
+        this.graph.model.stopBatch('move-selection')
         this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
         break
       }
@@ -328,6 +336,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: JQuery.MouseDownEvent) {
+    evt.stopPropagation()
     const e = this.normalizeEvent(evt)
 
     if (this.options.movable) {
@@ -348,7 +357,67 @@ export class Selection extends View<Selection.EventArgs> {
       action: 'translating',
       clientX: client.x,
       clientY: client.y,
+      originX: client.x,
+      originY: client.y,
     })
+  }
+
+  protected getSelectionOffset(client: Point, data: EventData.Translating) {
+    let dx = client.x - data.clientX
+    let dy = client.y - data.clientY
+    const restrict = this.graph.hook.getRestrictArea()
+    if (restrict) {
+      const cells = this.collection.toArray()
+      const totalBBox = Cell.getCellsBBox(cells)!
+      let minDx = restrict.x - totalBBox.x
+      let minDy = restrict.y - totalBBox.y
+      let maxDx =
+        restrict.x + restrict.width - (totalBBox.x + totalBBox.width)
+      let maxDy =
+        restrict.y + restrict.height - (totalBBox.y + totalBBox.height)
+      
+      if (dx < minDx) {
+        dx = minDx
+      }
+      if (dy < minDy) {
+        dy = minDy
+      }
+      if (maxDx < dx) {
+        dx = maxDx
+      }
+      if (maxDy < dy) {
+        dy = maxDy
+      }
+
+      if (!this.options.following) {
+        const offsetX = client.x - data.originX
+        const offsetY = client.y - data.originY
+        dx = offsetX <= minDx || offsetX >= maxDx ? 0 : dx
+        dy = offsetY <= minDy || offsetY >= maxDy ? 0 : dy
+      }
+    }
+
+    return {
+      dx,
+      dy,
+    }
+  }
+
+  protected updateSelectedNodesPosition(offset: { dx: number, dy: number }) {
+    const { dx, dy } = offset
+    if (dx || dy) {
+      if ((this.translateSelectedNodes(dx, dy), this.boxesUpdated)) {
+        if (this.collection.length > 1) {
+          this.updateSelectionBoxes()
+        }
+      } else {
+        const scale = this.graph.transform.getScale()
+        this.$boxes.add(this.$selectionContainer).css({
+          left: `+=${dx * scale.sx}`,
+          top: `+=${dy * scale.sy}`,
+        })
+      }
+    }
   }
 
   protected adjustSelection(evt: JQuery.MouseMoveEvent) {
@@ -377,50 +446,20 @@ export class Selection extends View<Selection.EventArgs> {
       }
 
       case 'translating': {
-        const data = eventData as EventData.Translating
         const client = this.graph.snapToGrid(e.clientX, e.clientY)
-        let dx = client.x - data.clientX
-        let dy = client.y - data.clientY
-        const restrict = this.graph.hook.getRestrictArea()
-        if (restrict) {
-          const cells = this.collection.toArray()
-          const totalBBox = Cell.getCellsBBox(cells)!
-          const minDx = restrict.x - totalBBox.x
-          const minDy = restrict.y - totalBBox.y
-          const maxDx =
-            restrict.x + restrict.width - (totalBBox.x + totalBBox.width)
-          const maxDy =
-            restrict.y + restrict.height - (totalBBox.y + totalBBox.height)
-          if (dx < minDx) {
-            dx = minDx
-          }
-          if (dy < minDy) {
-            dy = minDy
-          }
-          if (maxDx < dx) {
-            dx = maxDx
-          }
-          if (maxDy < dy) {
-            dy = maxDy
-          }
+        const data = eventData as EventData.Translating
+        const offset = this.getSelectionOffset(client, data)
+        if (this.options.following) {
+          this.updateSelectedNodesPosition(offset)
+        } else {
+          this.updateContainerPosition(offset)
         }
-
-        if (dx || dy) {
-          if ((this.translateSelectedNodes(dx, dy), this.boxesUpdated)) {
-            if (this.collection.length > 1) {
-              this.updateSelectionBoxes()
-            }
-          } else {
-            const scale = this.graph.transform.getScale()
-            this.$boxes.add(this.$selectionContainer).css({
-              left: `+=${dx * scale.sx}`,
-              top: `+=${dy * scale.sy}`,
-            })
-          }
+        if (offset.dx) {
           data.clientX = client.x
-          data.clientY = client.y
         }
-
+        if (offset.dy) {
+          data.clientY = client.y
+        }  
         this.notifyBoxEvent('box:mousemove', evt, client.x, client.y)
         break
       }
@@ -564,6 +603,16 @@ export class Selection extends View<Selection.EventArgs> {
 
     this.$container.prepend(this.$selectionContainer)
     this.$handleContainer = this.$selectionContainer
+  }
+
+  protected updateContainerPosition(offset: { dx: number, dy: number }) {
+    if (offset.dx || offset.dy) {
+      this.$selectionContainer
+      .css({
+        left: `+=${offset.dx}`,
+        top: `+=${offset.dy}`,
+      })
+    }
   }
 
   protected updateContainer() {
@@ -910,6 +959,7 @@ export namespace Selection {
     showEdgeSelectionBox?: boolean
     showNodeSelectionBox?: boolean
     movable?: boolean
+    following?: boolean
     useCellGeometry?: boolean
     content?: Content
   }
@@ -995,6 +1045,7 @@ namespace Private {
 
   export const defaultOptions: Partial<Selection.Options> = {
     movable: true,
+    following: true,
     strict: false,
     useCellGeometry: false,
     content(selection) {
@@ -1054,6 +1105,8 @@ namespace EventData {
     action: 'translating'
     clientX: number
     clientY: number
+    originX: number
+    originY: number
   }
 
   export interface SelectionBox {
