@@ -6,6 +6,16 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.13.1
+
+## @antv/x6-app-dag [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.2...@antv/x6-app-dag@1.1.3) (2021-02-23)
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.13.0
 
 ## @antv/x6-app-dag [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.2...@antv/x6-app-dag@1.1.3) (2021-02-22)
