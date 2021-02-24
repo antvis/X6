@@ -53,12 +53,12 @@ export const content = `.x6-graph {
 .x6-node [magnet='true']:hover {
   opacity: 0.7;
 }
-.x6-node foreignobject {
+.x6-node foreignObject {
   display: block;
   overflow: visible;
   background-color: transparent;
 }
-.x6-node foreignobject > body {
+.x6-node foreignObject > body {
   position: static;
   width: 100%;
   height: 100%;
