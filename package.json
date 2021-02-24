@@ -21,15 +21,8 @@
     "clear": "lerna run clean && lerna clean -y",
     "clean:modules": "rimraf node_modules",
     "bootstrap": "lerna bootstrap && yarn build:dev",
-    "reboot": "run-s clear clean:modules bootstrap"
-  },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "devmoji -e --lint",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit",
-      "prepush": "./scripts/pre-push-check"
-    }
+    "reboot": "run-s clear clean:modules bootstrap",
+    "postinstall": "husky install"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
