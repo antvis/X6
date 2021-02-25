@@ -52,6 +52,13 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
 
   protected onRemove() {}
 
+  setClass(className: string | string[], elem: Element = this.container) {
+    elem.classList.value = Array.isArray(className)
+      ? className.join(' ')
+      : className
+    return
+  }
+
   addClass(className: string | string[], elem: Element = this.container) {
     this.$(elem).addClass(
       Array.isArray(className) ? className.join(' ') : className,
