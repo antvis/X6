@@ -1,10 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Graph } from '@antv/x6'
+import { Graph, CellView } from '@antv/x6'
 import { Switch } from 'antd'
 
 const interactingLabel = {
-  nodeMovable: '移动节点',
   magnetConnectable: '连接连接桩',
   edgeMovable: '移动边',
   edgeLabelMovable: '移动标签',
@@ -19,7 +18,10 @@ class Example extends React.Component {
 
   state = {
     interactingMap: {
-      nodeMovable: true,
+      nodeMovable: (view: CellView) => {
+        const cell = view.cell
+        return cell.prop('movable') === true
+      },
       magnetConnectable: true,
       edgeMovable: true,
       edgeLabelMovable: true,
@@ -45,6 +47,7 @@ class Example extends React.Component {
       y: 80,
       width: 80,
       height: 40,
+      label: 'A',
       attrs: {
         body: {
           stroke: '#9254de',
@@ -63,7 +66,25 @@ class Example extends React.Component {
             },
           },
         }
-      ]
+      ],
+    })
+
+    graph.addNode({
+      shape: 'rect',
+      x: 80,
+      y: 180,
+      width: 80,
+      height: 40,
+      label: 'B',
+      attrs: {
+        body: {
+          stroke: '#9254de',
+          fill: '#efdbff',
+          rx: 2,
+          ry: 2,
+        }
+      },
+      movable: true
     })
 
     graph.addEdge({
@@ -103,7 +124,7 @@ class Example extends React.Component {
       <div className="x6-graph-wrap" style={{ width: '100%', height: '100%' }}>
         <div ref={this.refContainer} className="x6-graph" />
         <div style={{ position: 'absolute', top: 116, right: 16, lineHeight: 3, textAlign: 'right' }}>
-          {Object.keys(this.state.interactingMap).map((item: keyof typeof interactingLabel) => (
+          {Object.keys(interactingLabel).map((item: keyof typeof interactingLabel) => (
             <div key={item}>
               <span>{interactingLabel[item]}：</span>
               <Switch
