@@ -37,6 +37,7 @@ export class Scroller extends View {
   protected cachedScrollLeft: number | null
   protected cachedScrollTop: number | null
   protected cachedCenterPoint: Point.PointLike | null
+  protected cachedClientSize: { width: number; height: number } | null
   protected delegatedHandlers: { [name: string]: Function }
 
   constructor(options: Scroller.Options) {
@@ -284,6 +285,17 @@ export class Scroller extends View {
     this.container.scrollTop = this.cachedScrollTop!
     this.cachedScrollLeft = null
     this.cachedScrollTop = null
+  }
+
+  protected storeClientSize() {
+    this.cachedClientSize = {
+      width: this.container.clientWidth,
+      height: this.container.clientHeight,
+    }
+  }
+
+  protected restoreClientSize() {
+    this.cachedClientSize = null
   }
 
   protected beforeManipulation() {
@@ -555,6 +567,8 @@ export class Scroller extends View {
 
     let localOptions: Scroller.CenterOptions | null | undefined
 
+    this.storeClientSize() // avoid multilple reflow
+
     if (typeof x === 'number' || typeof y === 'number') {
       localOptions = options
       const visibleCenter = this.getVisibleArea().getCenter()
@@ -595,7 +609,11 @@ export class Scroller extends View {
       Math.max(bottom, 0),
     )
 
-    return this.scrollToPoint(x, y, localOptions || undefined)
+    const result = this.scrollToPoint(x, y, localOptions || undefined)
+
+    this.restoreClientSize()
+
+    return result
   }
 
   centerContent(options?: Scroller.PositionContentOptions) {
@@ -1002,6 +1020,9 @@ export class Scroller extends View {
   }
 
   getClientSize() {
+    if (this.cachedClientSize) {
+      return this.cachedClientSize
+    }
     return {
       width: this.container.clientWidth,
       height: this.container.clientHeight,
