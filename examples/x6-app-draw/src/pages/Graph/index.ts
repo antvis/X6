@@ -33,6 +33,7 @@ export default class FlowGraph {
         rubberband: true,
         movable: true,
         showNodeSelectionBox: true,
+        filter: ['groupNode'],
       },
       connecting: {
         anchor: 'center',
@@ -344,6 +345,12 @@ export default class FlowGraph {
           n.show()
         }
       })
+    })
+
+    graph.on('node:embedded', ({ cell }) => {
+      if (cell.shape !== 'groupNode') {
+        cell.toFront()
+      }
     })
 
     graph.bindKey('backspace', () => {
