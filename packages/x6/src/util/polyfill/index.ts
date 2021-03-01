@@ -5,6 +5,9 @@ import { Platform } from '../platform'
 if (Platform.SUPPORT_PASSIVE) {
   JQuery.event.special.touchstart = {
     setup(data, ns, handle) {
+      if (!this.addEventListener) {
+        return false
+      }
       this.addEventListener('touchstart', handle as any, {
         passive: true,
       })
@@ -16,6 +19,9 @@ if (Platform.SUPPORT_PASSIVE) {
     const setup = hook.setup
     hook.setup = function (this: EventTarget) {
       const addEventListener = this.addEventListener
+      if (!addEventListener) {
+        return false
+      }
       this.addEventListener = (name: string, handler: any) => {
         addEventListener.call(this, name, handler, { passive: true })
       }
