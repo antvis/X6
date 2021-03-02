@@ -147,13 +147,14 @@ export class MouseWheel extends Disposable implements IDisablable {
             }
           } else {
             if (this.options.zoomAtMousePosition) {
-              const origin = this.graph.coord.clientToLocalPoint(this.startPos)
-              this.graph.translate(
-                origin.x * (1 - targetScale),
-                origin.y * (1 - targetScale),
-              )
+              const origin = this.graph.coord.clientToGraphPoint(this.startPos)
+              this.graph.zoom(targetScale, {
+                absolute: true,
+                center: origin.clone(),
+              })
+            } else {
+              this.graph.zoom(targetScale, { absolute: true })
             }
-            this.graph.scale(targetScale, targetScale)
           }
         }
 
