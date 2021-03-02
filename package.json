@@ -22,7 +22,8 @@
     "clean:modules": "rimraf node_modules",
     "bootstrap": "lerna bootstrap && yarn build:dev",
     "reboot": "run-s clear clean:modules bootstrap",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "precommit": "lerna run --concurrency 1 --stream precommit"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
