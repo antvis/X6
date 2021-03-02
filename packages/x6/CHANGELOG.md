@@ -1,3 +1,15 @@
+## @antv/x6 [1.13.2](https://github.com/antvis/x6/compare/@antv/x6@1.13.1...@antv/x6@1.13.2) (2021-03-02)
+
+
+### Bug Fixes
+
+* add judgment in sepcial event ([2732b12](https://github.com/antvis/x6/commit/2732b12b4fe9cf7e381239333497c10ca2b8e7d0))
+
+
+### Performance Improvements
+
+* ⚡️ avoid multiple times reflow when resize ([83483e9](https://github.com/antvis/x6/commit/83483e9d2af65ce2397770d35e8a7b799af8972a))
+
 ## @antv/x6 [1.13.1](https://github.com/antvis/x6/compare/@antv/x6@1.13.0...@antv/x6@1.13.1) (2021-02-23)
 
 # @antv/x6 [1.13.0](https://github.com/antvis/x6/compare/@antv/x6@1.12.32...@antv/x6@1.13.0) (2021-02-23)
