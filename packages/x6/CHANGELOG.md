@@ -1,3 +1,10 @@
+## @antv/x6 [1.13.3](https://github.com/antvis/x6/compare/@antv/x6@1.13.2...@antv/x6@1.13.3) (2021-03-02)
+
+
+### Bug Fixes
+
+* 🐛 fix start pos error in mousewheel ([1077a31](https://github.com/antvis/x6/commit/1077a3196219ecadbf1ecffac31d843d542f91fb))
+
 ## @antv/x6 [1.13.2](https://github.com/antvis/x6/compare/@antv/x6@1.13.1...@antv/x6@1.13.2) (2021-03-02)
 
 
