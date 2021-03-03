@@ -22,8 +22,9 @@ export class SizeManager extends Base {
 
       SizeSensor.bind(target, () => {
         const container = this.getContainer()
-        const width = container.clientWidth
-        const height = container.clientHeight
+        // container is border-box
+        const width = container.offsetWidth
+        const height = container.offsetHeight
         this.resize(width, height)
       })
     }
