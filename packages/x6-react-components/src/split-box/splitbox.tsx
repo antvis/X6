@@ -7,12 +7,12 @@ import { Resizer } from './resizer'
 export class SplitBox extends React.PureComponent<
   SplitBox.Props,
   SplitBox.State
-> {
+  > {
   private container: HTMLDivElement
   private box1Elem: HTMLDivElement
   private box2Elem: HTMLDivElement
-  private maskElem: HTMLDivElement
   private resizerElem: HTMLDivElement
+  private rootContainer: HTMLDivElement
 
   private minSize: number
   private maxSize: number
@@ -28,6 +28,12 @@ export class SplitBox extends React.PureComponent<
   UNSAFE_componentWillReceiveProps(nextProps: SplitBox.Props) {
     const nextState = this.getNextState(nextProps)
     this.setState(nextState)
+  }
+
+  componentDidMount() {
+    this.rootContainer = document.querySelector(
+      '.x6-split-box',
+    ) as HTMLDivElement
   }
 
   getNextState(props: SplitBox.Props): SplitBox.State {
@@ -154,26 +160,18 @@ export class SplitBox extends React.PureComponent<
         cursor = 'row-resize'
       }
     }
-
-    this.maskElem.style.cursor = cursor
+    this.rootContainer.style.cursor = cursor
   }
 
-  createMask() {
-    const mask = document.createElement('div')
-    mask.style.position = 'absolute'
-    mask.style.top = '0'
-    mask.style.right = '0'
-    mask.style.bottom = '0'
-    mask.style.left = '0'
-    mask.style.zIndex = '9999'
-    document.body.appendChild(mask)
-    this.maskElem = mask
+  frozenBox() {
+    this.box1Elem.style.pointerEvents = 'none'
+    this.box2Elem.style.pointerEvents = 'none'
   }
 
-  removeMask() {
-    if (this.maskElem.parentNode) {
-      this.maskElem.parentNode.removeChild(this.maskElem)
-    }
+  releaseBox() {
+    this.box1Elem.style.pointerEvents = 'auto'
+    this.box2Elem.style.pointerEvents = 'auto'
+    this.rootContainer.style.cursor = 'auto'
   }
 
   onMouseDown = () => {
@@ -183,9 +181,8 @@ export class SplitBox extends React.PureComponent<
     this.curSize = this.getPrimarySize()
     this.rawSize = this.curSize
     this.resizing = true
-
-    this.createMask()
     this.updateCursor(this.curSize, minSize, maxSize)
+    this.frozenBox()
   }
 
   onMouseMove = (deltaX: number, deltaY: number) => {
@@ -227,7 +224,7 @@ export class SplitBox extends React.PureComponent<
       }
 
       this.resizing = false
-      this.removeMask()
+      this.releaseBox()
     }
   }
 
