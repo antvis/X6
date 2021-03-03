@@ -1,3 +1,10 @@
+## @antv/x6 [1.13.4](https://github.com/antvis/x6/compare/@antv/x6@1.13.3...@antv/x6@1.13.4) (2021-03-03)
+
+
+### Bug Fixes
+
+* 🐛 get container size use offsetxxx ([faf3e4f](https://github.com/antvis/x6/commit/faf3e4f0b015650b04f33d7ad914c116962f317e))
+
 ## @antv/x6 [1.13.3](https://github.com/antvis/x6/compare/@antv/x6@1.13.2...@antv/x6@1.13.3) (2021-03-02)
 
 
