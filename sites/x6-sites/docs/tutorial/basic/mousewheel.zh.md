@@ -37,6 +37,8 @@ interface MouseWheelOptions {
   enabled?: boolean
   global?: boolean
   factor?: number
+  minScale?: number
+  maxScale?: number
   zoomAtMousePosition?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   guard?: (this: Graph, e: WheelEvent) => boolean
@@ -47,17 +49,33 @@ interface MouseWheelOptions {
 
 是否开启滚轮缩放交互。
 
+### global
+
+是否为全局事件，设置为 `true` 时滚轮事件绑定在 `document` 上，否则绑定在画布容器上。默认为 `false`。
+
 ### factor
 
 滚动缩放因子。默认为 `1.2`。
 
+### minScale
+
+最小的缩放级别。缺省时默认值为：
+
+```ts
+graph.options.scaling.min || 0.01
+```
+
+### maxScale
+
+最大的缩放级别。缺省时默认值为：
+
+```ts
+graph.options.scaling.max || 16
+```
+
 ### zoomAtMousePosition
 
 是否将鼠标位置作为中心缩放，默认为 `true`。
-
-### global
-
-是否为全局事件，设置为 `true` 时滚轮事件绑定在 `Document` 上，否则绑定在画布容器上。默认为 `false`。
 
 ### modifiers
 
