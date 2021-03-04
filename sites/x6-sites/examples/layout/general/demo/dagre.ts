@@ -1,5 +1,5 @@
 import { Graph, Model } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { DagreLayout } from '@antv/layout'
 
 const data: Model.FromJSONData = {
   nodes: [],
@@ -16,7 +16,7 @@ const edges = [
   ['5', '9'],
   ['6', '10'],
   ['7', '11'],
-  ['8', '12']
+  ['8', '12'],
 ]
 
 for (let i = 1; i <= 12; i++) {
@@ -56,7 +56,7 @@ const graph = new Graph({
   grid: true,
 })
 
-const dagreLayout = new Layout({
+const dagreLayout = new DagreLayout({
   type: 'dagre',
   rankdir: 'LR',
   align: 'UR',

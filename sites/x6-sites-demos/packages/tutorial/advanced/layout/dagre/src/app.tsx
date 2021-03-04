@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { DagreLayout } from '@antv/layout'
 import './app.css'
 
 const data: any = {
@@ -151,7 +151,7 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    const dagreLayout = new Layout({
+    const dagreLayout = new DagreLayout({
       type: 'dagre',
       rankdir: 'LR',
       align: 'UR',
