@@ -161,6 +161,16 @@ const graph = new Graph({
 - `number` 将节点限制在画布区域扩展（正数）或收缩（负数）后的范围，通常设置为负数将节点限制在离画布边缘指定大小的区域内，如设置为 `-20` 表示将节点限制在距离画布边缘 `20px` 的区域内。
 - `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定节点的移动区域。
 
+### scaling
+
+#### min
+
+画布可以缩放的最小级别。默认值为 `0.01`。
+
+#### max
+
+画布可以缩放的最大级别。默认值为 `16`。
+
 ## 方法
 
 ### matrix()
