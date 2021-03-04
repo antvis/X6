@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { CircularLayout } from '@antv/layout'
 import './app.css'
 
 const data: any = {
@@ -46,7 +46,7 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    const lcircularLayout = new Layout({
+    const lcircularLayout = new CircularLayout({
       type: 'circular',
       width: 480,
       height: 240,
@@ -56,7 +56,7 @@ export default class Example extends React.Component {
       nodes: data.lnodes,
     })
 
-    const rcircularLayout = new Layout({
+    const rcircularLayout = new CircularLayout({
       type: 'circular',
       width: 480,
       height: 240,

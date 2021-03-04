@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { GridLayout } from '@antv/layout'
 import './app.css'
 
 const data: any = {
@@ -71,7 +71,7 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    const gridLayout = new Layout({
+    const gridLayout = new GridLayout({
       type: 'grid',
       begin: [10, 10],
       width: 480,

@@ -1,5 +1,5 @@
 import { Graph, Model } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { GridLayout } from '@antv/layout'
 
 const data: Model.FromJSONData = {
   nodes: [],
@@ -65,7 +65,7 @@ const graph = new Graph({
   grid: true,
 })
 
-const gridLayout = new Layout({
+const gridLayout = new GridLayout({
   type: 'grid',
   width: 738,
   height: 360,

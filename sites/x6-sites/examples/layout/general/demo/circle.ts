@@ -1,5 +1,5 @@
 import { Graph, Model } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { CircularLayout } from '@antv/layout'
 
 const data: Model.FromJSONData = {
   nodes: [],
@@ -25,7 +25,7 @@ const graph = new Graph({
   grid: true,
 })
 
-const circularLayout = new Layout({
+const circularLayout = new CircularLayout({
   type: 'circular',
   center: [350, 250],
 })
