@@ -18,14 +18,57 @@ $ npm install @antv/layout --save
 # yarn
 $ yarn add @antv/layout
 ```
-如果是直接通过 `script` 标签引入，可以使用下面两个 CDN 中的任何一个，由于项目依赖原因，只有 0.1.2 版本支持 umd 模式：
+如果是直接通过 `script` 标签引入，可以使用下面两个 CDN 中的任何一个：
 
-- https://unpkg.com/@antv/layout@0.1.2/dist/layout.js
-- https://cdn.jsdelivr.net/npm/@antv/layout@0.1.2/dist/layout.js
+- https://unpkg.com/@antv/layout/dist/layout.min.js
+- https://cdn.jsdelivr.net/npm/@antv/layout/dist/layout.min.js
 
 ## 使用
 
 下面是一个网格布局的简单使用：
+
+```ts
+import { Graph } from '@antv/x6'
+import { GridLayout } from '@antv/layout' // umd模式下， const { GridLayout } = window.layout
+
+const graph = new Graph({
+  container: document.getElementById('container'),
+  width: 600,
+  height: 400,
+})
+
+const model = {
+  nodes: [
+    {
+      id: 'node1',
+    }, {
+      id: 'node2',
+    },
+  ],
+  edges: [
+    {
+      source: 'node1',
+      target: 'node2',
+    },
+  ],
+}
+
+const gridLayout = new GridLayout({
+  type: 'grid',
+  width: 600,
+  height: 400,
+  center: [300, 200],
+  rows: 4,
+  cols: 4,
+})
+
+const newModel = gridLayout.layout(model)
+
+graph.fromJSON(newModel)
+
+```
+
+如果你的 `Layout` 使用的是 `0.1.7` 之前的版本，使用方式所有不同：
 
 ```ts
 import { Graph } from '@antv/x6'
@@ -91,16 +134,17 @@ const gridLayout = new Layout({
 
 | 名称              | 类型      | 必选 | 默认值           | 描述                                                                          |
 |-------------------|-----------|:----:|------------------|-----------------------------------------------------------------------------|
-| type                  | string           |  `true`  |   `grid`   | 布局类型 |
-| begin                 | [number, number] |  `false` |   [0, 0]   | 网格开始位置（左上角 |
-| width                 | number           |  `false` |    -       | 布局区域宽度 |
-| height                | number           |  `false` |    -       | 布局区域高度 |
-| center                | [number, number] |  `false` |    -       | 布局中心点 |
-| preventOverlap        | boolean          |  `false` |    `false` | 是否防止重叠，必须配合下面属性 `nodeSize`，只有设置了与当前图节点大小相同的 `nodeSize` 值，才能够进行节点重叠的碰撞检测 |
-| preventOverlapPadding | number           |  `false` |    10      | 避免重叠时节点的间距 `padding`。`preventOverlap` 为 `true` 时生效 |
-| rows                  | number           |  `false` |    -       | 网格的行数，不设置时算法根据节点数量、布局空间、`cols`（若指定）自动计算 |
-| cols                  | number           |  `false` |    -       | 网格的列数，不设置时算法根据节点数量、布局空间、`rows`（若指定）自动计算 |
-| sortBy                | string           |  `false` |    -       | 指定排序的依据（节点属性名），数值越高则该节点被放置得越中心。若不设置，则会计算节点的度数，度数越高，节点将被放置得越中心 |
+| type                  | string             |  `true`  |   `grid`   | 布局类型 |
+| begin                 | [number, number]   |  `false` |   [0, 0]   | 网格开始位置（左上角 |
+| width                 | number             |  `false` |    -       | 布局区域宽度 |
+| height                | number             |  `false` |    -       | 布局区域高度 |
+| center                | [number, number]   |  `false` |    -       | 布局中心点 |
+| preventOverlap        | boolean            |  `false` |    `false` | 是否防止重叠，必须配合下面属性 `nodeSize`，只有设置了与当前图节点大小相同的 `nodeSize` 值，才能够进行节点重叠的碰撞检测 |
+| preventOverlapPadding | number             |  `false` |    10      | 避免重叠时节点的间距 `padding`。`preventOverlap` 为 `true` 时生效 |
+| rows                  | number             |  `false` |    -       | 网格的行数，不设置时算法根据节点数量、布局空间、`cols`（若指定）自动计算 |
+| cols                  | number             |  `false` |    -       | 网格的列数，不设置时算法根据节点数量、布局空间、`rows`（若指定）自动计算 |
+| sortBy                | string             |  `false` |    -       | 指定排序的依据（节点属性名），数值越高则该节点被放置得越中心。若不设置，则会计算节点的度数，度数越高，节点将被放置得越中心 |
+| nodeSize              | number \| number[] |  `false` |    30      | 统一设置节点的尺寸 |
 
 ### 环形布局
 
@@ -156,11 +200,12 @@ const dagreLayout = new Layout({
 
 | 名称              | 类型      | 必选 | 默认值           | 描述                                                                          |
 |-------------------|-----------|:----:|------------------|-----------------------------------------------------------------------------|
-| type              | string                          |  `true`  |   `dagre`  | 布局类型 |
-| rankdir           | 'TB' \| 'BT' \| 'LR' \| 'RL'    |  `false` |   `TB`     | 布局的方向。T：top（上）；B：bottom（下）；L：left（左）；R：right（右）|
-| align             | 'UL' \| 'UR' \| 'DL' \| 'DR'    |  `false` |   `UL`     | 节点对齐方式。U：upper（上）；D：down（下）；L：left（左）；R：right（右） |
-| nodesep           | number                          |  `false` |    50      | 节点间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是节点的水平间距；在 `rankdir` 为 `LR` 或 `RL` 时代表节点的竖直方向间距 |
-| ranksep           | number                          |  `false` |    50      | 层间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是竖直方向相邻层间距；在 `rankdir` 为 `LR` 或 `RL` 时代表水平方向相邻层间距 |
-| nodesepFunc       | function                        |  `false` |    -       | 节点间距（px）的回调函数，通过该参数可以对不同节点设置不同的节点间距。 |
-| ranksepFunc       | function                        |  `false` |    -       | 层间距（px）的回调函数，通过该参数可以对不同节点设置不同的层间距。 |
-| controlPoints     | boolean                         |  `false` |   `true`   | 是否保留布局连线的控制点 |
+| type              | string                          |  `true`  |   `dagre`     | 布局类型 |
+| rankdir           | 'TB' \| 'BT' \| 'LR' \| 'RL'    |  `false` |   `TB`        | 布局的方向。T：top（上）；B：bottom（下）；L：left（左）；R：right（右）|
+| align             | 'UL' \| 'UR' \| 'DL' \| 'DR'    |  `false` |   `UL`        | 节点对齐方式。U：upper（上）；D：down（下）；L：left（左）；R：right（右） |
+| nodesep           | number                          |  `false` |    50         | 节点间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是节点的水平间距；在 `rankdir` 为 `LR` 或 `RL` 时代表节点的竖直方向间距 |
+| ranksep           | number                          |  `false` |    50         | 层间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是竖直方向相邻层间距；在 `rankdir` 为 `LR` 或 `RL` 时代表水平方向相邻层间距 |
+| nodesepFunc       | function                        |  `false` |    -          | 节点间距（px）的回调函数，通过该参数可以对不同节点设置不同的节点间距。 |
+| ranksepFunc       | function                        |  `false` |    -          | 层间距（px）的回调函数，通过该参数可以对不同节点设置不同的层间距。 |
+| controlPoints     | boolean                         |  `false` |   `true`      | 是否保留布局连线的控制点 |
+| nodeSize          | number \| number[] \| undefined |  `false` |   `undefined` | 节点的尺寸，默认为 `undefined`，代表从节点的 `size` 属性中获取。 |
