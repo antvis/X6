@@ -54,7 +54,7 @@ graph.zoom(-0.2) // 在原来缩放级别上减少 0.2
 常用的就是将画布内容中心与视口中心对齐，使用方式：
 
 ```ts
-garah.centerContent()
+graph.centerContent()
 ```
 
 更多的居中方法可以查看 [Transform](../../api/graph/transform)
