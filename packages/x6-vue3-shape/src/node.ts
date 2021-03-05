@@ -102,6 +102,46 @@ export namespace Vue3Shape {
         textVerticalAnchor: 'middle',
       },
     },
+    propHooks(metadata: Properties) {
+      if (metadata.markup == null) {
+        const primer = metadata.primer
+        const useForeignObject = metadata.useForeignObject
+        if (primer != null || useForeignObject != null) {
+          metadata.markup = getMarkup(useForeignObject !== false, primer)
+          if (primer) {
+            if (metadata.attrs == null) {
+              metadata.attrs = {}
+            }
+            let attrs = {}
+            if (primer === 'circle') {
+              attrs = {
+                refCx: '50%',
+                refCy: '50%',
+                refR: '50%',
+              }
+            } else if (primer === 'ellipse') {
+              attrs = {
+                refCx: '50%',
+                refCy: '50%',
+                refRx: '50%',
+                refRy: '50%',
+              }
+            }
+
+            if (primer !== 'rect') {
+              metadata.attrs = ObjectExt.merge({}, metadata.attrs, {
+                body: {
+                  refWidth: null,
+                  refHeight: null,
+                  ...attrs,
+                },
+              })
+            }
+          }
+        }
+      }
+      return metadata
+    },
   })
   Node.registry.register('vue3-shape', Vue3Shape, true)
 }
