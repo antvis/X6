@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [1.1.7](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.6...@antv/x6-vue-shape@1.1.7) (2021-03-07)
+
+
+### Bug Fixes
+
+* 🐛 add primer for vue-shape ([#738](https://github.com/antvis/x6/issues/738)) ([9dbcb07](https://github.com/antvis/x6/commit/9dbcb074facd75a9c9bc940bc2c831c3349525e8))
+
 ## @antv/x6-vue-shape [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.5...@antv/x6-vue-shape@1.1.6) (2021-02-07)
 
 
