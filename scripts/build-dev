@@ -7,6 +7,7 @@ wait
 
 lerna run build --scope @antv/x6-react-shape &
 lerna run build --scope @antv/x6-vue-shape &
+lerna run build --scope @antv/x6-vue3-shape &
 lerna run build --scope @antv/x6-sites-demos-helper
 
 wait
