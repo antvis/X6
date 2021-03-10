@@ -1,3 +1,10 @@
+# @antv/x6 [1.14.0](https://github.com/antvis/x6/compare/@antv/x6@1.13.4...@antv/x6@1.14.0) (2021-03-10)
+
+
+### Features
+
+* ✨ add containerParent config for dnd ([58fb4fd](https://github.com/antvis/x6/commit/58fb4fdd6a51c672e5a473773874081fe548fe0a))
+
 ## @antv/x6 [1.13.4](https://github.com/antvis/x6/compare/@antv/x6@1.13.3...@antv/x6@1.13.4) (2021-03-03)
 
 
