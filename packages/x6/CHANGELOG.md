@@ -1,3 +1,10 @@
+# @antv/x6 [1.15.0](https://github.com/antvis/x6/compare/@antv/x6@1.14.0...@antv/x6@1.15.0) (2021-03-10)
+
+
+### Features
+
+* ✨ add allowReverse option for resizing ([a597a75](https://github.com/antvis/x6/commit/a597a759c0a0b83f53e99e530d1970f46faf3dd2))
+
 # @antv/x6 [1.14.0](https://github.com/antvis/x6/compare/@antv/x6@1.13.4...@antv/x6@1.14.0) (2021-03-10)
 
 
