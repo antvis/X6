@@ -66,15 +66,12 @@ const graph = new Graph({
 - `boolean`
 - `(this: Graph, node: Node) => boolean`
 
-#### restrict
+#### restricted
 
-调整大小边界是否可以超出画布边缘，默认为 `false`。支持以下几种方式：
+调整大小边界是否可以超出画布边缘，默认为 `false`。支持以下两种方式：
 
 - `boolean`
-- `number`
-- `(this: Graph, node: Node) => boolean | number`
-
-当其值为 `number` 类型时，表示将边界限制在距离画布边缘指定大小的范围内。
+- `(this: Graph, node: Node) => boolean`
 
 #### autoScroll
 
@@ -89,6 +86,10 @@ const graph = new Graph({
 
 - `boolean`
 - `(this: Graph, node: Node) => boolean`
+
+#### allowReverse
+
+到达最小宽度或者高度时是否允许控制点反向拖动，默认为 `true`。
 
 ## 调整节点旋转角度
 
