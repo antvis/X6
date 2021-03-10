@@ -333,7 +333,10 @@ export class Transform extends Widget<Transform.Options> {
         }
 
         const relativeDirection = data.relativeDirection
-        if (rawWidth <= -width || rawHeight <= -height) {
+        if (
+          options.allowReverse &&
+          (rawWidth <= -width || rawHeight <= -height)
+        ) {
           let reverted: Node.ResizeDirection
 
           if (relativeDirection === 'left') {
@@ -537,6 +540,10 @@ export namespace Transform {
      * aspect ratio of the node. Default is `false`.
      */
     preserveAspectRatio?: boolean
+    /**
+     * Reaching the minimum width or height is whether to allow control points to reverse
+     */
+    allowReverse?: boolean
   }
 }
 
@@ -572,6 +579,7 @@ namespace Private {
     orthogonalResizing: true,
     restrictedResizing: false,
     autoScrollOnResizing: true,
+    allowReverse: true,
   }
 }
 

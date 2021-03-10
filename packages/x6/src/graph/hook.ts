@@ -242,6 +242,7 @@ export class Hook extends Base implements Hook.IHook {
         resizing.restrict != null ? resizing.restrict : resizing.restricted,
       autoScrollOnResizing: resizing.autoScroll,
       preserveAspectRatio: resizing.preserveAspectRatio,
+      allowReverse: resizing.allowReverse,
 
       rotatable: rotating.enabled,
       rotateGrid: rotating.grid,
