@@ -458,6 +458,7 @@ export namespace Options {
     restricted?: boolean | number
     autoScroll?: boolean
     preserveAspectRatio?: boolean
+    allowReverse?: boolean
   }
 
   export type Resizing = {
@@ -703,6 +704,7 @@ export namespace Options {
       restricted: false,
       autoScroll: true,
       preserveAspectRatio: false,
+      allowReverse: true,
     },
     rotating: {
       enabled: false,
