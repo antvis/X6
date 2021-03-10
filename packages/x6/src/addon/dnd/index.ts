@@ -71,7 +71,9 @@ export class Dnd extends View {
     e.preventDefault()
 
     this.targetModel.startBatch('dnd')
-    this.$container.addClass('dragging').appendTo(document.body)
+    this.$container
+      .addClass('dragging')
+      .appendTo(this.options.containerParent || document.body)
 
     this.sourceNode = node
     this.prepareDragging(node, e.clientX, e.clientY)
@@ -448,6 +450,7 @@ export namespace Dnd {
           duration?: number
           easing?: string
         }
+    containerParent?: HTMLElement
     getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
     getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
     validateNode?: (
