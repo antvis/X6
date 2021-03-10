@@ -59,6 +59,7 @@ const graph = new Graph({
     restricted: false,
     autoScroll: true,
     preserveAspectRatio: false,
+    allowReverse: true,
   },
 })
 ```
@@ -107,6 +108,10 @@ const graph = new Graph({
 #### preserveAspectRatio
 
 缩放过程中是否保持节点的宽高比例，默认为 `false`。
+
+#### allowReverse
+
+到达最小宽度或者高度时是否允许控制点反向拖动，默认为 `true`。
 
 
 ### rotating

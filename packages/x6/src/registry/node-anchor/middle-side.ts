@@ -4,6 +4,7 @@ import { NodeAnchor } from './index'
 export interface MiddleSideEndpointOptions extends ResolveOptions {
   rotate?: boolean
   padding?: number
+  direction?: 'H' | 'V'
 }
 
 const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = function (
@@ -49,6 +50,23 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
     case 'bottom':
       result = bbox.getBottomCenter()
       break
+  }
+
+  const direction = options.direction
+  if (direction === 'H') {
+    if (side === 'top' || side === 'bottom') {
+      if (refPoint.x <= bbox.x + bbox.width) {
+        result = bbox.getLeftMiddle()
+      } else {
+        result = bbox.getRightMiddle()
+      }
+    }
+  } else if (direction === 'V') {
+    if (refPoint.y <= bbox.y + bbox.height) {
+      result = bbox.getTopCenter()
+    } else {
+      result = bbox.getBottomCenter()
+    }
   }
 
   return options.rotate ? result.rotate(-angle, center) : result
