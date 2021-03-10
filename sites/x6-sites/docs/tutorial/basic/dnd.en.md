@@ -2,9 +2,9 @@
 title: 拖拽 Dnd
 order: 12
 redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/basic
+  - /en/docs
+  - /en/docs/tutorial
+  - /en/docs/tutorial/basic
 ---
 
 我们经常需要通过拖拽交互往画布中添加节点，如流程图编辑场景，从流程图组件库中拖拽组件到画布中。
@@ -32,6 +32,7 @@ const dnd = new Addon.Dnd(options)
 | options.getDropNode          | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |         | 拖拽结束时，获取放置到目标画布的节点，默认克隆代理节点。                                                                                                                                                                                             |
 | options.validateNode         | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |         | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                                                                                                                                                                      |
 | options.animation            | boolean \| { duration?: number; easing?: string }                                   |      | `false` | 拖拽结束时，而且目标节点不能添加到目标画布时，是否使用动画将代理画布移动到开始拖动的位置。选项 `duration` 和 `easing` 对应 JQuery 的 [.animate( properties [, duration ] [, easing ] [, complete ] )](https://api.jquery.com/animate/) 方法中的参数。 |
+| options.containerParent      | HTMLElement                                                                         |      | `document.body` | 拖拽容器挂载在哪个父节点下面 |
 
 ### Step 2 开始拖拽
 
