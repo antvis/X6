@@ -87,6 +87,10 @@ const graph = new Graph({
 - `boolean`
 - `(this: Graph, node: Node) => boolean`
 
+#### allowReverse
+
+到达最小宽度或者高度时是否允许控制点反向拖动，默认为 `true`。
+
 ## 调整节点旋转角度
 
 可以在全局配置 `rotating` 来启用调整节点角度的功能。
