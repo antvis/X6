@@ -1,3 +1,10 @@
+## @antv/x6 [1.17.1](https://github.com/antvis/x6/compare/@antv/x6@1.17.0...@antv/x6@1.17.1) (2021-03-11)
+
+
+### Bug Fixes
+
+* 🐛 add ToJSONData type ([f5ffbe2](https://github.com/antvis/x6/commit/f5ffbe2ffa50cb9585ee241aa1f37d5c069e97e5))
+
 # @antv/x6 [1.17.0](https://github.com/antvis/x6/compare/@antv/x6@1.16.0...@antv/x6@1.17.0) (2021-03-11)
 
 
