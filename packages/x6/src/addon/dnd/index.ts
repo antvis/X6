@@ -432,7 +432,13 @@ export class Dnd extends View {
   protected onRemove() {
     if (this.draggingGraph) {
       this.draggingGraph.view.remove()
+      this.draggingGraph.dispose()
     }
+  }
+
+  @View.dispose()
+  dispose() {
+    this.remove()
   }
 }
 
