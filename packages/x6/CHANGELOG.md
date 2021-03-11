@@ -1,3 +1,10 @@
+# @antv/x6 [1.16.0](https://github.com/antvis/x6/compare/@antv/x6@1.15.0...@antv/x6@1.16.0) (2021-03-11)
+
+
+### Features
+
+* ✨ add direction option for midside node-anchor ([b235c11](https://github.com/antvis/x6/commit/b235c1106b4041f257d4f0db5f30198e5c41c90d))
+
 # @antv/x6 [1.15.0](https://github.com/antvis/x6/compare/@antv/x6@1.14.0...@antv/x6@1.15.0) (2021-03-10)
 
 
