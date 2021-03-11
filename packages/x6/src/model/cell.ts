@@ -1202,7 +1202,7 @@ export class Cell<
   removeTool(name: string, options?: Cell.SetOptions): this
   removeTool(index: number, options?: Cell.SetOptions): this
   removeTool(nameOrIndex: string | number, options: Cell.SetOptions = {}) {
-    const tools = this.getTools()
+    const tools = ObjectExt.cloneDeep(this.getTools())
     if (tools) {
       let updated = false
       const items = tools.items.slice()
