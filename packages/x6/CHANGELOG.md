@@ -1,3 +1,15 @@
+# @antv/x6 [1.17.0](https://github.com/antvis/x6/compare/@antv/x6@1.16.0...@antv/x6@1.17.0) (2021-03-11)
+
+
+### Bug Fixes
+
+* 🐛 make sure css resource is disposed  after all graph instance is disposed ([81fa537](https://github.com/antvis/x6/commit/81fa537282ce5cd65c2fb585b8a7649087490313))
+
+
+### Features
+
+* ✨  allow disable auto resize in some high performance scenario ([dd6681b](https://github.com/antvis/x6/commit/dd6681b53739bf48fa0a97166e16ada4a2c16896))
+
 # @antv/x6 [1.16.0](https://github.com/antvis/x6/compare/@antv/x6@1.15.0...@antv/x6@1.16.0) (2021-03-11)
 
 
