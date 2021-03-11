@@ -1,3 +1,18 @@
+# @antv/x6-sites [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.2.0...@antv/x6-sites@1.3.0) (2021-03-11)
+
+
+### Features
+
+* ✨ add direction option for midside node-anchor ([b235c11](https://github.com/antvis/x6/commit/b235c1106b4041f257d4f0db5f30198e5c41c90d))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.16.0
+
 # @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-03-10)
 
 
