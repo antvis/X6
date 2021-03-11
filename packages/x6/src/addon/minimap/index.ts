@@ -123,6 +123,7 @@ export class MiniMap extends View {
   protected onRemove() {
     this.targetGraph.view.remove()
     this.stopListening()
+    this.targetGraph.dispose()
   }
 
   protected updatePaper(width: number, height: number): this
