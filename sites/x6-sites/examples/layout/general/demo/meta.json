@@ -31,6 +31,14 @@
         "en": "Ellipse"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*oP93S7a2H-sAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "force.ts",
+      "title": {
+        "zh": "力导向布局",
+        "en": "Force"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*1yboRpsGdBYAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
