@@ -119,6 +119,18 @@ export class ScrollerManager extends Base {
     }
   }
 
+  enableAutoResize() {
+    if (this.widget) {
+      this.widget.enableAutoResize()
+    }
+  }
+
+  disableAutoResize() {
+    if (this.widget) {
+      this.widget.disableAutoResize()
+    }
+  }
+
   resize(width?: number, height?: number) {
     if (this.widget) {
       this.widget.resize(width, height)
