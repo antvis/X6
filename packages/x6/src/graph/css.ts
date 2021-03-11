@@ -18,9 +18,13 @@ export class CSSManager extends Base {
 
 export namespace CSSManager {
   let styleElement: HTMLStyleElement | null
+  let counter = 0
 
   export function ensure() {
-    if (styleElement == null && !Platform.isApplyingHMR()) {
+    counter = counter + 1
+    if (counter > 1) return
+
+    if (!Platform.isApplyingHMR()) {
       styleElement = document.createElement('style')
       styleElement.setAttribute('type', 'text/css')
       styleElement.textContent = content
@@ -33,6 +37,9 @@ export namespace CSSManager {
   }
 
   export function clean() {
+    counter = counter - 1
+    if (counter > 0) return
+
     if (styleElement && styleElement.parentNode) {
       styleElement.parentNode.removeChild(styleElement)
     }
