@@ -104,7 +104,7 @@ if (graph.isPannable()) {
 
 ### padding
 
-设置画布四周的 padding 边距。默认根据 `minVisibleWidth` 和 `minVisibleHeight` [自动计算](https://github.com/antvis/X6/blob/master/packages/x6/src/addon/scroller/index.ts#L1081-L1088)得到，保证画布滚动时，在宽度和高度方向至少有 `minVisibleWidth` 和 `minVisibleHeight` 大小的画布可见。 
+设置画布四周的 padding 边距。默认根据 `minVisibleWidth` 和 `minVisibleHeight` [自动计算](https://github.com/antvis/X6/blob/master/packages/x6/src/addon/scroller/index.ts#L1081-L1088)得到，保证画布滚动时，在宽度和高度方向至少有 `minVisibleWidth` 和 `minVisibleHeight` 大小的画布可见。
 
 ### minVisibleWidth
 
@@ -178,8 +178,8 @@ graph.scrollToPoint(null, 200) // 滚动到 [null, 200]
 
 // 支持动画
 graph.scrollToPoint(100, 200,  { animation: { duration: 400 }})
-graph.scrollToPoint(100, null, { animation: { duration: 200, easing: 'linear' }})      
-graph.scrollToPoint(null, 200, { animation: { duration: 600 }}) 
+graph.scrollToPoint(100, null, { animation: { duration: 200, easing: 'linear' }})
+graph.scrollToPoint(null, 200, { animation: { duration: 600 }})
 ```
 
 ### scrollToContent(...)
@@ -289,7 +289,7 @@ graph.transitionToRect({
   height: 200,
 }, {
     visibility: 0.9, // 矩形覆盖 90% 视口区域
-    maxScale: 3,     // 画布最大缩放比例为 3 
+    maxScale: 3,     // 画布最大缩放比例为 3
 })
 
 // 使 cell1, cell2, cell3 三个节点的包围盒 BBox 完全位于视口，并将 cell1 移动到视口中心
@@ -330,14 +330,14 @@ setScrollbarPosition(left?: number, top?: number, options?: ScrollOptions): this
 <span class="tag-example">例如<span>
 
 ```ts
-graph.setScrollbarPosition(100) 
-graph.setScrollbarPosition(100, null) 
-graph.setScrollbarPosition(null, 200) 
-graph.setScrollbarPosition(100, 200) 
+graph.setScrollbarPosition(100)
+graph.setScrollbarPosition(100, null)
+graph.setScrollbarPosition(null, 200)
+graph.setScrollbarPosition(100, 200)
 
 // 使用动画
-graph.setScrollbarPosition(100, null, { animation: { duration: 200, easing: 'linear' }})      
-graph.setScrollbarPosition(null, 200, { animation: { duration: 600 }}) 
+graph.setScrollbarPosition(100, null, { animation: { duration: 200, easing: 'linear' }})
+graph.setScrollbarPosition(null, 200, { animation: { duration: 600 }})
 graph.setScrollbarPosition(100, 200,  { animation: { duration: 400 }})
 ```
 
@@ -372,6 +372,30 @@ togglePanning(pannable?: boolean): this
 ```
 
 切换或设置画布平移。
+
+### enableAutoResize()
+
+```sign
+enableAutoResize(): this
+```
+
+开启自动扩充/缩小画布
+
+### disableAutoResize()
+
+```sign
+disableAutoResize(): this
+```
+
+关闭自动扩充/缩小画布
+
+### update()
+
+```sign
+update(): this
+```
+
+更新画布
 
 ### lockScroller()
 

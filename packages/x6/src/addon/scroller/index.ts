@@ -169,6 +169,14 @@ export class Scroller extends View {
     this.undelegateBackgroundEvents()
   }
 
+  public enableAutoResize() {
+    this.options.autoResize = true
+  }
+
+  public disableAutoResize() {
+    this.options.autoResize = false
+  }
+
   protected onUpdate() {
     if (this.graph.isAsync() || !this.options.autoResize) {
       return
