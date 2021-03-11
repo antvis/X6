@@ -1259,6 +1259,9 @@ export namespace Model {
         nodes?: Node.Metadata[]
         edges?: Edge.Metadata[]
       })
+  export type ToJSONData = {
+    cells: Cell.Properties[]
+  }
 
   export interface GetCellsInAreaOptions {
     strict?: boolean
