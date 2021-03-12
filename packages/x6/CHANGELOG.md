@@ -1,3 +1,10 @@
+## @antv/x6 [1.17.3](https://github.com/antvis/x6/compare/@antv/x6@1.17.2...@antv/x6@1.17.3) (2021-03-12)
+
+
+### Bug Fixes
+
+* 🐛 fix add tools not work ([191eab3](https://github.com/antvis/x6/commit/191eab3d02bdea32755009d865a2929a131cb9e2))
+
 ## @antv/x6 [1.17.2](https://github.com/antvis/x6/compare/@antv/x6@1.17.1...@antv/x6@1.17.2) (2021-03-12)
 
 
