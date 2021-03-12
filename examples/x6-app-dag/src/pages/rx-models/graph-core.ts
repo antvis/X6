@@ -567,9 +567,11 @@ export class GraphCore<
       const needEnableRubberBand: boolean =
         typeof enabled === 'undefined' ? !graph.isRubberbandEnabled() : enabled
       if (needEnableRubberBand) {
+        graph.disablePanning()
         graph.enableRubberband()
         // graph.scroller.widget?.setCursor('crosshair', { silent: true })
       } else {
+        graph.enablePanning()
         graph.disableRubberband()
         // graph.scroller.widget?.setCursor('grab', { silent: true })
       }
