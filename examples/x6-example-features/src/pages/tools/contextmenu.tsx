@@ -59,7 +59,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
       if (this.options.onHide) {
         this.options.onHide.call(this)
       }
-    }, 100)
+    }, 200)
   }
 }
 
