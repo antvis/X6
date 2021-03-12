@@ -1140,7 +1140,7 @@ export class Cell<
     if (options.reset) {
       this.setTools({ name, items: toolItems }, options)
     } else {
-      let tools = this.getTools()
+      let tools = ObjectExt.cloneDeep(this.getTools())
       if (tools == null || name == null || tools.name === name) {
         if (tools == null) {
           tools = {} as Cell.Tools
