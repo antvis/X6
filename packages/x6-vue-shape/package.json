@@ -36,9 +36,18 @@
       "tslint -c tslint.json -p ./tsconfig.json --fix"
     ]
   },
+  "dependencies": {
+    "vue-demi": "^0.7.1"
+  },
   "peerDependencies": {
-    "@antv/x6": ">=1.0.0",
-    "vue": ">=2.6.11"
+    "@vue/composition-api": "^1.0.0-rc.2",
+    "vue": "^2.6.12 || ^3.0.0",
+    "@antv/x6": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
@@ -58,8 +67,9 @@
     "ts-node": "^9.1.1",
     "tslint": "^6.1.3",
     "typescript": "^4.1.2",
-    "vue": "^2.6.11",
-    "watch": "^1.0.2"
+    "vue": "^3.0.5",
+    "watch": "^1.0.2",
+    "@vue/composition-api": "^1.0.0-rc.1"
   },
   "author": {
     "name": "bubkoo",
