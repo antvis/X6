@@ -1,7 +1,7 @@
 import { NodeView } from '@antv/x6'
 import { VueShape } from './node'
 import { VueComponent } from './registry'
-import Vue from 'vue'
+import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 
 export class VueShapeView extends NodeView<VueShape> {
   protected init() {
@@ -27,29 +27,42 @@ export class VueShapeView extends NodeView<VueShape> {
 
     if (root) {
       const component = this.graph.hook.getVueComponent(node)
-      const div = document.createElement('div')
-      div.style.width = '100%'
-      div.style.height = '100%'
-      let instance = null
-      if (typeof component === 'string') {
-        div.innerHTML = component
-        instance = new Vue({ el: div })
-      } else {
-        const { template, ...other } = component as VueComponent
-        div.innerHTML = template
-        instance = new Vue({
-          el: div,
+      if (isVue2) {
+        const div = document.createElement('div')
+        div.style.width = '100%'
+        div.style.height = '100%'
+        let instance = null
+        if (typeof component === 'string') {
+          div.innerHTML = component
+          instance = new Vue2({ el: div })
+        } else {
+          const { template, ...other } = component as VueComponent
+          div.innerHTML = template
+          instance = new Vue2({
+            el: div,
+            provide() {
+              return {
+                getGraph: () => graph,
+                getNode: () => node,
+              }
+            },
+            ...other,
+          })
+        }
+        root.appendChild(instance.$el)
+      } else if (isVue3) {
+        createApp({
+          render() {
+            return h(component as any)
+          },
           provide() {
             return {
               getGraph: () => graph,
               getNode: () => node,
             }
           },
-          ...other,
-        })
+        }).mount(root)
       }
-
-      root.appendChild(instance.$el)
     }
   }
 
