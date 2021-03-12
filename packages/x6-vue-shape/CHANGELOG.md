@@ -1,3 +1,10 @@
+# @antv/x6-vue-shape [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.7...@antv/x6-vue-shape@1.2.0) (2021-03-12)
+
+
+### Features
+
+* ✨ use vue-demi manage vue3 and vue2 ([ea66480](https://github.com/antvis/x6/commit/ea6648011e46fce128a9ee28fdf1385255248e92))
+
 ## @antv/x6-vue-shape [1.1.7](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.6...@antv/x6-vue-shape@1.1.7) (2021-03-07)
 
 
