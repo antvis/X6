@@ -1,3 +1,10 @@
+## @antv/x6 [1.17.2](https://github.com/antvis/x6/compare/@antv/x6@1.17.1...@antv/x6@1.17.2) (2021-03-12)
+
+
+### Bug Fixes
+
+* 🐛 fix not refresh after removeTool ([9d15243](https://github.com/antvis/x6/commit/9d152433ee4050bf2311c140d74dd805cae519ba))
+
 ## @antv/x6 [1.17.1](https://github.com/antvis/x6/compare/@antv/x6@1.17.0...@antv/x6@1.17.1) (2021-03-11)
 
 
