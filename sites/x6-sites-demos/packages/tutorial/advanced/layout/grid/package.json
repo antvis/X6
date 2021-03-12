@@ -9,7 +9,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "@antv/layout": "0.0.13"
+    "@antv/layout": "^0.1.9"
   },
   "devDependencies": {
     "@types/react": "^16.9.19",
