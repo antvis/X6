@@ -3,11 +3,10 @@ import Icon, {
   ReloadOutlined,
   GithubOutlined,
   CodeSandboxOutlined,
-  ThunderboltOutlined,
 } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import 'antd/dist/antd.css'
-import stackblitzSdk from '@stackblitz/sdk'
+// import stackblitzSdk from '@stackblitz/sdk'
 import { getParameters } from 'codesandbox/lib/api/define'
 const repo = require('../../loaders/repo.js!./data.js')
 import './index.css'
@@ -96,7 +95,7 @@ export class Toolbar extends React.Component {
           </form>
         </Tooltip>
 
-        <Tooltip
+        {/* <Tooltip
           placement="bottomLeft"
           arrowPointAtCenter={true}
           title="在 StackBlitz 中打开"
@@ -109,7 +108,7 @@ export class Toolbar extends React.Component {
               })
             }}
           />
-        </Tooltip>
+        </Tooltip> */}
       </div>
     )
   }
