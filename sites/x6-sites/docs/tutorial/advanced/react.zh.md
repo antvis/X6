@@ -264,7 +264,7 @@ const graph = new Graph({
 
 ### 渲染 Vue 节点
 
-我们提供了一个独立的包 `@antv/x6-vue-shape` 来使用 Vue 渲染节点。
+我们提供了一个独立的包 `@antv/x6-vue-shape` 来使用 Vue(2/3) 渲染节点。
 
 ```shell
 # npm
@@ -272,6 +272,9 @@ npm install @antv/x6-vue-shape
 
 # yarn
 yarn add @antv/x6-vue-shape
+
+# 在 vue2 下还需要安装 @vue/composition-api
+yarn add @vue/composition-api
 ```
 
 安装并应用该包后，指定节点的 `shape` 为 `vue-shape`，并通过 `component` 属性来指定渲染节点的 Vue 组件。
