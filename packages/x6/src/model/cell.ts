@@ -933,9 +933,11 @@ export class Cell<
     const children = this.children
     if (children != null && child != null) {
       const index = this.getChildIndex(child)
-      children.splice(index, 1)
-      child.setParent(null, options)
-      this.setChildren(children, options)
+      if (index !== -1) {
+        children.splice(index, 1)
+        child.setParent(null, options)
+        this.setChildren(children, options)
+      }
     }
     return this
   }
