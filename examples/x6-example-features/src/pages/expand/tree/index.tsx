@@ -33,9 +33,10 @@ export default class Example extends React.Component {
           },
         },
       },
-      // checkView: ({view}) => {
-
-      // },
+      minimap: {
+        enabled: true,
+        container: document.getElementById('minimap')!,
+      },
     })
 
     graph.zoomTo(0.8)
@@ -86,6 +87,7 @@ export default class Example extends React.Component {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
+        <div id="minimap"/>
       </div>
     )
   }
