@@ -1,3 +1,10 @@
+## @antv/x6 [1.17.4](https://github.com/antvis/x6/compare/@antv/x6@1.17.3...@antv/x6@1.17.4) (2021-03-19)
+
+
+### Bug Fixes
+
+* 🐛 set the async of minimapGraph to be the same as sourceGraph ([474d93c](https://github.com/antvis/x6/commit/474d93c9bc54cb469d75b72e6cd956c9671afcd2))
+
 ## @antv/x6 [1.17.3](https://github.com/antvis/x6/compare/@antv/x6@1.17.2...@antv/x6@1.17.3) (2021-03-12)
 
 
