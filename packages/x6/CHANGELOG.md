@@ -1,3 +1,10 @@
+## @antv/x6 [1.17.5](https://github.com/antvis/x6/compare/@antv/x6@1.17.4...@antv/x6@1.17.5) (2021-03-19)
+
+
+### Bug Fixes
+
+* 🐛 restrict unembed condition ([2f797fd](https://github.com/antvis/x6/commit/2f797fd13754e3068f321800d1973a0ad3612d4d))
+
 ## @antv/x6 [1.17.4](https://github.com/antvis/x6/compare/@antv/x6@1.17.3...@antv/x6@1.17.4) (2021-03-19)
 
 
