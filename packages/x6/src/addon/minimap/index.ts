@@ -73,6 +73,7 @@ export class MiniMap extends View {
       container: graphContainer,
       model: this.sourceGraph.model,
       frozen: true,
+      async: this.sourceGraph.isAsync(),
       interacting: false,
       grid: false,
       background: false,
