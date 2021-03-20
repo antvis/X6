@@ -1,0 +1,41 @@
+{
+  "private": true,
+  "name": "@antv/eslint-config",
+  "version": "1.0.0",
+  "main": "./lib/index.js",
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "lint": "eslint 'src/**/*.{js,ts}' --fix",
+    "build": "tsc --outDir ./lib",
+    "build:watch": "yarn build --w",
+    "prebuild": "run-s clean",
+    "preinstall": "run-s build"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unicorn": "^28.0.2"
+
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.2.3"
+  }
+}

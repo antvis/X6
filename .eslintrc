@@ -1,16 +1,3 @@
 {
-  "extends": ["airbnb-base/legacy", "prettier"],
-  "env": {
-    "es6": true,
-    "node": true,
-    "browser": true
-  },
-  "parserOptions": {
-    "sourceType": "module"
-  },
-  "rules": {
-    "semi": "off",
-    "no-console": "off",
-    "no-multi-spaces": "off"
-  }
+  "extends": "@antv/eslint-config"
 }
