@@ -102,14 +102,6 @@ export class Graph extends Basecoat<EventArgs> {
     this.format = this.hook.createFormatManager()
     this.panning = this.hook.createPanningManager()
     this.size = this.hook.createSizeManager()
-
-    this.setup()
-  }
-
-  protected setup() {
-    this.model.on('sorted', () => this.trigger('model:sorted'))
-    this.model.on('reseted', (args) => this.trigger('model:reseted', args))
-    this.model.on('updated', (args) => this.trigger('model:updated', args))
   }
 
   // #region model
