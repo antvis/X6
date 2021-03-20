@@ -1,3 +1,10 @@
+## @antv/x6 [1.17.6](https://github.com/antvis/x6/compare/@antv/x6@1.17.5...@antv/x6@1.17.6) (2021-03-20)
+
+
+### Bug Fixes
+
+* 🐛 fix model event trigger twice ([#789](https://github.com/antvis/x6/issues/789)) ([5520bc3](https://github.com/antvis/x6/commit/5520bc38ab4106287e6591c73aff8c6f96f675da))
+
 ## @antv/x6 [1.17.5](https://github.com/antvis/x6/compare/@antv/x6@1.17.4...@antv/x6@1.17.5) (2021-03-19)
 
 
