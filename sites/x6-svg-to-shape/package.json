@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "x6-svg-to-shape",
+  "name": "@antv/x6-svg-to-shape",
   "version": "1.0.0",
   "description": "convert svg to shape definition",
   "scripts": {
