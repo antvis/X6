@@ -369,13 +369,13 @@ export class Selection extends View<Selection.EventArgs> {
     if (restrict) {
       const cells = this.collection.toArray()
       const totalBBox = Cell.getCellsBBox(cells)!
-      let minDx = restrict.x - totalBBox.x
-      let minDy = restrict.y - totalBBox.y
-      let maxDx =
+      const minDx = restrict.x - totalBBox.x
+      const minDy = restrict.y - totalBBox.y
+      const maxDx =
         restrict.x + restrict.width - (totalBBox.x + totalBBox.width)
-      let maxDy =
+      const maxDy =
         restrict.y + restrict.height - (totalBBox.y + totalBBox.height)
-      
+
       if (dx < minDx) {
         dx = minDx
       }
@@ -403,7 +403,7 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
-  protected updateSelectedNodesPosition(offset: { dx: number, dy: number }) {
+  protected updateSelectedNodesPosition(offset: { dx: number; dy: number }) {
     const { dx, dy } = offset
     if (dx || dy) {
       if ((this.translateSelectedNodes(dx, dy), this.boxesUpdated)) {
@@ -459,7 +459,7 @@ export class Selection extends View<Selection.EventArgs> {
         }
         if (offset.dy) {
           data.clientY = client.y
-        }  
+        }
         this.notifyBoxEvent('box:mousemove', evt, client.x, client.y)
         break
       }
@@ -605,10 +605,9 @@ export class Selection extends View<Selection.EventArgs> {
     this.$handleContainer = this.$selectionContainer
   }
 
-  protected updateContainerPosition(offset: { dx: number, dy: number }) {
+  protected updateContainerPosition(offset: { dx: number; dy: number }) {
     if (offset.dx || offset.dy) {
-      this.$selectionContainer
-      .css({
+      this.$selectionContainer.css({
         left: `+=${offset.dx}`,
         top: `+=${offset.dy}`,
       })

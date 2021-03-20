@@ -9,9 +9,9 @@ export interface ErRoundedArgs {
 }
 
 function erRounded(
-  sourcePoint: Point.PointLike, 
-  targetPoint: Point.PointLike, 
-  routePoints: Point.PointLike[], 
+  sourcePoint: Point.PointLike,
+  targetPoint: Point.PointLike,
+  routePoints: Point.PointLike[],
   args: ErRoundedArgs,
 ) {
   const path = new Path()
@@ -61,8 +61,10 @@ function erRounded(
       horizontal = sourcePoint.y === targetPoint.y
       vertical = sourcePoint.x === targetPoint.x
     } else {
-      horizontal = sourcePoint.y === routePoints[0].y && targetPoint.y === routePoints[1].y
-      vertical = sourcePoint.x === routePoints[0].x && targetPoint.x === routePoints[1].x
+      horizontal =
+        sourcePoint.y === routePoints[0].y && targetPoint.y === routePoints[1].y
+      vertical =
+        sourcePoint.x === routePoints[0].x && targetPoint.x === routePoints[1].x
     }
     if (horizontal) {
       path.translate(0, offset)
@@ -86,9 +88,9 @@ export default class Example extends React.Component {
       grid: true,
       connecting: {
         router: {
-          name: 'er'
-        }
-      }
+          name: 'er',
+        },
+      },
     })
 
     const source = graph.addNode({
@@ -115,8 +117,8 @@ export default class Example extends React.Component {
         args: {
           radius: 20,
           offset: -20,
-        }
-      }
+        },
+      },
     })
 
     graph.addEdge({
@@ -127,8 +129,8 @@ export default class Example extends React.Component {
         args: {
           radius: 20,
           offset: 0,
-        }
-      }
+        },
+      },
     })
 
     graph.addEdge({
@@ -139,8 +141,8 @@ export default class Example extends React.Component {
         args: {
           radius: 20,
           offset: 20,
-        }
-      }
+        },
+      },
     })
   }
 

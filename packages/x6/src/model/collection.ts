@@ -287,13 +287,10 @@ export class Collection extends Basecoat<Collection.EventArgs> {
   protected reference(cell: Cell) {
     this.map[cell.id] = cell
     cell.on('*', this.notifyCellEvent, this)
-    cell.on('change:zIndex', this.onCellZIndexChanged, this)
   }
 
   protected unreference(cell: Cell) {
     cell.off('*', this.notifyCellEvent, this)
-    cell.off('change:zIndex', this.onCellZIndexChanged, this)
-
     delete this.map[cell.id]
   }
 
@@ -310,10 +307,6 @@ export class Collection extends Basecoat<Collection.EventArgs> {
         this.trigger(`edge:${name}`, { ...args, edge: cell })
       }
     }
-  }
-
-  protected onCellZIndexChanged(args: Cell.EventArgs['change:zIndex']) {
-    this.sort(args.options)
   }
 
   protected clean() {
