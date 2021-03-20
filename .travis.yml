@@ -4,10 +4,10 @@ node_js:
 branches:
   only:
     - master
-cache:
-  yarn: true
-  directories:
-    - node_modules
+# cache:
+#   yarn: true
+#   directories:
+#     - node_modules
 install:
   - npm install -g yarn
   - npm install -g lerna
