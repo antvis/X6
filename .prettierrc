@@ -6,6 +6,7 @@
   "proseWrap": "never",
   "overrides": [
     { "files": ".eslintrc", "options": { "parser": "json" } },
-    { "files": ".prettierrc", "options": { "parser": "json" } }
+    { "files": ".prettierrc", "options": { "parser": "json" } },
+    { "files": ".stylelintrc", "options": { "parser": "json" } }
   ]
 }
