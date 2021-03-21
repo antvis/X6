@@ -1,0 +1,8 @@
+{
+  "peerDependencies": {
+    "antd": ">=4.4.2"
+  },
+  "devDependencies": {
+    "antd": "^4.4.2"
+  }
+}
