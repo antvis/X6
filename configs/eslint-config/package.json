@@ -21,7 +21,12 @@
       "eslint --fix"
     ]
   },
-  "dependencies": {
+  "inherits": [
+    "@antv/x6-package-json/cli.json",
+    "@antv/x6-package-json/eslint.json"
+  ],
+  "devDependencies": {
+    "eslint": "^7.22.0",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
@@ -34,13 +39,17 @@
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-unicorn": "^28.0.2"
-  },
-  "devDependencies": {
-    "eslint": "^7.22.0",
+    "eslint-plugin-unicorn": "^28.0.2",
     "lint-staged": "^10.5.3",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "@types/node": "^14.14.14",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^9.1.1",
+    "watch": "^1.0.2",
+    "fs-extra": "^9.0.1",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0"
   }
 }
