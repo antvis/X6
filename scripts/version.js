@@ -7,7 +7,7 @@ const fs = require('fs')
 
 const version = JSON.parse(fs.readFileSync('package.json', 'utf8')).version
 
-const code = `/* tslint:disable */
+const code = `/* eslint-disable */
 
 /**
  * Auto generated version file, do not modify it!
