@@ -21,7 +21,7 @@ export namespace CSSManager {
   let counter = 0
 
   export function ensure() {
-    counter = counter + 1
+    counter += 1
     if (counter > 1) return
 
     if (!Platform.isApplyingHMR()) {
@@ -37,7 +37,7 @@ export namespace CSSManager {
   }
 
   export function clean() {
-    counter = counter - 1
+    counter -= 1
     if (counter > 0) return
 
     if (styleElement && styleElement.parentNode) {
