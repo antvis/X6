@@ -38,7 +38,7 @@ export const Cylinder = Base.define({
       set(t: number | string, { refBBox }) {
         const isPercentage = NumberExt.isPercentage(t)
         if (isPercentage) {
-          // tslint:disable-next-line
+          // eslint-disable-next-line
           t = parseFloat(t as string) / 100
         }
 

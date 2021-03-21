@@ -436,7 +436,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  /***
+  /** *
    * Returns an array of IDs of nodes on the shortest
    * path between source and target.
    */
@@ -490,7 +490,7 @@ export class Graph extends Basecoat<EventArgs> {
     return result
   }
 
-  //#endregion
+  // #endregion
 
   // #region view
 
@@ -650,12 +650,7 @@ export class Graph extends Basecoat<EventArgs> {
    */
   scale(): Dom.Scale
   scale(sx: number, sy?: number, cx?: number, cy?: number): this
-  scale(
-    sx?: number,
-    sy: number = sx as number,
-    cx: number = 0,
-    cy: number = 0,
-  ) {
+  scale(sx?: number, sy: number = sx as number, cx = 0, cy = 0) {
     if (typeof sx === 'undefined') {
       return this.transform.getScale()
     }
@@ -1243,12 +1238,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableClipboard()
         }
       }
+    } else if (this.isClipboardEnabled()) {
+      this.disableClipboard()
     } else {
-      if (this.isClipboardEnabled()) {
-        this.disableClipboard()
-      } else {
-        this.enableClipboard()
-      }
+      this.enableClipboard()
     }
 
     return this
@@ -1308,12 +1301,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableHistory()
         }
       }
+    } else if (this.isHistoryEnabled()) {
+      this.disableHistory()
     } else {
-      if (this.isHistoryEnabled()) {
-        this.disableHistory()
-      } else {
-        this.enableHistory()
-      }
+      this.enableHistory()
     }
 
     return this
@@ -1373,12 +1364,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableKeyboard()
         }
       }
+    } else if (this.isKeyboardEnabled()) {
+      this.disableKeyboard()
     } else {
-      if (this.isKeyboardEnabled()) {
-        this.disableKeyboard()
-      } else {
-        this.enableKeyboard()
-      }
+      this.enableKeyboard()
     }
     return this
   }
@@ -1422,12 +1411,10 @@ export class Graph extends Basecoat<EventArgs> {
       } else {
         this.enableMouseWheel()
       }
+    } else if (enabled) {
+      this.enableMouseWheel()
     } else {
-      if (enabled) {
-        this.enableMouseWheel()
-      } else {
-        this.disableMouseWheel()
-      }
+      this.disableMouseWheel()
     }
     return this
   }
@@ -1558,13 +1545,11 @@ export class Graph extends Basecoat<EventArgs> {
       } else {
         this.enablePanning()
       }
-    } else {
-      if (pannable !== this.isPannable()) {
-        if (pannable) {
-          this.enablePanning()
-        } else {
-          this.disablePanning()
-        }
+    } else if (pannable !== this.isPannable()) {
+      if (pannable) {
+        this.enablePanning()
+      } else {
+        this.disablePanning()
       }
     }
 
@@ -1598,12 +1583,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableSelection()
         }
       }
+    } else if (this.isSelectionEnabled()) {
+      this.disableSelection()
     } else {
-      if (this.isSelectionEnabled()) {
-        this.disableSelection()
-      } else {
-        this.enableSelection()
-      }
+      this.enableSelection()
     }
 
     return this
@@ -1632,12 +1615,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableMultipleSelection()
         }
       }
+    } else if (this.isMultipleSelection()) {
+      this.disableMultipleSelection()
     } else {
-      if (this.isMultipleSelection()) {
-        this.disableMultipleSelection()
-      } else {
-        this.enableMultipleSelection()
-      }
+      this.enableMultipleSelection()
     }
 
     return this
@@ -1666,12 +1647,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableSelectionMovable()
         }
       }
+    } else if (this.isSelectionMovable()) {
+      this.disableSelectionMovable()
     } else {
-      if (this.isSelectionMovable()) {
-        this.disableSelectionMovable()
-      } else {
-        this.enableSelectionMovable()
-      }
+      this.enableSelectionMovable()
     }
 
     return this
@@ -1700,12 +1679,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableRubberband()
         }
       }
+    } else if (this.isRubberbandEnabled()) {
+      this.disableRubberband()
     } else {
-      if (this.isRubberbandEnabled()) {
-        this.disableRubberband()
-      } else {
-        this.enableRubberband()
-      }
+      this.enableRubberband()
     }
 
     return this
@@ -1734,12 +1711,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableStrictRubberband()
         }
       }
+    } else if (this.isStrictRubberband()) {
+      this.disableStrictRubberband()
     } else {
-      if (this.isStrictRubberband()) {
-        this.disableStrictRubberband()
-      } else {
-        this.enableStrictRubberband()
-      }
+      this.enableStrictRubberband()
     }
 
     return this
@@ -1871,12 +1846,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableSnaplineOnResizing()
         }
       }
+    } else if (this.isSnaplineOnResizingEnabled()) {
+      this.disableSnaplineOnResizing()
     } else {
-      if (this.isSnaplineOnResizingEnabled()) {
-        this.disableSnaplineOnResizing()
-      } else {
-        this.enableSnaplineOnResizing()
-      }
+      this.enableSnaplineOnResizing()
     }
     return this
   }
@@ -1904,12 +1877,10 @@ export class Graph extends Basecoat<EventArgs> {
           this.disableSharpSnapline()
         }
       }
+    } else if (this.isSharpSnapline()) {
+      this.disableSharpSnapline()
     } else {
-      if (this.isSharpSnapline()) {
-        this.disableSharpSnapline()
-      } else {
-        this.enableSharpSnapline()
-      }
+      this.enableSharpSnapline()
     }
     return this
   }

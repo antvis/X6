@@ -145,8 +145,8 @@ export class MiniMap extends View {
     const maxWidth = this.options.width - 2 * this.options.padding
     const maxHeight = this.options.height - 2 * this.options.padding
 
-    width = width / scale.sx // tslint:disable-line
-    height = height / scale.sy // tslint:disable-line
+    width /= scale.sx // eslint-disable-line
+    height /= scale.sy // eslint-disable-line
 
     this.ratio = Math.min(maxWidth / width, maxHeight / height)
 
@@ -154,8 +154,8 @@ export class MiniMap extends View {
     const x = (origin.x * ratio) / scale.sx
     const y = (origin.y * ratio) / scale.sy
 
-    width = width * ratio // tslint:disable-line
-    height = height * ratio // tslint:disable-line
+    width *= ratio // eslint-disable-line
+    height *= ratio // eslint-disable-line
     this.targetGraph.resizeGraph(width, height)
     this.targetGraph.translate(x, y)
     this.targetGraph.scale(ratio, ratio)
@@ -232,6 +232,9 @@ export class MiniMap extends View {
         })
         break
       }
+
+      default:
+        break
     }
   }
 

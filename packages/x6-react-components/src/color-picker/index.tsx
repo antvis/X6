@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events  */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
 import React from 'react'
 import classNames from 'classnames'
 import { Popover } from 'antd'
@@ -18,6 +21,7 @@ export class ColorPicker extends React.Component<
   ColorPicker.State
 > {
   private removeDocClickEvent: (() => void) | null
+
   private container: HTMLDivElement
 
   constructor(props: ColorPicker.Props) {

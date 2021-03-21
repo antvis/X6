@@ -13,7 +13,6 @@ export class SplitBox extends React.PureComponent<
   private box2Elem: HTMLDivElement
   private maskElem: HTMLDivElement
   private resizerElem: HTMLDivElement
-
   private minSize: number
   private maxSize: number
   private curSize: number
@@ -60,7 +59,7 @@ export class SplitBox extends React.PureComponent<
     }
 
     if (step && Math.abs(delta) >= step) {
-      delta = ~~(delta / step) * step
+      delta = ~~(delta / step) * step // eslint-disable-line
     }
 
     delta = isPrimaryFirst ? -delta : delta
@@ -145,14 +144,12 @@ export class SplitBox extends React.PureComponent<
       } else {
         cursor = 'col-resize'
       }
+    } else if (size === minSize) {
+      cursor = this.isPrimaryFirst() ? 's-resize' : 'n-resize'
+    } else if (size === maxSize) {
+      cursor = this.isPrimaryFirst() ? 'n-resize' : 's-resize'
     } else {
-      if (size === minSize) {
-        cursor = this.isPrimaryFirst() ? 's-resize' : 'n-resize'
-      } else if (size === maxSize) {
-        cursor = this.isPrimaryFirst() ? 'n-resize' : 's-resize'
-      } else {
-        cursor = 'row-resize'
-      }
+      cursor = 'row-resize'
     }
 
     this.maskElem.style.cursor = cursor

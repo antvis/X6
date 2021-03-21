@@ -27,6 +27,8 @@ export function getSpellingSuggestion<T>(
   let bestCandidate: T | undefined
   let justCheckExactMatches = false
   const nameLowerCase = name.toLowerCase()
+
+  // eslint-disable-next-line
   for (const candidate of candidates) {
     const candidateName = getName(candidate)
     if (
@@ -81,8 +83,8 @@ function levenshteinWithMax(
   s2: string,
   max: number,
 ): number | undefined {
-  let previous = new Array(s2.length + 1) // tslint:disable-line
-  let current = new Array(s2.length + 1) // tslint:disable-line
+  let previous = new Array(s2.length + 1) // eslint-disable-line
+  let current = new Array(s2.length + 1) // eslint-disable-line
   /** Represents any value > max. We don't care about the particular value. */
   const big = max + 1
 
@@ -105,9 +107,9 @@ function levenshteinWithMax(
         c1 === s2.charCodeAt(j - 1)
           ? previous[j - 1]
           : Math.min(
-              /*delete*/ previous[j] + 1,
-              /*insert*/ current[j - 1] + 1,
-              /*substitute*/ previous[j - 1] + 2,
+              /* delete */ previous[j] + 1,
+              /* insert */ current[j - 1] + 1,
+              /* substitute */ previous[j - 1] + 2,
             )
       current[j] = dist
       colMin = Math.min(colMin, dist)

@@ -250,7 +250,7 @@ describe('Dom', () => {
     describe('#matrixTo[Transformation]', () => {
       function roundObject(obj: any) {
         for (const i in obj) {
-          if (obj.hasOwnProperty(i)) {
+          if (Object.prototype.hasOwnProperty.call(obj, i)) {
             obj[i] = Math.round(obj[i])
           }
         }

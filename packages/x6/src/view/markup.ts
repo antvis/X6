@@ -448,7 +448,7 @@ export namespace Markup {
 
     const markup = nodes
       .map((node) => parse(node, node))
-      .filter((markup) => markup != null) as JSONMarkup[]
+      .filter((mk) => mk != null) as JSONMarkup[]
 
     return {
       markup,
@@ -538,9 +538,7 @@ export namespace Markup {
 }
 
 export namespace Markup {
-  export function getForeignObjectMarkup(
-    bare: boolean = false,
-  ): Markup.JSONMarkup {
+  export function getForeignObjectMarkup(bare = false): Markup.JSONMarkup {
     return {
       tagName: 'foreignObject',
       selector: 'fo',

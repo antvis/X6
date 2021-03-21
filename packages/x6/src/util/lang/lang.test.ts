@@ -1,4 +1,4 @@
-import { Lang } from './'
+import { Lang } from '.'
 
 describe('Lang', () => {
   describe('#isNumeric', () => {

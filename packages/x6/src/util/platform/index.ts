@@ -2,7 +2,7 @@ const ua = navigator.userAgent
 
 export namespace Platform {
   export const IS_MAC = navigator.appVersion.indexOf('Mac') > 0
-  export const IS_IOS = ua.match(/(iPad|iPhone|iPod)/g) ? true : false
+  export const IS_IOS = !!ua.match(/(iPad|iPhone|iPod)/g)
   export const IS_WINDOWS = navigator.appVersion.indexOf('Win') > 0
 
   export const IS_IE = ua.indexOf('MSIE') >= 0
@@ -45,7 +45,7 @@ export namespace Platform {
    */
   export const SUPPORT_POINTER = (window as any).PointerEvent != null && !IS_MAC
 
-  export let SUPPORT_PASSIVE = false
+  export let SUPPORT_PASSIVE = false // eslint-disable-line import/no-mutable-exports
 
   try {
     const options = Object.defineProperty({}, 'passive', {
@@ -57,7 +57,9 @@ export namespace Platform {
     if (div.addEventListener) {
       div.addEventListener('click', () => {}, options)
     }
-  } catch (err) {}
+  } catch (err) {
+    // pass
+  }
 
   /**
    * A flag indicating whether foreignObject support is not available. This

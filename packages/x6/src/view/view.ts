@@ -21,11 +21,11 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     View.views[this.cid] = this
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmUpdate(flag: number, options: any): number {
     return 0
   }
 
-  // tslint:disable-next-line
   $(elem: any) {
     return View.$(elem)
   }
@@ -56,7 +56,6 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     elem.classList.value = Array.isArray(className)
       ? className.join(' ')
       : className
-    return
   }
 
   addClass(className: string | string[], elem: Element = this.container) {
@@ -222,7 +221,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
 
   protected delegateEvent(
     eventName: string,
-    selector: string | object,
+    selector: string | Record<string, unknown>,
     listener: any,
   ) {
     this.$(this.container).on(
@@ -377,7 +376,6 @@ export namespace View {
 }
 
 export namespace View {
-  // tslint:disable-next-line
   export function $(elem: any) {
     return JQuery(elem)
   }
@@ -423,6 +421,7 @@ export namespace View {
       originalEvent.changedTouches[0]
 
     if (touchEvt) {
+      // eslint-disable-next-line no-restricted-syntax
       for (const key in evt) {
         // copy all the properties from the input event that are not
         // defined on the touch event (functions included).

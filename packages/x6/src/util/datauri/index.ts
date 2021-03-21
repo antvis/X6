@@ -143,7 +143,7 @@ export namespace DataUri {
 
   function getNumber(str: string) {
     const ret = parseFloat(str)
-    return isNaN(ret) ? null : ret
+    return Number.isNaN(ret) ? null : ret
   }
 
   export function svgToDataUrl(

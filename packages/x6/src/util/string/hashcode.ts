@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 /**
  * Return a simple hash code from a string.
  * Source from: https://github.com/sindresorhus/fnv1a/blob/master/index.js#L25

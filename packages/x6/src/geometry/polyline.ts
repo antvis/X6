@@ -263,7 +263,7 @@ export class Polyline extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     let tmp = 0
@@ -293,11 +293,11 @@ export class Polyline extends Geometry {
     }
 
     if (ratio < 0) {
-      ratio = 0 // tslint:disable-line
+      ratio = 0 // eslint-disable-line
     }
 
     if (ratio > 1) {
-      ratio = 1 // tslint:disable-line
+      ratio = 1 // eslint-disable-line
     }
 
     const total = this.length()
@@ -316,7 +316,7 @@ export class Polyline extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     let lastValidLine

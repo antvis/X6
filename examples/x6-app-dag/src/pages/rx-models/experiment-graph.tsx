@@ -1,4 +1,4 @@
-/* tslint:disable no-this-assignment */
+/* eslint-disable no-this-assignment */
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { ANT_PREFIX } from '@/constants/global'
@@ -250,7 +250,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
   // 获取实验和图及执行状态信息
   async initialize() {
-    // tslint:disable-next-line: no-this-assignment
+    // eslint-disable-next-line: no-this-assignment
     const { experimentId } = this
     this.loading$.next(true)
     try {
@@ -638,7 +638,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   // 运行画布或节点
   runGraph = async () => {
     try {
-      // tslint:disable-next-line: no-this-assignment
+      // eslint-disable-next-line: no-this-assignment
       const { experimentId, nodeMetas = [] } = this
       await runGraph(nodeMetas)
       this.running$.next(true)
@@ -682,7 +682,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     clientX: number
     clientY: number
   }) => {
-    // tslint:disable-next-line: no-this-assignment
+    // eslint-disable-next-line: no-this-assignment
     const { graph } = this
     if (graph) {
       const { nodeMeta, clientX, clientY } = param

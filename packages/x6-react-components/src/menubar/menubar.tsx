@@ -7,7 +7,10 @@ import { MenubarContext } from './context'
 export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
   private removeDocClickEvent: (() => void) | null
 
-  state = { active: false }
+  constructor(props: Menubar.Props) {
+    super(props)
+    this.state = { active: false }
+  }
 
   componentWillUnmount() {
     this.unbindDocEvent()
@@ -42,7 +45,7 @@ export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
     const contextValue: MenubarContext.Contexts = {
       prefixCls: baseCls,
       activeMenubar: this.activeMenubar,
-      menubarActived: this.state.active,
+      menubarActived: this.state.active === true,
     }
 
     return (

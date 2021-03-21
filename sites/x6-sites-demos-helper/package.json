@@ -13,25 +13,70 @@
   },
   "scripts": {
     "clean": "rimraf es lib",
+    "lint": "run-s lint:ts lint:style",
+    "lint:ts": "eslint 'src/**/*.{js,ts}?(x)' --fix",
+    "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:less": "node ./scripts/style",
     "build:watch": "yarn build:esm --w",
+    "build:watch:esm": "yarn build:esm --w",
+    "build:watch:cjs": "yarn build:cjs --w",
     "build": "run-p build:cjs build:esm build:less",
-    "prebuild": "yarn clean"
+    "prebuild": "run-s lint clean",
+    "prepare": "yarn build"
   },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix"
+    ],
+    "src/**/*.less": [
+      "stylelint --syntax less --fix"
+    ]
+  },
+  "inherits": [
+    "@antv/x6-package-json/cli.json",
+    "@antv/x6-package-json/less.json",
+    "@antv/x6-package-json/eslint.json"
+  ],
   "devDependencies": {
+    "@types/node": "^14.14.14",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unicorn": "^28.0.2",
     "fs-extra": "^9.0.1",
     "less": "^4.0.0",
+    "lint-staged": "^10.5.3",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^3.0.0",
-    "typescript": "^4.1.2"
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0",
+    "rimraf": "^3.0.2",
+    "stylelint": "^13.8.0",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.3.0",
+    "stylelint-order": "^4.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@stackblitz/sdk": "^1.4.0",
     "antd": "^4.4.2",
     "chalk": "^4.1.0",
+    "codesandbox": "^2.2.1",
     "folder-hash": "^3.3.2",
     "ora": "^5.0.0",
     "react-helmet": "^6.1.0"

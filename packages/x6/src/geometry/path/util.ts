@@ -40,7 +40,7 @@ function draw(
 
   // Adds virtual waypoint in the center between start and end point
   if (close && rounded) {
-    points = points.slice() // tslint:disable-line
+    points = points.slice() // eslint-disable-line
     const p0 = points[0]
     const wp = new Point(end.x + (p0.x - end.x) / 2, end.y + (p0.y - end.y) / 2)
     points.splice(0, 0, wp)
@@ -153,9 +153,9 @@ export function arcToCurves(
   y0: number,
   r1: number,
   r2: number,
-  angle: number = 0,
-  largeArcFlag: number = 0,
-  sweepFlag: number = 0,
+  angle = 0,
+  largeArcFlag = 0,
+  sweepFlag = 0,
   x: number,
   y: number,
 ) {
@@ -163,10 +163,10 @@ export function arcToCurves(
     return []
   }
 
-  x -= x0 // tslint:disable-line
-  y -= y0 // tslint:disable-line
-  r1 = Math.abs(r1) // tslint:disable-line
-  r2 = Math.abs(r2) // tslint:disable-line
+  x -= x0 // eslint-disable-line
+  y -= y0 // eslint-disable-line
+  r1 = Math.abs(r1) // eslint-disable-line
+  r2 = Math.abs(r2) // eslint-disable-line
 
   const ctx = -x / 2
   const cty = -y / 2
@@ -183,8 +183,8 @@ export function arcToCurves(
   let sds
 
   if (lamda > 1) {
-    r1 = Math.sqrt(lamda) * r1 // tslint:disable-line
-    r2 = Math.sqrt(lamda) * r2 // tslint:disable-line
+    r1 = Math.sqrt(lamda) * r1 // eslint-disable-line
+    r2 = Math.sqrt(lamda) * r2 // eslint-disable-line
     sds = 0
   } else {
     let seif = 1
@@ -267,7 +267,7 @@ export function drawArc(
   startY: number,
   rx: number,
   ry: number,
-  xAxisRotation: number = 0,
+  xAxisRotation = 0,
   largeArcFlag: 0 | 1 = 0,
   sweepFlag: 0 | 1 = 0,
   stopX: number,

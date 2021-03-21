@@ -9,6 +9,7 @@ export const registry = Registry.create<Definition>({
 })
 
 declare module '@antv/x6/lib/graph/graph' {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   namespace Graph {
     let registerReactComponent: typeof registry.register
     let unregisterReactComponent: typeof registry.unregister

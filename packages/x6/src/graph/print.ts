@@ -186,7 +186,9 @@ export class PrintManager extends Base {
     if ($style.length) {
       $style.html(css)
     } else {
-      JQuery('head').append(`'<style type="text/css" id="${id}">${css}</style>'`)
+      JQuery('head').append(
+        `'<style type="text/css" id="${id}">${css}</style>'`,
+      )
     }
   }
 
@@ -254,23 +256,17 @@ export class PrintManager extends Base {
     const marginUnit = options.marginUnit || ''
     const sheetUnit = options.sheetUnit || ''
 
-    const cssWidth = // tslint:disable-next-line
-      'calc(' +
-      sheet.width +
-      sheetUnit +
-      ' - ' +
-      (margin.left + margin.right) +
-      marginUnit +
-      ')'
+    const cssWidth =
+      // eslint-disable-next-line
+      `calc(${sheet.width}${sheetUnit} - ${
+        margin.left + margin.right
+      }${marginUnit})`
 
-    const cssHeight = // tslint:disable-next-line
-      'calc(' +
-      sheet.height +
-      sheetUnit +
-      ' - ' +
-      (margin.top + margin.bottom) +
-      marginUnit +
-      ')'
+    const cssHeight =
+      // eslint-disable-next-line
+      `calc(${sheet.height}${sheetUnit} - ${
+        margin.top + margin.bottom
+      }${marginUnit})`
 
     const ret = Unit.measure(cssWidth, cssHeight)
     return {

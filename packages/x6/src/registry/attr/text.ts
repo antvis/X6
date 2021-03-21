@@ -24,20 +24,19 @@ export const text: Attr.Definition = {
       }
     }
     const options: Dom.TextOptions = {
-      x: attrs['x'] as string | number,
-      eol: attrs['eol'] as string,
-      annotations: json(attrs['annotations']) as
+      x: attrs.x as string | number,
+      eol: attrs.eol as string,
+      annotations: json(attrs.annotations) as
         | Text.Annotation
         | Text.Annotation[],
-      textPath: json(attrs['text-path'] || attrs['textPath']),
+      textPath: json(attrs['text-path'] || attrs.textPath),
       textVerticalAnchor: (attrs['text-vertical-anchor'] ||
-        attrs['textVerticalAnchor']) as 'middle' | 'bottom' | 'top' | number,
-      displayEmpty:
-        (attrs['display-empty'] || attrs['displayEmpty']) === 'true',
-      lineHeight: (attrs['line-height'] || attrs['lineHeight']) as string,
+        attrs.textVerticalAnchor) as 'middle' | 'bottom' | 'top' | number,
+      displayEmpty: (attrs['display-empty'] || attrs.displayEmpty) === 'true',
+      lineHeight: (attrs['line-height'] || attrs.lineHeight) as string,
     }
 
-    const fontSize = (attrs['font-size'] || attrs['fontSize']) as string
+    const fontSize = (attrs['font-size'] || attrs.fontSize) as string
     const textHash = JSON.stringify([text, options])
 
     // Updates the text only if there was a change in the string

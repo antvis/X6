@@ -329,11 +329,9 @@ export class Path extends Geometry {
         this.segments.push(currentSegment)
         previousSegment = currentSegment
       }
-    } else {
-      if (seg != null && seg.isSegment) {
-        currentSegment = this.prepareSegment(seg, previousSegment, nextSegment)
-        this.segments.push(currentSegment)
-      }
+    } else if (seg != null && seg.isSegment) {
+      currentSegment = this.prepareSegment(seg, previousSegment, nextSegment)
+      this.segments.push(currentSegment)
     }
     return this
   }
@@ -341,7 +339,7 @@ export class Path extends Geometry {
   insertSegment(index: number, seg: Segment | Segment[]) {
     const count = this.segments.length
     if (index < 0) {
-      index = count + index + 1 // tslint:disable-line
+      index = count + index + 1 // eslint-disable-line
     }
 
     if (index > count || index < 0) {
@@ -503,7 +501,7 @@ export class Path extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     const precision = this.getPrecision(options)
@@ -750,7 +748,7 @@ export class Path extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     const precision = this.getPrecision(options)
@@ -829,7 +827,7 @@ export class Path extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     const precision = this.getPrecision(options)
@@ -1055,7 +1053,7 @@ export class Path extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     const precision = this.getPrecision(options)
@@ -1149,6 +1147,7 @@ export class Path extends Geometry {
       if (segment.isVisible) {
         const divisions = segmentSubdivisions[i]
         if (divisions.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
           divisions.forEach((c) => partialPoints.push(c.start))
         } else {
           partialPoints.push(segment.start)

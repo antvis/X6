@@ -5,6 +5,7 @@ import { CellView } from './cell'
 
 export class Cache {
   protected elemCache: Dictionary<Element, Cache.Item>
+
   public pathCache: {
     data?: string
     length?: number

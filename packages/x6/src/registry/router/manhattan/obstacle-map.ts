@@ -9,10 +9,12 @@ import { ResolvedOptions } from './options'
  */
 export class ObstacleMap {
   options: ResolvedOptions
+
   /**
    * How to divide the paper when creating the elements map
    */
   mapGridSize: number
+
   map: KeyValue<Rectangle[]>
 
   constructor(options: ResolvedOptions) {

@@ -3,20 +3,35 @@ import { requestAnimationFrame } from './animationFrame'
 
 export class TouchHandler {
   private deltaX: number
+
   private deltaY: number
+
   private lastTouchX: number
+
   private lastTouchY: number
+
   private velocityX: number
+
   private velocityY: number
+
   private accumulatedDeltaX: number
+
   private accumulatedDeltaY: number
+
   private lastFrameTimestamp: number
+
   private autoScrollTimestamp: number
+
   private trackerId: number | null
+
   private dragAnimationId: number | null
+
   private handleScrollX: (deltaX: number, deltaY: number) => boolean
+
   private handleScrollY: (deltaX: number, deltaY: number) => boolean
+
   private callback: (deltaX: number, deltaY: number) => void
+
   private stopPropagation: () => boolean
 
   constructor(options: TouchHandler.Options) {

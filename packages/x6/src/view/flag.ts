@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import { KeyValue } from '../types'
 import { CellView } from './cell'
 

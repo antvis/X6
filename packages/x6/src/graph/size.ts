@@ -8,7 +8,7 @@ export class SizeManager extends Base {
 
   protected getContainer() {
     return this.hasScroller()
-      ? this.graph.scroller.widget?.container!
+      ? this.graph.scroller.widget!.container!
       : this.graph.container
   }
 

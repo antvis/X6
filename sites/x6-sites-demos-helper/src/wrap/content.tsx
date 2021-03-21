@@ -72,7 +72,9 @@ export namespace Content {
     if (raw) {
       try {
         data = JSON.parse(raw)
-      } catch (error) {}
+      } catch (error) {
+        // pass
+      }
     } else {
       data = {}
     }

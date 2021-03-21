@@ -53,13 +53,15 @@ export class Resizer extends React.PureComponent<Resizer.Props> {
     const { className, style } = this.props
 
     return (
+      // eslint-disable-next-line
       <div
+        role="button"
         style={style}
         className={className}
         onClick={this.onClick}
         ref={this.props.refIt}
-        onDoubleClick={this.onDoubleClick}
         onMouseDown={this.onMouseDown}
+        onDoubleClick={this.onDoubleClick}
       />
     )
   }

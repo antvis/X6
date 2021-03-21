@@ -113,14 +113,14 @@ export class ToolsView extends View {
           if (this.cell.isNode()) {
             const ctor = NodeTool.registry.get(name)
             if (ctor) {
-              tool = new ctor(args)
+              tool = new ctor(args) // eslint-disable-line
             } else {
               return NodeTool.registry.onNotFound(name)
             }
           } else if (this.cell.isEdge()) {
             const ctor = EdgeTool.registry.get(name)
             if (ctor) {
-              tool = new ctor(args)
+              tool = new ctor(args) // eslint-disable-line
             } else {
               return EdgeTool.registry.onNotFound(name)
             }
@@ -320,10 +320,15 @@ export namespace ToolsView {
     // #endregion
 
     public readonly options: Options
+
     public container: HTMLElement | SVGElement
+
     public parent: ToolsView
+
     protected cellView: TargetView
+
     protected visible: boolean
+
     protected childNodes: KeyValue<Element>
 
     public get graph() {
@@ -440,7 +445,7 @@ export namespace ToolsView {
 
     focus() {
       const opacity = this.options.focusOpacity
-      if (opacity != null && isFinite(opacity)) {
+      if (opacity != null && Number.isFinite(opacity)) {
         this.container.style.opacity = `${opacity}`
       }
       this.parent.focus(this)

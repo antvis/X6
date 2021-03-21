@@ -1,7 +1,7 @@
 import { Point } from './point'
 import { Rectangle } from './rectangle'
 
-export function round(num: number, precision: number = 0) {
+export function round(num: number, precision = 0) {
   return Number.isInteger(num) ? num : +num.toFixed(precision)
 }
 

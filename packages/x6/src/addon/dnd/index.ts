@@ -260,8 +260,8 @@ export class Dnd extends View {
       let y = draggingBBox.y
 
       if (snapOffset) {
-        x = x + snapOffset.x
-        y = y + snapOffset.y
+        x += snapOffset.x
+        y += snapOffset.y
       }
 
       draggingNode.position(x, y, { silent: true })
@@ -289,7 +289,7 @@ export class Dnd extends View {
       if (FunctionExt.isAsync(ret)) {
         // stop dragging
         this.undelegateDocumentEvents()
-        ret.then(callback)
+        ret.then(callback) // eslint-disable-line
       } else {
         callback(ret)
       }

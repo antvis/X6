@@ -36,7 +36,9 @@ describe('Dom', () => {
               .split(' ')
               .map((command) => {
                 const number = parseInt(command, 10)
-                if (isNaN(number)) return command
+                if (Number.isNaN(number)) {
+                  return command
+                }
                 return number.toFixed(0)
               })
               .join(' ')

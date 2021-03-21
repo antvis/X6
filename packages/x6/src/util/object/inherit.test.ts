@@ -4,6 +4,7 @@ describe('object', () => {
   class Parent {
     public name: string
     public age: number
+
     constructor(name: string, age: number) {
       this.name = name
       this.age = age
@@ -22,6 +23,7 @@ describe('object', () => {
     public name: string
     public age: number
     public gender: string
+
     constructor(name: string, age: number, gender: string) {
       this.name = name
       this.age = age

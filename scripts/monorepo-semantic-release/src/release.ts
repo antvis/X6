@@ -32,7 +32,7 @@ export namespace Release {
     check(stdout, 'stdout: stream')
     check(stderr, 'stderr: stream')
 
-    cwd = Util.cleanPath(cwd) // tslint:disable-line
+    cwd = Util.cleanPath(cwd) // eslint-disable-line
 
     const logger = Logger.get({ stdout, stderr })
     logger.complete(`Started release! Loading ${paths.length} packages...`)
@@ -80,7 +80,7 @@ export namespace Release {
     path: string,
     { options: globalOptions, env, cwd, stdout, stderr }: Context,
   ): Promise<Package> {
-    path = Util.cleanPath(path, cwd) // tslint:disable-line
+    path = Util.cleanPath(path, cwd) // eslint-disable-line
     const dir = dirname(path)
     const manifest = Manifest.get(path)
     const name = manifest.name

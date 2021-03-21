@@ -20,7 +20,7 @@ export class Point extends Geometry implements Point.PointLike {
   /**
    * Rounds the point to the given precision.
    */
-  round(precision: number = 0) {
+  round(precision = 0) {
     this.x = util.round(this.x, precision)
     this.y = util.round(this.y, precision)
     return this
@@ -333,7 +333,7 @@ export class Point extends Geometry implements Point.PointLike {
    * not specified, it is considered to be `1`; in that case, a unit vector
    * is computed.
    */
-  normalize(length: number = 1) {
+  normalize(length = 1) {
     const scale = length / this.magnitude()
     return this.scale(scale, scale)
   }

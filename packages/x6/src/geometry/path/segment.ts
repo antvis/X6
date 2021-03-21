@@ -7,7 +7,6 @@ export abstract class Segment extends Geometry {
   isVisible = true
   isSegment = true
   isSubpathStart = false
-
   nextSegment: Segment | null
   previousSegment: Segment | null
   subpathStartSegment: Segment | null
@@ -30,12 +29,17 @@ export abstract class Segment extends Geometry {
   }
 
   abstract get type(): string
+
   abstract bbox(): Rectangle | null
+
   abstract closestPoint(p: Point.PointLike | Point.PointData): Point
+
   abstract closestPointLength(p: Point.PointLike | Point.PointData): number
+
   abstract closestPointNormalizedLength(
     p: Point.PointLike | Point.PointData,
   ): number
+
   closestPointT(
     p: Point.PointLike | Point.PointData,
     options?: Segment.Options,
@@ -72,10 +76,12 @@ export abstract class Segment extends Geometry {
     ratio: number,
     options?: Segment.Options,
   ): [Segment, Segment]
+
   abstract divideAtLength(
     length: number,
     options?: Segment.Options,
   ): [Segment, Segment]
+
   divideAtT(t: number) {
     if (this.divideAt) {
       return this.divideAt(t)
@@ -83,11 +89,13 @@ export abstract class Segment extends Geometry {
 
     throw new Error('Neither `divideAtT` nor `divideAt` method is implemented.')
   }
+
   abstract getSubdivisions(options?: Segment.Options): Segment[]
 
   abstract pointAt(ratio: number): Point
 
   abstract pointAtLength(length: number, options?: Segment.Options): Point
+
   pointAtT(t: number): Point {
     if (this.pointAt) {
       return this.pointAt(t)

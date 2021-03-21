@@ -182,8 +182,8 @@ export class Transform extends Widget<Transform.Options> {
     const angle = Angle.normalize(this.node.getAngle())
     let index = Private.POSITIONS.indexOf(dir)
 
-    index = index + Math.floor(angle * (Private.POSITIONS.length / 360))
-    index = index % Private.POSITIONS.length
+    index += Math.floor(angle * (Private.POSITIONS.length / 360))
+    index %= Private.POSITIONS.length
 
     return Private.POSITIONS[index]
   }

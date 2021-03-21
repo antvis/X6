@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 export function uuid(): string {
   // credit: http://stackoverflow.com/posts/2117523/revisions
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {

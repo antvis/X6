@@ -1,4 +1,5 @@
 import { NodeView } from '@antv/x6'
+import Vue from 'vue'
 import { VueShape } from './node'
 import { VueComponent } from './registry'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'

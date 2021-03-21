@@ -63,9 +63,9 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
       : options.defaultAnchorAttrs
 
     if (anchorAttrs) {
-      for (const attrName in anchorAttrs) {
+      Object.keys(anchorAttrs).forEach((attrName) => {
         anchorNode.setAttribute(attrName, anchorAttrs[attrName] as string)
-      }
+      })
     }
   }
 
@@ -87,7 +87,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
       const terminalCell = terminalView.cell as Node
       const magnet = edgeView.getTerminalMagnet(type)
       let padding = this.options.areaPadding || 0
-      if (!isFinite(padding)) {
+      if (!Number.isFinite(padding)) {
         padding = 0
       }
 
@@ -233,6 +233,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     this.update()
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onMouseUp(evt: JQuery.MouseUpEvent) {
     this.graph.view.delegateEvents()
     this.undelegateDocumentEvents()

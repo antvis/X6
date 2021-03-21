@@ -4,11 +4,17 @@ import { requestAnimationFrame } from './animationFrame'
 
 export class WheelHandler {
   private deltaX: number
+
   private deltaY: number
+
   private callback: (deltaX: number, deltaY: number) => void
+
   private shouldHandleScrollX: (deltaX: number, deltaY: number) => boolean
+
   private shouldHandleScrollY: (deltaX: number, deltaY: number) => boolean
+
   private stopPropagation: () => boolean
+
   private animationFrameID: number | null
 
   constructor(options: WheelHandler.Options) {

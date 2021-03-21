@@ -17,7 +17,6 @@ export class Snapline extends View implements IDisablable {
   protected filterFunction: Snapline.FilterFunction | null
   protected offset: Point.PointLike
   protected timer: number | null
-
   protected $container: JQuery<HTMLElement>
   protected $horizontal: JQuery<HTMLElement>
   protected $vertical: JQuery<HTMLElement>
@@ -130,15 +129,13 @@ export class Snapline extends View implements IDisablable {
           this.filterCells[item.id] = true
         }
       })
-    } else {
-      if (typeof filter === 'function') {
-        this.filterFunction = filter
-      }
+    } else if (typeof filter === 'function') {
+      this.filterFunction = filter
     }
   }
 
   protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
-    if ('resize' === name) {
+    if (name === 'resize') {
       this.snapOnResizing(data.cell, data as Node.ResizeOptions)
     }
   }
@@ -272,7 +269,7 @@ export class Snapline extends View implements IDisablable {
         let dWidth = 0
         let dHeight = 0
         if (angle % 90 === 0) {
-          if (90 === angle || 270 === angle) {
+          if (angle === 90 || angle === 270) {
             dWidth = dy
             dHeight = dx
           } else {
@@ -281,11 +278,11 @@ export class Snapline extends View implements IDisablable {
           }
         } else {
           const quadrant =
-            0 <= angle && angle < 90
+            angle >= 0 && angle < 90
               ? 1
-              : 90 <= angle && angle < 180
+              : angle >= 90 && angle < 180
               ? 4
-              : 180 <= angle && angle < 270
+              : angle >= 180 && angle < 270
               ? 3
               : 2
 
@@ -307,7 +304,7 @@ export class Snapline extends View implements IDisablable {
             dHeight = quadrant === 3 ? dy / Math.cos(rad) : dy / Math.sin(rad)
           }
 
-          const quadrant13 = 1 === quadrant || 3 === quadrant
+          const quadrant13 = quadrant === 1 || quadrant === 3
           switch (relativeDirection) {
             case 'top':
             case 'bottom':
@@ -320,6 +317,9 @@ export class Snapline extends View implements IDisablable {
               dWidth = dx
                 ? dx / (quadrant13 ? Math.cos(rad) : Math.sin(rad))
                 : dy / (quadrant13 ? Math.sin(rad) : Math.cos(rad))
+              break
+            default:
+              break
           }
         }
 
@@ -331,6 +331,9 @@ export class Snapline extends View implements IDisablable {
           case 'left':
           case 'right':
             dHeight = 0
+            break
+          default:
+            break
         }
 
         const gridSize = this.graph.getGridSize()

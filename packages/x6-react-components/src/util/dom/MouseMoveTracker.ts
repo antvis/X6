@@ -3,20 +3,31 @@ import { requestAnimationFrame, cancelAnimationFrame } from './animationFrame'
 
 export class MouseMoveTracker {
   private elem: HTMLElement
+
   private clientX: number
+
   private clientY: number
+
   private deltaX: number
+
   private deltaY: number
+
   private dragging: boolean
+
   private captured: boolean
+
   private animationFrameID: number | null
+
   private removeMouseMoveEvent: (() => void) | null
+
   private removeMouseUpEvent: (() => void) | null
+
   private onMouseMoveCallback: (
     deltaX: number,
     deltaY: number,
     pos?: MouseMoveTracker.ClientPosition,
   ) => void
+
   private onMouseMoveEndCallback: (cancel: boolean) => void
 
   constructor(options: MouseMoveTracker.Options) {

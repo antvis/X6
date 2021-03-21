@@ -10,8 +10,8 @@ export function offset(
     if (isFinite(offset.y)) {
       const line = new Line(p2, p1)
       const { start, end } = line.parallel(offset.y)
-      p2 = start // tslint:disable-line
-      p1 = end // tslint:disable-line
+      p2 = start // eslint-disable-line
+      p1 = end // eslint-disable-line
     }
     tx = offset.x
   } else {

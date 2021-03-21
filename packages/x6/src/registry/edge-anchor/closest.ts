@@ -8,7 +8,7 @@ export const getClosestPoint: EdgeAnchor.ResolvedDefinition<ClosestEndpointOptio
   view,
   magnet,
   refPoint,
-  options,
+  options, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
   const closestPoint = view.getClosestPoint(refPoint)
   return closestPoint != null ? closestPoint : new Point()

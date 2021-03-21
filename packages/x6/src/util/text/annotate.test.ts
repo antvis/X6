@@ -58,26 +58,34 @@ describe('Text', () => {
 
   describe('#shiftAnnotations', () => {
     it('should add offset when position less than index', () => {
-      expect(shiftAnnotations([
-        {
-          start: 1,
-          end: 8,
-          attrs: {}
-        }, {
-          start: 8,
-          end: 8,
-          attrs: {}
-        }
-      ], 5, 2)).toEqual([
+      expect(
+        shiftAnnotations(
+          [
+            {
+              start: 1,
+              end: 8,
+              attrs: {},
+            },
+            {
+              start: 8,
+              end: 8,
+              attrs: {},
+            },
+          ],
+          5,
+          2,
+        ),
+      ).toEqual([
         {
           start: 1,
           end: 10,
-          attrs: {}
-        }, {
+          attrs: {},
+        },
+        {
           start: 10,
           end: 10,
-          attrs: {}
-        }
+          attrs: {},
+        },
       ])
     })
   })

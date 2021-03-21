@@ -9,6 +9,7 @@ import { EdgePreset } from './edge-preset'
 
 export class Halo extends Widget<Halo.Options> implements Handle {
   protected $container: JQuery<HTMLElement>
+
   protected $content: JQuery<HTMLElement>
 
   protected get type() {
@@ -148,12 +149,10 @@ export class Halo extends Widget<Halo.Options> implements Handle {
       if (ret) {
         this.$content.html(ret)
       }
+    } else if (content) {
+      this.$content.html(content)
     } else {
-      if (content) {
-        this.$content.html(content)
-      } else {
-        this.$content.remove()
-      }
+      this.$content.remove()
     }
   }
 

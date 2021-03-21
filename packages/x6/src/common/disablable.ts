@@ -6,9 +6,10 @@ export interface IDisablable {
   disable(): void
 }
 
-export abstract class Disablable<EventArgs = any> extends Basecoat<EventArgs>
+export abstract class Disablable<EventArgs = any>
+  extends Basecoat<EventArgs>
   implements IDisablable {
-  // tslint:disable-next-line
+  // eslint-disable-next-line
   private _disabled?: boolean
 
   public get disabled(): boolean {

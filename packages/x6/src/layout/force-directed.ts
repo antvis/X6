@@ -9,13 +9,19 @@ import { Model } from '../model/model'
 
 export class ForceDirected extends Events {
   t: number
+
   energy: number
+
   progress: number
 
   public readonly options: ForceDirected.Options
+
   protected edges: Edge[]
+
   protected nodes: Node[]
+
   protected nodeData: KeyValue<ForceDirected.NodeData>
+
   protected edgeData: KeyValue<ForceDirected.EdgeData>
 
   get model() {
@@ -94,8 +100,8 @@ export class ForceDirected extends Events {
 
     for (let i = 0; i < nodeCount - 1; i += 1) {
       const v = this.nodeData[this.nodes[i].id]
-      xBefore = xBefore + v.x
-      yBefore = yBefore + v.y
+      xBefore += v.x
+      yBefore += v.y
 
       for (let j = i + 1; j < nodeCount; j += 1) {
         const u = this.nodeData[this.nodes[j].id]

@@ -3,7 +3,7 @@ import { Markup } from '../../view/markup'
 import { Node } from '../../model/node'
 import { Base } from '../base'
 
-export function getMarkup(tagName: string, selector: string = 'body'): Markup {
+export function getMarkup(tagName: string, selector = 'body'): Markup {
   return [
     {
       tagName,

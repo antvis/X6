@@ -14,7 +14,7 @@ export const er: Router.Definition<ErRouterOptions> = function (
   const offsetRaw = options.offset || 32
   const min = options.min == null ? 16 : options.min
 
-  let offset: number = 0
+  let offset = 0
   let direction = options.direction
 
   const sourceBBox = edgeView.sourceBBox
@@ -118,11 +118,9 @@ export const er: Router.Definition<ErRouterOptions> = function (
         source.x = Math.max(targetX, sourcePoint.x + sourceDelta)
         target.x = Math.min(sourceX, targetPoint.x - targetDelta)
       }
-    } else {
-      if (targetX >= sourceX) {
-        source.x = Math.min(targetX, sourcePoint.x - sourceDelta)
-        target.x = Math.max(sourceX, targetPoint.x + targetDelta)
-      }
+    } else if (targetX >= sourceX) {
+      source.x = Math.min(targetX, sourcePoint.x - sourceDelta)
+      target.x = Math.max(sourceX, targetPoint.x + targetDelta)
     }
   } else {
     const sourceY = source.y
@@ -134,11 +132,9 @@ export const er: Router.Definition<ErRouterOptions> = function (
         source.y = Math.max(targetY, sourcePoint.y + sourceDelta)
         target.y = Math.min(sourceY, targetPoint.y - targetDelta)
       }
-    } else {
-      if (targetY >= sourceY) {
-        source.y = Math.min(targetY, sourcePoint.y - sourceDelta)
-        target.y = Math.max(sourceY, targetPoint.y + targetDelta)
-      }
+    } else if (targetY >= sourceY) {
+      source.y = Math.min(targetY, sourcePoint.y - sourceDelta)
+      target.y = Math.max(sourceY, targetPoint.y + targetDelta)
     }
   }
 

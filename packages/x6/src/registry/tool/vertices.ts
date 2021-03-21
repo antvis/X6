@@ -243,7 +243,11 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   protected onPathMouseDown(evt: JQuery.MouseDownEvent) {
     const edgeView = this.cellView
 
-    if (this.guard(evt) || !this.options.addable || !edgeView.can('vertexAddable')) {
+    if (
+      this.guard(evt) ||
+      !this.options.addable ||
+      !edgeView.can('vertexAddable')
+    ) {
       return
     }
 

@@ -15,7 +15,8 @@ function rollup(points: Point.PointLike[], merge?: boolean | number) {
       const center1 = Point.create(points[1]).move(points[2], amount)
       const center2 = Point.create(points[1]).move(points[0], amount)
       return [center1.toJSON(), ...points, center2.toJSON()]
-    }  {
+    }
+    {
       const center = points[1]
       return [{ ...center }, ...points, { ...center }]
     }
@@ -94,7 +95,8 @@ export const loop: Router.Definition<LoopRouterOptions> = function (
       }
     }
     return rollup(ret, options.merge)
-  }  {
+  }
+  {
     const line = new Line(sourceAnchor, targetAnchor)
     let parallel = line.parallel(-width)
     let center = parallel.getCenter()
