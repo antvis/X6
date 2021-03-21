@@ -24,7 +24,7 @@
     "reboot": "run-s clean:lerna clean:modules bootstrap",
     "preinstall": "node ./scripts/pkg-inherit.js update",
     "prepare": "is-ci || husky install configs/husky-config",
-    "precommit": "lerna run --concurrency 1 --stream precommit"
+    "precommit": "yarn lint-staged && lerna run --concurrency 1 --stream precommit"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
