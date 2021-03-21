@@ -51,6 +51,7 @@ module.exports = {
     },
   },
   rules: {
+    'no-bitwise': 0,
     'no-continue': 0,
     'no-lonely-if': 0,
     'no-multi-assign': 0,
