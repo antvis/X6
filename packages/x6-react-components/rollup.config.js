@@ -1,13 +1,8 @@
-import { terser } from 'rollup-plugin-terser'
-import replace from '@rollup/plugin-replace'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import filesize from 'rollup-plugin-filesize'
-import typescript from '@rollup/plugin-typescript'
 import postcss from 'rollup-plugin-postcss'
+import external from 'rollup-plugin-auto-external'
+import config from '../../configs/rollup-config'
 
-export default {
-  input: './src/index.ts',
+export default config({
   output: [
     {
       name: 'X6ReactComponents',
@@ -15,24 +10,15 @@ export default {
       file: 'dist/x6-react-components.js',
       sourcemap: true,
       globals: {
+        antd: 'antd',
         react: 'React',
         'react-dom': 'ReactDom',
-        antd: 'antd',
       },
     },
   ],
   external: ['antd', 'react', 'react-dom'],
   plugins: [
-    typescript({ declaration: false }),
-    resolve(),
-    commonjs(),
-    replace({
-      preventAssignment: true,
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    }),
-    terser(),
-    filesize(),
-    // autoExternal(),
+    external(),
     postcss({
       minimize: true,
       sourceMap: false,
@@ -40,4 +26,4 @@ export default {
       use: [['less', { javascriptEnabled: true }]],
     }),
   ],
-}
+})
