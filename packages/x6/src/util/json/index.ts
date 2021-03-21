@@ -239,7 +239,7 @@ export namespace JSONExt {
    * Create a deep copy of a JSON array.
    */
   function deepArrayCopy(value: any): any {
-    const result = new Array<any>(value.length) // tslint:disable-line
+    const result = new Array<any>(value.length) // eslint-disable-line
     for (let i = 0, n = value.length; i < n; i += 1) {
       result[i] = deepCopy(value[i])
     }
@@ -251,9 +251,9 @@ export namespace JSONExt {
    */
   function deepObjectCopy(value: any): any {
     const result: any = {}
-    for (const key in value) {
+    Object.keys(value).forEach((key) => {
       result[key] = deepCopy(value[key])
-    }
+    })
     return result
   }
 }

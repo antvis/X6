@@ -33,7 +33,7 @@ export class Registry<
   register(
     name: string | { [name: string]: Entity | OptionalType },
     options: any,
-    force: boolean = false,
+    force = false,
   ) {
     if (typeof name === 'object') {
       Object.keys(name).forEach((key) => {
@@ -77,6 +77,7 @@ export class Registry<
   }
 
   onDuplicated(name: string) {
+    // eslint-disable-next-line no-useless-catch
     try {
       // race
       if (this.options.onConflict) {
@@ -103,9 +104,10 @@ export class Registry<
       : this.options.type
 
     return (
-      // tslint:disable-next-line
-      `${StringExt.upperFirst(prefixed)} with name '${name}' does not exist.` +
-      (suggestion ? ` Did you mean '${suggestion}'?` : '')
+      // eslint-disable-next-line
+      `${StringExt.upperFirst(prefixed)} with name '${name}' does not exist.${
+        suggestion ? ` Did you mean '${suggestion}'?` : ''
+      }`
     )
   }
 

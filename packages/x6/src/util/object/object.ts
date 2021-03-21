@@ -33,7 +33,7 @@ export function getNumber(obj: any, key: string, defaultValue: number) {
   }
 
   value = +value
-  if (isNaN(value) || !isFinite(value)) {
+  if (Number.isNaN(value) || !Number.isFinite(value)) {
     return defaultValue
   }
 
@@ -113,11 +113,7 @@ export function unsetByPath(
   return obj
 }
 
-export function flatten(
-  obj: any,
-  delim: string = '/',
-  stop?: (val: any) => boolean,
-) {
+export function flatten(obj: any, delim = '/', stop?: (val: any) => boolean) {
   const ret: { [key: string]: any } = {}
 
   Object.keys(obj).forEach((key) => {
@@ -137,8 +133,11 @@ export function flatten(
     }
   })
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const key in obj) {
-    if (!obj.hasOwnProperty(key)) continue
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+      continue
+    }
   }
 
   return ret

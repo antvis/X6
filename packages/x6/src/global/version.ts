@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 
 /**
  * Auto generated version file, do not modify it!

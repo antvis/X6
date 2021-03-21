@@ -116,21 +116,21 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
       const ta = (-b - root) / a
       const tb = (-b + root) / a
 
-      if ((ta < 0 || 1 < ta) && (tb < 0 || 1 < tb)) {
+      if ((ta < 0 || ta > 1) && (tb < 0 || tb > 1)) {
         // outside
         return null
       }
 
-      if (0 <= ta && ta <= 1) {
+      if (ta >= 0 && ta <= 1) {
         intersections.push(a1.lerp(a2, ta))
       }
 
-      if (0 <= tb && tb <= 1) {
+      if (tb >= 0 && tb <= 1) {
         intersections.push(a1.lerp(a2, tb))
       }
     } else {
       const t = -b / a
-      if (0 <= t && t <= 1) {
+      if (t >= 0 && t <= 1) {
         intersections.push(a1.lerp(a2, t))
       } else {
         // outside
@@ -151,7 +151,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    */
   intersectsWithLineFromCenterToPoint(
     p: Point.PointLike | Point.PointData,
-    angle: number = 0,
+    angle = 0,
   ) {
     const ref = Point.clone(p)
     if (angle) {

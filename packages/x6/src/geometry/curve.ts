@@ -9,7 +9,8 @@ export class Curve extends Geometry {
   end: Point
   controlPoint1: Point
   controlPoint2: Point
-  PRECISION: number = 3
+
+  PRECISION = 3
 
   protected get [Symbol.toStringTag]() {
     return Curve.toStringTag
@@ -73,7 +74,7 @@ export class Curve extends Geometry {
         }
 
         t = -c / b
-        if (0 < t && t < 1) tvalues.push(t)
+        if (t > 0 && t < 1) tvalues.push(t)
 
         continue
       }
@@ -84,10 +85,10 @@ export class Curve extends Geometry {
       if (b2ac < 0) continue
 
       t1 = (-b + sqrtb2ac) / (2 * a)
-      if (0 < t1 && t1 < 1) tvalues.push(t1)
+      if (t1 > 0 && t1 < 1) tvalues.push(t1)
 
       t2 = (-b - sqrtb2ac) / (2 * a)
-      if (0 < t2 && t2 < 1) tvalues.push(t2)
+      if (t2 > 0 && t2 < 1) tvalues.push(t2)
     }
 
     let x
@@ -182,7 +183,7 @@ export class Curve extends Geometry {
   ) {
     const precision = this.getPrecision(options)
     const subdivisions = this.getDivisions(options)
-    const precisionRatio = Math.pow(10, -precision)
+    const precisionRatio = Math.pow(10, -precision) // eslint-disable-line
 
     let investigatedSubdivision: Curve | null = null
     let investigatedSubdivisionStartT = 0
@@ -214,6 +215,7 @@ export class Curve extends Geometry {
     // Recursively divide investigated subdivision, until distance between
     // baselinePoint and closest path endpoint is within `10^(-precision)`,
     // then return the closest endpoint of that final subdivision.
+    // eslint-disable-next-line
     while (true) {
       // check if we have reached at least one required observed precision
       // - calculated as: the difference in distances from point to start and end divided by the distance
@@ -407,11 +409,12 @@ export class Curve extends Geometry {
     }
 
     let previousLength = this.endpointDistance()
-    const precisionRatio = Math.pow(10, -precision)
+    const precisionRatio = Math.pow(10, -precision) // eslint-disable-line
 
     // Recursively divide curve at `t = 0.5`, until the difference between
     // observed length at subsequent iterations is lower than precision.
     let iteration = 0
+    // eslint-disable-next-line
     while (true) {
       iteration += 1
 
@@ -508,9 +511,9 @@ export class Curve extends Geometry {
     if (!this.isDifferentiable()) return null
 
     if (ratio < 0) {
-      ratio = 0 // tslint:disable-line
+      ratio = 0 // eslint-disable-line
     } else if (ratio > 1) {
-      ratio = 1 // tslint:disable-line
+      ratio = 1 // eslint-disable-line
     }
 
     const t = this.tAt(ratio, options)
@@ -532,11 +535,11 @@ export class Curve extends Geometry {
     }
 
     if (t < 0) {
-      t = 0 // tslint:disable-line
+      t = 0 // eslint-disable-line
     }
 
     if (t > 1) {
-      t = 1 // tslint:disable-line
+      t = 1 // eslint-disable-line
     }
 
     const skeletonPoints = this.getSkeletonPoints(t)
@@ -587,7 +590,7 @@ export class Curve extends Geometry {
     let fromStart = true
     if (length < 0) {
       fromStart = false
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     const precision = this.getPrecision(options)
@@ -636,11 +639,12 @@ export class Curve extends Geometry {
     // e.g. at precision 1, the length may be underestimated by up to 10% and cause this function to return 1
 
     const total = this.length(opts)
-    const precisionRatio = Math.pow(10, -precision)
+    const precisionRatio = Math.pow(10, -precision) // eslint-disable-line
 
     // recursively divide investigated subdivision:
     // until distance between baselinePoint and closest path endpoint is within 10^(-precision)
     // then return the closest endpoint of that final subdivision
+    // eslint-disable-next-line
     while (true) {
       let ratio
 

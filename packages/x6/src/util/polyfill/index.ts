@@ -39,23 +39,22 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 
 // compatible with ParentNode.append() before chrome 54
 // https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/append()/append().md
-(function (arr) {
+;(function (arr) {
   arr.forEach((item) => {
-    if (item.hasOwnProperty('append')) {
+    if (Object.prototype.hasOwnProperty.call(item, 'append')) {
       return
     }
     Object.defineProperty(item, 'append', {
       configurable: true,
       enumerable: true,
       writable: true,
-      value: function append() {
-        const argArr = Array.prototype.slice.call(arguments)
+      value(...args: any[]) {
         const docFrag = document.createDocumentFragment()
 
-        argArr.forEach((argItem: any) => {
-          const isNode = argItem instanceof Node
+        args.forEach((arg: any) => {
+          const isNode = arg instanceof Node
           docFrag.appendChild(
-            isNode ? argItem : document.createTextNode(String(argItem)),
+            isNode ? arg : document.createTextNode(String(arg)),
           )
         })
 

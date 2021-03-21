@@ -5,8 +5,7 @@
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
-    "lint": "yarn lint:ts",
-    "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
     "precommit": "lint-staged"
   },
   "dependencies": {
@@ -31,16 +30,10 @@
     "eslint-plugin-react": "^7.11.1",
     "lint-staged": "^10.5.3",
     "react-test-renderer": "^16.7.0",
-    "tslint": "^6.1.3",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-react": "^5.0.0",
     "umi": "^3.2.19"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx}": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix"
-    ],
-    "*.{js,jsx}": [
+    "src/**/*.ts": [
       "eslint --fix"
     ]
   },

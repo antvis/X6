@@ -14,7 +14,7 @@ const defaults: Partial<MetroRouterOptions> = {
   directions() {
     const step = resolve(this.step, this)
     const cost = resolve(this.cost, this)
-    const diagonalCost = Math.ceil(Math.sqrt((step * step) << 1))
+    const diagonalCost = Math.ceil(Math.sqrt((step * step) << 1)) // eslint-disable-line no-bitwise
 
     return [
       { cost, offsetX: step, offsetY: 0 },
@@ -55,7 +55,7 @@ const defaults: Partial<MetroRouterOptions> = {
     const l2 = new Line(to, p2)
 
     const intersectionPoint = l1.intersectsWithLine(l2)
-    const point = intersectionPoint ? intersectionPoint : to
+    const point = intersectionPoint || to
 
     const directionFrom = intersectionPoint ? point : from
 

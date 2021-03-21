@@ -22,7 +22,7 @@ export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
 
   let columnWidth = options.columnWidth
 
-  if ('compact' === columnWidth) {
+  if (columnWidth === 'compact') {
     for (let j = 0; j < columns; j += 1) {
       const items = GridLayout.getNodesInColumn(nodes, j, columns)
       columnWidths.push(GridLayout.getMaxDim(items, 'width') + dx)
@@ -41,7 +41,7 @@ export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
 
   const rowHeights: number[] = []
   let rowHeight = options.rowHeight
-  if ('compact' === rowHeight) {
+  if (rowHeight === 'compact') {
     for (let i = 0; i < rows; i += 1) {
       const items = GridLayout.getNodesInRow(nodes, i, columns)
       rowHeights.push(GridLayout.getMaxDim(items, 'height') + dy)
@@ -146,7 +146,7 @@ namespace GridLayout {
     columnCount: number,
   ) {
     const res: Node[] = []
-    for (let i = columnIndex, ii = nodes.length; i < ii; i = i + columnCount) {
+    for (let i = columnIndex, ii = nodes.length; i < ii; i += columnCount) {
       res.push(nodes[i])
     }
     return res

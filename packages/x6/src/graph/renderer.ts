@@ -384,7 +384,7 @@ export class Renderer extends Base {
 
       if (flag & Renderer.FLAG_INSERT) {
         this.insertView(view)
-        flag ^= Renderer.FLAG_INSERT // tslint:disable-line
+        flag ^= Renderer.FLAG_INSERT // eslint-disable-line
       }
     }
 
@@ -432,12 +432,13 @@ export class Renderer extends Base {
       checkView = null
     }
 
+    // eslint-disable-next-line no-labels
     main: for (let p = 0, n = priorities.length; p < n; p += 1) {
       const cache = priorities[p]
       for (const cid in cache) {
         if (updatedCount >= batchSize) {
           empty = false // goto next batch
-          break main
+          break main // eslint-disable-line no-labels
         }
 
         const view = View.views[cid]
@@ -709,7 +710,7 @@ export class Renderer extends Base {
   ) {
     let mountCount = 0
     if (typeof checkView !== 'function') {
-      checkView = null // tslint:disable-line
+      checkView = null // eslint-disable-line
     }
 
     const updates = this.updates
@@ -1032,7 +1033,7 @@ export class Renderer extends Base {
     })
   }
 
-  protected addZPivot(zIndex: number = 0) {
+  protected addZPivot(zIndex = 0) {
     if (this.zPivots == null) {
       this.zPivots = {}
     }
@@ -1080,11 +1081,12 @@ export class Renderer extends Base {
   insertView(view: CellView) {
     const stage = this.view.stage
     switch (this.options.sorting) {
-      case 'approx':
+      case 'approx': {
         const zIndex = view.cell.getZIndex()
         const pivot = this.addZPivot(zIndex)
         stage.insertBefore(view.container, pivot)
         break
+      }
       case 'exact':
       default:
         stage.appendChild(view.container)
@@ -1137,6 +1139,7 @@ export class Renderer extends Base {
             target: this.view.stage,
           }).containsPoint(ref)
         }
+        return false
       }) as CellView[]
   }
 
@@ -1157,6 +1160,7 @@ export class Renderer extends Base {
             ? area.containsRect(bbox)
             : area.isIntersectWithRect(bbox)
         }
+        return false
       }) as CellView[]
   }
 

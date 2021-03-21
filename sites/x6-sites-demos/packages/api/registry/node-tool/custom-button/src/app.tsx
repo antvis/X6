@@ -3,7 +3,7 @@ import { Graph, Color } from '@antv/x6'
 import { Button } from '@antv/x6/es/registry/tool/button'
 import './app.css'
 
-// tslint:disable-next-line
+// eslint-disable-next-line
 const MyButton = Button.define<Button.Options>({
   name: 'my-btn', // 工具名称，可省略，指定后其大驼峰形式同时作为继承的类的类名。
   markup: [

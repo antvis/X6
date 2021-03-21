@@ -66,10 +66,10 @@ describe('NumberExt', () => {
   describe('#normalizeSides', () => {
     it('should return the same property', () => {
       expect(NumberExt.normalizeSides(10)).toEqual({
-        top: 10, 
-        right: 10, 
-        bottom: 10, 
-        left: 10
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10,
       })
     })
 
@@ -78,29 +78,29 @@ describe('NumberExt', () => {
         left: 0,
         right: 10,
         top: 20,
-        bottom: 30
+        bottom: 30,
       }
       expect(NumberExt.normalizeSides(slides)).toEqual(slides)
       slides = {
         left: 0,
         right: 10,
-        vertical: 20
+        vertical: 20,
       }
       expect(NumberExt.normalizeSides(slides)).toEqual({
         left: 0,
         right: 10,
         top: 20,
-        bottom: 20
+        bottom: 20,
       })
       slides = {
         horizontal: 30,
-        vertical: 20
+        vertical: 20,
       }
       expect(NumberExt.normalizeSides(slides)).toEqual({
         left: 30,
         right: 30,
         top: 20,
-        bottom: 20
+        bottom: 20,
       })
     })
   })

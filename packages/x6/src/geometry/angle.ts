@@ -12,7 +12,7 @@ export namespace Angle {
    * @param deg The degree angle to convert.
    * @param over360
    */
-  export const toRad = function (deg: number, over360: boolean = false) {
+  export const toRad = function (deg: number, over360 = false) {
     const d = over360 ? deg : deg % 360
     return (d * Math.PI) / 180
   }
