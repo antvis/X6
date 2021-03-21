@@ -52,6 +52,19 @@
       "stylelint --syntax less --fix"
     ]
   },
+  "inherits": [
+    "@antv/x6-package-json/cli.json",
+    "@antv/x6-package-json/antd.json",
+    "@antv/x6-package-json/react.json",
+    "@antv/x6-package-json/less.json",
+    "@antv/x6-package-json/eslint.json",
+    "@antv/x6-package-json/rollup.json"
+  ],
+  "peerDependencies": {
+    "antd": ">=4.4.2",
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
+  },
   "dependencies": {
     "clamp": "^1.0.1",
     "classnames": "^2.2.6",
@@ -61,14 +74,6 @@
     "react-resize-detector": "^4.2.1",
     "ua-parser-js": "^0.7.20"
   },
-  "inherits": [
-    "@antv/x6-package-json/cli.json",
-    "@antv/x6-package-json/antd.json",
-    "@antv/x6-package-json/react.json",
-    "@antv/x6-package-json/less.json",
-    "@antv/x6-package-json/eslint.json",
-    "@antv/x6-package-json/rollup.json"
-  ],
   "devDependencies": {
     "@types/react-color": "^3.0.1",
     "@types/react-resize-detector": "^4.2.0",
@@ -117,11 +122,6 @@
     "stylelint-order": "^4.1.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
-  },
-  "peerDependencies": {
-    "antd": ">=4.4.2",
-    "react": ">=16.8.6",
-    "react-dom": ">=16.8.6"
   },
   "author": {
     "name": "bubkoo",
