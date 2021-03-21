@@ -82,6 +82,7 @@ export class MoveTo extends Segment {
   pointAt() {
     return this.end.clone()
   }
+
   pointAtLength() {
     return this.end.clone()
   }

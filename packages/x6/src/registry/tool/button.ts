@@ -42,8 +42,8 @@ export class Button extends ToolsView.ToolItem<
       bbox = bbox.bbox(angle)
     }
 
-    let offsetX: number = 0
-    let offsetY: number = 0
+    let offsetX = 0
+    let offsetY = 0
     if (typeof offset === 'number') {
       offsetX = offset
       offsetY = offset

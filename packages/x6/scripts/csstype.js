@@ -11,7 +11,7 @@ const dist = path.join(cwd, 'src/types/csstype.ts')
 
 const content = fs.readFileSync(src, { encoding: 'utf8' })
 const prev = fs.readFileSync(dist, { encoding: 'utf8' })
-const next = `/* tslint:disable */
+const next = `/* eslint-disable */
 
 /**
 * Auto generated file by copying from node_modules, do not modify it!

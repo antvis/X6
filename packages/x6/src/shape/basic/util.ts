@@ -3,7 +3,7 @@ import { Node } from '../../model/node'
 import { Cell } from '../../model/cell'
 import { Base } from '../base'
 
-export function getMarkup(tagName: string, noText: boolean = false) {
+export function getMarkup(tagName: string, noText = false) {
   return `<g class="rotatable"><g class="scalable"><${tagName}/></g>${
     noText ? '' : '<text/>'
   }</g>`
@@ -13,7 +13,7 @@ export function getName(name: string) {
   return `basic.${name}`
 }
 
-export function getImageUrlHook(attrName: string = 'xlink:href') {
+export function getImageUrlHook(attrName = 'xlink:href') {
   const hook: Cell.PropHook = (metadata) => {
     const { imageUrl, imageWidth, imageHeight, ...others } = metadata
     if (imageUrl != null || imageWidth != null || imageHeight != null) {

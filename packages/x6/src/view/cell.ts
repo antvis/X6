@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Nilable, KeyValue } from '../types'
 import { Rectangle, Point } from '../geometry'
 import { ArrayExt, ObjectExt, Dom, FunctionExt, Vector } from '../util'
@@ -89,7 +91,6 @@ export class CellView<
   protected readonly flag: FlagManager
   protected readonly attr: AttrManager
   protected readonly cache: Cache
-
   public scalableNode: Element | null
   public rotatableNode: Element | null
 
@@ -206,6 +207,7 @@ export class CellView<
     return this
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmUpdate(flag: number, options: any = {}) {
     return 0
   }
@@ -258,7 +260,7 @@ export class CellView<
     }
 
     if (options.dirty && this.hasAction(flag, 'update')) {
-      flag |= this.getFlag('render')
+      flag |= this.getFlag('render') // eslint-disable-line no-bitwise
     }
 
     // tool changes should be sync render
@@ -492,6 +494,7 @@ export class CellView<
     return this
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   notifyUnhighlight(magnet: Element, options: CellView.HighlightOptions) {}
 
   // #endregion
@@ -751,7 +754,7 @@ export class CellView<
     y: number,
   ): CellView.MousePositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
-    const view = this // tslint:disable-line
+    const view = this // eslint-disable-line @typescript-eslint/no-this-alias
     const cell = view.cell
     if (x == null || y == null) {
       return { e, view, cell } as CellView.MouseEventArgs<E>
@@ -772,6 +775,7 @@ export class CellView<
   }
 
   protected cachedModelForMouseEvent: Model | null
+
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (this.cell.model) {
       this.cachedModelForMouseEvent = this.cell.model

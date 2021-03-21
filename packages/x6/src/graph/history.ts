@@ -12,15 +12,13 @@ export class HistoryManager
   public readonly graph: Graph
   public readonly options: HistoryManager.CommonOptions
   public readonly validator: HistoryManager.Validator
-
   protected redoStack: HistoryManager.Commands[]
   protected undoStack: HistoryManager.Commands[]
-
   protected batchCommands: HistoryManager.Command[] | null = null
-  protected batchLevel: number = 0
-  protected lastBatchIndex: number = -1
+  protected batchLevel = 0
+  protected lastBatchIndex = -1
+  protected freezed = false
 
-  protected freezed: boolean = false
   protected readonly handlers: (<T extends HistoryManager.ModelEvents>(
     event: T,
     args: Model.EventArgs[T],
@@ -264,7 +262,7 @@ export class HistoryManager
     }
 
     if (event === 'cell:change:*') {
-      // tslint:disable-next-line
+      // eslint-disable-next-line
       event = `cell:change:${eventArgs.key}` as T
     }
 
@@ -395,7 +393,7 @@ export class HistoryManager
 
     if (this.batchCommands && this.batchLevel <= 0) {
       const cmds = this.filterBatchCommand(this.batchCommands)
-      if (0 < cmds.length) {
+      if (cmds.length > 0) {
         this.redoStack = []
         this.undoStack.push(cmds)
         this.notify('add', cmds, options)
@@ -403,10 +401,8 @@ export class HistoryManager
       this.batchCommands = null
       this.lastBatchIndex = -1
       this.batchLevel = 0
-    } else {
-      if (this.batchCommands && this.batchLevel > 0) {
-        this.batchLevel -= 1
-      }
+    } else if (this.batchCommands && this.batchLevel > 0) {
+      this.batchLevel -= 1
     }
   }
 
@@ -414,12 +410,12 @@ export class HistoryManager
     let cmds = batchCommands.slice()
     const result = []
 
-    while (0 < cmds.length) {
+    while (cmds.length > 0) {
       const cmd = cmds.shift()!
       const evt = cmd.event
       const id = cmd.data.id
 
-      if (null != evt && (null != id || cmd.modelChange)) {
+      if (evt != null && (id != null || cmd.modelChange)) {
         if (Util.isAddEvent(evt)) {
           const index = cmds.findIndex(
             (c) => Util.isRemoveEvent(c.event) && c.data.id === id,
@@ -444,6 +440,7 @@ export class HistoryManager
             continue
           }
         } else {
+          // pass
         }
 
         result.push(cmd)
@@ -597,7 +594,9 @@ export namespace HistoryManager {
    */
   export class Validator extends Basecoat<Validator.EventArgs> {
     protected readonly command: HistoryManager
+
     protected readonly cancelInvalid: boolean
+
     protected readonly map: { [event: string]: Validator.Callback[][] }
 
     constructor(options: Validator.Options) {
@@ -765,7 +764,7 @@ namespace Util {
         }
       }
 
-      if (null !== index) {
+      if (index !== null) {
         results.splice(index, 0, cmd)
       } else {
         results.push(cmd)

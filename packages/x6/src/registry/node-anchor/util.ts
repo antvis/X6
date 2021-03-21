@@ -29,7 +29,7 @@ export function resolve<S extends Function, T>(fn: S): T {
       }
       return fn.call(this, view, magnet, refPoint, options)
     }
-    return fn.apply(this, arguments)
+    return fn.apply(this, arguments) // eslint-disable-line
   } as any) as T
 }
 

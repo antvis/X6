@@ -127,7 +127,7 @@ export class PathDrawer extends View {
 
   finishPath(name: string) {
     const path = this.pathElement
-    if (path && 0 < this.numberOfVisibleSegments()) {
+    if (path && this.numberOfVisibleSegments() > 0) {
       this.emit('path:finish', { path })
       this.trigger(name, { path })
     } else {
@@ -139,10 +139,10 @@ export class PathDrawer extends View {
   numberOfVisibleSegments() {
     const path = this.pathElement
     let remaining = path.pathSegList.numberOfItems
-    remaining = remaining - 1
+    remaining -= 1
     const last = this.getPathSeg(path, -1)
     if (last.pathSegType === SVGPathSeg.PATHSEG_CLOSEPATH) {
-      remaining = remaining - 1
+      remaining -= 1
     }
     return remaining
   }
@@ -197,8 +197,8 @@ export class PathDrawer extends View {
     const snapRadius = this.options.snapRadius
     if (snapRadius && x != null && y != null) {
       const snaped = this.snapLastSegmentCoordinates(x, y, snapRadius)
-      x = snaped.x // tslint:disable-line
-      y = snaped.y // tslint:disable-line
+      x = snaped.x // eslint-disable-line
+      y = snaped.y // eslint-disable-line
     }
 
     const seg = this.getPathSeg(path, -1)
@@ -237,7 +237,7 @@ export class PathDrawer extends View {
 
     for (
       let i = path.pathSegList.numberOfItems - 2;
-      0 <= i && (!xSnaped || !ySnaped);
+      i >= 0 && (!xSnaped || !ySnaped);
       i -= 1
     ) {
       const seg = this.getPathSeg(path, i)
@@ -333,6 +333,9 @@ export class PathDrawer extends View {
           break
         case 'adjusting-curve-end':
           this.action = 'awaiting-curve-control-2'
+          break
+        default:
+          break
       }
       this.timeStamp = e.timeStamp
     }
@@ -341,7 +344,7 @@ export class PathDrawer extends View {
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
     const e = this.normalizeEvent(evt)
     e.stopPropagation()
-    if ('awaiting-input' !== this.action) {
+    if (this.action !== 'awaiting-input') {
       const local = this.vel.toLocalPoint(e.clientX, e.clientY)
       const timeStamp = this.timeStamp
       if (timeStamp) {
@@ -371,7 +374,10 @@ export class PathDrawer extends View {
                 local.x,
                 local.y,
               )
+              break
             }
+            default:
+              break
           }
         } else {
           switch (this.action) {
@@ -411,7 +417,10 @@ export class PathDrawer extends View {
                 local.x,
                 local.y,
               )
+              break
             }
+            default:
+              break
           }
         }
       } else {
@@ -428,6 +437,10 @@ export class PathDrawer extends View {
               local.x,
               local.y,
             )
+            break
+
+          default:
+            break
         }
       }
     }
@@ -454,6 +467,10 @@ export class PathDrawer extends View {
         case 'adjusting-curve-control-2':
           this.addCurveSegment(local.x, local.y, local.x, local.y)
           this.action = 'adjusting-curve-end'
+          break
+
+        default:
+          break
       }
     }
   }
@@ -471,7 +488,7 @@ export class PathDrawer extends View {
     e.preventDefault()
     e.stopPropagation()
     if (this.isLeftMouseDown(e)) {
-      if (this.pathElement && 0 < this.numberOfVisibleSegments()) {
+      if (this.pathElement && this.numberOfVisibleSegments() > 0) {
         this.removeLastSegment()
         this.finishPath('path:stop')
       }
@@ -483,7 +500,7 @@ export class PathDrawer extends View {
     e.preventDefault()
     e.stopPropagation()
     if (this.isSamePositionEvent(e)) {
-      if (this.pathElement && 0 < this.numberOfVisibleSegments()) {
+      if (this.pathElement && this.numberOfVisibleSegments() > 0) {
         this.removeLastSegment()
         this.finishPath('path:stop')
       }

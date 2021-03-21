@@ -335,7 +335,7 @@ export class Edge<
   }
 
   protected getTerminalNode(type: Edge.TerminalType): Node | null {
-    let cell: Cell | null = this // tslint:disable-line
+    let cell: Cell | null = this // eslint-disable-line
     const visited: { [id: string]: boolean } = {}
 
     while (cell && cell.isEdge()) {
@@ -572,6 +572,7 @@ export class Edge<
             ) {
               return label1
             }
+            return null
           })
         : current
         ? [...current]
@@ -588,6 +589,7 @@ export class Edge<
             ) {
               return label1
             }
+            return null
           })
         : previous
         ? [...previous]
@@ -710,6 +712,7 @@ export class Edge<
             if (!previous.find((p2) => Point.equals(p1, p2))) {
               return p1
             }
+            return null
           })
         : current
         ? [...current]
@@ -721,6 +724,7 @@ export class Edge<
             if (!current.find((p2) => Point.equals(p1, p2))) {
               return p1
             }
+            return null
           })
         : previous
         ? [...previous]

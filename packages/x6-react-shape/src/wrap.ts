@@ -1,13 +1,17 @@
 import React from 'react'
+import { Graph, FunctionExt } from '@antv/x6'
 import { ReactShape } from './node'
 import { Definition } from './registry'
-import { Graph, FunctionExt } from '@antv/x6'
 
 export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
-  state = { tick: 0 }
+  constructor(props: Wrap.Props) {
+    super(props)
+    this.state = { tick: 0 }
+  }
 
   componentDidMount() {
     this.props.node.on('change:*', () => {
+      // eslint-disable-next-line react/no-access-state-in-setstate
       this.setState({ tick: this.state.tick + 1 })
     })
   }

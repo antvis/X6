@@ -249,7 +249,7 @@ export class Scroller extends View {
     if (valid) {
       const handler = this.delegatedHandlers[e.type]
       if (typeof handler === 'function') {
-        handler.apply(this.graph, arguments)
+        handler.apply(this.graph, arguments) // eslint-disable-line
       }
     }
   }
@@ -417,7 +417,7 @@ export class Scroller extends View {
         bottom: (options.padding.bottom || 0) * sy,
       }
     } else if (typeof options.padding === 'number') {
-      options.padding = options.padding * sx
+      options.padding *= sx
     }
 
     return options
@@ -581,20 +581,20 @@ export class Scroller extends View {
       localOptions = options
       const visibleCenter = this.getVisibleArea().getCenter()
       if (typeof x === 'number') {
-        x = x * sx // tslint:disable-line
+        x *= sx // eslint-disable-line
       } else {
-        x = visibleCenter.x // tslint:disable-line
+        x = visibleCenter.x // eslint-disable-line
       }
 
       if (typeof y === 'number') {
-        y = y * sy // tslint:disable-line
+        y *= sy // eslint-disable-line
       } else {
-        y = visibleCenter.y // tslint:disable-line
+        y = visibleCenter.y // eslint-disable-line
       }
     } else {
       localOptions = x
-      x = (tx + tWidth) / 2 // tslint:disable-line
-      y = (ty + tHeight) / 2 // tslint:disable-line
+      x = (tx + tWidth) / 2 // eslint-disable-line
+      y = (ty + tHeight) / 2 // eslint-disable-line
     }
 
     if (localOptions && localOptions.padding) {
@@ -714,16 +714,16 @@ export class Scroller extends View {
       height: -padding.top - padding.bottom,
     })
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     x = NumberExt.normalizePercentage(x, Math.max(0, targetRect.width))
     if (x < 0) {
-      x = targetRect.width + x // tslint:disable-line
+      x = targetRect.width + x // eslint-disable-line
     }
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     y = NumberExt.normalizePercentage(y, Math.max(0, targetRect.height))
     if (y < 0) {
-      y = targetRect.height + y // tslint:disable-line
+      y = targetRect.height + y // eslint-disable-line
     }
 
     const origin = targetRect.getTopLeft().translate(x, y)
@@ -741,7 +741,7 @@ export class Scroller extends View {
       return this.sx
     }
 
-    options = options || {} // tslint:disable-line
+    options = options || {} // eslint-disable-line
 
     let cx
     let cy
@@ -755,8 +755,8 @@ export class Scroller extends View {
     let sy = factor
 
     if (!options.absolute) {
-      sx = sx + this.sx
-      sy = sy + this.sy
+      sx += this.sx
+      sy += this.sy
     }
 
     if (options.scaleGrid) {
@@ -843,15 +843,15 @@ export class Scroller extends View {
     options?: Scroller.TransitionOptions,
   ) {
     if (typeof x === 'object') {
-      options = y as Scroller.TransitionOptions // tslint:disable-line
-      y = x.y // tslint:disable-line
-      x = x.x // tslint:disable-line
+      options = y as Scroller.TransitionOptions // eslint-disable-line
+      y = x.y // eslint-disable-line
+      x = x.x // eslint-disable-line
     } else {
-      y = y as number // tslint:disable-line
+      y = y as number // eslint-disable-line
     }
 
     if (options == null) {
-      options = {} // tslint:disable-line
+      options = {} // eslint-disable-line
     }
 
     let transform

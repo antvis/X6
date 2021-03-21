@@ -86,9 +86,9 @@ export class Cell<
   public readonly id: string
   protected readonly store: Store<Cell.Properties>
   protected readonly animation: Animation
-  protected _model: Model | null // tslint:disable-line
-  protected _parent: Cell | null // tslint:disable-line
-  protected _children: Cell[] | null // tslint:disable-line
+  protected _model: Model | null // eslint-disable-line
+  protected _parent: Cell | null // eslint-disable-line
+  protected _children: Cell[] | null // eslint-disable-line
 
   constructor(metadata: Cell.Metadata = {}) {
     super()
@@ -420,7 +420,7 @@ export class Cell<
 
       if (changed) {
         this.batchUpdate('to-front', () => {
-          z = z + cells.length
+          z += cells.length
           cells.forEach((cell, index) => {
             cell.setZIndex(z + index, options)
           })
@@ -675,11 +675,7 @@ export class Cell<
     options: Cell.SetOptions = {},
   ) {
     const visible =
-      typeof isVisible === 'boolean'
-        ? isVisible
-        : this.isVisible()
-        ? false
-        : true
+      typeof isVisible === 'boolean' ? isVisible : !this.isVisible()
     const localOptions = typeof isVisible === 'boolean' ? options : isVisible
     if (visible) {
       this.show(localOptions)
@@ -1094,7 +1090,7 @@ export class Cell<
     path: string | string[],
     target: T,
     options: Animation.StartOptions<T> = {},
-    delim: string = '/',
+    delim = '/',
   ) {
     return this.animation.start(path, target, options, delim)
   }
@@ -1102,7 +1098,7 @@ export class Cell<
   stopTransition<T extends Animation.TargetValue>(
     path: string | string[],
     options?: Animation.StopOptions<T>,
-    delim: string = '/',
+    delim = '/',
   ) {
     this.animation.stop(path, options, delim)
     return this

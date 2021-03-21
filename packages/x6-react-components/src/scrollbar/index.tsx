@@ -241,6 +241,7 @@ export class Scrollbar extends React.PureComponent<Scrollbar.Props> {
 
     return (
       <div
+        role="button"
         className={classNames(
           baseCls,
           {

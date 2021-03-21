@@ -7,8 +7,8 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   protected data: D
   protected previous: D
   protected changed: Partial<D>
-  protected pending: boolean = false
-  protected changing: boolean = false
+  protected pending = false
+  protected changing = false
   protected pendingOptions: Store.MutateOptions | null
 
   constructor(data: Partial<D> = {}) {
@@ -148,7 +148,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     key: K | K[] | Store.SetOptions,
     options?: Store.SetOptions,
   ) {
-    const empty = void 0
+    const empty = undefined
     const subset: Partial<D> = {}
     let opts: Store.SetOptions | undefined
 

@@ -193,14 +193,12 @@ export class Stencil extends View {
   ) {
     if (Array.isArray(data)) {
       this.loadGroup(data, groupName)
-    } else {
-      if (this.options.groups) {
-        Object.keys(this.options.groups).forEach((groupName) => {
-          if (data[groupName]) {
-            this.loadGroup(data[groupName], groupName)
-          }
-        })
-      }
+    } else if (this.options.groups) {
+      Object.keys(this.options.groups).forEach((groupName) => {
+        if (data[groupName]) {
+          this.loadGroup(data[groupName], groupName)
+        }
+      })
     }
     return this
   }
@@ -306,7 +304,7 @@ export class Stencil extends View {
   ) {
     if (keyword && filters) {
       return Object.keys(filters).some((shape) => {
-        if ('*' === shape || cell.shape === shape) {
+        if (shape === '*' || cell.shape === shape) {
           const filter = filters[shape]
           if (typeof filter === 'boolean') {
             return filter
@@ -322,6 +320,7 @@ export class Stencil extends View {
               }
               return val.indexOf(keyword) >= 0
             }
+            return false
           })
         }
 

@@ -72,8 +72,8 @@ function normalizeAttr(
   // marker with a connection(for which 'fill' attribute is set to 'none').
   const stroke = attr.stroke
   if (typeof stroke === 'string') {
-    result['stroke'] = stroke
-    result['fill'] = stroke
+    result.stroke = stroke
+    result.fill = stroke
   }
 
   // Again the context 'fill-opacity' is ignored.
@@ -93,11 +93,11 @@ function normalizeAttr(
 
   if (type !== 'marker-mid') {
     const strokeWidth = parseFloat(
-      (attr['strokeWidth'] || attr['stroke-width']) as string,
+      (attr.strokeWidth || attr['stroke-width']) as string,
     )
     if (isFinite(strokeWidth) && strokeWidth > 1) {
       const offset = Math.ceil(strokeWidth / 2)
-      result['refX'] = type === 'marker-start' ? offset : -offset
+      result.refX = type === 'marker-start' ? offset : -offset
     }
   }
 

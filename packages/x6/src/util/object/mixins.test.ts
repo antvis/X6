@@ -4,6 +4,7 @@ describe('Ojbect', () => {
   describe('applyMixins', () => {
     class Disposable {
       isDisposed: boolean
+
       dispose() {
         this.isDisposed = true
       }
@@ -11,9 +12,11 @@ describe('Ojbect', () => {
 
     class Activatable {
       isActive: boolean
+
       activate() {
         this.isActive = true
       }
+
       deactivate() {
         this.isActive = false
       }

@@ -28,7 +28,6 @@ export class EdgeView<
   Options extends EdgeView.Options = EdgeView.Options
 > extends CellView<Entity, Options> {
   protected readonly POINT_ROUNDING = 2
-
   public path: Path
   public routePoints: Point[]
   public sourceAnchor: Point
@@ -39,10 +38,8 @@ export class EdgeView<
   public targetView: CellView | null
   public sourceMagnet: Element | null
   public targetMagnet: Element | null
-
   protected toolCache: Element
   protected tool2Cache: Element
-
   protected readonly markerCache: {
     sourcePoint?: Point
     targetPoint?: Point
@@ -194,7 +191,9 @@ export class EdgeView<
   // #region render
 
   protected containers: EdgeView.ContainerCache
+
   protected labelCache: { [index: number]: Element }
+
   protected labelSelectors: { [index: number]: Markup.Selectors }
 
   render() {
@@ -630,7 +629,7 @@ export class EdgeView<
 
   getTerminalMagnet(type: Edge.TerminalType, options: { raw?: boolean } = {}) {
     switch (type) {
-      case 'source':
+      case 'source': {
         if (options.raw) {
           return this.sourceMagnet
         }
@@ -639,8 +638,8 @@ export class EdgeView<
           return null
         }
         return this.sourceMagnet || sourceView.container
-
-      case 'target':
+      }
+      case 'target': {
         if (options.raw) {
           return this.targetMagnet
         }
@@ -649,8 +648,10 @@ export class EdgeView<
           return null
         }
         return this.targetMagnet || targetView.container
-      default:
+      }
+      default: {
         throw new Error(`Unknown terminal type '${type}'`)
+      }
     }
   }
 
@@ -1001,7 +1002,7 @@ export class EdgeView<
         const attr = attrs[keys[i]]
         if (attr[`${type}Marker`] || attr[`${type}-marker`]) {
           const strokeWidth =
-            (attr['strokeWidth'] as string) || (attr['stroke-width'] as string)
+            (attr.strokeWidth as string) || (attr['stroke-width'] as string)
           if (strokeWidth) {
             return parseFloat(strokeWidth)
           }
@@ -1519,7 +1520,9 @@ export class EdgeView<
         timing,
         ...others
       } = options
-      Object.keys(others).forEach((key) => (attrs[key] = others[key]))
+      Object.keys(others).forEach((key) => {
+        attrs[key] = others[key]
+      })
     }
 
     let path
@@ -1633,7 +1636,7 @@ export class EdgeView<
     }
 
     if (NumberExt.isPercentage(ratio)) {
-      // tslint:disable-next-line
+      // eslint-disable-next-line
       ratio = parseFloat(ratio) / 100
     }
 
@@ -1891,7 +1894,7 @@ export class EdgeView<
     y: number,
   ): EdgeView.PositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
-    const view = this // tslint:disable-line
+    const view = this // eslint-disable-line
     const edge = view.cell
     const cell = edge
     if (x == null || y == null) {
@@ -1949,28 +1952,36 @@ export class EdgeView<
     this.notifyMouseDown(e, x, y)
     const className = e.target.getAttribute('class')
     switch (className) {
-      case 'vertex':
+      case 'vertex': {
         this.startVertexDragging(e, x, y)
         return
+      }
 
       case 'vertex-remove':
-      case 'vertex-remove-area':
+      case 'vertex-remove-area': {
         this.handleVertexRemoving(e, x, y)
         return
+      }
 
       case 'connection':
-      case 'connection-wrap':
+      case 'connection-wrap': {
         this.handleVertexAdding(e, x, y)
         return
+      }
 
-      case 'arrowhead':
+      case 'arrowhead': {
         this.startArrowheadDragging(e, x, y)
         return
+      }
 
       case 'source-marker':
-      case 'target-marker':
+      case 'target-marker': {
         this.notifyUnhandledMouseDown(e, x, y)
         return
+      }
+
+      default:
+        break
     }
 
     this.startEdgeDragging(e, x, y)
@@ -1979,20 +1990,27 @@ export class EdgeView<
   onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData(e)
     switch (data.action) {
-      case 'drag-vertex':
+      case 'drag-vertex': {
         this.dragVertex(e, x, y)
         break
+      }
 
-      case 'drag-label':
+      case 'drag-label': {
         this.dragLabel(e, x, y)
         break
+      }
 
-      case 'drag-arrowhead':
+      case 'drag-arrowhead': {
         this.dragArrowhead(e, x, y)
         break
+      }
 
-      case 'drag-edge':
+      case 'drag-edge': {
         this.dragEdge(e, x, y)
+        break
+      }
+
+      default:
         break
     }
 
@@ -2003,20 +2021,28 @@ export class EdgeView<
   onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData(e)
     switch (data.action) {
-      case 'drag-vertex':
+      case 'drag-vertex': {
         this.stopVertexDragging(e, x, y)
         break
+      }
 
-      case 'drag-label':
+      case 'drag-label': {
         this.stopLabelDragging(e, x, y)
         break
+      }
 
-      case 'drag-arrowhead':
+      case 'drag-arrowhead': {
         this.stopArrowheadDragging(e, x, y)
         break
+      }
 
-      case 'drag-edge':
+      case 'drag-edge': {
         this.stopEdgeDragging(e, x, y)
+        break
+      }
+
+      default:
+        break
     }
 
     this.notifyMouseUp(e, x, y)
@@ -2624,23 +2650,27 @@ export class EdgeView<
         data.terminalType,
         data.initialTerminal,
       ),
-    ).then((valid) => {
-      if (valid) {
-        this.finishEmbedding(data)
-        this.notifyConnectionEvent(data, e)
-      } else {
-        // If the changed edge is not allowed, revert to its previous state.
-        this.fallbackConnection(data)
-      }
+    )
+      .then((valid) => {
+        if (valid) {
+          this.finishEmbedding(data)
+          this.notifyConnectionEvent(data, e)
+        } else {
+          // If the changed edge is not allowed, revert to its previous state.
+          this.fallbackConnection(data)
+        }
 
-      this.afterArrowheadDragging(data)
-    })
+        this.afterArrowheadDragging(data)
+        return valid
+      })
+      .catch(() => {})
   }
 
   // #endregion
 
   // #region drag lable
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   startLabelDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (this.can('edgeLabelMovable')) {
       const target = e.currentTarget
@@ -2682,6 +2712,7 @@ export class EdgeView<
     this.cell.setLabelAt(data.index, label)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   stopLabelDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
 
   // #endregion
@@ -2733,6 +2764,7 @@ export class EdgeView<
     this.cell.setVertexAt(data.index, { x, y }, { ui: true })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   stopVertexDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
 
   // #endregion

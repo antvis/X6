@@ -95,16 +95,12 @@ export class SelectionManager extends Base {
     if (!disabled) {
       if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
         this.reset(cell)
+      } else if (this.unselectMap.has(cell)) {
+        this.unselectMap.delete(cell)
+      } else if (this.isSelected(cell)) {
+        this.unselect(cell)
       } else {
-        if (this.unselectMap.has(cell)) {
-          this.unselectMap.delete(cell)
-        } else {
-          if (this.isSelected(cell)) {
-            this.unselect(cell)
-          } else {
-            this.select(cell)
-          }
-        }
+        this.select(cell)
       }
     }
 

@@ -126,7 +126,7 @@ export namespace Color {
   }
 
   export function fromRGBA(color: string) {
-    const matches = color.toLowerCase().match(/^rgba?\(([\s\.,0-9]+)\)/)
+    const matches = color.toLowerCase().match(/^rgba?\(([\s.,0-9]+)\)/)
     if (matches) {
       const arr = matches[1].split(/\s*,\s*/).map((v) => parseInt(v, 10))
       return new Color(arr as Color.RGBA)
@@ -137,10 +137,10 @@ export namespace Color {
 
   function hue2rgb(m1: number, m2: number, h: number) {
     if (h < 0) {
-      ++h // tslint:disable-line
+      ++h // eslint-disable-line
     }
     if (h > 1) {
-      --h // tslint:disable-line
+      --h // eslint-disable-line
     }
 
     const h6 = 6 * h
@@ -157,7 +157,7 @@ export namespace Color {
   }
 
   export function fromHSLA(color: string) {
-    const matches = color.toLowerCase().match(/^hsla?\(([\s\.,0-9]+)\)/)
+    const matches = color.toLowerCase().match(/^hsla?\(([\s.,0-9]+)\)/)
     if (matches) {
       const arr = matches[2].split(/\s*,\s*/)
       const h = (((parseFloat(arr[0]) % 360) + 360) % 360) / 360
@@ -208,8 +208,8 @@ export namespace Color {
     const min = Math.min(r, g, b)
     const l = (max + min) / 2
 
-    let h: number = 0
-    let s: number = 0
+    let h = 0
+    let s = 0
 
     if (min !== max) {
       const d = max - min
@@ -223,6 +223,8 @@ export namespace Color {
           break
         case b:
           h = (r - g) / d + 4
+          break
+        default:
           break
       }
       h /= 6

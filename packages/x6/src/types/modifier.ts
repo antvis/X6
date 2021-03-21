@@ -54,7 +54,10 @@ export namespace ModifierKey {
     modifiers?: string | ModifierKey[] | null,
     strict?: boolean,
   ) {
-    if (modifiers == null || (Array.isArray(modifiers) && modifiers.length === 0)) {
+    if (
+      modifiers == null ||
+      (Array.isArray(modifiers) && modifiers.length === 0)
+    ) {
       return strict
         ? e.altKey !== true &&
             e.ctrlKey !== true &&
