@@ -12,11 +12,17 @@ export abstract class Geometry {
     angle: number,
     origin?: Point.PointLike | Point.PointData,
   ): this
+
   abstract translate(tx: number, ty: number): this
+
   abstract translate(p: Point.PointLike | Point.PointData): this
+
   abstract equals(g: any): boolean
+
   abstract clone(): Geometry
+
   abstract toJSON(): JSONObject | JSONArray
+
   abstract serialize(): string
 
   valueOf() {

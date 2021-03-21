@@ -9,7 +9,7 @@ export interface AnchorOptions extends ConnectionPoint.BaseOptions {
   alignOffset?: number
 }
 
-function alignLine(line: Line, type: Align, offset: number = 0) {
+function alignLine(line: Line, type: Align, offset = 0) {
   const { start, end } = line
   let a
   let b

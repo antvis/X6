@@ -36,7 +36,7 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
             // protocol (e.g. `href="javascript:alert(1)"`).
             if (
               name.startsWith('on') ||
-              val.startsWith('javascript:') ||
+              val.startsWith('javascript:') || // eslint-disable-line no-script-url
               // ref: https://lgtm.com/rules/1510852698359/
               val.startsWith('data:') ||
               val.startsWith('vbscript:')

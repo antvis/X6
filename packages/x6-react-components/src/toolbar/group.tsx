@@ -15,6 +15,7 @@ export const ToolbarGroup: React.SFC<ToolbarGroup.Props> = ({
   </ToolbarContext.Consumer>
 )
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export namespace ToolbarGroup {
   export interface Props {
     className?: string

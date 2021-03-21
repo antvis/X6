@@ -16,8 +16,8 @@ import {
   UnderlineOutlined,
 } from '@ant-design/icons'
 
-const Item = Toolbar.Item // tslint:disable-line
-const Group = Toolbar.Group // tslint:disable-line
+const Item = Toolbar.Item // eslint-disable-line
+const Group = Toolbar.Group // eslint-disable-line
 
 export default class Example extends React.Component {
   onClick = (name: string) => {
@@ -29,8 +29,8 @@ export default class Example extends React.Component {
   }
 
   renderZoomDropdown() {
-    const MenuItem = Menu.Item // tslint:disable-line
-    const Divider = Menu.Divider // tslint:disable-line
+    const MenuItem = Menu.Item // eslint-disable-line
+    const Divider = Menu.Divider // eslint-disable-line
 
     return (
       <Menu>

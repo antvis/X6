@@ -74,7 +74,7 @@ class BallView extends NodeView {
         params: { speed: number; angle: number },
       ) {
         return function (t: number) {
-          t = flightTime * t // tslint:disable-line
+          t = flightTime * t // eslint-disable-line
           return {
             x:
               position.x +

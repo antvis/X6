@@ -15,7 +15,7 @@ import {
   ControlOutlined,
 } from '@ant-design/icons'
 
-const MenuItem = Menu.Item // tslint:disable-line
+const MenuItem = Menu.Item // eslint-disable-line
 const SubMenu = Menu.SubMenu
 const Divider = Menu.Divider
 

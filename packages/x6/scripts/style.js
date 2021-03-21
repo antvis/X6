@@ -26,7 +26,7 @@ compile(path.join(src, 'index.less'), path.join(dist, 'x6.css'))
 
 function toCSSPath(source) {
   const dir = path.dirname(source)
-  const file = path.basename(source, '.less') + '.css'
+  const file = `${path.basename(source, '.less')}.css`
   return path.join(dir, file)
 }
 
@@ -65,7 +65,7 @@ function makeStyleModule() {
   const target = path.join(src, 'style/raw.ts')
   const content = fs.readFileSync(source, { encoding: 'utf8' })
   const prev = fs.readFileSync(target, { encoding: 'utf8' })
-  const curr = `/* tslint:disable */
+  const curr = `/* eslint-disable */
 
 /**
  * Auto generated file, do not modify it!

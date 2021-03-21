@@ -18,11 +18,9 @@ import { Handle } from '../common'
 export class Selection extends View<Selection.EventArgs> {
   public readonly options: Selection.Options
   protected readonly collection: Collection
-
   protected $container: JQuery<HTMLElement>
   protected $selectionContainer: JQuery<HTMLElement>
   protected $selectionContent: JQuery<HTMLElement>
-
   protected boxCount: number
   protected boxesUpdated: boolean
 
@@ -233,14 +231,14 @@ export class Selection extends View<Selection.EventArgs> {
   startSelecting(evt: JQuery.MouseDownEvent) {
     // Flow: startSelecting => adjustSelection => stopSelecting
 
-    evt = this.normalizeEvent(evt) // tslint:disable-line
+    evt = this.normalizeEvent(evt) // eslint-disable-line
     this.clean()
     let x
     let y
     const graphContainer = this.graph.container
     if (
-      null != evt.offsetX &&
-      null != evt.offsetY &&
+      evt.offsetX != null &&
+      evt.offsetY != null &&
       graphContainer.contains(evt.target)
     ) {
       x = evt.offsetX
@@ -297,8 +295,8 @@ export class Selection extends View<Selection.EventArgs> {
         const offset = this.$container.offset()!
         const origin = graph.pageToLocal(offset.left, offset.top)
         const scale = graph.transform.getScale()
-        width = width / scale.sx
-        height = height / scale.sy
+        width /= scale.sx
+        height /= scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
         const cells = this.getNodesInArea(rect).map((view) => view.cell)
         this.reset(cells)
@@ -463,7 +461,11 @@ export class Selection extends View<Selection.EventArgs> {
         this.notifyBoxEvent('box:mousemove', evt, client.x, client.y)
         break
       }
+
+      default:
+        break
     }
+
     this.boxesUpdated = false
   }
 
@@ -912,8 +914,8 @@ export class Selection extends View<Selection.EventArgs> {
     }
 
     if (
-      0.001 < Math.abs(width - newWidth) ||
-      0.001 < Math.abs(height - newHeight)
+      Math.abs(width - newWidth) > 0.001 ||
+      Math.abs(height - newHeight) > 0.001
     ) {
       this.graph.model.resizeCells(newWidth, newHeight, data.cells, {
         selection: this.cid,

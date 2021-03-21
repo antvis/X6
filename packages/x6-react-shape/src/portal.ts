@@ -32,6 +32,10 @@ export namespace Portal {
           result.splice(index, 1)
           return result
         }
+        break
+      }
+      default: {
+        break
       }
     }
     return state
@@ -54,10 +58,12 @@ export namespace Portal {
   }
 
   export function getProvider() {
+    // eslint-disable-next-line react/display-name
     return () => {
       active = true
       const [items, mutate] = useReducer(reducer, [])
       dispatch = mutate
+      // eslint-disable-next-line react/no-children-prop
       return React.createElement(React.Fragment, {
         children: items.map((item) => item.portal),
       })

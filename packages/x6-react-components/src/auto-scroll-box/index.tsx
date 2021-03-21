@@ -6,9 +6,12 @@ export class AutoScrollBox extends React.PureComponent<
   AutoScrollBox.Props,
   AutoScrollBox.State
 > {
-  state: AutoScrollBox.State = {
-    contentWidth: null,
-    contentHeight: null,
+  constructor(props: AutoScrollBox.Props) {
+    super(props)
+    this.state = {
+      contentWidth: null,
+      contentHeight: null,
+    }
   }
 
   onContentResize = (width: number, height: number) => {
@@ -64,7 +67,7 @@ export class AutoScrollBox extends React.PureComponent<
                 <ResizeDetector
                   handleWidth={scrollX}
                   handleHeight={scrollY}
-                  skipOnMount={true}
+                  skipOnMount
                   onResize={this.onContentResize}
                 >
                   {children}

@@ -192,7 +192,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     )
   }
 
-  round(precision: number = 0) {
+  round(precision = 0) {
     this.x = util.round(this.x, precision)
     this.y = util.round(this.y, precision)
     this.width = util.round(this.width, precision)
@@ -691,6 +691,8 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
           return new Point(ref.x, this.y + this.height)
         case 'top':
           return new Point(ref.x, this.y)
+        default:
+          break
       }
     }
 

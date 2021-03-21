@@ -331,7 +331,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     handle: Segments.Handle,
     vertex: Point.PointLike,
     nextVertex: Point.PointLike,
-    offset: number = 0,
+    offset = 0,
   ) {
     const precision = this.options.precision || 0
     const vertical = Math.abs(vertex.x - nextVertex.x) < precision

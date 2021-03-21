@@ -5,7 +5,7 @@ import { Node } from './node'
 import { Edge } from './edge'
 
 export class Collection extends Basecoat<Collection.EventArgs> {
-  public length: number = 0
+  public length = 0
   public comparator: Collection.Comparator | null
   private cells: Cell[]
   private map: { [id: string]: Cell }
@@ -245,7 +245,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   at(index: number): Cell | null {
     if (index < 0) {
-      index += this.length // tslint:disable-line
+      index += this.length // eslint-disable-line
     }
     return this.cells[index] || null
   }

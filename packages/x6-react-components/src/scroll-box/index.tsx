@@ -259,7 +259,7 @@ export class ScrollBox extends React.PureComponent<
       return false
     }
 
-    delta = Math.round(delta) // tslint:disable-line
+    delta = Math.round(delta) // eslint-disable-line
     if (delta === 0) {
       return false
     }
@@ -275,7 +275,7 @@ export class ScrollBox extends React.PureComponent<
       return false
     }
 
-    delta = Math.round(delta) // tslint:disable-line
+    delta = Math.round(delta) // eslint-disable-line
     if (delta === 0) {
       return false
     }

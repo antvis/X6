@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import { Point, Line, Path } from '../../geometry'
 import { Edge } from '../../model'
 import { EdgeView } from '../../view'

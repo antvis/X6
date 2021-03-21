@@ -62,9 +62,9 @@ export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
   if (matrix != null) {
     const source = matrix as any
     const target = mat as any
-    for (const key in source) {
+    Object.keys(source).forEach((key) => {
       target[key] = source[key]
-    }
+    })
   }
   return mat
 }
@@ -76,7 +76,7 @@ export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
 export function createSVGTransform(matrix?: DOMMatrix | MatrixLike) {
   if (matrix != null) {
     if (!(matrix instanceof DOMMatrix)) {
-      matrix = createSVGMatrix(matrix) // tslint:disable-line
+      matrix = createSVGMatrix(matrix) // eslint-disable-line
     }
 
     return svgDocument.createSVGTransformFromMatrix(matrix as DOMMatrix)
@@ -203,7 +203,7 @@ export function parseTransformString(transform: string) {
         transformations.push(`rotate(${rotation[0]})`)
       }
 
-      transform = transformations.join(' ') // tslint:disable-line
+      transform = transformations.join(' ') // eslint-disable-line
     } else {
       const translateMatch = transform.match(/translate\((.*?)\)/)
       if (translateMatch) {

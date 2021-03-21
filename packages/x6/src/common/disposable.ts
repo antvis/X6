@@ -1,6 +1,3 @@
-// import { Platform } from '../util'
-// import { DomEvent } from '../dom'
-
 /**
  * An object which implements the disposable pattern.
  */
@@ -36,7 +33,7 @@ export class Disposable implements IDisposable {
   //   }
   // }
 
-  // tslint:disable-next-line
+  // eslint-disable-next-line
   private _disposed?: boolean
 
   get disposed() {
@@ -56,7 +53,7 @@ export namespace Disposable {
       descriptor: PropertyDescriptor,
     ) => {
       const raw = descriptor.value
-      const proto = target.__proto__ as IDisposable
+      const proto = target.__proto__ as IDisposable // eslint-disable-line
       descriptor.value = function (this: IDisposable) {
         if (this.disposed) {
           return
@@ -107,13 +104,9 @@ export class DisposableDelegate implements IDisposable {
  * An object which manages a collection of disposable items.
  */
 export class DisposableSet implements IDisposable {
-  private isDisposed = false // tslint:disable-line:variable-name
-  private items = new Set<IDisposable>()
+  private isDisposed = false // eslint-disable-line:variable-name
 
-  /**
-   * Construct a new disposable set.
-   */
-  constructor() {}
+  private items = new Set<IDisposable>()
 
   /**
    * Test whether the set has been disposed.

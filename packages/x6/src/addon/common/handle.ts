@@ -79,7 +79,7 @@ export class Handle {
         startY: evt.clientY,
       })
 
-      if (evt.type === 'mousedown' && 2 === evt.button) {
+      if (evt.type === 'mousedown' && evt.button === 2) {
         this.triggerHandleAction(action, 'contextmenu', evt)
       } else {
         this.triggerHandleAction(action, 'mousedown', evt)
@@ -163,7 +163,7 @@ export class Handle {
   }
 
   protected setPieIcons(this: Handle & View) {
-    if ('pie' === this.handleOptions.type) {
+    if (this.handleOptions.type === 'pie') {
       this.$handleContainer.find(`.${ClassNames.handle}`).each((_, elem) => {
         const $elem = this.$(elem)
         const action = $elem.attr('data-action')!
@@ -174,7 +174,7 @@ export class Handle {
           const contect = window
             .getComputedStyle(elem, ':before')
             .getPropertyValue('content')
-          if (contect && 'none' !== contect) {
+          if (contect && contect !== 'none') {
             const $icons = $elem.find<any>(`.${className}-txt`)
             if ($icons.length) {
               Vector.create($icons[0]).text(contect.replace(/['"]/g, ''))
@@ -346,7 +346,7 @@ export class Handle {
       const $handle = this.getHandleElem(name)
       const className = `${ClassNames.handle}-selected`
       if (selected === undefined) {
-        selected = !$handle.hasClass(className) // tslint:disable-line
+        selected = !$handle.hasClass(className) // eslint-disable-line
       }
 
       $handle.toggleClass(className, selected)

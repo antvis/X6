@@ -12,7 +12,6 @@ export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
   protected readonly batches: KeyValue<number> = {}
   protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
-
   public graph: Graph | null
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
@@ -717,6 +716,8 @@ export class Model extends Basecoat<Model.EventArgs> {
       if (outgoing && targetCell && targetCell.id === cell2.id) {
         return true
       }
+
+      return false
     })
   }
 
@@ -1088,7 +1089,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region shortest path
 
-  /***
+  /** *
    * Returns an array of IDs of nodes on the shortest
    * path between source and target.
    */

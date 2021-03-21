@@ -23,7 +23,7 @@ export class Animation {
     path: string | string[],
     targetValue: T,
     options: Animation.StartOptions<T> = {},
-    delim: string = '/',
+    delim = '/',
   ): () => void {
     const startValue = this.cell.getPropByPath<T>(path)
     const localOptions = ObjectExt.defaults(options, Animation.defaultOptions)
@@ -87,7 +87,7 @@ export class Animation {
   stop<T extends Animation.TargetValue>(
     path: string | string[],
     options: Animation.StopOptions<T> = {},
-    delim: string = '/',
+    delim = '/',
   ) {
     const paths = Array.isArray(path) ? path : path.split(delim)
     Object.keys(this.ids)

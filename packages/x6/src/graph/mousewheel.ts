@@ -7,8 +7,9 @@ import { Disposable, IDisablable } from '../common'
 export class MouseWheel extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
   public readonly container: HTMLElement
+
   protected frameId: number | null
-  protected cumulatedFactor: number = 1
+  protected cumulatedFactor = 1
   protected currentScale: number | null
   protected startPos: { x: number; y: number }
   protected eventName: 'mousewheel' | 'wheel'
@@ -145,16 +146,14 @@ export class MouseWheel extends Disposable implements IDisablable {
             } else {
               scroller.zoom(targetScale, { absolute: true })
             }
+          } else if (this.options.zoomAtMousePosition) {
+            const origin = this.graph.coord.clientToGraphPoint(this.startPos)
+            this.graph.zoom(targetScale, {
+              absolute: true,
+              center: origin.clone(),
+            })
           } else {
-            if (this.options.zoomAtMousePosition) {
-              const origin = this.graph.coord.clientToGraphPoint(this.startPos)
-              this.graph.zoom(targetScale, {
-                absolute: true,
-                center: origin.clone(),
-              })
-            } else {
-              this.graph.zoom(targetScale, { absolute: true })
-            }
+            this.graph.zoom(targetScale, { absolute: true })
           }
         }
 

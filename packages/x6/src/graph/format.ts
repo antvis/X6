@@ -64,7 +64,7 @@ export class FormatManager extends Base {
 
       const styleSheetCount = document.styleSheets.length
       const styleSheetsCopy = []
-      for (let k = styleSheetCount - 1; 0 <= k; k -= 1) {
+      for (let k = styleSheetCount - 1; k >= 0; k -= 1) {
         // There is a bug (bugSS) in Chrome 14 and Safari. When you set
         // `stylesheet.disable = true` it will also remove it from
         // `document.styleSheets`. So we need to store all stylesheets before
@@ -234,7 +234,7 @@ export class FormatManager extends Base {
       context2D.fillStyle = 'rgb(1,1,1)'
       context2D.fillRect(x, y, 1, 1)
       const data = context2D.getImageData(x, y, 1, 1).data
-      if (1 !== data[0] || 1 !== data[1] || 1 !== data[2]) {
+      if (data[0] !== 1 || data[1] !== 1 || data[2] !== 1) {
         throw new Error('size exceeded')
       }
     }
@@ -253,7 +253,9 @@ export class FormatManager extends Base {
         context.drawImage(img, 0, 0, size.width, size.height)
         const dataUri = canvas.toDataURL(options.type, options.quality)
         callback(dataUri)
-      } catch (error) {}
+      } catch (error) {
+        // pass
+      }
     }
 
     this.toSVG(

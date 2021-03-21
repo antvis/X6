@@ -28,7 +28,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
       return
     }
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     options = ObjectExt.defaultsDeep({}, options, defaultOptions)
 
     const magnetVel = Vector.create(magnet as SVGElement)

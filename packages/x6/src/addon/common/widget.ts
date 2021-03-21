@@ -23,7 +23,7 @@ export class Widget<
 
   public static register(instance: Widget, graph?: Graph) {
     if (graph == null) {
-      // tslint:disable-next-line
+      // eslint-disable-next-line
       graph = instance.graph
     }
     const dic = this.ensureCache()
@@ -36,7 +36,7 @@ export class Widget<
 
   public static unregister(instance: Widget, graph?: Graph) {
     if (graph == null) {
-      // tslint:disable-next-line
+      // eslint-disable-next-line
       graph = instance.graph
     }
     const dic = this.ensureCache()

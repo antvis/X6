@@ -2,11 +2,12 @@ const extendStatics =
   Object.setPrototypeOf ||
   ({ __proto__: [] } instanceof Array &&
     function (d, b) {
-      d.__proto__ = b
+      d.__proto__ = b // eslint-disable-line no-proto
     }) ||
   function (d, b) {
+    // eslint-disable-next-line no-restricted-syntax
     for (const p in b) {
-      if (b.hasOwnProperty(p)) {
+      if (Object.prototype.hasOwnProperty.call(b, p)) {
         d[p] = (b as any)[p]
       }
     }
@@ -36,12 +37,12 @@ const isNativeClass =
 export function createClass<T>(className: string, base: Function): T {
   let cls
   if (isNativeClass) {
-    // tslint:disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
     cls = new Function('base', `return class ${className} extends base { }`)(
       base,
     )
   } else {
-    // tslint:disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
     cls = new Function(
       'base',
       `return function ${className}() { return base.apply(this, arguments) }`,

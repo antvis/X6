@@ -119,7 +119,7 @@ export function getBBox(
     }
 
     if (!target) {
-      target = elem // tslint:disable-line
+      target = elem // eslint-disable-line
     }
 
     for (let i = 0; i < n; i += 1) {
@@ -213,7 +213,7 @@ export function toGeometryShape(elem: SVGElement) {
   const attr = (name: string) => {
     const s = elem.getAttribute(name)
     const v = s ? parseFloat(s) : 0
-    return isNaN(v) ? 0 : v
+    return Number.isNaN(v) ? 0 : v
   }
 
   switch (elem instanceof SVGElement && elem.nodeName.toLowerCase()) {
@@ -227,7 +227,6 @@ export function toGeometryShape(elem: SVGElement) {
       const points = getPointsFromSvgElement(elem as SVGPolylineElement)
       return new Polyline(points)
     }
-
     case 'polygon': {
       const points = getPointsFromSvgElement(elem as SVGPolygonElement)
       if (points.length > 1) {
@@ -235,7 +234,6 @@ export function toGeometryShape(elem: SVGElement) {
       }
       return new Polyline(points)
     }
-
     case 'path': {
       let d = elem.getAttribute('d') as string
       if (!Path.isValid(d)) {
@@ -243,9 +241,11 @@ export function toGeometryShape(elem: SVGElement) {
       }
       return Path.parse(d)
     }
-
-    case 'line':
+    case 'line': {
       return new Line(attr('x1'), attr('y1'), attr('x2'), attr('y2'))
+    }
+    default:
+      break
   }
 
   // Anything else is a rectangle
@@ -258,7 +258,7 @@ export function getIntersection(
   target?: SVGElement,
 ) {
   const svg = elem instanceof SVGSVGElement ? elem : elem.ownerSVGElement!
-  target = target || svg // tslint:disable-line
+  target = target || svg // eslint-disable-line
   const bbox = getBBox(target)
   const center = bbox.getCenter()
 
@@ -369,7 +369,9 @@ function createAnimation(
   elem.appendChild(animate)
   try {
     return setupAnimation(animate, options)
-  } catch (error) {}
+  } catch (error) {
+    // pass
+  }
 
   return () => {}
 }

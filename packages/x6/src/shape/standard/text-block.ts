@@ -74,10 +74,10 @@ export const TextBlock = Base.define({
           // No foreign object
           const style = (attrs.style as Attr.SimpleAttrs) || {}
           const wrapValue = { text, width: -5, height: '100%' }
-          const wrapAttrs = Object.assign(
-            { textVerticalAnchor: 'middle' },
-            style,
-          )
+          const wrapAttrs = {
+            textVerticalAnchor: 'middle',
+            ...style,
+          }
 
           const textWrap = Attr.presets.textWrap as Attr.SetDefinition
           FunctionExt.call(textWrap.set, this, wrapValue, {

@@ -101,7 +101,7 @@ export class PortManager {
     result.position = this.createPosition(group, result)
     result.label = ObjectExt.merge({}, group.label, this.getLabel(result))
     result.zIndex = this.getZIndex(group, result)
-    result.size = Object.assign({}, group.size, result.size)
+    result.size = { ...group.size, ...result.size } as Size
 
     return result
   }
@@ -137,7 +137,7 @@ export class PortManager {
 
   protected getPortPosition(
     position?: PortManager.PortPositionMetadata,
-    setDefault: boolean = false,
+    setDefault = false,
   ): PortManager.PortPosition {
     if (position == null) {
       if (setDefault) {
@@ -168,7 +168,7 @@ export class PortManager {
 
   protected getPortLabelPosition(
     position?: PortManager.PortLabelPositionMetadata,
-    setDefault: boolean = false,
+    setDefault = false,
   ): PortManager.PortLabelPosition {
     if (position == null) {
       if (setDefault) {
@@ -190,10 +190,7 @@ export class PortManager {
     return { args: {} }
   }
 
-  protected getLabel(
-    item: PortManager.GroupMetadata,
-    setDefaults: boolean = false,
-  ) {
+  protected getLabel(item: PortManager.GroupMetadata, setDefaults = false) {
     const label = item.label || {}
     label.position = this.getPortLabelPosition(label.position, setDefaults)
     return label as PortManager.Label

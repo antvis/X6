@@ -25,7 +25,10 @@ export default {
     typescript({ declaration: false }),
     resolve(),
     commonjs(),
-    replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
     terser(),
     filesize(),
     autoExternal(),

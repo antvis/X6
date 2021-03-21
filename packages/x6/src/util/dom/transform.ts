@@ -50,7 +50,7 @@ export function translate(
 export function translate(
   elem: Element,
   tx?: number,
-  ty: number = 0,
+  ty = 0,
   options: TransformOptions = {},
 ) {
   let transformAttr = attr(elem, 'transform')
@@ -96,7 +96,7 @@ export function rotate(
   transformAttr = transform.raw
   transformAttr = transformAttr.replace(/rotate\([^)]*\)/g, '').trim()
 
-  angle %= 360 // tslint:disable-line
+  angle %= 360 // eslint-disable-line
   const newAngle = options.absolute ? angle : transform.rotation.angle + angle
   const newOrigin = cx != null && cy != null ? `,${cx},${cy}` : ''
   const newRotate = `rotate(${newAngle}${newOrigin})`
@@ -113,7 +113,7 @@ export function scale(elem: Element, sx?: number, sy?: number) {
     return transform.scale
   }
 
-  sy = sy == null ? sx : sy //tslint:disable-line
+  sy = sy == null ? sx : sy // eslint-disable-line
 
   transformAttr = transform.raw
   transformAttr = transformAttr.replace(/scale\([^)]*\)/g, '').trim()
@@ -132,7 +132,7 @@ export function translateAndAutoOrient(
 
   if (!target) {
     const svg = elem instanceof SVGSVGElement ? elem : elem.ownerSVGElement!
-    target = svg // tslint:disable-line
+    target = svg // eslint-disable-line
   }
 
   // Clean-up previously set transformations except the scale.
