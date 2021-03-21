@@ -16,6 +16,7 @@ export default {
       sourcemap: true,
       globals: {
         vue: 'Vue',
+        'vue-demi': 'vueDemi',
         'react-dom': 'ReactDom',
         '@antv/x6': 'X6',
       },
