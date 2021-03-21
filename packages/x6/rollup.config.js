@@ -1,13 +1,6 @@
-import { terser } from 'rollup-plugin-terser'
-import replace from '@rollup/plugin-replace'
-import commonjs from '@rollup/plugin-commonjs'
-import filesize from 'rollup-plugin-filesize'
-import resolve from '@rollup/plugin-node-resolve'
-import typescript from '@rollup/plugin-typescript'
-// import progress from 'rollup-plugin-progress'
+import config from '../../configs/rollup-config'
 
-export default {
-  input: './src/index.ts',
+export default config({
   output: [
     {
       name: 'X6',
@@ -16,16 +9,4 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [
-    typescript({ declaration: false }),
-    resolve(),
-    commonjs(),
-    replace({
-      preventAssignment: true,
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    }),
-    // progress(),
-    terser(),
-    filesize(),
-  ],
-}
+})
