@@ -1,8 +1,7 @@
 import { NodeView } from '@antv/x6'
-import Vue from 'vue'
+import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 import { VueShape } from './node'
 import { VueComponent } from './registry'
-import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 
 export class VueShapeView extends NodeView<VueShape> {
   protected init() {
@@ -29,17 +28,18 @@ export class VueShapeView extends NodeView<VueShape> {
     if (root) {
       const component = this.graph.hook.getVueComponent(node)
       if (isVue2) {
+        const Vue = Vue2 as any
         const div = document.createElement('div')
         div.style.width = '100%'
         div.style.height = '100%'
         let instance = null
         if (typeof component === 'string') {
           div.innerHTML = component
-          instance = new Vue2({ el: div })
+          instance = new Vue({ el: div })
         } else {
           const { template, ...other } = component as VueComponent
           div.innerHTML = template
-          instance = new Vue2({
+          instance = new Vue({
             el: div,
             provide() {
               return {
