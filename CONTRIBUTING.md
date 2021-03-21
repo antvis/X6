@@ -41,7 +41,7 @@ No one can guarantee how much will be remembered about certain PR after some tim
 
 ### Style Guide
 
-tslint can help to identify styling issues that may exist in your code. Your code is required to pass the test from tslint. Run the test locally by `$ yarn lint`.
+eslint can help to identify styling issues that may exist in your code. Your code is required to pass the test from eslint. Run the test locally by `$ yarn lint`.
 
 ### Commit Message Format
 

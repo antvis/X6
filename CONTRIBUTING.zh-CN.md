@@ -41,7 +41,7 @@ $ git push origin branch-name
 
 ### 代码风格
 
-你的代码风格必须通过 tslint，你可以运行 `$ yarn lint` 本地测试。
+你的代码风格必须通过 eslint，你可以运行 `$ yarn lint` 本地测试。
 
 ### Commit 提交规范
 
