@@ -1,5 +1,6 @@
 import { ResolveOptions, resolve } from './util'
 import { NodeAnchor } from './index'
+import { Point } from '../../geometry'
 
 export interface MiddleSideEndpointOptions extends ResolveOptions {
   rotate?: boolean
@@ -36,7 +37,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
   }
 
   const side = bbox.getNearestSideToPoint(refPoint)
-  let result
+  let result: Point
   switch (side) {
     case 'left':
       result = bbox.getLeftMiddle()
@@ -49,6 +50,8 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
       break
     case 'bottom':
       result = bbox.getBottomCenter()
+      break
+    default:
       break
   }
 
@@ -69,7 +72,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
     }
   }
 
-  return options.rotate ? result.rotate(-angle, center) : result
+  return options.rotate ? result!.rotate(-angle, center) : result!
 }
 
 /**

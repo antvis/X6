@@ -5,10 +5,10 @@ import '@antv/x6-react-components/es/menu/style/index.css'
 import '@antv/x6-react-components/es/menubar/style/index.css'
 import 'antd/dist/antd.css'
 
-const MenuItem = Menu.Item // tslint:disable-line
+const MenuItem = Menu.Item // eslint-disable-line
 const SubMenu = Menu.SubMenu
 const Divider = Menu.Divider
-const MenubarItem = Menubar.Item // tslint:disable-line
+const MenubarItem = Menubar.Item // eslint-disable-line
 
 export default class Example extends React.Component {
   onMenuClick = (name: string) => {

@@ -79,8 +79,8 @@ export namespace MenuItemInner {
     const { prefixCls } = props.context
     const baseCls = `${prefixCls}-item`
     return (
-      <React.Fragment>
-        <button className={`${baseCls}-button`} onClick={onClick}>
+      <>
+        <button type="button" className={`${baseCls}-button`} onClick={onClick}>
           {icon && React.isValidElement(icon) && (
             <span className={`${baseCls}-icon`}>{icon}</span>
           )}
@@ -89,7 +89,7 @@ export namespace MenuItemInner {
           {innerExtra}
         </button>
         {outerExtra}
-      </React.Fragment>
+      </>
     )
   }
 }
@@ -100,6 +100,7 @@ export const MenuItem: React.SFC<MenuItem.Props> = (props) => (
   </MenuContext.Consumer>
 )
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export namespace MenuItem {
   export interface Props {
     className?: string

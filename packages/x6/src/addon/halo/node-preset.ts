@@ -276,6 +276,9 @@ export class NodePreset {
             bbox.y + bbox.height / 2,
           )
           dy = loopEdgeWidth / 2
+          break
+        default:
+          break
       }
 
       if (point) {
@@ -286,6 +289,7 @@ export class NodePreset {
           graphRect.containsPoint(vertex1) && graphRect.containsPoint(vertex2)
         )
       }
+      return false
     })
 
     if (found && vertex1 && vertex2) {

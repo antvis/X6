@@ -32,7 +32,7 @@ export class PriorityQueue<T> {
    * Returns `true` if the priority queue is empty, `false` otherwise.
    */
   isEmpty() {
-    return 0 === this.data.length
+    return this.data.length === 0
   }
 
   /**
@@ -147,6 +147,7 @@ export class PriorityQueue<T> {
     const last = data.length - 1
     let current = index
 
+    // eslint-disable-next-line
     while (true) {
       const left = (current << 1) + 1
       const right = left + 1

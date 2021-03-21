@@ -1,3 +1,11 @@
+import {
+  camelCase,
+  startCase,
+  upperCase,
+  lowerCase,
+  upperFirst,
+} from 'lodash-es'
+
 export {
   // kebabCase,
   // startCase,
@@ -8,14 +16,6 @@ export {
   lowerFirst,
   upperFirst,
   camelCase,
-} from 'lodash-es'
-
-import {
-  camelCase,
-  startCase,
-  upperCase,
-  lowerCase,
-  upperFirst,
 } from 'lodash-es'
 
 // @see: https://medium.com/@robertsavian/javascript-case-converters-using-lodash-4f2f964091cc

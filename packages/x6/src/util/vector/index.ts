@@ -85,7 +85,7 @@ export class Vector {
    * is considered zero.
    */
   translate(tx: number, ty?: number, options?: Dom.TransformOptions): this
-  translate(tx?: number, ty: number = 0, options: Dom.TransformOptions = {}) {
+  translate(tx?: number, ty = 0, options: Dom.TransformOptions = {}) {
     if (tx == null) {
       return Dom.translate(this.node)
     }
@@ -350,7 +350,7 @@ export class Vector {
   }
 
   parent(type?: string) {
-    let parent: Vector = this // tslint:disable-line
+    let parent: Vector = this // eslint-disable-line @typescript-eslint/no-this-alias
 
     // check for parent
     if (parent.node.parentNode == null) {
@@ -516,7 +516,7 @@ export class Vector {
    * paths. Using sampling, we can just generate bunch of points for each of
    * the path and find the closest ones from each set.
    */
-  sample(interval: number = 1) {
+  sample(interval = 1) {
     if (this.node instanceof SVGPathElement) {
       return Dom.sample(this.node, interval)
     }

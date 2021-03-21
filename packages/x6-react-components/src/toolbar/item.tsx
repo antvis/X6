@@ -65,7 +65,7 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
     }
 
     const button = (
-      <button {...props}>
+      <button type="button" {...props}>
         {icon && React.isValidElement(icon) && (
           <span className={`${baseCls}-icon`}>{icon}</span>
         )}
@@ -140,6 +140,7 @@ ToolbarItem.defaultProps = {
   dropdownArrow: true,
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export namespace ToolbarItem {
   export interface Props {
     className?: string

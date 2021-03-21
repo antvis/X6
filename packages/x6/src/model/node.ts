@@ -20,7 +20,6 @@ export class Node<
     position: { x: 0, y: 0 },
     size: { width: 1, height: 1 },
   }
-
   protected readonly store: Store<Node.Properties>
   protected port: PortManager
 
@@ -116,12 +115,14 @@ export class Node<
         case 'left':
         case 'right':
           // Don't change height when resizing horizontally.
-          height = currentSize.height // tslint:disable-line
+          height = currentSize.height // eslint-disable-line
           break
         case 'top':
         case 'bottom':
           // Don't change width when resizing vertically.
-          width = currentSize.width // tslint:disable-line
+          width = currentSize.width // eslint-disable-line
+          break
+        default:
           break
       }
 
@@ -318,11 +319,7 @@ export class Node<
     return this
   }
 
-  translate(
-    tx: number = 0,
-    ty: number = 0,
-    options: Node.TranslateOptions = {},
-  ) {
+  translate(tx = 0, ty = 0, options: Node.TranslateOptions = {}) {
     if (tx === 0 && ty === 0) {
       return this
     }
@@ -363,8 +360,8 @@ export class Node<
       )
 
       // recalculate the translation taking the restrictions into account.
-      tx = x - position.x // tslint:disable-line
-      ty = y - position.y // tslint:disable-line
+      tx = x - position.x // eslint-disable-line
+      ty = y - position.y // eslint-disable-line
     }
 
     const translatedPosition = {
@@ -407,7 +404,7 @@ export class Node<
     if (val == null) {
       return this.getAngle()
     }
-    return this.rotate(val)
+    return this.rotate(val, options)
   }
 
   getAngle() {
@@ -659,7 +656,7 @@ export class Node<
 
   getPortProp(portId: string): PortManager.PortMetadata
   getPortProp<T>(portId: string, path: string | string[]): T
-  getPortProp<T>(portId: string, path?: string | string[]) {
+  getPortProp(portId: string, path?: string | string[]) {
     return this.getPropByPath(this.prefixPortPath(portId, path))
   }
 
@@ -937,6 +934,7 @@ export class Node<
           if (!prev.find((prevPort) => prevPort.id === item.id)) {
             return item
           }
+          return null
         })
       : [...curr]
 
@@ -945,6 +943,7 @@ export class Node<
           if (!curr.find((curPort) => curPort.id === item.id)) {
             return item
           }
+          return null
         })
       : []
 

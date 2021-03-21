@@ -25,14 +25,12 @@ export function mod(n: number, m: number) {
 
 export function random(lower: number, upper: number) {
   if (upper == null) {
-    upper = lower == null ? 1 : lower // tslint:disable-line
-    lower = 0 // tslint:disable-line
-  } else {
-    if (upper < lower) {
-      const tmp = lower
-      lower = upper // tslint:disable-line
-      upper = tmp // tslint:disable-line
-    }
+    upper = lower == null ? 1 : lower // eslint-disable-line
+    lower = 0 // eslint-disable-line
+  } else if (upper < lower) {
+    const tmp = lower
+    lower = upper // eslint-disable-line
+    upper = tmp // eslint-disable-line
   }
   return Math.floor(Math.random() * (upper - lower + 1) + lower)
 }
@@ -55,7 +53,7 @@ export function normalizePercentage(
     raw = parseFloat(num)
     if (isPercentage(num)) {
       raw /= 100
-      if (isFinite(raw)) {
+      if (Number.isFinite(raw)) {
         return raw * ref
       }
     }
@@ -63,7 +61,7 @@ export function normalizePercentage(
     raw = num
   }
 
-  if (!isFinite(raw)) {
+  if (!Number.isFinite(raw)) {
     return 0
   }
 
@@ -135,23 +133,23 @@ export function normalizeSides(box?: SideOptions) {
     let right = 0
     let bottom = 0
 
-    if (box.vertical != null && isFinite(box.vertical)) {
+    if (box.vertical != null && Number.isFinite(box.vertical)) {
       top = bottom = box.vertical
     }
-    if (box.horizontal != null && isFinite(box.horizontal)) {
+    if (box.horizontal != null && Number.isFinite(box.horizontal)) {
       right = left = box.horizontal
     }
 
-    if (box.left != null && isFinite(box.left)) left = box.left
-    if (box.top != null && isFinite(box.top)) top = box.top
-    if (box.right != null && isFinite(box.right)) right = box.right
-    if (box.bottom != null && isFinite(box.bottom)) bottom = box.bottom
+    if (box.left != null && Number.isFinite(box.left)) left = box.left
+    if (box.top != null && Number.isFinite(box.top)) top = box.top
+    if (box.right != null && Number.isFinite(box.right)) right = box.right
+    if (box.bottom != null && Number.isFinite(box.bottom)) bottom = box.bottom
 
     return { top, right, bottom, left }
   }
 
   let val = 0
-  if (box != null && isFinite(box)) {
+  if (box != null && Number.isFinite(box)) {
     val = box
   }
 

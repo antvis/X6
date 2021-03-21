@@ -8,7 +8,9 @@ import { Base } from './base'
 
 export class TransformManager extends Base {
   protected widgets: Map<Node, Transform> = new Map()
+
   protected viewportMatrix: DOMMatrix | null
+
   protected viewportTransformString: string | null
 
   protected get container() {
@@ -134,9 +136,9 @@ export class TransformManager extends Base {
     return Dom.matrixToScale(this.getMatrix())
   }
 
-  scale(sx: number, sy: number = sx, ox: number = 0, oy: number = 0) {
-    sx = this.clampScale(sx) // tslint:disable-line
-    sy = this.clampScale(sy) // tslint:disable-line
+  scale(sx: number, sy: number = sx, ox = 0, oy = 0) {
+    sx = this.clampScale(sx) // eslint-disable-line
+    sy = this.clampScale(sy) // eslint-disable-line
 
     if (ox || oy) {
       const ts = this.getTranslation()
@@ -166,7 +168,7 @@ export class TransformManager extends Base {
   }
 
   zoom(factor: number, options?: TransformManager.ZoomOptions) {
-    options = options || {} // tslint:disable-line
+    options = options || {} // eslint-disable-line
 
     let sx = factor
     let sy = factor
@@ -176,8 +178,8 @@ export class TransformManager extends Base {
     let cy = clientSize.height / 2
 
     if (!options.absolute) {
-      sx = sx + scale.sx
-      sy = sy + scale.sy
+      sx += scale.sx
+      sy += scale.sy
     }
 
     if (options.scaleGrid) {
@@ -224,8 +226,8 @@ export class TransformManager extends Base {
   rotate(angle: number, cx?: number, cy?: number) {
     if (cx == null || cy == null) {
       const bbox = Dom.getBBox(this.graph.view.stage)
-      cx = bbox.width / 2 // tslint:disable-line
-      cy = bbox.height / 2 // tslint:disable-line
+      cx = bbox.width / 2 // eslint-disable-line
+      cy = bbox.height / 2 // eslint-disable-line
     }
 
     const ctm = this.getMatrix()
@@ -264,16 +266,16 @@ export class TransformManager extends Base {
   ) {
     if (typeof gridWidth === 'object') {
       const opts = gridWidth
-      gridWidth = opts.gridWidth || 1 // tslint:disable-line
-      gridHeight = opts.gridHeight || 1 // tslint:disable-line
-      padding = opts.padding || 0 // tslint:disable-line
-      options = opts // tslint:disable-line
+      gridWidth = opts.gridWidth || 1 // eslint-disable-line
+      gridHeight = opts.gridHeight || 1 // eslint-disable-line
+      padding = opts.padding || 0 // eslint-disable-line
+      options = opts // eslint-disable-line
     } else {
-      gridWidth = gridWidth || 1 // tslint:disable-line
-      gridHeight = gridHeight || 1 // tslint:disable-line
-      padding = padding || 0 // tslint:disable-line
+      gridWidth = gridWidth || 1 // eslint-disable-line
+      gridHeight = gridHeight || 1 // eslint-disable-line
+      padding = padding || 0 // eslint-disable-line
       if (options == null) {
-        options = {} // tslint:disable-line
+        options = {} // eslint-disable-line
       }
     }
 
@@ -363,7 +365,7 @@ export class TransformManager extends Base {
 
   scaleContentToFitImpl(
     options: TransformManager.ScaleContentToFitOptions = {},
-    translate: boolean = true,
+    translate = true,
   ) {
     let contentBBox
     let contentLocalOrigin
@@ -489,11 +491,11 @@ export class TransformManager extends Base {
     const cx = clientSize.width / 2
     const cy = clientSize.height / 2
 
-    x = typeof x === 'number' ? x : cx // tslint:disable-line
-    y = typeof y === 'number' ? y : cy // tslint:disable-line
+    x = typeof x === 'number' ? x : cx // eslint-disable-line
+    y = typeof y === 'number' ? y : cy // eslint-disable-line
 
-    x = cx - x * scale.sx // tslint:disable-line
-    y = cy - y * scale.sy // tslint:disable-line
+    x = cx - x * scale.sx // eslint-disable-line
+    y = cy - y * scale.sy // eslint-disable-line
 
     if (ts.tx !== x || ts.ty !== y) {
       this.translate(x, y)
@@ -517,16 +519,16 @@ export class TransformManager extends Base {
   ) {
     const clientSize = this.getComputedSize()
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     x = NumberExt.normalizePercentage(x, Math.max(0, clientSize.width))
     if (x < 0) {
-      x = clientSize.width + x // tslint:disable-line
+      x = clientSize.width + x // eslint-disable-line
     }
 
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     y = NumberExt.normalizePercentage(y, Math.max(0, clientSize.height))
     if (y < 0) {
-      y = clientSize.height + y // tslint:disable-line
+      y = clientSize.height + y // eslint-disable-line
     }
 
     const ts = this.getTranslation()

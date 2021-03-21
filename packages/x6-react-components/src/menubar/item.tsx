@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events  */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
 import React from 'react'
 import classnames from 'classnames'
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
@@ -9,6 +12,7 @@ class MenubarItemInner extends React.PureComponent<
   MenubarItemInner.State
 > {
   private readonly popupClassName: string
+
   private removeDocClickEvent: (() => void) | null
 
   constructor(props: MenubarItemInner.Props) {
@@ -176,6 +180,7 @@ export const MenubarItem: React.SFC<MenubarItem.Props> = (props) => (
   </MenubarContext.Consumer>
 )
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export namespace MenubarItem {
   export interface Props {
     text: string

@@ -104,7 +104,7 @@ export function parseXML(
   return xml
 }
 
-export function tagName(node: Element, lowercase: boolean = true) {
+export function tagName(node: Element, lowercase = true) {
   const nodeName = node.nodeName
   return lowercase ? nodeName.toLowerCase() : nodeName.toUpperCase()
 }
@@ -150,7 +150,7 @@ export function contains(parent: Element, child: Element) {
   const bup = child && child.parentNode
   return (
     parent === bup ||
-    !!(bup && bup.nodeType === 1 && parent.compareDocumentPosition(bup) & 16)
+    !!(bup && bup.nodeType === 1 && parent.compareDocumentPosition(bup) & 16) // eslint-disable-line no-bitwise
   )
 }
 

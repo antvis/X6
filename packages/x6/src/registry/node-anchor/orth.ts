@@ -19,7 +19,7 @@ const orthogonal: NodeAnchor.ResolvedDefinition<OrthEndpointOptions> = function 
   const bottomRight = bbox.getBottomRight()
 
   let padding = options.padding
-  if (!isFinite(padding)) {
+  if (!Number.isFinite(padding)) {
     padding = 0
   }
 

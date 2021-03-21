@@ -6,17 +6,17 @@ export const KAPPA = 0.551784
 function getNumbericAttribute(
   elem: SVGElement,
   attr: string,
-  defaultValue: number = NaN,
+  defaultValue = NaN,
 ) {
   const v = elem.getAttribute(attr)
   if (v == null) {
     return defaultValue
   }
   const n = parseFloat(v)
-  return isNaN(n) ? defaultValue : n
+  return Number.isNaN(n) ? defaultValue : n
 }
 
-export function sample(elem: SVGPathElement, interval: number = 1) {
+export function sample(elem: SVGPathElement, interval = 1) {
   const length = elem.getTotalLength()
   const samples = []
   let distance = 0
@@ -293,6 +293,8 @@ export function toPathData(
       return circleToPathData(elem as SVGCircleElement)
     case 'rect':
       return rectangleToPathData(elem as SVGRectElement)
+    default:
+      break
   }
 
   throw new Error(`"${tagName}" cannot be converted to svg path element.`)
@@ -325,98 +327,16 @@ export function createSlicePathData(
 
   return da >= svgArcMax
     ? r0
-      ? // tslint:disable-next-line
-        'M0,' +
-        r1 +
-        'A' +
-        r1 +
-        ',' +
-        r1 +
-        ' 0 1,1 0,' +
-        -r1 +
-        'A' +
-        r1 +
-        ',' +
-        r1 +
-        ' 0 1,1 0,' +
-        r1 +
-        'M0,' +
-        r0 +
-        'A' +
-        r0 +
-        ',' +
-        r0 +
-        ' 0 1,0 0,' +
-        -r0 +
-        'A' +
-        r0 +
-        ',' +
-        r0 +
-        ' 0 1,0 0,' +
-        r0 +
-        'Z'
-      : // tslint:disable-next-line
-        'M0,' +
-        r1 +
-        'A' +
-        r1 +
-        ',' +
-        r1 +
-        ' 0 1,1 0,' +
-        -r1 +
-        'A' +
-        r1 +
-        ',' +
-        r1 +
-        ' 0 1,1 0,' +
-        r1 +
-        'Z'
+      ? // eslint-disable-next-line
+        `M0,${r1}A${r1},${r1} 0 1,1 0,${-r1}A${r1},${r1} 0 1,1 0,${r1}M0,${r0}A${r0},${r0} 0 1,0 0,${-r0}A${r0},${r0} 0 1,0 0,${r0}Z`
+      : // eslint-disable-next-line
+        `M0,${r1}A${r1},${r1} 0 1,1 0,${-r1}A${r1},${r1} 0 1,1 0,${r1}Z`
     : r0
-    ? // tslint:disable-next-line
-      'M' +
-      r1 * c0 +
-      ',' +
-      r1 * s0 +
-      'A' +
-      r1 +
-      ',' +
-      r1 +
-      ' 0 ' +
-      df +
-      ',1 ' +
-      r1 * c1 +
-      ',' +
-      r1 * s1 +
-      'L' +
-      r0 * c1 +
-      ',' +
-      r0 * s1 +
-      'A' +
-      r0 +
-      ',' +
-      r0 +
-      ' 0 ' +
-      df +
-      ',0 ' +
-      r0 * c0 +
-      ',' +
-      r0 * s0 +
-      'Z'
-    : // tslint:disable-next-line
-      'M' +
-      r1 * c0 +
-      ',' +
-      r1 * s0 +
-      'A' +
-      r1 +
-      ',' +
-      r1 +
-      ' 0 ' +
-      df +
-      ',1 ' +
-      r1 * c1 +
-      ',' +
-      r1 * s1 +
-      'L0,0' +
-      'Z'
+    ? // eslint-disable-next-line
+      `M${r1 * c0},${r1 * s0}A${r1},${r1} 0 ${df},1 ${r1 * c1},${r1 * s1}L${
+        r0 * c1
+      },${r0 * s1}A${r0},${r0} 0 ${df},0 ${r0 * c0},${r0 * s0}Z`
+    : // eslint-disable-next-line
+      `M${r1 * c0},${r1 * s0}A${r1},${r1} 0 ${df},1 ${r1 * c1},${r1 * s1}L0,0` +
+      `Z`
 }

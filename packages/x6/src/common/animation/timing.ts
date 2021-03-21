@@ -24,10 +24,11 @@ export namespace Timing {
   }
 
   export const exponential: Definition = (t) => {
-    return Math.pow(2, 10 * (t - 1))
+    return Math.pow(2, 10 * (t - 1)) // eslint-disable-line
   }
 
   export const bounce = ((t: number) => {
+    // eslint-disable-next-line
     for (let a = 0, b = 1; 1; a += b, b /= 2) {
       if (t >= (7 - 4 * a) / 11) {
         const q = (11 - 6 * a - 11 * t) / 4
@@ -45,18 +46,18 @@ export namespace Timing {
     reflect(f: Definition): Definition {
       return (t) => 0.5 * (t < 0.5 ? f(2 * t) : 2 - f(2 - 2 * t))
     },
-    clamp(f: Definition, n: number = 0, x: number = 1): Definition {
+    clamp(f: Definition, n = 0, x = 1): Definition {
       return (t) => {
         const r = f(t)
         return r < n ? n : r > x ? x : r
       }
     },
-    back(s: number = 1.70158): Definition {
+    back(s = 1.70158): Definition {
       return (t) => t * t * ((s + 1) * t - s)
     },
-    elastic(x: number = 1.5): Definition {
+    elastic(x = 1.5): Definition {
       return (t) =>
-        Math.pow(2, 10 * (t - 1)) * Math.cos(((20 * Math.PI * x) / 3) * t)
+        Math.pow(2, 10 * (t - 1)) * Math.cos(((20 * Math.PI * x) / 3) * t) // eslint-disable-line
     },
   }
 }
@@ -148,7 +149,7 @@ export namespace Timing {
       return 0
     }
 
-    return Math.pow(2, 10 * (t - 1))
+    return Math.pow(2, 10 * (t - 1)) // eslint-disable-line
   }
 
   // Initial exponential acceleration slowing to stop
@@ -157,7 +158,7 @@ export namespace Timing {
       return 1
     }
 
-    return -Math.pow(2, -10 * t) + 1
+    return -Math.pow(2, -10 * t) + 1 // eslint-disable-line
   }
 
   // Exponential acceleration and deceleration
@@ -170,10 +171,10 @@ export namespace Timing {
     const scaledTime1 = scaledTime - 1
 
     if (scaledTime < 1) {
-      return 0.5 * Math.pow(2, 10 * scaledTime1)
+      return 0.5 * Math.pow(2, 10 * scaledTime1) // eslint-disable-line
     }
 
-    return 0.5 * (-Math.pow(2, -10 * scaledTime1) + 2)
+    return 0.5 * (-Math.pow(2, -10 * scaledTime1) + 2) // eslint-disable-line
   }
 
   // Increasing velocity until stop
@@ -241,7 +242,7 @@ export namespace Timing {
     const s = (p / (2 * Math.PI)) * Math.asin(1)
 
     return -(
-      Math.pow(2, 10 * scaledTime1) *
+      Math.pow(2, 10 * scaledTime1) * // eslint-disable-line
       Math.sin(((scaledTime1 - s) * (2 * Math.PI)) / p)
     )
   }
@@ -257,7 +258,7 @@ export namespace Timing {
 
     const s = (p / (2 * Math.PI)) * Math.asin(1)
     return (
-      Math.pow(2, -10 * scaledTime) *
+      Math.pow(2, -10 * scaledTime) * // eslint-disable-line
         Math.sin(((scaledTime - s) * (2 * Math.PI)) / p) +
       1
     )
@@ -279,13 +280,13 @@ export namespace Timing {
     if (scaledTime < 1) {
       return (
         -0.5 *
-        (Math.pow(2, 10 * scaledTime1) *
+        (Math.pow(2, 10 * scaledTime1) * // eslint-disable-line
           Math.sin(((scaledTime1 - s) * (2 * Math.PI)) / p))
       )
     }
 
     return (
-      Math.pow(2, -10 * scaledTime1) *
+      Math.pow(2, -10 * scaledTime1) * // eslint-disable-line
         Math.sin(((scaledTime1 - s) * (2 * Math.PI)) / p) *
         0.5 +
       1

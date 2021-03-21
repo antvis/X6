@@ -1,4 +1,4 @@
-import { JSONArray, JSONExt, JSONObject, JSONPrimitive } from './'
+import { JSONArray, JSONExt, JSONObject, JSONPrimitive } from '.'
 
 describe('JSONExt', () => {
   describe('isPrimitive()', () => {
@@ -82,11 +82,11 @@ describe('JSONExt', () => {
       expect(v6).toEqual(r6)
       expect(v6[3]).not.toBe(r6[3])
       expect(v6[4]).not.toBe(r6[4])
-      expect((v6[4] as JSONObject)['b']).not.toBe((r6[4] as JSONObject)['b'])
+      expect((v6[4] as JSONObject).b).not.toBe((r6[4] as JSONObject).b)
       expect(v7).toEqual(r7)
-      expect(v7['b']).not.toBe(r7['b'])
-      expect((v7['b'] as JSONArray)[1]).not.toBe((r7['b'] as JSONArray)[1])
-      expect(v7['c']).not.toBe(r7['c'])
+      expect(v7.b).not.toBe(r7.b)
+      expect((v7.b as JSONArray)[1]).not.toBe((r7.b as JSONArray)[1])
+      expect(v7.c).not.toBe(r7.c)
     })
   })
 })

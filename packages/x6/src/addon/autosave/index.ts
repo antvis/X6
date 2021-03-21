@@ -8,12 +8,12 @@ export class AutoSave extends Disablable<AutoSave.EventArgs> {
     return this.options.graph
   }
 
-  delay: number = 10
-  throttle: number = 2
-  threshold: number = 5
+  delay = 10
+  throttle = 2
+  threshold = 5
 
-  private changeCount: number = 0
-  private timestamp: number = 0
+  private changeCount = 0
+  private timestamp = 0
 
   constructor(options: AutoSave.Options) {
     super()

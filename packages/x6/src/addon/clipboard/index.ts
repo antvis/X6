@@ -54,7 +54,7 @@ export class Clipboard {
     this.deserialize(localOptions)
     const cells = this.cells
 
-    cells.map((cell) => {
+    cells.forEach((cell) => {
       cell.model = null
       cell.removeProp('zIndex')
       if (dx || dy) {

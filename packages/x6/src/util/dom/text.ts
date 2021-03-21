@@ -1,3 +1,5 @@
+/* eslint-disable no-control-regex */
+
 import { Size } from '../../types'
 import { NumberExt } from '../number'
 import { Text } from '../text'
@@ -58,7 +60,7 @@ function annotateTextLine(
 
       tspanNode.textContent = t
       // Per annotation className
-      const annotationClass = annotationAttrs['class'] as string
+      const annotationClass = annotationAttrs.class as string
       if (annotationClass) {
         vTSpan.addClass(annotationClass)
       }
@@ -168,7 +170,7 @@ export function text(
   content: string,
   options: TextOptions = {},
 ) {
-  content = Text.sanitize(content) // tslint:disable-line
+  content = Text.sanitize(content) // eslint-disable-line
   const eol = options.eol
   let textPath = options.textPath
   const verticalAnchor = options.textVerticalAnchor
@@ -335,20 +337,20 @@ export function text(
         case 'bottom':
           dy = `${-rh - 0.3}em`
           break
+        default:
+          break
       }
     }
+  } else if (verticalAnchor === 0) {
+    dy = '0em'
+  } else if (verticalAnchor) {
+    dy = verticalAnchor
   } else {
-    if (verticalAnchor === 0) {
-      dy = '0em'
-    } else if (verticalAnchor) {
-      dy = verticalAnchor
-    } else {
-      // No vertical anchor is defined
-      dy = 0
-      // Backwards compatibility - we change the `y` attribute instead of `dy`.
-      if (elem.getAttribute('y') == null) {
-        elem.setAttribute('y', `${annotatedY || '0.8em'}`)
-      }
+    // No vertical anchor is defined
+    dy = 0
+    // Backwards compatibility - we change the `y` attribute instead of `dy`.
+    if (elem.getAttribute('y') == null) {
+      elem.setAttribute('y', `${annotatedY || '0.8em'}`)
     }
   }
 
@@ -598,13 +600,11 @@ export function breakText(
           wordIndex -= 1
           continue
         }
-      } else {
-        if (!lines[lineIndex]) {
-          lines[lineIndex] = word
-          full[lineIndex] = true
-          lineIndex += 1
-          continue
-        }
+      } else if (!lines[lineIndex]) {
+        lines[lineIndex] = word
+        full[lineIndex] = true
+        lineIndex += 1
+        continue
       }
 
       lineIndex += 1

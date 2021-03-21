@@ -419,7 +419,7 @@ export interface AnchorHTMLAttributes extends HTMLAttributes {
   referrerPolicy?: string
 }
 
-// tslint:disable-next-line:no-empty-interface
+// eslint-disable-next-line:no-empty-interface
 export interface AudioHTMLAttributes extends MediaHTMLAttributes {}
 
 export interface AreaHTMLAttributes extends HTMLAttributes {

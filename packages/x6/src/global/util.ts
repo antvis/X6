@@ -38,7 +38,7 @@ export namespace Util {
         : parent[options.children || 'children']
 
     if (!parentNode) {
-      parentNode = options.createNode(parent) // tslint:disable-line
+      parentNode = options.createNode(parent) // eslint-disable-line
       collector.push(parentNode)
     }
 

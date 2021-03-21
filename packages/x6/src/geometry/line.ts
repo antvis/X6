@@ -48,7 +48,7 @@ export class Line extends Geometry {
   /**
    * Rounds the line to the given `precision`.
    */
-  round(precision: number = 0) {
+  round(precision = 0) {
     this.start.round(precision)
     this.end.round(precision)
     return this
@@ -208,7 +208,7 @@ export class Line extends Geometry {
     const normalized = Math.min(1, Math.max(0, product / this.squaredLength()))
 
     // normalized returns `NaN` if this line has zero length
-    if (normalized !== normalized) {
+    if (Number.isNaN(normalized)) {
       return 0
     }
 
@@ -246,7 +246,7 @@ export class Line extends Geometry {
 
     if (length < 0) {
       fromStart = false // start calculation from end point
-      length = -length // tslint:disable-line
+      length = -length // eslint-disable-line
     }
 
     const total = this.length()
@@ -354,10 +354,8 @@ export class Line extends Geometry {
       if (alpha > det || beta > det) {
         return null
       }
-    } else {
-      if (alpha < det || beta < det) {
-        return null
-      }
+    } else if (alpha < det || beta < det) {
+      return null
     }
 
     return new Point(

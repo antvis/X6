@@ -3,7 +3,7 @@ import { Graph, Edge } from '@antv/x6'
 import { Vertices } from '@antv/x6/es/registry/tool/vertices'
 import './app.css'
 
-// tslint:disable-next-line
+// eslint-disable-next-line
 const RedVertices = Vertices.define<Vertices.Options>({
   name: 'red-vertices',
   attrs: {

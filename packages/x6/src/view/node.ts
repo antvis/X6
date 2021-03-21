@@ -436,6 +436,7 @@ export class NodeView<
 
     let portSelectors: Markup.Selectors | undefined
     if (portContentSelectors && portLabelSelectors) {
+      // eslint-disable-next-line
       for (const key in portLabelSelectors) {
         if (portContentSelectors[key] && key !== this.rootSelector) {
           throw new Error('Selectors within port must be unique.')
@@ -536,7 +537,7 @@ export class NodeView<
   protected applyPortTransform(
     element: Element,
     layout: PortLayout.Result,
-    initialAngle: number = 0,
+    initialAngle = 0,
   ) {
     const angle = layout.angle
     const position = layout.position
@@ -573,7 +574,7 @@ export class NodeView<
     y: number,
   ): NodeView.PositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
-    const view = this // tslint:disable-line
+    const view = this // eslint-disable-line
     const node = view.cell
     const cell = node
     if (x == null || y == null) {
@@ -806,11 +807,11 @@ export class NodeView<
         ? (FunctionExt.call(findParent, graph, {
             view: this,
             node: this.cell,
-          }) as Cell[]).filter((cell) => {
+          }) as Cell[]).filter((c) => {
             return (
-              Cell.isCell(cell) &&
-              this.cell.id !== cell.id &&
-              !cell.isDescendantOf(this.cell)
+              Cell.isCell(c) &&
+              this.cell.id !== c.id &&
+              !c.isDescendantOf(this.cell)
             )
           })
         : graph.model.getNodesUnderNode(cell, {
@@ -911,7 +912,7 @@ export class NodeView<
 
   getDelegatedView() {
     let cell = this.cell
-    let view: NodeView = this // tslint:disable-line
+    let view: NodeView = this // eslint-disable-line
 
     while (view) {
       if (cell.isEdge()) {
@@ -1016,6 +1017,7 @@ export class NodeView<
         ) {
           return
         }
+        // eslint-disable-next-line no-lonely-if
       } else {
         // magnetThreshold defined as a number of movements
         if (graph.view.getMouseMovedCount(e) <= magnetThreshold) {
@@ -1066,7 +1068,7 @@ export class NodeView<
         cells = selectedCells.filter((c: Cell) => c.isNode())
       }
     }
-    
+
     cells.forEach((c: Cell) => {
       this.notify(name, {
         e,

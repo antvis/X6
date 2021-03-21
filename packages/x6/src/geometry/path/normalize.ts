@@ -54,12 +54,12 @@ function a2c(
 
   if (!recursive) {
     xy = rotate(x1, y1, -rad)
-    x1 = xy.x // tslint:disable-line
-    y1 = xy.y // tslint:disable-line
+    x1 = xy.x // eslint-disable-line
+    y1 = xy.y // eslint-disable-line
 
     xy = rotate(x2, y2, -rad)
-    x2 = xy.x // tslint:disable-line
-    y2 = xy.y // tslint:disable-line
+    x2 = xy.x // eslint-disable-line
+    y2 = xy.y // eslint-disable-line
 
     const x = (x1 - x2) / 2
     const y = (y1 - y2) / 2
@@ -67,8 +67,8 @@ function a2c(
 
     if (h > 1) {
       h = Math.sqrt(h)
-      rx = h * rx // tslint:disable-line
-      ry = h * ry // tslint:disable-line
+      rx = h * rx // eslint-disable-line
+      ry = h * ry // eslint-disable-line
     }
 
     const rx2 = rx * rx
@@ -100,11 +100,11 @@ function a2c(
     }
 
     if (sweepFlag && f1 > f2) {
-      f1 = f1 - Math.PI * 2
+      f1 -= Math.PI * 2
     }
 
     if (!sweepFlag && f2 > f1) {
-      f2 = f2 - Math.PI * 2
+      f2 -= Math.PI * 2
     }
   } else {
     f1 = recursive[0]
@@ -119,8 +119,8 @@ function a2c(
     const x2old = x2
     const y2old = y2
     f2 = f1 + v120 * (sweepFlag && f2 > f1 ? 1 : -1)
-    x2 = cx + rx * Math.cos(f2) // tslint:disable-line
-    y2 = cy + ry * Math.sin(f2) // tslint:disable-line
+    x2 = cx + rx * Math.cos(f2) // eslint-disable-line
+    y2 = cy + ry * Math.sin(f2) // eslint-disable-line
     res = a2c(x2, y2, rx, ry, angle, 0, sweepFlag, x2old, y2old, [
       f2,
       f2old,
@@ -175,20 +175,14 @@ function parse(pathData: string) {
 
   // https://regexper.com/#%28%5Ba-z%5D%29%5B%5Cs%2C%5D*%28%28-%3F%5Cd*%5C.%3F%5C%5Cd*%28%3F%3Ae%5B%5C-%2B%5D%3F%5Cd%2B%29%3F%5B%5Cs%5D*%2C%3F%5B%5Cs%5D*%29%2B%29
   const segmentReg = new RegExp(
-    '([a-z])[' +
-      spaces +
-      ',]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[' +
-      spaces +
-      ']*,?[' +
-      spaces +
-      ']*)+)', // tslint:disable-line
+    `([a-z])[${spaces},]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[${spaces}]*,?[${spaces}]*)+)`, // eslint-disable-line
     'ig',
   )
 
   // https://regexper.com/#%28-%3F%5Cd*%5C.%3F%5Cd*%28%3F%3Ae%5B%5C-%2B%5D%3F%5Cd%2B%29%3F%29%5B%5Cs%5D*%2C%3F%5B%5Cs%5D*
   const commandParamReg = new RegExp(
-    // tslint:disable-next-line
-    '(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[' + spaces + ']*,?[' + spaces + ']*',
+    // eslint-disable-next-line
+    `(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[${spaces}]*,?[${spaces}]*`,
     'ig',
   )
 
@@ -221,7 +215,7 @@ function parse(pathData: string) {
     if (command === 'm' && params.length > 2) {
       segmetns.push([cmd, ...params.splice(0, 2)])
       command = 'l'
-      cmd = cmd === 'm' ? 'l' : 'L' // tslint:disable-line
+      cmd = cmd === 'm' ? 'l' : 'L' // eslint-disable-line
     }
 
     const count = paramsCount[command as keyof typeof paramsCount]
@@ -410,6 +404,9 @@ function normalize(path: string) {
 
       case 'Z':
         break
+
+      default:
+        break
     }
 
     return path
@@ -423,7 +420,7 @@ function normalize(path: string) {
       while (pi.length) {
         // if created multiple 'C's, their original seg is saved
         commands[i] = 'A'
-        i += 1 // tslint:disable-line
+        i += 1 // eslint-disable-line
         pp.splice(i, 0, ['C'].concat(pi.splice(0, 6)))
       }
 

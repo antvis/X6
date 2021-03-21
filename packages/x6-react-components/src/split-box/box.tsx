@@ -42,24 +42,20 @@ export class Box extends React.PureComponent<Box.Props> {
           style.bottom = 0
         }
       }
-    } else {
-      if (vertical) {
-        if (index === 1) {
-          style.left = 0
-          style.right = oppositeSize
-        } else {
-          style.left = oppositeSize
-          style.right = 0
-        }
+    } else if (vertical) {
+      if (index === 1) {
+        style.left = 0
+        style.right = oppositeSize
       } else {
-        if (index === 1) {
-          style.top = 0
-          style.bottom = oppositeSize
-        } else {
-          style.top = oppositeSize
-          style.bottom = 0
-        }
+        style.left = oppositeSize
+        style.right = 0
       }
+    } else if (index === 1) {
+      style.top = 0
+      style.bottom = oppositeSize
+    } else {
+      style.top = oppositeSize
+      style.bottom = 0
     }
 
     return (

@@ -1,0 +1,14 @@
+{
+  "extends": "../../.eslintrc",
+  "rules": {
+    "new-cap": 0,
+    "no-bitwise": 0,
+    "guard-for-in": 0,
+    "@typescript-eslint/no-unused-vars": 0,
+    "no-underscore-dangle": 0,
+    "no-restricted-syntax": 0,
+    "no-restricted-globals": 0,
+    "@typescript-eslint/ban-types": 0,
+    "@typescript-eslint/no-redeclare": 0
+  }
+}
