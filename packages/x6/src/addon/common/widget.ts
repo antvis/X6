@@ -96,7 +96,7 @@ export class Widget<
     this.init(localOptions)
   }
 
-  protected init(options: Options) {}
+  protected init(options: Options) {} // eslint-disable-line
 
   protected render() {
     return this

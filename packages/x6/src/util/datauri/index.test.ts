@@ -15,8 +15,8 @@ describe('DataUri', () => {
   describe('#imageToDataUri', () => {
     const oldXMLHttpRequest = window.XMLHttpRequest
     const oldFileReader = window.FileReader
-    let onLoadHandle: () => {}
-    let onErrorHandle: () => {}
+    let onLoadHandle: () => Record<string, any>
+    let onErrorHandle: () => Record<string, any>
 
     beforeEach(() => {
       const win = window as any

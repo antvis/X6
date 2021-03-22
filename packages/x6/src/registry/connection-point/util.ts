@@ -7,7 +7,7 @@ export function offset(
 ) {
   let tx: number | undefined
   if (typeof offset === 'object') {
-    if (isFinite(offset.y)) {
+    if (Number.isFinite(offset.y)) {
       const line = new Line(p2, p1)
       const { start, end } = line.parallel(offset.y)
       p2 = start // eslint-disable-line
@@ -18,7 +18,7 @@ export function offset(
     tx = offset
   }
 
-  if (tx == null || !isFinite(tx)) {
+  if (tx == null || !Number.isFinite(tx)) {
     return p1
   }
 

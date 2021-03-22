@@ -159,6 +159,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
       key.forEach((k) => (subset[k] = empty))
       opts = options
     } else {
+      // eslint-disable-next-line
       for (const key in this.data) {
         subset[key] = empty
       }
@@ -269,6 +270,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     const old = this.changing ? this.previous : this.data
     const changed: Partial<D> = {}
     let hasChanged
+    // eslint-disable-next-line
     for (const key in diff) {
       const val = diff[key]
       if (!ObjectExt.isEqual(old[key], val)) {

@@ -1147,7 +1147,7 @@ export class Path extends Geometry {
       if (segment.isVisible) {
         const divisions = segmentSubdivisions[i]
         if (divisions.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-loop-func
+          // eslint-disable-next-line no-loop-func
           divisions.forEach((c) => partialPoints.push(c.start))
         } else {
           partialPoints.push(segment.start)

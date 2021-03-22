@@ -16,6 +16,7 @@ const extendStatics =
 /**
  * @see https://github.com/microsoft/TypeScript/blob/5c85febb0ce9d6088cbe9b09cb42f73f9ee8ea05/src/compiler/transformers/es2015.ts#L4309
  */
+// eslint-disable-next-line
 export function inherit(cls: Function, base: Function) {
   extendStatics(cls, base)
   function tmp() {
@@ -34,15 +35,16 @@ const isNativeClass =
 /**
  * Extends class with specified class name.
  */
+// eslint-disable-next-line
 export function createClass<T>(className: string, base: Function): T {
   let cls
   if (isNativeClass) {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    // eslint-disable-next-line no-new-func
     cls = new Function('base', `return class ${className} extends base { }`)(
       base,
     )
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    // eslint-disable-next-line no-new-func
     cls = new Function(
       'base',
       `return function ${className}() { return base.apply(this, arguments) }`,

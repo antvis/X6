@@ -211,6 +211,7 @@ export namespace JSONExt {
     }
 
     // Check for the first object's keys in the second object.
+    // eslint-disable-next-line
     for (const key in first) {
       if (!(key in second)) {
         return false
@@ -218,6 +219,7 @@ export namespace JSONExt {
     }
 
     // Check for the second object's keys in the first object.
+    // eslint-disable-next-line
     for (const key in second) {
       if (!(key in first)) {
         return false
@@ -225,6 +227,7 @@ export namespace JSONExt {
     }
 
     // Compare the values for equality.
+    // eslint-disable-next-line
     for (const key in first) {
       if (!deepEqual(first[key], second[key])) {
         return false

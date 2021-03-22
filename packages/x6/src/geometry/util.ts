@@ -30,11 +30,11 @@ export function random(min?: number, max?: number): number {
 }
 
 export function clamp(value: number, min: number, max: number) {
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     return NaN
   }
 
-  if (isNaN(min) || isNaN(max)) {
+  if (Number.isNaN(min) || Number.isNaN(max)) {
     return 0
   }
 

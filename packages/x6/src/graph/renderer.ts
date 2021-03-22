@@ -432,9 +432,11 @@ export class Renderer extends Base {
       checkView = null
     }
 
-    // eslint-disable-next-line no-labels
+    // eslint-disable-next-line
     main: for (let p = 0, n = priorities.length; p < n; p += 1) {
       const cache = priorities[p]
+
+      // eslint-disable-next-line
       for (const cid in cache) {
         if (updatedCount >= batchSize) {
           empty = false // goto next batch
@@ -1046,6 +1048,7 @@ export class Renderer extends Base {
 
     pivot = pivots[zIndex] = document.createComment(`z-index:${zIndex + 1}`)
     let neighborZ = -Infinity
+    // eslint-disable-next-line
     for (const key in pivots) {
       const currentZ = +key
       if (currentZ < zIndex && currentZ > neighborZ) {

@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import { Basecoat } from './basecoat'
 
 export interface IDisablable {
@@ -9,7 +11,6 @@ export interface IDisablable {
 export abstract class Disablable<EventArgs = any>
   extends Basecoat<EventArgs>
   implements IDisablable {
-  // eslint-disable-next-line
   private _disabled?: boolean
 
   public get disabled(): boolean {
