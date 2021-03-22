@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "vue-demi": "^0.7.1"
+    "vue-demi": "^0.7.3"
   },
   "peerDependencies": {
-    "@vue/composition-api": "^1.0.0-rc.2",
+    "@vue/composition-api": "^1.0.0-rc.5",
     "vue": "^2.6.12 || ^3.0.0"
   },
   "devDependencies": {
-    "@vue/composition-api": "^1.0.0-rc.1",
-    "vue": "^2.6.11"
+    "@vue/composition-api": "^1.0.0-rc.5",
+    "vue": "^2.6.12"
   }
 }

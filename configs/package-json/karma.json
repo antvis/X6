@@ -2,17 +2,17 @@
   "devDependencies": {
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
-    "@types/jasmine": "^3.6.2",
-    "@types/sinon": "^9.0.0",
+    "@types/jasmine": "^3.6.7",
+    "@types/sinon": "^9.0.11",
     "coveralls": "^3.1.0",
-    "jasmine-core": "^3.6.0",
-    "karma": "^6.0.0",
+    "jasmine-core": "^3.7.1",
+    "karma": "^6.2.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
     "karma-jasmine": "^4.0.1",
     "karma-spec-reporter": "^0.0.32",
-    "karma-typescript": "^5.2.0",
+    "karma-typescript": "^5.5.0",
     "karma-typescript-es6-transform": "^5.5.0",
-    "sinon": "^9.0.2"
+    "sinon": "^9.2.4"
   }
 }
