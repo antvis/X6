@@ -32,7 +32,7 @@ function offsetWrapper(
       delta = refBBox[dimension] / 2
     } else if (value === corner) {
       delta = refBBox[dimension]
-    } else if (typeof value === 'number' && isFinite(value)) {
+    } else if (typeof value === 'number' && Number.isFinite(value)) {
       delta = value > -1 && value < 1 ? -refBBox[dimension] * value : -value
     } else if (NumberExt.isPercentage(value)) {
       delta = (refBBox[dimension] * parseFloat(value)) / 100

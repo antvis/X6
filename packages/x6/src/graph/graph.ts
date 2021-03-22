@@ -1979,6 +1979,7 @@ export class Graph extends Basecoat<EventArgs> {
 }
 
 export namespace Graph {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   export import View = GraphView
   export import Hook = HookManager
   export import Renderer = ViewRenderer

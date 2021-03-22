@@ -215,7 +215,7 @@ export class FormatManager extends Base {
         : viewBox
 
     let scale = options.ratio ? parseFloat(options.ratio) : 1
-    if (!isFinite(scale) || scale === 0) {
+    if (!Number.isFinite(scale) || scale === 0) {
       scale = 1
     }
 

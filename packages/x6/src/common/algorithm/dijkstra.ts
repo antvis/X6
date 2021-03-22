@@ -7,7 +7,7 @@ export namespace Dijkstra {
   export function run(
     adjacencyList: AdjacencyList,
     source: string,
-    weight: Weight = (u, v) => 1,
+    weight: Weight = (u, v) => 1, // eslint-disable-line
   ) {
     const dist: { [key: string]: number } = {}
     const previous: { [key: string]: string } = {}
@@ -16,12 +16,12 @@ export namespace Dijkstra {
 
     dist[source] = 0
 
-    for (const v in adjacencyList) {
+    Object.keys(adjacencyList).forEach((v) => {
       if (v !== source) {
         dist[v] = Infinity
       }
       queue.insert(dist[v], v, v)
-    }
+    })
 
     while (!queue.isEmpty()) {
       const u = queue.remove()!
