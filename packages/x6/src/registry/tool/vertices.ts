@@ -59,7 +59,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
       const handle = createHandle({
         index: i,
         graph: this.graph,
-        guard: (evt: JQuery.TriggeredEvent) => this.guard(evt),
+        guard: (evt: JQuery.TriggeredEvent) => this.guard(evt), // eslint-disable-line no-loop-func
         attrs: this.options.attrs || {},
       })
 

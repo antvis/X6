@@ -297,6 +297,7 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   @Decorator.hook()
+  // eslint-disable-next-line
   allowRubberband(e: JQuery.MouseDownEvent) {
     return true
   }
@@ -320,6 +321,7 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   @Decorator.hook()
+  // eslint-disable-next-line
   allowPanning(e: JQuery.MouseDownEvent) {
     return true
   }
@@ -665,14 +667,14 @@ export class Hook extends Base implements Hook.IHook {
   onViewPostponed(
     view: CellView,
     flag: number,
-    options: Renderer.UpdateViewOptions,
+    options: Renderer.UpdateViewOptions, // eslint-disable-line
   ) {
     return this.graph.renderer.forcePostponedViewUpdate(view, flag)
   }
 
   @Decorator.hook()
   getCellView(
-    cell: Cell,
+    cell: Cell, // eslint-disable-line
   ): null | undefined | typeof CellView | (new (...args: any[]) => CellView) {
     return null
   }
@@ -683,14 +685,14 @@ export class Hook extends Base implements Hook.IHook {
 
     const ctor = this.getCellView(cell)
     if (ctor) {
-      return new ctor(cell, options)
+      return new ctor(cell, options) // eslint-disable-line new-cap
     }
 
     const view = cell.view
     if (view != null && typeof view === 'string') {
       const def = CellView.registry.get(view)
       if (def) {
-        return new def(cell, options)
+        return new def(cell, options) // eslint-disable-line new-cap
       }
 
       return CellView.registry.onNotFound(view)
@@ -749,13 +751,13 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   @Decorator.hook()
-  onEdgeLabelRendered(args: Hook.OnEdgeLabelRenderedArgs) {}
+  onEdgeLabelRendered(args: Hook.OnEdgeLabelRenderedArgs) {} // eslint-disable-line
 
   @Decorator.hook()
-  onPortRendered(args: Hook.OnPortRenderedArgs) {}
+  onPortRendered(args: Hook.OnPortRenderedArgs) {} // eslint-disable-line
 
   @Decorator.hook()
-  onToolItemCreated(args: Hook.OnToolItemCreatedArgs) {}
+  onToolItemCreated(args: Hook.OnToolItemCreatedArgs) {} // eslint-disable-line
 }
 
 export namespace Hook {

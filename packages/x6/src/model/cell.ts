@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import { NonUndefined } from 'utility-types'
 import { ArrayExt, StringExt, ObjectExt, FunctionExt } from '../util'
 import { Rectangle, Point } from '../geometry'
@@ -140,7 +142,7 @@ export class Cell<
     return props as Properties
   }
 
-  protected postprocess(metadata: Cell.Metadata) {}
+  protected postprocess(metadata: Cell.Metadata) {} // eslint-disable-line
 
   protected setup() {
     this.store.on('change:*', (metadata) => {
@@ -710,7 +712,7 @@ export class Cell<
       if (options.overwrite === true) {
         set(data)
       } else {
-        const prev = this.getData<Object>()
+        const prev = this.getData<Record<string, any>>()
         if (options.deep === false) {
           set(typeof data === 'object' ? { ...prev, ...data } : data)
         } else {
@@ -1112,15 +1114,16 @@ export class Cell<
 
   // #region transform
 
+  // eslint-disable-next-line
   translate(tx: number, ty: number, options?: Cell.TranslateOptions) {
     return this
   }
 
   scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike,
-    options?: Node.SetOptions,
+    sx: number, // eslint-disable-line
+    sy: number, // eslint-disable-line
+    origin?: Point | Point.PointLike, // eslint-disable-line
+    options?: Node.SetOptions, // eslint-disable-line
   ) {
     return this
   }
@@ -1236,10 +1239,12 @@ export class Cell<
 
   // #region common
 
+  // eslint-disable-next-line
   getBBox(options?: { deep?: boolean }) {
     return new Rectangle()
   }
 
+  // eslint-disable-next-line
   getConnectionPoint(edge: Edge, type: Edge.TerminalType) {
     return new Point()
   }
@@ -1368,7 +1373,7 @@ export class Cell<
       delete data.parent
       delete data.children
       const ctor = this.constructor as typeof Cell
-      return new ctor(data) as any
+      return new ctor(data) as any // eslint-disable-line new-cap
     }
 
     // Deep cloning. Clone the cell itself and all its children.

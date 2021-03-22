@@ -13,7 +13,8 @@ export interface BlurArgs {
 
 export function blur(args: BlurArgs = {}) {
   const x = getNumber(args.x, 2)
-  const stdDeviation = args.y != null && isFinite(args.y) ? [x, args.y] : x
+  const stdDeviation =
+    args.y != null && Number.isFinite(args.y) ? [x, args.y] : x
 
   return `
     <filter>
