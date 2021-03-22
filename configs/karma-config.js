@@ -63,47 +63,45 @@ module.exports = function (config, base, karmaTypescriptConfig) {
 
   config.set(
     Object.assign(common, base, {
-      karmaTypescriptConfig: Object.assign(
-        {
-          tsconfig: './tsconfig.json',
-          bundlerOptions: {
-            sourceMap: true,
-            transforms: [
-              es6Transform({
-                presets: [
-                  [
-                    '@babel/preset-env',
-                    {
-                      targets: {
-                        chrome: '60',
-                      },
+      karmaTypescriptConfig: {
+        tsconfig: './tsconfig.json',
+        bundlerOptions: {
+          sourceMap: true,
+          transforms: [
+            es6Transform({
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    targets: {
+                      node: 'current',
                     },
-                  ],
+                  },
                 ],
-              }),
-            ],
-          },
-          coverageOptions: {
-            instrumentation: true,
-            exclude: /\.test|spec\.ts$/,
-          },
-          reports: {
-            html: 'test/coverage',
-            lcovonly: {
-              directory: 'test/coverage',
-              subdirectory: './',
-              filename: 'lcov.info',
-            },
-            cobertura: {
-              directory: 'test/coverage',
-              subdirectory: './',
-              filename: 'coverage.xml',
-            },
-            'text-summary': '',
-          },
+              ],
+            }),
+          ],
         },
-        karmaTypescriptConfig,
-      ),
+        coverageOptions: {
+          instrumentation: true,
+          exclude: /\.test|spec\.ts$/,
+        },
+        reports: {
+          html: 'test/coverage',
+          lcovonly: {
+            directory: 'test/coverage',
+            subdirectory: './',
+            filename: 'lcov.info',
+          },
+          cobertura: {
+            directory: 'test/coverage',
+            subdirectory: './',
+            filename: 'coverage.xml',
+          },
+          'text-summary': '',
+        },
+        ...karmaTypescriptConfig,
+      },
     }),
   )
 }
