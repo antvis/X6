@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 const fs = require('fs')
 
 const version = JSON.parse(fs.readFileSync('package.json', 'utf8')).version
