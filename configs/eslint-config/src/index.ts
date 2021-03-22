@@ -15,7 +15,7 @@ module.exports = {
     'unicorn',
   ],
   extends: [
-    'airbnb-typescript',
+    'airbnb-base',
     'eslint:recommended',
     'prettier',
     'plugin:@typescript-eslint/recommended',
@@ -39,7 +39,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
-    project: './tsconfig.json',
+    // project: './tsconfig.json',
     ecmaFeatures: {
       jsx: true,
     },
@@ -78,8 +78,10 @@ module.exports = {
 
     'import/export': 0,
     'import/no-cycle': 0,
+    'import/extensions': 0,
     'import/no-unresolved': 0,
     'import/prefer-default-export': 0,
+    'import/no-extraneous-dependencies': 0,
 
     'promise/always-return': 0,
     'promise/catch-or-return': 0,
