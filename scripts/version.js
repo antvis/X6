@@ -13,7 +13,10 @@ const version = '${version}'
 export { version }
 `
 
-const file = 'src/global/version.ts'
+const dir = 'src/global'
+const hasDir = fs.existsSync(dir)
+const name = 'version.ts'
+const file = hasDir ? `${dir}/${name}` : `src/${name}`
 const old = fs.readFileSync(file, { encoding: 'utf8' })
 const format = (s) => s.replace(/[\n\s]/g, '')
 
