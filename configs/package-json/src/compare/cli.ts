@@ -17,7 +17,7 @@ const files = fs.readdirSync(root)
 files.forEach((name: string) => {
   const file = path.join(root, name)
   const stat = fs.statSync(file)
-  if (stat.isFile() && name !== reserved) {
+  if (stat.isFile() && path.extname(file) === '.json' && name !== reserved) {
     pkgs.push(file)
   }
 })
