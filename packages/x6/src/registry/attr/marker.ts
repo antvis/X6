@@ -95,7 +95,7 @@ function normalizeAttr(
     const strokeWidth = parseFloat(
       (attr.strokeWidth || attr['stroke-width']) as string,
     )
-    if (isFinite(strokeWidth) && strokeWidth > 1) {
+    if (Number.isFinite(strokeWidth) && strokeWidth > 1) {
       const offset = Math.ceil(strokeWidth / 2)
       result.refX = type === 'marker-start' ? offset : -offset
     }

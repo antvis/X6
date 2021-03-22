@@ -25,6 +25,7 @@ const supportedUnits = {
 
 export type Unit = keyof typeof supportedUnits
 
+// eslint-disable-next-line
 export namespace Unit {
   export function measure(cssWidth: string, cssHeight: string, unit?: Unit) {
     const div = jQuery('<div/>')

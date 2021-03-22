@@ -11,8 +11,6 @@ import { Handle } from '../common'
 import { notify } from '../transform/util'
 import { Halo } from './index'
 
-export function getNodePreset(halo: Halo) {}
-
 export class NodePreset {
   private edgeView: EdgeView | null
   private flip: number

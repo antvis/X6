@@ -6,6 +6,7 @@ export interface ResolveOptions {
   fixedAt?: number | string
 }
 
+// eslint-disable-next-line
 export function resolve<S extends Function, T>(fn: S): T {
   return (function (
     this: EdgeView,

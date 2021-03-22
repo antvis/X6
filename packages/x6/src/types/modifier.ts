@@ -1,5 +1,6 @@
 export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift'
 
+// eslint-disable-next-line
 export namespace ModifierKey {
   export function parse(modifiers: string | ModifierKey[]) {
     const or: ModifierKey[] = []
