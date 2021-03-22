@@ -38,7 +38,7 @@ export class Scroller extends View {
   protected cachedScrollTop: number | null
   protected cachedCenterPoint: Point.PointLike | null
   protected cachedClientSize: { width: number; height: number } | null
-  protected delegatedHandlers: { [name: string]: Function }
+  protected delegatedHandlers: { [name: string]: (...args: any) => any }
 
   constructor(options: Scroller.Options) {
     super()
@@ -198,17 +198,17 @@ export class Scroller extends View {
   protected delegateBackgroundEvents(events?: View.Events) {
     const evts = events || GraphView.events
     this.delegatedHandlers = Object.keys(evts).reduce<{
-      [name: string]: Function
+      [name: string]: (...args: any) => any
     }>((memo, name) => {
       const handler = evts[name]
       if (name.indexOf(' ') === -1) {
         if (typeof handler === 'function') {
-          memo[name] = handler
+          memo[name] = handler as (...args: any) => any
         } else {
           let method = this.graph.view[handler as keyof GraphView]
           if (typeof method === 'function') {
             method = method.bind(this.graph.view)
-            memo[name] = method as Function
+            memo[name] = method as (...args: any) => any
           }
         }
       }

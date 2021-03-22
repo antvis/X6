@@ -42,7 +42,7 @@ export abstract class Segment extends Geometry {
 
   closestPointT(
     p: Point.PointLike | Point.PointData,
-    options?: Segment.Options,
+    options?: Segment.Options, // eslint-disable-line
   ) {
     if (this.closestPointNormalizedLength) {
       return this.closestPointNormalizedLength(p)
@@ -59,6 +59,7 @@ export abstract class Segment extends Geometry {
 
   abstract length(options?: Segment.Options): number
 
+  // eslint-disable-next-line
   lengthAtT(t: number, options?: Segment.Options) {
     if (t <= 0) {
       return 0

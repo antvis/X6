@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 /**
  * An object which implements the disposable pattern.
  */

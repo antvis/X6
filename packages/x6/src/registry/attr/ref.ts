@@ -75,7 +75,7 @@ export const refRCircumscribed: Attr.Definition = {
     )
 
     let rValue
-    if (isFinite(value)) {
+    if (Number.isFinite(value)) {
       if (percentage || (value >= 0 && value <= 1)) {
         rValue = value * diagonalLength
       } else {
@@ -143,7 +143,7 @@ function positionWrapper(
     }
 
     let delta
-    if (isFinite(value)) {
+    if (Number.isFinite(value)) {
       const refOrigin = refBBox[origin]
       if (percentage || (value > 0 && value < 1)) {
         delta = refOrigin[axis] + refBBox[dimension] * value
@@ -171,7 +171,7 @@ function setWrapper(
 
     const attrs: Attr.SimpleAttrs = {}
 
-    if (isFinite(value)) {
+    if (Number.isFinite(value)) {
       const attrValue =
         percentage || (value >= 0 && value <= 1)
           ? value * refBBox[dimension]

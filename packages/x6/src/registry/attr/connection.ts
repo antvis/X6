@@ -11,7 +11,7 @@ export const connection: Attr.Definition = {
     const view = args.view as EdgeView
     const stubs = ((val as any).stubs || 0) as number
     let d
-    if (isFinite(stubs) && stubs !== 0) {
+    if (Number.isFinite(stubs) && stubs !== 0) {
       let offset
       if (stubs < 0) {
         const len = view.getConnectionLength() || 0
