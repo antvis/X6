@@ -9,5 +9,5 @@ export function getNumber(
   num: number | null | undefined,
   defaultValue: number,
 ) {
-  return num != null && isFinite(num) ? num : defaultValue
+  return num != null && Number.isFinite(num) ? num : defaultValue
 }

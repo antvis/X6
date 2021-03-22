@@ -287,7 +287,9 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return `.${Config.prefixCls}-event-${this.cid}`
   }
 
+  // eslint-disable-next-line
   protected getEventHandler(handler: string | Function) {
+    // eslint-disable-next-line
     let method: Function | undefined
     if (typeof handler === 'string') {
       const fn = (this as any)[handler]
@@ -372,7 +374,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
 }
 
 export namespace View {
-  export type Events = KeyValue<string | Function>
+  export type Events = KeyValue<string | Function> // eslint-disable-line
 }
 
 export namespace View {

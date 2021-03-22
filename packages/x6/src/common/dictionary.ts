@@ -1,6 +1,6 @@
 import { Disposable } from './disposable'
 
-export class Dictionary<T extends Object, V> extends Disposable {
+export class Dictionary<T extends Record<string, any>, V> extends Disposable {
   private map: WeakMap<T, V>
   private arr: T[]
 

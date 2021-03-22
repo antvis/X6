@@ -5,6 +5,7 @@ import { ObjectExt, StringExt, Dom, Vector } from '../util'
 
 export type Markup = string | Markup.JSONMarkup | Markup.JSONMarkup[]
 
+// eslint-disable-next-line
 export namespace Markup {
   export type Selectors = KeyValue<Element | Element[]>
 
@@ -51,6 +52,7 @@ export namespace Markup {
   }
 }
 
+// eslint-disable-next-line
 export namespace Markup {
   export function isJSONMarkup(markup?: Nilable<Markup>) {
     return markup != null && !isStringMarkup(markup)
@@ -267,6 +269,7 @@ export namespace Markup {
   }
 }
 
+// eslint-disable-next-line
 export namespace Markup {
   export function getSelector(
     elem: Element,
@@ -457,6 +460,7 @@ export namespace Markup {
   }
 }
 
+// eslint-disable-next-line
 export namespace Markup {
   export function getPortContainerMarkup(): Markup {
     return 'g'
@@ -485,6 +489,7 @@ export namespace Markup {
   }
 }
 
+// eslint-disable-next-line
 export namespace Markup {
   export function getEdgeMarkup(): Markup {
     return sanitize(`
@@ -537,6 +542,7 @@ export namespace Markup {
   }
 }
 
+// eslint-disable-next-line
 export namespace Markup {
   export function getForeignObjectMarkup(bare = false): Markup.JSONMarkup {
     return {

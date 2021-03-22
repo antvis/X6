@@ -51,7 +51,7 @@ function alignLine(line: Line, type: Align, offset = 0) {
     b[coordinate] = a[coordinate]
   }
 
-  if (isFinite(offset)) {
+  if (Number.isFinite(offset)) {
     a[coordinate] += direction * offset
     b[coordinate] += direction * offset
   }

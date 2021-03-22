@@ -506,7 +506,7 @@ export class Edge<
   ) {
     const labels = this.getLabels()
     const len = labels.length
-    let idx = index != null && isFinite(index) ? index : len
+    let idx = index != null && Number.isFinite(index) ? index : len
     if (idx < 0) {
       idx = len + idx + 1
     }
@@ -521,7 +521,7 @@ export class Edge<
 
   getLabelAt(index: number) {
     const labels = this.getLabels()
-    if (index != null && isFinite(index)) {
+    if (index != null && Number.isFinite(index)) {
       return this.parseLabel(labels[index])
     }
     return null
@@ -532,7 +532,7 @@ export class Edge<
     label: Edge.Label | string,
     options: Edge.SetOptions = {},
   ) {
-    if (index != null && isFinite(index)) {
+    if (index != null && Number.isFinite(index)) {
       const labels = this.getLabels()
       labels[index] = this.parseLabel(label)
       this.setLabels(labels, options)
@@ -542,7 +542,7 @@ export class Edge<
 
   removeLabelAt(index: number, options: Edge.SetOptions = {}) {
     const labels = this.getLabels()
-    const idx = index != null && isFinite(index) ? index : -1
+    const idx = index != null && Number.isFinite(index) ? index : -1
 
     const removed = labels.splice(idx, 1)
     this.setLabels(labels, options)
@@ -661,7 +661,7 @@ export class Edge<
   ) {
     const vertices = this.getVertices()
     const len = vertices.length
-    let idx = index != null && isFinite(index) ? index : len
+    let idx = index != null && Number.isFinite(index) ? index : len
     if (idx < 0) {
       idx = len + idx + 1
     }
@@ -675,7 +675,7 @@ export class Edge<
   }
 
   getVertexAt(index: number) {
-    if (index != null && isFinite(index)) {
+    if (index != null && Number.isFinite(index)) {
       const vertices = this.getVertices()
       return vertices[index]
     }
@@ -687,7 +687,7 @@ export class Edge<
     vertice: Point.PointLike,
     options: Edge.SetOptions = {},
   ) {
-    if (index != null && isFinite(index)) {
+    if (index != null && Number.isFinite(index)) {
       const vertices = this.getVertices()
       vertices[index] = vertice
       this.setVertices(vertices, options)
@@ -697,7 +697,7 @@ export class Edge<
 
   removeVertexAt(index: number, options: Edge.SetOptions = {}) {
     const vertices = this.getVertices()
-    const idx = index != null && isFinite(index) ? index : -1
+    const idx = index != null && Number.isFinite(index) ? index : -1
     vertices.splice(idx, 1)
     return this.setVertices(vertices, options)
   }
@@ -956,6 +956,7 @@ export class Edge<
     // Note that there in the deep mode a edge can have a loop,
     // even if it connects only a parent and its embed.
     // A loop "target equals source" is valid in both shallow and deep mode.
+    // eslint-disable-next-line
     if (!loop && options.deep && this._model) {
       const sourceCell = this.getSourceCell()
       const targetCell = this.getTargetCell()

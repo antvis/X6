@@ -71,6 +71,7 @@ export class PanningManager extends Base {
     this.graph.translateBy(dx, dy)
   }
 
+  // eslint-disable-next-line
   protected stopPanning(e: JQuery.MouseUpEvent) {
     this.panning = false
     this.updateClassName()

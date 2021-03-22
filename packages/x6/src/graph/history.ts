@@ -369,6 +369,7 @@ export class HistoryManager
    * is called every change made on model is not stored into the undoStack.
    * Changes are temporarily kept until `storeBatchCommand()` is called.
    */
+  // eslint-disable-next-line
   protected initBatchCommand(options: KeyValue) {
     if (this.freezed) {
       return

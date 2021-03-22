@@ -249,6 +249,7 @@ describe('Dom', () => {
 
     describe('#matrixTo[Transformation]', () => {
       function roundObject(obj: any) {
+        // eslint-disable-next-line
         for (const i in obj) {
           if (Object.prototype.hasOwnProperty.call(obj, i)) {
             obj[i] = Math.round(obj[i])

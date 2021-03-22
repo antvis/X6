@@ -28,7 +28,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
   }
 
   const padding = options.padding
-  if (padding != null && isFinite(padding)) {
+  if (padding != null && Number.isFinite(padding)) {
     bbox.inflate(padding)
   }
 
