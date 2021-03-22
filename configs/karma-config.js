@@ -91,8 +91,13 @@ module.exports = function (config, base, karmaTypescriptConfig) {
             html: 'test/coverage',
             lcovonly: {
               directory: 'test/coverage',
-              filename: 'lcov.info',
               subdirectory: './',
+              filename: 'lcov.info',
+            },
+            cobertura: {
+              directory: 'test/coverage',
+              subdirectory: './',
+              filename: 'coverage.xml',
             },
             'text-summary': '',
           },
