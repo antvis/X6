@@ -50,3 +50,8 @@ jobs:
         with:
           github-token: ${{ env.bot_token }}
           path-to-lcov: ./packages/x6/test/coverage/lcov.info
+      - name: 💡　Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/x6/test/coverage/lcov.info,./packages/x6-vector/test/coverage/lcov.info
