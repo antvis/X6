@@ -22,7 +22,9 @@
     "clean:modules": "rimraf node_modules **/yarn-error.log",
     "bootstrap": "lerna bootstrap && yarn build:dev",
     "reboot": "run-s clean:lerna clean:modules bootstrap",
-    "preinstall": "node ./scripts/pkg-inherit.js update",
+    "package:compare": "yarn package-compare",
+    "package:check": "yarn package-inherit check",
+    "package:inherit": "yarn package-inherit update",
     "prepare": "is-ci || husky install configs/husky-config",
     "precommit": "yarn lint-staged && lerna run --concurrency 1 --stream precommit"
   },
@@ -49,13 +51,11 @@
     }
   },
   "dependencies": {
-    "@commitlint/cli": "^11.0.0",
+    "@commitlint/cli": "^12.0.1",
     "@commitlint/config-conventional": "^12.0.1",
-    "devmoji": "^2.1.9",
-    "husky": "^5.1.1",
+    "devmoji": "^2.2.0",
+    "husky": "^5.2.0",
     "is-ci": "^3.0.0",
-    "lerna": "^3.22.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "lerna": "^4.0.0"
   }
 }
