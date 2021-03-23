@@ -1,3 +1,11 @@
+## @antv/x6 [1.17.7](https://github.com/antvis/x6/compare/@antv/x6@1.17.6...@antv/x6@1.17.7) (2021-03-23)
+
+
+### Bug Fixes
+
+* 🐛 fix eslint errors ([06ba121](https://github.com/antvis/x6/commit/06ba121e3b937c5aeebbbe2b24e6db67fc141cb9))
+* 🐛 fix karma can not process lodash-es ([f7ae6b1](https://github.com/antvis/x6/commit/f7ae6b1f6b961a01c58d8827a9aaa2d5a984a6e0))
+
 ## @antv/x6 [1.17.6](https://github.com/antvis/x6/compare/@antv/x6@1.17.5...@antv/x6@1.17.6) (2021-03-20)
 
 
