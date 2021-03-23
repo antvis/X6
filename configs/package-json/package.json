@@ -15,7 +15,7 @@
     "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
     "build": "tsc --outDir ./lib",
     "build:watch": "yarn build --w",
-    "prebuild": "run-s lint clean",
+    "prebuild": "run-s clean",
     "preinstall": "run-s build",
     "precommit": "lint-staged"
   },
