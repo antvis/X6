@@ -1,20 +1,22 @@
-export class SVGArray<T = number> extends Array<T> {
+import { ObjUtil } from '../util/obj'
+
+export class SVGArray<T = number> {
+  constructor()
   constructor(arrayLength: number)
   constructor(arrayString: string)
   constructor(items: T[])
   constructor(instance: SVGArray<T>)
   constructor(...args: any[]) {
-    if (args.length === 1 && typeof args[0] === 'number') {
-      super(args[0])
-    } else {
-      super()
-      this.length = 0
-      if (args.length === 1) {
-        this.push(...this.parse(args[0]))
-      } else {
-        this.push(...this.parse(args))
-      }
+    if (args.length === 0) {
+      return
     }
+
+    if (args.length === 1 && typeof args[0] === 'number') {
+      this.length = args[0]
+      return
+    }
+
+    this.push(...this.parse(args.length === 1 ? args[0] : args))
   }
 
   parse(raw: string | T[] = []): T[] {
@@ -38,14 +40,20 @@ export class SVGArray<T = number> extends Array<T> {
   }
 
   toSet() {
-    return new Set(this)
+    return new Set(this.toArray())
   }
+}
 
-  toString() {
-    return this.join(' ')
-  }
+export interface SVGArray<T = number> extends Array<T> {}
 
-  valueOf() {
+export namespace SVGArray {
+  ObjUtil.applyMixins(SVGArray, Array)
+
+  SVGArray.prototype.valueOf = function () {
     return this.toArray()
+  }
+
+  SVGArray.prototype.toString = function () {
+    return this.join(' ')
   }
 }

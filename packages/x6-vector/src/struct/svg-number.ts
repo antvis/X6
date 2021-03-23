@@ -68,14 +68,14 @@ export class SVGNumber implements SVGNumber.SVGNumberLike {
     return [this.value, this.unit]
   }
 
-  toJSON() {
-    return this.toString()
+  toJSON(): SVGNumber.SVGNumberLike {
+    return { value: this.value, unit: this.unit }
   }
 
   toString() {
     const value =
       this.unit === '%'
-        ? Math.trunc(this.value * 1e8) / 1e6 // eslint-disable-line no-bitwise
+        ? Math.trunc(this.value * 1e8) / 1e6
         : this.unit === 's'
         ? this.value / 1e3
         : this.value
@@ -95,7 +95,7 @@ export namespace SVGNumber {
     | number
     | string
     | SVGNumberLike
-    | [number | string | SVGNumberLike, string?]
+    | [number | string, string?]
 
   export interface SVGNumberLike {
     value: number
@@ -104,10 +104,13 @@ export namespace SVGNumber {
 
   export type SVGNumberArray = [number, string]
 
-  export function create(number: Raw) {
+  export function create(): SVGNumber
+  export function create(number: number, unit?: string): SVGNumber
+  export function create(number: Raw): SVGNumber
+  export function create(number?: Raw, unit?: string) {
     return Array.isArray(number)
       ? new SVGNumber(number[0], number[1])
-      : new SVGNumber(number)
+      : new SVGNumber(number, unit)
   }
 
   export function plus(left: Raw, right: Raw) {
