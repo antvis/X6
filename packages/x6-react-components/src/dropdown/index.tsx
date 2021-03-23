@@ -48,7 +48,7 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
         overlay={fixedOverlay}
         alignPoint={alignPoint}
         trigger={triggers as string[]}
-        transitionName={this.getTransitionName()}
+        // transitionName={this.getTransitionName()}
       >
         {dropdownTrigger}
       </RcDropdown>
