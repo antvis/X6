@@ -9,8 +9,7 @@ export default config({
       sourcemap: true,
       globals: {
         vue: 'Vue',
-        'vue-demi': 'vueDemi',
-        'react-dom': 'ReactDom',
+        '@vue/composition-api': 'VueCompositionAPI',
         '@antv/x6': 'X6',
       },
     },
