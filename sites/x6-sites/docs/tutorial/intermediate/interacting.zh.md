@@ -124,7 +124,7 @@ const graph = new Graph({
 
 ## 限制节点移动
 
-可以在全局配置 `translating` 来限制节点的移动返回
+可以在全局配置 `translating` 来限制节点的移动范围
 
 ```ts
 const graph = new Graph({
@@ -138,10 +138,10 @@ const graph = new Graph({
 
 #### restrict
 
-节点的可移动返回。支持以下两种方式：
+节点的可移动范围。支持以下两种方式：
 
 - `boolean` 如果设置为 `true`, 节点不能移动超出画布区域
-- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定一个节点的移动返回
+- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定一个节点的移动范围
 
 ```ts
 const graph = new Graph({
