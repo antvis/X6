@@ -1,4 +1,3 @@
-import external from 'rollup-plugin-auto-external'
 import config from '../../configs/rollup-config'
 
 export default config({
@@ -16,5 +15,4 @@ export default config({
     },
   ],
   external: ['@antv/x6', 'react', 'react-dom'],
-  plugins: [external()],
 })
