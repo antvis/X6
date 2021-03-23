@@ -1,3 +1,19 @@
+## @antv/x6-vue-shape [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.0...@antv/x6-vue-shape@1.2.1) (2021-03-23)
+
+
+### Bug Fixes
+
+* 🐛 missing global variable names ([64b55f8](https://github.com/antvis/x6/commit/64b55f85b4314a1029cf9a538a4dcc68a1dc945a))
+* 🐛 type errors ([854619f](https://github.com/antvis/x6/commit/854619f9493661d9a7e743243a81f44bdcc1b40b))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.17.7
+
 # @antv/x6-vue-shape [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.7...@antv/x6-vue-shape@1.2.0) (2021-03-12)
 
 
