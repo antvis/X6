@@ -62,9 +62,10 @@ export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
   if (matrix != null) {
     const source = matrix as any
     const target = mat as any
-    Object.keys(source).forEach((key) => {
+    // eslint-disable-next-line
+    for (const key in source) {
       target[key] = source[key]
-    })
+    }
   }
   return mat
 }
