@@ -1,3 +1,10 @@
+# @antv/x6 [1.18.0](https://github.com/antvis/x6/compare/@antv/x6@1.17.7...@antv/x6@1.18.0) (2021-03-23)
+
+
+### Features
+
+* ✨ revert a lint fix commit ([319f30f](https://github.com/antvis/x6/commit/319f30f5e68587623d85a2759142feaf37ac46fc))
+
 ## @antv/x6 [1.17.7](https://github.com/antvis/x6/compare/@antv/x6@1.17.6...@antv/x6@1.17.7) (2021-03-23)
 
 
