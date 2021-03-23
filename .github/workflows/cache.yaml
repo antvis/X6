@@ -28,12 +28,14 @@ jobs:
       - name: 🌱　Get Cache Directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: 🚸　Setup Cacha
+      - name: 🚸　Setup Cache
+        id: cache
         uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-      - name: 🚧　Prepare
-        run: yarn global add lerna
-      - name: 🚀　Bootstrap
-        run: lerna bootstrap
+      - name: 🚧　Update Cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          yarn global add lerna
+          lerna bootstrap
