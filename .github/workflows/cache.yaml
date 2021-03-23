@@ -1,0 +1,39 @@
+# Auto update cahe
+
+name: 🌈　Cache
+
+on:
+  push:
+    branches:
+      - master
+      - next
+      - next-major
+      - alpha
+      - beta
+  pull_request_target:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: ⤵️　Checkout
+        uses: actions/checkout@v2
+      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: 🌱　Get Cache Directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 🚸　Setup Cacha
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: 🚧　Prepare
+        run: yarn global add lerna
+      - name: 🚀　Bootstrap
+        run: lerna bootstrap
