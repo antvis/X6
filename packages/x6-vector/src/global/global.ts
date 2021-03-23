@@ -13,7 +13,10 @@ export namespace Global {
     document: DocumentType
   }
 
-  export function setWindow(win: WindowType, doc: DocumentType = win.document) {
+  export function registerWindow(
+    win: WindowType,
+    doc: DocumentType = win.document,
+  ) {
     window = win
     document = doc
   }
@@ -22,14 +25,14 @@ export namespace Global {
     return window
   }
 
-  export function save() {
+  export function saveWindow() {
     saved = {
       window,
       document,
     }
   }
 
-  export function restore() {
+  export function restoreWindow() {
     if (saved) {
       window = saved.window
       document = saved.document
@@ -40,9 +43,9 @@ export namespace Global {
     w: WindowType,
     callback: (win: WindowType, doc: DocumentType) => any,
   ) {
-    save()
-    setWindow(w, w.document)
+    saveWindow()
+    registerWindow(w, w.document)
     callback(w, w.document)
-    restore()
+    restoreWindow()
   }
 }

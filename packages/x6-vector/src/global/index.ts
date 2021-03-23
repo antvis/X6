@@ -1,2 +1,2 @@
-export * from './window'
+export * from './global'
 export * from './version'
