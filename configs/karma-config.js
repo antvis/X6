@@ -17,7 +17,7 @@ module.exports = function (config, base, karmaTypescriptConfig) {
 
     reporters: ['spec', 'karma-typescript'],
 
-    browsers: [process.env.CI ? 'ChromeHeadless' : 'Chrome'],
+    browsers: [process.env.CI ? 'ChromeHeadless' : 'ChromeHeadless'],
 
     customLaunchers: {
       ChromeHeadless: {
@@ -69,16 +69,7 @@ module.exports = function (config, base, karmaTypescriptConfig) {
           sourceMap: true,
           transforms: [
             es6Transform({
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    targets: {
-                      node: 'current',
-                    },
-                  },
-                ],
-              ],
+              presets: [['@babel/preset-env']],
             }),
           ],
         },
