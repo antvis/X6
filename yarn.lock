@@ -4421,15 +4421,7 @@
     jest-diff "^25.2.1"
     pretty-format "^25.2.1"
 
-"@types/jest@^26.0.0":
-  version "26.0.21"
-  resolved "https://registry.npm.taobao.org/@types/jest/download/@types/jest-26.0.21.tgz#3a73c2731e7e4f0fbaea56ce7ff8c79cf812bd24"
-  integrity sha1-OnPCcx5+Tw+66lbOf/jHnPgSvSQ=
-  dependencies:
-    jest-diff "^26.0.0"
-    pretty-format "^26.0.0"
-
-"@types/jest@^26.0.21":
+"@types/jest@^26.0.0", "@types/jest@^26.0.21":
   version "26.0.21"
   resolved "https://registry.npmjs.org/@types/jest/-/jest-26.0.21.tgz#3a73c2731e7e4f0fbaea56ce7ff8c79cf812bd24"
   integrity sha512-ab9TyM/69yg7eew9eOwKMUmvIZAKEGZYlq/dhe5/0IMUd/QLJv5ldRMdddSn+u22N13FP3s5jYyktxuBwY0kDA==
@@ -18381,10 +18373,10 @@ karma-typescript@5.3.0:
     util "^0.12.1"
     vm-browserify "^1.1.2"
 
-karma@^6.0.0:
+karma@^6.2.0:
   version "6.2.0"
-  resolved "https://registry.npm.taobao.org/karma/download/karma-6.2.0.tgz#5302ca36390b146f635b3427982afe0a94c72ff7"
-  integrity sha1-UwLKNjkLFG9jWzQnmCr+CpTHL/c=
+  resolved "https://registry.npmjs.org/karma/-/karma-6.2.0.tgz#5302ca36390b146f635b3427982afe0a94c72ff7"
+  integrity sha512-pCB8eNxGgdIdZeC885rbhZ/VyuOPNHUIDNL9EaaMf1NVzpvTjMO8a7zRTn51ZJhOOOxCSpalUdT1A8x76LyVqg==
   dependencies:
     body-parser "^1.19.0"
     braces "^3.0.2"
@@ -20417,21 +20409,16 @@ moment@2.x, moment@^2.15.1, moment@^2.22.1, moment@^2.24.0, moment@^2.25.3, mome
   integrity sha1-sr52n6MZQL6e7qZGnAdeNQBvo9M=
 
 monaco-editor-webpack-plugin@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.npm.taobao.org/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-2.1.0.tgz#216bd35512a282beac7befd2fcdc5adb110403ff"
-  integrity sha1-IWvTVRKigr6se+/S/Nxa2xEEA/8=
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-2.0.0.tgz?cache=0&sync_timestamp=1600681958041&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmonaco-editor-webpack-plugin%2Fdownload%2Fmonaco-editor-webpack-plugin-2.0.0.tgz#196052f23678285deca7a7baf4d7aebe9d1ff9e1"
+  integrity sha1-GWBS8jZ4KF3sp6e69Neuvp0f+eE=
   dependencies:
     loader-utils "^2.0.0"
 
-monaco-editor@*:
-  version "0.23.0"
-  resolved "https://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.23.0.tgz#24844ba5640c7adb3a2a3ff3b520cf2d7170a6f0"
-  integrity sha1-JIRLpWQMets6Kj/ztSDPLXFwpvA=
-
-monaco-editor@^0.21.0:
-  version "0.21.3"
-  resolved "https://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.21.3.tgz#3381b66614b64d1c5e3b77dd5564ad496d1b4e5d"
-  integrity sha1-M4G2ZhS2TRxeO3fdVWStSW0bTl0=
+monaco-editor@*, monaco-editor@^0.21.0:
+  version "0.21.2"
+  resolved "https://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.21.2.tgz#37054e63e480d51a2dd17d609dcfb192304d5605"
+  integrity sha1-NwVOY+SA1Rot0X1gnc+xkjBNVgU=
 
 moo@^0.5.0:
   version "0.5.1"
