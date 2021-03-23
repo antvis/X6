@@ -1,5 +1,4 @@
 import postcss from 'rollup-plugin-postcss'
-import external from 'rollup-plugin-auto-external'
 import config from '../../configs/rollup-config'
 
 export default config({
@@ -18,7 +17,6 @@ export default config({
   ],
   external: ['antd', 'react', 'react-dom'],
   plugins: [
-    external(),
     postcss({
       minimize: true,
       sourceMap: false,
