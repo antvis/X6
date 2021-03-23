@@ -1,0 +1,25 @@
+coverage:
+  status:
+    project:
+      default: off
+      x6:
+        flags:
+          - x6
+      x6-vector:
+        flags:
+          - x6-vector
+      x6-geometry:
+        flags:
+          - x6-geometry
+
+flags:
+  # filter the folder(s) you wish to measure by that flag
+  x6:
+    paths:
+      - packages/x6
+  x6-vector:
+    paths:
+      - packages/x6-vector
+  x6-geometry:
+    paths:
+      - packages/x6-geometry
