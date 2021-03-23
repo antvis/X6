@@ -87,6 +87,7 @@ module.exports = {
     'promise/catch-or-return': 0,
 
     '@typescript-eslint/no-namespace': 0,
+    '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/no-empty-function': 0,
@@ -120,4 +121,13 @@ module.exports = {
     'react/destructuring-assignment': 0,
     'react/no-access-state-in-setstate': 0,
   },
+  overrides: [
+    {
+      files: ['**/*.js'],
+      rules: {
+        'no-console': 0,
+        'global-require': 0,
+      },
+    },
+  ],
 }
