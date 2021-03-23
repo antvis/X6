@@ -1,3 +1,13 @@
+## @antv/x6-react [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-react@1.1.3...@antv/x6-react@1.1.4) (2021-03-23)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.17.7
+
 ## @antv/x6-react [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-react@1.1.1...@antv/x6-react@1.1.2) (2021-01-13)
 
 
