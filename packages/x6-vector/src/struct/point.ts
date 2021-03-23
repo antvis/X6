@@ -24,7 +24,11 @@ export class Point implements Point.PointLike {
     return new Point(this)
   }
 
-  toArray() {
+  toJSON(): Point.PointLike {
+    return { x: this.x, y: this.y }
+  }
+
+  toArray(): Point.PointArray {
     return [this.x, this.y]
   }
 
