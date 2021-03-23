@@ -1,5 +1,4 @@
 {
-  "private": true,
   "version": "1.0.0",
   "name": "@antv/x6-geometry",
   "description": "Some useful geometry operations.",
