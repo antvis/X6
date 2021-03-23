@@ -1,4 +1,3 @@
-import autoExternal from 'rollup-plugin-auto-external'
 import config from '../../configs/rollup-config'
 
 export default config({
@@ -16,5 +15,5 @@ export default config({
       },
     },
   ],
-  plugins: [autoExternal()],
+  external: ['@antv/x6', '@vue/composition-api', 'vue'],
 })
