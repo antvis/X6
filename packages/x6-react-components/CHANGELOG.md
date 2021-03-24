@@ -1,3 +1,11 @@
+## @antv/x6-react-components [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.2...@antv/x6-react-components@1.1.3) (2021-03-24)
+
+
+### Bug Fixes
+
+* 🐛 update .lock file ([5fe675c](https://github.com/antvis/x6/commit/5fe675cd1a68a8c50c1dc12fd22c8eb7c54e1e42))
+* 🐛 update yarn.lock file ([22817d1](https://github.com/antvis/x6/commit/22817d1505e017b73fcc92896cd4032d42fe82b2))
+
 ## @antv/x6-react-components [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.1...@antv/x6-react-components@1.1.2) (2021-03-23)
 
 ## @antv/x6-react-components [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.0.2...@antv/x6-react-components@1.0.3) (2021-01-13)
