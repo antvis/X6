@@ -1,9 +1,9 @@
 ---
 title: 常见问题
-order: 0
+order: 9
 redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
+  - /zh/docs
+  - /zh/docs/tutorial
 ---
 
 1.	一般问题
