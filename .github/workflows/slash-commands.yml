@@ -3,7 +3,7 @@ on:
   issue_comment:
     types: [created]
 jobs:
-  run:
+  slash-commands:
     runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/use-app-token@v1

@@ -10,7 +10,7 @@ on:
       - alpha
       - beta
 jobs:
-  run:
+  release:
     runs-on: ubuntu-latest
     strategy:
       matrix:

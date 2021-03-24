@@ -1,7 +1,7 @@
 name: 🏷️　Label(File Paths)
 on: pull_request_target
 jobs:
-  run:
+  label-file-paths:
     runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/use-app-token@v1
