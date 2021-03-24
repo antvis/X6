@@ -21,7 +21,7 @@ export default config({
       minimize: true,
       sourceMap: false,
       extensions: ['.less', '.css'],
-      use: [['less', { javascriptEnabled: true, math: 'always' }]],
+      use: [['less', { javascriptEnabled: true }]],
     }),
   ],
 })
