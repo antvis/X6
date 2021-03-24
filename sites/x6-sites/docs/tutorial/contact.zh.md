@@ -1,6 +1,6 @@
 ---
 title: 联系我们
-order: 10
+order: 11
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
