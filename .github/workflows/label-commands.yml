@@ -5,7 +5,7 @@ on:
   issues:
     types: [labeled, unlabeled]
 jobs:
-  run:
+  label-commands:
     runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/use-app-token@v1
