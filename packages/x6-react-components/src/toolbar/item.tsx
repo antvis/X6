@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Tooltip } from 'antd'
-import { TooltipProps } from 'antd/lib/tooltip'
+import { TooltipProps } from 'antd/es/tooltip'
 import 'antd/es/tooltip/style'
 import { Menu } from '../menu'
 import { Dropdown } from '../dropdown'
