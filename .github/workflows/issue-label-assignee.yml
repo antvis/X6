@@ -8,7 +8,7 @@ on:
   pull_request_target:
     types: [opened]
 jobs:
-  run:
+  label:
     runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/use-app-token@v1
