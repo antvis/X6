@@ -3,7 +3,7 @@ on:
   issue_comment:
     types: [created]
 jobs:
-  run:
+  rebase:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
     runs-on: ubuntu-latest
     steps:
