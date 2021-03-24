@@ -4,7 +4,7 @@ on:
     types: [released]
 
 jobs:
-  run:
+  deploy-sites:
     runs-on: ubuntu-latest
     strategy:
       matrix:
