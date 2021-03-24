@@ -3,16 +3,16 @@ import classNames from 'classnames'
 import RcDropdown from 'rc-dropdown'
 
 export class Dropdown extends React.Component<Dropdown.Props, any> {
-  getTransitionName() {
-    const { placement = '', transitionName } = this.props
-    if (transitionName !== undefined) {
-      return transitionName
-    }
-    if (placement.indexOf('top') >= 0) {
-      return 'slide-down'
-    }
-    return 'slide-up'
-  }
+  // getTransitionName() {
+  //   const { placement = '', transitionName } = this.props
+  //   if (transitionName !== undefined) {
+  //     return transitionName
+  //   }
+  //   if (placement.indexOf('top') >= 0) {
+  //     return 'slide-down'
+  //   }
+  //   return 'slide-up'
+  // }
 
   render() {
     const { children, trigger, disabled } = this.props
