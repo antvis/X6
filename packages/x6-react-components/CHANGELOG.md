@@ -1,3 +1,11 @@
+## @antv/x6-react-components [1.1.5](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.4...@antv/x6-react-components@1.1.5) (2021-03-24)
+
+
+### Bug Fixes
+
+* 修复x6-react-component antd引入的问题 ([edf947d](https://github.com/antvis/x6/commit/edf947debc2d2ea22569a116c41c7af27d81d331))
+* 修复x6-react-component antd引入的问题 ([b261160](https://github.com/antvis/x6/commit/b261160299a92a796cda8ca96710d7b3447aa815))
+
 ## @antv/x6-react-components [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.3...@antv/x6-react-components@1.1.4) (2021-03-24)
 
 
