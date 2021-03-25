@@ -5,7 +5,7 @@ on:
   issues:
     types: [opened]
 jobs:
-  needs-more-info:
+  evaluate:
     runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/use-app-token@v1

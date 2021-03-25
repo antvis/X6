@@ -1,7 +1,7 @@
 name: 💬　Auto Comment
 on: [issues, pull_request_target]
 jobs:
-  auto-comment:
+  comment:
     runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/use-app-token@v1
