@@ -15,11 +15,14 @@
   },
   "dependencies": {
     "@octokit/app": "^4.2.1",
+    "gemoji": "^6.1.0",
     "is-base64": "^1.1.0",
+    "js-yaml": "^4.0.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "probot": "^10.2.0",
-    "tweetsodium": "^0.0.5"
+    "tweetsodium": "^0.0.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -28,8 +31,10 @@
     "@octokit/types": "^5.5.0",
     "@types/is-base64": "^1.1.0",
     "@types/jest": "^26.0.9",
+    "@types/js-yaml": "^4.0.0",
     "@types/lodash": "^4.14.161",
     "@types/node": "^14.0.27",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
     "eslint": "^7.9.0",
