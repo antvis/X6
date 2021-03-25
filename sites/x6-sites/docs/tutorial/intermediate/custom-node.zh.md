@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-我们在 X6 中内置了一些基础图形，如 `Rect`、`Circle` 和 `Ellipse` 等，但这些还远远不能满足我们的实习需求，我们需要能够定义具有业务意义的节点，例如 ER 图的表格节点。自定义节点也不是什么难事，其实就是在组合使用 SVG 中的 `<rect>` 、`<circle>`、`<ellipse>`、`<image>`、`<text>`、`<path>` 等基础元素，如果你对这些基础元素还不熟悉，可以参考 MDN 提供的[教程](https://developer.mozilla.org/en-US/docs/Web/SVG/Element)，使用这些基础元素可以定义出任何我们想要的图形。
+我们在 X6 中内置了一些基础图形，如 `Rect`、`Circle` 和 `Ellipse` 等，但这些还远远不能满足我们的实际需求，我们需要能够定义具有业务意义的节点，例如 ER 图的表格节点。自定义节点也不是什么难事，其实就是在组合使用 SVG 中的 `<rect>` 、`<circle>`、`<ellipse>`、`<image>`、`<text>`、`<path>` 等基础元素，如果你对这些基础元素还不熟悉，可以参考 MDN 提供的[教程](https://developer.mozilla.org/en-US/docs/Web/SVG/Element)，使用这些基础元素可以定义出任何我们想要的图形。
 
 ## 原理
 
