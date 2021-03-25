@@ -3,7 +3,7 @@ on:
   issue_comment:
       types: [created]
 jobs:
-  create-issue-branch:
+  cib:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
