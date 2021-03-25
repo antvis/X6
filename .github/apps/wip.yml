@@ -1,0 +1,13 @@
+locations:
+  - title
+  - label
+  - commit
+
+terms:
+  - wip
+  - rfc
+  - work in progress
+  - work-in-progress
+  - do not merge
+  - do-not-merge
+  - 🚧
