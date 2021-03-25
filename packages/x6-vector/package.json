@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "name": "@antv/x6-vector",
-  "description": "The lightweight library for manipulating and animating SVG.",
+  "description": "Lightweight library for manipulating and animating SVG.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/x6-vector.js",
