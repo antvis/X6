@@ -4,7 +4,7 @@ on:
     types: [released]
 
 jobs:
-  delete-stale-releases:
+  clean:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
