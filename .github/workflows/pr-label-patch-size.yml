@@ -1,7 +1,7 @@
 name: 🏷️　Label(Patch Size)
 on: pull_request_target
 jobs:
-  label-patch-size:
+  label:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
