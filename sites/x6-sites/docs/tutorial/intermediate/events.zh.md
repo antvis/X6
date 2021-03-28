@@ -120,6 +120,14 @@ graph.on('node:resized', ({ e, x, y, node, view }) => { })
 graph.on('node:rotated', ({ e, x, y, node, view }) => { })
 ```
 
+### 节点嵌入
+
+| 事件名          | 回调参数                                                                         | 说明                    |
+|-----------------|----------------------------------------------------------------------------------|-----------------------|
+| `node:embed`     | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView, currentParent: Node }` | 开启嵌入，在开始拖动节点时触发。     |
+| `node:embedding`   | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView, currentParent: Node, candidateParent: Node }` | 寻找目标节点过程中触发。         |
+| `node:embedded`    | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView, previousParent: Node, currentParent: Node }`   | 完成节点嵌入后触发。         |
+
 ### 边连接/取消连接
 
 当拖动边的起始/终止箭头将边连接到节点/边或者将边从节点/边上分离后触发 `edge:connected`，回调函数的参数如下。
