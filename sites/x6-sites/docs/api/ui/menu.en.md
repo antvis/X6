@@ -56,7 +56,7 @@ const Divider = Menu.Divider
 | 参数      | 说明                                               | 类型       | 默认值  |
 |-----------|--------------------------------------------------|------------|---------|
 | className | 自定义的样式名                                     | string     | -       |
-| name      | 菜单名称(唯一标识)，在 Menu 的 `onClick` 回调用使用 | string     | -       |
+| name      | 菜单名称(唯一标识)，在 Menu 的 `onClick` 回调中使用，如果不设置 `name` 属性，`onClick` 将不会被调用。 | string     | -       |
 | icon      | 菜单图标                                           | ReactNode  | -       |
 | text      | 菜单文本                                           | string     | -       |
 | hotkey    | 菜单快捷键                                         | string     | -       |
