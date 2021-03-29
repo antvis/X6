@@ -62,8 +62,8 @@
   ],
   "peerDependencies": {
     "antd": ">=4.4.2",
-    "react": ">=16.8.6",
-    "react-dom": ">=16.8.6"
+    "react": ">=16.8.6 || >=17.0.0",
+    "react-dom": ">=16.8.6 || >=17.0.0"
   },
   "dependencies": {
     "clamp": "^1.0.1",
