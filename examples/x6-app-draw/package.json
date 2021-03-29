@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@antv/x6": "^1.18.0",
-    "@antv/x6-react-components": "^1.1.5",
+    "@antv/x6-react-components": "^1.1.6",
     "antd": "^4.4.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
