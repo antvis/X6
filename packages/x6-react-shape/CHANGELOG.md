@@ -1,3 +1,5 @@
+## @antv/x6-react-shape [1.3.4](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.3.3...@antv/x6-react-shape@1.3.4) (2021-03-29)
+
 ## @antv/x6-react-shape [1.3.3](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.3.2...@antv/x6-react-shape@1.3.3) (2021-03-24)
 
 ## @antv/x6-react-shape [1.3.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.3.1...@antv/x6-react-shape@1.3.2) (2021-03-23)
