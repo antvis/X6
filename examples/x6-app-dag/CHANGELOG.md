@@ -1,3 +1,19 @@
+## @antv/x6-app-dag [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.3...@antv/x6-app-dag@1.1.4) (2021-03-29)
+
+
+### Bug Fixes
+
+* 🐛 disable panning before rubberband ([382a090](https://github.com/antvis/x6/commit/382a090fba9798ff66957458a640f5803cfcdcf6))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-react-components:** upgraded to 1.1.6
+* **@antv/x6-react-shape:** upgraded to 1.3.4
+
 ## @antv/x6-app-dag [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.3...@antv/x6-app-dag@1.1.4) (2021-03-28)
 
 
