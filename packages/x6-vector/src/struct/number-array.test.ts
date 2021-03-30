@@ -1,9 +1,9 @@
-import { SVGArray } from './svg-array'
+import { NumberArray } from './number-array'
 
-describe('SVGArray', () => {
+describe('NumberArray', () => {
   describe('constructor()', () => {
     it('should preallocate memory if only number is passed', () => {
-      const arr = new SVGArray(1)
+      const arr = new NumberArray(1)
       expect(arr.length).toBe(1)
     })
 
@@ -30,7 +30,7 @@ describe('SVGArray', () => {
         1,
         -0,
       ]
-      const array = new SVGArray(raw)
+      const array = new NumberArray(raw)
 
       array.forEach((v, i) => {
         expect(v).toBe(raw[i])
@@ -42,29 +42,29 @@ describe('SVGArray', () => {
     })
 
     it('should parse space seperated string and converts it to array', () => {
-      expect(new SVGArray('1 2 3 4').valueOf()).toEqual([1, 2, 3, 4])
+      expect(new NumberArray('1 2 3 4').valueOf()).toEqual([1, 2, 3, 4])
     })
 
     it('should parse comma seperated string and converts it to array', () => {
-      expect(new SVGArray('1,2,3,4').valueOf()).toEqual([1, 2, 3, 4])
+      expect(new NumberArray('1,2,3,4').valueOf()).toEqual([1, 2, 3, 4])
     })
   })
 
   describe('reverse()', () => {
     it('should reverse the array', () => {
-      const array = new SVGArray([1, 2, 3, 4, 5]).reverse()
+      const array = new NumberArray([1, 2, 3, 4, 5]).reverse()
       expect(array.valueOf()).toEqual([5, 4, 3, 2, 1])
     })
 
     it('should returns itself', () => {
-      const array = new SVGArray()
+      const array = new NumberArray()
       expect(array.reverse()).toBe(array)
     })
   })
 
   describe('clone()', () => {
     it('should create a shallow clone of the array', () => {
-      const array = new SVGArray([1, 2, 3, 4, 5])
+      const array = new NumberArray([1, 2, 3, 4, 5, 6, 7, 8])
       const clone = array.clone()
 
       expect(array.toString()).toBe(clone.toString())
@@ -74,7 +74,7 @@ describe('SVGArray', () => {
 
   describe('toSet()', () => {
     it('should create a Set from the Array', () => {
-      const set = new SVGArray([1, 1, 2, 3]).toSet()
+      const set = new NumberArray([1, 1, 2, 3]).toSet()
       expect(set).toBeInstanceOf(Set)
     })
   })

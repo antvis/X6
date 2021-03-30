@@ -1,4 +1,4 @@
-import { ObjUtil } from '../util/obj'
+import { Obj } from '../util/obj'
 import { Registry } from './registry'
 
 export abstract class Base {}
@@ -14,7 +14,7 @@ export namespace Base {
 
   export function mixin(...source: any[]) {
     return <TClass extends Class>(ctor: TClass) => {
-      ObjUtil.applyMixins(ctor, ...source)
+      Obj.applyMixins(ctor, ...source)
     }
   }
 }
