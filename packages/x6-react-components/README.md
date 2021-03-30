@@ -2,7 +2,7 @@
 
 > React components for building x6 editors
 
-[![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE) 
+[![MIT License](https://img.shields.io/github/license/antvis/x6?style=flat-square)](/LICENSE) 
 [![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
 
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6-react-components.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6-react-components) 
