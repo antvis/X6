@@ -34,6 +34,8 @@
     "build": "run-p build:version build:dev build:umd",
     "prebuild": "run-s lint clean",
     "test": "karma start",
+    "test:watch": "karma start --single-run=false --auto-watch",
+    "test:debug": "karma start --browsers=Chrome --single-run=false --auto-watch --debug",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
     "prepare": "run-s build:version test build",
