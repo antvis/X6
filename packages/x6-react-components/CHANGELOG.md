@@ -1,3 +1,5 @@
+## @antv/x6-react-components [1.1.8](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.7...@antv/x6-react-components@1.1.8) (2021-03-30)
+
 ## @antv/x6-react-components [1.1.7](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.6...@antv/x6-react-components@1.1.7) (2021-03-30)
 
 ## @antv/x6-react-components [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.5...@antv/x6-react-components@1.1.6) (2021-03-29)
