@@ -1,6 +1,6 @@
 import { Attrs } from '../../types'
 import { Global } from '../../global'
-import { SVGNumber } from '../../struct/svg-number'
+import { UNumber } from '../../struct/unumber'
 import { Adopter } from '../adopter'
 import { Tspan } from './tspan'
 import { TextBase } from './text-base'
@@ -58,13 +58,13 @@ export class Text<
   }
 
   leading(): number
-  leading(value: SVGNumber.Raw): this
-  leading(value?: SVGNumber.Raw) {
+  leading(value: UNumber.Raw): this
+  leading(value?: UNumber.Raw) {
     if (value == null) {
       return this.assets.leading
     }
 
-    this.assets.leading = SVGNumber.create(value).valueOf()
+    this.assets.leading = UNumber.create(value).valueOf()
     return this.rebuild()
   }
 

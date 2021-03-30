@@ -59,7 +59,6 @@ export namespace Util {
       const r = Num.clamp((num >> 16) + amt, 0, 255)
       const g = Num.clamp(((num >> 8) & 0x00ff) + amt, 0, 255)
       const b = Num.clamp((num & 0x0000ff) + amt, 0, 255)
-
       return `${pound ? '#' : ''}${(b | (g << 8) | (r << 16)).toString(16)}`
     }
 

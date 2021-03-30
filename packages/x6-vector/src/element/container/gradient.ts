@@ -1,7 +1,7 @@
 import { Attrs } from '../../types'
 import { DomUtil } from '../../util/dom'
 import { Box } from '../../struct/box'
-import { SVGNumber } from '../../struct/svg-number'
+import { UNumber } from '../../struct/unumber'
 import { VectorElement } from '../element'
 import { Container } from './container'
 import { Stop } from './gradient-stop'
@@ -27,37 +27,37 @@ export class Gradient extends Container<
   from(x: number | string, y: number | string) {
     return this.type === 'radialGradient'
       ? this.attr({
-          fx: SVGNumber.create(x).toString(),
-          fy: SVGNumber.create(y).toString(),
+          fx: UNumber.create(x).toString(),
+          fy: UNumber.create(y).toString(),
         })
       : this.attr({
-          x1: SVGNumber.create(x).toString(),
-          y1: SVGNumber.create(y).toString(),
+          x1: UNumber.create(x).toString(),
+          y1: UNumber.create(y).toString(),
         })
   }
 
   to(x: number | string, y: number | string) {
     return this.type === 'radialGradient'
       ? this.attr({
-          cx: SVGNumber.create(x).toString(),
-          cy: SVGNumber.create(x).toString(),
+          cx: UNumber.create(x).toString(),
+          cy: UNumber.create(x).toString(),
         })
       : this.attr({
-          x2: SVGNumber.create(y).toString(),
-          y2: SVGNumber.create(y).toString(),
+          x2: UNumber.create(y).toString(),
+          y2: UNumber.create(y).toString(),
         })
   }
 
   stop(
-    offset?: number | string | SVGNumber,
+    offset?: number | string | UNumber,
     color?: string,
-    opacity?: number | string | SVGNumber,
+    opacity?: number | string | UNumber,
   ): Stop
   stop(options: Stop.Options): Stop
   stop(
-    offset?: Stop.Options | number | string | SVGNumber,
+    offset?: Stop.Options | number | string | UNumber,
     color?: string,
-    opacity?: number | string | SVGNumber,
+    opacity?: number | string | UNumber,
   ) {
     return new Stop().update(offset, color, opacity).appendTo(this)
   }
