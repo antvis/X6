@@ -145,7 +145,8 @@ export namespace Color {
       typeof val === 'object' &&
       typeof val.r === 'number' &&
       typeof val.g === 'number' &&
-      typeof val.b === 'number'
+      typeof val.b === 'number' &&
+      (typeof val.a === 'undefined' || typeof val.a === 'number')
     )
   }
 
@@ -176,7 +177,7 @@ export namespace Color {
   export function fromRgb(rgba: string) {
     const matches = rgba.toLowerCase().match(rRgb)
     if (matches) {
-      const arr = matches[1].split(/\s*,\s*/).map((v) => parseInt(v, 10))
+      const arr = matches[1].split(/\s*,\s*/).map((v) => parseFloat(v))
       return fromArray(arr as Color.RGBA)
     }
 
@@ -186,11 +187,11 @@ export namespace Color {
   export function fromHsl(color: string) {
     const matches = color.toLowerCase().match(rHsl)
     if (matches) {
-      const arr = matches[2].split(/\s*,\s*/)
+      const arr = matches[1].split(/\s*,\s*/)
       const h = (((parseFloat(arr[0]) % 360) + 360) % 360) / 360
       const s = parseFloat(arr[1]) / 100
       const l = parseFloat(arr[2]) / 100
-      const a = arr[3] == null ? 1 : parseInt(arr[3], 10)
+      const a = arr[3] == null ? 1 : parseFloat(arr[3])
       return new Color(Util.hsla2rgba(h, s, l, a))
     }
 
@@ -244,9 +245,9 @@ export namespace Color {
     return random(ignoreAlpha).toString()
   }
 
-  export function invert(rgba: RGBA, bw: boolean): RGBA
-  export function invert(hex: string, bw: boolean): string
-  export function invert(color: string | RGBA, bw: boolean) {
+  export function invert(rgba: RGBA, bw?: boolean): RGBA
+  export function invert(hex: string, bw?: boolean): string
+  export function invert(color: string | RGBA, bw?: boolean) {
     if (typeof color === 'string') {
       const pound = color[0] === '#'
       const [r, g, b] = Util.hex2rgb(color)
