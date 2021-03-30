@@ -9,13 +9,13 @@ export class Color implements Color.RGBALike {
 
   constructor()
   constructor(color: string)
-  constructor(color: Color | Color.RGBA)
+  constructor(color: Color.RGBALike | Color.RGBA)
   constructor(r: number, g: number, b: number, a?: number)
   constructor(
     color?:
       | number
       | string
-      | Color
+      | Color.RGBALike
       | Color.RGBA
       | {
           r: number
@@ -47,7 +47,7 @@ export class Color implements Color.RGBALike {
   }
 
   blend(start: Color, end: Color, weight: number) {
-    this.set(
+    return this.set(
       start.r + (end.r - start.r) * weight,
       start.g + (end.g - start.g) * weight,
       start.b + (end.b - start.b) * weight,
@@ -61,10 +61,11 @@ export class Color implements Color.RGBALike {
     this.g = rgba[1]
     this.b = rgba[2]
     this.a = rgba[3]
+    return this
   }
 
   darken(amount: number) {
-    this.lighten(-amount)
+    return this.lighten(-amount)
   }
 
   set(rgba: Color.RGBA): this
@@ -98,7 +99,7 @@ export class Color implements Color.RGBALike {
   }
 
   toCSS(ignoreAlpha?: boolean) {
-    const rgb = `${this.r},${this.g},${this.b},`
+    const rgb = `${this.r},${this.g},${this.b}`
     return ignoreAlpha ? `rgb(${rgb})` : `rgba(${rgb},${this.a})`
   }
 

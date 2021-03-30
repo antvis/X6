@@ -7,7 +7,7 @@ import { Box } from '../struct/box'
 import { Point } from '../struct/point'
 import { Color } from '../struct/color'
 import { Matrix } from '../struct/matrix'
-import { SVGNumber } from '../struct/svg-number'
+import { UNumber } from '../struct/unumber'
 import { Vector } from './vector'
 
 @VectorElement.register('Element')
@@ -56,7 +56,7 @@ export class VectorElement<TSVGElement extends SVGElement = SVGElement>
   cx(x?: string | number | null) {
     return x == null
       ? this.x() + this.width() / 2
-      : this.x(SVGNumber.minus(x, this.width() / 2))
+      : this.x(UNumber.minus(x, this.width() / 2))
   }
 
   cy(): number
@@ -65,7 +65,7 @@ export class VectorElement<TSVGElement extends SVGElement = SVGElement>
   cy(y?: string | number | null) {
     return y == null
       ? this.y() + this.height() / 2
-      : this.y(SVGNumber.minus(y, this.height() / 2))
+      : this.y(UNumber.minus(y, this.height() / 2))
   }
 
   center(x: string | number, y: string | number) {
@@ -73,11 +73,11 @@ export class VectorElement<TSVGElement extends SVGElement = SVGElement>
   }
 
   dx(x: string | number) {
-    return this.x(SVGNumber.plus(x, this.x()))
+    return this.x(UNumber.plus(x, this.x()))
   }
 
   dy(y: string | number) {
-    return this.y(SVGNumber.plus(y, this.y()))
+    return this.y(UNumber.plus(y, this.y()))
   }
 
   dmove(x: string | number = 0, y: string | number = 0) {

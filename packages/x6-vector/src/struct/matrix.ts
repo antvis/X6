@@ -160,11 +160,58 @@ export class Matrix implements Matrix.MatrixLike {
     return this.translateO(-dx, -dy).lmultiplyO(matrix).translateO(dx, dy)
   }
 
-  flip(axis: 'x' | 'y', around: number) {
+  scale(s: number): Matrix
+  scale(x: number, y: number): Matrix
+  scale(s: number, cx: number, cy: number): Matrix
+  scale(x: number, y: number, cx: number, cy: number): Matrix
+  scale(x: number, y?: number, cx?: number, cy?: number) {
+    return this.clone().scaleO(x, y, cx, cy)
+  }
+
+  scaleO(s: number): this
+  scaleO(sx: number, sy: number): this
+  scaleO(s: number, cx: number, cy: number): this
+  scaleO(sx: number, sy: number, cx: number, cy: number): this
+  scaleO(sx: number, sy?: number, cx?: number, cy?: number): this
+  scaleO(sx: number, sy?: number, cx?: number, cy?: number) {
+    if (typeof cy === 'undefined') {
+      if (typeof cx === 'undefined') {
+        cx = 0 // eslint-disable-line
+        cy = 0 // eslint-disable-line
+        if (typeof sy === 'undefined') {
+          sy = sx // eslint-disable-line
+        }
+      } else {
+        cy = cx // eslint-disable-line
+        cx = sy // eslint-disable-line
+        sy = sx // eslint-disable-line
+      }
+    }
+
+    const { a, b, c, d, e, f } = this
+
+    this.a = a * sx
+    this.b = b * (sy as number)
+    this.c = c * sx
+    this.d = d * (sy as number)
+    this.e = e * sx - (cx as number) * sx + (cx as number)
+    this.f = f * (sy as number) - cy * (sy as number) + cy
+
+    return this
+  }
+
+  flip(): Matrix
+  flip(cx: number, cy?: number): Matrix
+  flip(axis: 'x' | 'y', around?: number): Matrix
+  flip(axis?: 'x' | 'y' | number, around?: number) {
     return this.clone().flipO(axis, around)
   }
 
-  flipO(axis: 'x' | 'y', around: number) {
+  flipO(): this
+  flipO(cx: number, cy?: number): this
+  flipO(axis: 'x' | 'y', around?: number): this
+  flipO(axis?: 'x' | 'y' | number, around?: number): this
+  flipO(axis: 'x' | 'y' | number = 0, around = 0): this {
     return axis === 'x'
       ? this.scaleO(-1, 1, around, 0)
       : axis === 'y'
@@ -182,7 +229,7 @@ export class Matrix implements Matrix.MatrixLike {
     // Invert the 2x2 matrix in the top left
     const det = a * d - b * c
     if (!det) {
-      throw new Error(`Cannot invert matrix ${this.toString()}`)
+      throw new Error(`Cannot invert ${this.toString()}`)
     }
 
     // Calculate the top 2x2 matrix
@@ -230,10 +277,15 @@ export class Matrix implements Matrix.MatrixLike {
     )
   }
 
+  rotate(degree: number): Matrix
+  rotate(degree: number, cx: number, cy: number): Matrix
   rotate(degree: number, cx?: number, cy?: number) {
     return this.clone().rotateO(degree, cx, cy)
   }
 
+  rotateO(degree: number): this
+  rotateO(degree: number, cx: number, cy: number): this
+  rotateO(degree: number, cx?: number, cy?: number): this
   rotateO(degrees: number, cx = 0, cy = 0) {
     const radian = Num.radians(degrees)
     const cos = Math.cos(radian)
@@ -251,37 +303,15 @@ export class Matrix implements Matrix.MatrixLike {
     return this
   }
 
-  scale(s: number, cx?: number, cy?: number): Matrix
-  scale(x: number, y?: number, cx?: number, cy?: number): Matrix
-  scale(x: number, y?: number, cx?: number, cy?: number) {
-    return this.clone().scaleO(x, y, cx, cy)
-  }
-
-  scaleO(s: number, cx?: number, cy?: number): this
-  scaleO(sx: number, sy?: number, cx?: number, cy?: number): this
-  scaleO(sx: number, sy: number = sx, cx = 0, cy = 0) {
-    if (arguments.length === 3) {
-      cy = cx // eslint-disable-line
-      cx = sy // eslint-disable-line
-      sy = sx // eslint-disable-line
-    }
-
-    const { a, b, c, d, e, f } = this
-
-    this.a = a * sx
-    this.b = b * sy
-    this.c = c * sx
-    this.d = d * sy
-    this.e = e * sx - cx * sx + cx
-    this.f = f * sy - cy * sy + cy
-
-    return this
-  }
-
+  shear(a: number): Matrix
+  shear(a: number, cx: number, cy: number): Matrix
   shear(a: number, cx?: number, cy?: number) {
     return this.clone().shearO(a, cx, cy)
   }
 
+  shearO(lx: number): this
+  shearO(lx: number, cx: number, cy: number): this
+  shearO(lx: number, cx?: number, cy?: number): this
   shearO(lx: number, cx?: number, cy = 0) {
     const { a, b, c, d, e, f } = this
 
@@ -292,23 +322,36 @@ export class Matrix implements Matrix.MatrixLike {
     return this
   }
 
-  skew(s: number, cx?: number, cy?: number): Matrix
-  skew(x: number, y?: number, cx?: number, cy?: number): Matrix
-  skew(x: number, y?: number, cx?: number, cy?: number) {
-    return this.clone().skewO(x, y, cx, cy)
+  skew(s: number): Matrix
+  skew(sx: number, sy: number): Matrix
+  skew(s: number, cx: number, cy: number): Matrix
+  skew(sx: number, sy: number, cx: number, cy: number): Matrix
+  skew(sx: number, sy?: number, cx?: number, cy?: number): Matrix
+  skew(sx: number, sy?: number, cx?: number, cy?: number) {
+    return this.clone().skewO(sx, sy, cx, cy)
   }
 
-  skewO(s: number, cx?: number, cy?: number): this
+  skewO(s: number): this
+  skewO(sx: number, sy: number): this
+  skewO(s: number, cx: number, cy: number): this
+  skewO(sx: number, sy: number, cx: number, cy: number): this
   skewO(sx: number, sy?: number, cx?: number, cy?: number): this
-  skewO(sx: number, sy: number = sx, cx = 0, cy = 0) {
-    if (arguments.length === 3) {
-      cy = cx // eslint-disable-line no-param-reassign
-      cx = sy // eslint-disable-line no-param-reassign
-      sy = sx // eslint-disable-line no-param-reassign
+  skewO(sx: number, sy?: number, cx?: number, cy?: number) {
+    if (typeof cy === 'undefined') {
+      if (typeof cx === 'undefined') {
+        cx = 0 // eslint-disable-line
+        cy = 0 // eslint-disable-line
+        if (typeof sy === 'undefined') {
+          sy = sx // eslint-disable-line
+        }
+      } else {
+        cy = cx // eslint-disable-line
+        cx = sy // eslint-disable-line
+        sy = sx // eslint-disable-line
+      }
     }
-
-    sx = Num.radians(sx) // eslint-disable-line no-param-reassign
-    sy = Num.radians(sy) // eslint-disable-line no-param-reassign
+    sx = Num.radians(sx) // eslint-disable-line
+    sy = Num.radians(sy as number) // eslint-disable-line
 
     const lx = Math.tan(sx)
     const ly = Math.tan(sy)
@@ -320,15 +363,19 @@ export class Matrix implements Matrix.MatrixLike {
     this.c = c + d * lx
     this.d = d + c * ly
     this.e = e + f * lx - cy * lx
-    this.f = f + e * ly - cx * ly
+    this.f = f + e * ly - (cx as number) * ly
 
     return this
   }
 
+  skewX(x: number): Matrix
+  skewX(x: number, cx: number, cy: number): Matrix
   skewX(x: number, cx?: number, cy?: number) {
     return this.skew(x, 0, cx, cy)
   }
 
+  skewY(y: number): Matrix
+  skewY(y: number, cx: number, cy: number): Matrix
   skewY(y: number, cx?: number, cy?: number) {
     return this.skew(0, y, cx, cy)
   }
@@ -572,15 +619,22 @@ export namespace Matrix {
     | MatrixArray
     | TransformOptions
 
-  export function multiply(l: Matrix, r: Matrix, target: Matrix) {
-    target.a = l.a * r.a + l.c * r.b
-    target.b = l.b * r.a + l.d * r.b
-    target.c = l.a * r.c + l.c * r.d
-    target.d = l.b * r.c + l.d * r.d
-    target.e = l.e + l.a * r.e + l.c * r.f
-    target.f = l.f + l.b * r.e + l.d * r.f
+  export function multiply(l: Matrix, r: Matrix, o: Matrix) {
+    const a = l.a * r.a + l.c * r.b
+    const b = l.b * r.a + l.d * r.b
+    const c = l.a * r.c + l.c * r.d
+    const d = l.b * r.c + l.d * r.d
+    const e = l.e + l.a * r.e + l.c * r.f
+    const f = l.f + l.b * r.e + l.d * r.f
 
-    return target
+    o.a = a
+    o.b = b
+    o.c = c
+    o.d = d
+    o.e = e
+    o.f = f
+
+    return o
   }
 
   export function transformPoint(x: number, y: number, matrix: Raw) {

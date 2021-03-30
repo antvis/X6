@@ -1,9 +1,9 @@
 import { Box } from './box'
 import { Matrix } from './matrix'
-import { SVGArray } from './svg-array'
-import { SVGNumber } from './svg-number'
+import { TArray } from './tarray'
+import { UNumber } from './unumber'
 
-export class PointArray extends SVGArray<[number, number]> {
+export class PointArray extends TArray<[number, number]> {
   clone(): PointArray {
     return super.clone() as PointArray
   }
@@ -24,10 +24,10 @@ export class PointArray extends SVGArray<[number, number]> {
     return new Box(minX, minY, maxX - minX, maxY - minY)
   }
 
-  move(x: number | string = 0, y: number | string = 0) {
+  move(x?: number | string, y?: number | string) {
     const box = this.bbox()
-    const dx = SVGNumber.toNumber(x) - box.x
-    const dy = SVGNumber.toNumber(y) - box.y
+    const dx = typeof x === 'undefined' ? NaN : UNumber.toNumber(x) - box.x
+    const dy = typeof y === 'undefined' ? NaN : UNumber.toNumber(y) - box.y
 
     if (!Number.isNaN(dx) && !Number.isNaN(dy)) {
       for (let i = this.length - 1; i >= 0; i -= 1) {
@@ -60,8 +60,8 @@ export class PointArray extends SVGArray<[number, number]> {
 
   size(width: number | string, height: number | string) {
     const box = this.bbox()
-    const w = SVGNumber.toNumber(width)
-    const h = SVGNumber.toNumber(height)
+    const w = UNumber.toNumber(width)
+    const h = UNumber.toNumber(height)
 
     for (let i = this.length - 1; i >= 0; i -= 1) {
       if (box.width) {

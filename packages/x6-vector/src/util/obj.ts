@@ -1,6 +1,6 @@
 import { Class } from '../types'
 
-export namespace ObjUtil {
+export namespace Obj {
   export function applyMixin<TClass extends Class, Key extends keyof TClass>(
     target: any,
     source: TClass,

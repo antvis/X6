@@ -1,8 +1,8 @@
+import { Attr } from '../../util/attr'
+import { DomUtil } from '../../util/dom'
 import { Attrs, Class } from '../../types'
 import { Color } from '../../struct/color'
-import { SVGArray } from '../../struct/svg-array'
-import { DomUtil } from '../../util/dom'
-import { Attr } from '../../util/attr'
+import { NumberArray } from '../../struct/number-array'
 import { Registry } from '../registry'
 import { Base } from '../base'
 
@@ -127,7 +127,7 @@ export abstract class Primer<TNode extends Node> extends Base {
     }
 
     if (Array.isArray(value)) {
-      return new SVGArray(value)
+      return new NumberArray(value)
     }
 
     return value

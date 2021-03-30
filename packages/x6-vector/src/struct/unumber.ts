@@ -1,14 +1,14 @@
-export class SVGNumber implements SVGNumber.SVGNumberLike {
+export class UNumber implements UNumber.UNumberLike {
   public value: number
   public unit: string
 
   constructor()
   constructor(
-    value: number | string | SVGNumber.SVGNumberLike | null | undefined,
+    value: number | string | UNumber.UNumberLike | null | undefined,
     unit?: string,
   )
   constructor(array: [number | string, string?])
-  constructor(arg1?: SVGNumber.Raw, arg2?: string) {
+  constructor(arg1?: UNumber.Raw, arg2?: string) {
     const value = Array.isArray(arg1) ? arg1[0] : arg1
     const unit = Array.isArray(arg1) ? arg1[1] : arg2
 
@@ -17,7 +17,7 @@ export class SVGNumber implements SVGNumber.SVGNumberLike {
 
     if (value != null) {
       if (typeof value === 'number') {
-        this.value = SVGNumber.normalizeNumber(value)
+        this.value = UNumber.normalizeNumber(value)
       } else if (typeof value === 'string') {
         const matches = value.match(
           /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([%a-z]*)$/i,
@@ -40,35 +40,35 @@ export class SVGNumber implements SVGNumber.SVGNumberLike {
     }
   }
 
-  minus(number: SVGNumber.Raw) {
-    const input = SVGNumber.create(number)
-    return new SVGNumber(this.value - input.value, this.unit || input.unit)
+  minus(number: UNumber.Raw) {
+    const input = UNumber.create(number)
+    return new UNumber(this.value - input.value, this.unit || input.unit)
   }
 
-  plus(number: SVGNumber.Raw) {
-    const input = SVGNumber.create(number)
-    return new SVGNumber(this.value + input.value, this.unit || input.unit)
+  plus(number: UNumber.Raw) {
+    const input = UNumber.create(number)
+    return new UNumber(this.value + input.value, this.unit || input.unit)
   }
 
-  times(number: SVGNumber.Raw) {
-    const input = SVGNumber.create(number)
-    return new SVGNumber(this.value * input.value, this.unit || input.unit)
+  times(number: UNumber.Raw) {
+    const input = UNumber.create(number)
+    return new UNumber(this.value * input.value, this.unit || input.unit)
   }
 
-  divide(number: SVGNumber.Raw) {
-    const input = SVGNumber.create(number)
-    return new SVGNumber(this.value / input.value, this.unit || input.unit)
+  divide(number: UNumber.Raw) {
+    const input = UNumber.create(number)
+    return new UNumber(this.value / input.value, this.unit || input.unit)
   }
 
   convert(unit: string) {
-    return new SVGNumber(this.value, unit)
+    return new UNumber(this.value, unit)
   }
 
-  toArray(): SVGNumber.SVGNumberArray {
+  toArray(): UNumber.SVGNumberArray {
     return [this.value, this.unit]
   }
 
-  toJSON(): SVGNumber.SVGNumberLike {
+  toJSON(): UNumber.UNumberLike {
     return { value: this.value, unit: this.unit }
   }
 
@@ -88,29 +88,29 @@ export class SVGNumber implements SVGNumber.SVGNumberLike {
   }
 }
 
-export namespace SVGNumber {
+export namespace UNumber {
   export type Raw =
     | undefined
     | null
     | number
     | string
-    | SVGNumberLike
+    | UNumberLike
     | [number | string, string?]
 
-  export interface SVGNumberLike {
+  export interface UNumberLike {
     value: number
     unit: string
   }
 
   export type SVGNumberArray = [number, string]
 
-  export function create(): SVGNumber
-  export function create(number: number, unit?: string): SVGNumber
-  export function create(number: Raw): SVGNumber
+  export function create(): UNumber
+  export function create(number: number, unit?: string): UNumber
+  export function create(number: Raw): UNumber
   export function create(number?: Raw, unit?: string) {
     return Array.isArray(number)
-      ? new SVGNumber(number[0], number[1])
-      : new SVGNumber(number, unit)
+      ? new UNumber(number[0], number[1])
+      : new UNumber(number, unit)
   }
 
   export function plus(left: Raw, right: Raw) {

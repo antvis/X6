@@ -1,6 +1,6 @@
 import type { Box } from '../struct/box'
 import type { VectorElement } from './element'
-import { SVGNumber } from '../struct/svg-number'
+import { UNumber } from '../struct/unumber'
 
 export namespace Util {
   export function proportionalSize(
@@ -15,9 +15,9 @@ export namespace Util {
       let w = width
       let h = height
       if (w == null) {
-        w = (bbox.width / bbox.height) * SVGNumber.toNumber(h!)
+        w = (bbox.width / bbox.height) * UNumber.toNumber(h!)
       } else if (h == null) {
-        h = (bbox.height / bbox.width) * SVGNumber.toNumber(w)
+        h = (bbox.height / bbox.width) * UNumber.toNumber(w)
       }
 
       return { width: w, height: h! }
