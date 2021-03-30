@@ -3,6 +3,52 @@ import { Color } from './color'
 const { objectContaining } = jasmine
 
 describe('Color', () => {
+  describe('static', () => {
+    describe('isRgbLike()', () => {
+      it('shoud return true if the given object is rgb like', () => {
+        expect(Color.isRgbLike({ r: 1, g: 1, b: 1 })).toBeTrue()
+        expect(Color.isRgbLike({ r: 1, g: 1, b: 1, a: 0.5 })).toBeTrue()
+      })
+
+      it('shoud return false if the given object is not rgb like', () => {
+        expect(Color.isRgbLike({ r: 1, g: 1 })).toBeFalse()
+        expect(Color.isRgbLike({ r: 1, b: 1, a: 0.5 })).toBeFalse()
+      })
+    })
+
+    describe('invert', () => {
+      it('shoud invert the given hex color', () => {
+        expect(Color.invert('#ffffff')).toEqual('#000000')
+        expect(Color.invert([255, 255, 255, 1])).toEqual([0, 0, 0, 1])
+        expect(Color.invert([100, 100, 100, 1], true)).toEqual([
+          255,
+          255,
+          255,
+          1,
+        ])
+        expect(Color.invert([200, 200, 200, 1], true)).toEqual([0, 0, 0, 1])
+      })
+    })
+
+    describe('fromHex', () => {
+      it('should return null when the given string is not a valid hex string', () => {
+        expect(Color.fromHex('')).toBeNull()
+      })
+    })
+
+    describe('fromHsl', () => {
+      it('should return null when the given string is not a valid hsla string', () => {
+        expect(Color.fromHsl('')).toBeNull()
+      })
+    })
+
+    describe('fromRgb', () => {
+      it('should return null when the given string is not a valid rgba string', () => {
+        expect(Color.fromRgb('')).toBeNull()
+      })
+    })
+  })
+
   describe('constructor', () => {
     it('shoud create a Color with default args', () => {
       const color = new Color()
@@ -19,14 +65,14 @@ describe('Color', () => {
       expect(black.b).toBe(0)
       expect(black.a).toBe(1)
 
-      const white = new Color(Color.presets.white)
+      const white = new Color('white')
       expect(white.r).toBe(255)
       expect(white.g).toBe(255)
       expect(white.b).toBe(255)
       expect(black.a).toBe(1)
     })
 
-    it('should create a Color from hex color', () => {
+    it('should create a Color from hex string', () => {
       const black = new Color('#000000')
       expect(black.r).toBe(0)
       expect(black.g).toBe(0)
@@ -38,6 +84,30 @@ describe('Color', () => {
       expect(white.g).toBe(255)
       expect(white.b).toBe(255)
       expect(black.a).toBe(1)
+    })
+
+    it('should create a Color from rgb string', () => {
+      expect(new Color('rgb(255,255,255)')).toEqual(
+        objectContaining({ r: 255, g: 255, b: 255, a: 1 }),
+      )
+    })
+
+    it('should create a Color from rgba string', () => {
+      expect(new Color('rgba(255,255,255,0.5)')).toEqual(
+        objectContaining({ r: 255, g: 255, b: 255, a: 0.5 }),
+      )
+    })
+
+    it('should create a Color from hsl string', () => {
+      expect(new Color('hsl(10,10,10)')).toEqual(
+        objectContaining({ r: 28, g: 24, b: 23, a: 1 }),
+      )
+    })
+
+    it('should create a Color from hsla string', () => {
+      expect(new Color('hsl(10,10,10,0.5)')).toEqual(
+        objectContaining({ r: 28, g: 24, b: 23, a: 0.5 }),
+      )
     })
 
     it('should not parse invalid string', () => {
@@ -132,6 +202,8 @@ describe('Color', () => {
       expect(new Color().darken(10)).toEqual(
         objectContaining({ r: 245, g: 245, b: 245, a: 1 }),
       )
+
+      expect(Color.darken('#ffffff', 10)).toEqual('#f5f5f5')
     })
   })
 
