@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "name": "@antv/x6-geometry",
   "description": "Some useful geometry operations.",
   "main": "lib/index.js",
