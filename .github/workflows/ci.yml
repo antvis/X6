@@ -54,4 +54,4 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/x6/test/coverage/lcov.info, ./packages/x6-vector/test/coverage/lcov.info, ./packages/x6-geometry/test/coverage/lcov.info
+          files: ./packages/x6/test/coverage/lcov.info,./packages/x6-vector/test/coverage/lcov.info,./packages/x6-geometry/test/coverage/lcov.info
