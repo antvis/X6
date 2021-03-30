@@ -11,6 +11,7 @@
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/workflow/status/antvis/x6/%F0%9F%91%B7%E3%80%80CI/master?logo=github&style=flat-square"></a>
 <a href="https://coveralls.io/github/antvis/x6"><img alt="coverage" src="https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square"></a>
 <a href="https://lgtm.com/projects/g/antvis/x6/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square"></a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fantvis%2FX6?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fantvis%2FX6.svg?type=shield"/></a>
 </p>
 
 <p align="center">
@@ -238,3 +239,7 @@ yarn build:watch:cjs
 ## 开源协议
 
 该项目的代码和文档基于 [MIT License](/LICENSE) 开源协议。
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fantvis%2FX6.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fantvis%2FX6?ref=badge_large)
