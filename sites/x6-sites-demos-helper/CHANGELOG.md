@@ -5,6 +5,13 @@
 
 * 🐛 temporarily disable stackblitz ([d454ba2](https://github.com/antvis/x6/commit/d454ba2d4ae3e45ad2fabc8074c79121abd5de6b))
 
+## @antv/x6-sites-demos-helper [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.2.0...@antv/x6-sites-demos-helper@1.2.1) (2021-03-30)
+
+
+### Bug Fixes
+
+* 🐛 temporarily disable stackblitz ([d454ba2](https://github.com/antvis/x6/commit/d454ba2d4ae3e45ad2fabc8074c79121abd5de6b))
+
 ## @antv/x6-sites-demos-helper [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.2.0...@antv/x6-sites-demos-helper@1.2.1) (2021-03-29)
 
 
