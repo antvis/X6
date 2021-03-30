@@ -2,6 +2,8 @@ const cpuCount = require('os').cpus().length
 const es6Transform = require('karma-typescript-es6-transform')
 
 module.exports = function (config, base, karmaTypescriptConfig) {
+  const isDebug = process.argv.some((arg) => arg === '--debug')
+
   const common = {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '.',
@@ -74,7 +76,7 @@ module.exports = function (config, base, karmaTypescriptConfig) {
           ],
         },
         coverageOptions: {
-          instrumentation: true,
+          instrumentation: !isDebug,
           exclude: /\.test|spec\.ts$/,
         },
         reports: {
