@@ -57,7 +57,7 @@
     "@commitlint/cli": "^12.0.1",
     "@commitlint/config-conventional": "^12.0.1",
     "devmoji": "^2.2.0",
-    "husky": "^5.2.0",
+    "husky": "^6.0.0",
     "is-ci": "^3.0.0",
     "lerna": "^4.0.0"
   }
