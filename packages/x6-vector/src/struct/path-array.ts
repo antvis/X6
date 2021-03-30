@@ -2,10 +2,10 @@ import { DomUtil } from '../util/dom'
 import type { Path } from '../element/shape/path'
 import * as PathUtil from '../element/shape/path-util'
 import { Box } from './box'
-import { SVGArray } from './svg-array'
-import { SVGNumber } from './svg-number'
+import { TArray } from './tarray'
+import { UNumber } from './unumber'
 
-export class PathArray extends SVGArray<Path.Segment> {
+export class PathArray extends TArray<Path.Segment> {
   bbox() {
     return DomUtil.withPathContect((path) => {
       path.setAttribute('d', this.toString())
@@ -13,10 +13,10 @@ export class PathArray extends SVGArray<Path.Segment> {
     })
   }
 
-  move(x: number | string, y: number | string) {
+  move(x?: number | string, y?: number | string) {
     const box = this.bbox()
-    const dx = SVGNumber.toNumber(x) - box.x
-    const dy = SVGNumber.toNumber(y) - box.y
+    const dx = typeof x === 'undefined' ? NaN : UNumber.toNumber(x) - box.x
+    const dy = typeof y === 'undefined' ? NaN : UNumber.toNumber(y) - box.y
 
     if (!Number.isNaN(dx) && !Number.isNaN(dy)) {
       for (let i = this.length - 1; i >= 0; i -= 1) {
@@ -52,8 +52,8 @@ export class PathArray extends SVGArray<Path.Segment> {
 
   size(width: number | string, height: number | string) {
     const box = this.bbox()
-    const w = SVGNumber.toNumber(width)
-    const h = SVGNumber.toNumber(height)
+    const w = UNumber.toNumber(width)
+    const h = UNumber.toNumber(height)
 
     // If the box width or height is 0 then we ignore
     // transformations on the respective axis
