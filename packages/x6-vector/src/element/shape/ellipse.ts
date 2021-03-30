@@ -1,5 +1,5 @@
 import { Attrs } from '../../types'
-import { SVGNumber } from '../../struct/svg-number'
+import { UNumber } from '../../struct/unumber'
 import { Util } from '../util'
 import { Shape } from './shape'
 
@@ -26,8 +26,8 @@ export class Ellipse extends Shape<SVGEllipseElement> {
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
     const size = Util.proportionalSize(this, width, height)
-    const rx = SVGNumber.divide(size.width, 2)
-    const ry = SVGNumber.divide(size.height, 2)
+    const rx = UNumber.divide(size.width, 2)
+    const ry = UNumber.divide(size.height, 2)
     return this.rx(rx).ry(ry)
   }
 
@@ -37,7 +37,7 @@ export class Ellipse extends Shape<SVGEllipseElement> {
   x(x?: string | number | null) {
     return x == null
       ? this.cx() - this.rx()
-      : this.cx(SVGNumber.plus(x, this.rx()))
+      : this.cx(UNumber.plus(x, this.rx()))
   }
 
   y(): number
@@ -46,7 +46,7 @@ export class Ellipse extends Shape<SVGEllipseElement> {
   y(y?: string | number | null) {
     return y == null
       ? this.cy() - this.ry()
-      : this.cy(SVGNumber.plus(y, this.ry()))
+      : this.cy(UNumber.plus(y, this.ry()))
   }
 
   cx(): number
@@ -65,14 +65,14 @@ export class Ellipse extends Shape<SVGEllipseElement> {
   width(w: null): number
   width(w: string | number): this
   width(w?: string | number | null) {
-    return w == null ? this.rx() * 2 : this.rx(SVGNumber.divide(w, 2))
+    return w == null ? this.rx() * 2 : this.rx(UNumber.divide(w, 2))
   }
 
   height(): number
   height(h: null): number
   height(h: string | number): this
   height(h?: string | number | null) {
-    return h == null ? this.ry() * 2 : this.ry(SVGNumber.divide(h, 2))
+    return h == null ? this.ry() * 2 : this.ry(UNumber.divide(h, 2))
   }
 }
 

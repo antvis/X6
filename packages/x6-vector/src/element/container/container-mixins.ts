@@ -1,4 +1,4 @@
-import { ObjUtil } from '../../util/obj'
+import { Obj } from '../../util/obj'
 // containers
 import { ContainerExtension as AExtension } from './a-ext'
 import { ContainerExtension as GExtension } from './g-ext'
@@ -52,7 +52,7 @@ declare module './container' {
       ForeignObjectExtension<TSVGElement> {}
 }
 
-ObjUtil.applyMixins(
+Obj.applyMixins(
   Container,
   AExtension,
   GExtension,
