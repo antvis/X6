@@ -11,7 +11,7 @@ export default config({
       globals: {
         antd: 'antd',
         react: 'React',
-        'react-dom': 'ReactDom',
+        'react-dom': 'ReactDOM',
       },
     },
   ],
