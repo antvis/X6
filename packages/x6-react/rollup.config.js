@@ -9,7 +9,7 @@ export default config({
       sourcemap: true,
       globals: {
         react: 'React',
-        'react-dom': 'ReactDom',
+        'react-dom': 'ReactDOM',
         '@antv/x6': 'X6',
       },
     },
