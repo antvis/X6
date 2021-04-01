@@ -1,3 +1,10 @@
+## @antv/x6-react-components [1.1.9](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.8...@antv/x6-react-components@1.1.9) (2021-04-01)
+
+
+### Bug Fixes
+
+* 🐛 fix x6-react-components rollup config ([66190e5](https://github.com/antvis/x6/commit/66190e5b980f6061d3219906e9dd200d20e61534))
+
 ## @antv/x6-react-components [1.1.8](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.7...@antv/x6-react-components@1.1.8) (2021-03-30)
 
 ## @antv/x6-react-components [1.1.7](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.6...@antv/x6-react-components@1.1.7) (2021-03-30)
