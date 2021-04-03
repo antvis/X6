@@ -33,6 +33,10 @@ export abstract class TArray<T, I = any> {
   toSet() {
     return new Set(this.toArray())
   }
+
+  valueOf() {
+    return this.toArray()
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

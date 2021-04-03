@@ -43,8 +43,6 @@ export abstract class Primer<TNode extends Node> extends Base {
     }
   }
 
-  // #region Attributes
-
   attr(): Attrs
   attr(names: string[]): Attrs
   attr<T extends string | number = string>(name: string): T
@@ -147,6 +145,4 @@ export abstract class Primer<TNode extends Node> extends Base {
 
     return this
   }
-
-  // #endregion
 }

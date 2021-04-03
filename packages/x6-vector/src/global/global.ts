@@ -2,8 +2,8 @@ const win = window
 const doc = document
 
 export namespace Global {
-  type WindowType = typeof win
-  type DocumentType = typeof doc
+  export type WindowType = typeof win
+  export type DocumentType = typeof doc
 
   export let window = win // eslint-disable-line
   export let document = doc // eslint-disable-line
