@@ -114,6 +114,10 @@ export class Color implements Color.RGBALike {
   toString() {
     return this.toCSS()
   }
+
+  valueOf() {
+    return this.toArray()
+  }
 }
 
 export namespace Color {
