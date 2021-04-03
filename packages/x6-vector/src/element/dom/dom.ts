@@ -11,9 +11,10 @@ import { Primer } from './primer'
 import { Memory } from './memory'
 import { Listener } from './listener'
 import { ClassName } from './classname'
+import { Transform } from './transform'
 
 @Dom.register('Dom')
-@Dom.mixin(Event, ClassName, Style, Data, Memory, Listener)
+@Dom.mixin(Event, ClassName, Style, Data, Memory, Listener, Transform)
 export class Dom<TNode extends Node = Node> extends Primer<TNode> {
   first<T extends Dom = Dom>(): T | null {
     return Dom.adopt<T>(this.node.firstChild)
@@ -442,7 +443,7 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
 
       this.storeAssets()
 
-      let current: Dom = this // eslint-disable-line @typescript-eslint/no-this-alias
+      let current: Dom = this // eslint-disable-line
 
       // An export modifier was passed
       if (typeof content === 'function') {
@@ -510,7 +511,8 @@ export interface Dom<TNode extends Node = Node>
     Style<TNode>,
     Data<TNode>,
     Memory<TNode>,
-    Listener<TNode> {}
+    Listener<TNode>,
+    Transform<TNode> {}
 
 export namespace Dom {
   export function adopt<T extends Dom>(node: Node): T

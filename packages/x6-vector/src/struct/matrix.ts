@@ -425,7 +425,7 @@ export class Matrix implements Matrix.MatrixLike {
     return this
   }
 
-  toArray() {
+  toArray(): Matrix.MatrixArray {
     return [this.a, this.b, this.c, this.d, this.e, this.f]
   }
 

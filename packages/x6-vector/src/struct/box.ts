@@ -86,14 +86,6 @@ export class Box implements Box.BoxLike {
     return new Box(x, y, width, height)
   }
 
-  toArray(): Box.BoxArray {
-    return [this.x, this.y, this.width, this.height]
-  }
-
-  toString() {
-    return `${this.x} ${this.y} ${this.width} ${this.height}`
-  }
-
   transform(matrix: Matrix | Matrix.Raw) {
     const m = matrix instanceof Matrix ? matrix : new Matrix(matrix)
 
@@ -118,6 +110,18 @@ export class Box implements Box.BoxLike {
     })
 
     return new Box(xMin, yMin, xMax - xMin, yMax - yMin)
+  }
+
+  toString() {
+    return `${this.x} ${this.y} ${this.width} ${this.height}`
+  }
+
+  toArray(): Box.BoxArray {
+    return [this.x, this.y, this.width, this.height]
+  }
+
+  valueOf() {
+    return this.toArray()
   }
 }
 
