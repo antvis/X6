@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import insertCss from 'insert-css'
 import { Tooltip } from 'antd'
-import { Graph, Node, Path, Dom } from '@antv/x6'
+import { Graph, Node, Platform, Dom } from '@antv/x6'
 
 // https://codesandbox.io/s/x6-pai-edge-nq3hl
 
@@ -122,8 +122,18 @@ const graph = new Graph({
     allowBlank: false,
     allowLoop: false,
     highlight: true,
-    sourceAnchor: 'bottom',
-    targetAnchor: 'center',
+    sourceAnchor: {
+      name: 'bottom',
+      args: {
+        dx: Platform.IS_SAFARI ? 5 : 0,
+      },
+    },
+    targetAnchor: {
+      name: 'center',
+      args: {
+        dx: Platform.IS_SAFARI ? 5 : 0,
+      },
+    },
     connectionPoint: 'anchor',
     connector: 'algo-edge',
     createEdge() {
