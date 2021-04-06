@@ -33,7 +33,7 @@ export class Line extends Shape<SVGLineElement> {
   size(width: string | number, height: string | number | null | undefined): this
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
-    const p = Util.proportionalSize(this, width, height)
+    const p = Util.normalizeSize(this, width, height)
     return this.plot(this.toPointArray().size(p.width, p.height))
   }
 

@@ -30,8 +30,8 @@ export class VectorElement<
   size(width: string | number, height: string | number | null | undefined): this
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
-    const bbox = Util.proportionalSize(this, width, height)
-    return this.width(bbox.width).height(bbox.height)
+    const size = Util.normalizeSize(this, width, height)
+    return this.width(size.width).height(size.height)
   }
 
   x(): number
@@ -87,7 +87,7 @@ export class VectorElement<
   // #region Fill and Stroke
 
   fill(): string
-  fill(color: string | Color | Color.RGBA | VectorElement | null): this
+  fill(color: string | Color | Color.RGBALike | VectorElement | null): this
   fill(attrs: {
     color?: string
     opacity?: number
@@ -98,7 +98,7 @@ export class VectorElement<
       | null
       | string
       | Color
-      | Color.RGBA
+      | Color.RGBALike
       | VectorElement
       | {
           color?: string
@@ -110,13 +110,12 @@ export class VectorElement<
       return this.attr('fill')
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    Private.fillOrStroke(this, 'fill', value, ['color', 'opacity', 'rule'])
+    Util.fillOrStroke(this, 'fill', value)
     return this
   }
 
   stroke(): string
-  stroke(color: string | Color | Color.RGBA | VectorElement | null): this
+  stroke(color: string | Color | Color.RGBALike | VectorElement | null): this
   stroke(attrs: {
     color?: string
     width?: number
@@ -132,7 +131,7 @@ export class VectorElement<
       | null
       | string
       | Color
-      | Color.RGBA
+      | Color.RGBALike
       | VectorElement
       | {
           color?: string
@@ -149,17 +148,7 @@ export class VectorElement<
       return this.attr('stroke')
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    Private.fillOrStroke(this, 'fill', value, [
-      'color',
-      'width',
-      'opacity',
-      'linecap',
-      'linejoin',
-      'miterlimit',
-      'dasharray',
-      'dashoffset',
-    ])
+    Util.fillOrStroke(this, 'stroke', value)
     return this
   }
 
@@ -318,33 +307,4 @@ export class VectorElement<
   }
 
   // #endregion
-}
-
-namespace Private {
-  export function fillOrStroke(
-    elem: VectorElement,
-    type: 'fill' | 'stroke',
-    value: string | Color | VectorElement | KeyValue | null,
-    names: string[],
-  ) {
-    if (value === null) {
-      elem.attr(type, null)
-    } else if (
-      typeof value === 'string' ||
-      value instanceof Color ||
-      Color.isRgbLike(value) ||
-      value instanceof VectorElement
-    ) {
-      elem.attr(type, value.toString())
-    } else {
-      const prefix = (t: string, a: string) => (a === 'color' ? t : `${t}-${a}`)
-      for (let i = names.length - 1; i >= 0; i -= 1) {
-        const k = names[i]
-        const v = value[k]
-        if (v != null) {
-          elem.attr(prefix(type, k), v)
-        }
-      }
-    }
-  }
 }
