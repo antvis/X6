@@ -65,7 +65,7 @@ export abstract class GeometryContainer<
     height?: number | string | null,
     box = this.bbox(),
   ) {
-    const size = Util.proportionalSize(this, width, height, box)
+    const size = Util.normalizeSize(this, width, height, box)
     const sx = UnitNumber.toNumber(size.width) / box.width
     const sy = UnitNumber.toNumber(size.height) / box.height
 
