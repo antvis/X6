@@ -21,8 +21,7 @@ export class Vector<TSVGElement extends SVGElement> extends Dom<TSVGElement> {
     }
 
     // reference id
-    const reg = /(#[_a-z][\w-]*)/i
-    const matches = `${value}`.match(reg)
+    const matches = `${value}`.match(/(#[_a-z][\w-]*)/i)
     return matches ? Adopter.makeInstance<T>(matches[1]) : null
   }
 
