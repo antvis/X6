@@ -101,6 +101,7 @@ Graph.registerNode(
         width: 56,
         height: 56,
         opacity: 0.7,
+        pointerEvents: 'none',
       },
       '.rank': {
         refX: 0.95,

@@ -39,6 +39,7 @@ Graph.registerNode(
         height: 48,
         refX: 8,
         refY: 6,
+        pointerEvents: 'none',
       },
       rank: {
         refX: 0.9,
