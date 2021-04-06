@@ -8,7 +8,7 @@ import { EventRaw } from './event-alias'
 import { EventObject } from './event-object'
 import { TypeEventHandler, TypeEventHandlers } from './event-types'
 
-export class Event<TElement extends Node> extends Primer<TElement> {
+export class EventEmitter<TElement extends Node> extends Primer<TElement> {
   on<TType extends string>(
     events: TType,
     selector: string,
@@ -50,7 +50,7 @@ export class Event<TElement extends Node> extends Primer<TElement> {
   ): this
   on(events: TypeEventHandlers<TElement, undefined, TElement, TElement>): this
   on(events: any, selector?: any, data?: any, handler?: any) {
-    Event.on(this.node as any, events, selector, data, handler)
+    EventEmitter.on(this.node as any, events, selector, data, handler)
     return this
   }
 
@@ -95,7 +95,7 @@ export class Event<TElement extends Node> extends Primer<TElement> {
   ): this
   once(events: TypeEventHandlers<TElement, undefined, TElement, TElement>): this
   once(events: any, selector?: any, data?: any, handler?: any) {
-    Event.on(this.node as any, events, selector, data, handler, true)
+    EventEmitter.on(this.node as any, events, selector, data, handler, true)
     return this
   }
 
@@ -132,7 +132,7 @@ export class Event<TElement extends Node> extends Primer<TElement> {
       | false,
     handler?: TypeEventHandler<TElement, any, any, any, TType> | false,
   ) {
-    Event.off(this.node, events, selector, handler)
+    EventEmitter.off(this.node, events, selector, handler)
     return this
   }
 
@@ -146,7 +146,7 @@ export class Event<TElement extends Node> extends Primer<TElement> {
   }
 }
 
-export namespace Event {
+export namespace EventEmitter {
   type EventHandler = false | ((...args: any[]) => any)
 
   export function on(
@@ -199,7 +199,7 @@ export namespace Event {
       const originHandler = fn
       fn = function (event, ...args: any[]) {
         // Can use an empty set, since event contains the info
-        Event.off(event)
+        EventEmitter.off(elem, event)
         return originHandler.call(this, event, ...args)
       }
 
@@ -207,7 +207,7 @@ export namespace Event {
       Util.setHandlerId(fn, Util.ensureHandlerId(originHandler))
     }
 
-    Core.add(elem, types as string, fn, data, selector as string)
+    Core.on(elem, types as string, fn, data, selector as string)
   }
 
   export function off<TType extends string, TElement>(
@@ -254,10 +254,10 @@ export namespace Event {
       fn = Util.returnFalse
     }
 
-    Core.remove(elem as any, events as string, fn, selector)
+    Core.off(elem as any, events as string, fn, selector)
   }
 }
 
-export namespace Event {
+export namespace EventEmitter {
   export const registerHook = Hook.add
 }

@@ -94,7 +94,7 @@ export namespace Special {
   ) {
     if (!isSync) {
       if (!State.has(elem, type)) {
-        Core.add(elem, type, Util.returnTrue)
+        Core.on(elem, type, Util.returnTrue)
       }
       return
     }
@@ -102,7 +102,7 @@ export namespace Special {
     // Register the controller as a special universal handler for all event namespaces
     State.set(elem, type, false)
 
-    Core.add(elem, type, {
+    Core.on(elem, type, {
       namespace: false,
       handler(event, ...args) {
         const node = this as HTMLElement
