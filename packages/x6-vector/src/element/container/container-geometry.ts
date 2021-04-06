@@ -1,7 +1,7 @@
 import { Box } from '../../struct/box'
 import { Point } from '../../struct/point'
 import { Matrix } from '../../struct/matrix'
-import { UNumber } from '../../struct/unumber'
+import { UnitNumber } from '../../struct/unit-number'
 import { VectorElement } from '../element'
 import { Util } from '../util'
 import { Container } from './container'
@@ -16,7 +16,7 @@ export abstract class GeometryContainer<
       // Translate childs matrix by amount and
       // transform it back into parents space
       const matrix = m
-        .translate(UNumber.toNumber(dx), UNumber.toNumber(dy))
+        .translate(UnitNumber.toNumber(dx), UnitNumber.toNumber(dy))
         .transform(m.inverse())
       // Calculate new x and y from old box
       const p = new Point(bbox.x, bbox.y).transform(matrix)
@@ -28,8 +28,8 @@ export abstract class GeometryContainer<
   }
 
   move(x: number | string = 0, y: number | string = 0, box = this.bbox()) {
-    const dx = UNumber.toNumber(x) - box.x
-    const dy = UNumber.toNumber(y) - box.y
+    const dx = UnitNumber.toNumber(x) - box.x
+    const dy = UnitNumber.toNumber(y) - box.y
 
     return this.dmove(dx, dy)
   }
@@ -66,8 +66,8 @@ export abstract class GeometryContainer<
     box = this.bbox(),
   ) {
     const size = Util.proportionalSize(this, width, height, box)
-    const sx = UNumber.toNumber(size.width) / box.width
-    const sy = UNumber.toNumber(size.height) / box.height
+    const sx = UnitNumber.toNumber(size.width) / box.width
+    const sy = UnitNumber.toNumber(size.height) / box.height
 
     this.eachChild<VectorElement>((child) => {
       const o = new Point(box).transform(new Matrix(child).inverse())
@@ -83,7 +83,7 @@ export abstract class GeometryContainer<
     if (width == null) {
       return box.width
     }
-    return this.size(new UNumber(width).value, box.height, box)
+    return this.size(new UnitNumber(width).value, box.height, box)
   }
 
   height(): number
@@ -92,6 +92,6 @@ export abstract class GeometryContainer<
     if (height == null) {
       return box.height
     }
-    return this.size(box.width, new UNumber(height).value, box)
+    return this.size(box.width, new UnitNumber(height).value, box)
   }
 }

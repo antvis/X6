@@ -1,14 +1,14 @@
-export class UNumber implements UNumber.UNumberLike {
+export class UnitNumber implements UnitNumber.UnitNumberLike {
   public value: number
   public unit: string
 
   constructor()
   constructor(
-    value: number | string | UNumber.UNumberLike | null | undefined,
+    value: number | string | UnitNumber.UnitNumberLike | null | undefined,
     unit?: string,
   )
   constructor(array: [number | string, string?])
-  constructor(arg1?: UNumber.Raw, arg2?: string) {
+  constructor(arg1?: UnitNumber.Raw, arg2?: string) {
     const value = Array.isArray(arg1) ? arg1[0] : arg1
     const unit = Array.isArray(arg1) ? arg1[1] : arg2
 
@@ -17,21 +17,12 @@ export class UNumber implements UNumber.UNumberLike {
 
     if (value != null) {
       if (typeof value === 'number') {
-        this.value = UNumber.normalizeNumber(value)
+        this.value = UnitNumber.normalize(value)
       } else if (typeof value === 'string') {
-        const matches = value.match(
-          /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([%a-z]*)$/i,
-        )
-        if (matches) {
-          this.value = Number.parseFloat(matches[1])
-          this.unit = matches[5]
-
-          // normalize
-          if (this.unit === '%') {
-            this.value /= 100
-          } else if (this.unit === 's') {
-            this.value *= 1000
-          }
+        const obj = UnitNumber.parse(value)
+        if (obj) {
+          this.value = obj.value
+          this.unit = obj.unit
         }
       } else if (typeof value === 'object') {
         this.value = value.value
@@ -40,35 +31,35 @@ export class UNumber implements UNumber.UNumberLike {
     }
   }
 
-  minus(number: UNumber.Raw) {
-    const input = UNumber.create(number)
-    return new UNumber(this.value - input.value, this.unit || input.unit)
+  minus(number: UnitNumber.Raw) {
+    const input = UnitNumber.create(number)
+    return new UnitNumber(this.value - input.value, this.unit || input.unit)
   }
 
-  plus(number: UNumber.Raw) {
-    const input = UNumber.create(number)
-    return new UNumber(this.value + input.value, this.unit || input.unit)
+  plus(number: UnitNumber.Raw) {
+    const input = UnitNumber.create(number)
+    return new UnitNumber(this.value + input.value, this.unit || input.unit)
   }
 
-  times(number: UNumber.Raw) {
-    const input = UNumber.create(number)
-    return new UNumber(this.value * input.value, this.unit || input.unit)
+  times(number: UnitNumber.Raw) {
+    const input = UnitNumber.create(number)
+    return new UnitNumber(this.value * input.value, this.unit || input.unit)
   }
 
-  divide(number: UNumber.Raw) {
-    const input = UNumber.create(number)
-    return new UNumber(this.value / input.value, this.unit || input.unit)
+  divide(number: UnitNumber.Raw) {
+    const input = UnitNumber.create(number)
+    return new UnitNumber(this.value / input.value, this.unit || input.unit)
   }
 
   convert(unit: string) {
-    return new UNumber(this.value, unit)
+    return new UnitNumber(this.value, unit)
   }
 
-  toArray(): UNumber.SVGNumberArray {
+  toArray(): UnitNumber.UnitNumberArray {
     return [this.value, this.unit]
   }
 
-  toJSON(): UNumber.UNumberLike {
+  toJSON(): UnitNumber.UnitNumberLike {
     return { value: this.value, unit: this.unit }
   }
 
@@ -88,29 +79,29 @@ export class UNumber implements UNumber.UNumberLike {
   }
 }
 
-export namespace UNumber {
+export namespace UnitNumber {
   export type Raw =
     | undefined
     | null
     | number
     | string
-    | UNumberLike
+    | UnitNumberLike
     | [number | string, string?]
 
-  export interface UNumberLike {
+  export interface UnitNumberLike {
     value: number
     unit: string
   }
 
-  export type SVGNumberArray = [number, string]
+  export type UnitNumberArray = [number, string]
 
-  export function create(): UNumber
-  export function create(number: number, unit?: string): UNumber
-  export function create(number: Raw): UNumber
+  export function create(): UnitNumber
+  export function create(number: number, unit?: string): UnitNumber
+  export function create(number: Raw): UnitNumber
   export function create(number?: Raw, unit?: string) {
     return Array.isArray(number)
-      ? new UNumber(number[0], number[1])
-      : new UNumber(number, unit)
+      ? new UnitNumber(number[0], number[1])
+      : new UnitNumber(number, unit)
   }
 
   export function plus(left: Raw, right: Raw) {
@@ -141,7 +132,7 @@ export namespace UNumber {
     return create(left).divide(right).toString()
   }
 
-  export function normalizeNumber(v: number) {
+  export function normalize(v: number) {
     return Number.isNaN(v)
       ? 0
       : !Number.isFinite(v)
@@ -151,7 +142,26 @@ export namespace UNumber {
       : v
   }
 
+  export const REGEX_NUMBER_UNIT = /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([a-z%]*)$/i
+
+  export function parse(str: string): UnitNumberLike | null {
+    const matches = str.match(REGEX_NUMBER_UNIT)
+    if (matches) {
+      let value = normalize(Number.parseFloat(matches[1]))
+      const unit = matches[5] || ''
+
+      // normalize
+      if (unit === '%') {
+        value /= 100
+      } else if (unit === 's') {
+        value *= 1000
+      }
+      return { value, unit }
+    }
+    return null
+  }
+
   export function toNumber(v: number | string) {
-    return typeof v === 'number' ? normalizeNumber(v) : create(v).valueOf()
+    return typeof v === 'number' ? normalize(v) : create(v).valueOf()
   }
 }

@@ -1,4 +1,4 @@
-import { Obj } from '../../util/obj'
+import { Mixin } from '../../util/mixin'
 // containers
 import { ContainerExtension as AExtension } from './a-ext'
 import { ContainerExtension as GExtension } from './g-ext'
@@ -52,7 +52,7 @@ declare module './container' {
       ForeignObjectExtension<TSVGElement> {}
 }
 
-Obj.applyMixins(
+Mixin.applyMixins(
   Container,
   AExtension,
   GExtension,
