@@ -7,8 +7,8 @@ import { Util } from '../util'
 import { Container } from './container'
 
 export abstract class GeometryContainer<
-  TSVGGElement extends SVGAElement | SVGGElement
-> extends Container<TSVGGElement> {
+  TSVGElement extends SVGAElement | SVGGElement
+> extends Container<TSVGElement> {
   dmove(dx: number | string = 0, dy: number | string = 0) {
     this.eachChild<VectorElement>((child) => {
       const bbox = child.bbox()

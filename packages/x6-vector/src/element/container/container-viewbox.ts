@@ -3,13 +3,12 @@ import { Point } from '../../struct/point'
 import { VectorElement } from '../element'
 
 export class Viewbox<
-  TSVGContainerElement extends
+  TSVGElement extends
     | SVGSVGElement
     | SVGSymbolElement
-    | SVGImageElement
     | SVGPatternElement
     | SVGMarkerElement
-> extends VectorElement<TSVGContainerElement> {
+> extends VectorElement<TSVGElement> {
   viewbox(): Box
   viewbox(box: Box.BoxLike): this
   viewbox(
