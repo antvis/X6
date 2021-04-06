@@ -1,7 +1,7 @@
-import { Event } from './event'
+import { EventEmitter } from './event-emitter'
 import { TypeEventHandler } from './event-types'
 
-export class Listener<TElement extends Node> extends Event<TElement> {}
+export class Listener<TElement extends Node> extends EventEmitter<TElement> {}
 
 export interface Listener<TElement extends Node>
   extends Listener.Methods<TElement> {}

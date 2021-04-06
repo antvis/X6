@@ -10,7 +10,7 @@ import { EventHandler } from './event-types'
 export namespace Core {
   let triggered: string | undefined
 
-  export function add(
+  export function on(
     elem: Store.EventTarget,
     types: string,
     handler:
@@ -118,7 +118,7 @@ export namespace Core {
     })
   }
 
-  export function remove(
+  export function off(
     elem: Store.EventTarget,
     types: string,
     handler?: EventHandler<any, any>,
@@ -142,7 +142,7 @@ export namespace Core {
       // Unbind all events (on this namespace, if provided) for the element
       if (!originType) {
         Object.keys(events).forEach((key) => {
-          remove(elem, key + item, handler, selector, true)
+          off(elem, key + item, handler, selector, true)
         })
         return
       }
