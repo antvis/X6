@@ -1,4 +1,4 @@
-import { Obj } from '../../util/obj'
+import { Mixin } from '../../util/mixin'
 import { Dom } from '../../element/dom/dom'
 import { Primer } from '../../element/dom/primer'
 import { When, Options } from '../types'
@@ -29,4 +29,4 @@ declare module '../../element/dom/dom' {
   interface Dom<TNode extends Node = Node> extends ElementExtension<TNode> {}
 }
 
-Obj.applyMixins(Dom, ElementExtension)
+Mixin.applyMixins(Dom, ElementExtension)

@@ -1,5 +1,5 @@
 import { Attrs } from '../../types'
-import { UNumber } from '../../struct/unumber'
+import { UnitNumber } from '../../struct/unit-number'
 import { Shape } from './shape'
 
 @Circle.register('Circle')
@@ -23,7 +23,7 @@ export class Circle extends Shape<SVGCircleElement> {
   }
 
   size(size: string | number) {
-    return this.radius(UNumber.divide(size, 2))
+    return this.radius(UnitNumber.divide(size, 2))
   }
 
   cx(): number
@@ -44,7 +44,7 @@ export class Circle extends Shape<SVGCircleElement> {
   x(x?: string | number | null) {
     return x == null
       ? this.cx() - this.rx()
-      : this.cx(UNumber.plus(x, this.rx()))
+      : this.cx(UnitNumber.plus(x, this.rx()))
   }
 
   y(): number
@@ -53,21 +53,21 @@ export class Circle extends Shape<SVGCircleElement> {
   y(y?: string | number | null) {
     return y == null
       ? this.cy() - this.ry()
-      : this.cy(UNumber.plus(y, this.ry()))
+      : this.cy(UnitNumber.plus(y, this.ry()))
   }
 
   width(): number
   width(w: null): number
   width(w: string | number): this
   width(w?: string | number | null) {
-    return w == null ? this.rx() * 2 : this.rx(UNumber.divide(w, 2))
+    return w == null ? this.rx() * 2 : this.rx(UnitNumber.divide(w, 2))
   }
 
   height(): number
   height(h: null): number
   height(h: string | number): this
   height(h?: string | number | null) {
-    return h == null ? this.ry() * 2 : this.ry(UNumber.divide(h, 2))
+    return h == null ? this.ry() * 2 : this.ry(UnitNumber.divide(h, 2))
   }
 }
 

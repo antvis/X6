@@ -1,5 +1,5 @@
 import { Attrs } from '../../types'
-import { UNumber } from '../../struct/unumber'
+import { UnitNumber } from '../../struct/unit-number'
 import { Container } from './container'
 import { Viewbox } from './container-viewbox'
 
@@ -103,7 +103,7 @@ export namespace Marker {
       if (typeof width === 'object') {
         marker.size(0, 0).ref(0, 0).viewbox(0, 0, 0, 0).attr(width)
       } else {
-        const w = UNumber.toNumber(width)
+        const w = UnitNumber.toNumber(width)
         if (height != null) {
           if (typeof height === 'function') {
             marker
@@ -122,7 +122,7 @@ export namespace Marker {
               .viewbox(0, 0, w, w)
               .attr(height)
           } else {
-            const h = UNumber.toNumber(height)
+            const h = UnitNumber.toNumber(height)
             marker
               .size(w, h)
               .ref(w / 2, h / 2)

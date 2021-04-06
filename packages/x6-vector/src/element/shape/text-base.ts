@@ -1,6 +1,6 @@
 import { Global } from '../../global'
 import { Box } from '../../struct/box'
-import { UNumber } from '../../struct/unumber'
+import { UnitNumber } from '../../struct/unit-number'
 import { Shape } from './shape'
 
 export class TextBase<
@@ -34,7 +34,10 @@ export class TextBase<
       return box.x
     }
 
-    return this.attr('x', this.attr<number>('x') + UNumber.toNumber(x) - box.x)
+    return this.attr(
+      'x',
+      this.attr<number>('x') + UnitNumber.toNumber(x) - box.x,
+    )
   }
 
   y(): number
@@ -44,7 +47,10 @@ export class TextBase<
       return box.y
     }
 
-    return this.attr('y', this.attr<number>('y') + UNumber.toNumber(y) - box.y)
+    return this.attr(
+      'y',
+      this.attr<number>('y') + UnitNumber.toNumber(y) - box.y,
+    )
   }
 
   move(x: number | string, y: number | string, box = this.bbox()) {
@@ -58,7 +64,10 @@ export class TextBase<
       return box.cx
     }
 
-    return this.attr('x', this.attr<number>('x') + UNumber.toNumber(x) - box.cx)
+    return this.attr(
+      'x',
+      this.attr<number>('x') + UnitNumber.toNumber(x) - box.cx,
+    )
   }
 
   cy(): number
@@ -68,7 +77,10 @@ export class TextBase<
       return box.cy
     }
 
-    return this.attr('y', this.attr<number>('y') + UNumber.toNumber(y) - box.cy)
+    return this.attr(
+      'y',
+      this.attr<number>('y') + UnitNumber.toNumber(y) - box.cy,
+    )
   }
 
   center(x: number | string, y: number | string, box = this.bbox()) {

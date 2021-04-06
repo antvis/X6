@@ -1,6 +1,6 @@
 import type { Box } from '../struct/box'
 import type { VectorElement } from './element'
-import { UNumber } from '../struct/unumber'
+import { UnitNumber } from '../struct/unit-number'
 
 export namespace Util {
   export function proportionalSize(
@@ -15,9 +15,9 @@ export namespace Util {
       let w = width
       let h = height
       if (w == null) {
-        w = (bbox.width / bbox.height) * UNumber.toNumber(h!)
+        w = (bbox.width / bbox.height) * UnitNumber.toNumber(h!)
       } else if (h == null) {
-        h = (bbox.height / bbox.width) * UNumber.toNumber(w)
+        h = (bbox.height / bbox.width) * UnitNumber.toNumber(w)
       }
 
       return { width: w, height: h! }
