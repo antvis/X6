@@ -62,7 +62,7 @@ export class LineExtension<
     | SVGLineElement
     | SVGPathElement
     | SVGPolygonElement
-    | SVGPolygonElement
+    | SVGPolylineElement
 > extends Vector<TSVGLineElement> {
   marker(type: Marker.Type, marker: Marker): this
   marker(type: Marker.Type, size: number | string, attrs?: Attrs | null): this
