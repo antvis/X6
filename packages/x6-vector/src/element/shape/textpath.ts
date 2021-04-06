@@ -4,11 +4,6 @@ import { Path } from './path'
 
 Text.register('TextPath')
 export class TextPath extends Text<SVGTextPathElement> {
-  array() {
-    const track = this.track()
-    return track ? track.array() : null
-  }
-
   plot(): PathArray
   plot(d: string | Path.Segment[] | PathArray): this
   plot(d?: string | Path.Segment[] | PathArray) {
@@ -25,5 +20,15 @@ export class TextPath extends Text<SVGTextPathElement> {
 
   track() {
     return this.reference<Path>('href')
+  }
+
+  toArray() {
+    const track = this.track()
+    return track ? track.toArray() : null
+  }
+
+  toPathArray() {
+    const track = this.track()
+    return track ? track.toPathArray() : null
   }
 }

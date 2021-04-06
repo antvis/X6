@@ -173,11 +173,4 @@ describe('PointArray', () => {
       expect(square.toString()).toEqual(squareString)
     })
   })
-
-  describe('toLine', () => {
-    it('should return an object which can be passed to a line as point attributes', () => {
-      const arr = new PointArray([1, 2, 3, 4])
-      expect(arr.toLine()).toEqual({ x1: 1, y1: 2, x2: 3, y2: 4 })
-    })
-  })
 })
