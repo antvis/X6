@@ -1,9 +1,5 @@
 {
-  "exclude": [
-      "node_modules",
-      "**/es",
-      "**/lib"
-  ],
+  "exclude": ["node_modules", "**/es", "**/lib"],
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
@@ -19,9 +15,6 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "target": "es5",
-    "lib": [
-      "dom",
-      "es2015"
-    ]
+    "lib": ["DOM", "ES2020"]
   }
 }
