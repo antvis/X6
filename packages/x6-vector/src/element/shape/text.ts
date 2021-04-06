@@ -9,7 +9,7 @@ import { TextBase } from './text-base'
 export class Text<
   TSVGTextElement extends SVGTextElement | SVGTextPathElement = SVGTextElement
 > extends TextBase<TSVGTextElement> {
-  public assets: Record<string | number, any> & {
+  public affixes: Record<string | number, any> & {
     leading: number
   }
 
@@ -49,10 +49,10 @@ export class Text<
     return ret
   }
 
-  restoreAssets() {
-    super.restoreAssets()
-    if (this.assets.leading == null) {
-      this.assets.leading = 1.3
+  restoreAffix() {
+    super.restoreAffix()
+    if (this.affixes.leading == null) {
+      this.affixes.leading = 1.3
     }
     return this
   }
@@ -61,10 +61,10 @@ export class Text<
   leading(value: UNumber.Raw): this
   leading(value?: UNumber.Raw) {
     if (value == null) {
-      return this.assets.leading
+      return this.affixes.leading
     }
 
-    this.assets.leading = UNumber.create(value).valueOf()
+    this.affixes.leading = UNumber.create(value).valueOf()
     return this.rebuild()
   }
 
@@ -84,7 +84,7 @@ export class Text<
 
         const dy = leading * Number.parseFloat(fontSize)
 
-        if (child.assets.newLined) {
+        if (child.affixes.newLined) {
           child.attr('x', this.attr('x'))
 
           if (child.text() === '\n') {
@@ -124,7 +124,7 @@ export class Text<
         if (
           index !== firstLine &&
           children[index].nodeType !== 3 &&
-          Adopter.adopt<TSpan>(children[index]).assets.newLined === true
+          Adopter.adopt<TSpan>(children[index]).affixes.newLined === true
         ) {
           content += '\n'
         }

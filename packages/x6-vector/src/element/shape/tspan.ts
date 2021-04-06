@@ -5,7 +5,7 @@ import { Text } from './text'
 
 @TSpan.register('Tspan')
 export class TSpan extends TextBase<SVGTSpanElement> {
-  public assets: Record<string | number, any> & {
+  public affixes: Record<string | number, any> & {
     leading?: number
     newLined?: boolean
   }
@@ -24,7 +24,7 @@ export class TSpan extends TextBase<SVGTSpanElement> {
 
   newLine() {
     // mark new line
-    this.assets.newLined = true
+    this.affixes.newLined = true
 
     const text = this.parent()
     if (text == null || !(text instanceof Text)) {
@@ -35,7 +35,7 @@ export class TSpan extends TextBase<SVGTSpanElement> {
     const fontSize = Global.window
       .getComputedStyle(this.node)
       .getPropertyValue('font-size')
-    const dy = text.assets.leading * Number.parseFloat(fontSize)
+    const dy = text.affixes.leading * Number.parseFloat(fontSize)
     return this.dy(index ? dy : 0).attr('x', text.x())
   }
 
@@ -43,7 +43,7 @@ export class TSpan extends TextBase<SVGTSpanElement> {
   text(text: string | ((this: TSpan, tspan: TSpan) => void)): this
   text(text?: string | ((this: TSpan, tspan: TSpan) => void)) {
     if (text == null) {
-      return this.node.textContent + (this.assets.newLined ? '\n' : '')
+      return this.node.textContent + (this.affixes.newLined ? '\n' : '')
     }
 
     if (typeof text === 'function') {
