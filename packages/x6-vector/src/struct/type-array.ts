@@ -1,4 +1,4 @@
-import { Obj } from '../util/obj'
+import { Mixin } from '../util/mixin'
 
 export abstract class TArray<T, I = any> {
   constructor()
@@ -43,7 +43,7 @@ export abstract class TArray<T, I = any> {
 export interface TArray<T, I> extends Array<T> {}
 
 export namespace TArray {
-  Obj.applyMixins(TArray as any, Array)
+  Mixin.applyMixins(TArray as any, Array)
 
   TArray.prototype.valueOf = function () {
     return this.toArray()

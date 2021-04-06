@@ -1,4 +1,4 @@
-import { Obj } from '../../util/obj'
+import { Mixin } from '../../util/mixin'
 import { DefsExtension as MaskExtension } from './mask-ext'
 import { DefsExtension as MarkerExtension } from './marker-ext'
 import { DefsExtension as PatternExtension } from './pattern-ext'
@@ -35,7 +35,7 @@ declare module './defs' {
       PolylineExtension<SVGDefsElement> {}
 }
 
-Obj.applyMixins(
+Mixin.applyMixins(
   Defs,
   MaskExtension,
   MarkerExtension,

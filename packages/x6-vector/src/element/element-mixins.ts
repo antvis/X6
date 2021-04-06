@@ -1,4 +1,4 @@
-import { Obj } from '../util/obj'
+import { Mixin } from '../util/mixin'
 import { ElementExtension as StyleExtension } from './shape/style-ext'
 import { ElementExtension as MaskExtension } from './container/mask-ext'
 import { ElementExtension as ClipPathExtension } from './container/clippath-ext'
@@ -11,4 +11,9 @@ declare module './element' {
       MaskExtension<TSVGElement> {}
 }
 
-Obj.applyMixins(VectorElement, MaskExtension, StyleExtension, ClipPathExtension)
+Mixin.applyMixins(
+  VectorElement,
+  MaskExtension,
+  StyleExtension,
+  ClipPathExtension,
+)

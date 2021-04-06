@@ -1,4 +1,4 @@
-import { TArray } from './tarray'
+import { TArray } from './type-array'
 
 export class NumberArray extends TArray<number> {
   parse(raw: string | number[] = []): number[] {

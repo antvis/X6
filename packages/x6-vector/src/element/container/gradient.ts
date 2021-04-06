@@ -1,7 +1,7 @@
 import { Attrs } from '../../types'
 import { DomUtil } from '../../util/dom'
 import { Box } from '../../struct/box'
-import { UNumber } from '../../struct/unumber'
+import { UnitNumber } from '../../struct/unit-number'
 import { VectorElement } from '../element'
 import { Container } from './container'
 import { Stop } from './gradient-stop'
@@ -27,37 +27,37 @@ export class Gradient extends Container<
   from(x: number | string, y: number | string) {
     return this.type === 'radialGradient'
       ? this.attr({
-          fx: UNumber.create(x).toString(),
-          fy: UNumber.create(y).toString(),
+          fx: UnitNumber.create(x).toString(),
+          fy: UnitNumber.create(y).toString(),
         })
       : this.attr({
-          x1: UNumber.create(x).toString(),
-          y1: UNumber.create(y).toString(),
+          x1: UnitNumber.create(x).toString(),
+          y1: UnitNumber.create(y).toString(),
         })
   }
 
   to(x: number | string, y: number | string) {
     return this.type === 'radialGradient'
       ? this.attr({
-          cx: UNumber.create(x).toString(),
-          cy: UNumber.create(x).toString(),
+          cx: UnitNumber.create(x).toString(),
+          cy: UnitNumber.create(x).toString(),
         })
       : this.attr({
-          x2: UNumber.create(y).toString(),
-          y2: UNumber.create(y).toString(),
+          x2: UnitNumber.create(y).toString(),
+          y2: UnitNumber.create(y).toString(),
         })
   }
 
   stop(
-    offset?: number | string | UNumber,
+    offset?: number | string | UnitNumber,
     color?: string,
-    opacity?: number | string | UNumber,
+    opacity?: number | string | UnitNumber,
   ): Stop
   stop(options: Stop.Options): Stop
   stop(
-    offset?: Stop.Options | number | string | UNumber,
+    offset?: Stop.Options | number | string | UnitNumber,
     color?: string,
-    opacity?: number | string | UNumber,
+    opacity?: number | string | UnitNumber,
   ) {
     return new Stop().update(offset, color, opacity).appendTo(this)
   }

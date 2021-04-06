@@ -1,5 +1,5 @@
 import { Entity } from '../../types'
-import { Obj } from '../../util/obj'
+import { Mixin } from '../../util/mixin'
 import { When, Options } from '../types'
 import { Easing } from '../stepper/easing'
 import { Morpher } from '../morpher/morpher'
@@ -553,7 +553,7 @@ export namespace Animator {
 
   export function mixin(...source: any[]) {
     return (ctor: Registry.Definition) => {
-      Obj.applyMixins(ctor, ...source)
+      Mixin.applyMixins(ctor, ...source)
     }
   }
 }
