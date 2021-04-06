@@ -76,15 +76,6 @@ export class PointArray extends TArray<[number, number]> {
     return this
   }
 
-  toLine() {
-    return {
-      x1: this[0][0],
-      y1: this[0][1],
-      x2: this[1][0],
-      y2: this[1][1],
-    }
-  }
-
   toString() {
     return this.map((item) => item.join(',')).join(' ')
   }

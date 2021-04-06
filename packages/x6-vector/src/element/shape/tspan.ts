@@ -3,8 +3,8 @@ import { Global } from '../../global'
 import { TextBase } from './text-base'
 import { Text } from './text'
 
-@Tspan.register('Tspan')
-export class Tspan extends TextBase<SVGTSpanElement> {
+@TSpan.register('Tspan')
+export class TSpan extends TextBase<SVGTSpanElement> {
   public assets: Record<string | number, any> & {
     leading?: number
     newLined?: boolean
@@ -40,8 +40,8 @@ export class Tspan extends TextBase<SVGTSpanElement> {
   }
 
   text(): string
-  text(text: string | ((this: Tspan, tspan: Tspan) => void)): this
-  text(text?: string | ((this: Tspan, tspan: Tspan) => void)) {
+  text(text: string | ((this: TSpan, tspan: TSpan) => void)): this
+  text(text?: string | ((this: TSpan, tspan: TSpan) => void)) {
     if (text == null) {
       return this.node.textContent + (this.assets.newLined ? '\n' : '')
     }
@@ -58,12 +58,12 @@ export class Tspan extends TextBase<SVGTSpanElement> {
   }
 }
 
-export namespace Tspan {
-  export function create(): Tspan
-  export function create(attrs: Attrs | null): Tspan
-  export function create(text: string, attrs?: Attrs | null): Tspan
+export namespace TSpan {
+  export function create(): TSpan
+  export function create(attrs: Attrs | null): TSpan
+  export function create(text: string, attrs?: Attrs | null): TSpan
   export function create(text?: string | Attrs | null, attrs?: Attrs | null) {
-    const tspan = new Tspan()
+    const tspan = new TSpan()
     if (text != null) {
       if (typeof text === 'string') {
         tspan.text(text)

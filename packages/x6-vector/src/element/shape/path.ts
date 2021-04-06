@@ -33,22 +33,15 @@ export class Path extends Shape<SVGPathElement> {
     return h == null ? this.bbox().height : this.size(this.bbox().width, h)
   }
 
-  array() {
-    if (this.arr == null) {
-      this.arr = new PathArray(this.attr('d'))
-    }
-    return this.arr
-  }
-
   move(x: number | string, y: number | string) {
-    return this.attr('d', this.array().move(x, y).toString())
+    return this.attr('d', this.toPathArray().move(x, y).toString())
   }
 
-  plot(): PathArray
+  plot(): Path.Segment[]
   plot(d: string | Path.Segment[] | PathArray): this
   plot(d?: string | Path.Segment[] | PathArray) {
     if (d == null) {
-      return this.array()
+      return this.toArray()
     }
 
     this.arr = null
@@ -68,7 +61,7 @@ export class Path extends Shape<SVGPathElement> {
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
     const p = Util.proportionalSize(this, width, height)
-    return this.attr('d', this.array().size(p.width, p.height).toString())
+    return this.attr('d', this.toPathArray().size(p.width, p.height).toString())
   }
 
   length() {
@@ -77,6 +70,17 @@ export class Path extends Shape<SVGPathElement> {
 
   pointAt(length: number) {
     return new Point(this.node.getPointAtLength(length))
+  }
+
+  toArray() {
+    return this.toPathArray().toArray()
+  }
+
+  toPathArray() {
+    if (this.arr == null) {
+      this.arr = new PathArray(this.attr('d'))
+    }
+    return this.arr
   }
 }
 

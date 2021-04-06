@@ -31,24 +31,17 @@ export class Poly<
     return h == null ? this.bbox().height : this.size(this.bbox().width, h)
   }
 
-  array() {
-    if (this.arr == null) {
-      this.arr = new PointArray(this.attr('points'))
-    }
-    return this.arr
-  }
-
   move(x: number | string, y: number | string) {
-    return this.attr('points', this.array().move(x, y).toString())
+    return this.attr('points', this.toPointArray().move(x, y).toString())
   }
 
-  plot(): PointArray
+  plot(): [number, number][]
   plot(d: string): this
   plot(points: [number, number][]): this
   plot(points: string | [number, number][]): this
   plot(d?: string | [number, number][]) {
     if (d == null) {
-      return this.array()
+      return this.toArray()
     }
 
     this.arr = null
@@ -68,6 +61,20 @@ export class Poly<
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
     const s = Util.proportionalSize(this, width, height)
-    return this.attr('points', this.array().size(s.width, s.height).toString())
+    return this.attr(
+      'points',
+      this.toPointArray().size(s.width, s.height).toString(),
+    )
+  }
+
+  toArray() {
+    return this.toPointArray().toArray()
+  }
+
+  toPointArray() {
+    if (this.arr == null) {
+      this.arr = new PointArray(this.attr('points'))
+    }
+    return this.arr
   }
 }

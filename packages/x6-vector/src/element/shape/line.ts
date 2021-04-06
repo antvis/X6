@@ -29,38 +29,44 @@ export class Line extends Shape<SVGLineElement> {
     return h == null ? this.bbox().height : this.size(this.bbox().width, h)
   }
 
-  array() {
-    return new PointArray([
-      [this.attr<number>('x1'), this.attr<number>('y1')],
-      [this.attr<number>('x2'), this.attr<number>('y2')],
-    ])
+  size(width: string | number, height: string | number): this
+  size(width: string | number, height: string | number | null | undefined): this
+  size(width: string | number | null | undefined, height: string | number): this
+  size(width?: string | number | null, height?: string | number | null) {
+    const p = Util.proportionalSize(this, width, height)
+    return this.plot(this.toPointArray().size(p.width, p.height))
   }
 
   move(x: number | string, y: number | string) {
-    return this.attr(this.array().move(x, y).toLine())
+    return this.plot(this.toPointArray().move(x, y))
   }
 
-  plot(): PointArray
-  plot(points: [[number, number], [number, number]]): this
+  plot(): Line.Array
+  plot(points: Line.Array | PointArray): this
   plot(x1: number, y1: number, x2: number, y2: number): this
   plot(
-    x1?: [[number, number], [number, number]] | number,
+    x1?: Line.Array | PointArray | number,
     y1?: number,
     x2?: number,
     y2?: number,
   ): this
   plot(
-    x1?: [[number, number], [number, number]] | number,
+    x1?: Line.Array | PointArray | number,
     y1?: number,
     x2?: number,
     y2?: number,
   ) {
     if (x1 == null) {
-      return this.array()
+      return this.toArray()
     }
 
     const attrs = Array.isArray(x1)
-      ? new PointArray(x1).toLine()
+      ? {
+          x1: x1[0][0],
+          y1: x1[0][1],
+          x2: x1[1][0],
+          y2: x1[1][1],
+        }
       : {
           x1,
           y1,
@@ -71,21 +77,23 @@ export class Line extends Shape<SVGLineElement> {
     return this.attr(attrs)
   }
 
-  size(width: string | number, height: string | number): this
-  size(width: string | number, height: string | number | null | undefined): this
-  size(width: string | number | null | undefined, height: string | number): this
-  size(width?: string | number | null, height?: string | number | null) {
-    const p = Util.proportionalSize(this, width, height)
-    return this.attr(this.array().size(p.width, p.height).toLine())
+  toArray(): Line.Array {
+    return [
+      [this.attr<number>('x1'), this.attr<number>('y1')],
+      [this.attr<number>('x2'), this.attr<number>('y2')],
+    ]
+  }
+
+  toPointArray() {
+    return new PointArray(this.toArray())
   }
 }
 
 export namespace Line {
+  export type Array = [[number, number], [number, number]]
+
   export function create(attrs?: Attrs | null): Line
-  export function create(
-    points: [[number, number], [number, number]],
-    attrs?: Attrs | null,
-  ): Line
+  export function create(points: Array, attrs?: Attrs | null): Line
   export function create(
     x1: number,
     y1: number,
@@ -94,14 +102,14 @@ export namespace Line {
     attrs?: Attrs | null,
   ): Line
   export function create(
-    x1?: [[number, number], [number, number]] | number | Attrs | null,
+    x1?: Array | number | Attrs | null,
     y1?: number | Attrs | null,
     x2?: number,
     y2?: number,
     attrs?: Attrs | null,
   ): Line
   export function create(
-    x1?: [[number, number], [number, number]] | number | Attrs | null,
+    x1?: Array | number | Attrs | null,
     y1?: number | Attrs | null,
     x2?: number,
     y2?: number,

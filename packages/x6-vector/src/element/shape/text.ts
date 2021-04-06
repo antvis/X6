@@ -2,7 +2,7 @@ import { Attrs } from '../../types'
 import { Global } from '../../global'
 import { UNumber } from '../../struct/unumber'
 import { Adopter } from '../adopter'
-import { Tspan } from './tspan'
+import { TSpan } from './tspan'
 import { TextBase } from './text-base'
 
 @Text.register('Text')
@@ -77,7 +77,7 @@ export class Text<
     if (this.rebuilding) {
       let blankLineOffset = 0
       const leading = this.leading()
-      this.eachChild<Tspan>((child, index) => {
+      this.eachChild<TSpan>((child, index) => {
         const fontSize = Global.window
           .getComputedStyle(this.node)
           .getPropertyValue('font-size')
@@ -103,8 +103,8 @@ export class Text<
   }
 
   text(): string
-  text(text: string | ((this: Tspan, tspan: Tspan) => void)): this
-  text(text?: string | ((this: Tspan, tspan: Tspan) => void)) {
+  text(text: string | ((this: TSpan, tspan: TSpan) => void)): this
+  text(text?: string | ((this: TSpan, tspan: TSpan) => void)) {
     // getter
     if (text === undefined) {
       const children = this.node.childNodes
@@ -124,7 +124,7 @@ export class Text<
         if (
           index !== firstLine &&
           children[index].nodeType !== 3 &&
-          Adopter.adopt<Tspan>(children[index]).assets.newLined === true
+          Adopter.adopt<TSpan>(children[index]).assets.newLined === true
         ) {
           content += '\n'
         }
