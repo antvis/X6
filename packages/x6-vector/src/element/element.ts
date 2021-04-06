@@ -7,7 +7,7 @@ import { Box } from '../struct/box'
 import { Point } from '../struct/point'
 import { Color } from '../struct/color'
 import { Matrix } from '../struct/matrix'
-import { UNumber } from '../struct/unumber'
+import { UnitNumber } from '../struct/unit-number'
 import { Vector } from './vector'
 
 @VectorElement.register('Vector')
@@ -56,7 +56,7 @@ export class VectorElement<
   cx(x?: string | number | null) {
     return x == null
       ? this.x() + this.width() / 2
-      : this.x(UNumber.minus(x, this.width() / 2))
+      : this.x(UnitNumber.minus(x, this.width() / 2))
   }
 
   cy(): number
@@ -65,7 +65,7 @@ export class VectorElement<
   cy(y?: string | number | null) {
     return y == null
       ? this.y() + this.height() / 2
-      : this.y(UNumber.minus(y, this.height() / 2))
+      : this.y(UnitNumber.minus(y, this.height() / 2))
   }
 
   center(x: string | number, y: string | number) {
@@ -73,11 +73,11 @@ export class VectorElement<
   }
 
   dx(x: string | number) {
-    return this.x(UNumber.plus(x, this.x()))
+    return this.x(UnitNumber.plus(x, this.x()))
   }
 
   dy(y: string | number) {
-    return this.y(UNumber.plus(y, this.y()))
+    return this.y(UnitNumber.plus(y, this.y()))
   }
 
   dmove(x: string | number = 0, y: string | number = 0) {

@@ -1,3 +1,5 @@
+import './lib.dom'
+
 export type Primitive =
   | string
   | number
@@ -39,3 +41,7 @@ export type Attrs = Record<string, string | number | null | undefined>
 export interface Class<Args extends [] = any, ReturnType = any> {
   new (...args: Args): ReturnType
 }
+
+export type CSSKeys = Exclude<keyof CSSStyleDeclaration, number>
+
+export type Entity = Record<any, any>

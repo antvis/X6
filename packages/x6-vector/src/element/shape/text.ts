@@ -1,6 +1,6 @@
 import { Attrs } from '../../types'
 import { Global } from '../../global'
-import { UNumber } from '../../struct/unumber'
+import { UnitNumber } from '../../struct/unit-number'
 import { Adopter } from '../adopter'
 import { TSpan } from './tspan'
 import { TextBase } from './text-base'
@@ -58,13 +58,13 @@ export class Text<
   }
 
   leading(): number
-  leading(value: UNumber.Raw): this
-  leading(value?: UNumber.Raw) {
+  leading(value: UnitNumber.Raw): this
+  leading(value?: UnitNumber.Raw) {
     if (value == null) {
       return this.affixes.leading
     }
 
-    this.affixes.leading = UNumber.create(value).valueOf()
+    this.affixes.leading = UnitNumber.create(value).valueOf()
     return this.rebuild()
   }
 

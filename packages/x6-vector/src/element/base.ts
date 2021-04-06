@@ -1,4 +1,4 @@
-import { Obj } from '../util/obj'
+import { Mixin } from '../util/mixin'
 import { Registry } from './registry'
 
 export abstract class Base {}
@@ -12,7 +12,7 @@ export namespace Base {
 
   export function mixin(...source: any[]) {
     return (ctor: Registry.Definition) => {
-      Obj.applyMixins(ctor, ...source)
+      Mixin.applyMixins(ctor, ...source)
     }
   }
 }
