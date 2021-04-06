@@ -1,8 +1,8 @@
 import { Attrs } from '../../types'
 import { Adopter } from '../adopter'
+import { Decorator } from '../decorator'
 import { Vector } from '../vector'
 import { VectorElement } from '../element'
-import { Decorator } from '../decorator'
 import { Container } from './container'
 import { ClipPath } from './clippath'
 
