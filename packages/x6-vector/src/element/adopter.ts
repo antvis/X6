@@ -1,63 +1,88 @@
 import { DomUtil } from '../util/dom'
 import { Global } from '../global'
+import type { Svg } from './container/svg'
+import type { Dom } from './dom'
 import { Registry } from './registry'
-import { Base } from './base'
+import { ElementMapping, HTMLTagMapping, SVGTagMapping } from './types'
 
 export namespace Adopter {
-  const cache: WeakMap<Node, Base> = new WeakMap()
+  const store: WeakMap<Node, Dom> = new WeakMap()
 
-  export function ref(node: Node, instance?: Base | null) {
+  export function cache(node: Node, instance?: Dom | null) {
     if (instance == null) {
-      cache.delete(node)
+      store.delete(node)
     } else {
-      cache.set(node, instance)
+      store.set(node, instance)
     }
   }
 
-  export function adopt<TVector extends Base>(node: Node): TVector
-  export function adopt<TVector extends Base>(
-    node?: Node | null,
-  ): TVector | null
-  export function adopt<TVector extends Base>(
-    node?: Node | null,
-  ): TVector | null {
+  export function adopt(node: null): null
+  export function adopt<T extends Node>(node: T): ElementMapping<T>
+  export function adopt<T extends Dom>(node: Node | ChildNode): T
+  export function adopt<T extends Dom>(node: Node | ChildNode | null): T | null
+  export function adopt<T extends Node>(
+    node?: T | null,
+  ): ElementMapping<T> | null
+  export function adopt<T extends Node>(
+    node?: T | null,
+  ): ElementMapping<T> | null {
     if (node == null) {
       return null
     }
 
     // make sure a node isn't already adopted
-    const instance = cache.get(node)
-    if (instance != null && instance instanceof Base) {
-      return instance as TVector
+    const instance = store.get(node)
+    if (instance != null) {
+      return instance as ElementMapping<T>
     }
 
-    const cls = Registry.getClass(node)
-    return new cls(node) // eslint-disable-line new-cap
+    const Type = Registry.getClass(node)
+    return new Type(node) as ElementMapping<T>
   }
 
   let adopter = adopt
 
-  export type Target<TVector extends Base = Base> = TVector | Node | string
+  export type Target<T extends Dom = Dom> = T | Node | string
 
-  export function makeInstance<TVector extends Base>(
-    node?: TVector | Node | string,
+  export function makeInstance(): Svg
+  export function makeInstance(node: undefined | null): Svg
+  export function makeInstance<T extends Dom>(instance: T): T
+  export function makeInstance<T extends Dom>(target: Target<T>): T
+  export function makeInstance<T extends Node>(node: T): ElementMapping<T>
+  export function makeInstance<T extends keyof SVGTagMapping>(
+    tagName: T,
+  ): SVGTagMapping[T]
+  export function makeInstance<T extends keyof SVGTagMapping>(
+    tagName: T,
+    isHTML: false,
+  ): SVGTagMapping[T]
+  export function makeInstance<T extends keyof HTMLTagMapping>(
+    tagName: T,
+    isHTML: true,
+  ): HTMLTagMapping[T]
+  export function makeInstance<T extends Dom>(
+    tagName: string,
+    isHTML: boolean,
+  ): T
+  export function makeInstance<T extends Dom>(
+    node?: T | Node | string,
     isHTML = false,
-  ): TVector {
+  ): T {
     if (node == null) {
-      const root = Registry.getRoot()
-      return new root() // eslint-disable-line new-cap
+      const Root = Registry.getRoot()
+      return new Root() as T
     }
 
-    if (node instanceof Base) {
-      return node
+    if (node instanceof Node) {
+      return adopter(node) as T
     }
 
     if (typeof node === 'object') {
-      return adopter(node)
+      return node
     }
 
     if (typeof node === 'string' && node.charAt(0) !== '<') {
-      return adopter(Global.document.querySelector(node)) as TVector
+      return adopter(Global.document.querySelector(node)) as T
     }
 
     // Make sure, that HTML elements are created with the correct namespace
@@ -73,7 +98,7 @@ export namespace Adopter {
     // make sure, that element doesnt have its wrapper attached
     wrapper.firstChild!.remove()
 
-    return result as TVector
+    return result as T
   }
 
   export function mock(instance = adopt) {

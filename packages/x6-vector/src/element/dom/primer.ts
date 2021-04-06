@@ -1,6 +1,6 @@
 import { Attr } from '../../util/attr'
 import { DomUtil } from '../../util/dom'
-import { Attrs, Class } from '../../types'
+import { Attrs } from '../../types'
 import { Color } from '../../struct/color'
 import { NumberArray } from '../../struct/number-array'
 import { Registry } from '../registry'
@@ -13,33 +13,28 @@ export abstract class Primer<TNode extends Node> extends Base {
     return this.node.nodeName
   }
 
-  constructor()
-  constructor(node: Node)
-  constructor(attrs: Attrs | null)
-  constructor(node?: TNode | string | null, attrs?: Attrs | null)
-  constructor(node?: TNode | string | Attrs | null, attrs?: Attrs | null)
   constructor(node?: TNode | string | Attrs | null, attrs?: Attrs | null) {
     super()
 
+    let attributes: Attrs | null | undefined
     if (DomUtil.isNode(node)) {
       this.node = node
-      if (attrs) {
-        this.attr(attrs)
-      }
+      attributes = attrs
     } else {
-      const ctor = this.constructor as Class
+      const ctor = this.constructor as Registry.Definition
       const name = typeof node === 'string' ? node : Registry.getTagName(ctor)
       if (name) {
         this.node = DomUtil.createNode<any>(name)
-        const ats = node != null && typeof node !== 'string' ? node : attrs
-        if (ats) {
-          this.attr(ats)
-        }
+        attributes = node != null && typeof node !== 'string' ? node : attrs
       } else {
         throw new Error(
           `Can not initialize "${ctor.name}" with unknown node name`,
         )
       }
+    }
+
+    if (attributes) {
+      this.attr(attributes)
     }
   }
 

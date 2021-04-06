@@ -10,7 +10,7 @@ import { Matrix } from '../struct/matrix'
 import { UNumber } from '../struct/unumber'
 import { Vector } from './vector'
 
-@VectorElement.register('Element')
+@VectorElement.register('Vector')
 export class VectorElement<
   TSVGElement extends SVGElement = SVGElement
 > extends Vector<TSVGElement> {
@@ -258,7 +258,7 @@ export class VectorElement<
     const retry = (node: SVGGraphicsElement) =>
       DomUtil.withSvgContext((svg) => {
         try {
-          const cloned = this.clone<VectorElement>().addTo(svg).show()
+          const cloned = this.clone().addTo(svg).show()
           const box = DomUtil.toElement<SVGGraphicsElement>(
             cloned.node,
           ).getBBox()
