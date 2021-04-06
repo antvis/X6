@@ -5,16 +5,16 @@ import { Attr } from '../../util/attr'
 import { Svg } from '../container/svg'
 import { Adopter } from '../adopter'
 import { Data } from './data'
-import { Event } from './event'
 import { Style } from './style'
 import { Primer } from './primer'
 import { Memory } from './memory'
 import { Listener } from './listener'
 import { ClassName } from './classname'
 import { Transform } from './transform'
+import { EventEmitter } from './event-emitter'
 
 @Dom.register('Dom')
-@Dom.mixin(Event, ClassName, Style, Data, Memory, Listener, Transform)
+@Dom.mixin(EventEmitter, ClassName, Style, Data, Memory, Listener, Transform)
 export class Dom<TNode extends Node = Node> extends Primer<TNode> {
   first<T extends Dom = Dom>(): T | null {
     return Dom.adopt<T>(this.node.firstChild)
@@ -507,7 +507,7 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
 
 export interface Dom<TNode extends Node = Node>
   extends ClassName<TNode>,
-    Event<TNode>,
+    EventEmitter<TNode>,
     Style<TNode>,
     Data<TNode>,
     Memory<TNode>,
@@ -542,6 +542,6 @@ export namespace Dom {
 
 export namespace Dom {
   export const registerAttrHook = Attr.registerHook
-  export const registerEventHook = Event.registerHook
+  export const registerEventHook = EventEmitter.registerHook
   export const registerStyleHook = Style.registerHook
 }
