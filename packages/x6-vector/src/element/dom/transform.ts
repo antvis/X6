@@ -98,20 +98,28 @@ export class Transform<TNode extends Node>
     )
   }
 
+  rotate(angle: number): this
+  rotate(angle: number, cx: number, cy: number): this
   rotate(angle: number, cx?: number, cy?: number) {
     return this.transform({ rotate: angle, ox: cx, oy: cy }, true)
   }
 
+  skew(x: number, y: number): this
+  skew(x: number, y: number, cx: number, cy: number): this
   skew(x: number, y: number, cx?: number, cy?: number) {
     return arguments.length === 1 || arguments.length === 3
       ? this.transform({ skew: x, ox: y, oy: cx }, true)
       : this.transform({ skew: [x, y], ox: cx, oy: cy }, true)
   }
 
+  shear(lam: number): this
+  shear(lam: number, cx: number, cy: number): this
   shear(lam: number, cx?: number, cy?: number) {
     return this.transform({ shear: lam, ox: cx, oy: cy }, true)
   }
 
+  scale(x: number, y: number): this
+  scale(x: number, y: number, cx: number, cy: number): this
   scale(x: number, y: number, cx?: number, cy?: number) {
     return arguments.length === 1 || arguments.length === 3
       ? this.transform({ scale: x, ox: y, oy: cx }, true)
