@@ -9,7 +9,7 @@ export namespace Decorator {
     const raw = descriptor.value
     descriptor.value = function (
       this: VectorElement<TSVGElement>,
-      ...arguments_: any[]
+      ...args: any[]
     ) {
       const defs = this.defs()
       if (defs == null) {
@@ -18,7 +18,7 @@ export namespace Decorator {
             'Please ensure that the current element is attached into any SVG context.',
         )
       }
-      return raw.call(this, ...arguments_)
+      return raw.call(this, ...args)
     }
   }
 }
