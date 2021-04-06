@@ -2,8 +2,8 @@ import { DomUtil } from '../util/dom'
 import type { Path } from '../element/shape/path'
 import * as PathUtil from '../element/shape/path-util'
 import { Box } from './box'
-import { TArray } from './tarray'
-import { UNumber } from './unumber'
+import { TArray } from './type-array'
+import { UnitNumber } from './unit-number'
 
 export class PathArray extends TArray<Path.Segment> {
   bbox() {
@@ -15,8 +15,8 @@ export class PathArray extends TArray<Path.Segment> {
 
   move(x?: number | string, y?: number | string) {
     const box = this.bbox()
-    const dx = typeof x === 'undefined' ? NaN : UNumber.toNumber(x) - box.x
-    const dy = typeof y === 'undefined' ? NaN : UNumber.toNumber(y) - box.y
+    const dx = typeof x === 'undefined' ? NaN : UnitNumber.toNumber(x) - box.x
+    const dy = typeof y === 'undefined' ? NaN : UnitNumber.toNumber(y) - box.y
 
     if (!Number.isNaN(dx) && !Number.isNaN(dy)) {
       for (let i = this.length - 1; i >= 0; i -= 1) {
@@ -52,8 +52,8 @@ export class PathArray extends TArray<Path.Segment> {
 
   size(width: number | string, height: number | string) {
     const box = this.bbox()
-    const w = UNumber.toNumber(width)
-    const h = UNumber.toNumber(height)
+    const w = UnitNumber.toNumber(width)
+    const h = UnitNumber.toNumber(height)
 
     // If the box width or height is 0 then we ignore
     // transformations on the respective axis

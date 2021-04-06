@@ -1,4 +1,4 @@
-import { Obj } from '../../util/obj'
+import { Mixin } from '../../util/mixin'
 import { TextExtension as TextpathExtension } from './textpath-ext'
 import { TextExtension as TspanExtension } from './tspan-ext'
 import { Text } from './text'
@@ -9,4 +9,4 @@ declare module './text' {
       TspanExtension<TSVGTextElement> {}
 }
 
-Obj.applyMixins(Text, TspanExtension, TextpathExtension)
+Mixin.applyMixins(Text, TspanExtension, TextpathExtension)
