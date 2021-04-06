@@ -60,7 +60,7 @@ export class Poly<
   size(width: string | number, height: string | number | null | undefined): this
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
-    const s = Util.proportionalSize(this, width, height)
+    const s = Util.normalizeSize(this, width, height)
     return this.attr(
       'points',
       this.toPointArray().size(s.width, s.height).toString(),

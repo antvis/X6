@@ -25,7 +25,7 @@ export class Ellipse extends Shape<SVGEllipseElement> {
   size(width: string | number, height: string | number | null | undefined): this
   size(width: string | number | null | undefined, height: string | number): this
   size(width?: string | number | null, height?: string | number | null) {
-    const size = Util.proportionalSize(this, width, height)
+    const size = Util.normalizeSize(this, width, height)
     const rx = UnitNumber.divide(size.width, 2)
     const ry = UnitNumber.divide(size.height, 2)
     return this.rx(rx).ry(ry)
