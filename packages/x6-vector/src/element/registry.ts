@@ -1,11 +1,17 @@
-import { Class } from '../types'
 import { Str } from '../util/str'
+import { Base } from './base'
 
 export namespace Registry {
-  let root: Class
-  const cache: Record<string, Class> = {}
+  export type Definition = { new (...args: any[]): Base }
 
-  export function register(ctor: Class, name = ctor.name, asRoot?: boolean) {
+  let root: Definition
+  const cache: Record<string, Definition> = {}
+
+  export function register(
+    ctor: Definition,
+    name = ctor.name,
+    asRoot?: boolean,
+  ) {
     cache[name] = ctor
 
     if (asRoot) {
@@ -15,28 +21,34 @@ export namespace Registry {
     return ctor
   }
 
-  export function getClass<TClass extends Class = Class>(node: Node): TClass
-  export function getClass<TClass extends Class = Class>(name: string): TClass
-  export function getClass<TClass extends Class = Class>(node: string | Node) {
+  export function getClass<TDefinition extends Definition = Definition>(
+    node: Node,
+  ): TDefinition
+  export function getClass<TDefinition extends Definition = Definition>(
+    name: string,
+  ): TDefinition
+  export function getClass<TDefinition extends Definition = Definition>(
+    node: string | Node,
+  ) {
     if (typeof node === 'string') {
-      return cache[node] as TClass
+      return cache[node] as TDefinition
     }
 
-    const nodeName = node.nodeName || 'Dom'
+    const nodeName = node.nodeName
     let className = Str.ucfirst(nodeName)
 
-    if (nodeName === '#document-fragment') {
-      className = 'Fragment'
-    } else if (
-      className === 'LinearGradient' ||
-      className === 'RadialGradient'
+    if (
+      node instanceof SVGElement &&
+      (className === 'LinearGradient' || className === 'RadialGradient')
     ) {
       className = 'Gradient'
+    } else if (nodeName === '#document-fragment') {
+      className = 'Fragment'
     } else if (!Registry.hasClass(className)) {
-      className = 'Dom'
+      className = node instanceof SVGElement ? 'Vector' : 'Dom'
     }
 
-    return cache[className] as TClass
+    return cache[className] as TDefinition
   }
 
   export function hasClass(name: string) {
@@ -47,7 +59,7 @@ export namespace Registry {
     return root
   }
 
-  export function getTagName(cls: Class) {
+  export function getTagName(cls: Definition) {
     const keys = Object.keys(cache)
     for (let i = 0, l = keys.length; i < l; i += 1) {
       const key = keys[i]

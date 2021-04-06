@@ -1,10 +1,10 @@
-import { Attrs, Class } from '../../types'
+import type { Attrs } from '../../types'
 import { Global } from '../../global'
-import { DomUtil } from '../../util/dom'
 import { Attr } from '../../util/attr'
-import { Svg } from '../container/svg'
+import { DomUtil } from '../../util/dom'
 import { Adopter } from '../adopter'
 import { Data } from './data'
+import { Affix } from './affix'
 import { Style } from './style'
 import { Primer } from './primer'
 import { Memory } from './memory'
@@ -12,30 +12,70 @@ import { Listener } from './listener'
 import { ClassName } from './classname'
 import { Transform } from './transform'
 import { EventEmitter } from './event-emitter'
+import { ElementMapping, HTMLTagMapping, SVGTagMapping } from '../types'
+import { Registry } from '../registry'
 
 @Dom.register('Dom')
-@Dom.mixin(EventEmitter, ClassName, Style, Data, Memory, Listener, Transform)
+@Dom.mixin(
+  ClassName,
+  Style,
+  Transform,
+  Data,
+  Affix,
+  Memory,
+  EventEmitter,
+  Listener,
+)
 export class Dom<TNode extends Node = Node> extends Primer<TNode> {
+  constructor()
+  constructor(node: Node)
+  constructor(attrs: Attrs | null)
+  constructor(node?: TNode | string | null, attrs?: Attrs | null)
+  constructor(node?: TNode | string | Attrs | null, attrs?: Attrs | null)
+  constructor(node?: TNode | string | Attrs | null, attrs?: Attrs | null) {
+    super(node, attrs)
+    this.restoreAffix()
+    Adopter.cache(this.node, this)
+  }
+
+  /**
+   * Returns the first child of the element.
+   */
   first<T extends Dom = Dom>(): T | null {
     return Dom.adopt<T>(this.node.firstChild)
   }
 
+  /**
+   * Returns the last child of the element.
+   */
   last<T extends Dom = Dom>(): T | null {
     return Dom.adopt<T>(this.node.lastChild)
   }
 
+  /**
+   * Returns an element on a given position in the element's children array.
+   */
   get<T extends Dom = Dom>(index: number): T | null {
     return Dom.adopt<T>(this.node.childNodes[index])
   }
 
-  find<T extends Dom = Dom>(selectors: string): T[] {
-    return Dom.find<T>(selectors, DomUtil.toElement(this.node))
+  /**
+   * Returns an array of elements matching the given selector.
+   */
+  find<T extends Dom = Dom>(selector: string): T[] {
+    return Dom.find<T>(selector, DomUtil.toElement(this.node))
   }
 
-  findOne<T extends Dom = Dom>(selectors: string): T | null {
-    return Dom.findOne<T>(selectors, DomUtil.toElement(this.node))
+  /**
+   * Returns the first element matching the given selector.
+   */
+  findOne<T extends Dom = Dom>(selector: string): T | null {
+    return Dom.findOne<T>(selector, DomUtil.toElement(this.node))
   }
 
+  /**
+   * Returns `true` if the element matching the given selector.
+   */
   matches(selector: string): boolean {
     const elem = DomUtil.toElement(this.node)
     const node = this.node as any
@@ -51,6 +91,9 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return matcher ? matcher.call(elem, selector) : false
   }
 
+  /**
+   * Returns an array of children elements.
+   */
   children<T extends Dom>(): T[] {
     const elems: T[] = []
     this.node.childNodes.forEach((node) => {
@@ -59,6 +102,9 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return elems
   }
 
+  /**
+   * Removes all elements from the element.
+   */
   clear() {
     while (this.node.lastChild) {
       this.node.lastChild.remove()
@@ -66,15 +112,22 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
-  clone<T extends Dom>(deep = true): T {
+  /**
+   * Returns an exact copy of the element.
+   */
+  clone(deep = true) {
     // write dom data to the dom so the clone can pickup the data
-    this.storeAssets()
+    this.storeAffix(deep)
     // clone element and assign new id
-    const ctor = this.constructor as new (node: Node) => T
-    // eslint-disable-next-line new-cap
-    return new ctor(DomUtil.assignNewId(this.node.cloneNode(deep)))
+    const Ctor = this.constructor as new (node: Node) => ElementMapping<TNode>
+    return new Ctor(DomUtil.assignNewId(this.node.cloneNode(deep)))
   }
 
+  /**
+   * Iterates over all the children of the element.
+   * Deep traversing is also possible by passing `true` as the second argument.
+   * @returns
+   */
   eachChild<T extends Dom>(
     iterator: (this: T, child: T, index: number, children: T[]) => void,
     deep?: boolean,
@@ -91,21 +144,58 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
-  indexOf(element: Dom): number {
+  /**
+   * Returns the index of given node.
+   * Returns `-1` when it is not a child.
+   */
+  indexOf(node: Node): number
+  /**
+   * Returns the index of given element.
+   * Returns `-1` when it is not a child.
+   */
+  indexOf(element: Dom): number
+  /**
+   * Returns the index of given element or node.
+   * Returns `-1` when it is not a child.
+   */
+  indexOf(element: Dom | Node): number
+  indexOf(element: Dom | Node): number {
     const children = Array.prototype.slice.call(this.node.childNodes) as Node[]
-    return children.indexOf(element.node)
+    return children.indexOf(element instanceof Node ? element : element.node)
   }
 
+  /**
+   * Returns `true` when the given node is a child of the element.
+   */
+  has(node: Node): boolean
+  /**
+   * Returns `true` when the given element is a child of the element.
+   */
+  has(element: Dom): boolean
+  /**
+   * Returns `true` when the given element or node is a child of the element.
+   */
+  has(element: Dom | Node): boolean
+  has(element: Dom | Node): boolean {
+    return this.indexOf(element) !== -1
+  }
+
+  /**
+   * Returns the index of the element in it's parent.
+   * Returns `-1` when the element do not have a parent.
+   */
   index(): number {
     const parent: Dom | null = this.parent()
     return parent ? parent.indexOf(this) : -1
   }
 
-  has(element: Dom): boolean {
-    return this.indexOf(element) !== -1
-  }
-
+  /**
+   * Returns the element's id, generate new id if no id set.
+   */
   id(): string
+  /**
+   * Set id of the element.
+   */
   id(id: string | null): this
   id(id?: string | null) {
     const elem = DomUtil.toElement(this.node)
@@ -119,23 +209,38 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return typeof id === 'undefined' ? this.attr('id') : this.attr('id', id)
   }
 
-  parent<T extends Dom = Dom>(selectors?: string | Class): T | null {
+  /**
+   * Returns the parent element if exist.
+   */
+  parent<T extends Dom = Dom>(): T | null
+  /**
+   * Iterates over the ancestors and returns the ancestor mathcing the selector.
+   */
+  parent<T extends Dom = Dom>(selector: string): T | null
+  /**
+   * Iterates over the ancestors and returns the ancestor mathcing the type.
+   */
+  parent<T extends Dom = Dom>(parentType: Registry.Definition): T | null
+  parent<T extends Dom = Dom>(selector?: string | Registry.Definition): T | null
+  parent<T extends Dom = Dom>(
+    selector?: string | Registry.Definition,
+  ): T | null {
     if (this.node.parentNode == null) {
       return null
     }
 
     let parent: T | null = Dom.adopt<T>(this.node.parentNode)
 
-    if (selectors == null) {
+    if (selector == null) {
       return parent
     }
 
     // loop trough ancestors if type is given
     do {
       if (
-        typeof selectors === 'string'
-          ? parent.matches(selectors)
-          : parent instanceof selectors
+        typeof selector === 'string'
+          ? parent.matches(selector)
+          : parent instanceof selector
       ) {
         return parent
       }
@@ -144,12 +249,36 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return null
   }
 
+  parents<T extends Dom = Dom>(): T[]
+  parents<T extends Dom = Dom>(until: null): T[]
+  parents<T extends Dom = Dom>(untilElement: Dom): T[]
+  parents<T extends Dom = Dom>(untilNode: Node): T[]
+  parents<T extends Dom = Dom>(untilSelector: string): T[]
+  parents<T extends Dom = Dom>(until: Adopter.Target<Dom> | null): T[]
+  parents<T extends Dom = Dom>(until?: Adopter.Target<Dom> | null) {
+    const stop = until ? Adopter.makeInstance<Dom>(until) : null
+    const parents: T[] = []
+    let parent = this.parent()
+    while (parent && !parent.isDocument() && !parent.isDocumentFragment()) {
+      parents.push(parent as T)
+      if (stop && parent.node === stop.node) {
+        break
+      }
+      parent = parent.parent()
+    }
+    return parents
+  }
+
+  add<T extends Dom>(element: T, index?: number): this
+  add<T extends Node>(node: T, index?: number): this
+  add(selector: string, index?: number): this
+  add<T extends Dom>(element: Adopter.Target<T>, index?: number): this
   add<T extends Dom>(element: Adopter.Target<T>, index?: number): this {
     const instance = Adopter.makeInstance<T>(element)
 
     // If non-root svg nodes are added we have to remove their namespaces
     if (instance.isSVGSVGElement()) {
-      const svg = Dom.adopt<Svg>(instance.node)
+      const svg = Dom.adopt(instance.node as SVGSVGElement)
       svg.removeNamespace()
     }
 
@@ -162,40 +291,72 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
+  append<T extends Dom>(element: T): this
+  append<T extends Node>(node: T): this
+  append(selector: string): this
+  append<T extends Dom>(element: Adopter.Target<T>): this
   append<T extends Dom>(element: Adopter.Target<T>): this {
     return this.add(element)
   }
 
+  prepend<T extends Dom>(element: T): this
+  prepend<T extends Node>(node: T): this
+  prepend(selector: string): this
+  prepend<T extends Dom>(element: Adopter.Target<T>): this
   prepend<T extends Dom>(element: Adopter.Target<T>): this {
     return this.add(element, 0)
   }
 
-  appendTo<T extends Dom>(parent: Adopter.Target<T>): this {
-    return this.addTo(parent)
-  }
-
+  addTo<T extends Dom>(parentElement: T, index?: number): this
+  addTo<T extends Node>(parentNode: T, index?: number): this
+  addTo(selector: string, index?: number): this
+  addTo<T extends Dom>(parent: Adopter.Target<T>, index?: number): this
   addTo<T extends Dom>(parent: Adopter.Target<T>, index?: number): this {
     return Adopter.makeInstance<T>(parent).put(this, index)
   }
 
+  appendTo<T extends Dom>(parentElement: T): this
+  appendTo<T extends Node>(parentNode: T): this
+  appendTo(selector: string): this
+  appendTo<T extends Dom>(parent: Adopter.Target<T>): this
+  appendTo<T extends Dom>(parent: Adopter.Target<T>): this {
+    return this.addTo(parent)
+  }
+
+  /**
+   * Adds the given element to the end fo child list or the optional child
+   * position and returns the added element.
+   */
+  put<T extends Dom>(element: T, index?: number): T
+  /**
+   * Adds the given node to the end fo child list or the optional child position
+   * and returns the added element.
+   */
+  put<T extends Node>(node: T, index?: number): ElementMapping<T>
+  /**
+   * Adds the node matching the selector to end fo child list or the optional
+   * child position and returns the added element.
+   */
+  put<T extends Dom>(selector: string, index?: number): T
+  put<T extends Dom>(element: Adopter.Target<T>, index?: number): T
   put<T extends Dom>(element: Adopter.Target<T>, index?: number): T {
     const instance = Adopter.makeInstance<T>(element)
     this.add(instance, index)
     return instance
   }
 
+  putIn<T extends Dom>(parentElement: T, index?: number): T
+  putIn<T extends Node>(parentNode: T, index?: number): ElementMapping<T>
+  putIn<T extends Dom>(selector: string, index?: number): T
+  putIn<T extends Dom>(parent: Adopter.Target<T>, index?: number): T
   putIn<T extends Dom>(parent: Adopter.Target<T>, index?: number): T {
     return Adopter.makeInstance<T>(parent).add(this, index)
   }
 
-  element<T extends Dom>(nodeName: string, attrs?: Attrs | null): T {
-    const elem = Adopter.makeInstance<T>(nodeName)
-    if (attrs) {
-      elem.attr(attrs)
-    }
-    return this.put(elem)
-  }
-
+  replace<T extends Dom>(element: T, index?: number): T
+  replace<T extends Node>(node: T, index?: number): ElementMapping<T>
+  replace<T extends Dom>(selector: string, index?: number): T
+  replace<T extends Dom>(element: Adopter.Target<T>, index?: number): T
   replace<T extends Dom>(element: Adopter.Target<T>): T {
     const instance = Adopter.makeInstance<T>(element)
 
@@ -204,6 +365,22 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     }
 
     return instance
+  }
+
+  element<T extends keyof SVGElementTagNameMap>(
+    nodeName: T,
+    attrs?: Attrs | null,
+  ): SVGTagMapping[T]
+  element<T extends keyof HTMLElementTagNameMap>(
+    nodeName: T,
+    attrs?: Attrs | null,
+  ): HTMLTagMapping[T]
+  element<T extends Dom>(nodeName: string, attrs?: Attrs | null): T {
+    const elem = Adopter.makeInstance<T>(nodeName)
+    if (attrs) {
+      elem.attr(attrs)
+    }
+    return this.put(elem)
   }
 
   remove() {
@@ -215,11 +392,17 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
-  removeElement(element: Dom) {
-    this.node.removeChild(element.node)
+  removeElement(node: Node): this
+  removeElement(element: Dom): this
+  removeElement(element: Dom | Node) {
+    this.node.removeChild(element instanceof Node ? element : element.node)
     return this
   }
 
+  before<T extends Dom>(element: T): this
+  before<T extends Node>(node: T): this
+  before(selector: string): this
+  before<T extends Dom>(element: Adopter.Target<T>): this
   before<T extends Dom>(element: Adopter.Target<T>) {
     const parent = this.parent()
     if (parent) {
@@ -232,6 +415,10 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
+  after<T extends Dom>(element: T): this
+  after<T extends Node>(node: T): this
+  after(selector: string): this
+  after<T extends Dom>(element: Adopter.Target<T>): this
   after<T extends Dom>(element: Adopter.Target<T>) {
     const parent = this.parent()
     if (parent) {
@@ -243,11 +430,19 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
+  insertBefore<T extends Dom>(element: T): this
+  insertBefore<T extends Node>(node: T): this
+  insertBefore(selector: string): this
+  insertBefore<T extends Dom>(element: Adopter.Target<T>): this
   insertBefore<T extends Dom>(element: Adopter.Target<T>) {
     Adopter.makeInstance(element).before(this)
     return this
   }
 
+  insertAfter<T extends Dom>(element: T): this
+  insertAfter<T extends Node>(node: T): this
+  insertAfter(selector: string): this
+  insertAfter<T extends Dom>(element: Adopter.Target<T>): this
   insertAfter<T extends Dom>(element: Adopter.Target<T>) {
     Adopter.makeInstance(element).after(this)
     return this
@@ -255,32 +450,34 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
 
   siblings<T extends Dom>(): T[]
   siblings<T extends Dom>(selfInclued?: boolean): T[]
-  siblings<T extends Dom>(selectors: string, selfInclued?: boolean): T[]
-  siblings(selectors?: string | boolean, selfInclued?: boolean) {
+  siblings<T extends Dom>(selector: string, selfInclued?: boolean): T[]
+  siblings(selector?: string | boolean, selfInclued?: boolean) {
     const parent = this.parent()
     const children = parent ? parent.children() : []
 
-    if (selectors == null) {
+    if (selector == null) {
       return children.filter((child) => child !== this)
     }
 
-    if (typeof selectors === 'boolean') {
-      return selectors ? children : children.filter((child) => child !== this)
+    if (typeof selector === 'boolean') {
+      return selector ? children : children.filter((child) => child !== this)
     }
 
     return children.filter(
-      (child) => child.matches(selectors) && (selfInclued || child !== this),
+      (child) => child.matches(selector) && (selfInclued || child !== this),
     )
   }
 
-  next<T extends Dom>(selectors?: string): T | null {
+  next<T extends Dom>(): T | null
+  next<T extends Dom>(selector: string): T | null
+  next<T extends Dom>(selector?: string): T | null {
     const parent = this.parent()
     if (parent) {
       const index = this.index()
       const children = parent.children<T>()
       for (let i = index + 1, l = children.length; i < l; i += 1) {
         const next = children[i]
-        if (selectors == null || next.matches(selectors)) {
+        if (selector == null || next.matches(selector)) {
           return next
         }
       }
@@ -288,7 +485,9 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return null
   }
 
-  nextAll<T extends Dom>(selectors?: string): T[] {
+  nextAll<T extends Dom>(): T[]
+  nextAll<T extends Dom>(selector: string): T[]
+  nextAll<T extends Dom>(selector?: string): T[] {
     const result: T[] = []
     const parent = this.parent()
     if (parent) {
@@ -296,7 +495,7 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
       const children = parent.children<T>()
       for (let i = index + 1, l = children.length; i < l; i += 1) {
         const next = children[i]
-        if (selectors == null || next.matches(selectors)) {
+        if (selector == null || next.matches(selector)) {
           result.push(next)
         }
       }
@@ -304,14 +503,16 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return result
   }
 
-  prev<T extends Dom>(selectors?: string): T | null {
+  prev<T extends Dom>(): T | null
+  prev<T extends Dom>(selector: string): T | null
+  prev<T extends Dom>(selector?: string): T | null {
     const parent = this.parent()
     if (parent) {
       const index = this.index()
       const children = parent.children<T>()
       for (let i = index - 1; i >= 0; i -= 1) {
         const previous = children[i]
-        if (selectors == null || previous.matches(selectors)) {
+        if (selector == null || previous.matches(selector)) {
           return previous
         }
       }
@@ -320,7 +521,9 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return null
   }
 
-  prevAll<T extends Dom>(selectors?: string): T[] {
+  prevAll<T extends Dom>(): T[]
+  prevAll<T extends Dom>(selector: string): T[]
+  prevAll<T extends Dom>(selector?: string): T[] {
     const result: T[] = []
     const parent = this.parent()
     if (parent) {
@@ -328,7 +531,7 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
       const children = parent.children<T>()
       for (let i = index - 1; i >= 0; i -= 1) {
         const previous = children[i]
-        if (selectors == null || previous.matches(selectors)) {
+        if (selector == null || previous.matches(selector)) {
           result.push(previous)
         }
       }
@@ -370,6 +573,10 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
     return this
   }
 
+  wrap<T extends Dom>(element: T): this
+  wrap<T extends Node>(node: T): this
+  wrap(selector: string): this
+  wrap<T extends Dom>(element: Adopter.Target<T>): this
   wrap<T extends Dom>(node: Adopter.Target<T>): this {
     const parent = this.parent()
     if (!parent) {
@@ -382,11 +589,6 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
 
   words(text: string) {
     this.node.textContent = text
-    return this
-  }
-
-  storeAssets() {
-    this.eachChild(() => this.storeAssets())
     return this
   }
 
@@ -441,7 +643,7 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
       // The default for exports is, that the outerNode is included
       isOuterXML = isOuterXML == null ? true : isOuterXML
 
-      this.storeAssets()
+      this.storeAffix(true)
 
       let current: Dom = this // eslint-disable-line
 
@@ -507,19 +709,16 @@ export class Dom<TNode extends Node = Node> extends Primer<TNode> {
 
 export interface Dom<TNode extends Node = Node>
   extends ClassName<TNode>,
-    EventEmitter<TNode>,
     Style<TNode>,
+    Transform<TNode>,
     Data<TNode>,
+    Affix<TNode>,
     Memory<TNode>,
-    Listener<TNode>,
-    Transform<TNode> {}
+    EventEmitter<TNode>,
+    Listener<TNode> {}
 
 export namespace Dom {
-  export function adopt<T extends Dom>(node: Node): T
-  export function adopt<T extends Dom>(node?: Node | null): T | null
-  export function adopt<T extends Dom>(node?: Node | null) {
-    return Adopter.adopt<T>(node)
-  }
+  export const adopt = Adopter.adopt
 
   export function find<T extends Dom = Dom>(
     selectors: string,
