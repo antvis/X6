@@ -16,7 +16,8 @@
     "build": "tsc --outDir ./lib",
     "build:watch": "yarn build --w",
     "prebuild": "run-s clean",
-    "preinstall": "run-s build",
+    "postinstall": "run-s build",
+    "prepare": "run-s build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
