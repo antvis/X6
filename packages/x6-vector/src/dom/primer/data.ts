@@ -5,6 +5,7 @@ export class Data<TElement extends Element> extends Base<TElement> {
   data(): Record<string, any>
   data<T>(key: string): T
   data(keys: string[]): Record<string, any>
+  data(data: Record<string, any>): this
   data<T>(key: string, value: T, raw?: boolean): this
   data(
     key?: string | string[] | Record<string, any>,
@@ -17,7 +18,7 @@ export class Data<TElement extends Element> extends Base<TElement> {
       const keys: string[] = []
       for (let i = 0, l = attrs.length; i < l; i += 1) {
         const item = attrs.item(i)
-        if (item && item.nodeName.indexOf('data-')) {
+        if (item && item.nodeName.startsWith('data-')) {
           keys.push(item.nodeName.slice(5))
         }
       }
@@ -71,7 +72,7 @@ export namespace Data {
     return `data-${key.replace(/[A-Z]/g, '-$&').toLowerCase()}`
   }
 
-  export function parseValue(val: string | number | null) {
+  export function parseValue(val: string | null) {
     if (val && typeof val === 'string') {
       if (val === 'true') {
         return true
