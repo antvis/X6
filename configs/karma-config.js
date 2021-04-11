@@ -2,7 +2,14 @@ const cpuCount = require('os').cpus().length
 const es6Transform = require('karma-typescript-es6-transform')
 
 module.exports = function (config, base, karmaTypescriptConfig) {
-  const isDebug = process.argv.some((arg) => arg === '--debug')
+  const hasFlag = (flag) => process.argv.some((arg) => arg === flag)
+  const isDebug = hasFlag('--debug')
+  const isWatch = hasFlag('--auto-watch')
+
+  const reporters = []
+  if (!isWatch && !isDebug) {
+    reporters.push('spec')
+  }
 
   const common = {
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -17,7 +24,7 @@ module.exports = function (config, base, karmaTypescriptConfig) {
       '**/*.ts': ['karma-typescript'],
     },
 
-    reporters: ['spec', 'karma-typescript'],
+    reporters: [...reporters, 'karma-typescript'],
 
     browsers: [process.env.CI ? 'ChromeHeadless' : 'ChromeHeadless'],
 
@@ -63,9 +70,29 @@ module.exports = function (config, base, karmaTypescriptConfig) {
     concurrency: cpuCount || Infinity,
   }
 
+  const reportsDir = 'test/coverage'
+  const reports = {
+    html: reportsDir,
+    'text-summary': null,
+  }
+
+  if (!isWatch && !isDebug) {
+    reports.lcovonly = {
+      directory: reportsDir,
+      subdirectory: './',
+      filename: 'lcov.info',
+    }
+    reports.cobertura = {
+      directory: reportsDir,
+      subdirectory: './',
+      filename: 'coverage.xml',
+    }
+  }
+
   config.set(
     Object.assign(common, base, {
       karmaTypescriptConfig: {
+        reports,
         tsconfig: './tsconfig.json',
         bundlerOptions: {
           sourceMap: true,
@@ -78,20 +105,6 @@ module.exports = function (config, base, karmaTypescriptConfig) {
         coverageOptions: {
           instrumentation: !isDebug,
           exclude: /\.test|spec\.ts$/,
-        },
-        reports: {
-          html: 'test/coverage',
-          lcovonly: {
-            directory: 'test/coverage',
-            subdirectory: './',
-            filename: 'lcov.info',
-          },
-          cobertura: {
-            directory: 'test/coverage',
-            subdirectory: './',
-            filename: 'coverage.xml',
-          },
-          'text-summary': '',
         },
         ...karmaTypescriptConfig,
       },
