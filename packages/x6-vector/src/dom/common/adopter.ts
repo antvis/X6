@@ -1,6 +1,7 @@
 import { Global } from '../../global'
 import { createHTMLNode, createSVGNode } from '../../util'
 import { Registry } from './registry'
+import type { Base } from './base'
 import type { Dom } from '../dom'
 import type { Svg } from '../../vector'
 import type { ElementMap } from '../../types'
@@ -8,9 +9,9 @@ import type { HTMLAttributesTagNameMap } from '../types'
 import type { SVGAttributesTagNameMap } from '../../vector/types'
 
 export namespace Adopter {
-  const store: WeakMap<Node, Dom> = new WeakMap()
+  const store: WeakMap<Node, Base> = new WeakMap()
 
-  export function cache(node: Node, instance?: Dom | null) {
+  export function cache(node: Node, instance?: Base | null) {
     if (instance == null) {
       store.delete(node)
     } else {
