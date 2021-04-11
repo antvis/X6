@@ -7,8 +7,10 @@ export class Affix<TElement extends Element> extends Base<TElement> {
   affix<T extends Record<string, any>>(): T
   affix<T>(key: string): T
   affix(data: Record<string, any>): this
+  affix(data: null): this
   affix(key: string, value: any): this
-  affix(key?: string | Record<string, any>, value?: any) {
+  affix(key: string, value: null): this
+  affix(key?: string | Record<string, any> | null, value?: any) {
     if (typeof key === 'undefined') {
       return this.affixes
     }
@@ -25,8 +27,9 @@ export class Affix<TElement extends Element> extends Base<TElement> {
 
       if (value == null) {
         delete this.affixes[key]
+      } else {
+        this.affixes[key] = value
       }
-      this.affixes[key] = value
       return this
     }
 
@@ -45,7 +48,7 @@ export class Affix<TElement extends Element> extends Base<TElement> {
 }
 
 export namespace Affix {
-  const PERSIST_ATTR_NAME = 'vector:data'
+  export const PERSIST_ATTR_NAME = 'vector:data'
 
   export function store<TElement extends Element>(
     node: TElement,
@@ -66,9 +69,13 @@ export namespace Affix {
   export function restore<TElement extends Element>(
     node: TElement,
   ): Record<string, any> {
-    const raw = node.getAttribute(PERSIST_ATTR_NAME)
-    if (raw) {
-      return JSON.parse(raw)
+    try {
+      const raw = node.getAttribute(PERSIST_ATTR_NAME)
+      if (raw) {
+        return JSON.parse(raw)
+      }
+    } catch (error) {
+      // pass
     }
     return {}
   }
