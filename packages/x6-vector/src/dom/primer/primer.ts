@@ -12,6 +12,7 @@ import {
   Hook as AttributesHook,
 } from '../attributes'
 import { EventEmitter, EventListener, Hook as EventHook } from '../events'
+import { Adopter } from '../common/adopter'
 
 @Primer.mixin(
   Affix,
@@ -70,6 +71,9 @@ export class Primer<TElement extends Element> extends Base<TElement> {
     if (attributes) {
       this.attr(attributes)
     }
+
+    this.restoreAffix()
+    Adopter.cache(this.node, this)
   }
 
   protected createNode(tagName: string): TElement {
