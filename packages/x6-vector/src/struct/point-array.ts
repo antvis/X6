@@ -1,9 +1,9 @@
 import { Box } from './box'
 import { Matrix } from './matrix'
-import { TArray } from './type-array'
+import { TypeArray } from './type-array'
 import { UnitNumber } from './unit-number'
 
-export class PointArray extends TArray<[number, number]> {
+export class PointArray extends TypeArray<[number, number]> {
   clone(): PointArray {
     return super.clone() as PointArray
   }

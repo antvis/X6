@@ -1,6 +1,6 @@
 import { Easing } from '../stepper/easing'
 import { Stepper } from '../stepper/stepper'
-import { Util } from './morphable-util'
+import { Util } from './util'
 import { Morphable } from './morphable'
 
 export class Morpher<TArray extends any[], TInput, TValue> {
@@ -37,7 +37,7 @@ export class Morpher<TArray extends any[], TInput, TValue> {
       ),
     )
 
-    return this.instance.fromArray(current as TArray).valueOf()
+    return this.instance.fromArray(current as TArray).toValue()
   }
 
   done(): boolean {
