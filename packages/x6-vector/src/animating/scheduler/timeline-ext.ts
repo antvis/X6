@@ -1,28 +1,28 @@
-import { Mixin } from '../../util/mixin'
-import { Dom } from '../../element/dom/dom'
 import { Timeline } from './timeline'
-
-const cache: WeakMap<ElementExtension, Timeline> = new WeakMap()
+import { Primer } from '../../dom/primer'
 
 export class ElementExtension {
-  timeline(): Timeline
-  timeline(timeline: Timeline): this
-  timeline(timeline?: Timeline) {
+  protected timeline: Timeline
+
+  scheduler(): Timeline
+  scheduler(timeline: Timeline): this
+  scheduler(timeline?: Timeline) {
     if (timeline == null) {
-      if (!cache.has(this)) {
-        cache.set(this, new Timeline())
+      if (this.timeline == null) {
+        this.timeline = new Timeline()
       }
-      return cache.get(this)!
+      return this.timeline
     }
 
-    cache.set(this, timeline)
+    this.timeline = timeline
     return this
   }
 }
 
-declare module '../../element/dom/primer' {
+declare module '../../dom/primer/primer' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Primer<TNode extends Node = Node> extends ElementExtension {}
+  interface Primer<TElement extends Element = Element>
+    extends ElementExtension {}
 }
 
-Mixin.applyMixins(Dom, ElementExtension)
+Primer.mixin(ElementExtension)

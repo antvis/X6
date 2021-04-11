@@ -4,19 +4,7 @@ const { objectContaining } = jasmine
 
 describe('Color', () => {
   describe('static', () => {
-    describe('isRgbLike()', () => {
-      it('shoud return true if the given object is rgb like', () => {
-        expect(Color.isRgbLike({ r: 1, g: 1, b: 1 })).toBeTrue()
-        expect(Color.isRgbLike({ r: 1, g: 1, b: 1, a: 0.5 })).toBeTrue()
-      })
-
-      it('shoud return false if the given object is not rgb like', () => {
-        expect(Color.isRgbLike({ r: 1, g: 1 })).toBeFalse()
-        expect(Color.isRgbLike({ r: 1, b: 1, a: 0.5 })).toBeFalse()
-      })
-    })
-
-    describe('invert', () => {
+    describe('invert()', () => {
       it('shoud invert the given hex color', () => {
         expect(Color.invert('#ffffff')).toEqual('#000000')
         expect(Color.invert([255, 255, 255, 1])).toEqual([0, 0, 0, 1])
@@ -30,21 +18,99 @@ describe('Color', () => {
       })
     })
 
-    describe('fromHex', () => {
+    describe('fromHex()', () => {
       it('should return null when the given string is not a valid hex string', () => {
         expect(Color.fromHex('')).toBeNull()
       })
     })
 
-    describe('fromHsl', () => {
+    describe('fromHsl()', () => {
       it('should return null when the given string is not a valid hsla string', () => {
         expect(Color.fromHsl('')).toBeNull()
       })
     })
 
-    describe('fromRgb', () => {
+    describe('fromRgb()', () => {
       it('should return null when the given string is not a valid rgba string', () => {
         expect(Color.fromRgb('')).toBeNull()
+      })
+    })
+
+    describe('isRgbLike()', () => {
+      it('shoud return true if the given object is rgb like', () => {
+        expect(Color.isRgbLike({ r: 1, g: 1, b: 1 })).toBeTrue()
+        expect(Color.isRgbLike({ r: 1, g: 1, b: 1, a: 0.5 })).toBeTrue()
+      })
+
+      it('shoud return false if the given object is not rgb like', () => {
+        expect(Color.isRgbLike({ r: 1, g: 1 })).toBeFalse()
+        expect(Color.isRgbLike({ r: 1, b: 1, a: 0.5 })).toBeFalse()
+      })
+    })
+
+    describe('isRgb()', () => {
+      it('should return true when the given string is a valid rgba string', () => {
+        expect(Color.isRgb('rgb(0,0,0)')).toBeTrue()
+        expect(Color.isRgb('rgba(0,0,0,0)')).toBeTrue()
+      })
+
+      it('should return false when the given string is a not valid rgba string', () => {
+        expect(Color.isRgb('')).toBeFalse()
+        expect(Color.isRgb('#000000')).toBeFalse()
+        expect(Color.isRgb('hsl(0,0,0)')).toBeFalse()
+        expect(Color.isRgb('hsla(0,0,0,0)')).toBeFalse()
+      })
+    })
+
+    describe('isHsl()', () => {
+      it('should return true when the given string is a valid hsla string', () => {
+        expect(Color.isHsl('hsl(0,0,0)')).toBeTrue()
+        expect(Color.isHsl('hsla(0,0,0,0)')).toBeTrue()
+      })
+
+      it('should return false when the given string is a not valid hsla string', () => {
+        expect(Color.isHsl('')).toBeFalse()
+        expect(Color.isHsl('#000000')).toBeFalse()
+        expect(Color.isHsl('rgb(0,0,0)')).toBeFalse()
+        expect(Color.isHsl('rgba(0,0,0,0)')).toBeFalse()
+      })
+    })
+
+    describe('isHex()', () => {
+      it('should return true when the given string is a valid hex string', () => {
+        expect(Color.isHex('#000')).toBeTrue()
+        expect(Color.isHex('#000000')).toBeTrue()
+      })
+
+      it('should return false when the given string is a not valid hex string', () => {
+        expect(Color.isHex('')).toBeFalse()
+        expect(Color.isHex('#0000')).toBeFalse()
+        expect(Color.isHex('#0000000')).toBeFalse()
+        expect(Color.isHex('rgb(0,0,0)')).toBeFalse()
+        expect(Color.isHex('rgba(0,0,0,0)')).toBeFalse()
+        expect(Color.isHex('hsl(0,0,0)')).toBeFalse()
+        expect(Color.isHex('hsla(0,0,0,0)')).toBeFalse()
+      })
+    })
+
+    describe('isColor()', () => {
+      it('should return true when the given value is a color', () => {
+        expect(Color.isColor('#000')).toBeTrue()
+        expect(Color.isColor('#000000')).toBeTrue()
+        expect(Color.isColor('rgb(0,0,0)')).toBeTrue()
+        expect(Color.isColor('rgba(0,0,0,0)')).toBeTrue()
+        expect(Color.isColor('hsl(0,0,0)')).toBeTrue()
+        expect(Color.isColor('hsla(0,0,0,0)')).toBeTrue()
+        expect(Color.isColor({ r: 0, g: 0, b: 0, a: 0 })).toBeTrue()
+      })
+
+      it('should return false when the given string is a not color', () => {
+        expect(Color.isColor('')).toBeFalse()
+        expect(Color.isColor(null)).toBeFalse()
+        expect(Color.isColor({})).toBeFalse()
+        expect(Color.isColor(false)).toBeFalse()
+        expect(Color.isColor(1)).toBeFalse()
+        expect(Color.isColor({ a: 0 })).toBeFalse()
       })
     })
   })
@@ -245,7 +311,7 @@ describe('Color', () => {
   })
 
   describe('toArray()', () => {
-    it('should convert color to rgba string', () => {
+    it('should convert color to rgba array', () => {
       expect(new Color().toArray()).toEqual([255, 255, 255, 1])
     })
   })
@@ -253,6 +319,12 @@ describe('Color', () => {
   describe('toString()', () => {
     it('should convert color to rgba string', () => {
       expect(new Color().toCSS()).toBe('rgba(255,255,255,1)')
+    })
+  })
+
+  describe('valueOf()', () => {
+    it('should return a rgba array', () => {
+      expect(new Color().valueOf()).toEqual([255, 255, 255, 1])
     })
   })
 })

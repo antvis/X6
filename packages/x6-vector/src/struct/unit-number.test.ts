@@ -494,5 +494,20 @@ describe('SVGNumber', () => {
         expect(UnitNumber.divide('1px', '2s')).toBe('0.0005px')
       })
     })
+
+    describe('parse()', () => {
+      it('should parse a string to UnitNumberLike object', () => {
+        expect(UnitNumber.parse('1')).toEqual({ value: 1, unit: '' })
+        expect(UnitNumber.parse('1px')).toEqual({ value: 1, unit: 'px' })
+        expect(UnitNumber.parse('1t')).toEqual({ value: 1, unit: 't' })
+        expect(UnitNumber.parse('1%')).toEqual({ value: 0.01, unit: '%' })
+        expect(UnitNumber.parse('1s')).toEqual({ value: 1000, unit: 's' })
+      })
+
+      it('should return null when can not parse the given string ', () => {
+        expect(UnitNumber.parse('')).toBeNull()
+        expect(UnitNumber.parse('px')).toBeNull()
+      })
+    })
   })
 })

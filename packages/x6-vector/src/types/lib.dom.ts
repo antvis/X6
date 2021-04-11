@@ -245,3 +245,7 @@ interface SVGUseElement {
 interface SVGViewElement {
   readonly x6_vector_type: 'view'
 }
+
+interface HTMLAbbrElement extends HTMLElement {
+  readonly x6_vector_type: 'abbr'
+}
