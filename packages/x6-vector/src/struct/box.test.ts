@@ -163,22 +163,28 @@ describe('Box', () => {
     })
   })
 
+  describe('isNull()', () => {
+    it('should check if the box consists of only zeros', () => {
+      expect(new Box().isNull()).toBe(true)
+      expect(new Box(1, 2, 3, 4).isNull()).toBe(false)
+    })
+  })
+
   describe('toArray()', () => {
     it('should return an array representation of the box', () => {
       expect(new Box(1, 2, 3, 4).toArray()).toEqual([1, 2, 3, 4])
     })
   })
 
-  describe('toString()', () => {
-    it('should return a string representation of the box', () => {
-      expect(new Box(1, 2, 3, 4).toString()).toBe('1 2 3 4')
+  describe('valueOf()', () => {
+    it('should return an array representation of the box', () => {
+      expect(new Box(1, 2, 3, 4).valueOf()).toEqual([1, 2, 3, 4])
     })
   })
 
-  describe('isNull()', () => {
-    it('should check if the box consists of only zeros', () => {
-      expect(new Box().isNull()).toBe(true)
-      expect(new Box(1, 2, 3, 4).isNull()).toBe(false)
+  describe('toString()', () => {
+    it('should return a string representation of the box', () => {
+      expect(new Box(1, 2, 3, 4).toString()).toBe('1 2 3 4')
     })
   })
 })

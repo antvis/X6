@@ -1,4 +1,4 @@
-import { Num } from '../util/num'
+import { closeEnough, toRad } from './matrix-util'
 
 export class Matrix implements Matrix.MatrixLike {
   a: number
@@ -97,12 +97,12 @@ export class Matrix implements Matrix.MatrixLike {
     }
     const comp = new Matrix(other)
     return (
-      Num.closeEnough(this.a, comp.a) &&
-      Num.closeEnough(this.b, comp.b) &&
-      Num.closeEnough(this.c, comp.c) &&
-      Num.closeEnough(this.d, comp.d) &&
-      Num.closeEnough(this.e, comp.e) &&
-      Num.closeEnough(this.f, comp.f)
+      closeEnough(this.a, comp.a) &&
+      closeEnough(this.b, comp.b) &&
+      closeEnough(this.c, comp.c) &&
+      closeEnough(this.d, comp.d) &&
+      closeEnough(this.e, comp.e) &&
+      closeEnough(this.f, comp.f)
     )
   }
 
@@ -287,7 +287,7 @@ export class Matrix implements Matrix.MatrixLike {
   rotateO(degree: number, cx: number, cy: number): this
   rotateO(degree: number, cx?: number, cy?: number): this
   rotateO(degrees: number, cx = 0, cy = 0) {
-    const radian = Num.radians(degrees)
+    const radian = toRad(degrees)
     const cos = Math.cos(radian)
     const sin = Math.sin(radian)
 
@@ -350,8 +350,8 @@ export class Matrix implements Matrix.MatrixLike {
         sy = sx // eslint-disable-line
       }
     }
-    sx = Num.radians(sx) // eslint-disable-line
-    sy = Num.radians(sy as number) // eslint-disable-line
+    sx = toRad(sx) // eslint-disable-line
+    sy = toRad(sy as number) // eslint-disable-line
 
     const lx = Math.tan(sx)
     const ly = Math.tan(sy)

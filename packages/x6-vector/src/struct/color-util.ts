@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import { Num } from '../util/num'
+import { clamp } from '../util'
 
 export namespace Util {
   export type RGBA = [number, number, number, number]
@@ -56,9 +56,9 @@ export namespace Util {
     if (typeof color === 'string') {
       const pound = color[0] === '#'
       const num = parseInt(pound ? color.substr(1) : color, 16)
-      const r = Num.clamp((num >> 16) + amt, 0, 255)
-      const g = Num.clamp(((num >> 8) & 0x00ff) + amt, 0, 255)
-      const b = Num.clamp((num & 0x0000ff) + amt, 0, 255)
+      const r = clamp((num >> 16) + amt, 0, 255)
+      const g = clamp(((num >> 8) & 0x00ff) + amt, 0, 255)
+      const b = clamp((num & 0x0000ff) + amt, 0, 255)
       return `${pound ? '#' : ''}${(b | (g << 8) | (r << 16)).toString(16)}`
     }
 

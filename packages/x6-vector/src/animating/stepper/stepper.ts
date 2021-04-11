@@ -1,19 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-export class Stepper {
+export abstract class Stepper {
   done(context: Stepper.Context) {
     return context.done
   }
 
-  step<T>(
+  abstract step<T>(
     from: T,
     to: T,
     pos: number,
     context: Stepper.Context,
     contexts: Stepper.Context[],
-  ): T {
-    return from
-  }
+  ): T
 }
 
 export namespace Stepper {

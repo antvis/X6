@@ -1,4 +1,4 @@
-import { Num } from '../util/num'
+import { clamp } from '../util'
 import { Util } from './color-util'
 
 export class Color implements Color.RGBALike {
@@ -75,10 +75,10 @@ export class Color implements Color.RGBALike {
     const g = Array.isArray(arg0) ? arg0[1] : (arg1 as number)
     const b = Array.isArray(arg0) ? arg0[2] : (arg2 as number)
     const a = Array.isArray(arg0) ? arg0[3] : (arg3 as number)
-    this.r = Math.round(Num.clamp(r, 0, 255))
-    this.g = Math.round(Num.clamp(g, 0, 255))
-    this.b = Math.round(Num.clamp(b, 0, 255))
-    this.a = a == null ? 1 : Num.clamp(a, 0, 1)
+    this.r = Math.round(clamp(r, 0, 255))
+    this.g = Math.round(clamp(g, 0, 255))
+    this.b = Math.round(clamp(b, 0, 255))
+    this.a = a == null ? 1 : clamp(a, 0, 1)
     return this
   }
 
