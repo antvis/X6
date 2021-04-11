@@ -1,4 +1,4 @@
-import { Global } from './global'
+import { Global } from '../../global/global'
 
 export class MockRAF {
   protected realRAF: typeof requestAnimationFrame
