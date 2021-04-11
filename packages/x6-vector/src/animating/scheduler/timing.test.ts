@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 import { Timing } from './timing'
-import { MockRAF } from '../../global/mock-raf'
+import { MockRAF } from './mock-raf'
 import { Global } from '../../global'
 
 describe('Timing', () => {

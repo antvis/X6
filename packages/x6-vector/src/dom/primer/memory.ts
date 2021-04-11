@@ -12,11 +12,17 @@ export class Memory<TElement extends Element> extends Base<TElement> {
       return this
     }
 
-    if (arguments.length === 1) {
-      return this.memory()[k]
+    const memory = this.memory()
+    if (typeof v === 'undefined') {
+      return memory[k]
     }
 
-    this.memory()[k] = v
+    if (v == null) {
+      this.forget(k)
+    } else {
+      memory[k] = v
+    }
+
     return this
   }
 
@@ -24,7 +30,8 @@ export class Memory<TElement extends Element> extends Base<TElement> {
     if (keys.length === 0) {
       this.memo = {}
     } else {
-      keys.forEach((key) => delete this.memory()[key])
+      const memory = this.memory()
+      keys.forEach((key) => delete memory[key])
     }
     return this
   }
