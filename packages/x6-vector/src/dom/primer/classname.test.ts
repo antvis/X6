@@ -131,7 +131,6 @@ describe('Dom', () => {
 
     describe('toggleClass()', () => {
       it('should do nothing for invalid class', () => {
-        elem.toggleClass('test')
         elem.toggleClass(null as any)
         elem.toggleClass(undefined as any)
         expect(elem.attr('class')).toEqual('foo bar')
