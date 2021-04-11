@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-export class Morphable<TArray extends any[], TValueOf> {
+export class Morphable<TArray extends any[], TValue> {
   constructor()
   constructor(arg: any)
   constructor(...args: any[])
@@ -7,8 +7,8 @@ export class Morphable<TArray extends any[], TValueOf> {
   constructor(...args: any[]) {}
 }
 
-export interface Morphable<TArray extends any[], TValueOf> {
+export interface Morphable<TArray extends any[], TValue> {
   fromArray(arr: TArray): this
   toArray(): TArray
-  valueOf(): TValueOf
+  toValue(): TValue
 }

@@ -1,13 +1,13 @@
-import { DomUtil } from '../util/dom'
-import type { Path } from '../element/shape/path'
-import * as PathUtil from '../element/shape/path-util'
+import type { Path } from '../vector/path/path'
+import { withPathContext } from '../util'
+import { parse, toString } from '../vector/path/util'
 import { Box } from './box'
-import { TArray } from './type-array'
+import { TypeArray } from './type-array'
 import { UnitNumber } from './unit-number'
 
-export class PathArray extends TArray<Path.Segment> {
+export class PathArray extends TypeArray<Path.Segment> {
   bbox() {
-    return DomUtil.withPathContect((path) => {
+    return withPathContext((path) => {
       path.setAttribute('d', this.toString())
       return new Box(path.getBBox())
     })
@@ -97,12 +97,12 @@ export class PathArray extends TArray<Path.Segment> {
   }
 
   parse(d: string | number[] | Path.Segment[] = 'M0 0') {
-    return PathUtil.parse(
+    return parse(
       Array.isArray(d) ? Array.prototype.concat.apply([], d).toString() : d,
     )
   }
 
   toString(): string {
-    return PathUtil.toString(this)
+    return toString(this)
   }
 }

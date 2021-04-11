@@ -1,5 +1,5 @@
 import { Matrix } from './matrix'
-import { Rect } from '../element'
+import { Rect } from '../vector/rect/rect'
 
 const { objectContaining } = jasmine
 

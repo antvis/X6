@@ -1,7 +1,7 @@
+import type { When, Now } from '../types'
+import type { Animator } from '../animator/animator'
 import { Queue } from './queue'
 import { Timing } from './timing'
-import { When, Now } from '../types'
-import type { Animator } from '../animator'
 
 export class Timeline {
   public readonly step: () => this
@@ -251,7 +251,7 @@ export class Timeline {
     }
 
     animator.unschedule()
-    animator.timeline(this)
+    animator.scheduler(this)
 
     const persist = animator.persist()
     const meta = {
@@ -281,7 +281,7 @@ export class Timeline {
     this.animators.splice(index, 1)
     this.animatorIds.splice(index, 1)
 
-    animator.timeline(null)
+    animator.scheduler(null)
     return this
   }
 
@@ -389,5 +389,5 @@ export class Timeline {
 }
 
 export namespace Timeline {
-  export type AnyAnimator = Animator<any, any, any>
+  export type AnyAnimator = Animator<any, any>
 }
