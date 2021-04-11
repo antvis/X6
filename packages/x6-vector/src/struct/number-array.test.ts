@@ -78,4 +78,18 @@ describe('NumberArray', () => {
       expect(set).toBeInstanceOf(Set)
     })
   })
+
+  describe('toArray()', () => {
+    it('should convert to an array', () => {
+      const arr = [1, 1, 2, 3]
+      expect(new NumberArray(arr).toArray()).toEqual(arr)
+    })
+  })
+
+  describe('valueOf()', () => {
+    it('should return an array', () => {
+      const arr = [1, 1, 2, 3]
+      expect(new NumberArray(arr).valueOf()).toEqual(arr)
+    })
+  })
 })
