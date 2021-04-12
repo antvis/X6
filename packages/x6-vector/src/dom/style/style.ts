@@ -36,8 +36,17 @@ export class Style<TElement extends Element> extends Base<TElement> {
    * is `true`, otherwise returns inline style properties.
    */
   css(computed?: boolean): CSSProperties
+  css(styleName: string, computed?: boolean): string | number
+  css(styleNames: string[], computed?: boolean): Record<string, string | number>
+  css(styleName: string, styleValue: string | number): this
   css(
-    style?: boolean | CSSPropertyName | CSSPropertyName[] | CSSProperties,
+    style?:
+      | boolean
+      | CSSPropertyName
+      | CSSPropertyName[]
+      | CSSProperties
+      | string
+      | string[],
     value?: string | number | null | boolean,
   ) {
     const node = (this.node as any) as HTMLElement
@@ -46,10 +55,13 @@ export class Style<TElement extends Element> extends Base<TElement> {
     if (style == null || typeof style === 'boolean') {
       if (style) {
         const result: CSSProperties = {}
-        const computedStyle = Util.getComputedStyle(node)
-        Array.from(computedStyle).forEach((key: MockedCSSName) => {
-          result[key] = Util.css(node, key, computedStyle)
-        })
+        if (Util.isValidNode(node)) {
+          const computedStyle = Util.getComputedStyle(node)
+          Array.from(computedStyle).forEach((key) => {
+            const name = Util.camelCase(key) as MockedCSSName
+            result[name] = Util.css(node, key, computedStyle)
+          })
+        }
         return result
       }
 
@@ -60,10 +72,12 @@ export class Style<TElement extends Element> extends Base<TElement> {
     if (Array.isArray(style)) {
       const result: CSSProperties = {}
       if (value) {
-        const computedStyle = Util.getComputedStyle(node)
-        style.forEach((name: MockedCSSName) => {
-          result[name] = Util.css(node, name, computedStyle)
-        })
+        if (Util.isValidNode(node)) {
+          const computedStyle = Util.getComputedStyle(node)
+          style.forEach((name: MockedCSSName) => {
+            result[name] = Util.css(node, name, computedStyle)
+          })
+        }
       } else {
         style.forEach((name: MockedCSSName) => {
           result[name] = Util.style(node, name)
@@ -81,14 +95,12 @@ export class Style<TElement extends Element> extends Base<TElement> {
     }
 
     // get style for property
-    if (typeof value == null || typeof value === 'boolean') {
+    if (value == null || typeof value === 'boolean') {
       return value ? Util.css(node, style) : Util.style(node, style)
     }
 
     // set style for property
-    if (typeof value === 'string') {
-      Util.style(node, style, value)
-    }
+    Util.style(node, style, value)
 
     return this
   }
