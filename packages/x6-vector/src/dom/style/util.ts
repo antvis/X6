@@ -1,5 +1,5 @@
 import { Global } from '../../global'
-import { camelCase, isInDocument } from '../../util'
+import { isInDocument } from '../../util'
 import { Hook } from './hook'
 import { CSSProperties } from './types'
 
@@ -29,6 +29,20 @@ export namespace Util {
     return result !== undefined ? `${result}` : result
   }
 
+  export function isValidNode<TElement extends Element>(node: TElement) {
+    // Don't set styles on text and comment nodes
+    if (!node || node.nodeType === 3 || node.nodeType === 8) {
+      return false
+    }
+
+    const style = ((node as any) as HTMLElement).style
+    if (!style) {
+      return false
+    }
+
+    return true
+  }
+
   export function isCustomStyleName(styleName: string) {
     return styleName.indexOf('--') === 0
   }
@@ -37,8 +51,37 @@ export namespace Util {
   // Used by the css & effects modules.
   // Support: IE <=9 - 11+
   // Microsoft forgot to hump their vendor prefix
-  export function cssCamelCase(str: string) {
-    return camelCase(str.replace(/^-ms-/, 'ms-'))
+  export function camelCase(str: string) {
+    const to = (s: string) =>
+      s
+        .replace(/^-ms-/, 'ms-')
+        .replace(/-([a-z])/g, (input) => input[1].toUpperCase())
+
+    if (isCustomStyleName(str)) {
+      return `--${to(str.substring(2))}`
+    }
+
+    return to(str)
+  }
+
+  export function kebabCase(str: string) {
+    return (
+      str
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        // vendor
+        .replace(/^([A-Z])/g, '-$1')
+        .toLowerCase()
+        .replace(/^ms-/, '-ms-')
+    )
+  }
+
+  export function tryConvertToNumber(value: string | number) {
+    if (typeof value === 'number') {
+      return value
+    }
+
+    const numReg = /^[+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i
+    return numReg.test(value) ? +value : value
   }
 }
 
@@ -150,7 +193,7 @@ export namespace Util {
     name: string,
     presets?: Record<string, string> | CSSStyleDeclaration,
   ) {
-    const styleName = cssCamelCase(name)
+    const styleName = camelCase(name)
     const isCustom = isCustomStyleName(name)
 
     // Make sure that we're working with the right name. We don't
@@ -170,10 +213,10 @@ export namespace Util {
 
     // Otherwise, if a way to get the computed value exists, use that
     if (val === undefined) {
-      val = getComputedStyleValue(node, name, presets)
+      val = getComputedStyleValue(node, kebabCase(name), presets)
     }
 
-    return val
+    return tryConvertToNumber(val)
   }
 }
 
@@ -215,33 +258,26 @@ export namespace Util {
     name?: string,
     value?: string | number,
   ) {
-    // Don't set styles on text and comment nodes
-    if (!node || node.nodeType === 3 || node.nodeType === 8) {
+    if (!isValidNode(node)) {
       return typeof name === 'undefined' ? {} : undefined
     }
 
-    const style = ((node as any) as HTMLElement).style
-    if (!style) {
-      return typeof name === 'undefined' ? {} : undefined
-    }
+    const styleDeclaration = ((node as any) as HTMLElement).style
 
     if (typeof name === 'undefined') {
       const result: CSSProperties = {}
-      style.cssText
+      styleDeclaration.cssText
         .split(/\s*;\s*/)
         .filter((str) => str.length > 0)
         .forEach((str) => {
           const parts = str.split(/\s*:\s*/)
-          result[cssCamelCase(parts[0]) as MockedCSSName] = Util.style(
-            node,
-            parts[0],
-          )
+          result[camelCase(parts[0]) as MockedCSSName] = style(node, parts[0])
         })
       return result
     }
 
     // Make sure that we're working with the right name
-    const styleName = cssCamelCase(name)
+    const styleName = camelCase(name)
     const isCustom = isCustomStyleName(name)
 
     // Make sure that we're working with the right name. We don't
@@ -256,7 +292,7 @@ export namespace Util {
 
     // Setting a value
     if (value !== undefined) {
-      let val = normalizeValue(name, value, isCustom)
+      let val = value
       // If a hook was provided, use that value, otherwise just set the specified value
       let setting = true
       if (hook && hook.set) {
@@ -268,27 +304,30 @@ export namespace Util {
       }
 
       if (setting) {
+        val = normalizeValue(name, val, isCustom)
         if (name === 'float') {
           name = 'cssFloat' // eslint-disable-line
         }
 
         if (isCustom) {
-          style.setProperty(name, val)
+          styleDeclaration.setProperty(kebabCase(name), val)
         } else {
-          style[name as MockedCSSName] = val
+          styleDeclaration[name as MockedCSSName] = val
         }
       }
     } else {
+      let ret: string | number | undefined
       // If a hook was provided get the non-computed value from there
       if (hook && hook.get) {
-        const ret = hook.get(node, false)
-        if (ret !== undefined) {
-          return ret
-        }
+        ret = hook.get(node, false)
       }
 
       // Otherwise just get the value from the style object
-      return style.getPropertyValue(name)
+      if (ret === undefined) {
+        ret = styleDeclaration.getPropertyValue(kebabCase(name))
+      }
+
+      return tryConvertToNumber(ret)
     }
   }
 }
@@ -316,7 +355,10 @@ export namespace Util {
     const doc = node.ownerDocument || Global.document
     const temp = doc.body.appendChild(doc.createElement(nodeName))
     display = css(temp, 'display') as string
-    doc.removeChild(temp)
+
+    if (temp.parentNode) {
+      temp.parentNode.removeChild(temp)
+    }
 
     if (display === 'none') {
       display = 'block'
@@ -337,23 +379,27 @@ export namespace Util {
     }
 
     const display = style.display
+    let val: string | undefined
     if (show) {
-      // Since we force visibility upon cascade-hidden elements, an immediate (and slow)
-      // check is required in this first loop unless we have a nonempty display value (either
-      // inline or about-to-be-restored)
       if (display === 'none') {
-        const value = cache.get(node)
-        if (!value) {
+        val = cache.get(node)
+        if (!val) {
           style.display = ''
         }
       }
+
+      // for cascade-hidden
       if (style.display === '' && isHiddenWithinTree(node)) {
-        style.display = getDefaultDisplay(node)
+        val = getDefaultDisplay(node)
       }
     } else if (display !== 'none') {
-      style.display = 'none'
+      val = 'none'
       // Remember what we're overwriting
       cache.set(node, display)
+    }
+
+    if (val != null) {
+      style.display = val
     }
   }
 }
