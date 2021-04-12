@@ -7,7 +7,7 @@ export namespace Hook {
     set?: <TElement extends Element>(
       elem: TElement,
       styleValue: string | number,
-    ) => string | undefined
+    ) => string | number | undefined
   }
 
   const hooks: Record<string, Definition> = {}
@@ -18,5 +18,9 @@ export namespace Hook {
 
   export function register(styleName: string, hook: Definition) {
     hooks[styleName] = hook
+  }
+
+  export function unregister(styleName: string) {
+    delete hooks[styleName]
   }
 }
