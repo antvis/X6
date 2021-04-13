@@ -20,43 +20,47 @@ Shape.Path.define({
   },
   attrHooks: {
     round: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        const dim = Math.min(width, height)
-        let round = dim * v
-        if (round > dim / 2) {
-          round = dim / 2
-        }
-        return {
-          rx: round,
-          ry: round,
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          const dim = Math.min(width, height)
+          let round = dim * v
+          if (round > dim / 2) {
+            round = dim / 2
+          }
+          return {
+            rx: round,
+            ry: round,
+          }
         }
       },
     },
     ridge: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        let ridge = width * v
-        if (ridge > width / 2) {
-          ridge = width / 2
-        }
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          let ridge = width * v
+          if (ridge > width / 2) {
+            ridge = width / 2
+          }
 
-        const data = [
-          'M',
-          ridge,
-          0,
-          'L',
-          ridge,
-          height,
-          'M',
-          width - ridge,
-          0,
-          width - ridge,
-          height,
-        ]
+          const data = [
+            'M',
+            ridge,
+            0,
+            'L',
+            ridge,
+            height,
+            'M',
+            width - ridge,
+            0,
+            width - ridge,
+            height,
+          ]
 
-        return {
-          d: data.join(' '),
+          return {
+            d: data.join(' '),
+          }
         }
       },
     },

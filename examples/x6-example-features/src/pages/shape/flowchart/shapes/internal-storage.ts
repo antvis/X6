@@ -47,29 +47,35 @@ Shape.Path.define({
   },
   attrHooks: {
     round: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        const r = Math.min(width / 2, height / 2, v)
-        return {
-          rx: r,
-          ry: r,
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          const r = Math.min(width / 2, height / 2, v)
+          return {
+            rx: r,
+            ry: r,
+          }
         }
       },
     },
     hPos: {
-      set(v: number, { cell, refBBox }) {
-        const { width, height } = refBBox
-        const round = cell.attr<number>('bg/round')
-        const offset = NumberExt.clamp(v, round, height - round)
-        return { d: `M 0 ${offset}  L ${width} ${offset}` }
+      set(v, { cell, refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          const round = cell.attr<number>('bg/round')
+          const offset = NumberExt.clamp(v, round, height - round)
+          return { d: `M 0 ${offset}  L ${width} ${offset}` }
+        }
       },
     },
     vPos: {
-      set(v: number, { cell, refBBox }) {
-        const { width, height } = refBBox
-        const round = cell.attr<number>('bg/round')
-        const offset = NumberExt.clamp(v, round, width - round)
-        return { d: `M ${offset} 0 L ${offset} ${height}` }
+      set(v, { cell, refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          const round = cell.attr<number>('bg/round')
+          const offset = NumberExt.clamp(v, round, width - round)
+          return { d: `M ${offset} 0 L ${offset} ${height}` }
+        }
       },
     },
   },

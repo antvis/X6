@@ -16,7 +16,7 @@ Shape.Path.define({
   },
   attrHooks: {
     line: {
-      set(v: number, { refBBox }) {
+      set(v, { refBBox }) {
         const { width, height } = refBBox
         const outline = Path.drawPoints(
           [

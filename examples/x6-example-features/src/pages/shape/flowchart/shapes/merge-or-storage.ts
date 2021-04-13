@@ -16,26 +16,28 @@ Shape.Path.define({
   },
   attrHooks: {
     round: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        const dim = Math.min(width, height)
-        let round = NumberExt.normalizePercentage(v, dim)
-        if (round > dim / 2) {
-          round = dim / 2
-        }
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          const dim = Math.min(width, height)
+          let round = NumberExt.normalizePercentage(v, dim)
+          if (round > dim / 2) {
+            round = dim / 2
+          }
 
-        const points: Point.PointData[] = [
-          [0, 0],
-          [width, 0],
-          [width / 2, height],
-        ]
+          const points: Point.PointData[] = [
+            [0, 0],
+            [width, 0],
+            [width / 2, height],
+          ]
 
-        return {
-          d: Path.drawPoints(points, {
-            round,
-            close: true,
-            initialMove: true,
-          }),
+          return {
+            d: Path.drawPoints(points, {
+              round,
+              close: true,
+              initialMove: true,
+            }),
+          }
         }
       },
     },

@@ -48,13 +48,13 @@ Shape.Path.define({
   },
   attrHooks: {
     hPath: {
-      set(v: number, { refBBox }) {
+      set(v, { refBBox }) {
         const { width, height } = refBBox
         return { d: `M 0 ${height / 2}  L ${width} ${height / 2}` }
       },
     },
     vPath: {
-      set(v: number, { refBBox }) {
+      set(v, { refBBox }) {
         const { width, height } = refBBox
         return { d: `M ${width / 2} 0 L ${width / 2} ${height}` }
       },
