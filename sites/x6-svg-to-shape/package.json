@@ -23,7 +23,7 @@
     ]
   },
   "dependencies": {
-    "@antv/x6": "^1.18.2",
+    "@antv/x6": "^1.18.3",
     "@umijs/preset-react": "1.x",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
