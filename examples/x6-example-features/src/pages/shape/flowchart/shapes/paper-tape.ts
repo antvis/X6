@@ -16,25 +16,27 @@ Shape.Path.define({
   },
   attrHooks: {
     ridge: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        let ridge = NumberExt.normalizePercentage(v, height)
-        if (ridge > height / 2) {
-          ridge = height / 2
-        }
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          let ridge = NumberExt.normalizePercentage(v, height)
+          if (ridge > height / 2) {
+            ridge = height / 2
+          }
 
-        const r = width * 0.7
+          const r = width * 0.7
 
-        return {
-          d: new Path()
-            .moveTo(0, ridge)
-            .arcTo(r, r, 0, 0, 0, width / 2, ridge)
-            .arcTo(r, r, 0, 0, 1, width, ridge)
-            .lineTo(width, height - ridge)
-            .arcTo(r, r, 0, 0, 0, width / 2, height - ridge)
-            .arcTo(r, r, 0, 0, 1, 0, height - ridge)
-            .lineTo(0, ridge)
-            .serialize(),
+          return {
+            d: new Path()
+              .moveTo(0, ridge)
+              .arcTo(r, r, 0, 0, 0, width / 2, ridge)
+              .arcTo(r, r, 0, 0, 1, width, ridge)
+              .lineTo(width, height - ridge)
+              .arcTo(r, r, 0, 0, 0, width / 2, height - ridge)
+              .arcTo(r, r, 0, 0, 1, 0, height - ridge)
+              .lineTo(0, ridge)
+              .serialize(),
+          }
         }
       },
     },
