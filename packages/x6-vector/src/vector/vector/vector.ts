@@ -7,6 +7,10 @@ import { Dom } from '../../dom'
 export class Vector<
   TSVGElement extends SVGElement = SVGElement
 > extends Dom<TSVGElement> {
+  // protected createNode(tagName: string) {
+  //   return createSVGNode(tagName) as any
+  // }
+
   width(): number
   width(width: string | number | null): this
   width(width?: string | number | null) {

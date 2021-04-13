@@ -1,4 +1,4 @@
-import { isNode, createHTMLNode } from '../../util'
+import { isNode, createHTMLNode, createSVGNode } from '../../util'
 import { Base } from '../common/base'
 import { Registry } from '../common/registry'
 import { Affix } from './affix'
@@ -51,12 +51,18 @@ export class Primer<TElement extends Element> extends Base<TElement> {
       attributes = attrs
     } else {
       const ctor = this.constructor as Registry.Definition
-      const tagName =
+      let tagName =
         typeof nodeOrAttrs === 'string'
           ? nodeOrAttrs
           : Registry.getTagName(ctor)
       if (tagName) {
-        this.node = this.createNode(tagName)
+        if (tagName === 'dom') {
+          // return new Dom('div') by dafault
+          tagName = 'div'
+        }
+        this.node = Registry.isRegisted(tagName)
+          ? createSVGNode<any>(tagName)
+          : createHTMLNode<any>(tagName)
         attributes =
           nodeOrAttrs != null && typeof nodeOrAttrs !== 'string'
             ? nodeOrAttrs
@@ -74,10 +80,6 @@ export class Primer<TElement extends Element> extends Base<TElement> {
 
     this.restoreAffix()
     Adopter.cache(this.node, this)
-  }
-
-  protected createNode(tagName: string): TElement {
-    return createHTMLNode(tagName) as any
   }
 }
 
