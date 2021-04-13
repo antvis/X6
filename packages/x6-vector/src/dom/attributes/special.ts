@@ -132,7 +132,7 @@ export namespace Special {
   ]
   arr.forEach((attributeName) => {
     const name = Util.camelCase(attributeName)
-    specials[name] = new Special(
+    specials[name] = specials[attributeName] = new Special(
       Type.STRING,
       name,
       attributeName,
@@ -189,7 +189,9 @@ export namespace Special {
     'srcLang',
   ]
   arr.forEach((attributeName) => {
-    specials[attributeName] = new Special(
+    specials[attributeName] = specials[
+      attributeName.toLowerCase()
+    ] = new Special(
       Type.STRING,
       attributeName,
       attributeName.toLowerCase(), // attributeName
@@ -206,7 +208,7 @@ export namespace Special {
   const arr = ['accept-charset', 'http-equiv']
   arr.forEach((attributeName) => {
     const name = Util.camelCase(attributeName)
-    specials[name] = new Special(
+    specials[name] = specials[attributeName] = new Special(
       Type.STRING,
       name,
       attributeName, // attributeName
@@ -248,7 +250,7 @@ export namespace Special {
     'itemScope',
   ]
   arr.forEach((name) => {
-    specials[name] = new Special(
+    specials[name] = specials[name.toLowerCase()] = new Special(
       Type.BOOLEAN,
       name,
       name.toLowerCase(), // attributeName
@@ -266,7 +268,7 @@ export namespace Special {
   // boolean attributes (they are coerced to strings).
   const arr = ['contentEditable', 'draggable', 'spellCheck', 'value']
   arr.forEach((name) => {
-    specials[name] = new Special(
+    specials[name] = specials[name.toLowerCase()] = new Special(
       Type.BOOLEANISH_STRING,
       name,
       name.toLowerCase(), // attributeName
@@ -364,7 +366,7 @@ export namespace Special {
   // These are HTML attributes that must be numbers.
   const arr = ['tabIndex', 'rowSpan', 'colSpan', 'start']
   arr.forEach((name) => {
-    specials[name] = new Special(
+    specials[name] = specials[name.toLowerCase()] = new Special(
       Type.NUMERIC,
       name,
       name.toLowerCase(), // attributeName
@@ -460,7 +462,7 @@ export namespace Special {
 
   arr1.forEach((attributeName) => {
     const name = Util.camelCase(attributeName)
-    specials[name] = new Special(
+    specials[name] = specials[attributeName] = new Special(
       Type.STRING,
       name,
       attributeName,
@@ -529,7 +531,9 @@ export namespace Special {
 export namespace Special {
   const arr = ['src', 'href', 'action', 'formAction']
   arr.forEach((attributeName) => {
-    specials[attributeName] = new Special(
+    specials[attributeName] = specials[
+      attributeName.toLowerCase()
+    ] = new Special(
       Type.STRING,
       attributeName,
       attributeName.toLowerCase(), // attributeName

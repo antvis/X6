@@ -116,11 +116,11 @@ describe('Dom', () => {
 
       it('should remove all', () => {
         elem.removeClass()
-        expect(elem.attr('class')).toEqual('')
+        expect(elem.attr('class')).toBeUndefined()
 
         elem.addClass('test foo')
         elem.removeClass(null as any)
-        expect(elem.attr('class')).toEqual('')
+        expect(elem.attr('class')).toBeUndefined()
       })
 
       it('should call hook', () => {

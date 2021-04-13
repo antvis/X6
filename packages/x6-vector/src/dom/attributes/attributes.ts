@@ -1,7 +1,5 @@
 import { Base } from '../common/base'
-import { Util } from './util'
 import { Core } from './core'
-import { Special } from './special'
 import { CSSProperties } from '../style'
 import { AttributesMap } from './types'
 import { AttributesBase } from './base'
@@ -34,8 +32,7 @@ export class Attributes<
   attr<K extends Keys>(name: K, value: string | number | boolean): this
   attr(name: string, value: null): this
   attr(name: string, value: string | number | boolean | null): this
-  attr(name: 'style', style: CSSProperties): this
-
+  attr(name: 'style', style: CSSProperties | string): this
   attr(name: 'style'): CSSProperties
   attr<T extends Attributes[K], K extends Keys>(name: K): T
   attr<T extends string | number | boolean>(name: string): T
@@ -63,8 +60,8 @@ export class Attributes<
         for (let index = 0, l = attrs.length; index < l; index += 1) {
           const item = attrs.item(index)
           if (item && item.nodeValue) {
-            const name = Util.camelCase(item.nodeName)
-            result[name] = Core.getAttribute(node, name, item.nodeValue)
+            const name = Core.getAttributeNameInResult(item.nodeName)
+            result[name] = this.attr(item.nodeName)
           }
         }
       }
@@ -74,10 +71,8 @@ export class Attributes<
     // get attributes by specified attribute names
     if (Array.isArray(attr)) {
       return attr.reduce<Record<string, any>>((memo, name) => {
-        const attrName = Core.getAttributeName(name)
-        const attrValue = node.getAttribute(attrName) || ''
         // keep the given names
-        memo[name] = Core.getAttribute(node, Util.camelCase(name), attrValue)
+        memo[name] = this.attr(name)
         return memo
       }, {})
     }
@@ -87,19 +82,21 @@ export class Attributes<
       return this
     }
 
-    const special = Special.get(attr)
-
-    // remove attribute
-    if (Core.shouldRemoveAttribute(attr, val, special)) {
-      node.removeAttribute(attr)
-      return this
-    }
-
     // get attribute by name
     if (val === undefined) {
-      const attrName = Core.getAttributeName(attr)
-      const attrValue = node.getAttribute(attrName) || ''
-      return Core.getAttribute(node, Util.camelCase(attr), attrValue)
+      const attrName = Core.getAttributeNameInElement(attr)
+      const attrValue = node.getAttribute(attrName) || undefined
+      return Core.getAttribute(
+        node,
+        Core.getAttributeNameInResult(attr),
+        attrValue,
+      )
+    }
+
+    // remove attribute
+    if (Core.shouldRemoveAttribute(attr, val)) {
+      node.removeAttribute(attr)
+      return this
     }
 
     // set attribute by k-v

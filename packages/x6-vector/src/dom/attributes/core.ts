@@ -1,6 +1,5 @@
 import { Env } from '../../global/env'
 import { Special } from './special'
-import { Util as Style } from '../style/util'
 import { Hook } from './hook'
 import { Util } from './util'
 
@@ -39,27 +38,28 @@ export namespace Core {
 }
 
 export namespace Core {
-  export function shouldRemoveAttribute(
-    name: string,
-    value: any,
-    special: Special | null,
-  ): boolean {
+  export function shouldRemoveAttribute(name: string, value: any): boolean {
+    const special = Special.get(name)
+    if (special !== null) {
+      if (special.mustUseProperty) {
+        return false
+      }
+    }
+
     if (value === null) {
       return true
     }
 
-    if (typeof value === 'function' || typeof value === 'symbol') {
+    if (
+      special == null &&
+      (typeof value === 'function' || typeof value === 'symbol')
+    ) {
       return true
     }
 
     if (typeof value === 'boolean') {
       if (special !== null) {
         if (!special.acceptsBooleans) {
-          return true
-        }
-      } else {
-        const prefix = name.toLowerCase().slice(0, 5)
-        if (prefix !== 'data-' && prefix !== 'aria-') {
           return true
         }
       }
@@ -92,7 +92,7 @@ export namespace Core {
 
       switch (special.type) {
         case Special.Type.BOOLEAN:
-          return !value
+          return !(value === true || value === 'true')
         case Special.Type.OVERLOADED_BOOLEAN:
           return value === false
         case Special.Type.NUMERIC:
@@ -109,10 +109,21 @@ export namespace Core {
 }
 
 export namespace Core {
+  export function getAttributeNameInElement(name: string) {
+    const special = Special.get(name)
+    return special ? special.attributeName : name
+  }
+
+  export function getAttributeNameInResult(name: string) {
+    const special = Special.get(name)
+    const ret = special ? special.propertyName : name
+    return ret === name ? Util.camelCase(name) : ret
+  }
+
   export function getAttribute<TElement extends Element>(
     node: TElement,
     name: string,
-    value: string,
+    value: string | undefined,
   ) {
     const hook = Hook.get(name)
     if (hook && hook.get) {
@@ -122,29 +133,48 @@ export namespace Core {
       }
     }
 
-    if (name === 'style') {
-      return Style.style(node)
-    }
-
     const special = Special.get(name)
     if (special) {
-      if (
-        special.type === Special.Type.BOOLEAN ||
-        special.type === Special.Type.BOOLEANISH_STRING
-      ) {
-        const cased = value.toLowerCase()
-        return cased === 'true' ? true : cased === 'false' ? false : undefined
+      if (special.mustUseProperty) {
+        const el = node as any
+        value = el[special.propertyName] // eslint-disable-line
       }
 
-      if (special.type === Special.Type.OVERLOADED_BOOLEAN) {
-        const cased = value.toLowerCase()
-        if (cased === 'true') {
-          return true
+      if (
+        special.type === Special.Type.BOOLEAN ||
+        special.type === Special.Type.OVERLOADED_BOOLEAN
+      ) {
+        if (typeof value === 'string') {
+          const cased = value.toLowerCase()
+          if (cased === 'true') {
+            return true
+          }
+
+          if (cased === 'false') {
+            return false
+          }
         }
 
-        if (cased === 'false') {
-          return false
+        if (special.mustUseProperty) {
+          return value
         }
+
+        return value == null ? node.hasAttribute(name) : value
+      }
+
+      if (special.type === Special.Type.BOOLEANISH_STRING) {
+        if (typeof value === 'string') {
+          const cased = value.toLowerCase()
+          if (cased === 'true') {
+            return true
+          }
+
+          if (cased === 'false') {
+            return false
+          }
+        }
+
+        return false
       }
 
       if (
@@ -167,11 +197,6 @@ export namespace Core {
     return Util.tryConvertToNumber(value)
   }
 
-  export function getAttributeName(name: string) {
-    const special = Special.get(name)
-    return special ? special.attributeName : name
-  }
-
   export function setAttribute<TElement extends Element>(
     node: TElement,
     name: string,
@@ -179,10 +204,8 @@ export namespace Core {
   ) {
     const hook = Hook.get(name)
     if (hook && hook.set) {
-      // convert and return the new value of attribute
-      const result = hook.set(node, value)
-      if (typeof result !== 'undefined') {
-        value = result // eslint-disable-line
+      if (hook.set(node, value) !== false) {
+        return
       }
     }
 
@@ -200,35 +223,34 @@ export namespace Core {
         } else {
           el[propertyName] = value
         }
+        return
       }
 
       const { attributeName } = special
-      if (value === null) {
-        node.removeAttribute(attributeName)
+
+      let attributeValue: string | undefined
+
+      if (
+        (special.type === Special.Type.BOOLEAN ||
+          special.type === Special.Type.OVERLOADED_BOOLEAN) &&
+        (value === true || value === 'true')
+      ) {
+        attributeValue = ''
       } else {
-        let attributeValue: string | undefined
-
-        if (
-          special.type === Special.Type.BOOLEAN ||
-          (special.type === Special.Type.OVERLOADED_BOOLEAN && value === true)
-        ) {
-          attributeValue = ''
-        } else {
-          attributeValue = `${value}`
-          if (special.sanitizeURL) {
-            Util.sanitizeURL(attributeName, attributeValue)
-          }
+        attributeValue = `${value}`
+        if (special.sanitizeURL) {
+          Util.sanitizeURL(attributeName, attributeValue)
         }
+      }
 
-        if (special.attributeNamespace) {
-          node.setAttributeNS(
-            special.attributeNamespace,
-            attributeName,
-            attributeValue,
-          )
-        } else {
-          node.setAttribute(attributeName, attributeValue)
-        }
+      if (special.attributeNamespace) {
+        node.setAttributeNS(
+          special.attributeNamespace,
+          attributeName,
+          attributeValue,
+        )
+      } else {
+        node.setAttribute(attributeName, attributeValue)
       }
     }
   }
