@@ -1,3 +1,10 @@
+## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-04-13)
+
+
+### Bug Fixes
+
+* 🐛 fix type error ([62a15bd](https://github.com/antvis/x6/commit/62a15bdf4929134eb87bfa736db1271be0a76613))
+
 # @antv/x6-example-features [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.2.0) (2021-04-13)
 
 
