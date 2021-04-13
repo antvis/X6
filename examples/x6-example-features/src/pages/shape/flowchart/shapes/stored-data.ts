@@ -16,7 +16,7 @@ Shape.Path.define({
   },
   attrHooks: {
     draw: {
-      set(v: number, { refBBox }) {
+      set(v, { refBBox }) {
         const { width, height } = refBBox
         const sx = width / 96.51
         const sy = height / 60

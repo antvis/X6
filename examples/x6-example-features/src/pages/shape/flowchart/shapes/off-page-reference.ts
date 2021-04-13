@@ -16,34 +16,36 @@ Shape.Path.define({
   },
   attrHooks: {
     ridge: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        let ridge = v < 1 ? NumberExt.normalizePercentage(v, height) : height
-        if (ridge > height) {
-          ridge = height
-        }
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          let ridge = v < 1 ? NumberExt.normalizePercentage(v, height) : height
+          if (ridge > height) {
+            ridge = height
+          }
 
-        const points: Point.PointData[] = []
-        if (ridge === 0) {
-          points.push([0, 0], [width, 0], [width / 2, height])
-        } else if (ridge === height) {
-          points.push([0, 0], [width, 0], [width, height], [0, height])
-        } else {
-          points.push(
-            [0, 0],
-            [width, 0],
-            [width, ridge],
-            [width / 2, height],
-            [0, ridge],
-          )
-        }
+          const points: Point.PointData[] = []
+          if (ridge === 0) {
+            points.push([0, 0], [width, 0], [width / 2, height])
+          } else if (ridge === height) {
+            points.push([0, 0], [width, 0], [width, height], [0, height])
+          } else {
+            points.push(
+              [0, 0],
+              [width, 0],
+              [width, ridge],
+              [width / 2, height],
+              [0, ridge],
+            )
+          }
 
-        return {
-          d: Path.drawPoints(points, {
-            round: 0,
-            close: true,
-            initialMove: true,
-          }),
+          return {
+            d: Path.drawPoints(points, {
+              round: 0,
+              close: true,
+              initialMove: true,
+            }),
+          }
         }
       },
     },
