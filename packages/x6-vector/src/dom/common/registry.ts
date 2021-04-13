@@ -6,6 +6,8 @@ export namespace Registry {
   let root: Definition
   const cache: Record<string, Definition> = {}
 
+  const ucfirst = (s: string) => s.charAt(0).toUpperCase() + s.substring(1)
+
   export function register(
     ctor: Definition,
     name = ctor.name,
@@ -34,8 +36,7 @@ export namespace Registry {
     }
 
     const nodeName = node.nodeName
-    // ucfirst
-    let className = nodeName.charAt(0).toUpperCase() + nodeName.substring(1)
+    let className = ucfirst(nodeName)
 
     if (nodeName === '#document-fragment') {
       className = 'Fragment'
@@ -64,5 +65,10 @@ export namespace Registry {
       }
     }
     return null
+  }
+
+  export function isRegisted(tagName: string) {
+    const name = ucfirst(tagName)
+    return cache[name] != null
   }
 }
