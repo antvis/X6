@@ -16,11 +16,13 @@ Shape.Path.define({
   },
   attrHooks: {
     round: {
-      set(v: number, { refBBox }) {
-        const { width, height } = refBBox
-        const dim = Math.min(width, height)
-        const round = v * dim
-        return { rx: round, ry: round }
+      set(v, { refBBox }) {
+        if (typeof v === 'number') {
+          const { width, height } = refBBox
+          const dim = Math.min(width, height)
+          const round = v * dim
+          return { rx: round, ry: round }
+        }
       },
     },
   },
