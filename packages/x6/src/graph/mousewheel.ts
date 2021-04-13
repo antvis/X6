@@ -94,30 +94,29 @@ export class MouseWheel extends Disposable implements IDisablable {
         // zoomin
         // ------
         // Switches to 1% zoom steps below 15%
-        if (this.currentScale * this.cumulatedFactor < 0.15) {
+        if (this.currentScale < 0.15) {
           this.cumulatedFactor = (this.currentScale + 0.01) / this.currentScale
         } else {
           // Uses to 5% zoom steps for better grid rendering in
           // webkit and to avoid rounding errors for zoom steps
-          this.cumulatedFactor *= factor
+          this.cumulatedFactor =
+            Math.round(this.currentScale * factor * 20) / 20 / this.currentScale
         }
       } else {
         // zoomout
         // -------
         // Switches to 1% zoom steps below 15%
-        if (this.currentScale * this.cumulatedFactor <= 0.15) {
+        if (this.currentScale <= 0.15) {
           this.cumulatedFactor = (this.currentScale - 0.01) / this.currentScale
         } else {
           // Uses to 5% zoom steps for better grid rendering in
           // webkit and to avoid rounding errors for zoom steps
-          this.cumulatedFactor /= factor
+          this.cumulatedFactor =
+            Math.round(this.currentScale * (1 / factor) * 20) /
+            20 /
+            this.currentScale
         }
       }
-
-      this.cumulatedFactor =
-        Math.round(this.currentScale * this.cumulatedFactor * 20) /
-        20 /
-        this.currentScale
 
       this.cumulatedFactor = Math.max(
         0.01,
