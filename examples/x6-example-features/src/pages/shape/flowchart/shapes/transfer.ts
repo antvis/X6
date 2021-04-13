@@ -1,4 +1,10 @@
-import { NumberExt, Shape, Path } from '@antv/x6'
+import { NumberExt, Shape, Path, JSONObject } from '@antv/x6'
+
+interface KnobsAttrValue extends JSONObject {
+  tail: number
+  ridgeX: number
+  ridgeY: number
+}
 
 Shape.Path.define({
   title: 'Transfer',
@@ -20,15 +26,9 @@ Shape.Path.define({
   },
   attrHooks: {
     knobs: {
-      set(
-        v: {
-          tail: number
-          ridgeX: number
-          ridgeY: number
-        },
-        { refBBox },
-      ) {
-        if (typeof v === 'object') {
+      set(val, { refBBox }) {
+        if (typeof val === 'object') {
+          const v = val as KnobsAttrValue
           const { width, height } = refBBox
           const tail = NumberExt.clamp(width * v.tail, 0, v.ridgeX * width)
           const ridgeX = NumberExt.clamp(

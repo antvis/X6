@@ -23,7 +23,7 @@ Shape.Path.define({
   },
   attrHooks: {
     line: {
-      set(v: number, { refBBox }) {
+      set(v, { refBBox }) {
         const { width, height } = refBBox
         return { d: `M ${width / 2} ${height} L ${width} ${height}` }
       },

@@ -1,4 +1,9 @@
-import { NumberExt, Shape, Path, Line, Point } from '@antv/x6'
+import { NumberExt, Shape, Path, Line, Point, JSONObject } from '@antv/x6'
+
+interface KnobsAttrValue extends JSONObject {
+  round: boolean | string | number
+  ridge: boolean | string | number
+}
 
 Shape.Path.define({
   shape: 'flowchart_data',
@@ -18,14 +23,9 @@ Shape.Path.define({
   },
   attrHooks: {
     knobs: {
-      set(
-        v: {
-          round: boolean | string | number
-          ridge: boolean | string | number
-        },
-        { refBBox },
-      ) {
-        if (typeof v === 'object') {
+      set(val, { refBBox }) {
+        if (typeof val === 'object') {
+          const v = val as KnobsAttrValue
           const dim = Math.min(refBBox.width, refBBox.height)
           let round: number
           let ridge: number
