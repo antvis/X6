@@ -87,6 +87,18 @@ describe('Dom', () => {
         })
       })
 
+      it('should return an empty object when get all style on invalid node', () => {
+        const mock = new Dom() as any
+        mock.node = {}
+        expect(mock.css()).toEqual({})
+      })
+
+      it('should return undefined when get style on invalid node', () => {
+        const mock = new Dom() as any
+        mock.node = {}
+        expect(mock.css('foo')).toBeUndefined()
+      })
+
       it('should return style by given style names', () => {
         const div = new Dom('div')
         div.css({ border: 1, left: 0 })
@@ -254,6 +266,12 @@ describe('Dom', () => {
         expect(div.css('display')).toEqual('')
         expect(div.visible()).toBeTrue()
       })
+
+      it('should do nothing for invalid node', () => {
+        const mock = new Dom() as any
+        mock.node = {}
+        expect(() => mock.hide()).not.toThrowError()
+      })
     })
 
     describe('visible()', () => {
@@ -261,6 +279,17 @@ describe('Dom', () => {
         withCSSContext('.hidden { display: none; }', () => {
           const div = new Dom('div').appendTo(document.body)
           div.addClass('hidden')
+          expect(div.visible()).toBeFalse()
+
+          div.removeClass('hidden')
+          expect(div.visible()).toBeTrue()
+
+          div.addClass('hidden')
+          expect(div.visible()).toBeFalse()
+
+          div.toggle()
+          expect(div.visible()).toBeTrue()
+          div.toggle()
           expect(div.visible()).toBeFalse()
 
           div.remove()
