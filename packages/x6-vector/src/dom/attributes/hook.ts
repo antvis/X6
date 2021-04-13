@@ -16,9 +16,22 @@ export namespace Hook {
     hooks[attributeName] = hook
   }
 
+  export function unregister(attributeName: string) {
+    delete hooks[attributeName]
+  }
+
   register('style', {
     get(node) {
       return Style.style(node)
+    },
+    set(node, attributeValue) {
+      if (typeof attributeValue === 'object') {
+        Object.keys(attributeValue).forEach((key) =>
+          Style.style(node, key, attributeValue[key]),
+        )
+        return true
+      }
+      return false
     },
   })
 }
