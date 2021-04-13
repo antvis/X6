@@ -1,3 +1,10 @@
+## @antv/x6 [1.18.3](https://github.com/antvis/x6/compare/@antv/x6@1.18.2...@antv/x6@1.18.3) (2021-04-13)
+
+
+### Bug Fixes
+
+* 🐛 fix factor calculation in mousewheel ([#855](https://github.com/antvis/x6/issues/855)) ([8a3ecce](https://github.com/antvis/x6/commit/8a3eccec6856a8ff7bfb4464dfed43a0c27097a4))
+
 ## @antv/x6 [1.18.2](https://github.com/antvis/x6/compare/@antv/x6@1.18.1...@antv/x6@1.18.2) (2021-03-30)
 
 ## @antv/x6 [1.18.1](https://github.com/antvis/x6/compare/@antv/x6@1.18.0...@antv/x6@1.18.1) (2021-03-30)
