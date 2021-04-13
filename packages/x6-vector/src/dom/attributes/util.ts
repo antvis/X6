@@ -1,9 +1,12 @@
 import { Env } from '../../global/env'
 
 export namespace Util {
-  export function tryConvertToNumber(value: string) {
-    const numReg = /^[+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i
-    return numReg.test(value) ? +value : value
+  export function tryConvertToNumber(value: string | undefined) {
+    if (value != null) {
+      const numReg = /^[+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i
+      return numReg.test(value) ? +value : value
+    }
+    return value
   }
 
   export function camelCase(str: string) {
