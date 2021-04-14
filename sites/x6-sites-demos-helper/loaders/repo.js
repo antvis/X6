@@ -49,7 +49,7 @@ module.exports = () => {
 
     result.files['package.json'] = {
       isBinary: false,
-      content: JSON.stringify(pkg),
+      content: JSON.stringify(pkg, null, 2),
     }
   }
 
