@@ -34,7 +34,7 @@ export namespace Util {
       if (!didWarn && isJavaScriptProtocol.test(url)) {
         didWarn = true
         console.error(
-          `Attribute "${attributeName}" with javascript url was blocked for security precaution.` +
+          `Attribute "${attributeName}" with javascript url was blocked for security precaution. ` +
             `Check the passed url: ${JSON.stringify(url)}`,
         )
       }
