@@ -9,7 +9,7 @@ export class EventObject<
   TTarget = any,
   TEvent extends Event = Event
 > implements EventObject.Event {
-  isDefaultPrevented: () => boolean
+  isDefaultPrevented: () => boolean = Util.returnFalse
   isPropagationStopped: () => boolean = Util.returnFalse
   isImmediatePropagationStopped: () => boolean = Util.returnFalse
 
@@ -23,7 +23,6 @@ export class EventObject<
 
   data: TData
   result: any
-  isTrigger: number
 
   timeStamp: number
   handleObj: Store.HandlerObject
@@ -106,7 +105,10 @@ export namespace EventObject {
 }
 
 export namespace EventObject {
-  export function addProp(name: string, hook?: any | ((e: EventRaw) => any)) {
+  export function addProperty(
+    name: string,
+    hook?: any | ((e: EventRaw) => any),
+  ) {
     Object.defineProperty(EventObject.prototype, name, {
       enumerable: true,
       configurable: true,
@@ -179,7 +181,7 @@ export namespace EventObject {
   }
 
   Object.keys(commonProps).forEach((name: keyof typeof commonProps) =>
-    EventObject.addProp(name, commonProps[name]),
+    EventObject.addProperty(name, commonProps[name]),
   )
 }
 
