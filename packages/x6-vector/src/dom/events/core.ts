@@ -3,7 +3,6 @@ import { Global } from '../../global'
 import { Util } from './util'
 import { Hook } from './hook'
 import { Store } from './store'
-import { EventRaw } from './alias'
 import { EventObject } from './object'
 import { EventHandler } from './types'
 
@@ -27,10 +26,12 @@ export namespace Core {
     }
 
     // Caller can pass in an object of custom data in lieu of the handler
+    let handlerData: any
     if (typeof handler !== 'function') {
-      const temp = handler
-      handler = temp.handler // eslint-disable-line
-      selector = temp.selector // eslint-disable-line
+      const { handler: h, selector: s, ...others } = handler
+      handler = h // eslint-disable-line
+      selector = s // eslint-disable-line
+      handlerData = others
     }
 
     // Ensure that invalid selectors throw exceptions at attach time
@@ -70,7 +71,6 @@ export namespace Core {
       hook = Hook.get(type)
 
       // handleObj is passed to all event handlers
-      const others = typeof handler === 'function' ? undefined : handler
       const handleObj: Store.HandlerObject = {
         type,
         originType,
@@ -79,8 +79,7 @@ export namespace Core {
         guid,
         handler: handler as EventHandler<any, any>,
         namespace: namespaces.join('.'),
-        needsContext: Util.needsContext(selector),
-        ...others,
+        ...handlerData,
       }
 
       // Init the event handler queue if we're the first
@@ -163,8 +162,9 @@ export namespace Core {
         if (
           (mappedTypes || originType === handleObj.originType) &&
           (!handler || Util.getHandlerId(handler) === handleObj.guid) &&
-          (!rns || !handleObj.namespace || rns.test(handleObj.namespace)) &&
-          (!selector ||
+          (rns == null ||
+            (handleObj.namespace && rns.test(handleObj.namespace))) &&
+          (selector == null ||
             selector === handleObj.selector ||
             (selector === '**' && handleObj.selector))
         ) {
@@ -212,7 +212,7 @@ export namespace Core {
 
     const hook = Hook.get(event.type)
     if (hook.preDispatch && hook.preDispatch(elem, event) === false) {
-      return undefined
+      return
     }
 
     const handlerQueue = Util.getHandlerQueue(elem, event)
@@ -236,8 +236,7 @@ export namespace Core {
         // specially universal or its namespaces are a superset of the event's.
         if (
           event.rnamespace == null ||
-          !handleObj.namespace ||
-          event.rnamespace.test(handleObj.namespace)
+          (handleObj.namespace && event.rnamespace.test(handleObj.namespace))
         ) {
           event.handleObj = handleObj
           event.data = handleObj.data
@@ -267,9 +266,12 @@ export namespace Core {
   }
 
   export function trigger(
-    event: EventObject.Event | EventObject | EventRaw | string,
-    data: any,
-    elem?: Store.EventTarget,
+    event:
+      | (Partial<EventObject.Event> & { type: string })
+      | EventObject
+      | string,
+    eventArgs: any,
+    elem: Store.EventTarget,
     onlyHandlers?: boolean,
   ) {
     let eventObj = event as EventObject
@@ -279,17 +281,11 @@ export namespace Core {
         ? []
         : eventObj.namespace.split('.')
 
-    const node = (elem || Global.document) as HTMLElement
+    const node = elem as HTMLElement
 
     // Don't do events on text and comment nodes
     if (node.nodeType === 3 || node.nodeType === 8) {
-      return undefined
-    }
-
-    // focus/blur morphs to focusin/out; ensure we're not firing them right now
-    const rfocusMorph = /^(?:focusinfocus|focusoutblur)$/
-    if (rfocusMorph.test(type + triggered)) {
-      return undefined
+      return
     }
 
     if (type.indexOf('.') > -1) {
@@ -306,8 +302,6 @@ export namespace Core {
         ? event
         : new EventObject(type, typeof event === 'object' ? event : null)
 
-    // Trigger bitmask: & 1 for native handlers; & 2 for custom (always true)
-    eventObj.isTrigger = onlyHandlers ? 2 : 3
     eventObj.namespace = namespaces.join('.')
     eventObj.rnamespace = eventObj.namespace
       ? new RegExp(`(^|\\.)${namespaces.join('\\.(?:.*\\.|)')}(\\.|$)`)
@@ -320,19 +314,19 @@ export namespace Core {
     }
 
     const args: [EventObject, ...any[]] = [eventObj]
-    if (Array.isArray(data)) {
-      args.push(...data)
+    if (Array.isArray(eventArgs)) {
+      args.push(...eventArgs)
     } else {
-      args.push(data)
+      args.push(eventArgs)
     }
 
     const hook = Hook.get(type)
     if (
       !onlyHandlers &&
       hook.trigger &&
-      hook.trigger(node, eventObj, data) === false
+      hook.trigger(node, eventObj, eventArgs) === false
     ) {
-      return undefined
+      return
     }
 
     let bubbleType
@@ -343,19 +337,16 @@ export namespace Core {
     if (!onlyHandlers && !hook.noBubble && !isWindow(node)) {
       bubbleType = hook.delegateType || type
 
-      let curr = node
-      let last = node
+      let last: Document | HTMLElement = node
+      let curr = node.parentNode as HTMLElement
 
-      if (!rfocusMorph.test(bubbleType + type)) {
+      while (curr != null) {
+        eventPath.push(curr)
+        last = curr
         curr = curr.parentNode as HTMLElement
       }
 
-      for (; curr != null; curr = curr.parentNode as HTMLElement) {
-        eventPath.push(curr)
-        last = curr
-      }
-
-      // Only add window if we got to document (e.g., not plain obj or detached DOM)
+      // Only add window if we got to document
       const doc = node.ownerDocument || Global.document
       if ((last as any) === doc) {
         const win =
@@ -373,23 +364,23 @@ export namespace Core {
       i < l && !eventObj.isPropagationStopped();
       i += 1
     ) {
-      const curr = eventPath[i]
-      lastElement = curr
+      const currElement = eventPath[i]
+      lastElement = currElement
 
       eventObj.type = i > 1 ? (bubbleType as string) : hook.bindType || type
 
-      // custom handler
-      const store = Store.get(curr as Element)
+      // Custom handler
+      const store = Store.get(currElement as Element)
       if (store) {
         if (store.events[eventObj.type] && store.handler) {
-          store.handler.call(curr, ...args)
+          store.handler.call(currElement, ...args)
         }
       }
 
       // Native handler
-      const handle = ontype ? curr[ontype] : null
-      if (handle && handle.apply && Util.isValidTarget(curr)) {
-        eventObj.result = handle.call(curr, ...args)
+      const handle = (ontype && currElement[ontype]) || null
+      if (handle && handle.apply && Util.isValidTarget(currElement)) {
+        eventObj.result = handle.call(currElement, ...args)
         if (eventObj.result === false) {
           eventObj.preventDefault()
         }
@@ -400,13 +391,14 @@ export namespace Core {
 
     // If nobody prevented the default action, do it now
     if (!onlyHandlers && !eventObj.isDefaultPrevented()) {
+      const preventDefault = hook.preventDefault
       if (
-        (!hook.default ||
-          hook.default(eventPath.pop()!, eventObj, data) === false) &&
+        (preventDefault == null ||
+          preventDefault(eventPath.pop()!, eventObj, eventArgs) === false) &&
         Util.isValidTarget(node)
       ) {
-        // Call a native DOM method on the target with the same name as the event.
-        // Don't do default actions on window, that's where global variables be (#6170)
+        // Call a native DOM method on the target with the same name as the
+        // event. Don't do default actions on window.
         if (
           ontype &&
           typeof node[type as 'click'] === 'function' &&

@@ -2,7 +2,6 @@
 
 import { Core } from './core'
 import { Util } from './util'
-import { EventRaw } from './alias'
 import { EventObject } from './object'
 import { TypeEventHandler, TypeEventHandlers } from './types'
 import { Base } from '../common/base'
@@ -28,11 +27,28 @@ export class EventEmitter<TElement extends Element> extends Base<TElement> {
       | TypeEventHandler<TElement, TData, TElement, TElement, TType>
       | false,
   ): this
+  on<TType extends string, TData>(
+    events: TType,
+    data: TData,
+    handlerObject: {
+      handler: TypeEventHandler<TElement, TData, TElement, TElement, TType>
+      selector?: string
+      [key: string]: any
+    },
+  ): this
   on<TType extends string>(
     events: TType,
     handler:
       | TypeEventHandler<TElement, undefined, TElement, TElement, TType>
       | false,
+  ): this
+  on<TType extends string>(
+    events: TType,
+    handlerObject: {
+      handler: TypeEventHandler<TElement, undefined, TElement, TElement, TType>
+      selector?: string
+      [key: string]: any
+    },
   ): this
   on<TData>(
     events: TypeEventHandlers<TElement, TData, any, any>,
@@ -73,11 +89,28 @@ export class EventEmitter<TElement extends Element> extends Base<TElement> {
       | TypeEventHandler<TElement, TData, TElement, TElement, TType>
       | false,
   ): this
+  once<TType extends string, TData>(
+    events: TType,
+    data: TData,
+    handlerObject: {
+      handler: TypeEventHandler<TElement, TData, TElement, TElement, TType>
+      selector?: string
+      [key: string]: any
+    },
+  ): this
   once<TType extends string>(
     events: TType,
     handler:
       | TypeEventHandler<TElement, undefined, TElement, TElement, TType>
       | false,
+  ): this
+  once<TType extends string>(
+    events: TType,
+    handlerObject: {
+      handler: TypeEventHandler<TElement, undefined, TElement, TElement, TType>
+      selector?: string
+      [key: string]: any
+    },
   ): this
   once<TData>(
     events: TypeEventHandlers<TElement, TData, any, any>,
@@ -103,7 +136,6 @@ export class EventEmitter<TElement extends Element> extends Base<TElement> {
     selector: string,
     handler: TypeEventHandler<TElement, any, any, any, TType> | false,
   ): this
-
   off<TType extends string>(
     events: TType,
     handler: TypeEventHandler<TElement, any, any, any, TType> | false,
@@ -136,11 +168,22 @@ export class EventEmitter<TElement extends Element> extends Base<TElement> {
   }
 
   trigger(
-    event: string | EventObject | EventRaw | EventObject.Event,
-    data?: any[] | Record<string, any> | string | number | boolean,
+    event:
+      | string
+      | EventObject
+      | (Partial<EventObject.Event> & { type: string }),
+    args?: any[] | Record<string, any> | string | number | boolean,
+    /**
+     * When onlyHandlers is `true`
+     * - Will not call `.event()` on the element it is triggered on. This means
+     *   `.trigger('submit', [], true)` on a form will not call `.submit()` on
+     *   the form.
+     * - Events will not bubble up the DOM hierarchy; if they are not handled
+     *   by the target element directly, they do nothing.
+     */
     onlyHandlers?: boolean,
   ) {
-    Core.trigger(event, data, this.node as any, onlyHandlers)
+    Core.trigger(event, args, this.node as any, onlyHandlers)
     return this
   }
 }

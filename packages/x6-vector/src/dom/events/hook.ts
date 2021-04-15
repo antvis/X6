@@ -12,6 +12,10 @@ export namespace Hook {
   export function register(type: string, hook: Hook) {
     cache[type] = hook
   }
+
+  export function unregister(type: string) {
+    delete cache[type]
+  }
 }
 
 export interface Hook {
@@ -146,12 +150,12 @@ export interface Hook {
    * an event, it also looks for and runs any method on the target object by
    * the same name unless of the handlers called `event.preventDefault()`. So,
    * `.trigger("submit")` will execute the `submit()` method on the element if
-   * one exists. When a `default` hook is specified, the hook is called just
-   * prior to checking for and executing the element's default method. If this
-   * hook returns the value `false` the element's default method will be called;
-   * otherwise it is not.
+   * one exists. When a `preventDefault` hook is specified, the hook is called
+   * just prior to checking for and executing the element's default method. If
+   * this hook returns the value `false` the element's default method will be
+   * called; otherwise it is not.
    */
-  default?: (
+  preventDefault?: (
     elem: Store.EventTarget,
     event: EventObject,
     data: any,

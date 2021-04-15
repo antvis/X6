@@ -4,14 +4,13 @@ export namespace Store {
   export type EventTarget = Element | Record<string, unknown>
 
   export interface HandlerObject {
+    guid: number
     type: string
     originType: string
-    data?: any
     handler: EventHandler<any, any>
-    guid: number
+    data?: any
     selector?: string
-    namespace: string | false
-    needsContext: boolean
+    namespace?: string
   }
 
   export interface Data {
