@@ -80,7 +80,11 @@ export namespace Adopter {
       return node
     }
 
-    if (typeof node === 'string' && node.charAt(0) !== '<') {
+    if (typeof node === 'string') {
+      node = node.trim() // eslint-disable-line
+    }
+
+    if (node.charAt(0) !== '<') {
       return adopter(Global.document.querySelector(node)) as T
     }
 
