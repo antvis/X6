@@ -9,76 +9,6 @@ export interface EventListener<TElement extends Element>
   extends EventListener.Methods<TElement> {}
 
 export namespace EventListener {
-  // Generate interface
-  // eslint-disable-next-line no-constant-condition
-  if (false) {
-    const events = [
-      'blur',
-      'focus',
-      'focusin',
-      'focusout',
-      'resize',
-      'scroll',
-      'click',
-      'dblclick',
-      'mousedown',
-      'mouseup',
-      'mousemove',
-      'mouseover',
-      'mouseout',
-      'mouseenter',
-      'mouseleave',
-      'change',
-      'select',
-      'submit',
-      'keydown',
-      'keypress',
-      'keyup',
-      'contextmenu',
-      'touchstart',
-      'touchmove',
-      'touchleave',
-      'touchend',
-      'touchcancel',
-    ] as const
-
-    events.forEach((event) => {
-      EventListener.prototype[event] = function <TData>(
-        this: EventListener<Element>,
-        eventData?: TData | TypeEventHandler<any, any, any, any, any> | false,
-        handler?: TypeEventHandler<any, any, any, any, any> | false,
-      ) {
-        if (eventData == null) {
-          this.trigger(event)
-        } else {
-          this.on(event, null, eventData, handler!)
-        }
-        return this
-      }
-    })
-
-    const methods = events.map(
-      (event) =>
-        `
-    ${event}(): this
-    ${event}(
-      handler:
-        | TypeEventHandler<TElement, null, TElement, TElement, '${event}'>
-        | false,
-    ): this
-    ${event}<TData>(
-      eventData: TData,
-      handler:
-        | TypeEventHandler<TElement, TData, TElement, TElement, '${event}'>
-        | false,
-    ): this
-    `,
-    )
-
-    // eslint-disable-next-line no-console
-    console.log(methods.join('\n'))
-  }
-
   export interface Methods<TElement extends Node> {
     blur(): this
     blur(
@@ -431,4 +361,73 @@ export namespace EventListener {
         | false,
     ): this
   }
+}
+
+export namespace EventListener {
+  // Generate interface
+  // eslint-disable-next-line no-constant-condition
+  // if (false) {
+  //   const events = [
+  //     'blur',
+  //     'focus',
+  //     'focusin',
+  //     'focusout',
+  //     'resize',
+  //     'scroll',
+  //     'click',
+  //     'dblclick',
+  //     'mousedown',
+  //     'mouseup',
+  //     'mousemove',
+  //     'mouseover',
+  //     'mouseout',
+  //     'mouseenter',
+  //     'mouseleave',
+  //     'change',
+  //     'select',
+  //     'submit',
+  //     'keydown',
+  //     'keypress',
+  //     'keyup',
+  //     'contextmenu',
+  //     'touchstart',
+  //     'touchmove',
+  //     'touchleave',
+  //     'touchend',
+  //     'touchcancel',
+  //   ] as const
+  //   events.forEach((event) => {
+  //     EventListener.prototype[event] = function <TData>(
+  //       this: EventListener<Element>,
+  //       eventData?: TData | TypeEventHandler<any, any, any, any, any> | false,
+  //       handler?: TypeEventHandler<any, any, any, any, any> | false,
+  //     ) {
+  //       if (eventData == null) {
+  //         this.trigger(event)
+  //       } else {
+  //         this.on(event, null, eventData, handler!)
+  //       }
+  //       return this
+  //     }
+  //   })
+  //   const methods = events.map(
+  //     (event) =>
+  //       `
+  //   ${event}(): this
+  //   ${event}(
+  //     handler:
+  //       | TypeEventHandler<TElement, null, TElement, TElement, '${event}'>
+  //       | false,
+  //   ): this
+  //   ${event}<TData>(
+  //     eventData: TData,
+  //     handler:
+  //       | TypeEventHandler<TElement, TData, TElement, TElement, '${event}'>
+  //       | false,
+  //   ): this
+  //   `,
+  //   )
+  //   // eslint-disable-next-line no-console
+  //   console.log(methods.join('\n'))
+  // }
 }
