@@ -30,34 +30,24 @@ export namespace Util {
 }
 
 export namespace Util {
-  const rnothtmlwhite = /[^\x20\t\r\n\f]+/g
-  const rtypenamespace = /^([^.]*)(?:\.(.+)|)/
-  const rcheckableInput = /^(?:checkbox|radio)$/i
-  const whitespace = '[\\x20\\t\\r\\n\\f]'
-  const rneedsContext = new RegExp(
-    `^${whitespace}*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(${whitespace}*((?:-\\d)?\\d*)${whitespace}*\\)|)(?=[^-]|$)`,
-    'i',
-  )
+  const rNotHTMLWhite = /[^\x20\t\r\n\f]+/g
+  const rNamespace = /^([^.]*)(?:\.(.+)|)/
 
   export function splitType(types: string) {
-    return (types || '').match(rnothtmlwhite) || ['']
+    return (types || '').match(rNotHTMLWhite) || ['']
   }
 
   export function normalizeType(type: string) {
-    const parts = rtypenamespace.exec(type) || []
+    const parts = rNamespace.exec(type) || []
     return {
-      originType: parts[1],
-      namespaces: parts[2] ? parts[2].split('.').sort() : [],
+      originType: parts[1] ? parts[1].trim() : parts[1],
+      namespaces: parts[2]
+        ? parts[2]
+            .split('.')
+            .map((ns) => ns.trim())
+            .sort()
+        : [],
     }
-  }
-
-  export function isCheckableInput(elem: Store.EventTarget) {
-    const node = elem as HTMLInputElement
-    return (
-      node.click != null &&
-      node.nodeName.toLowerCase() === 'input' &&
-      rcheckableInput.test(node.type)
-    )
   }
 
   export function isValidTarget(target: Element | Record<string, any>) {
@@ -72,15 +62,10 @@ export namespace Util {
 
   export function isValidSelector(elem: Store.EventTarget, selector?: string) {
     if (selector) {
-      const doce = document.documentElement
-      const matches = doce.matches || (doce as any).msMatchesSelector
-      return matches.call(elem, selector) as boolean
+      const node = elem as Element
+      return node.querySelector != null && node.querySelector(selector) != null
     }
     return true
-  }
-
-  export function needsContext(selector?: string) {
-    return selector != null && rneedsContext.test(selector)
   }
 }
 
