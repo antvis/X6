@@ -358,7 +358,7 @@ export namespace Options {
         cell: Cell
         view: CellView
         magnet: Element
-        e: JQuery.MouseDownEvent
+        e: JQuery.MouseDownEvent | JQuery.MouseEnterEvent
       },
     ) => boolean
 
