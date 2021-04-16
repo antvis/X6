@@ -434,7 +434,7 @@ export class Hook extends Base implements Hook.IHook {
   validateMagnet(
     cellView: CellView,
     magnet: Element,
-    e: JQuery.MouseDownEvent,
+    e: JQuery.MouseDownEvent | JQuery.MouseEnterEvent,
   ) {
     if (magnet.getAttribute('magnet') !== 'passive') {
       const validate = this.options.connecting.validateMagnet

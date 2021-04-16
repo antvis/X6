@@ -39,12 +39,27 @@ export class NodeView<
     return classList.join(' ')
   }
 
-  protected updateClassName() {
-    const className = this.prefixClassName('node-immovable')
-    if (this.can('nodeMovable')) {
-      this.removeClass(className)
+  protected updateClassName(e: JQuery.MouseEnterEvent) {
+    const target = e.target
+    if (target.hasAttribute('magnet')) {
+      // port
+      const className = this.prefixClassName('port-unconnectable')
+      if (
+        this.can('magnetConnectable') &&
+        this.graph.hook.validateMagnet(this, target, e)
+      ) {
+        Dom.removeClass(target, className)
+      } else {
+        Dom.addClass(target, className)
+      }
     } else {
-      this.addClass(className)
+      // node
+      const className = this.prefixClassName('node-immovable')
+      if (this.can('nodeMovable')) {
+        this.removeClass(className)
+      } else {
+        this.addClass(className)
+      }
     }
   }
 
@@ -679,7 +694,7 @@ export class NodeView<
   }
 
   onMouseEnter(e: JQuery.MouseEnterEvent) {
-    this.updateClassName()
+    this.updateClassName(e)
     super.onMouseEnter(e)
     this.notify('node:mouseenter', this.getEventArgs(e))
   }
