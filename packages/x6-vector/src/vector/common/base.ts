@@ -8,7 +8,7 @@ export class Base<
   TSVGElement extends SVGElement = SVGElement
 > extends Dom<TSVGElement> {
   root(): Svg | null {
-    const parent = this.parent<Svg>(Registry.getRoot())
+    const parent = this.parent<Svg>(Registry.getClass('Svg'))
     return parent ? parent.root() : null
   }
 
@@ -26,18 +26,6 @@ export class Base<
     // reference id
     const matches = `${value}`.match(/(#[_a-z][\w-]*)/i)
     return matches ? Adopter.makeInstance<T>(matches[1]) : null
-  }
-
-  parents<T extends Dom = Dom>(): T[]
-  parents<T extends Dom = Dom>(until: null): T[]
-  parents<T extends Dom = Dom>(untilElement: Dom): T[]
-  parents<T extends Dom = Dom>(untilNode: Node): T[]
-  parents<T extends Dom = Dom>(untilSelector: string): T[]
-  parents<T extends Dom = Dom>(until: Adopter.Target<Dom> | null): T[]
-  parents<T extends Dom = Dom>(
-    until: Adopter.Target<Dom> | null = this.root(),
-  ) {
-    return super.parents<T>(until)
   }
 
   svg(): string

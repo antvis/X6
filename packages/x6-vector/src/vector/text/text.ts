@@ -54,7 +54,7 @@ export class Text<
 
         const dy = leading * Number.parseFloat(fontSize)
 
-        if (child.affixes.newLined) {
+        if (child.affix<boolean>('newLined')) {
           child.attr('x', this.attr('x') as string)
 
           if (child.text() === '\n') {
@@ -83,7 +83,8 @@ export class Text<
 
       for (let index = 0, l = children.length; index < l; index += 1) {
         // skip textPaths - they are no lines
-        if (children[index].nodeName === 'textPath') {
+        const child = children[index]
+        if (child.nodeName === 'textPath') {
           if (index === 0) {
             firstLine = 1
           }
@@ -93,8 +94,8 @@ export class Text<
         // add newline if its not the first child and newLined is set to true
         if (
           index !== firstLine &&
-          children[index].nodeType !== 3 &&
-          Adopter.adopt<TSpan>(children[index]).affixes.newLined === true
+          child.nodeType !== 3 &&
+          Adopter.adopt<TSpan>(child).affix<boolean>('newLined') === true
         ) {
           content += '\n'
         }
