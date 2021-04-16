@@ -1,4 +1,4 @@
-import { isNode, createHTMLNode, createSVGNode } from '../../util'
+import { isNode } from '../../util'
 import { Base } from '../common/base'
 import { Registry } from '../common/registry'
 import { Affix } from './affix'
@@ -60,9 +60,7 @@ export class Primer<TElement extends Element> extends Base<TElement> {
           // return new Dom('div') by dafault
           tagName = 'div'
         }
-        this.node = Registry.isRegisted(tagName)
-          ? createSVGNode<any>(tagName)
-          : createHTMLNode<any>(tagName)
+        this.node = Adopter.createNode<TElement>(tagName)
         attributes =
           nodeOrAttrs != null && typeof nodeOrAttrs !== 'string'
             ? nodeOrAttrs

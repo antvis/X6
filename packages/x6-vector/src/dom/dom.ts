@@ -183,7 +183,7 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
   id(id: string | null): this
   id(id?: string | null) {
     // generate new id if no id set
-    if (typeof id === 'undefined' && this.node.id == null) {
+    if (typeof id === 'undefined' && !this.node.id) {
       this.node.id = ID.generate()
     }
 
@@ -233,19 +233,49 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
 
   parents<T extends Dom = Dom>(): T[]
   parents<T extends Dom = Dom>(until: null): T[]
-  parents<T extends Dom = Dom>(untilElement: Dom): T[]
-  parents<T extends Dom = Dom>(untilNode: Node): T[]
   parents<T extends Dom = Dom>(untilSelector: string): T[]
-  parents<T extends Dom = Dom>(until: Adopter.Target<Dom> | null): T[]
-  parents<T extends Dom = Dom>(until?: Adopter.Target<Dom> | null) {
-    const stop = until ? Adopter.makeInstance<Dom>(until) : null
+  parents<T extends Dom = Dom>(untilType: Registry.Definition): T[]
+  parents<T extends Dom = Dom>(untilNode: Node): T[]
+  parents<T extends Dom = Dom>(untilElement: Dom): T[]
+  parents<T extends Dom = Dom>(
+    until: string | Registry.Definition | Node | Dom | null,
+  ): T[]
+  parents<T extends Dom = Dom>(
+    until?: string | Registry.Definition | Node | Dom | null,
+  ) {
+    if (until == null && this.node instanceof Global.window.SVGElement) {
+      until = Registry.getClass('Svg') // eslint-disable-line
+    }
+
+    const match = (elem: Dom) => {
+      if (until == null) {
+        return true
+      }
+
+      if (typeof until === 'string') {
+        return !elem.matches(until)
+      }
+
+      if (until instanceof Primer) {
+        return elem !== until
+      }
+
+      if (until instanceof Global.window.Node) {
+        return elem.node !== until
+      }
+
+      return !(elem instanceof until)
+    }
+
     const parents: T[] = []
     let parent = this.parent()
-    while (parent && !parent.isDocument() && !parent.isDocumentFragment()) {
+    while (
+      parent &&
+      !parent.isDocument() &&
+      !parent.isDocumentFragment() &&
+      match(parent)
+    ) {
       parents.push(parent as T)
-      if (stop && parent.node === stop.node) {
-        break
-      }
       parent = parent.parent()
     }
     return parents
@@ -349,19 +379,24 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
     return instance
   }
 
+  /**
+   * Creates an element of given tagName and appends it to the current element.
+   */
   element<T extends keyof SVGElementTagNameMap>(
-    nodeName: T,
+    tagName: T,
     attrs?: AttributesMap<SVGElementTagNameMap[T]> | null,
   ): ElementMap<T>
   element<T extends keyof HTMLElementTagNameMap>(
-    nodeName: T,
+    tagName: T,
     attrs?: AttributesMap<HTMLElementTagNameMap[T]> | null,
   ): ElementMap<T>
   element<T extends Dom>(
-    nodeName: string,
+    tagName: string,
     attrs?: AttributesMap<any> | null,
   ): T {
-    const elem = Adopter.makeInstance<T>(nodeName)
+    const registed =
+      tagName.toLowerCase() !== 'dom' && Registry.isRegisted(tagName)
+    const elem = Adopter.makeInstance<T>(tagName, !registed)
     if (attrs) {
       elem.attr(attrs)
     }
@@ -371,22 +406,22 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
   remove() {
     const parent = this.parent()
     if (parent) {
-      parent.removeElement(this)
+      parent.removeChild(this)
     }
 
     return this
   }
 
-  removeElement(node: Node): this
-  removeElement(element: Dom): this
-  removeElement(element: Dom | Node) {
+  removeChild(node: Node): this
+  removeChild(element: Dom): this
+  removeChild(element: Dom | Node) {
     this.node.removeChild(element instanceof Node ? element : element.node)
     return this
   }
 
   before<T extends Dom>(element: T): this
   before<T extends Node>(node: T): this
-  before(selector: string): this
+  before(tagName: string): this
   before<T extends Dom>(element: Adopter.Target<T>): this
   before<T extends Dom>(element: Adopter.Target<T>) {
     const parent = this.parent()
@@ -402,7 +437,7 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
 
   after<T extends Dom>(element: T): this
   after<T extends Node>(node: T): this
-  after(selector: string): this
+  after(tagName: string): this
   after<T extends Dom>(element: Adopter.Target<T>): this
   after<T extends Dom>(element: Adopter.Target<T>) {
     const parent = this.parent()
@@ -417,7 +452,6 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
 
   insertBefore<T extends Dom>(element: T): this
   insertBefore<T extends Node>(node: T): this
-  insertBefore(selector: string): this
   insertBefore<T extends Dom>(element: Adopter.Target<T>): this
   insertBefore<T extends Dom>(element: Adopter.Target<T>) {
     Adopter.makeInstance(element).before(this)
@@ -426,7 +460,6 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
 
   insertAfter<T extends Dom>(element: T): this
   insertAfter<T extends Node>(node: T): this
-  insertAfter(selector: string): this
   insertAfter<T extends Dom>(element: Adopter.Target<T>): this
   insertAfter<T extends Dom>(element: Adopter.Target<T>) {
     Adopter.makeInstance(element).after(this)
@@ -586,23 +619,33 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
 
   html(): string
   html(outerHTML: boolean): string
-  html(process: (dom: Dom) => false | Dom, outerHTML?: boolean): string
+  html(
+    process: (dom: Dom) => boolean | undefined | Dom,
+    outerHTML?: boolean,
+  ): string
   html(content: string, outerHTML?: boolean): string
-  html(arg1?: boolean | string | ((dom: Dom) => false | Dom), arg2?: boolean) {
+  html(
+    arg1?: boolean | string | ((dom: Dom) => boolean | undefined | Dom),
+    arg2?: boolean,
+  ) {
     return this.xml(arg1, arg2, Util.namespaces.html)
   }
 
   xml(): string
   xml(outerXML: boolean): string
-  xml(process: (dom: Dom) => false | Dom, outerXML?: boolean): string
-  xml(content: string, outerXML?: boolean, ns?: string): string
   xml(
-    arg1?: boolean | string | ((dom: Dom) => false | Dom),
+    process: (dom: Dom) => boolean | undefined | Dom,
+    outerXML?: boolean,
+  ): string
+  xml(content: string, outerXML?: boolean, ns?: string): this
+  xml<T extends Dom>(content: string, outerXML: true, ns?: string): T
+  xml(
+    arg1?: boolean | string | ((dom: Dom) => boolean | undefined | Dom),
     arg2?: boolean,
     arg3?: string,
   ): string
   xml(
-    arg1?: boolean | string | ((dom: Dom) => false | Dom),
+    arg1?: boolean | string | ((dom: Dom) => boolean | undefined | Dom),
     arg2?: boolean,
     arg3?: string,
   ) {
@@ -627,7 +670,9 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
         // If the user wants outerHTML we need to process this node, too
         if (isOuterXML) {
           const result = content(current)
-          current = result || current
+          if (result && typeof result !== 'boolean') {
+            current = result
+          }
 
           // The user does not want this node? Well, then he gets nothing
           if (result === false) {
@@ -638,12 +683,12 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
         // Deep loop through all children and apply modifier
         current.eachChild((child) => {
           const result = content(child)
-          const next = result || child
+          const next = result && typeof result !== 'boolean' ? result : child
 
           if (result === false) {
             // If modifier returns false, discard node
             child.remove()
-          } else if (result && child !== next) {
+          } else if (child !== next) {
             // If modifier returns new node, use it
             child.replace(next)
           }
