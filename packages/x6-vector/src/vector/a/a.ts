@@ -1,8 +1,8 @@
-import { GeometryContainer } from '../container/geometry'
+import { ContainerGeometry } from '../container/geometry'
 import { SVGAAttributes } from './types'
 
 @A.register('A')
-export class A extends GeometryContainer<SVGAElement> {
+export class A extends ContainerGeometry<SVGAElement> {
   target(): string
   target(target: '_self' | '_parent' | '_top' | '_blank' | string | null): this
   target(target?: string | null) {

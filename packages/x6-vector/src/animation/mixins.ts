@@ -1,3 +1,4 @@
+import { applyMixins } from '../util'
 import { Dom } from '../dom/dom'
 import { Primer } from '../dom/primer/primer'
 import { Util } from '../animating/animator/util'
@@ -53,4 +54,4 @@ declare module '../dom/dom' {
       TimelineExtension<TElement> {}
 }
 
-Dom.mixin(AnimateExtension, TimelineExtension)
+applyMixins(Dom, AnimateExtension, TimelineExtension)
