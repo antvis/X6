@@ -53,6 +53,9 @@ export const content = `.x6-graph {
 .x6-node [magnet='true']:hover {
   opacity: 0.7;
 }
+.x6-node .x6-port-unconnectable {
+  cursor: default;
+}
 .x6-node foreignObject {
   display: block;
   overflow: visible;
