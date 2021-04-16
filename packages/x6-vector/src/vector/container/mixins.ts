@@ -1,3 +1,5 @@
+import { applyMixins } from '../../util'
+
 // containers
 import { ContainerExtension as AExtension } from '../a/exts'
 import { ContainerExtension as GExtension } from '../g/exts'
@@ -55,7 +57,8 @@ declare module './container' {
       ForeignObjectExtension<TSVGElement> {}
 }
 
-Container.mixin(
+applyMixins(
+  Container,
   AExtension,
   GExtension,
   SvgExtension,
