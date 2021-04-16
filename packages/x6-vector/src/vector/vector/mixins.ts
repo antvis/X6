@@ -1,3 +1,4 @@
+import { applyMixins } from '../../util'
 import { ElementExtension as StyleExtension } from '../style/exts'
 import { ElementExtension as MaskExtension } from '../mask/exts'
 import { ElementExtension as ClipPathExtension } from '../clippath/exts'
@@ -18,7 +19,8 @@ declare module './vector' {
       ClipPathExtension<TSVGElement> {}
 }
 
-Vector.mixin(
+applyMixins(
+  Vector,
   Base,
   BBox,
   Transform,

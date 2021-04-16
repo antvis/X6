@@ -1,5 +1,6 @@
 import { Timeline } from './timeline'
 import { Primer } from '../../dom/primer'
+import { applyMixins } from '../../util'
 
 export class ElementExtension {
   protected timeline: Timeline
@@ -25,4 +26,4 @@ declare module '../../dom/primer/primer' {
     extends ElementExtension {}
 }
 
-Primer.mixin(ElementExtension)
+applyMixins(Primer, ElementExtension)

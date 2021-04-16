@@ -1,8 +1,8 @@
-import { GeometryContainer } from '../container/geometry'
+import { ContainerGeometry } from '../container/geometry'
 import { SVGGAttributes } from './types'
 
 @G.register('G')
-export class G extends GeometryContainer<SVGGElement> {}
+export class G extends ContainerGeometry<SVGGElement> {}
 
 export namespace G {
   export function create<Attributes extends SVGGAttributes>(

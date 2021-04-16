@@ -6,7 +6,7 @@ import { Vector } from '../vector/vector'
 import { Size } from '../common/size'
 import { Container } from './container'
 
-export abstract class GeometryContainer<
+export abstract class ContainerGeometry<
   TSVGElement extends SVGAElement | SVGGElement
 > extends Container<TSVGElement> {
   dmove(dx: number | string = 0, dy: number | string = 0) {
