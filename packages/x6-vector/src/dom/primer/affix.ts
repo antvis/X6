@@ -1,8 +1,8 @@
 import { Adopter } from '../common/adopter'
 import { Base } from '../common/base'
 
-export class Affix<TElement extends Element> extends Base<TElement> {
-  protected affixes: Record<string, any>
+export class Affix<TElement extends Element = Element> extends Base<TElement> {
+  protected affixes: Record<string, any> | undefined
 
   affix<T extends Record<string, any>>(): T
   affix<T>(key: string): T
@@ -11,29 +11,32 @@ export class Affix<TElement extends Element> extends Base<TElement> {
   affix(key: string, value: any): this
   affix(key: string, value: null): this
   affix(key?: string | Record<string, any> | null, value?: any) {
+    const bag = Affix.get(this)
+
     if (typeof key === 'undefined') {
-      return this.affixes
+      return bag
     }
 
     if (key == null) {
-      this.affixes = {}
+      Affix.set(this, {})
       return this
     }
 
     if (typeof key === 'string') {
       if (typeof value === 'undefined') {
-        return this.affixes[key]
+        return bag[key]
       }
 
       if (value == null) {
-        delete this.affixes[key]
+        delete bag[key]
       } else {
-        this.affixes[key] = value
+        bag[key] = value
       }
+
       return this
     }
 
-    this.affixes = key
+    Affix.set(this, key)
     return this
   }
 
@@ -44,6 +47,18 @@ export class Affix<TElement extends Element> extends Base<TElement> {
 
   restoreAffix() {
     return this.affix(Affix.restore(this.node))
+  }
+}
+
+export namespace Affix {
+  const cache: WeakMap<Affix, Record<string, any>> = new WeakMap()
+
+  export function get<T extends Affix>(instance: T): Record<string, any> {
+    return cache.get(instance)!
+  }
+
+  export function set<T extends Affix>(instance: T, item: Record<string, any>) {
+    cache.set(instance, item)
   }
 }
 
@@ -77,6 +92,7 @@ export namespace Affix {
     } catch (error) {
       // pass
     }
+
     return {}
   }
 }
