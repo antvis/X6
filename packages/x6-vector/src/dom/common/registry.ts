@@ -3,21 +3,10 @@ import type { Base } from './base'
 export namespace Registry {
   export type Definition = { new (...args: any[]): Base }
 
-  let root: Definition
   const cache: Record<string, Definition> = {}
 
-  const ucfirst = (s: string) => s.charAt(0).toUpperCase() + s.substring(1)
-
-  export function register(
-    ctor: Definition,
-    name = ctor.name,
-    asRoot?: boolean,
-  ) {
+  export function register(ctor: Definition, name = ctor.name) {
     cache[name] = ctor
-
-    if (asRoot) {
-      root = ctor
-    }
 
     return ctor
   }
@@ -31,28 +20,29 @@ export namespace Registry {
   export function getClass<TDefinition extends Definition = Definition>(
     node: string | Node,
   ) {
+    let className: string
     if (typeof node === 'string') {
-      return cache[node] as TDefinition
+      className = node
+    } else {
+      const nodeName = node.nodeName
+      if (nodeName === '#document-fragment') {
+        className = 'Fragment'
+      } else {
+        className = nodeName
+      }
     }
 
-    const nodeName = node.nodeName
-    let className = ucfirst(nodeName)
-
-    if (nodeName === '#document-fragment') {
-      className = 'Fragment'
-    } else if (!Registry.hasClass(className)) {
-      className = node instanceof SVGElement ? 'Vector' : 'Dom'
+    const keys = Object.keys(cache)
+    let key = keys.find((k) => k.toLowerCase() === className.toLowerCase())
+    if (key == null) {
+      if (typeof node === 'string') {
+        key = 'Dom'
+      } else {
+        key = node instanceof SVGElement ? 'Vector' : 'Dom'
+      }
     }
 
-    return cache[className] as TDefinition
-  }
-
-  export function hasClass(name: string) {
-    return cache[name] != null
-  }
-
-  export function getRoot() {
-    return root
+    return cache[key] as TDefinition
   }
 
   export function getTagName(cls: Definition) {
@@ -68,7 +58,8 @@ export namespace Registry {
   }
 
   export function isRegisted(tagName: string) {
-    const name = ucfirst(tagName)
-    return cache[name] != null
+    const lower = tagName.toLowerCase()
+    const keys = Object.keys(cache)
+    return keys.some((key) => key.toLowerCase() === lower)
   }
 }

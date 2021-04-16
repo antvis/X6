@@ -1,12 +1,14 @@
 import './vector/mixins'
 
 import './container/mixins'
+import './fragment/mixins'
 import './defs/mixins'
 import './line/mixins'
 import './path/mixins'
 import './poly/mixins'
 import './text/mixins'
 
+export * from './fragment/fragment'
 export * from './vector/vector'
 
 export * from './a/a'
