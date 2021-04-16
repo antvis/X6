@@ -7,7 +7,7 @@ import { Defs } from '../defs/defs'
 import { SVGSVGAttributes } from './types'
 
 @Svg.mixin(Viewbox)
-@Svg.register('Svg', true)
+@Svg.register('Svg')
 export class Svg extends Container<SVGSVGElement> {
   isRoot() {
     const parentNode = this.node.parentNode

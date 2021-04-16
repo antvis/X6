@@ -1,3 +1,5 @@
+import { Fragment } from '../vector/fragment/fragment'
+
 import { A } from '../vector/a/a'
 import { ClipPath } from '../vector/clippath/clippath'
 import { Defs } from '../vector/defs/defs'
@@ -15,7 +17,6 @@ import { Vector } from '../vector/vector/vector'
 import { Circle } from '../vector/circle/circle'
 import { Ellipse } from '../vector/ellipse/ellipse'
 import { ForeignObject } from '../vector/foreignobject/foreignobject'
-import { Fragment } from '../dom/fragment'
 import { Image } from '../vector/image/image'
 import { Line } from '../vector/line/line'
 import { Path } from '../vector/path/path'

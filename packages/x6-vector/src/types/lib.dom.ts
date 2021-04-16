@@ -18,6 +18,8 @@
 // type EEE = SVGPolygonElement extends SVGPolylineElement ? true : false
 // =============================================================================
 
+interface DocumentFragment extends Element, SVGElement {}
+
 interface SVGAElement {
   readonly x6_vector_type: 'a'
 }

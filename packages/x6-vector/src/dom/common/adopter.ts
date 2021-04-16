@@ -68,11 +68,11 @@ export namespace Adopter {
     isHTML = false,
   ): T {
     if (node == null) {
-      const Root = Registry.getRoot()
+      const Root = Registry.getClass('Svg')
       return new Root() as T
     }
 
-    if (node instanceof Node) {
+    if (node instanceof Global.window.Node) {
       return adopter(node) as T
     }
 
@@ -85,7 +85,7 @@ export namespace Adopter {
     }
 
     if (node.charAt(0) !== '<') {
-      return adopter(Global.document.querySelector(node)) as T
+      return adopter(createNode(node)) as T
     }
 
     // Make sure, that HTML elements are created with the correct namespace
@@ -100,6 +100,13 @@ export namespace Adopter {
     wrapper.firstChild!.remove()
 
     return result as T
+  }
+
+  export function createNode<TElement extends Element>(tagName: string) {
+    const lower = tagName.toLowerCase()
+    const isSVG = lower !== 'dom' && Registry.isRegisted(lower)
+    const node = isSVG ? createSVGNode(tagName) : createHTMLNode(tagName)
+    return (node as any) as TElement
   }
 
   export function mock(instance = adopt) {

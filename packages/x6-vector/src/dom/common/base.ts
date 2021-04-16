@@ -28,9 +28,9 @@ export abstract class Base<TElement extends Element = Element> {
 }
 
 export namespace Base {
-  export function register(name: string, asRoot?: boolean) {
+  export function register(name: string) {
     return (ctor: Registry.Definition) => {
-      Registry.register(ctor, name, asRoot)
+      Registry.register(ctor, name)
     }
   }
 
