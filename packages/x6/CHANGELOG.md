@@ -1,3 +1,11 @@
+## @antv/x6 [1.18.4](https://github.com/antvis/x6/compare/@antv/x6@1.18.3...@antv/x6@1.18.4) (2021-04-17)
+
+
+### Bug Fixes
+
+* 🐛 change port cursor style when is not magnet ([2a1aa21](https://github.com/antvis/x6/commit/2a1aa2167e73f0bf2992bf2ef264c0401025a3f3))
+* 🐛 src dir included in publication ([d2901a8](https://github.com/antvis/x6/commit/d2901a86a065dd5b6537fdf6d7a1249ed4e10a1e))
+
 ## @antv/x6 [1.18.3](https://github.com/antvis/x6/compare/@antv/x6@1.18.2...@antv/x6@1.18.3) (2021-04-13)
 
 
