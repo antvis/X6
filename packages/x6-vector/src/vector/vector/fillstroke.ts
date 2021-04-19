@@ -1,11 +1,13 @@
 import { Color } from '../../struct/color'
 import { Base } from '../common/base'
+import { Image } from '../image/image'
+import { Vector } from './vector'
 
 export class FillStroke<
   TSVGElement extends SVGElement = SVGElement
 > extends Base<TSVGElement> {
   fill(): string
-  fill(color: string | Color | Color.RGBALike | Base | null): this
+  fill(color: string | Color | Color.RGBALike | Vector | null): this
   fill(attrs: {
     color?: string
     opacity?: number
@@ -17,7 +19,7 @@ export class FillStroke<
       | string
       | Color
       | Color.RGBALike
-      | Base
+      | Vector
       | {
           color?: string
           opacity?: number
@@ -33,7 +35,7 @@ export class FillStroke<
   }
 
   stroke(): string
-  stroke(color: string | Color | Color.RGBALike | Base | null): this
+  stroke(color: string | Color | Color.RGBALike | Vector | null): this
   stroke(attrs: {
     color?: string
     width?: number
@@ -41,8 +43,8 @@ export class FillStroke<
     linecap?: 'butt' | 'round' | 'square'
     linejoin?: 'arcs' | 'bevel' | 'miter' | 'miter-clip' | 'round'
     miterlimit?: number
-    dasharray?: string
-    dashoffset?: string
+    dasharray?: string | number[]
+    dashoffset?: string | number
   }): this
   stroke(
     value?:
@@ -50,7 +52,7 @@ export class FillStroke<
       | string
       | Color
       | Color.RGBALike
-      | Base
+      | Vector
       | {
           color?: string
           width?: number
@@ -58,8 +60,8 @@ export class FillStroke<
           linecap?: 'butt' | 'round' | 'square'
           linejoin?: 'arcs' | 'bevel' | 'miter' | 'miter-clip' | 'round'
           miterlimit?: number
-          dasharray?: string
-          dashoffset?: string
+          dasharray?: string | number[]
+          dashoffset?: string | number
         },
   ) {
     if (typeof value === 'undefined') {
@@ -101,14 +103,17 @@ export namespace FillStroke {
       | string
       | Color
       | Color.RGBALike
-      | Base<T>
-      | Record<string, string | number>
+      | Vector
+      | Record<string, string | number | number[]>
       | null,
   ) {
     if (value === null) {
       elem.attr(type, null)
-    } else if (typeof value === 'string' || value instanceof Base) {
-      elem.attr(type, value.toString())
+    } else if (typeof value === 'string' || value instanceof Vector) {
+      elem.attr(
+        type,
+        value instanceof Image ? (value as any) : value.toString(),
+      )
     } else if (value instanceof Color || Color.isRgbLike(value)) {
       const color = new Color(value)
       elem.attr(type, color.toString())
@@ -118,7 +123,7 @@ export namespace FillStroke {
         const k = names[i]
         const v = value[k]
         if (v != null) {
-          elem.attr(prefix(type, k), v)
+          elem.attr(prefix(type, k), Array.isArray(v) ? v.join(' ') : v)
         }
       }
     }

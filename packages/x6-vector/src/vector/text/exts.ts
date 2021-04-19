@@ -14,7 +14,18 @@ export class ContainerExtension<
     text?: string | Attributes | null,
     attrs?: Attributes | null,
   ) {
-    return Text.create(text, attrs).appendTo(this)
+    const instance = new Text().appendTo(this)
+    if (text) {
+      if (typeof text === 'string') {
+        instance.text(text)
+        if (attrs) {
+          instance.attr(attrs)
+        }
+      } else {
+        instance.attr(text)
+      }
+    }
+    return instance
   }
 
   plain<Attributes extends SVGTextAttributes>(attrs?: Attributes | null): Text
@@ -26,17 +37,17 @@ export class ContainerExtension<
     text?: string | Attributes | null,
     attrs?: Attributes,
   ) {
-    const t = Text.create()
+    const instance = new Text().appendTo(this)
     if (text) {
       if (typeof text === 'string') {
-        t.plain(text)
+        instance.plain(text)
         if (attrs) {
-          t.attr(attrs)
+          instance.attr(attrs)
         }
       } else {
-        t.attr(text)
+        instance.attr(text)
       }
     }
-    return t
+    return instance
   }
 }

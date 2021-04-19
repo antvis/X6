@@ -72,9 +72,10 @@ export class Transform<TElement extends Element>
   }
 
   matrix(): Matrix
+  matrix(m: Matrix | Matrix.MatrixLike): this
   matrix(a: number, b: number, c: number, d: number, e: number, f: number): this
   matrix(
-    a?: number,
+    a?: Matrix | Matrix.MatrixLike | number,
     b?: number,
     c?: number,
     d?: number,
@@ -85,17 +86,19 @@ export class Transform<TElement extends Element>
       return new Matrix(this)
     }
 
-    return this.attr(
-      'transform',
-      new Matrix(
-        a,
-        b as number,
-        c as number,
-        d as number,
-        e as number,
-        f as number,
-      ).toString(),
-    )
+    const m =
+      typeof a === 'number'
+        ? new Matrix(
+            a,
+            b as number,
+            c as number,
+            d as number,
+            e as number,
+            f as number,
+          )
+        : new Matrix(a)
+
+    return this.attr('transform', m.toString())
   }
 
   rotate(angle: number): this
@@ -104,12 +107,22 @@ export class Transform<TElement extends Element>
     return this.transform({ rotate: angle, ox: cx, oy: cy }, true)
   }
 
+  skew(): this
+  skew(s: number): this
   skew(x: number, y: number): this
+  skew(s: number, cx: number, cy: number): this
   skew(x: number, y: number, cx: number, cy: number): this
-  skew(x: number, y: number, cx?: number, cy?: number) {
+  skew(x?: number, y?: number, cx?: number, cy?: number) {
     return arguments.length === 1 || arguments.length === 3
       ? this.transform({ skew: x, ox: y, oy: cx }, true)
-      : this.transform({ skew: [x, y], ox: cx, oy: cy }, true)
+      : this.transform(
+          {
+            skew: typeof x === 'undefined' ? undefined : [x, y as number],
+            ox: cx,
+            oy: cy,
+          },
+          true,
+        )
   }
 
   shear(lam: number): this
@@ -118,12 +131,22 @@ export class Transform<TElement extends Element>
     return this.transform({ shear: lam, ox: cx, oy: cy }, true)
   }
 
+  scale(): this
+  scale(s: number): this
   scale(x: number, y: number): this
   scale(x: number, y: number, cx: number, cy: number): this
-  scale(x: number, y: number, cx?: number, cy?: number) {
+  scale(s: number, cx: number, cy: number): this
+  scale(x?: number, y?: number, cx?: number, cy?: number) {
     return arguments.length === 1 || arguments.length === 3
       ? this.transform({ scale: x, ox: y, oy: cx }, true)
-      : this.transform({ scale: [x, y], ox: cx, oy: cy }, true)
+      : this.transform(
+          {
+            scale: typeof x === 'undefined' ? undefined : [x, y as number],
+            ox: cx,
+            oy: cy,
+          },
+          true,
+        )
   }
 
   translate(x: number, y: number) {
@@ -137,7 +160,7 @@ export class Transform<TElement extends Element>
   flip(origin?: number | [number, number] | Point.PointLike): this
   flip(
     direction: 'both' | 'x' | 'y',
-    origin?: number | [number, number] | Point.PointLike,
+    origin?: number | [number, number] | Point.PointLike | 'center',
   ): this
   flip(
     direction:
@@ -147,7 +170,7 @@ export class Transform<TElement extends Element>
       | number
       | [number, number]
       | Point.PointLike = 'both',
-    origin?: number | [number, number] | Point.PointLike,
+    origin: number | [number, number] | Point.PointLike | 'center' = 'center',
   ) {
     if (typeof direction !== 'string') {
       origin = direction // eslint-disable-line
