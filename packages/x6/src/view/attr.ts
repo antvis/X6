@@ -32,7 +32,7 @@ export class AttrManager {
     let set: Attr.ComplexAttrs | undefined
     let offset: Attr.ComplexAttrs | undefined
     let position: Attr.ComplexAttrs | undefined
-    let text: Attr.ComplexAttrs | undefined
+    let delay: Attr.ComplexAttrs | undefined
 
     const specials: { name: string; definition: Attr.Definition }[] = []
 
@@ -78,11 +78,11 @@ export class AttrManager {
 
       const setDefine = definition as Attr.SetDefinition
       if (typeof setDefine.set === 'function') {
-        if (name === 'text' || name === 'textWrap') {
-          if (text == null) {
-            text = {}
+        if (AttrManager.DELAY_ATTRS.includes(name)) {
+          if (delay == null) {
+            delay = {}
           }
-          text[name] = val
+          delay[name] = val
         } else {
           if (set == null) {
             set = {}
@@ -114,7 +114,7 @@ export class AttrManager {
       set,
       offset,
       position,
-      text,
+      delay,
     }
   }
 
@@ -241,7 +241,7 @@ export class AttrManager {
     const setAttrs = processedAttrs.set
     const positionAttrs = processedAttrs.position
     const offsetAttrs = processedAttrs.offset
-    const textAttrs = processedAttrs.text
+    const delayAttrs = processedAttrs.delay
 
     const getOptions = () => ({
       elem,
@@ -373,19 +373,29 @@ export class AttrManager {
       elem.setAttribute('transform', Dom.matrixToTransformString(nodeMatrix))
     }
 
-    // text process
-    if (textAttrs != null) {
+    // delay render
+    if (delayAttrs != null) {
       Scheduler.scheduleTask(() => {
-        Object.keys(textAttrs).forEach((name) => {
-          const val = textAttrs[name]
+        Object.keys(delayAttrs).forEach((name) => {
+          const val = delayAttrs[name]
           const def = this.getDefinition(name)
           if (def != null) {
-            FunctionExt.call(
+            const ret = FunctionExt.call(
               (def as Attr.SetDefinition).set,
               this.view,
               val,
               getOptions(),
             )
+            if (typeof ret === 'object') {
+              this.view.setAttrs(ret, elem)
+            } else if (ret != null) {
+              this.view.setAttrs(
+                {
+                  [name]: ret,
+                },
+                elem,
+              )
+            }
           }
         })
       })
@@ -553,8 +563,14 @@ export namespace AttrManager {
     set?: Attr.ComplexAttrs | undefined
     offset?: Attr.ComplexAttrs | undefined
     position?: Attr.ComplexAttrs | undefined
-    text?: Attr.ComplexAttrs | undefined
+    delay?: Attr.ComplexAttrs | undefined
   }
 
   export const CASE_SENSITIVE_ATTR = ['viewBox']
+  export const DELAY_ATTRS = [
+    'text',
+    'textWrap',
+    'sourceMarker',
+    'targetMarker',
+  ]
 }
