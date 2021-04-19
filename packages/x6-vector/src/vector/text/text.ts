@@ -3,16 +3,15 @@ import { UnitNumber } from '../../struct/unit-number'
 import { Adopter } from '../../dom/common/adopter'
 import { TSpan } from '../tspan/tspan'
 import { TextBase } from './base'
-import { AttrOverride } from './override'
-import { SVGTextAttributes } from './types'
+import { Overrides } from './overrides'
 
-@Text.mixin(AttrOverride)
+@Text.mixin(Overrides)
 @Text.register('Text')
 export class Text<
     TSVGTextElement extends SVGTextElement | SVGTextPathElement = SVGTextElement
   >
   extends TextBase<TSVGTextElement>
-  implements AttrOverride.Depends {
+  implements Overrides.Depends {
   public affixes: Record<string | number, any> & {
     leading: number
   }
@@ -21,8 +20,8 @@ export class Text<
 
   restoreAffix() {
     super.restoreAffix()
-    if (this.affixes.leading == null) {
-      this.affixes.leading = 1.3
+    if (this.leading() == null) {
+      this.leading(1.3)
     }
     return this
   }
@@ -31,10 +30,10 @@ export class Text<
   leading(value: UnitNumber.Raw): this
   leading(value?: UnitNumber.Raw) {
     if (value == null) {
-      return this.affixes.leading
+      return this.affix('leading')
     }
 
-    this.affixes.leading = UnitNumber.create(value).valueOf()
+    this.affix('leading', UnitNumber.create(value).valueOf())
     return this.rebuild()
   }
 
@@ -121,36 +120,5 @@ export class Text<
 
   newLine(text = '') {
     return this.tspan(text).newLine()
-  }
-}
-
-export namespace Text {
-  export function create<Attributes extends SVGTextAttributes>(
-    attrs?: Attributes | null,
-  ): Text
-  export function create<Attributes extends SVGTextAttributes>(
-    text: string,
-    attrs?: Attributes | null,
-  ): Text
-  export function create<Attributes extends SVGTextAttributes>(
-    text?: string | Attributes | null,
-    attrs?: Attributes | null,
-  ): Text
-  export function create<Attributes extends SVGTextAttributes>(
-    text?: string | Attributes | null,
-    attrs?: Attributes | null,
-  ) {
-    const t = new Text()
-    if (text) {
-      if (typeof text === 'string') {
-        t.text(text)
-        if (attrs) {
-          t.attr(attrs)
-        }
-      } else {
-        t.attr(text)
-      }
-    }
-    return t
   }
 }

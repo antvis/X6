@@ -14,14 +14,14 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
   /**
    * Returns the first child of the element.
    */
-  first<T extends Dom = Dom>(): T | null {
+  firstChild<T extends Dom = Dom>(): T | null {
     return Dom.adopt<T>(this.node.firstChild)
   }
 
   /**
    * Returns the last child of the element.
    */
-  last<T extends Dom = Dom>(): T | null {
+  lastChild<T extends Dom = Dom>(): T | null {
     return Dom.adopt<T>(this.node.lastChild)
   }
 

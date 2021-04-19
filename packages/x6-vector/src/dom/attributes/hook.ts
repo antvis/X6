@@ -29,9 +29,9 @@ export namespace Hook {
         Object.keys(attributeValue).forEach((key) =>
           Style.style(node, key, attributeValue[key]),
         )
-        return true
+        return false
       }
-      return false
+      return attributeValue
     },
   })
 }

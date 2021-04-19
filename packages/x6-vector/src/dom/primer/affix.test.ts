@@ -77,7 +77,7 @@ describe('Dom', () => {
 
         div.add(span)
         const div2 = div.clone(true)
-        const span2 = div2.first()!
+        const span2 = div2.firstChild()!
 
         expect(div2.attr(Affix.PERSIST_ATTR_NAME)).toEqual('{"foo":"bar"}')
         expect(span2.attr(Affix.PERSIST_ATTR_NAME)).toEqual('{"a":1}')
