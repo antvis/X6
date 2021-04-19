@@ -1,4 +1,4 @@
-import { NodeView } from '@antv/x6'
+import { NodeView, Scheduler } from '@antv/x6'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 import { VueShape } from './node'
 import { VueComponent } from './registry'
@@ -14,9 +14,11 @@ export class VueShapeView extends NodeView<VueShape> {
 
   confirmUpdate(flag: number) {
     const ret = super.confirmUpdate(flag)
-    return this.handleAction(ret, VueShapeView.action, () =>
-      this.renderVueComponent(),
-    )
+    return this.handleAction(ret, VueShapeView.action, () => {
+      Scheduler.scheduleTask(() => {
+        this.renderVueComponent()
+      })
+    })
   }
 
   protected renderVueComponent() {
