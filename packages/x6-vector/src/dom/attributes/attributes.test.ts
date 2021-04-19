@@ -329,9 +329,9 @@ describe('Dom', () => {
           set(node, value) {
             if (typeof value === 'number') {
               node.setAttribute('foo', value > 0 ? '1' : '-1')
-              return true
+              return false
             }
-            return false
+            return value
           },
         })
         div.attr('foo', 'bar')

@@ -1,4 +1,3 @@
-import type { Text } from '../text/text'
 import { UnitNumber } from '../../struct/unit-number'
 import { Size } from '../common/size'
 import { Dom } from '../../dom'
@@ -80,36 +79,4 @@ export class Vector<
   dmove(x: string | number = 0, y: string | number = 0) {
     return this.dx(x).dy(y)
   }
-
-  // #region Font
-
-  font(attrs: Record<string, string | number>): this
-  font(key: string, value: string | number): this
-  font(a: Record<string, string | number> | string, v?: string | number) {
-    if (typeof a === 'object') {
-      Object.keys(a).forEach((key) => this.font(key, a[key]))
-      return this
-    }
-
-    if (a === 'leading') {
-      const text = (this as any) as Text // eslint-disable-line
-      if (text.leading) {
-        text.leading(v)
-      }
-      return this
-    }
-
-    return a === 'anchor'
-      ? this.attr('text-anchor', v)
-      : a === 'size' ||
-        a === 'family' ||
-        a === 'weight' ||
-        a === 'stretch' ||
-        a === 'variant' ||
-        a === 'style'
-      ? this.attr(`font-${a}`, v)
-      : this.attr(a, v)
-  }
-
-  // #endregion
 }
