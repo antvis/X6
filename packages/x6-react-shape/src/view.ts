@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { NodeView } from '@antv/x6'
+import { NodeView, Scheduler } from '@antv/x6'
 import { ReactShape } from './node'
 import { Portal } from './portal'
 import { Wrap } from './wrap'
@@ -21,9 +21,11 @@ export class ReactShapeView extends NodeView<ReactShape> {
 
   confirmUpdate(flag: number) {
     const ret = super.confirmUpdate(flag)
-    return this.handleAction(ret, ReactShapeView.action, () =>
-      this.renderReactComponent(),
-    )
+    return this.handleAction(ret, ReactShapeView.action, () => {
+      Scheduler.scheduleTask(() => {
+        this.renderReactComponent()
+      })
+    })
   }
 
   protected renderReactComponent() {

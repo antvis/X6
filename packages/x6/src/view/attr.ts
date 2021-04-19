@@ -1,4 +1,11 @@
-import { ObjectExt, ArrayExt, Dom, FunctionExt } from '../util'
+import {
+  ObjectExt,
+  ArrayExt,
+  Dom,
+  FunctionExt,
+  StringExt,
+  Scheduler,
+} from '../util'
 import { Rectangle, Point } from '../geometry'
 import { Dictionary } from '../common'
 import { Attr } from '../registry/attr'
@@ -25,9 +32,9 @@ export class AttrManager {
     let set: Attr.ComplexAttrs | undefined
     let offset: Attr.ComplexAttrs | undefined
     let position: Attr.ComplexAttrs | undefined
+    let text: Attr.ComplexAttrs | undefined
 
     const specials: { name: string; definition: Attr.Definition }[] = []
-    const kebabCase = (s: string) => s.replace(/[A-Z]/g, '-$&').toLowerCase()
 
     // divide the attributes between normal and special
     Object.keys(raw).forEach((name) => {
@@ -61,7 +68,7 @@ export class AttrManager {
         }
         const normalName = AttrManager.CASE_SENSITIVE_ATTR.includes(name)
           ? name
-          : kebabCase(name)
+          : StringExt.kebabCase(name)
         normal[normalName] = val as Attr.SimpleAttrValue
       }
     })
@@ -71,10 +78,17 @@ export class AttrManager {
 
       const setDefine = definition as Attr.SetDefinition
       if (typeof setDefine.set === 'function') {
-        if (set == null) {
-          set = {}
+        if (name === 'text' || name === 'textWrap') {
+          if (text == null) {
+            text = {}
+          }
+          text[name] = val
+        } else {
+          if (set == null) {
+            set = {}
+          }
+          set[name] = val
         }
-        set[name] = val
       }
 
       const offsetDefine = definition as Attr.OffsetDefinition
@@ -100,6 +114,7 @@ export class AttrManager {
       set,
       offset,
       position,
+      text,
     }
   }
 
@@ -226,6 +241,8 @@ export class AttrManager {
     const setAttrs = processedAttrs.set
     const positionAttrs = processedAttrs.position
     const offsetAttrs = processedAttrs.offset
+    const textAttrs = processedAttrs.text
+
     const getOptions = () => ({
       elem,
       cell: this.cell,
@@ -354,6 +371,24 @@ export class AttrManager {
       nodeMatrix.e = nodePosition.x
       nodeMatrix.f = nodePosition.y
       elem.setAttribute('transform', Dom.matrixToTransformString(nodeMatrix))
+    }
+
+    // text process
+    if (textAttrs != null) {
+      Scheduler.scheduleTask(() => {
+        Object.keys(textAttrs).forEach((name) => {
+          const val = textAttrs[name]
+          const def = this.getDefinition(name)
+          if (def != null) {
+            FunctionExt.call(
+              (def as Attr.SetDefinition).set,
+              this.view,
+              val,
+              getOptions(),
+            )
+          }
+        })
+      })
     }
   }
 
@@ -518,6 +553,7 @@ export namespace AttrManager {
     set?: Attr.ComplexAttrs | undefined
     offset?: Attr.ComplexAttrs | undefined
     position?: Attr.ComplexAttrs | undefined
+    text?: Attr.ComplexAttrs | undefined
   }
 
   export const CASE_SENSITIVE_ATTR = ['viewBox']
