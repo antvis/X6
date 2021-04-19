@@ -20,26 +20,38 @@ export {
 
 // @see: https://medium.com/@robertsavian/javascript-case-converters-using-lodash-4f2f964091cc
 
-export function pascalCase(str?: string) {
-  return startCase(camelCase(str)).replace(/ /g, '')
+const cacheStringFunction = <T extends (str: string) => string>(fn: T): T => {
+  const cache: Record<string, string> = Object.create(null)
+  return ((str: string) => {
+    const hit = cache[str]
+    return hit || (cache[str] = fn(str))
+  }) as any
 }
 
-export function constantCase(str?: string) {
-  return upperCase(str).replace(/ /g, '_')
-}
+export const kebabCase = cacheStringFunction((s: string) =>
+  s.replace(/\B([A-Z])/g, '-$1').toLowerCase(),
+)
 
-export function dotCase(str?: string) {
-  return lowerCase(str).replace(/ /g, '.')
-}
+export const pascalCase = cacheStringFunction((s: string) =>
+  startCase(camelCase(s)).replace(/ /g, ''),
+)
 
-export function pathCase(str?: string) {
-  return lowerCase(str).replace(/ /g, '/')
-}
+export const constantCase = cacheStringFunction((s: string) =>
+  upperCase(s).replace(/ /g, '_'),
+)
 
-export function sentenceCase(str?: string) {
-  return upperFirst(lowerCase(str))
-}
+export const dotCase = cacheStringFunction((s: string) =>
+  lowerCase(s).replace(/ /g, '.'),
+)
 
-export function titleCase(str?: string) {
-  return startCase(camelCase(str))
-}
+export const pathCase = cacheStringFunction((s: string) =>
+  lowerCase(s).replace(/ /g, '/'),
+)
+
+export const sentenceCase = cacheStringFunction((s: string) =>
+  upperFirst(lowerCase(s)),
+)
+
+export const titleCase = cacheStringFunction((s: string) =>
+  startCase(camelCase(s)),
+)
