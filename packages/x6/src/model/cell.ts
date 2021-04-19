@@ -255,7 +255,7 @@ export class Cell<
     if (typeof key === 'string') {
       this.store.set(key, value, options)
     } else {
-      const props = this.preprocess(key)
+      const props = this.preprocess(key, true)
       this.store.set(ObjectExt.merge({}, this.getProp(), props), value)
       this.postprocess(key)
     }
