@@ -15,5 +15,6 @@ export * from './unit'
 export * from './dom'
 export * from './vector'
 export * from './size-sensor'
+export * from './scheduler'
 
 export { JQuery }
