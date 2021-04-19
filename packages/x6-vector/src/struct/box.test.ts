@@ -1,4 +1,3 @@
-import { Global } from '../global'
 import { Box } from './box'
 import { Matrix } from './matrix'
 
@@ -85,26 +84,6 @@ describe('Box', () => {
       expect(
         new Box({ left: 1, top: 2, width: 3, height: 4 }).toArray(),
       ).toEqual([1, 2, 3, 4])
-    })
-  })
-
-  describe('addOffset()', () => {
-    it('should return a new instance', () => {
-      Global.withWindow({ pageXOffset: 50, pageYOffset: 25 } as any, () => {
-        const box = new Box(100, 100, 100, 100)
-        const box2 = box.addOffset()
-
-        expect(box2).toBeInstanceOf(Box)
-        expect(box2).not.toBe(box)
-      })
-    })
-
-    it('should add the current page offset to the box', () => {
-      Global.withWindow({ pageXOffset: 50, pageYOffset: 25 } as any, () => {
-        const box = new Box(100, 100, 100, 100).addOffset()
-
-        expect(box.toArray()).toEqual([150, 125, 100, 100])
-      })
     })
   })
 

@@ -204,9 +204,11 @@ export namespace Core {
   ) {
     const hook = Hook.get(name)
     if (hook && hook.set) {
-      if (hook.set(node, value) !== false) {
+      const ret = hook.set(node, value)
+      if (ret === false) {
         return
       }
+      value = ret // eslint-disable-line
     }
 
     const special = Special.get(name)

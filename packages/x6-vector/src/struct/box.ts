@@ -1,6 +1,5 @@
-import { Global } from '../global'
-import { Matrix } from './matrix'
 import { Point } from './point'
+import { Matrix } from './matrix'
 
 export class Box implements Box.BoxLike {
   x: number
@@ -65,13 +64,6 @@ export class Box implements Box.BoxLike {
     this.height = source[3] || 0
 
     return this
-  }
-
-  addOffset() {
-    // offset by window scroll position, because getBoundingClientRect changes when window is scrolled
-    this.x += Global.window.pageXOffset
-    this.y += Global.window.pageYOffset
-    return new Box(this)
   }
 
   isNull() {
