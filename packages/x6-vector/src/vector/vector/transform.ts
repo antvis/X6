@@ -6,6 +6,11 @@ import { Base } from '../common/base'
 export class Transform<
   TSVGElement extends SVGElement = SVGElement
 > extends Base<TSVGElement> {
+  /**
+   * Moves an element to a different parent (similar to addTo), but without
+   * changing its visual representation. All transformations are merged and
+   * applied to the element.
+   */
   toParent(parent: Transform, index?: number): this {
     if (this !== parent) {
       const ctm = this.screenCTM()
@@ -17,6 +22,11 @@ export class Transform<
     return this
   }
 
+  /**
+   * Moves an element to the root svg (similar to addTo), but without
+   * changing its visual representation. All transformations are merged and
+   * applied to the element.
+   */
   toRoot(index?: number): this {
     const root = this.root()
     if (root) {
@@ -25,8 +35,14 @@ export class Transform<
     return this
   }
 
-  point(x: number, y: number) {
-    return new Point(x, y).transform(this.screenCTM().inverse())
+  /**
+   * Transforms a point from screen coordinates to the elements coordinate system.
+   */
+  toLocalPoint(p: Point.PointLike): Point
+  toLocalPoint(x: number, y: number): Point
+  toLocalPoint(x: number | Point.PointLike, y?: number) {
+    const p = typeof x === 'number' ? new Point(x, y) : new Point(x)
+    return p.transform(this.screenCTM().inverse())
   }
 
   ctm() {

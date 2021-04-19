@@ -9,12 +9,22 @@ export class TextExtension<
     text = '',
     attrs?: Attributes | null,
   ) {
-    const tspan = TSpan.create(text, attrs)
+    const tspan = new TSpan().appendTo(this)
+    if (text != null) {
+      if (typeof text === 'string') {
+        tspan.text(text)
+        if (attrs) {
+          tspan.attr(attrs)
+        }
+      } else {
+        tspan.attr(text)
+      }
+    }
 
     if (!this.building) {
       this.clear()
     }
 
-    return tspan.appendTo(this)
+    return tspan
   }
 }

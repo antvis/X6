@@ -21,7 +21,7 @@ export class Matrix implements Matrix.MatrixLike {
   constructor(element: Matrix.Matrixifiable | null)
   constructor(array: Matrix.MatrixArray)
   constructor(matrix: Matrix.MatrixLike)
-  constructor(options: Matrix.TransformOptions)
+  constructor(options: Matrix.TransformOptionsStrict)
   constructor(
     a?:
       | number
@@ -44,7 +44,7 @@ export class Matrix implements Matrix.MatrixLike {
       | Matrix.Matrixifiable
       | Matrix.MatrixArray
       | Matrix.MatrixLike
-      | Matrix.TransformOptions
+      | Matrix.TransformOptionsStrict
       | null,
     b?: number,
     c?: number,
@@ -67,7 +67,7 @@ export class Matrix implements Matrix.MatrixLike {
         : typeof a === 'object' && Matrix.isMatrixLike(a)
         ? a
         : typeof a === 'object'
-        ? new Matrix().transform(a as Matrix.TransformOptions)
+        ? new Matrix().transform(a as Matrix.TransformOptionsStrict)
         : typeof a === 'number'
         ? Matrix.toMatrixLike([
             a,
@@ -380,7 +380,7 @@ export class Matrix implements Matrix.MatrixLike {
     return this.skew(0, y, cx, cy)
   }
 
-  transform(o: Matrix.MatrixLike | Matrix.TransformOptions) {
+  transform(o: Matrix.MatrixLike | Matrix.TransformOptionsStrict) {
     if (Matrix.isMatrixLike(o)) {
       const matrix = new Matrix(o)
       return matrix.multiplyO(this)
@@ -452,7 +452,7 @@ export namespace Matrix {
 }
 
 export namespace Matrix {
-  export interface TransformOptions {
+  export interface TransformOptionsStrict {
     flip?: 'both' | 'x' | 'y' | boolean
     skew?: number | [number, number]
     skewX?: number
@@ -491,9 +491,14 @@ export namespace Matrix {
     relativeY?: number
   }
 
+  export interface TransformOptions
+    extends Omit<TransformOptionsStrict, 'origin'> {
+    origin?: number | [number, number] | { x: number; y: number } | 'center'
+  }
+
   export type Transform = ReturnType<typeof Matrix.prototype.decompose>
 
-  export function formatTransforms(o: TransformOptions) {
+  export function formatTransforms(o: TransformOptionsStrict) {
     const flipBoth = o.flip === 'both' || o.flip === true
     const flipX = o.flip && (flipBoth || o.flip === 'x') ? -1 : 1
     const flipY = o.flip && (flipBoth || o.flip === 'y') ? -1 : 1

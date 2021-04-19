@@ -14,7 +14,7 @@ export class ContainerExtension<
     path: string | Path,
     attrs?: Attributes,
   ) {
-    const instance = text instanceof Text ? text : Text.create(text)
+    const instance = text instanceof Text ? text : new Text().text(text)
     const textPath = instance.path(path)
     if (attrs) {
       textPath.attr(attrs)
@@ -74,7 +74,7 @@ export class PathExtension<
     text: string | Text,
     attrs?: Attributes,
   ) {
-    const instance = text instanceof Text ? text : Text.create(text)
+    const instance = text instanceof Text ? text : new Text().text(text)
     if (!instance.parent()) {
       this.after(instance)
     }

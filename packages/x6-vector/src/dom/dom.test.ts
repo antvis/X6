@@ -5,29 +5,29 @@ import { Dom } from './dom'
 import { Fragment } from '../vector/fragment/fragment'
 
 describe('Dom', () => {
-  describe('first()', () => {
+  describe('firstChild()', () => {
     it('should return the first child', () => {
       const g = new G()
       const rect = g.rect()
       g.circle(100)
-      expect(g.first()).toBe(rect)
+      expect(g.firstChild()).toBe(rect)
     })
 
     it('should return `null` if no first child exists', () => {
-      expect(new G().first()).toBe(null)
+      expect(new G().firstChild()).toBe(null)
     })
   })
 
-  describe('last()', () => {
+  describe('lastChild()', () => {
     it('should return the last child of the element', () => {
       const g = new G()
       g.rect()
       const rect = g.rect()
-      expect(g.last()).toBe(rect)
+      expect(g.lastChild()).toBe(rect)
     })
 
     it('should return `null` if no last child exists', () => {
-      expect(new G().last()).toBe(null)
+      expect(new G().lastChild()).toBe(null)
     })
   })
 

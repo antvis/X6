@@ -2,6 +2,8 @@ import { withSvgContext } from '../../util'
 import { Box } from '../../struct/box'
 import { Base } from '../common/base'
 import { Transform } from './transform'
+import { Global } from '../../global'
+import { Point } from '../../struct/point'
 
 export class BBox<
   TSVGElement extends SVGElement = SVGElement
@@ -50,11 +52,18 @@ export class BBox<
 
     // Else we want it in absolute screen coordinates
     // Therefore we need to add the scrollOffset
-    return rbox.addOffset()
+    rbox.x += Global.window.pageXOffset
+    rbox.y += Global.window.pageYOffset
+
+    return rbox
   }
 
-  inside(x: number, y: number) {
+  containsPoint(p: Point.PointLike): boolean
+  containsPoint(x: number, y: number): boolean
+  containsPoint(arg1: number | Point.PointLike, arg2?: number) {
     const box = this.bbox()
+    const x = typeof arg1 === 'number' ? arg1 : arg1.x
+    const y = typeof arg1 === 'number' ? (arg2 as number) : arg1.y
     return (
       x > box.x && y > box.y && x < box.x + box.width && y < box.y + box.height
     )

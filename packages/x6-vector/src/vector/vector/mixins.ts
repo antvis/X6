@@ -2,9 +2,11 @@ import { applyMixins } from '../../util'
 import { ElementExtension as StyleExtension } from '../style/exts'
 import { ElementExtension as MaskExtension } from '../mask/exts'
 import { ElementExtension as ClipPathExtension } from '../clippath/exts'
-import { Vector } from './vector'
 import { Base } from '../common/base'
+import { Vector } from './vector'
+import { Overrides } from './overrides'
 import { BBox } from './bbox'
+import { FontStyle } from './font'
 import { Transform } from './transform'
 import { FillStroke } from './fillstroke'
 
@@ -13,6 +15,7 @@ declare module './vector' {
     extends Base<TSVGElement>,
       FillStroke<TSVGElement>,
       BBox<TSVGElement>,
+      FontStyle<TSVGElement>,
       Transform<TSVGElement>,
       MaskExtension<TSVGElement>,
       StyleExtension<TSVGElement>,
@@ -22,7 +25,9 @@ declare module './vector' {
 applyMixins(
   Vector,
   Base,
+  Overrides,
   BBox,
+  FontStyle,
   Transform,
   FillStroke,
   MaskExtension,
