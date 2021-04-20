@@ -1,3 +1,10 @@
+## @antv/x6 [1.18.5](https://github.com/antvis/x6/compare/@antv/x6@1.18.4...@antv/x6@1.18.5) (2021-04-20)
+
+
+### Bug Fixes
+
+* 🐛 don't change cell id when setProp ([44be23e](https://github.com/antvis/x6/commit/44be23ed5500a3b219ee4774990e8caee58269c3))
+
 ## @antv/x6 [1.18.4](https://github.com/antvis/x6/compare/@antv/x6@1.18.3...@antv/x6@1.18.4) (2021-04-17)
 
 
