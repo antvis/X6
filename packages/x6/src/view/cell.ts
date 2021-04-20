@@ -7,7 +7,6 @@ import { Attr } from '../registry/attr'
 import { Registry } from '../registry/registry'
 import { ConnectionStrategy } from '../registry/connection-strategy'
 import { Cell } from '../model/cell'
-import { Node } from '../model/node'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
 import { Graph } from '../graph/graph'
@@ -352,54 +351,7 @@ export class CellView<
     return this.cache.getBoundingRect(elem)
   }
 
-  getBBoxOfNeatElement(elem: Element) {
-    if (elem === this.container) {
-      return this.cell.getBBox()
-    }
-
-    const tagName = elem.nodeName.toLowerCase()
-    const portId = elem.getAttribute('port')
-    if (!(this.cell instanceof Node && elem instanceof SVGAElement && portId)) {
-      return null
-    }
-
-    const port = this.cell.getPort(portId)
-    if (!port || !port.group) {
-      return null
-    }
-
-    const cellBBox = this.cell.getBBox()
-    const layouts = this.cell.getPortsPosition(port.group)
-    const position = layouts[portId].position
-    const attr = (name: string) => {
-      const s = elem.getAttribute(name)
-      const v = s ? parseFloat(s) : 0
-      return Number.isNaN(v) ? 0 : v
-    }
-
-    let r = 0
-
-    switch (tagName) {
-      case 'rect':
-        break
-      case 'circle':
-        r = attr('r')
-        return new Rectangle(
-          cellBBox.x + position.x - r,
-          cellBBox.y + position.y - r,
-          2 * r,
-          2 * r,
-        )
-      default:
-        break
-    }
-  }
-
   getBBoxOfElement(elem: Element) {
-    const ret = this.getBBoxOfNeatElement(elem)
-    if (ret) {
-      return ret
-    }
     const rect = this.getBoundingRectOfElement(elem)
     const matrix = this.getMatrixOfElement(elem)
     const rm = this.getRootRotatedMatrix()
