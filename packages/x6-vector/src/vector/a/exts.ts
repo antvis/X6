@@ -48,7 +48,7 @@ export class ElementExtension<
       link.to(url)
     }
 
-    if (!link.parent()) {
+    if (this.parent() !== link) {
       this.wrap(link)
     }
 
