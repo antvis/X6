@@ -1,3 +1,21 @@
+## @antv/x6-sites-demos [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.2...@antv/x6-sites-demos@1.1.3) (2021-04-21)
+
+
+### Bug Fixes
+
+* 🐛 fix lack of deps in demo ([a6232fc](https://github.com/antvis/x6/commit/a6232fc35934cb6b31e735af040fb8115813bb12))
+* 🐛 update layout version ([a37f640](https://github.com/antvis/x6/commit/a37f640c915e061d2fccc2ce2ae077e27c0bafd2))
+* add `placeholder` and `notFoundText` for stencil component ([#574](https://github.com/antvis/x6/issues/574)) ([c9100ab](https://github.com/antvis/x6/commit/c9100abb8576eaf55c5a9b0c5496f63c1796af5a)), closes [#555](https://github.com/antvis/x6/issues/555)
+* fix demo error in sites ([#641](https://github.com/antvis/x6/issues/641)) ([a8f90b1](https://github.com/antvis/x6/commit/a8f90b16a953ddb9970f9d6954d541d3f8375869))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-sites-demos-helper:** upgraded to 1.2.1
+
 ## @antv/x6-sites-demos [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.3...@antv/x6-sites-demos@1.1.4) (2021-04-20)
 
 
