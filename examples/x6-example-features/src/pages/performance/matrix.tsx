@@ -206,59 +206,6 @@ export default class Example extends React.Component {
     this.container = container
   }
 
-  getMatrixOfElement = (elem: Element, target: Element) => {
-    let matrix = Dom.createSVGMatrix()
-    let node = elem
-    const matrixList = []
-    while (node && node !== target) {
-      const transform = node.getAttribute('transform') || null
-      const nodeMatrix = Dom.transformStringToMatrix(transform)
-      matrixList.push(nodeMatrix)
-      node = node.parentElement as Element
-    }
-    matrixList.reverse().forEach((m) => {
-      matrix = matrix.multiply(m)
-    })
-    return matrix
-  }
-
-  getBoundingRectOfElement = (elem: Element) => {
-    let node = elem
-    let tagName = elem.tagName.toLowerCase()
-
-    if (tagName === 'g') {
-      node = elem.firstElementChild as Element
-      tagName = node.tagName.toLowerCase()
-    }
-
-    const attr = (name: string) => {
-      const s = node.getAttribute(name)
-      const v = s ? parseFloat(s) : 0
-      return Number.isNaN(v) ? 0 : v
-    }
-
-    let x, y, r, width, height, bbox
-    switch (tagName) {
-      case 'rect':
-        x = attr('x')
-        y = attr('y')
-        width = attr('width')
-        height = attr('height')
-        bbox = new Rectangle(x, y, width, height)
-        break
-      case 'circle':
-        x = attr('cx')
-        y = attr('cy')
-        r = attr('r')
-        bbox = new Rectangle(x - r, y - r, 2 * r, 2 * r)
-        break
-      default:
-        break
-    }
-
-    return bbox
-  }
-
   test = () => {
     const view = this.graph.findViewByCell(this.source)
     const container = view?.container
@@ -296,11 +243,14 @@ export default class Example extends React.Component {
 
     // matrix
     let s = performance.now()
-    const oldMatrixList = q.map((item) => view?.getMatrixOfElement(item))
+    const oldMatrixList = q.map((item) =>
+      Dom.getTransformToElement(item as any, container as SVGElement),
+    )
     console.log('old getMatrixOfElement spend:', performance.now() - s)
+
     s = performance.now()
     const newMatrixList = q.map((item) =>
-      this.getMatrixOfElement(item, container!),
+      Dom.getMatrixByElementAttr(item as SVGElement, container as SVGElement),
     )
     console.log('new getMatrixOfElement spend:', performance.now() - s)
 
@@ -313,14 +263,15 @@ export default class Example extends React.Component {
     })
     console.log(`getMatrixOfElement test ${isSame ? 'success' : 'failed'}`)
 
-    // bounding
+    // bbox
     s = performance.now()
-    const oldBoundingList = q.map((item) =>
-      view?.getBoundingRectOfElement(item),
-    )
+    const oldBoundingList = q.map((item) => Dom.getBBox(item as SVGElement))
     console.log('old getBoundingRectOfElement spend:', performance.now() - s)
+
     s = performance.now()
-    const newBoundingList = q.map((item) => this.getBoundingRectOfElement(item))
+    const newBoundingList = q.map((item) =>
+      Dom.getBBoxByElementAttr(item as SVGElement),
+    )
     console.log('new getBoundingRectOfElement spend:', performance.now() - s)
 
     isSame = oldBoundingList.every((item, index) => {
