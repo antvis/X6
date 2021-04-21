@@ -1,5 +1,4 @@
 import { namespaces } from '../../util'
-import { Adopter } from '../../dom/common/adopter'
 import { Registry } from '../../dom/common/registry'
 import { Dom } from '../../dom/dom'
 import type { Svg } from '../svg/svg'
@@ -25,7 +24,7 @@ export class Base<
 
     // reference id
     const matches = `${value}`.match(/(#[_a-z][\w-]*)/i)
-    return matches ? Adopter.makeInstance<T>(matches[1]) : null
+    return matches ? Base.findOne<T>(matches[1]) : null
   }
 
   svg(): string

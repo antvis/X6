@@ -1,7 +1,7 @@
 import { Decorator } from '../common/decorator'
 import { Base } from '../common/base'
 import { Marker } from './marker'
-import { SVGMarkerAttributes } from './types'
+import { SVGMarkerAttributes, MarkerType } from './types'
 
 type MarkerMethod = {
   marker<Attributes extends SVGMarkerAttributes>(
@@ -69,26 +69,26 @@ export class LineExtension<
     | SVGPolygonElement
     | SVGPolylineElement
 > extends Base<TSVGLineElement> {
-  marker(type: Marker.Type, marker: Marker): this
+  marker(type: MarkerType, marker: Marker): this
   marker<Attributes extends SVGMarkerAttributes>(
-    type: Marker.Type,
+    type: MarkerType,
     size: number | string,
     attrs?: Attributes | null,
   ): this
   marker<Attributes extends SVGMarkerAttributes>(
-    type: Marker.Type,
+    type: MarkerType,
     size: number | string,
     update: Marker.Update,
     attrs?: Attributes | null,
   ): this
   marker<Attributes extends SVGMarkerAttributes>(
-    type: Marker.Type,
+    type: MarkerType,
     width: number | string,
     height: number | string,
     attrs?: Attributes | null,
   ): this
   marker<Attributes extends SVGMarkerAttributes>(
-    type: Marker.Type,
+    type: MarkerType,
     width: number | string,
     height: number | string,
     update: Marker.Update,
@@ -96,7 +96,7 @@ export class LineExtension<
   ): this
   @Decorator.checkDefs
   marker<Attributes extends SVGMarkerAttributes>(
-    type: Marker.Type,
+    type: MarkerType,
     width: Marker | number | string,
     height?: number | string | Marker.Update | Attributes | null,
     update?: Marker.Update | Attributes | null,

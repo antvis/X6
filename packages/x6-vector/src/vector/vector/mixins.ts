@@ -1,6 +1,9 @@
 import { applyMixins } from '../../util'
-import { ElementExtension as StyleExtension } from '../style/exts'
+import { ElementExtension as AExtension } from '../a/exts'
+import { ElementExtension as DescExtension } from '../desc/exts'
+import { ElementExtension as TitleExtension } from '../title/exts'
 import { ElementExtension as MaskExtension } from '../mask/exts'
+import { ElementExtension as StyleExtension } from '../style/exts'
 import { ElementExtension as ClipPathExtension } from '../clippath/exts'
 import { Base } from '../common/base'
 import { Vector } from './vector'
@@ -15,11 +18,14 @@ declare module './vector' {
     extends Base<TSVGElement>,
       FillStroke<TSVGElement>,
       BBox<TSVGElement>,
+      AExtension<TSVGElement>,
+      DescExtension<TSVGElement>,
+      TitleExtension<TSVGElement>,
+      ClipPathExtension<TSVGElement>,
       FontStyle<TSVGElement>,
       Transform<TSVGElement>,
       MaskExtension<TSVGElement>,
-      StyleExtension<TSVGElement>,
-      ClipPathExtension<TSVGElement> {}
+      StyleExtension<TSVGElement> {}
 }
 
 applyMixins(
@@ -27,10 +33,13 @@ applyMixins(
   Base,
   Overrides,
   BBox,
+  AExtension,
+  DescExtension,
+  TitleExtension,
+  ClipPathExtension,
   FontStyle,
   Transform,
   FillStroke,
   MaskExtension,
   StyleExtension,
-  ClipPathExtension,
 )

@@ -24,7 +24,7 @@ describe('Vector', () => {
   })
 
   describe('move()', () => {
-    it('should call `x()` and `y()` with passed parameters and returns itself', () => {
+    it('should call `x()` and `y()` with passed parameters and return itself', () => {
       const spyx = spyOn(rect, 'x').and.callThrough()
       const spyy = spyOn(rect, 'y').and.callThrough()
       expect(rect.move(1, 2)).toBe(rect)
@@ -39,7 +39,7 @@ describe('Vector', () => {
       expect(rect.cx()).toBe(60)
     })
 
-    it('should center the element along the x axis and returns itself', () => {
+    it('should center the element along the x axis and return itself', () => {
       rect.attr({ x: 10, width: 100 })
       expect(rect.cx(100)).toBe(rect)
       expect(rect.attr('x')).toBe(50)
@@ -52,7 +52,7 @@ describe('Vector', () => {
       expect(rect.cy()).toBe(60)
     })
 
-    it('should center the element along the y axis and returns itself', () => {
+    it('should center the element along the y axis and return itself', () => {
       rect.attr({ y: 10, height: 100 })
       expect(rect.cy(100)).toBe(rect)
       expect(rect.attr('y')).toBe(50)
@@ -60,7 +60,7 @@ describe('Vector', () => {
   })
 
   describe('center()', () => {
-    it('should call `cx()` and `cy()` with passed parameters and returns itself', () => {
+    it('should call `cx()` and `cy()` with passed parameters and return itself', () => {
       const spyCx = spyOn(rect, 'cx').and.callThrough()
       const spyCy = spyOn(rect, 'cy').and.callThrough()
       expect(rect.center(1, 2)).toBe(rect)
@@ -70,7 +70,7 @@ describe('Vector', () => {
   })
 
   describe('dx()', () => {
-    it('should move the element along the x axis relatively and returns itself', () => {
+    it('should move the element along the x axis relatively and return itself', () => {
       rect.attr({ x: 10, width: 100 })
       expect(rect.dx(100)).toBe(rect)
       expect(rect.attr('x')).toBe(110)
@@ -78,7 +78,7 @@ describe('Vector', () => {
   })
 
   describe('dy()', () => {
-    it('should move the element along the x axis relatively and returns itself', () => {
+    it('should move the element along the x axis relatively and return itself', () => {
       rect.attr({ y: 10, height: 100 })
       expect(rect.dy(100)).toBe(rect)
       expect(rect.attr('y')).toBe(110)
@@ -86,7 +86,7 @@ describe('Vector', () => {
   })
 
   describe('dmove()', () => {
-    it('should call `dx()` and `dy()` with passed parameters and returns itself', () => {
+    it('should call `dx()` and `dy()` with passed parameters and return itself', () => {
       const spyDx = spyOn(rect, 'dx').and.callThrough()
       const spyDy = spyOn(rect, 'dy').and.callThrough()
       expect(rect.dmove(1, 2)).toBe(rect)
@@ -112,7 +112,7 @@ describe('Vector', () => {
   })
 
   describe('size()', () => {
-    it('should call `width()` and `height()` with passed parameters and returns itself', () => {
+    it('should call `width()` and `height()` with passed parameters and return itself', () => {
       const spyWidth = spyOn(rect, 'width').and.callThrough()
       const spyHeight = spyOn(rect, 'height').and.callThrough()
       expect(rect.size(1, 2)).toBe(rect)

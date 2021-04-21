@@ -10,7 +10,8 @@ export class ClipPath extends Container<SVGClipPathElement> {
   }
 
   targets<TVector extends Vector>() {
-    return ClipPath.find<TVector>(`svg [clip-path*="${this.id()}"]`)
+    const root = this.root()
+    return root ? root.find<TVector>(`[clip-path*="${this.id()}"]`) : []
   }
 }
 
