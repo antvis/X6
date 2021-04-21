@@ -5,6 +5,12 @@ import {
   SVGConditionalProcessingAttributes,
 } from '../types/attributes-core'
 
+export type MarkerType = 'start' | 'end' | 'mid' | 'all'
+export type MarkerUnits = 'userSpaceOnUse' | 'objectBoundingBox'
+export type MarkerOrient = 'auto' | 'auto-start-reverse' | number
+export type MarkerRefX = 'left' | 'center' | 'right' | number
+export type MarkerRefY = 'top' | 'center' | 'bottom' | number
+
 export interface SVGMarkerAttributes
   extends SVGCommonAttributes<SVGMarkerElement>,
     SVGStyleAttributes,
@@ -12,10 +18,10 @@ export interface SVGMarkerAttributes
     SVGPresentationAttributes {
   markerHeight?: string | number
   markerWidth?: string | number
-  markerUnits?: 'userSpaceOnUse' | 'objectBoundingBox'
-  orient?: 'auto' | 'auto-start-reverse' | number
+  markerUnits?: MarkerUnits
+  orient?: MarkerOrient
   preserveAspectRatio?: string
-  refX?: 'left' | 'center' | 'right' | number
-  refY?: 'top' | 'center' | 'bottom' | number
+  refX?: MarkerRefX
+  refY?: MarkerRefY
   viewBox?: string
 }
