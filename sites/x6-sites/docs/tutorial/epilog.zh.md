@@ -15,6 +15,7 @@ redirect_from:
     1. [怎么禁止节点移动](#怎么禁止节点移动)
     2. [怎么支持特定节点的放大缩小](#怎么支持特定节点的放大缩小)
     3. [怎么判断节点处于可缩放状态](#怎么判断节点处于可缩放状态)
+    4. [HTML/React/Vue 节点渲染出错](#HTML/React/Vue节点渲染出错)
 3.  边相关
     1. [怎么区分 edgeremoved 事件触发原因](#怎么区分-edgeremoved-事件触发原因)
     2. [在 edge:removed 事件中怎么获取目标节点](#在-edgeremoved-事件中怎么获取目标节点)
@@ -89,6 +90,13 @@ new graph({
 ### 怎么判断节点处于可缩放状态
 
 处于可缩放状态的节点会带有 `has-widget-transform` 类名
+
+### HTML/React/Vue节点渲染出错
+
+HTML/React/Vue 节点内容都是渲染在 SVG 的 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 节点内部，因为浏览器的兼容性问题，经常会出现一些异常的渲染行为。可以通过以下方式来规避：
+
+- 节点 css 中不要使用 `position:absolute` 和 `position:relative`
+- 节点 css 中不要使用 `transform`
 
 ### 怎么区分 edge:removed 事件触发原因
 
