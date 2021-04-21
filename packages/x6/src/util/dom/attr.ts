@@ -1,4 +1,5 @@
 import { ns } from './elem'
+import { kebabCase } from '../string/format'
 
 export type Attributes = { [key: string]: string | number | null | undefined }
 
@@ -99,7 +100,7 @@ export function qualifyAttr(name: string) {
 export function kebablizeAttrs(attrs: Attributes) {
   const result: Attributes = {}
   Object.keys(attrs).forEach((key) => {
-    const name = key.replace(/[A-Z]/g, '-$&').toLowerCase()
+    const name = kebabCase(key)
     result[name] = attrs[key]
   })
   return result
