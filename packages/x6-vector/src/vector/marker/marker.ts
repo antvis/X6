@@ -1,7 +1,7 @@
 import { UnitNumber } from '../../struct/unit-number'
 import { Viewbox } from '../container/viewbox'
 import { Container } from '../container/container'
-import { SVGMarkerAttributes } from './types'
+import { MarkerOrient, MarkerUnits, SVGMarkerAttributes } from './types'
 
 @Marker.register('Marker')
 @Marker.mixin(Viewbox)
@@ -18,15 +18,15 @@ export class Marker extends Container<SVGMarkerElement> {
     return this.attr('markerWidth', w)
   }
 
-  units(): Marker.Units
-  units(units: Marker.Units | null): this
-  units(units?: Marker.Units | null) {
+  units(): MarkerUnits
+  units(units: MarkerUnits | null): this
+  units(units?: MarkerUnits | null) {
     return this.attr('markerUnits', units)
   }
 
-  orient(): Marker.Orient
-  orient(orient: Marker.Orient | null): this
-  orient(orient?: Marker.Orient | null) {
+  orient(): MarkerOrient
+  orient(orient: MarkerOrient | null): this
+  orient(orient?: MarkerOrient | null) {
     return this.attr('orient', orient)
   }
 
@@ -57,11 +57,6 @@ export class Marker extends Container<SVGMarkerElement> {
 export interface Marker extends Viewbox<SVGMarkerElement> {}
 
 export namespace Marker {
-  export type Type = 'start' | 'end' | 'mid' | 'all'
-  export type Units = 'userSpaceOnUse' | 'strokeWidth'
-  export type Orient = 'auto' | 'auto-start-reverse' | number
-  export type RefX = 'left' | 'center' | 'right' | number
-  export type RefY = 'top' | 'center' | 'bottom' | number
   export type Update = (this: Marker, marker: Marker) => void
 }
 

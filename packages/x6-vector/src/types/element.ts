@@ -3,6 +3,7 @@ import { Fragment } from '../vector/fragment/fragment'
 import { A } from '../vector/a/a'
 import { ClipPath } from '../vector/clippath/clippath'
 import { Defs } from '../vector/defs/defs'
+import { Desc } from '../vector/desc/desc'
 import { G } from '../vector/g/g'
 import { Stop } from '../vector/gradient/stop'
 import { LinearGradient } from '../vector/gradient/linear'
@@ -24,6 +25,7 @@ import { Polygon } from '../vector/polygon/polygon'
 import { Polyline } from '../vector/polyline/polyline'
 import { Rect } from '../vector/rect/rect'
 import { Style } from '../vector/style/style'
+import { Title } from '../vector/title/title'
 import { Text } from '../vector/text/text'
 import { TextPath } from '../vector/textpath/textpath'
 import { TSpan } from '../vector/tspan/tspan'
@@ -34,6 +36,7 @@ export type ElementMap<T> =
   T extends SVGAElement              ? A :
   T extends SVGClipPathElement       ? ClipPath :
   T extends SVGDefsElement           ? Defs :
+  T extends SVGDescElement           ? Desc :
   T extends SVGGElement              ? G :
   T extends SVGStopElement           ? Stop :
   T extends SVGLinearGradientElement ? LinearGradient :
@@ -55,6 +58,7 @@ export type ElementMap<T> =
   T extends SVGPolylineElement       ? Polyline :
   T extends SVGRectElement           ? Rect :
   T extends SVGStyleElement          ? Style :
+  T extends SVGTitleElement          ? Title :
   T extends SVGTextElement           ? Text :
   T extends SVGTextPathElement       ? TextPath :
   T extends SVGTSpanElement          ? TSpan :
