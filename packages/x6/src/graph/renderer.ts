@@ -1019,6 +1019,37 @@ export class Renderer extends Base {
   }
 
   sortViewsExact() {
+    // const elems = this.view.stage.querySelectorAll('[data-cell-id]')
+    // const length = elems.length
+    // const cells = []
+    // for (let i = 0; i < length; i++) {
+    //   const cell = this.model.getCell(elems[i].getAttribute('data-cell-id') || '')
+    //   cells.push({
+    //     id: cell.id,
+    //     zIndex: cell.getZIndex() || 0,
+    //     elem: elems[i],
+    //   })
+    // }
+    // const sortedCells = [...cells].sort((cell1, cell2) => cell1.zIndex - cell2.zIndex)
+    // const moves = ArrayExt.diff(cells, sortedCells, 'zIndex').moves
+
+    // if (moves && moves.length) {
+    //   moves.forEach((move) => {
+    //     if (move.type) {
+    //       const elem = move.item.elem as Element
+    //       const parentNode = elem.parentNode
+    //       const index = move.index
+    //       if (parentNode) {
+    //         if (index === length - 1) {
+    //           parentNode.appendChild(elem)
+    //         } else if (index < length - 1) {
+    //           parentNode.insertBefore(elem, elems[index + 1])
+    //         }
+    //       }
+    //     }
+    //   })
+    // }
+
     // Run insertion sort algorithm in order to efficiently sort DOM
     // elements according to their associated cell `zIndex` attribute.
     const elems = this.view
