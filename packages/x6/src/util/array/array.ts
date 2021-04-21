@@ -9,3 +9,5 @@ export {
   groupBy,
   difference,
 } from 'lodash-es'
+
+export * from './diff'
