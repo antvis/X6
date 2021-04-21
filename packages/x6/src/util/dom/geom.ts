@@ -13,6 +13,7 @@ import {
   createSVGMatrix,
   decomposeMatrix,
   transformRectangle,
+  transformStringToMatrix,
 } from './matrix'
 
 /**
@@ -142,6 +143,61 @@ export function getBBox(
 
     return outputBBox as Rectangle
   }
+}
+
+// BBox is calculated by the attribute on the node
+export function getBBoxByElementAttr(elem: SVGElement) {
+  let node = elem
+  let tagName = elem.tagName.toLowerCase()
+
+  // find shape node
+  while (tagName === 'g') {
+    node = elem.firstElementChild as SVGElement
+    tagName = node.tagName.toLowerCase()
+  }
+
+  const attr = (name: string) => {
+    const s = node.getAttribute(name)
+    const v = s ? parseFloat(s) : 0
+    return Number.isNaN(v) ? 0 : v
+  }
+
+  let r
+  let bbox
+  switch (tagName) {
+    case 'rect':
+      bbox = new Rectangle(attr('x'), attr('y'), attr('width'), attr('height'))
+      break
+    case 'circle':
+      r = attr('r')
+      bbox = new Rectangle(attr('cx') - r, attr('cy') - r, 2 * r, 2 * r)
+      break
+    default:
+      break
+  }
+
+  return bbox
+}
+
+// Matrix is calculated by the transform attribute on the node
+export function getMatrixByElementAttr(elem: SVGElement, target: SVGElement) {
+  let matrix = createSVGMatrix()
+
+  if (isSVGGraphicsElement(target) && isSVGGraphicsElement(elem)) {
+    let node = elem
+    const matrixList = []
+    while (node && node !== target) {
+      const transform = node.getAttribute('transform') || null
+      const nodeMatrix = transformStringToMatrix(transform)
+      matrixList.push(nodeMatrix)
+      node = node.parentNode as SVGGraphicsElement
+    }
+    matrixList.reverse().forEach((m) => {
+      matrix = matrix.multiply(m)
+    })
+  }
+
+  return matrix
 }
 
 /**
