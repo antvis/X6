@@ -4,10 +4,6 @@ import { TypeArray } from './type-array'
 import { UnitNumber } from './unit-number'
 
 export class PointArray extends TypeArray<[number, number]> {
-  clone(): PointArray {
-    return super.clone() as PointArray
-  }
-
   bbox() {
     let maxX = Number.NEGATIVE_INFINITY
     let maxY = Number.NEGATIVE_INFINITY
