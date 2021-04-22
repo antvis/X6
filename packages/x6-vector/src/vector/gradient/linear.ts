@@ -15,7 +15,7 @@ export class LinearGradient extends Gradient<SVGLinearGradientElement> {
 
   to(x: number | string, y: number | string) {
     return this.attr({
-      x2: UnitNumber.create(y).toString(),
+      x2: UnitNumber.create(x).toString(),
       y2: UnitNumber.create(y).toString(),
     })
   }

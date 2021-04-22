@@ -9,7 +9,7 @@ type GradientMethod = {
     attrs?: Attributes | null,
   ): LinearGradient
   linearGradient<Attributes extends SVGLinearGradientAttributes>(
-    block: Gradient.Update<SVGLinearGradientElement>,
+    update: Gradient.Update<SVGLinearGradientElement>,
     attrs?: Attributes | null,
   ): LinearGradient
   linearGradient<Attributes extends SVGLinearGradientAttributes>(
