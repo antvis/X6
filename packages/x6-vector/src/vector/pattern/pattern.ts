@@ -115,6 +115,12 @@ export namespace Pattern {
               ...update,
             })
           }
+        } else {
+          pattern.attr({
+            ...base,
+            width,
+            height,
+          })
         }
       } else {
         pattern.attr({
