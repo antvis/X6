@@ -66,12 +66,12 @@ export namespace Image {
     if (url) {
       if (typeof url === 'string') {
         if (typeof callback === 'function' || callback == null) {
-          image.load(url, callback)
           if (attrs) {
             image.attr(attrs)
           }
+          image.load(url, callback)
         } else {
-          image.load(url).attr(callback)
+          image.attr(callback).load(url)
         }
       } else {
         image.attr(url)

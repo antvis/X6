@@ -21,9 +21,9 @@ export abstract class TypeArray<T, I = any> {
 
   abstract parse(raw?: I | T[]): T[]
 
-  clone() {
-    const ctor = this.constructor as new (instance: T[]) => TypeArray<T>
-    return new ctor(this.toArray()) // eslint-disable-line new-cap
+  clone(): this {
+    const Ctor = this.constructor as any
+    return new Ctor(this.toArray())
   }
 
   toArray(): T[] {

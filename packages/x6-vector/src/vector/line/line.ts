@@ -42,16 +42,16 @@ export class Line extends Shape<SVGLineElement> {
   }
 
   plot(): Line.Array
-  plot(points: Line.Array | PointArray): this
+  plot(points: Line.Array | PointArray | string): this
   plot(x1: number, y1: number, x2: number, y2: number): this
   plot(
-    x1?: Line.Array | PointArray | number,
+    x1?: Line.Array | PointArray | string | number,
     y1?: number,
     x2?: number,
     y2?: number,
   ): this
   plot(
-    x1?: Line.Array | PointArray | number,
+    x1?: Line.Array | PointArray | string | number,
     y1?: number,
     x2?: number,
     y2?: number,
@@ -60,21 +60,25 @@ export class Line extends Shape<SVGLineElement> {
       return this.toArray()
     }
 
-    const attrs = Array.isArray(x1)
-      ? {
-          x1: x1[0][0],
-          y1: x1[0][1],
-          x2: x1[1][0],
-          y2: x1[1][1],
-        }
-      : {
-          x1,
-          y1,
-          x2,
-          y2,
-        }
+    let arr: [number, number][]
 
-    return this.attr(attrs)
+    if (typeof x1 === 'string') {
+      arr = new PointArray(x1)
+    } else if (x1 instanceof PointArray || Array.isArray(x1)) {
+      arr = x1
+    } else {
+      arr = [
+        [x1 as number, y1 as number],
+        [x2 as number, y2 as number],
+      ]
+    }
+
+    return this.attr({
+      x1: arr[0][0],
+      y1: arr[0][1],
+      x2: arr[1][0],
+      y2: arr[1][1],
+    })
   }
 
   toArray(): Line.Array {
@@ -96,7 +100,7 @@ export namespace Line {
     attrs?: Attributes | null,
   ): Line
   export function create<Attributes extends SVGLineAttributes>(
-    points: Array,
+    points: Array | PointArray | string,
     attrs?: Attributes | null,
   ): Line
   export function create<Attributes extends SVGLineAttributes>(
@@ -107,14 +111,14 @@ export namespace Line {
     attrs?: Attributes | null,
   ): Line
   export function create<Attributes extends SVGLineAttributes>(
-    x1?: Array | number | Attributes | null,
+    x1?: Array | PointArray | string | number | Attributes | null,
     y1?: number | Attributes | null,
     x2?: number,
     y2?: number,
     attrs?: Attributes | null,
   ): Line
   export function create<Attributes extends SVGLineAttributes>(
-    x1?: Array | number | Attributes | null,
+    x1?: Array | PointArray | string | number | Attributes | null,
     y1?: number | Attributes | null,
     x2?: number,
     y2?: number,
