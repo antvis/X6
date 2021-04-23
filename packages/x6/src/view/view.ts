@@ -407,8 +407,8 @@ export namespace View {
     if (Config.useCSSSelector) {
       return {
         isCSSSelector: true,
-        elems: Array.prototype.slice.call(rootElem.querySelectorAll(selector)),
-        // elems: $(rootElem).find(selector).toArray() as Element[],
+        // elems: Array.prototype.slice.call(rootElem.querySelectorAll(selector)),
+        elems: $(rootElem).find(selector).toArray() as Element[],
       }
     }
 
