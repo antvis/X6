@@ -62,18 +62,11 @@ export class ScrollerManager extends Base {
       return
     }
     const container = this.widget.container!
-    const panning = this.view.prefixClassName('graph-scroller-panning')
     const pannable = this.view.prefixClassName('graph-scroller-pannable')
     if (this.pannable) {
-      if (isPanning) {
-        Dom.addClass(container, panning)
-        Dom.removeClass(container, pannable)
-      } else {
-        Dom.removeClass(container, panning)
-        Dom.addClass(container, pannable)
-      }
+      Dom.addClass(container, pannable)
+      container.dataset.panning = (!!isPanning).toString() // Use dataset to control scroller panning style to avoid reflow caused by changing classList
     } else {
-      Dom.removeClass(container, panning)
       Dom.removeClass(container, pannable)
     }
   }
