@@ -27,8 +27,8 @@ export class Keyboard extends Disposable implements IDisablable {
         this.target.setAttribute('tabindex', '-1')
       }
 
-      this.graph.on('cell:mousedown', this.focus, this)
-      this.graph.on('blank:mousedown', this.focus, this)
+      this.graph.on('cell:mouseup', this.focus, this)
+      this.graph.on('blank:mouseup', this.focus, this)
     }
 
     this.mousetrap = Keyboard.createMousetrap(this)
