@@ -27,6 +27,7 @@ export class Keyboard extends Disposable implements IDisablable {
         this.target.setAttribute('tabindex', '-1')
       }
 
+      // change to mousedown event，prevent page stalling caused by focus
       this.graph.on('cell:mouseup', this.focus, this)
       this.graph.on('blank:mouseup', this.focus, this)
     }
