@@ -1,3 +1,16 @@
+# @antv/x6 [1.19.0](https://github.com/antvis/x6/compare/@antv/x6@1.18.5...@antv/x6@1.19.0) (2021-04-26)
+
+
+### Bug Fixes
+
+* 🐛 add comment, want to release new version ([bfeae0c](https://github.com/antvis/x6/commit/bfeae0c4958f6440a5a245a094db237c074d255b))
+
+
+### Features
+
+* ✨ enhance scroller performance by avoid scoller reflow caused by changing classList ([#909](https://github.com/antvis/x6/issues/909)) ([1346223](https://github.com/antvis/x6/commit/134622397cab7312cb8e9cfc3f78901008a7b49f))
+* ✨ postpone keyboard target focusing to improve dragging performance ([f3c04ca](https://github.com/antvis/x6/commit/f3c04ca02945d14e7912a963a11fe89908e1a4c8))
+
 ## @antv/x6 [1.18.5](https://github.com/antvis/x6/compare/@antv/x6@1.18.4...@antv/x6@1.18.5) (2021-04-20)
 
 
