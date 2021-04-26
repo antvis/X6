@@ -490,6 +490,7 @@ export class Hook extends Base implements Hook.IHook {
 
     const edge = edgeView ? edgeView.cell : null
     const terminalView = terminalType === 'target' ? targetView : sourceView
+    const terminalMagnet = terminalType === 'target' ? targetMagnet : sourceMagnet
 
     let valid = true
     const doValidate = (
@@ -538,7 +539,7 @@ export class Hook extends Base implements Hook.IHook {
 
     if (valid && allowPort != null) {
       if (typeof allowPort === 'boolean') {
-        if (!allowPort && targetMagnet) {
+        if (!allowPort && terminalMagnet) {
           valid = false
         }
       } else {
@@ -559,7 +560,7 @@ export class Hook extends Base implements Hook.IHook {
     if (valid && allowNode != null) {
       if (typeof allowNode === 'boolean') {
         if (!allowNode && terminalView != null) {
-          if (NodeView.isNodeView(terminalView) && targetMagnet == null) {
+          if (NodeView.isNodeView(terminalView) && terminalMagnet == null) {
             valid = false
           }
         }
