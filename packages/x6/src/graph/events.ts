@@ -1,4 +1,5 @@
 import { Model } from '../model'
+import { Cell } from '../model/cell'
 import { CellView } from '../view'
 import { Selection } from '../addon/selection'
 import { Renderer } from './renderer'
@@ -46,6 +47,10 @@ export interface EventArgs
     }
     options: Renderer.UpdateViewsAsyncOptions
   }
+  'render:changeCellVisible:start': Model.EventArgs['cell:change:visible']
+  'render:changeCellVisible:stop': Model.EventArgs['cell:change:visible']
+  'render:resetViews:start': { cells: Cell[] }
+  'render:resetViews:stop': { cells: Cell[] }
 
   scale: { sx: number; sy: number; ox: number; oy: number }
   resize: { width: number; height: number }

@@ -262,10 +262,12 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
 
     if (!this.collection.has(cell) && !this.addings.has(cell)) {
+      this.startSingle('add', { cell })
       this.addings.set(cell, true)
       this.collection.add(this.prepareCell(cell, options), options)
       cell.eachChild((child) => this.addCell(child, options))
       this.addings.delete(cell)
+      this.stopSingle('add', { cell })
     }
 
     return this
@@ -301,7 +303,10 @@ export class Model extends Basecoat<Model.EventArgs> {
   ): Cell | null {
     const cell = typeof obj === 'string' ? this.getCell(obj) : obj
     if (cell && this.has(cell)) {
-      return this.collection.remove(cell, options)
+      this.startSingle('remove', { cell })
+      const result = this.collection.remove(cell, options)
+      this.stopSingle('remove', { cell })
+      return result
     }
     return null
   }
@@ -1189,6 +1194,15 @@ export class Model extends Basecoat<Model.EventArgs> {
   // #endregion
 
   // #region batch
+  startSingle(name: Model.SingleName, data: KeyValue = {}) {
+    this.notify('single:start', { name, data })
+    return this
+  }
+
+  stopSingle(name: Model.SingleName, data: KeyValue = {}) {
+    this.notify('single:stop', { name, data })
+    return this
+  }
 
   startBatch(name: Model.BatchName, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) + 1
@@ -1316,6 +1330,14 @@ export namespace Model {
       name: BatchName | string
       data: KeyValue
     }
+    'single:start': {
+      name: SingleName | string
+      data: KeyValue
+    }
+    'single:end': {
+      name: SingleName | string
+      data: KeyValue
+    }
 
     sorted: null
     reseted: {
@@ -1357,6 +1379,8 @@ export namespace Model {
     | 'move-segment'
     | 'move-arrowhead'
     | 'move-selection'
+
+  export type SingleName = 'add' | 'remove'
 }
 
 export namespace Model {

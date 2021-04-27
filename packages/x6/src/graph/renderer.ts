@@ -146,6 +146,11 @@ export class Renderer extends Base {
     current: visible,
     options,
   }: Model.EventArgs['cell:change:visible']) {
+    this.graph.trigger('render:changeCellVisible:start', {
+      cell,
+      current: visible,
+      options,
+    })
     // Hide connected edges before cell
     if (!visible) {
       this.processEdgeOnTerminalVisibleChanged(cell, false)
@@ -162,6 +167,11 @@ export class Renderer extends Base {
     if (visible) {
       this.processEdgeOnTerminalVisibleChanged(cell, true)
     }
+    this.graph.trigger('render:changeCellVisible:stop', {
+      cell,
+      current: visible,
+      options,
+    })
   }
 
   protected processEdgeOnTerminalVisibleChanged(node: Cell, visible: boolean) {
@@ -894,6 +904,7 @@ export class Renderer extends Base {
   }
 
   protected resetViews(cells: Cell[] = [], options: any = {}) {
+    this.graph.trigger('render:resetViews:start', { cells })
     this.resetUpdates()
     this.removeViews()
     this.freeze({ key: 'reset' })
@@ -902,6 +913,7 @@ export class Renderer extends Base {
     }
     this.unfreeze({ key: 'reset' })
     this.sortViews()
+    this.graph.trigger('render:resetViews:stop', { cells })
   }
 
   protected removeView(cell: Cell) {
