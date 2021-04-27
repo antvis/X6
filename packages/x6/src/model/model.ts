@@ -283,12 +283,12 @@ export class Model extends Basecoat<Model.EventArgs> {
       maxPosition: count - 1,
     }
 
-    this.startBatch('add', localOptions)
+    this.startBatch('add', { ...localOptions, cells })
     cells.forEach((cell) => {
       this.addCell(cell, localOptions)
       localOptions.position -= 1
     })
-    this.stopBatch('add', localOptions)
+    this.stopBatch('add', { ...localOptions, cells })
 
     return this
   }
