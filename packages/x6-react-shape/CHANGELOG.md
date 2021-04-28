@@ -1,3 +1,18 @@
+# @antv/x6-react-shape [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.3.5...@antv/x6-react-shape@1.4.0) (2021-04-28)
+
+
+### Features
+
+* ✨ add usePortal react hook in x6-react-shape ([2a0ca92](https://github.com/antvis/x6/commit/2a0ca921e849d10eb93c7f832c45815fd36d17d8))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.19.1
+
 ## @antv/x6-react-shape [1.3.5](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.3.4...@antv/x6-react-shape@1.3.5) (2021-03-30)
 
 
