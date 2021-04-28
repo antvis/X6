@@ -13,7 +13,7 @@ redirect_from:
 
 ### 画布平移
 
-普通画布(未开启 [scroller](./scroller) 模式)通过开启 `panning` 选项来支持拖拽平移。
+普通画布(未开启 [scroller](/zh/docs/tutorial/basic/scroller) 模式)通过开启 `panning` 选项来支持拖拽平移。
 
 ```ts
 const graph = new Graph({
@@ -41,7 +41,7 @@ const graph = new Graph({
 
 ### 画布缩放
 
-普通画布(未开启 [scroller](./scroller) 模式)通过开启 [mousewheel](./mousewheel) 选项来支持画布缩放。这里说明怎么通过代码来进行画布缩放：
+普通画布(未开启 [scroller](/zh/docs/tutorial/basic/scroller) 模式)通过开启 [mousewheel](/zh/docs/tutorial/basic/mousewheel) 选项来支持画布缩放。这里说明怎么通过代码来进行画布缩放：
 
 ```ts
 graph.zoom() // 获取缩放级别
@@ -57,7 +57,7 @@ graph.zoom(-0.2) // 在原来缩放级别上减少 0.2
 graph.centerContent()
 ```
 
-更多的居中方法可以查看 [Transform](../../api/graph/transform)
+更多的居中方法可以查看 [Transform](/zh/docs/api/graph/transform)
 
 ## 导出
 

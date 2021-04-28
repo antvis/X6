@@ -43,7 +43,7 @@ new Graph({
 - `'magnetAdsorbed'` 连线过程中，自动吸附到链接桩时被使用。
 
 
-另外，也可以直接使用在 [`cellView.highlight(...)`](../view/cellview#highlight) 方法中，用来高亮指定的元素。
+另外，也可以直接使用在 [`cellView.highlight(...)`](/zh/docs/api/view/cellview#highlight) 方法中，用来高亮指定的元素。
 
 ```ts
 cellView.highlight(elem, { 

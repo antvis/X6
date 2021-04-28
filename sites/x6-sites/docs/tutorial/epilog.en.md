@@ -34,7 +34,7 @@ X6 的核心能力和框架无关，在 X6 的基础上我们有 [x6-react-shape
 
 ### 怎么兼容 IE
 
-X6 是支持 `IE 11` 的，支持 [cdn](../getting-started#安装) 和模块化引入方式：
+X6 是支持 `IE 11` 的，支持 [cdn](/en/docs/tutorial/getting-started#安装) 和模块化引入方式：
 
 ```ts
 import { Graph } from '@antv/x6/dist/x6'

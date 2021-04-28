@@ -6,7 +6,7 @@ redirect_from:
   - /en/docs/api
 ---
 
-背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式](../registry/background#registry)，背景层在 DOM 层级上位于画布的最底层。
+背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式](/en/docs/api/registry/background#registry)，背景层在 DOM 层级上位于画布的最底层。
 
 <iframe src="/demos/tutorial/basic/background/playground"></iframe>
 

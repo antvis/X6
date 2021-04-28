@@ -41,7 +41,7 @@ import '@antv/x6-react-components/es/auto-scroll-box/style/index.css'
 
 | 参数           | 说明                                     | 类型                                    | 默认值 |
 |----------------|----------------------------------------|-----------------------------------------|--------|
-| scrollBoxProps | 内部的 [ScrollBox](./scrollbox) 组件选项 | ScrollBox.Props                         | -      |
+| scrollBoxProps | 内部的 [ScrollBox](/en/docs/api/ui/scrollbox) 组件选项 | ScrollBox.Props                         | -      |
 | refreshRate    | 监听内容容器大小改变的频率               | number                                  | `1000` |
 | skipOnMount    | 首次渲染时是否触发 `onResize` 回调       | boolean                                 | -      |
 | scrollX        | 是否显示水平滚动条                       | boolean                                 | `true` |

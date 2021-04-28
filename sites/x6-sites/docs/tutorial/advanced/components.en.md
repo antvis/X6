@@ -102,12 +102,12 @@ import { Menu } from '@antv/x6-react-components'
 
 点击下面链接查看每个组件的使用文档。
 
-- [Menu](../../api/ui/menu) 菜单
-- [Dropdown](../../api/ui/dropdown) 下拉菜单
-- [ContextMenu](../../api/ui/contextmenu) 右键菜单
-- [Menubar](../../api/ui/menubar) 菜单栏
-- [Toolbar](../../api/ui/toolbar) 工具栏
-- [SplitBox](../../api/ui/splitbox) 分割容器
-- [ScrollBox](../../api/ui/scrollbox) 自定义滚动条的容器
-- [AutoScrollBox](../../api/ui/auto-scrollbox) 自动根据内容大小设置和更新容器的滚动条
-- [ColorPicker](../../api/ui/color-picker) 颜色选择器
+- [Menu](/en/docs/api/ui/menu) 菜单
+- [Dropdown](/en/docs/api/ui/dropdown) 下拉菜单
+- [ContextMenu](/en/docs/api/ui/contextmenu) 右键菜单
+- [Menubar](/en/docs/api/ui/menubar) 菜单栏
+- [Toolbar](/en/docs/api/ui/toolbar) 工具栏
+- [SplitBox](/en/docs/api/ui/splitbox) 分割容器
+- [ScrollBox](/en/docs/api/ui/scrollbox) 自定义滚动条的容器
+- [AutoScrollBox](/en/docs/api/ui/auto-scrollbox) 自动根据内容大小设置和更新容器的滚动条
+- [ColorPicker](/en/docs/api/ui/color-picker) 颜色选择器
