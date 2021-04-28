@@ -48,7 +48,7 @@ function setupUpdating(view: EdgeView) {
 function createLines(
   sourcePoint: Point.PointLike,
   targetPoint: Point.PointLike,
-  route: Point.PointLike[],
+  route: Point.PointLike[] = [],
 ) {
   const points = [sourcePoint, ...route, targetPoint]
   const lines: Line[] = []
