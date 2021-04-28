@@ -48,7 +48,7 @@ const menu = (
 | 参数              | 说明                                                                                            | 类型                                  | 默认值  |
 |-------------------|-----------------------------------------------------------------------------------------------|---------------------------------------|---------|
 | className         | 自定义的样式名                                                                                  | string                                | -       |
-| menu              | 菜单 [Menu](./menu) 组件                                                                        | Menu                                  | -       |
+| menu              | 菜单 [Menu](/en/docs/api/ui/menu) 组件                                                                        | Menu                                  | -       |
 | overlayClassName  | 下拉根元素的类名称                                                                              | string                                | -       |
 | overlayStyle      | 下拉根元素的样式                                                                                | CSSProperties                         | -       |
 | disabled          | 菜单是否禁用                                                                                    | boolean                               | `false` |

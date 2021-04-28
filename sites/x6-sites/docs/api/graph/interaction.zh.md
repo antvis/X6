@@ -117,7 +117,7 @@ const graph = new Graph({
 
 #### anchor
 
-当连接到节点时，通过 [`anchor`](../registry/node-anchor) 来指定被连接的节点的锚点，默认值为 `center`。
+当连接到节点时，通过 [`anchor`](/zh/docs/api/registry/node-anchor) 来指定被连接的节点的锚点，默认值为 `center`。
 
 #### sourceAnchor
 
@@ -129,7 +129,7 @@ const graph = new Graph({
 
 #### edgeAnchor
 
-当连接到边时，通过 [`edgeAnchor`](../registry/edge-anchor) 来指定被连接的边的锚点，默认值为 `ratio`。
+当连接到边时，通过 [`edgeAnchor`](/zh/docs/api/registry/edge-anchor) 来指定被连接的边的锚点，默认值为 `ratio`。
 
 #### sourceEdgeAnchor
 
@@ -141,7 +141,7 @@ const graph = new Graph({
 
 #### connectionPoint
 
-指定[连接点](../registry/connector)，默认值为 `boundary`。
+指定[连接点](/zh/docs/api/registry/connector)，默认值为 `boundary`。
 
 #### sourceConnectionPoint
 
@@ -153,11 +153,11 @@ const graph = new Graph({
 
 #### router
 
-[路由](../registry/router)将边的路径点 `vertices` 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点，默认值为 `normal`。
+[路由](/zh/docs/api/registry/router)将边的路径点 `vertices` 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点，默认值为 `normal`。
 
 #### connector
 
-[连接器](../registry/connector)将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal`。
+[连接器](/zh/docs/api/registry/connector)将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal`。
 
 #### validateMagnet
 
@@ -309,7 +309,7 @@ new Graph({
 - `'magnetAdsorbed'` 连线过程中，自动吸附到链接桩时被使用。
 
 
-另外，也可以直接使用在 [`cellView.highlight(...)`](../view/cellview#highlight) 方法中，用来高亮指定的元素。
+另外，也可以直接使用在 [`cellView.highlight(...)`](/zh/docs/api/view/cellview#highlight) 方法中，用来高亮指定的元素。
 
 ```ts
 cellView.highlight(elem, { 

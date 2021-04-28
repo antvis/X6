@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-在[快速上手](../getting-started)案例中，我们通过 JSON 数据添加了两个矩形节点和一条边到画布中，除此之外，我们在 X6 的 `Shape` 命名空间中内置了一些基础图形，如 `Rect`、`Edge`、`Circle` 等，这些图形最终都有共同的基类 `Cell`，定义了节点和边共同属性和方法，如属性样式、可见性、业务数据等，并且在实例化、定制样式、配置默认选项等方面具有相同的行为。看下面的继承关系。
+在[快速上手](/en/docs/tutorial/getting-started)案例中，我们通过 JSON 数据添加了两个矩形节点和一条边到画布中，除此之外，我们在 X6 的 `Shape` 命名空间中内置了一些基础图形，如 `Rect`、`Edge`、`Circle` 等，这些图形最终都有共同的基类 `Cell`，定义了节点和边共同属性和方法，如属性样式、可见性、业务数据等，并且在实例化、定制样式、配置默认选项等方面具有相同的行为。看下面的继承关系。
 
 ```
                                      ┌──────────────────┐
@@ -257,7 +257,7 @@ new SomeNode({
 
 ### attrs
 
-在[快速上手](../getting-started)中，我们简单介绍了如何使用 `attrs` 选项定制节点样式，`attrs` 选项是一个复杂对象，该对象的 Key 是节点中 SVG 元素的选择器(Selector)，对应的值是应用到该 SVG 元素的 [SVG 属性值](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)(如 [fill](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill) 和 [stroke](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke))，如果你对 SVG 属性还不熟悉，可以参考 MDN 提供的[填充和边框](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)入门教程。
+在[快速上手](/en/docs/tutorial/getting-started)中，我们简单介绍了如何使用 `attrs` 选项定制节点样式，`attrs` 选项是一个复杂对象，该对象的 Key 是节点中 SVG 元素的选择器(Selector)，对应的值是应用到该 SVG 元素的 [SVG 属性值](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)(如 [fill](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill) 和 [stroke](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke))，如果你对 SVG 属性还不熟悉，可以参考 MDN 提供的[填充和边框](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)入门教程。
 
 选择器(Selector)通过节点的 `markup` 确定，如 `Shape.Rect` 节点定义了 `'body'`(代表 `<rect>` 元素) 和 `'label'`(代表 `<text>` 元素) 两个选择器。
 
@@ -318,7 +318,7 @@ const rect = new Shape.Rect({
 
 值得一提的是，支持使用小驼峰(camelCase)格式的属性名，如 `'fontSize'`，这就避免了 `'font-size'` 这种属性名作为对象 Key 时需要加引号的书写麻烦。
 
-除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[如何使用特殊属性](../intermediate/attrs)和[如何自定义属性](../../api/registry/attr#definition)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `'x6-node'` 和 `'x6-edge'` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/index.less#L26-L156)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
+除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[如何使用特殊属性](/en/docs/tutorial/intermediate/attrs)和[如何自定义属性](/en/docs/api/registry/attr#definition)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `'x6-node'` 和 `'x6-edge'` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/index.less#L26-L156)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
 
 ```css
 .x6-node rect {
@@ -414,11 +414,11 @@ const edge = graph.addEdge({
 | Shape.DoubleEdge | double-edge | 双线边。 |
 | Shape.ShadowEdge | shadow-edge | 阴影边。 |
 
-除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](../intermediate/custom-node)和[自定义边](../intermediate/custom-edge)教程。
+除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](/en/docs/tutorial/intermediate/custom-node)和[自定义边](/en/docs/tutorial/intermediate/custom-edge)教程。
 
 ### view
 
-指定渲染节点/边所使用的视图，视图的概念与 MVC 模式中的 View 一致，我们将在[自定义节点](../intermediate/custom-node)和[自定义边](../intermediate/custom-edge)教程中做详细介绍。
+指定渲染节点/边所使用的视图，视图的概念与 MVC 模式中的 View 一致，我们将在[自定义节点](/en/docs/tutorial/intermediate/custom-node)和[自定义边](/en/docs/tutorial/intermediate/custom-edge)教程中做详细介绍。
 
 ### zIndex
 

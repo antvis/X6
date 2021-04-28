@@ -73,6 +73,6 @@ const Group = Toolbar.Group
 | tooltipAsTitle | 是否将提示文本作为工具项的 `title` 属性                         | boolean                 | -      |
 | dropdown       | 下拉菜单                                                        | ReactNode               | -      |
 | dropdownArrow  | 是否显示下拉菜单箭头                                            | boolean                 | -      |
-| dropdown       | [下拉菜单](./dropdown)的选项                                    | Dropdown.Props          | -      |
+| dropdown       | [下拉菜单](/en/docs/api/ui/dropdown)的选项                                    | Dropdown.Props          | -      |
 | onClick        | 点击工具项的回调函数                                            | (name?: string) => void | -      |
 

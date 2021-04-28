@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式](../../api/registry/background#registry)，背景层在 DOM 层级上位于画布的最底层。
+背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式](/en/docs/api/registry/background#registry)，背景层在 DOM 层级上位于画布的最底层。
 
 创建画布时，通过 `background` 选项来设置画布的背景颜色或背景图片，默认值为 `false` 表示没有（透明）背景。
 
@@ -84,10 +84,10 @@ interface BackgroundOptions {
 
 另外，还支持以下几个预定义值：
 
-- [`'watermark'`](../../api/registry/background#watermark) 水印效果。
-- [`'flip-x'`](../../api/registry/background#flip-x) 水平翻转背景图片。
-- [`'flip-y'`](../../api/registry/background#flip-y) 垂直翻转背景图片。
-- [`'flip-xy'`](../../api/registry/background#flip-xy) 水平和垂直翻转背景图片。
+- [`'watermark'`](/en/docs/api/registry/background#watermark) 水印效果。
+- [`'flip-x'`](/en/docs/api/registry/background#flip-x) 水平翻转背景图片。
+- [`'flip-y'`](/en/docs/api/registry/background#flip-y) 垂直翻转背景图片。
+- [`'flip-xy'`](/en/docs/api/registry/background#flip-xy) 水平和垂直翻转背景图片。
 
 ### opacity 
 
