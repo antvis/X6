@@ -44,10 +44,7 @@ export class NodeView<
     if (target.hasAttribute('magnet')) {
       // port
       const className = this.prefixClassName('port-unconnectable')
-      if (
-        this.can('magnetConnectable') &&
-        this.graph.hook.validateMagnet(this, target, e)
-      ) {
+      if (this.can('magnetConnectable')) {
         Dom.removeClass(target, className)
       } else {
         Dom.addClass(target, className)
