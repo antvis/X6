@@ -2,12 +2,12 @@
 title: EdgeView
 order: 3
 redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/view
+  - /en/docs
+  - /en/docs/api
+  - /en/docs/api/view
 ---
 
-边视图，继承自 [CellView](./cellview)。
+边视图，继承自 [CellView](/en/docs/api/view/cellview)。
 
 ## constructor
 

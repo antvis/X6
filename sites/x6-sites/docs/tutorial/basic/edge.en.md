@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-在[快速上手](../getting-started)案例中，我们通过 JSON 数据来快速添加两个矩形节点和一条边到画布中，并简单了解了如何定制边样式。接下来我们将学习更多创建边的方式，并了解创建边的基础选项。
+在[快速上手](/en/docs/tutorial/getting-started)案例中，我们通过 JSON 数据来快速添加两个矩形节点和一条边到画布中，并简单了解了如何定制边样式。接下来我们将学习更多创建边的方式，并了解创建边的基础选项。
 
 ## 创建边
 
@@ -52,11 +52,11 @@ const rect = graph.addEdge({
 })
 ```
 
-这里的关键是使用 `shape` 来指定图形，默认值为 `'edge'`，其他选项与使用边构造函数创建节点一致。在 X6 内部，我们通过 `shape` 指定的图形找到对应的构造函数来初始化边，并将其添加到画布。内置边构造函数与 `shape` 名称对应关系[参考此表](./cell#内置边)。除了使用[内置边](./cell#内置边)，我们还可以使用注册的自定义边，详情请参考[自定义边]()教程。
+这里的关键是使用 `shape` 来指定图形，默认值为 `'edge'`，其他选项与使用边构造函数创建节点一致。在 X6 内部，我们通过 `shape` 指定的图形找到对应的构造函数来初始化边，并将其添加到画布。内置边构造函数与 `shape` 名称对应关系[参考此表](/en/docs/tutorial/basic/cell#内置边)。除了使用[内置边](/en/docs/tutorial/basic/cell#内置边)，我们还可以使用注册的自定义边，详情请参考[自定义边]()教程。
 
 ## 选项
 
-上面我们介绍了如何通过构造函数和 `graph.addEdge` 两种方式来创建边，并了解了 `source` 和 `target` 两个基础选项，除了[从 Cell 继承的基础选项](./cell#基础选项)外，还支持以下选项。
+上面我们介绍了如何通过构造函数和 `graph.addEdge` 两种方式来创建边，并了解了 `source` 和 `target` 两个基础选项，除了[从 Cell 继承的基础选项](/en/docs/tutorial/basic/cell#基础选项)外，还支持以下选项。
 
 | 属性名       | 类型              | 默认值                                           | 描述              |
 |--------------|-------------------|--------------------------------------------------|-----------------|
@@ -66,7 +66,7 @@ const rect = graph.addEdge({
 | router       | RouterData        | undefined                                        | 路由。             |
 | connector    | ConnectorData     | undefined                                        | 连线。             |
 | labels       | Label[]           | undefined                                        | 标签。             |
-| defaultLabel | Label             | [默认标签](../intermediate/edge-labels#默认标签) | 默认标签。         |
+| defaultLabel | Label             | [默认标签](/en/docs/tutorial/intermediate/edge-labels#默认标签) | 默认标签。         |
 
 下面分别看看这些选项如何使用。
 
@@ -125,7 +125,7 @@ graph.addEdge({
 
 ### router
 
-路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](../../api/registry/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
+路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](/en/docs/api/registry/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
 
 ```ts
 graph.addEdge({
@@ -145,7 +145,7 @@ graph.addEdge({
 <iframe src="/demos/tutorial/basic/edge/router"></iframe>
 
 
-路由都是通过[注册的方式](../../api/registry/router#register)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
+路由都是通过[注册的方式](/en/docs/api/registry/router#register)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
 
 ```ts
 graph.addEdge({
@@ -165,14 +165,14 @@ graph.addEdge({
 
 X6 默认提供了以下几种路由，点击下面的链接查看每种路由的使用方式。
 
-- [normal](../../api/registry/router#normal) 
-- [orth](../../api/registry/router#orth)
-- [oneSide](../../api/registry/router#oneside)
-- [manhattan](../../api/registry/router#manhattan)
-- [metro](../../api/registry/router#metro)
-- [er](../../api/registry/router#er)
+- [normal](/en/docs/api/registry/router#normal) 
+- [orth](/en/docs/api/registry/router#orth)
+- [oneSide](/en/docs/api/registry/router#oneside)
+- [manhattan](/en/docs/api/registry/router#manhattan)
+- [metro](/en/docs/api/registry/router#metro)
+- [er](/en/docs/api/registry/router#er)
 
-另外，我们也可以注册自定义路由，详情请参考[自定义路由](../../api/registry/router#registry)教程。
+另外，我们也可以注册自定义路由，详情请参考[自定义路由](/en/docs/api/registry/router#registry)教程。
 
 ### connector
 
@@ -275,15 +275,15 @@ edge.appendLabel('edge')
 
 <iframe src="/demos/tutorial/basic/edge/labels"></iframe>
 
-完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](../intermediate/edge-labels)中介绍。
+完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](/en/docs/tutorial/intermediate/edge-labels)中介绍。
 
 ### defaultLabel
 
-默认标签。通默认标签可以简化标签配置项，[labels](#labels) 指定的每一项都将于 `defaultLabel` 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。详情请[参考这里](../intermediate/edge-labels#默认标签)。
+默认标签。通默认标签可以简化标签配置项，[labels](#labels) 指定的每一项都将于 `defaultLabel` 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。详情请[参考这里](/en/docs/tutorial/intermediate/edge-labels#默认标签)。
 
 ## 定制样式 Attrs
 
-我们在之前的教程中介绍了[如何通过 attrs 选项来定制样式](./cell#attrs-1)，并且学习了如何通过[选项默认值](./cell#选项默认值)来实现预设选项以及如何通过[自定义选项](./cell#自定义选项)来实现选项扩展，请结合这几个教程来学习如何定制样式。
+我们在之前的教程中介绍了[如何通过 attrs 选项来定制样式](/en/docs/tutorial/basic/cell#attrs-1)，并且学习了如何通过[选项默认值](/en/docs/tutorial/basic/cell#选项默认值)来实现预设选项以及如何通过[自定义选项](/en/docs/tutorial/basic/cell#自定义选项)来实现选项扩展，请结合这几个教程来学习如何定制样式。
 
 例如，`Shape.Edge` 边定义了 `'line'`（代表 `<path>` 元素）和 `'wrap'`（代表透明的 `<path>` 元素，用于响应交互）两个选择器。我们在创建边时可以像下面这样定义边的样式。
 
@@ -310,15 +310,15 @@ graph.addEdge({
 
 X6 提供了以下几种内置箭头，使用时只需要指定箭头名和参数（可省略）即可。
 
-- [block](../intermediate/marker#block)
-- [classic](../intermediate/marker#classic)
-- [diamond](../intermediate/marker#diamond)
-- [cross](../intermediate/marker#cross)
-- [async](../intermediate/marker#async)
-- [path](../intermediate/marker#path)
-- [circle](../intermediate/marker#circle)
-- [circlePlus](../intermediate/marker#circleplus)
-- [ellipse](../intermediate/marker#ellipse)
+- [block](/en/docs/tutorial/intermediate/marker#block)
+- [classic](/en/docs/tutorial/intermediate/marker#classic)
+- [diamond](/en/docs/tutorial/intermediate/marker#diamond)
+- [cross](/en/docs/tutorial/intermediate/marker#cross)
+- [async](/en/docs/tutorial/intermediate/marker#async)
+- [path](/en/docs/tutorial/intermediate/marker#path)
+- [circle](/en/docs/tutorial/intermediate/marker#circle)
+- [circlePlus](/en/docs/tutorial/intermediate/marker#circleplus)
+- [ellipse](/en/docs/tutorial/intermediate/marker#ellipse)
 
 ```ts
 edge.attr({
@@ -361,4 +361,4 @@ edge.attr({
 
 <iframe src="/demos/tutorial/basic/edge/custom-marker"></iframe>
 
-更多箭头的案例和定制技巧请参考[这篇教程](../intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](../intermediate/marker#注册箭头)。
+更多箭头的案例和定制技巧请参考[这篇教程](/en/docs/tutorial/intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](/en/docs/tutorial/intermediate/marker#注册箭头)。
