@@ -11,6 +11,21 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.19.3
+
+## @antv/x6-app-draw [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.3...@antv/x6-app-draw@1.1.4) (2021-04-28)
+
+
+### Bug Fixes
+
+* 🐛 x6-app-draw支持windows下ctrl组合快捷键 ([0253aaf](https://github.com/antvis/x6/commit/0253aaf7efc6a38739181f4d6315de73447e2017))
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.19.2
 
 ## @antv/x6-app-draw [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.3...@antv/x6-app-draw@1.1.4) (2021-04-28)
