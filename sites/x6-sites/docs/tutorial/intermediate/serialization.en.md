@@ -47,7 +47,7 @@ redirect_from:
 }
 ```
 
-另外，我们可以 `diff` 参数 `graph.toJSON({ diff: true })` 来导出节点和边的差异数据（与节点和边的[默认配置](../basic/cell#选项默认值)不同的部分）。
+另外，我们可以 `diff` 参数 `graph.toJSON({ diff: true })` 来导出节点和边的差异数据（与节点和边的[默认配置](/en/docs/tutorial/basic/cell#选项默认值)不同的部分）。
 
 例如，我们先为矩形和椭圆设置一些默认值：
 

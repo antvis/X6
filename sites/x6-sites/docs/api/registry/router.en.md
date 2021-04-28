@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/api/registry
 ---
 
-路由将边的路径点 [vertices](../../tutorial/basic/edge#vertices) 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](#orth) 路由处理后，边的每一条线段都是水平或垂直的正交线段。
+路由将边的路径点 [vertices](/en/docs/tutorial/basic/edge#vertices) 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](#orth) 路由处理后，边的每一条线段都是水平或垂直的正交线段。
 
 我们在 `Registry.Router.presets` 命名空间中提供了以下几种路由。
 

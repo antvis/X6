@@ -2,16 +2,16 @@
 title: 使用动画
 order: 2
 redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/advanced
+  - /en/docs
+  - /en/docs/tutorial
+  - /en/docs/tutorial/advanced
 ---
 
 ## Transition
 
 ### 开始
 
-我们可以调用 [`cell.transition(...)`](../../api/model/cell#transition) 方法，来将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值，并返回 `stop` 方法，调用该方法时立即停止该动画。
+我们可以调用 [`cell.transition(...)`](/en/docs/api/model/cell#transition) 方法，来将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值，并返回 `stop` 方法，调用该方法时立即停止该动画。
 
 ```sign
 transition(
@@ -93,7 +93,7 @@ transition(
 
 ### 停止
 
-动画开始后可以调用 [`cell.stopTransition(...)`](../../api/model/cell#stoptransition) 方法来停止指定路径上的动画。
+动画开始后可以调用 [`cell.stopTransition(...)`](/en/docs/api/model/cell#stoptransition) 方法来停止指定路径上的动画。
 
 ```sign
 stopTransition(
@@ -301,7 +301,7 @@ if (view) {
 
 ### 沿边运动的动画
 
-我们可以调用 EdgeView 上的 [`sendToken(...)`](../../api/view/edgeview#sendtoken) 方法来触发一个沿边运动的动画，同时返回一个停止该动画的方法。
+我们可以调用 EdgeView 上的 [`sendToken(...)`](/en/docs/api/view/edgeview#sendtoken) 方法来触发一个沿边运动的动画，同时返回一个停止该动画的方法。
 
 ```sign
 sendToken(
