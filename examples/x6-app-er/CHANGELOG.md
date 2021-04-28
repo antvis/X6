@@ -6,6 +6,16 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.19.3
+
+## @antv/x6-app-er [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.3...@antv/x6-app-er@1.1.4) (2021-04-28)
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.19.2
 
 ## @antv/x6-app-er [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.3...@antv/x6-app-er@1.1.4) (2021-04-28)
