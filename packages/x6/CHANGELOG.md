@@ -1,3 +1,10 @@
+## @antv/x6 [1.19.2](https://github.com/antvis/x6/compare/@antv/x6@1.19.1...@antv/x6@1.19.2) (2021-04-28)
+
+
+### Bug Fixes
+
+* 🐛 check correct magnet in validateConnection ([866c795](https://github.com/antvis/x6/commit/866c79547408e3661a10421590ee5c34f93a53e3))
+
 ## @antv/x6 [1.19.1](https://github.com/antvis/x6/compare/@antv/x6@1.19.0...@antv/x6@1.19.1) (2021-04-28)
 
 # @antv/x6 [1.19.0](https://github.com/antvis/x6/compare/@antv/x6@1.18.5...@antv/x6@1.19.0) (2021-04-26)
