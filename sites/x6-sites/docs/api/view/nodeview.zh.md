@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/view
 ---
 
-节点视图，继承自 [CellView](./cellview)。
+节点视图，继承自 [CellView](/zh/docs/api/view/cellview)。
 
 ## constructor
 

@@ -2,12 +2,12 @@
 title: CellView
 order: 1
 redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/view
+  - /en/docs
+  - /en/docs/api
+  - /en/docs/api/view
 ---
 
-节点和边视图的基类，继承自 [View](./view)。
+节点和边视图的基类，继承自 [View](/en/docs/api/view/view)。
 
 ## constructor
 
@@ -78,8 +78,8 @@ highlight(elem?: Element | null, options?: CellView.HighlightOptions): this
 
 支持的 `options.highlighter` 有：
 
-- [stroke](../registry/highlighter#stroke) 
-- [className](../registry/highlighter#classname)
+- [stroke](/en/docs/api/registry/highlighter#stroke) 
+- [className](/en/docs/api/registry/highlighter#classname)
 
 #### unhighlight(...)
 

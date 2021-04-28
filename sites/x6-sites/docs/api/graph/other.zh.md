@@ -39,7 +39,7 @@ showTools(): this
 defineFilter(options: FilterOptions): string
 ```
 
-定义[滤镜](../registry/filter)，返回滤镜 ID。
+定义[滤镜](/zh/docs/api/registry/filter)，返回滤镜 ID。
 
 <span class="tag-param">参数<span>
 

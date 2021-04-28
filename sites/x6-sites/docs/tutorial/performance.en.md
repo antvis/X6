@@ -194,7 +194,7 @@ onPortRendered(args) {
 
 #### 节点
 
-只渲染节点，节点个数和完成渲染时间的关系如下图，其中 [sync](../api/graph/view/#async) 是同步渲染结果， [async](../api/graph/view/#async) 是异步渲染结果。
+只渲染节点，节点个数和完成渲染时间的关系如下图，其中 [sync](/en/docs/api/graph/view/#async) 是同步渲染结果， [async](/en/docs/api/graph/view/#async) 是异步渲染结果。
 
 <image width="800" height="400" alt="performance" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*gVWMRIUaoGwAAAAAAAAAAAAAARQnAQ"/>
 

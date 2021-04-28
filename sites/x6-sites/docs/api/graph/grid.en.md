@@ -163,5 +163,5 @@ drawGrid(options?: DrawGridOptions): this
 
 | 名称         | 类型   | 必选 | 默认值  | 描述                                             |
 |--------------|--------|:----:|---------|------------------------------------------------|
-| options.type | string |      | `'dot'` | 网格类型。详情请[参考这里](../registry/grid)。 |
+| options.type | string |      | `'dot'` | 网格类型。详情请[参考这里](/en/docs/api/registry/grid)。 |
 | options.args | object |      | -       | 与网格类型对应的网格参数。                        |

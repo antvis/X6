@@ -54,7 +54,7 @@ createNode(metadata: Node.Metadata): Node
 
 | 名称     | 类型          | 必选 | 默认值 | 描述                                    |
 |----------|---------------|:----:|--------|---------------------------------------|
-| metadata | Node.Metadata |  ✓   |        | [节点元数据](../model/node#constructor)。 |
+| metadata | Node.Metadata |  ✓   |        | [节点元数据](/en/docs/api/model/node#constructor)。 |
 
 ### addNode(...)
 
@@ -69,7 +69,7 @@ addNode(node: Node, options?: AddOptions): Node
 
 | 名称             | 类型                  | 必选 | 默认值  | 描述                                                                |
 |------------------|-----------------------|:----:|---------|-------------------------------------------------------------------|
-| node             | Node.Metadata \| Node |  ✓   |         | [节点元数据](../model/node#constructor)或[节点实例](../model/node)。   |
+| node             | Node.Metadata \| Node |  ✓   |         | [节点元数据](/en/docs/api/model/node#constructor)或[节点实例](/en/docs/api/model/node)。   |
 | options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `'node:added'` 和 `'cell:added'` 事件和画布重绘。 |
 | options.sort     | boolean               |      | `true`  | 是否按照  `zIndex` 排序。                                            |
 | options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                              |
@@ -87,7 +87,7 @@ removeNode(node: Node, options?: RemoveOptions): Node | null
 
 | 名称             | 类型           | 必选 | 默认值  | 描述                                                                    |
 |------------------|----------------|:----:|---------|-----------------------------------------------------------------------|
-| node             | string \| Node |  ✓   |         | 节点 ID 或[节点实例](../model/node)。                                     |
+| node             | string \| Node |  ✓   |         | 节点 ID 或[节点实例](/en/docs/api/model/node)。                                     |
 | options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'node:removed'` 和 `'cell:removed'` 事件和画布重绘。 |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                  |
 
@@ -103,7 +103,7 @@ createNode(metadata: Edge.Metadata): Edge
 
 | 名称     | 类型          | 必选 | 默认值 | 描述                                    |
 |----------|---------------|:----:|--------|---------------------------------------|
-| metadata | Edge.Metadata |  ✓   |        | [节点元数据](../model/edge#constructor)。 |
+| metadata | Edge.Metadata |  ✓   |        | [节点元数据](/en/docs/api/model/edge#constructor)。 |
 
 ### addEdge(...)
 
@@ -118,7 +118,7 @@ addEdge(edge:Edge, options?: AddOptions): Edge
 
 | 名称             | 类型                  | 必选 | 默认值  | 描述                                                                |
 |------------------|-----------------------|:----:|---------|-------------------------------------------------------------------|
-| edge             | Edge.Metadata \| Edge |  ✓   |         | [边元数据](../model/edge#constructor)或[边实例](../model/edge)。       |
+| edge             | Edge.Metadata \| Edge |  ✓   |         | [边元数据](/en/docs/api/model/edge#constructor)或[边实例](/en/docs/api/model/edge)。       |
 | options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `'edge:added'` 和 `'cell:added'` 事件和画布重绘。 |
 | options.sort     | boolean               |      | `true`  | 是否按照  `zIndex` 排序。                                            |
 | options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                              |
@@ -136,7 +136,7 @@ removeEdge(edge: Edge, options?: RemoveOptions): Edge | null
 
 | 名称             | 类型           | 必选 | 默认值  | 描述                                                                    |
 |------------------|----------------|:----:|---------|-----------------------------------------------------------------------|
-| edge             | string \| Edge |  ✓   |         | 边 ID 或[边实例](../model/edge)。                                         |
+| edge             | string \| Edge |  ✓   |         | 边 ID 或[边实例](/en/docs/api/model/edge)。                                         |
 | options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'edge:removed'` 和 `'cell:removed'` 事件和画布重绘。 |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                  |
 
@@ -152,7 +152,7 @@ addCell(cell: Cell | Cell[], options?: AddOptions): this
 
 | 名称             | 类型           | 必选 | 默认值  | 描述                                                                               |
 |------------------|----------------|:----:|---------|----------------------------------------------------------------------------------|
-| cell             | Cell \| Cell[] |  ✓   |         | [节点实例](../model/node)或[边实例](../model/edge)，支持传入数组同时添加多个节点或边。 |
+| cell             | Cell \| Cell[] |  ✓   |         | [节点实例](/en/docs/api/model/node)或[边实例](/en/docs/api/model/edge)，支持传入数组同时添加多个节点或边。 |
 | options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'cell:added'`、`'node:added'` 和 `'edge:added'` 事件和画布重绘。 |
 | options.sort     | boolean        |      | `true`  | 是否按照  `zIndex` 排序。                                                           |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                             |
@@ -661,7 +661,7 @@ toJSON(options?: ToJSONOptions): object
 
 | 名称         | 类型 | 必选 | 默认值  | 描述                                                                                             |
 |--------------|------|:----:|---------|------------------------------------------------------------------------------------------------|
-| options.deep | diff |      | `false` | 是否导出节点和边的差异数据（与节点和边的[默认配置](../../tutorial/basic/cell#选项默认值)不同的部分）。 |
+| options.deep | diff |      | `false` | 是否导出节点和边的差异数据（与节点和边的[默认配置](/en/docs/tutorial/basic/cell#选项默认值)不同的部分）。 |
 
 ### parseJSON(...)
 

@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/ui
 ---
 
-菜单组件。一般在 [Menubar](./menubar)、[ContextMenu](./contextmenu)、[Dropdown](./dropdown) 组件中使用。
+菜单组件。一般在 [Menubar](/zh/docs/api/ui/menubar)、[ContextMenu](/zh/docs/api/ui/contextmenu)、[Dropdown](/zh/docs/api/ui/dropdown) 组件中使用。
 
 <iframe src="/demos/api/ui/menu/basic"></iframe>
 

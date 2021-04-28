@@ -29,13 +29,13 @@ class Rect extends Node {
 
 #### 第二步：配置
 
-调用继承的静态方法 `config(options)` 来配置[节点选项](../basic/node/#选项)的默认值、[自定义选项](../basic/cell#自定义选项)和[自定义属性]()，最常用选项的是通过 [markup](../basic/cell#markup) 来指定节点默认的 SVG/HTML 结构，通过 [attrs](../basic/cell#attrs-1) 来指定节点的默认属性样式。
+调用继承的静态方法 `config(options)` 来配置[节点选项](/zh/docs/tutorial/basic/node/#选项)的默认值、[自定义选项](/zh/docs/tutorial/basic/cell#自定义选项)和[自定义属性]()，最常用选项的是通过 [markup](/zh/docs/tutorial/basic/cell#markup) 来指定节点默认的 SVG/HTML 结构，通过 [attrs](/zh/docs/tutorial/basic/cell#attrs-1) 来指定节点的默认属性样式。
 
 | 名称      | 类型                             | 是否必选 | 默认值    | 说明                                        |
 |-----------|----------------------------------|----------|-----------|-------------------------------------------|
-| propHooks | Function \| Function[] \| Object | 否       | undefined | [自定义选项](../basic/cell#自定义选项)钩子。 |
+| propHooks | Function \| Function[] \| Object | 否       | undefined | [自定义选项](/zh/docs/tutorial/basic/cell#自定义选项)钩子。 |
 | attrHooks | Object                           | 否       | undefined | [自定义属性]()钩子。                         |
-| ...others | Object                           |          |           | [节点选项](../basic/node/#选项)。            |
+| ...others | Object                           |          |           | [节点选项](/zh/docs/tutorial/basic/node/#选项)。            |
 
 看下面 `Rect` 节点的默认配置。
 
@@ -79,7 +79,7 @@ Rect.config({
 })
 ```
 
-上面代码中，我们通过 `width` 和 `height` 指定了节点的默认大小，然后通过 `markup` 定义了节点由 `<rect>` 和 `<text>` 两个 SVG 元素构成，并分别指定了 `body` 和 `label` 两个选择器，接着就可以在 `attrs` 中通过这两个选择器来指定节点的默认样式。最后通过 `propHooks` 定义了一个[自定义选项](../basic/cell#自定义选项) `label`，这样我们就可以通过 label 设置标签文本。
+上面代码中，我们通过 `width` 和 `height` 指定了节点的默认大小，然后通过 `markup` 定义了节点由 `<rect>` 和 `<text>` 两个 SVG 元素构成，并分别指定了 `body` 和 `label` 两个选择器，接着就可以在 `attrs` 中通过这两个选择器来指定节点的默认样式。最后通过 `propHooks` 定义了一个[自定义选项](/zh/docs/tutorial/basic/cell#自定义选项) `label`，这样我们就可以通过 label 设置标签文本。
 
 #### 第三步：注册
 

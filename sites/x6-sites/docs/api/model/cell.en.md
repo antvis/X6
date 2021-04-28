@@ -2,12 +2,12 @@
 title: Cell
 order: 0
 redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/model
+  - /en/docs
+  - /en/docs/api
+  - /en/docs/api/model
 ---
 
-Cell 是 [Node](./node) 和 [Edge](./edge) 的基类，包含节点和边的通用属性和方法定义，如属性样式、可见性、业务数据等，并且在实例化、样式定制、默认选项、自定义选项等方面具有相同的行为。
+Cell 是 [Node](/en/docs/api/model/node) 和 [Edge](/en/docs/api/model/edge) 的基类，包含节点和边的通用属性和方法定义，如属性样式、可见性、业务数据等，并且在实例化、样式定制、默认选项、自定义选项等方面具有相同的行为。
 
 ## constructor
 
@@ -347,7 +347,7 @@ const edge = graph.addEdge({
 - `graph.addNode` 方法中 `shape` 的默认值为 `'rect'`
 - `graph.addEdge` 方法中 `shape` 的默认值为 `'edge'`
 
-同时，我们在 X6 中[内置](../../tutorial/basic/cell#内置节点)了一系列节点和边。
+同时，我们在 X6 中[内置](/en/docs/tutorial/basic/cell#内置节点)了一系列节点和边。
 
 内置节点构造函数与 `shape` 名称对应关系如下表。
 
@@ -375,7 +375,7 @@ const edge = graph.addEdge({
 | Shape.DoubleEdge | double-edge | 双线边。 |
 | Shape.ShadowEdge | shadow-edge | 阴影边。 |
 
-除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](../../tutorial/intermediate/custom-node)和[自定义边](../../tutorial/intermediate/custom-edge)教程。
+除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](/en/docs/tutorial/intermediate/custom-node)和[自定义边](/en/docs/tutorial/intermediate/custom-edge)教程。
 
 ### view
 
@@ -403,18 +403,18 @@ const edge = graph.addEdge({
 
 节点
 
-- [button](../registry/node-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
-- [button-remove](../registry/node-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
-- [boundary](../registry/node-tool#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [button](/en/docs/api/registry/node-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](/en/docs/api/registry/node-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
+- [boundary](/en/docs/api/registry/node-tool#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
 
 边
 
-- [vertices](../registry/edge-tool#vertices) 路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
-- [segments](../registry/edge-tool#segments) 线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
-- [boundary](../registry/edge-tool#boundary) 根据边的包围盒渲染一个包围边的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
-- [button](../registry/edge-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
-- [button-remove](../registry/edge-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
-- [source-arrowhead-和-target-arrowhead](../registry/edge-tool#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
+- [vertices](/en/docs/api/registry/edge-tool#vertices) 路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
+- [segments](/en/docs/api/registry/edge-tool#segments) 线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
+- [boundary](/en/docs/api/registry/edge-tool#boundary) 根据边的包围盒渲染一个包围边的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [button](/en/docs/api/registry/edge-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](/en/docs/api/registry/edge-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
+- [source-arrowhead-和-target-arrowhead](/en/docs/api/registry/edge-tool#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
 
 可以指定单个工具：
 
@@ -510,7 +510,7 @@ const rect = new Shape.Rect({
 
 #### get model
 
-获取节点/边所属的 [Model](../graph/model)，当节点/边被添加到画布时将自动确定。
+获取节点/边所属的 [Model](/en/docs/api/graph/model)，当节点/边被添加到画布时将自动确定。
 
 ```ts
 const rect = new Shape.Rect({
@@ -555,7 +555,7 @@ if (node.view === 'rect') {
 isNode(): boolean
 ```
 
-检测实例是不是 [Node](./node) 实例，如果是 [Node](./node) 实例则返回 `true`，否则返回 `false`。所有继承自 [Node](./node) 的节点都返回 `true`。
+检测实例是不是 [Node](/en/docs/api/model/node) 实例，如果是 [Node](/en/docs/api/model/node) 实例则返回 `true`，否则返回 `false`。所有继承自 [Node](/en/docs/api/model/node) 的节点都返回 `true`。
 
 ```ts
 if (cell.isNode()) {
@@ -569,7 +569,7 @@ if (cell.isNode()) {
 isEdge(): boolean
 ```
 
-检测实例是不是 [Edge](./edge) 实例，如果是 [Edge](./edge) 实例则返回 `true`，否则返回 `false`。所有继承自 [Edge](./edge) 的边都返回 `true`。
+检测实例是不是 [Edge](/en/docs/api/model/edge) 实例，如果是 [Edge](/en/docs/api/model/edge) 实例则返回 `true`，否则返回 `false`。所有继承自 [Edge](/en/docs/api/model/edge) 的边都返回 `true`。
 
 ```ts
 if (cell.isEdge()) {
@@ -818,7 +818,7 @@ cell.removeMarkup({ otherKey: 'otherValue', ... })
 获取属性。
 
 ```ts
-const atts = cell.atts
+const atts = cell.attrs
 ```
 
 #### set attrs
@@ -2737,7 +2737,7 @@ addTools(
 
 | 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                   |
 |------------------|----------------------------------|:----:|---------|----------------------------------------------------------------------------------------------------------------------|
-| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具。                 |
+| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/en/docs/api/registry/node-tool#presets) 或 [EdgeTool](/en/docs/api/registry/edge-tool#presets) 中定义的小工具。                 |
 | name             | string                           |      |         | 工具集名称。当指定了工具集名称，且 `options.reset` 为 `false` 时，指定的名称与现有工具集名称相同时才会向工具集中添加工具。 |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                 |
 | options.silent   | boolean                          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。                                                              |
@@ -2768,7 +2768,7 @@ setTools(
 |-------------|-----------------|:----:|-------------|----------------------------------------------------------------------------------------------------------|
 | tools.name  | string          |      | `undefined` | 工具集名称。                                                                                                |
 | tools.local | boolean         |      | `false`     | 是否渲染到节点/边的容器中，默认为 `false` 表示渲染到画布容器中。                                             |
-| tools.items | Cell.ToolItem[] |      | `undefined` | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具集合。 |
+| tools.items | Cell.ToolItem[] |      | `undefined` | [NodeTool](/en/docs/api/registry/node-tool#presets) 或 [EdgeTool](/en/docs/api/registry/edge-tool#presets) 中定义的小工具集合。 |
 
 #### getTools()
 

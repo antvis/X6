@@ -12,7 +12,7 @@ redirect_from:
 
 节点和边视图的排序方式。
 
-原生 SVG 不支持 `z-index` 样式，所以我们在 x6 中通过代码的形式来支持节点和边的层级设置。创建节点和边时，可以通过 [`zIndex`](../model/cell#zindex) 选项来设置节点和边的层级；也可以拿到节点/边的实例后，通过 [`cell.setZIndex(z)`](../model/cell#setzindex)、[`cell.toFront()`](../model/cell#tofront) 和 [`cell.toBack()`](../model/cell#toback) 等方法来修改层级。
+原生 SVG 不支持 `z-index` 样式，所以我们在 x6 中通过代码的形式来支持节点和边的层级设置。创建节点和边时，可以通过 [`zIndex`](/en/docs/api/model/cell#zindex) 选项来设置节点和边的层级；也可以拿到节点/边的实例后，通过 [`cell.setZIndex(z)`](/en/docs/api/model/cell#setzindex)、[`cell.toFront()`](/en/docs/api/model/cell#tofront) 和 [`cell.toBack()`](/en/docs/api/model/cell#toback) 等方法来修改层级。
 
 支持以下三种取值：
 
@@ -116,7 +116,7 @@ graph.unfreeze()
 (this: Graph, cell: Cell) => CellView | null | undefined
 ```
 
-创建节点/边的视图，默认自动根据节点和边的 [`view`](../model/cell#view) 选项创建对应的视图。
+创建节点/边的视图，默认自动根据节点和边的 [`view`](/en/docs/api/model/cell#view) 选项创建对应的视图。
 
 ### getHTMLComponent
 
@@ -124,7 +124,7 @@ graph.unfreeze()
 (this: Graph, node: HTML) => HTMLElement | string | null | undefined
 ```
 
-获取 HTML 节点的 HTML 元素，默认根据节点的 `html` 选项返回对应的 HTML 元素。更多细节请参考[使用 HTML 节点教程](../../tutorial/advanced/react#渲染-html-节点)。
+获取 HTML 节点的 HTML 元素，默认根据节点的 `html` 选项返回对应的 HTML 元素。更多细节请参考[使用 HTML 节点教程](/en/docs/tutorial/advanced/react#渲染-html-节点)。
 
 ```ts
 const graph = new Graph({
