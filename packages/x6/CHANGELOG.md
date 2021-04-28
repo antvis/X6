@@ -1,3 +1,11 @@
+## @antv/x6 [1.19.3](https://github.com/antvis/x6/compare/@antv/x6@1.19.2...@antv/x6@1.19.3) (2021-04-28)
+
+
+### Bug Fixes
+
+* 🐛 add default route for createLines in jumpover ([cb48d31](https://github.com/antvis/x6/commit/cb48d31e58041764f9bbb5f00e285849afd9058e))
+* 🐛 fix validateEdge trigger timming ([8bc943d](https://github.com/antvis/x6/commit/8bc943de5ec800d3cff4f68d95bb4d0b1713449c))
+
 ## @antv/x6 [1.19.2](https://github.com/antvis/x6/compare/@antv/x6@1.19.1...@antv/x6@1.19.2) (2021-04-28)
 
 
