@@ -9,7 +9,7 @@ redirect_from:
 
 ## 基础嵌套
 
-我们可以通过父子嵌套来实现群组，并提供了一系列获取和设置嵌套关系的[方法](../../api/model/cell#父子关系-parentchildren)。
+我们可以通过父子嵌套来实现群组，并提供了一系列获取和设置嵌套关系的[方法](/zh/docs/api/model/cell#父子关系-parentchildren)。
 
 ```ts
 const child = graph.addNode({

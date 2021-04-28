@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/api/registry
 ---
 
-我们可以通过 [`sourceMarker`](../../api/registry/attr#sourcemarker) 和 [`targetMarker`](../../api/registry/attr#targetmarker) 两个特殊属性，来指定边的起始箭头和终止箭头。同时我们将一些常用的箭头参数化并注册到 `Registry.Marker.presets` 命名空间中，这些箭头被称为“内置箭头”，使用内置箭头时只需要指定箭头名 `name` 和对应的参数即可，填充颜色 `fill` 和边框颜色 `stroke` 默认继承自边，可以通过指定 `fill` 和 `stroke` 属性来覆盖。
+我们可以通过 [`sourceMarker`](/en/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/en/docs/api/registry/attr#targetmarker) 两个特殊属性，来指定边的起始箭头和终止箭头。同时我们将一些常用的箭头参数化并注册到 `Registry.Marker.presets` 命名空间中，这些箭头被称为“内置箭头”，使用内置箭头时只需要指定箭头名 `name` 和对应的参数即可，填充颜色 `fill` 和边框颜色 `stroke` 默认继承自边，可以通过指定 `fill` 和 `stroke` 属性来覆盖。
 
 ```ts
 edge.attr({

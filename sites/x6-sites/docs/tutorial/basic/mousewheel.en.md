@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-鼠标滚轮的默认行为是滚动页面，启用 [Scroller](./scroller) 后用于滚动画布，但在某些场景下我们需要用滚轮来缩放画布，所为了避免交互冲突，通常配合修饰键来实现滚轮缩放画布，参考下面配置。
+鼠标滚轮的默认行为是滚动页面，启用 [Scroller](/en/docs/tutorial/basic/scroller) 后用于滚动画布，但在某些场景下我们需要用滚轮来缩放画布，所为了避免交互冲突，通常配合修饰键来实现滚轮缩放画布，参考下面配置。
 
 ```ts
 const graph = new Graph({

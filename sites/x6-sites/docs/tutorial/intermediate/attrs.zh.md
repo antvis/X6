@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-在之前教程中我们介绍了[如何通过 `attrs` 定制样式](../basic/cell#attrs-1)，同时在[使用箭头教程](../basic/edge#使用箭头-marker)中看到了 `sourceMarker` 和 `targetMarker` 两个特殊属性的强大作用，并了解到 `attrs` 在[节点样式](../basic/node#定制样式-attrs)、[边样式](../basic/edge#定制样式-attrs)、[标签样式](./edge-labels#标签样式)等多处被广泛使用，所以有必要对属性相关概念作更详细的介绍。
+在之前教程中我们介绍了[如何通过 `attrs` 定制样式](/zh/docs/tutorial/basic/cell#attrs-1)，同时在[使用箭头教程](/zh/docs/tutorial/basic/edge#使用箭头-marker)中看到了 `sourceMarker` 和 `targetMarker` 两个特殊属性的强大作用，并了解到 `attrs` 在[节点样式](/zh/docs/tutorial/basic/node#定制样式-attrs)、[边样式](/zh/docs/tutorial/basic/edge#定制样式-attrs)、[标签样式](/zh/docs/tutorial/intermediate/edge-labels#标签样式)等多处被广泛使用，所以有必要对属性相关概念作更详细的介绍。
 
 对于原生 SVG 属性，网上有很多教程可以参考，例如 MDN 提供的 [SVG 属性参考](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute)，这里我们将更多聚焦到如何定义和使用特殊属性。特殊属性提供了比[原生 SVG 属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute)更加灵活和强大的功能，在应用属性时，原生属性被直接传递给对应的元素，特殊属性则被进一步加工处理，转换为浏览器认识的原生属性后，再传递给对应的元素。
 
@@ -15,11 +15,11 @@ redirect_from:
 
 在定制节点或边时，设置元素的相对大小是一个非常常见需求，我们在 X6 中提供了一系列以 `ref` 为前缀特殊属性，可以通过这些属性来为元素设置相对大小，同时这些属性的计算都是基于节点/边的数据大小，也就是说所有计算都不依赖浏览器的 bbox 计算，所以不存在任何性能问题。
 
-- [`refWidth`](../../api/registry/attr#refwidth) 和 [`refHeight`](../../api/registry/attr#refheight) 元素大小。
-- [`refX`](../../api/registry/attr#refx) 和 [`refY`](../../api/registry/attr#refy) 元素位置。
-- [`refCx`](../../api/registry/attr#refcx) 和 [`refCy`](../../api/registry/attr#refcy) 椭圆 `<ellipse>` 和圆 `<circle>` 中心位置。
-- [`refRx`](../../api/registry/attr#refrx) 和 [`refRy`](../../api/registry/attr#refry) 椭圆 `<ellipse>` 半径。
-- [`refR`](../../api/registry/attr#refr) 圆 `<circle>` 半径。
+- [`refWidth`](/zh/docs/api/registry/attr#refwidth) 和 [`refHeight`](/zh/docs/api/registry/attr#refheight) 元素大小。
+- [`refX`](/zh/docs/api/registry/attr#refx) 和 [`refY`](/zh/docs/api/registry/attr#refy) 元素位置。
+- [`refCx`](/zh/docs/api/registry/attr#refcx) 和 [`refCy`](/zh/docs/api/registry/attr#refcy) 椭圆 `<ellipse>` 和圆 `<circle>` 中心位置。
+- [`refRx`](/zh/docs/api/registry/attr#refrx) 和 [`refRy`](/zh/docs/api/registry/attr#refry) 椭圆 `<ellipse>` 半径。
+- [`refR`](/zh/docs/api/registry/attr#refr) 圆 `<circle>` 半径。
 
 接下来我们一起来看看如何使用这些相对属性。下面案例中，我们定一个红色椭圆 `e`、一个绿色矩形 `r`、和蓝色圆形 `c` 和一个表示节点大小的矩形 `outline`。
 
@@ -108,11 +108,11 @@ graph.addNode({
 
 我们提供了下面几个属性来设置边以及相对于边的位置。
 
-- [`connection`](../../api/registry/attr#connection) 仅适用于边的 `<path>` 元素，当该属性为 `true` 时，表示将在该元素上渲染边。
-- [`atConnectionLength`](../../api/registry/attr#atconnectionlengthkeepgradient) 是 [`atConnectionLengthKeepGradient`](../../api/registry/attr#atconnectionlengthkeepgradient) 属性的简称，表示将指定元素移动到指定的偏移量的位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
-- [`atConnectionRatio`](../../api/registry/attr#atconnectionratiokeepgradient) 是 [`atConnectionRatioKeepGradient`](../../api/registry/attr#atconnectionratiokeepgradient) 属性的简称，表示将指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
-- [`atConnectionLengthIgnoreGradient`](../../api/registry/attr#atconnectionlengthignoregradient) 将指定元素移动到指定偏移量的位置处，忽略边的斜率，即不会跟随边自动旋转。
-- [`atConnectionRatioIgnoreGradient`](../../api/registry/attr#atconnectionratioignoregradient)，将指定元素移动到指定比例 `[0, 1]` 位置处，忽略边的斜率，即不会跟随边自动旋转。
+- [`connection`](/zh/docs/api/registry/attr#connection) 仅适用于边的 `<path>` 元素，当该属性为 `true` 时，表示将在该元素上渲染边。
+- [`atConnectionLength`](/zh/docs/api/registry/attr#atconnectionlengthkeepgradient) 是 [`atConnectionLengthKeepGradient`](/zh/docs/api/registry/attr#atconnectionlengthkeepgradient) 属性的简称，表示将指定元素移动到指定的偏移量的位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
+- [`atConnectionRatio`](/zh/docs/api/registry/attr#atconnectionratiokeepgradient) 是 [`atConnectionRatioKeepGradient`](/zh/docs/api/registry/attr#atconnectionratiokeepgradient) 属性的简称，表示将指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
+- [`atConnectionLengthIgnoreGradient`](/zh/docs/api/registry/attr#atconnectionlengthignoregradient) 将指定元素移动到指定偏移量的位置处，忽略边的斜率，即不会跟随边自动旋转。
+- [`atConnectionRatioIgnoreGradient`](/zh/docs/api/registry/attr#atconnectionratioignoregradient)，将指定元素移动到指定比例 `[0, 1]` 位置处，忽略边的斜率，即不会跟随边自动旋转。
 
 ```ts
 graph.addEdge({
@@ -205,4 +205,4 @@ graph.addEdge({
 
 ## 使用箭头
 
-我们可以使用 [`sourceMarker`](../../api/registry/attr#sourcemarker) 和 [`targetMarker`](../../api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](./marker)。
+我们可以使用 [`sourceMarker`](/zh/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/zh/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](/zh/docs/tutorial/intermediate/marker)。

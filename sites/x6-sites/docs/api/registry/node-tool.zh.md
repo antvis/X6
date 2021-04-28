@@ -234,7 +234,7 @@ const source = graph.addNode({
 
 ## registry
 
-我们在 Registry.NodeTool.registry 对象上提供了注册和取消注册工具的方法，工具实际上是一个继承自 ToolItem 的[视图](../view/view)。
+我们在 Registry.NodeTool.registry 对象上提供了注册和取消注册工具的方法，工具实际上是一个继承自 ToolItem 的[视图](/zh/docs/api/view/view)。
 
 ```ts
 export type Definition = typeof ToolItem | (new (options: ToolItem.Options) => ToolItem)
@@ -272,7 +272,7 @@ unregister(name: string): Definition | null
 
 ### 自定义工具
 
-场景一：继承 `ToolItem` 实现一个工具类，难度较高，要求对[视图基类](../view/view)和 `ToolItem` 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
+场景一：继承 `ToolItem` 实现一个工具类，难度较高，要求对[视图基类](/zh/docs/api/view/view)和 `ToolItem` 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
 
 ```ts
 Graph.registerNodeTool('button', Button)

@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-我们在 X6 中内置了 `Edge`、`DoubleEdge` 和 `ShadowEdge` 三种基础边，虽然 `Edge` 就能满足常见需求，但也避免不了偶然的定制需求。定制边与[定制节点](./custom-node)类似，但也有一些不同。
+我们在 X6 中内置了 `Edge`、`DoubleEdge` 和 `ShadowEdge` 三种基础边，虽然 `Edge` 就能满足常见需求，但也避免不了偶然的定制需求。定制边与[定制节点](/zh/docs/tutorial/intermediate/custom-node)类似，但也有一些不同。
 
 ## 原理
 
@@ -29,13 +29,13 @@ class Edge extends BaseEdge {
 
 #### 第二步：配置
 
-调用继承的静态方法 `config(options)` 来配置[边选项](../basic/edge/#选项)的默认值、[自定义选项](../basic/cell#自定义选项)和[自定义属性]()，例如通过 [markup](../basic/cell#markup) 来指定边默认的 SVG/HTML 结构，通过 [attrs](../basic/cell#attrs-1) 来指定边的默认属性样式，通过 [defaultlabel](../basic/edge#defaultlabel) 来指定边的默认标签样式。
+调用继承的静态方法 `config(options)` 来配置[边选项](/zh/docs/tutorial/basic/edge/#选项)的默认值、[自定义选项](/zh/docs/tutorial/basic/cell#自定义选项)和[自定义属性]()，例如通过 [markup](/zh/docs/tutorial/basic/cell#markup) 来指定边默认的 SVG/HTML 结构，通过 [attrs](/zh/docs/tutorial/basic/cell#attrs-1) 来指定边的默认属性样式，通过 [defaultlabel](/zh/docs/tutorial/basic/edge#defaultlabel) 来指定边的默认标签样式。
 
 | 名称      | 类型                             | 是否必选 | 默认值    | 说明                                        |
 |-----------|----------------------------------|----------|-----------|-------------------------------------------|
-| propHooks | Function \| Function[] \| Object | 否       | undefined | [自定义选项](../basic/cell#自定义选项)钩子。 |
+| propHooks | Function \| Function[] \| Object | 否       | undefined | [自定义选项](/zh/docs/tutorial/basic/cell#自定义选项)钩子。 |
 | attrHooks | Object                           | 否       | undefined | [自定义属性]()钩子。                         |
-| ...others | Object                           |          |           | [边选项](../basic/edge/#选项)。              |
+| ...others | Object                           |          |           | [边选项](/zh/docs/tutorial/basic/edge/#选项)。              |
 
 看下面 `Edge` 的默认配置。
 
@@ -83,7 +83,7 @@ Edge.config({
 
 上面代码中，我们通过 `markup` 定义了两个 `<path>` 元素，分别指定了 `wrap` 和 `line` 选择器，并通过 `markup` 内部的 `attrs` 指定了基础样式（交互响应）：`wrap` 指代的 `<path>` 元素默认透明不可见，用于响应用户交互，而 `line` 指代的 `<path>` 元素仅仅做视觉渲染，不响应用户交互。
 
-然后在 `attrs` 上定义了边的默认属性样式：`line` 指代的 `<path>` 元素代表了边的主体，我们为其指定了 `2px` 宽度的黑色边框，并通过 `targetMarker` [特殊属性](./marker)为其指定了一个终止箭头；`wrap` 指代的 `<path>` 元素用于响应用户交互，为了让鼠标更容易捕获到连线，我们为其指定了 `10px` 的边框。两者的 `connection` 特殊属性都为 `true`，表示两个 `<path>` 元素的 `d` 属性值都将根据边的 [vertices](../basic/edge#vertices)、[router](../basic/edge#router)、[connector](../basic/edge#connector) 选项计算得到。
+然后在 `attrs` 上定义了边的默认属性样式：`line` 指代的 `<path>` 元素代表了边的主体，我们为其指定了 `2px` 宽度的黑色边框，并通过 `targetMarker` [特殊属性](/zh/docs/tutorial/intermediate/marker)为其指定了一个终止箭头；`wrap` 指代的 `<path>` 元素用于响应用户交互，为了让鼠标更容易捕获到连线，我们为其指定了 `10px` 的边框。两者的 `connection` 特殊属性都为 `true`，表示两个 `<path>` 元素的 `d` 属性值都将根据边的 [vertices](/zh/docs/tutorial/basic/edge#vertices)、[router](/zh/docs/tutorial/basic/edge#router)、[connector](/zh/docs/tutorial/basic/edge#connector) 选项计算得到。
 
 #### 第三步：注册
 
