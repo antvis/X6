@@ -157,24 +157,53 @@ const graph = new Graph({
 
 #### connector
 
-[连接器](/en/docs/api/registry/connector)将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal`。
-
-#### validateMagnet
-
-点击 `magnet` 时 根据 `validateMagnet` 返回值来判断是否新增边
+[连接器](/zh/docs/api/registry/connector)将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal`。
 
 #### createEdge
 
 连接的过程中创建新的边
 
+#### validateMagnet
+
+点击 `magnet` 时 根据 `validateMagnet` 返回值来判断是否新增边，触发时机是 `magnet` 被按下，如果返回 `false`，则没有任何反应，如果返回 `true`，会在当前 `magnet` 创建一条新的边。
+
+```ts
+validateMagnet({ e, magnet, view, cell }) {
+  return false
+}
+```
+
+#### validateConnection
+
+在移动边的时候判断连接是否有效，如果返回 `false`，当鼠标放开的时候，不会连接到当前元素，否则会连接到当前元素。
+
+```ts
+validateConnection({
+  edge,
+  edgeView,
+  sourceView,
+  targetView,
+  sourcePort,
+  targetPort,
+  sourceMagnet,
+  targetMagnet,
+  sourceCell,
+  targetCell,
+  type 
+}){
+  return false
+}
+```
+
 #### validateEdge
 
 当停止拖动边的时候根据 `validateEdge` 返回值来判断边是否生效，如果返回 `false`, 该边会被清除。
 
-#### validateConnection
-
-判断连接是否有效，如果返回 `false` ，连接无效。
-
+```ts
+validateEdge({ edge, type, previous }) {
+  return false
+}
+```
 
 ### embedding
 
