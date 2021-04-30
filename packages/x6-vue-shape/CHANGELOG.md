@@ -1,3 +1,18 @@
+## @antv/x6-vue-shape [1.2.4](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.3...@antv/x6-vue-shape@1.2.4) (2021-04-30)
+
+
+### Performance Improvements
+
+* ⚡️ optimize node render performance ([433d25f](https://github.com/antvis/x6/commit/433d25ff4a8cb6bab662f1a2317f59c1d41aa7bd))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.19.4
+
 ## @antv/x6-vue-shape [1.2.3](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.2...@antv/x6-vue-shape@1.2.3) (2021-03-30)
 
 
