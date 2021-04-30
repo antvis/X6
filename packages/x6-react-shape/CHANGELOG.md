@@ -1,3 +1,18 @@
+## @antv/x6-react-shape [1.4.1](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.4.0...@antv/x6-react-shape@1.4.1) (2021-04-30)
+
+
+### Performance Improvements
+
+* ⚡️ optimize node render performance ([433d25f](https://github.com/antvis/x6/commit/433d25ff4a8cb6bab662f1a2317f59c1d41aa7bd))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.19.4
+
 # @antv/x6-react-shape [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.3.5...@antv/x6-react-shape@1.4.0) (2021-04-28)
 
 
