@@ -54,6 +54,10 @@ const container = document.getElementById('container')!
 const graph = new Graph({
   container,
   grid: true,
+  connecting: {
+    anchor: 'center',
+    connectionPoint: 'anchor',
+  },
 })
 
 graph.addNode({
