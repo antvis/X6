@@ -374,8 +374,8 @@ export class AttrManager {
     }
 
     // delay render
-    if (delayAttrs != null) {
-      Scheduler.scheduleTask(() => {
+    const updateDelayAttrs = () => {
+      if (delayAttrs != null) {
         Object.keys(delayAttrs).forEach((name) => {
           const val = delayAttrs[name]
           const def = this.getDefinition(name)
@@ -398,7 +398,12 @@ export class AttrManager {
             }
           }
         })
-      })
+      }
+    }
+    if (options.forceSync) {
+      updateDelayAttrs()
+    } else {
+      Scheduler.scheduleTask(updateDelayAttrs)
     }
   }
 
@@ -435,7 +440,8 @@ export class AttrManager {
       if (
         processed.set == null &&
         processed.position == null &&
-        processed.offset == null
+        processed.offset == null &&
+        processed.delay == null
       ) {
         this.view.setAttrs(processed.normal, node)
       } else {
@@ -540,6 +546,11 @@ export class AttrManager {
         refBBox = Dom.transformRectangle(unrotatedRefBBox!, rotatableMatrix)
       }
 
+      const caller = specialItems.find((item) => item.refNode === node)
+      if (caller) {
+        options.forceSync = true
+      }
+
       this.updateRelativeAttrs(node, processedAttrs, refBBox, options)
     })
   }
@@ -555,6 +566,10 @@ export namespace AttrManager {
      * Rendering only the specified attributes.
      */
     attrs?: Attr.CellAttrs | null
+    /**
+     * Whether to force synchronous rendering
+     */
+    forceSync?: boolean
   }
 
   export interface ProcessedAttrs {
@@ -568,8 +583,8 @@ export namespace AttrManager {
 
   export const CASE_SENSITIVE_ATTR = ['viewBox']
   export const DELAY_ATTRS = [
-    // 'text',
-    // 'textWrap',
+    'text',
+    'textWrap',
     'sourceMarker',
     'targetMarker',
   ]
