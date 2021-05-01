@@ -568,8 +568,8 @@ export namespace AttrManager {
 
   export const CASE_SENSITIVE_ATTR = ['viewBox']
   export const DELAY_ATTRS = [
-    'text',
-    'textWrap',
+    // 'text',
+    // 'textWrap',
     'sourceMarker',
     'targetMarker',
   ]
