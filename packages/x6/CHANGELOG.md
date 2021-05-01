@@ -1,3 +1,10 @@
+## @antv/x6 [1.19.5](https://github.com/antvis/x6/compare/@antv/x6@1.19.4...@antv/x6@1.19.5) (2021-05-01)
+
+
+### Bug Fixes
+
+* 🐛 revert delay text attr tmp ([bd41f0c](https://github.com/antvis/x6/commit/bd41f0cba09df2aa029c645a2bc1a8515538dcb5))
+
 ## @antv/x6 [1.19.4](https://github.com/antvis/x6/compare/@antv/x6@1.19.3...@antv/x6@1.19.4) (2021-04-30)
 
 
