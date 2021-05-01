@@ -1,3 +1,11 @@
+## @antv/x6 [1.19.6](https://github.com/antvis/x6/compare/@antv/x6@1.19.5...@antv/x6@1.19.6) (2021-05-01)
+
+
+### Bug Fixes
+
+* 🐛 update delay attrs async when node is not caller ([6e253fc](https://github.com/antvis/x6/commit/6e253fc140b289811442a9a89e4484cb1a7c285c))
+* 🐛 validateEdge is sync ([57a6f2b](https://github.com/antvis/x6/commit/57a6f2be0685c91dced5208103051ad30742e87f))
+
 ## @antv/x6 [1.19.5](https://github.com/antvis/x6/compare/@antv/x6@1.19.4...@antv/x6@1.19.5) (2021-05-01)
 
 
