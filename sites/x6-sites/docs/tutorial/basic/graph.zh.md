@@ -39,13 +39,13 @@ const graph = new Graph({
 })
 ```
 
-还可以配置 `eventTypes` 来设置触发画布拖拽的行为，支持 `leftMouseDown`、 `rightMouseDown`、`mousewheel`，默认为 `['leftMouseDown']` 。
+还可以配置 `eventTypes` 来设置触发画布拖拽的行为，支持 `leftMouseDown`、 `rightMouseDown`、`mouseWheel`，默认为 `['leftMouseDown']` 。
 
 ```ts
 const graph = new Graph({
   panning: {
     enabled: true,
-    eventTypes: ['leftMouseDown', 'rightMouseDown', 'mousewheel']
+    eventTypes: ['leftMouseDown', 'rightMouseDown', 'mouseWheel']
   },
 })
 ```
