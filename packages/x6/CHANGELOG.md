@@ -1,3 +1,15 @@
+# @antv/x6 [1.20.0](https://github.com/antvis/x6/compare/@antv/x6@1.19.6...@antv/x6@1.20.0) (2021-05-04)
+
+
+### Bug Fixes
+
+* 🐛 optimize usage of mousewheel ([a2851cd](https://github.com/antvis/x6/commit/a2851cd862c9224bb66a8f9bda3e0035259fd940))
+
+
+### Features
+
+* ✨ panning support rightMouseDown and mousehwheel ([3694cc0](https://github.com/antvis/x6/commit/3694cc080ca5d2a291ba6b2df8c25933bb39b80a))
+
 ## @antv/x6 [1.19.6](https://github.com/antvis/x6/compare/@antv/x6@1.19.5...@antv/x6@1.19.6) (2021-05-01)
 
 
