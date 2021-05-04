@@ -35,7 +35,7 @@ export class PanningManager extends Base {
       this.onRightMouseDown = this.onRightMouseDown.bind(this)
       this.view.$(this.graph.container).on('mousedown', this.onRightMouseDown)
     }
-    if (eventTypes.includes('mousewheel')) {
+    if (eventTypes.includes('mouseWheel')) {
       this.mousewheelHandle = new Dom.MouseWheelHandle(
         this.graph.container,
         this.onMouseWheel.bind(this),
@@ -57,7 +57,7 @@ export class PanningManager extends Base {
     if (eventTypes.includes('rightMouseDown')) {
       this.view.$(this.graph.container).off('mousedown', this.onRightMouseDown)
     }
-    if (eventTypes.includes('mousewheel')) {
+    if (eventTypes.includes('mouseWheel')) {
       if (this.mousewheelHandle) {
         this.mousewheelHandle.disable()
       }
@@ -174,7 +174,7 @@ export class PanningManager extends Base {
 }
 
 export namespace PanningManager {
-  type EventType = 'leftMouseDown' | 'rightMouseDown' | 'mousewheel'
+  type EventType = 'leftMouseDown' | 'rightMouseDown' | 'mouseWheel'
   export interface Options {
     enabled?: boolean
     modifiers?: string | ModifierKey[] | null
