@@ -13,3 +13,5 @@ export * from './path'
 export * from './geom'
 export * from './matrix'
 export * from './transform'
+
+export * from './mousewheel'
