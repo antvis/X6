@@ -739,6 +739,7 @@ export namespace Options {
     },
     panning: {
       enabled: false,
+      eventTypes: ['leftMouseDown'],
     },
     snapline: {
       enabled: false,

@@ -6,6 +6,7 @@ export class PanningManager extends Base {
   private panning: boolean
   private clientX: number
   private clientY: number
+  private mousewheelHandle: Dom.MouseWheelHandle
 
   protected get widgetOptions() {
     return this.options.panning
@@ -21,15 +22,46 @@ export class PanningManager extends Base {
   }
 
   protected startListening() {
-    this.graph.on('blank:mousedown', this.preparePanning, this)
-    this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
-    this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
+    const eventTypes = this.widgetOptions.eventTypes
+    if (!eventTypes) {
+      return
+    }
+    if (eventTypes.includes('leftMouseDown')) {
+      this.graph.on('blank:mousedown', this.preparePanning, this)
+      this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
+      this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
+    }
+    if (eventTypes.includes('rightMouseDown')) {
+      this.onRightMouseDown = this.onRightMouseDown.bind(this)
+      this.view.$(this.graph.container).on('mousedown', this.onRightMouseDown)
+    }
+    if (eventTypes.includes('mousewheel')) {
+      this.mousewheelHandle = new Dom.MouseWheelHandle(
+        this.graph.container,
+        this.onMouseWheel.bind(this),
+      )
+      this.mousewheelHandle.enable()
+    }
   }
 
   protected stopListening() {
-    this.graph.off('blank:mousedown', this.preparePanning, this)
-    this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
-    this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
+    const eventTypes = this.widgetOptions.eventTypes
+    if (!eventTypes) {
+      return
+    }
+    if (eventTypes.includes('leftMouseDown')) {
+      this.graph.off('blank:mousedown', this.preparePanning, this)
+      this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
+      this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
+    }
+    if (eventTypes.includes('rightMouseDown')) {
+      this.view.$(this.graph.container).off('mousedown', this.onRightMouseDown)
+    }
+    if (eventTypes.includes('mousewheel')) {
+      if (this.mousewheelHandle) {
+        this.mousewheelHandle.disable()
+      }
+    }
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
@@ -97,6 +129,22 @@ export class PanningManager extends Base {
     }
   }
 
+  protected onRightMouseDown(e: JQuery.MouseDownEvent) {
+    if (e.button === 2 && this.allowPanning(e, true)) {
+      this.startPanning(e)
+    }
+  }
+
+  protected onMouseWheel(
+    e: JQueryMousewheel.JQueryMousewheelEventObject,
+    deltaX: number,
+    deltaY: number,
+  ) {
+    if (!e.ctrlKey) {
+      this.graph.translateBy(-deltaX, -deltaY)
+    }
+  }
+
   enablePanning() {
     if (!this.pannable) {
       this.widgetOptions.enabled = true
@@ -126,8 +174,10 @@ export class PanningManager extends Base {
 }
 
 export namespace PanningManager {
+  type EventType = 'leftMouseDown' | 'rightMouseDown' | 'mousewheel'
   export interface Options {
     enabled?: boolean
     modifiers?: string | ModifierKey[] | null
+    eventTypes?: EventType[]
   }
 }
