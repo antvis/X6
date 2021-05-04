@@ -39,6 +39,17 @@ const graph = new Graph({
 })
 ```
 
+还可以配置 `eventTypes` 来设置触发画布拖拽的行为，支持 `leftMouseDown`、 `rightMouseDown`、`mousewheel`，默认为 `['leftMouseDown']` 。
+
+```ts
+const graph = new Graph({
+  panning: {
+    enabled: true,
+    eventTypes: ['leftMouseDown', 'rightMouseDown', 'mousewheel']
+  },
+})
+```
+
 ### 画布缩放
 
 普通画布(未开启 [scroller](/en/docs/tutorial/basic/scroller) 模式)通过开启 [mousewheel](/en/docs/tutorial/basic/mousewheel) 选项来支持画布缩放。这里说明怎么通过代码来进行画布缩放：
