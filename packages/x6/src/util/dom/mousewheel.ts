@@ -2,7 +2,7 @@ import JQuery from 'jquery'
 import { Platform } from '../platform'
 
 export class MouseWheelHandle {
-  private target: HTMLElement
+  private target: HTMLElement | Document
   private onWheelCallback: MouseWheelHandle.OnWheelCallback
   private animationFrameId = 0
   private deltaX = 0
@@ -12,7 +12,7 @@ export class MouseWheelHandle {
     : 'mousewheel'
 
   constructor(
-    target: HTMLElement,
+    target: HTMLElement | Document,
     onWheelCallback: MouseWheelHandle.OnWheelCallback,
   ) {
     this.target = target
