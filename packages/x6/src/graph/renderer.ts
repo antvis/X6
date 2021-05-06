@@ -1177,6 +1177,27 @@ export class Renderer extends Base {
       }) as CellView[]
   }
 
+  findEdgeViewsInArea(
+    rect: Rectangle.RectangleLike,
+    options: Renderer.FindViewsInAreaOptions = {},
+  ) {
+    const area = Rectangle.create(rect)
+    return this.model
+      .getEdges()
+      .map((edge) => this.findViewByCell(edge))
+      .filter((view) => {
+        if (view) {
+          const bbox = Dom.getBBox(view.container as SVGElement, {
+            target: this.view.stage,
+          })
+          return options.strict
+            ? area.containsRect(bbox)
+            : area.isIntersectWithRect(bbox)
+        }
+        return false
+      }) as CellView[]
+  }
+
   findViewsInArea(
     rect: Rectangle.RectangleLike,
     options: Renderer.FindViewsInAreaOptions = {},

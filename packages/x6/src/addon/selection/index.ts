@@ -298,7 +298,7 @@ export class Selection extends View<Selection.EventArgs> {
         width /= scale.sx
         height /= scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
-        const cells = this.getNodesInArea(rect).map((view) => view.cell)
+        const cells = this.getCellViewsInArea(rect).map((view) => view.cell)
         this.reset(cells)
         this.hideRubberband()
         break
@@ -496,18 +496,40 @@ export class Selection extends View<Selection.EventArgs> {
     })
   }
 
-  protected getNodesInArea(rect: Rectangle) {
+  protected getCellViewsInArea(rect: Rectangle) {
     const graph = this.graph
     const options = {
       strict: this.options.strict,
     }
+    let views: CellView[] = []
 
-    return this.options.useCellGeometry
-      ? (graph.model
-          .getNodesInArea(rect, options)
-          .map((node) => graph.renderer.findViewByCell(node))
-          .filter((view) => view != null) as CellView[])
-      : graph.renderer.findViewsInArea(rect, options)
+    if (this.options.rubberNode) {
+      if (this.options.useCellGeometry) {
+        views = views.concat(
+          graph.model
+            .getNodesInArea(rect, options)
+            .map((node) => graph.renderer.findViewByCell(node))
+            .filter((view) => view != null) as CellView[],
+        )
+      } else {
+        views = views.concat(graph.renderer.findViewsInArea(rect, options))
+      }
+    }
+
+    if (this.options.rubberEdge) {
+      if (this.options.useCellGeometry) {
+        views = views.concat(
+          graph.model
+            .getEdgesInArea(rect, options)
+            .map((edge) => graph.renderer.findViewByCell(edge))
+            .filter((view) => view != null) as CellView[],
+        )
+      } else {
+        views = views.concat(graph.renderer.findEdgeViewsInArea(rect, options))
+      }
+    }
+
+    return views
   }
 
   protected notifyBoxEvent<
@@ -963,6 +985,10 @@ export namespace Selection {
     following?: boolean
     useCellGeometry?: boolean
     content?: Content
+
+    // can select node or edge when rubberband
+    rubberNode?: boolean
+    rubberEdge?: boolean
   }
 
   export interface Options extends CommonOptions {
