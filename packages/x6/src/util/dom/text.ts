@@ -209,10 +209,11 @@ export function text(
   })
 
   // Set default font-size if none
-  let fontSize = parseFloat(attr(elem, 'font-size'))
+  const strFontSize = attr(elem, 'font-size')
+  let fontSize = parseFloat(strFontSize)
   if (!fontSize) {
     fontSize = 16
-    if (namedVerticalAnchor || annotations) {
+    if ((namedVerticalAnchor || annotations) && !strFontSize) {
       attr(elem, 'font-size', `${fontSize}`)
     }
   }
