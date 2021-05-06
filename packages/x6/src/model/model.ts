@@ -979,6 +979,41 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
   }
 
+  /**
+   * Returns an array of edges whose bounding box top/left coordinate
+   * falls into the rectangle.
+   */
+  getEdgesInArea(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    options?: Model.GetCellsInAreaOptions,
+  ): Edge[]
+  getEdgesInArea(
+    rect: Rectangle.RectangleLike,
+    options?: Model.GetCellsInAreaOptions,
+  ): Edge[]
+  getEdgesInArea(
+    x: number | Rectangle.RectangleLike,
+    y?: number | Model.GetCellsInAreaOptions,
+    w?: number,
+    h?: number,
+    options?: Model.GetCellsInAreaOptions,
+  ): Edge[] {
+    const rect =
+      typeof x === 'number'
+        ? new Rectangle(x, y as number, w as number, h as number)
+        : Rectangle.create(x)
+    const opts =
+      typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
+    const strict = opts && opts.strict
+    return this.getEdges().filter((edge) => {
+      const bbox = edge.getBBox()
+      return strict ? rect.containsRect(bbox) : rect.isIntersectWithRect(bbox)
+    })
+  }
+
   getNodesUnderNode(
     node: Node,
     options: {

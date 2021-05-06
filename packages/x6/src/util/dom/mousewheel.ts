@@ -43,7 +43,7 @@ export class MouseWheelHandle {
   }
 
   private onWheel(e: JQueryMousewheel.JQueryMousewheelEventObject) {
-    if (this.onWheelGuard == null || !this.onWheelGuard(e)) {
+    if (this.onWheelGuard != null && !this.onWheelGuard(e)) {
       return
     }
 
