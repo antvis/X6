@@ -1,3 +1,16 @@
+# @antv/x6 [1.21.0](https://github.com/antvis/x6/compare/@antv/x6@1.20.0...@antv/x6@1.21.0) (2021-05-06)
+
+
+### Bug Fixes
+
+* 🐛 add onWheelGuard to prevent unwanted preventDefault ([#945](https://github.com/antvis/x6/issues/945)) ([3d567b1](https://github.com/antvis/x6/commit/3d567b14c3ba1da4522f94a3c8a325b5cf58012e))
+* 🐛 fix can not scroller by mousewheel ([dd511f8](https://github.com/antvis/x6/commit/dd511f81a9f96da969381c064188401dd009e42e))
+
+
+### Features
+
+* ✨ add rubberNode and rubberEdge config ([#949](https://github.com/antvis/x6/issues/949)) ([b715463](https://github.com/antvis/x6/commit/b71546332a91f7a894f453c691efee006fdf4ad0))
+
 # @antv/x6 [1.20.0](https://github.com/antvis/x6/compare/@antv/x6@1.19.6...@antv/x6@1.20.0) (2021-05-04)
 
 
