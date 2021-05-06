@@ -18,6 +18,7 @@ redirect_from:
     2. [怎么支持特定节点的放大缩小](#怎么支持特定节点的放大缩小)
     3. [怎么判断节点处于可缩放状态](#怎么判断节点处于可缩放状态)
     4. [HTML/React/Vue 节点渲染出错](#htmlreactvue节点渲染出错)
+    5. [node:moved 事件中 x、y 参数](mode:moved-事件中x、y-参数)
 3.  边相关
     1. [怎么区分 edgeremoved 事件触发原因](#怎么区分-edgeremoved-事件触发原因)
     2. [在 edge:removed 事件中怎么获取目标节点](#在-edgeremoved-事件中怎么获取目标节点)
@@ -113,6 +114,16 @@ HTML/React/Vue 节点内容都是渲染在 SVG 的 [foreignObject](https://devel
 
 - 节点 css 中不要使用 `position:absolute` 和 `position:relative`
 - 节点 css 中不要使用 `transform`
+
+### node:moved 事件中 x、y 参数
+
+在 `node:moved` 事件中参数中，`x`、`y` 参数经常引起歧义，这里说明一下：`x` 和 `y` 指定的是鼠标相对于画布的位置，而不是节点的位置，要获取节点的位置，可以：
+
+```ts
+graph.on('node:moved', ({ node })) {
+  const { x, y } = node.position()
+}
+```
 
 ### 怎么区分 edge:removed 事件触发原因
 

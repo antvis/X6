@@ -727,6 +727,8 @@ export namespace Options {
     selecting: {
       enabled: false,
       rubberband: false,
+      rubberNode: true,
+      rubberEdge: false, // next version will set to true
       multiple: true,
       movable: true,
       strict: false,

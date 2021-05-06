@@ -54,6 +54,8 @@ interface SelectionOptions {
   className?: string
   multiple?: boolean
   rubberband?: boolean
+  rubberNode?: boolean
+  rubberEdge?: boolean
   strict?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   movable?: boolean
@@ -93,7 +95,7 @@ const graph = new Graph({
 
 ### rubberband
 
-是否启用框选，默认为 `false`。
+是否启用框选，默认为 `false`。开启框选时，默认只能框选节点，如果需要自定义框选节点或者边，可以配置 `rubberNode` 和 `rubberEdge` 属性。
 
 ```ts
 const graph = new Graph({
