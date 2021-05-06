@@ -39,6 +39,7 @@ export class PanningManager extends Base {
       this.mousewheelHandle = new Dom.MouseWheelHandle(
         this.graph.container,
         this.onMouseWheel.bind(this),
+        this.allowMouseWheel.bind(this),
       )
       this.mousewheelHandle.enable()
     }
@@ -133,6 +134,10 @@ export class PanningManager extends Base {
     if (e.button === 2 && this.allowPanning(e, true)) {
       this.startPanning(e)
     }
+  }
+
+  protected allowMouseWheel(e: JQueryMousewheel.JQueryMousewheelEventObject) {
+    return this.pannable && !e.ctrlKey
   }
 
   protected onMouseWheel(

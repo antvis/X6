@@ -4,6 +4,7 @@ import { Platform } from '../platform'
 export class MouseWheelHandle {
   private target: HTMLElement | Document
   private onWheelCallback: MouseWheelHandle.OnWheelCallback
+  private onWheelGuard?: MouseWheelHandle.OnWheelGuard
   private animationFrameId = 0
   private deltaX = 0
   private deltaY = 0
@@ -14,9 +15,11 @@ export class MouseWheelHandle {
   constructor(
     target: HTMLElement | Document,
     onWheelCallback: MouseWheelHandle.OnWheelCallback,
+    onWheelGuard?: MouseWheelHandle.OnWheelGuard,
   ) {
     this.target = target
     this.onWheelCallback = onWheelCallback
+    this.onWheelGuard = onWheelGuard
     this.onWheel = this.onWheel.bind(this)
     this.didWheel = this.didWheel.bind(this)
   }
@@ -40,6 +43,10 @@ export class MouseWheelHandle {
   }
 
   private onWheel(e: JQueryMousewheel.JQueryMousewheelEventObject) {
+    if (this.onWheelGuard == null || !this.onWheelGuard(e)) {
+      return
+    }
+
     this.deltaX += e.deltaX
     this.deltaY += e.deltaY
     e.preventDefault()
@@ -66,6 +73,9 @@ export class MouseWheelHandle {
 }
 
 export namespace MouseWheelHandle {
+  export type OnWheelGuard = (
+    e: JQueryMousewheel.JQueryMousewheelEventObject,
+  ) => boolean
   export type OnWheelCallback = (
     e: JQueryMousewheel.JQueryMousewheelEventObject,
     deltaX?: number,
