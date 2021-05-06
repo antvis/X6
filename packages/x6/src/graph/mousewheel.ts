@@ -26,6 +26,7 @@ export class MouseWheel extends Disposable implements IDisablable {
     this.mousewheelHandle = new Dom.MouseWheelHandle(
       this.target,
       this.onMouseWheel.bind(this),
+      this.allowMouseWheel.bind(this),
     )
     if (this.options.enabled) {
       this.enable(true)
@@ -50,6 +51,16 @@ export class MouseWheel extends Disposable implements IDisablable {
       this.graph.options.mousewheel.enabled = false
       this.mousewheelHandle.disable()
     }
+  }
+
+  protected allowMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
+    const e = (evt.originalEvent || evt) as WheelEvent
+    const guard = this.options.guard
+
+    return (
+      (guard == null || guard.call(this.graph, e)) &&
+      ModifierKey.isMatch(e, this.options.modifiers)
+    )
   }
 
   protected onMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
