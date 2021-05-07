@@ -103,6 +103,8 @@ describe('Marker', () => {
       expect(marker.children().length).toBe(1)
       expect(marker.attr('refX')).toBe(5)
       expect(marker).toBeInstanceOf(Marker)
+
+      expect(path.reference('marker-end')).toBeNull()
     })
 
     it('creates a marker and applies it to the marker-start attribute', () => {

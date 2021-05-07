@@ -1,9 +1,9 @@
-import { Global } from '../../global'
 import { UnitNumber } from '../../struct/unit-number'
 import { Adopter } from '../../dom/common/adopter'
 import { TSpan } from '../tspan/tspan'
 import { TextBase } from './base'
 import { Overrides } from './overrides'
+import { getFontSize } from './util'
 
 @Text.mixin(Overrides)
 @Text.register('Text')
@@ -47,12 +47,7 @@ export class Text<
       let blankLineOffset = 0
       const leading = this.leading()
       this.eachChild<TSpan>((child, index) => {
-        const fontSize = Global.window
-          .getComputedStyle(this.node)
-          .getPropertyValue('font-size')
-
-        const dy = leading * Number.parseFloat(fontSize)
-
+        const dy = leading * getFontSize(child.node)
         if (child.affix<boolean>('newLined')) {
           child.attr('x', this.attr('x') as string)
 
@@ -72,8 +67,8 @@ export class Text<
   }
 
   text(): string
-  text(text: string | ((this: TSpan, tspan: TSpan) => void)): this
-  text(text?: string | ((this: TSpan, tspan: TSpan) => void)) {
+  text(text: string | ((this: Text, t: Text) => void)): this
+  text(text?: string | ((this: Text, t: Text) => void)) {
     // getter
     if (text === undefined) {
       const children = this.node.childNodes

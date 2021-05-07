@@ -2,7 +2,7 @@ import { PathArray } from '../../struct/path-array'
 import { Text } from '../text/text'
 import { Path } from '../path/path'
 
-Text.register('TextPath')
+@TextPath.register('TextPath')
 export class TextPath extends Text<SVGTextPathElement> {
   plot(): PathArray
   plot(d: string | Path.Segment[] | PathArray): this

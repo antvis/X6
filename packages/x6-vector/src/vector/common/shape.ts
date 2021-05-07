@@ -6,7 +6,7 @@ export class Shape<
   TSVGGraphicsElement extends SVGGraphicsElement
 > extends Vector<TSVGGraphicsElement> {
   constructor()
-  constructor(attrs: AttributesMap<TSVGGraphicsElement> | null)
+  constructor(attrs?: AttributesMap<TSVGGraphicsElement> | null)
   constructor(
     node: TSVGGraphicsElement | null,
     attrs?: AttributesMap<TSVGGraphicsElement> | null,

@@ -1,6 +1,6 @@
 import './vector/mixins'
 
-import './container/mixins'
+import './container/container-mixins'
 import './fragment/mixins'
 import './defs/mixins'
 import './line/mixins'

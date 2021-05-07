@@ -37,9 +37,10 @@ export class Poly<
 
   plot(): [number, number][]
   plot(d: string): this
+  plot(points: number[]): this
   plot(points: [number, number][]): this
-  plot(points: string | [number, number][]): this
-  plot(d?: string | [number, number][]) {
+  plot(points: string | number[] | [number, number][]): this
+  plot(d?: string | number[] | [number, number][]) {
     if (d == null) {
       return this.toArray()
     }

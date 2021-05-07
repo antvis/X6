@@ -1,16 +1,16 @@
-import { Container } from '../container/container'
 import { Vector } from '../vector/vector'
+import { Vessel } from '../container/vessel'
 import { SVGMaskAttributes } from './types'
 
 @Mask.register('Mask')
-export class Mask extends Container<SVGMaskElement> {
+export class Mask extends Vessel<SVGMaskElement> {
   remove() {
     this.targets().forEach((target) => target.unmask())
     return super.remove()
   }
 
   targets<TVector extends Vector>() {
-    return Mask.find<TVector>(`svg [mask*="${this.id()}"]`)
+    return this.findTargets<TVector>('mask')
   }
 }
 

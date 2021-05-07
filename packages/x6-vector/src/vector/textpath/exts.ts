@@ -1,5 +1,4 @@
 import { Base } from '../common/base'
-import { Vector } from '../vector/vector'
 import { Text } from '../text/text'
 import { Path } from '../path/path'
 import { TextPath } from './textpath'
@@ -14,12 +13,18 @@ export class ContainerExtension<
     path: string | Path,
     attrs?: Attributes,
   ) {
-    const instance = text instanceof Text ? text : new Text().text(text)
-    const textPath = instance.path(path)
-    if (attrs) {
-      textPath.attr(attrs)
+    // 1. create text instance
+    const instance = text instanceof Text ? text : new Text()
+
+    // 2. append text to container
+    instance.appendTo(this)
+
+    // 3. update text content
+    if (typeof text === 'string') {
+      instance.text(text)
     }
-    return textPath
+
+    return instance.path(path, undefined, attrs)
   }
 }
 
@@ -31,7 +36,7 @@ export class TextExtension<
     importNodes = true,
     attrs?: Attributes | null,
   ) {
-    const textPath = new TextPath()
+    const textPath = new TextPath(attrs)
 
     let path: Path | null = null
     if (track instanceof Path) {
@@ -44,7 +49,7 @@ export class TextExtension<
     }
 
     if (path) {
-      textPath.attr('href', `#${path.toString()}`)
+      textPath.attr('href', `#${path.id()}`)
 
       // Transplant all nodes from text to textPath
       let node
@@ -55,11 +60,9 @@ export class TextExtension<
       }
     }
 
-    if (attrs) {
-      textPath.attr(attrs)
-    }
+    textPath.appendTo(this)
 
-    return this.put(textPath)
+    return textPath
   }
 
   textPath() {
@@ -74,19 +77,30 @@ export class PathExtension<
     text: string | Text,
     attrs?: Attributes,
   ) {
-    const instance = text instanceof Text ? text : new Text().text(text)
+    const instance = text instanceof Text ? text : new Text()
+    if (attrs) {
+      instance.attr(attrs)
+    }
+
     if (!instance.parent()) {
       this.after(instance)
     }
 
-    if (attrs) {
-      instance.attr(attrs)
+    // update text after the node was appended to the document
+    if (typeof text === 'string') {
+      instance.text(text)
     }
 
     return instance.path(this as any)
   }
 
-  targets<TVector extends Vector>() {
-    return Path.find<TVector>(`svg [mask*="${this.id()}"]`)
+  targets() {
+    const root = this.root()
+    return root
+      ? root.find<TextPath>('textPath').filter((node) => {
+          const href = node.attr<string>('href')
+          return href && href.includes(this.id())
+        })
+      : []
   }
 }

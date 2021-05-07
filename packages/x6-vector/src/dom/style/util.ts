@@ -1,5 +1,5 @@
 import { Global } from '../../global'
-import { isInDocument } from '../../util'
+import { isInDocument } from '../../util/dom'
 import { Hook } from './hook'
 import { CSSProperties } from './types'
 

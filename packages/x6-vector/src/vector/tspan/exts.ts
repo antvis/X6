@@ -5,11 +5,17 @@ import { SVGTSpanAttributes } from './types'
 export class TextExtension<
   TSVGTextElement extends SVGTextElement | SVGTSpanElement | SVGTextPathElement
 > extends TextBase<TSVGTextElement> {
+  tspan<Attributes extends SVGTSpanAttributes>(attrs?: Attributes | null): TSpan
   tspan<Attributes extends SVGTSpanAttributes>(
-    text = '',
+    text: string,
+    attrs?: Attributes | null,
+  ): TSpan
+  tspan<Attributes extends SVGTSpanAttributes>(
+    text: Attributes | string | null = '',
     attrs?: Attributes | null,
   ) {
-    const tspan = new TSpan().appendTo(this)
+    const tspan = new TSpan()
+
     if (text != null) {
       if (typeof text === 'string') {
         tspan.text(text)
@@ -25,6 +31,6 @@ export class TextExtension<
       this.clear()
     }
 
-    return tspan
+    return tspan.appendTo(this)
   }
 }

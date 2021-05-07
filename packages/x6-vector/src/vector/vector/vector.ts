@@ -1,15 +1,11 @@
 import { UnitNumber } from '../../struct/unit-number'
 import { Size } from '../common/size'
-import { Dom } from '../../dom'
+import { Base } from '../common/base'
 
 @Vector.register('Vector')
 export class Vector<
   TSVGElement extends SVGElement = SVGElement
-> extends Dom<TSVGElement> {
-  // protected createNode(tagName: string) {
-  //   return createSVGNode(tagName) as any
-  // }
-
+> extends Base<TSVGElement> {
   width(): number
   width(width: string | number | null): this
   width(width?: string | number | null) {

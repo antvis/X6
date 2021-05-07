@@ -1,4 +1,4 @@
-import { applyMixins } from '../../util'
+import { applyMixins } from '../../util/mixin'
 import { PathExtension as TextpathExtension } from '../textpath/exts'
 import { LineExtension as MarkerLineExtension } from '../marker/exts'
 import { Path } from './path'

@@ -13,6 +13,10 @@ export namespace Polyline {
     attrs?: Attributes | null,
   ): Polyline
   export function create<Attributes extends SVGPolylineAttributes>(
+    points: number[],
+    attrs?: Attributes | null,
+  ): Polyline
+  export function create<Attributes extends SVGPolylineAttributes>(
     points: [number, number][],
     attrs?: Attributes | null,
   ): Polyline

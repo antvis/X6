@@ -5,10 +5,14 @@ export namespace Registry {
 
   const cache: Record<string, Definition> = {}
 
-  export function register(ctor: Definition, name = ctor.name) {
+  export function register(ctor: Definition, name: string) {
     cache[name] = ctor
 
     return ctor
+  }
+
+  export function unregister(name: string) {
+    delete cache[name]
   }
 
   export function getClass<TDefinition extends Definition = Definition>(

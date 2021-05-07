@@ -112,7 +112,7 @@ describe('RadialGradient', () => {
   describe('url()', () => {
     it('should return "url(#id)"', () => {
       const gradient = new RadialGradient().id('foo')
-      expect(gradient.url()).toBe('url("#foo")')
+      expect(gradient.url()).toBe('url(#foo)')
     })
   })
 

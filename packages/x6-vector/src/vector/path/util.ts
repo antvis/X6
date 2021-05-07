@@ -235,8 +235,13 @@ export function parse(d: string, toAbsolute = true) {
   while (((parser.lastToken = token), (token = d.charAt(index)))) {
     index += 1
 
-    if (!parser.inSegment && startNewSegment(parser, token)) {
-      continue
+    if (!parser.inSegment) {
+      if (
+        (!isCommand(token) && !parser.lastCommand) ||
+        startNewSegment(parser, token)
+      ) {
+        continue
+      }
     }
 
     if (token === '.') {
