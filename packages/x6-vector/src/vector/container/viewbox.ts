@@ -1,5 +1,6 @@
 import { Box } from '../../struct/box'
 import { Point } from '../../struct/point'
+import { Util } from '../../dom/attributes/util'
 import { Vector } from '../vector/vector'
 
 export class Viewbox<
@@ -38,7 +39,9 @@ export class Viewbox<
   zoom(): number
   zoom(level: number, origin?: Point.PointLike): this
   zoom(level?: number, origin?: Point.PointLike) {
-    let { width, height } = this.attr(['width', 'height'])
+    const node = this.node
+    let width = Util.tryConvertToNumber(node.getAttribute('width'))
+    let height = Util.tryConvertToNumber(node.getAttribute('height'))
 
     if (
       (width == null && height == null) ||

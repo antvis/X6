@@ -1,15 +1,4 @@
-import { Vector } from '../vector/vector'
-import { Container } from '../container/container'
+import { Wrapper } from '../container/wrapper'
 
 @Defs.register('Defs')
-export class Defs
-  extends Vector<SVGDefsElement>
-  implements Container.IContainer {
-  flatten() {
-    return this
-  }
-
-  ungroup() {
-    return this
-  }
-}
+export class Defs extends Wrapper<SVGDefsElement> {}

@@ -1,4 +1,4 @@
-import { namespaces } from '../../util'
+import { namespaces } from '../../util/dom'
 import { Registry } from '../../dom/common/registry'
 import { Dom } from '../../dom/dom'
 import type { Svg } from '../svg/svg'

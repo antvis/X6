@@ -34,7 +34,8 @@ export class TextBase<
       return box.x
     }
 
-    return this.attr('x', +this.attr('x') + UnitNumber.toNumber(x) - box.x)
+    const old = +this.attr('x') || 0
+    return this.attr('x', old + UnitNumber.toNumber(x) - box.x)
   }
 
   y(): number
@@ -44,7 +45,8 @@ export class TextBase<
       return box.y
     }
 
-    return this.attr('y', +this.attr('y') + UnitNumber.toNumber(y) - box.y)
+    const old = +this.attr('y') || 0
+    return this.attr('y', old + UnitNumber.toNumber(y) - box.y)
   }
 
   move(x: number | string, y: number | string, box = this.bbox()) {
@@ -75,13 +77,13 @@ export class TextBase<
     return this.cx(x, box).cy(y, box)
   }
 
-  ax(): number
+  ax(): number | string
   ax(x: number | string): this
   ax(x?: number | string) {
     return this.attr('x', x)
   }
 
-  ay(): number
+  ay(): number | string
   ay(y: number | string): this
   ay(y?: number | string) {
     return this.attr('y', y)

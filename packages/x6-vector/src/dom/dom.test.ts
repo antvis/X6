@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { createSVGNode, namespaces } from '../util'
+import { createSVGNode, namespaces } from '../util/dom'
 import { Circle, G, Rect, Svg, TSpan } from '../vector'
 import { Dom } from './dom'
 import { Fragment } from '../vector/fragment/fragment'

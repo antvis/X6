@@ -1,8 +1,8 @@
 import { UnitNumber } from '../../struct/unit-number'
-import { Vector } from '../vector/vector'
+import { Base } from '../common/base'
 
 @Stop.register('Stop')
-export class Stop extends Vector<SVGStopElement> {
+export class Stop extends Base<SVGStopElement> {
   update(
     offset?: number | string | UnitNumber,
     color?: string,
