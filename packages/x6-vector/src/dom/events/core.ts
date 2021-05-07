@@ -1,4 +1,4 @@
-import { isWindow } from '../../util'
+import { isWindow } from '../../util/dom'
 import { Global } from '../../global'
 import { Util } from './util'
 import { Hook } from './hook'

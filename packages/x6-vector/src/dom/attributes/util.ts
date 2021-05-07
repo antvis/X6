@@ -1,7 +1,7 @@
 import { Env } from '../../global/env'
 
 export namespace Util {
-  export function tryConvertToNumber(value: string | undefined) {
+  export function tryConvertToNumber(value: string | undefined | null) {
     if (value != null) {
       const numReg = /^[+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i
       return numReg.test(value) ? +value : value

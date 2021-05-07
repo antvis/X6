@@ -1,6 +1,6 @@
 import { Global } from '../../global'
 import { Registry } from '../../dom/common/registry'
-import { namespaces, createNode } from '../../util'
+import { namespaces, createNode } from '../../util/dom'
 import { Dom } from '../../dom/dom'
 
 export class Fragment extends Dom<DocumentFragment> {

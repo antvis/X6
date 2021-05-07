@@ -1,4 +1,4 @@
-import { withSvgContext } from '../../util'
+import { withSvgContext } from '../../util/context'
 import { Box } from '../../struct/box'
 import { Base } from '../common/base'
 import { Transform } from './transform'

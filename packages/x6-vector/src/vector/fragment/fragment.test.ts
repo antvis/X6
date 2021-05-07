@@ -1,5 +1,5 @@
 import { Global } from '../../global'
-import { namespaces } from '../../util'
+import { namespaces } from '../../util/dom'
 import { G } from '..'
 import { Fragment } from './fragment'
 

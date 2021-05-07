@@ -1,6 +1,6 @@
 import type { Dom } from '../dom'
 import type { AnimatorMap } from './types'
-import { applyMixins } from '../util'
+import { applyMixins } from '../util/mixin'
 import { Animator } from '../animating/animator/animator'
 import { Registry } from './registry'
 

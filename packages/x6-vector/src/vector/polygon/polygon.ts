@@ -13,6 +13,10 @@ export namespace Polygon {
     attrs?: Attributes | null,
   ): Polygon
   export function create<Attributes extends SVGPolygonAttributes>(
+    points: number[],
+    attrs?: Attributes | null,
+  ): Polygon
+  export function create<Attributes extends SVGPolygonAttributes>(
     points: [number, number][],
     attrs?: Attributes | null,
   ): Polygon

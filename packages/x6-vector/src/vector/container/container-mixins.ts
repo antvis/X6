@@ -1,4 +1,4 @@
-import { applyMixins } from '../../util'
+import { applyMixins } from '../../util/mixin'
 
 // containers
 import { ContainerExtension as AExtension } from '../a/exts'
@@ -12,6 +12,7 @@ import { ContainerExtension as GradientExtension } from '../gradient/exts'
 import { ContainerExtension as LinearGradientExtension } from '../gradient/linear-exts'
 import { ContainerExtension as RadialGradientExtension } from '../gradient/radial-exts'
 import { ContainerExtension as SymbolExtension } from '../symbol/exts'
+import { ContainerExtension as FilterExtension } from '../filter/exts'
 // shapes
 import { ContainerExtension as CircleExtension } from '../circle/exts'
 import { ContainerExtension as EllipseExtension } from '../ellipse/ext'
@@ -37,6 +38,7 @@ declare module './container' {
       MaskExtension<TSVGElement>,
       MarkerExtension<TSVGElement>,
       SymbolExtension<TSVGElement>,
+      FilterExtension<TSVGElement>,
       PatternExtension<TSVGElement>,
       ClipPathExtension<TSVGElement>,
       GradientExtension<TSVGElement>,
@@ -64,6 +66,7 @@ applyMixins(
   SvgExtension,
   MaskExtension,
   MarkerExtension,
+  FilterExtension,
   SymbolExtension,
   PatternExtension,
   ClipPathExtension,

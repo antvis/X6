@@ -1,4 +1,4 @@
-import { isNode } from '../../util'
+import { isNode } from '../../util/dom'
 import { Base } from '../common/base'
 import { Registry } from '../common/registry'
 import { Affix } from './affix'
@@ -57,9 +57,9 @@ export class Primer<TElement extends Element> extends Base<TElement> {
           : Registry.getTagName(ctor)
       if (tagName) {
         if (tagName === 'dom') {
-          // return new Dom('div') by dafault
-          tagName = 'div'
+          tagName = 'div' // return new Dom('div') by dafault
         }
+
         this.node = Adopter.createNode<TElement>(tagName)
         attributes =
           nodeOrAttrs != null && typeof nodeOrAttrs !== 'string'
