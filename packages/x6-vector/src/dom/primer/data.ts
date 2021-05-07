@@ -1,4 +1,3 @@
-import { camelCase } from '../../util'
 import { Base } from '../common/base'
 
 export class Data<TElement extends Element> extends Base<TElement> {
@@ -30,7 +29,7 @@ export class Data<TElement extends Element> extends Base<TElement> {
       const data: Record<string, any> = {}
       key.forEach((k) => {
         // Return the camelCased key
-        data[camelCase(k)] = this.data(k)
+        data[Data.camelCase(k)] = this.data(k)
       })
       return data
     }
@@ -67,6 +66,10 @@ export class Data<TElement extends Element> extends Base<TElement> {
 
 export namespace Data {
   const rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/
+
+  export function camelCase(str: string) {
+    return str.replace(/-([a-z])/g, (input) => input[1].toUpperCase())
+  }
 
   export function parseKey(key: string) {
     return `data-${key.replace(/[A-Z]/g, '-$&').toLowerCase()}`

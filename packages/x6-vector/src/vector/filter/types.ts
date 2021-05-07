@@ -6,6 +6,9 @@ import {
   SVGConditionalProcessingAttributes,
 } from '../types/attributes-core'
 
+export type FilterUnits = 'userSpaceOnUse' | 'objectBoundingBox'
+export type PrimitiveUnits = 'userSpaceOnUse' | 'objectBoundingBox'
+
 export interface SVGFilterAttributes
   extends SVGCoreAttributes<SVGFilterElement>,
     SVGStyleAttributes,
@@ -17,6 +20,6 @@ export interface SVGFilterAttributes
   width?: number | string
   height?: number | string
   filterRes?: string
-  filterUnits?: 'userSpaceOnUse' | 'objectBoundingBox'
-  primitiveUnits?: 'userSpaceOnUse' | 'objectBoundingBox'
+  filterUnits?: FilterUnits
+  primitiveUnits?: PrimitiveUnits
 }

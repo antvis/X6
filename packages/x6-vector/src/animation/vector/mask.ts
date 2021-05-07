@@ -1,8 +1,5 @@
 import { Mask } from '../../vector/mask/mask'
-import { SVGContainerAnimator } from './container'
+import { SVGWrapperAnimator } from './wrapper'
 
 @SVGMaskAnimator.register('Mask')
-export class SVGMaskAnimator extends SVGContainerAnimator<
-  SVGMaskElement,
-  Mask
-> {}
+export class SVGMaskAnimator extends SVGWrapperAnimator<SVGMaskElement, Mask> {}

@@ -1,5 +1,6 @@
 import { G } from '../g/g'
 import { Svg } from '../svg/svg'
+import { defaultAttributes } from '../vector/overrides'
 import { LinearGradient } from './linear'
 
 describe('LinearGradient', () => {
@@ -95,6 +96,18 @@ describe('LinearGradient', () => {
     })
   })
 
+  describe('remove()', () => {
+    it('should ungradient all targets', () => {
+      const svg = new Svg().appendTo(document.body)
+      const gradient = svg.linearGradient()
+      const rect = svg.rect(100, 100).fill(gradient)
+      expect(gradient.targets()).toEqual([rect])
+      expect(gradient.remove()).toBe(gradient)
+      expect(rect.attr('fill')).toBe(defaultAttributes.fill)
+      svg.remove()
+    })
+  })
+
   describe('update()', () => {
     it('should clear the element', () => {
       const gradient = new LinearGradient()
@@ -114,7 +127,7 @@ describe('LinearGradient', () => {
   describe('url()', () => {
     it('should return "url(#id)"', () => {
       const gradient = new LinearGradient().id('foo')
-      expect(gradient.url()).toBe('url("#foo")')
+      expect(gradient.url()).toBe('url(#foo)')
     })
   })
 

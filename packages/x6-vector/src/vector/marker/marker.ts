@@ -1,11 +1,11 @@
 import { UnitNumber } from '../../struct/unit-number'
+import { Vessel } from '../container/vessel'
 import { Viewbox } from '../container/viewbox'
-import { Container } from '../container/container'
 import { MarkerOrient, MarkerUnits, SVGMarkerAttributes } from './types'
 
 @Marker.register('Marker')
 @Marker.mixin(Viewbox)
-export class Marker extends Container<SVGMarkerElement> {
+export class Marker extends Vessel<SVGMarkerElement> {
   height(): number
   height(h: number | string | null): this
   height(h?: number | string | null) {
@@ -43,14 +43,6 @@ export class Marker extends Container<SVGMarkerElement> {
     }
 
     return this
-  }
-
-  url() {
-    return `url(#${this.id()})`
-  }
-
-  toString() {
-    return this.url()
   }
 }
 

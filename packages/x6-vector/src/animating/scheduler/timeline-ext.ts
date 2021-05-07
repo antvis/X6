@@ -1,6 +1,6 @@
 import { Timeline } from './timeline'
 import { Primer } from '../../dom/primer'
-import { applyMixins } from '../../util'
+import { applyMixins } from '../../util/mixin'
 
 export class ElementExtension {
   protected timeline: Timeline

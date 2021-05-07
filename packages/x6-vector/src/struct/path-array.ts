@@ -1,5 +1,5 @@
 import type { Path } from '../vector/path/path'
-import { withPathContext } from '../util'
+import { withPathContext } from '../util/context'
 import { parse, toString } from '../vector/path/util'
 import { Box } from './box'
 import { TypeArray } from './type-array'
@@ -96,10 +96,12 @@ export class PathArray extends TypeArray<Path.Segment> {
     return this
   }
 
-  parse(d: string | number[] | Path.Segment[] = 'M0 0') {
-    return parse(
-      Array.isArray(d) ? Array.prototype.concat.apply([], d).toString() : d,
-    )
+  parse(d: string | number[] | PathArray | Path.Segment[] = 'M0 0') {
+    return d instanceof PathArray
+      ? d.toArray()
+      : parse(
+          Array.isArray(d) ? Array.prototype.concat.apply([], d).toString() : d,
+        )
   }
 
   toString(): string {

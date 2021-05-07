@@ -1,4 +1,4 @@
-import { clamp } from '../util'
+import { clamp } from './util'
 import { Util } from './color-util'
 
 export class Color implements Color.RGBALike {

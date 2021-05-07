@@ -1,5 +1,5 @@
 import { Global } from '../../global'
-import { namespaces } from '../../util'
+import { namespaces } from '../../util/dom'
 import { Adopter } from '../../dom/common/adopter'
 import { Container } from '../container/container'
 import { Viewbox } from '../container/viewbox'
@@ -9,6 +9,21 @@ import { SVGSVGAttributes } from './types'
 @Svg.mixin(Viewbox)
 @Svg.register('Svg')
 export class Svg extends Container<SVGSVGElement> {
+  constructor()
+  constructor(attrs: SVGSVGAttributes | null)
+  constructor(node: SVGSVGElement | null, attrs?: SVGSVGAttributes | null)
+  constructor(
+    node?: SVGSVGElement | SVGSVGAttributes | null,
+    attrs?: SVGSVGAttributes | null,
+  )
+  constructor(
+    node?: SVGSVGElement | SVGSVGAttributes | null,
+    attrs?: SVGSVGAttributes | null,
+  ) {
+    super(node, attrs)
+    this.namespace()
+  }
+
   isRoot() {
     const parentNode = this.node.parentNode
     return (

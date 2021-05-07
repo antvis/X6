@@ -1,17 +1,16 @@
 import { Vector } from '../vector/vector'
-import { Container } from '../container/container'
+import { Vessel } from '../container/vessel'
 import { SVGClipPathAttributes } from './types'
 
 @ClipPath.register('ClipPath')
-export class ClipPath extends Container<SVGClipPathElement> {
+export class ClipPath extends Vessel<SVGClipPathElement> {
   remove() {
     this.targets().forEach((target) => target.unclip())
     return super.remove()
   }
 
   targets<TVector extends Vector>() {
-    const root = this.root()
-    return root ? root.find<TVector>(`[clip-path*="${this.id()}"]`) : []
+    return this.findTargets<TVector>('clip-path')
   }
 }
 

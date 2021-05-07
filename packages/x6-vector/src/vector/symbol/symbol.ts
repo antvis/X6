@@ -1,10 +1,10 @@
-import { Container } from '../container/container'
+import { Vessel } from '../container/vessel'
 import { Viewbox } from '../container/viewbox'
 import { SVGSymbolAttributes } from './types'
 
 @Symbol.mixin(Viewbox)
 @Symbol.register('Symbol')
-export class Symbol extends Container<SVGSymbolElement> {}
+export class Symbol extends Vessel<SVGSymbolElement> {}
 
 export interface Symbol extends Viewbox<SVGSymbolElement> {}
 
