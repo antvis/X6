@@ -1,3 +1,10 @@
+## @antv/x6 [1.21.1](https://github.com/antvis/x6/compare/@antv/x6@1.21.0...@antv/x6@1.21.1) (2021-05-07)
+
+
+### Bug Fixes
+
+* 🐛 support css var in font-size ([c4dde7e](https://github.com/antvis/x6/commit/c4dde7e498c5b892a181e86d9908519bc0e2c200))
+
 # @antv/x6 [1.21.0](https://github.com/antvis/x6/compare/@antv/x6@1.20.0...@antv/x6@1.21.0) (2021-05-06)
 
 
