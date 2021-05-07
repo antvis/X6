@@ -1,19 +1,19 @@
 import { Box } from '../../struct/box'
 import { Vector } from '../vector/vector'
+import { Vessel } from '../container/vessel'
 import { Viewbox } from '../container/viewbox'
-import { Container } from '../container/container'
-import { SVGPatternAttributes } from './types'
 import { AttrOverride } from './override'
+import { SVGPatternAttributes } from './types'
 
-@Pattern.mixin(Viewbox, AttrOverride)
 @Pattern.register('Pattern')
-export class Pattern extends Container<SVGPatternElement> {
+@Pattern.mixin(Viewbox, AttrOverride)
+export class Pattern extends Vessel<SVGPatternElement> {
   bbox() {
     return new Box()
   }
 
   targets<TVector extends Vector>() {
-    return Pattern.find<TVector>(`svg [fill*="${this.id()}"]`)
+    return this.findTargets<TVector>('fill')
   }
 
   update(handler?: Pattern.Update) {
@@ -24,14 +24,6 @@ export class Pattern extends Container<SVGPatternElement> {
     }
 
     return this
-  }
-
-  url() {
-    return `url("#${this.id()}")`
-  }
-
-  toString() {
-    return this.url()
   }
 }
 

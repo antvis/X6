@@ -69,11 +69,13 @@ export namespace Affix {
     node: TElement,
     deep: boolean,
   ) {
-    node.removeAttribute(PERSIST_ATTR_NAME)
-    const instance = Adopter.adopt(node)
-    const affixes = instance.affix()
-    if (affixes && Object.keys(affixes).length) {
-      node.setAttribute(PERSIST_ATTR_NAME, JSON.stringify(affixes))
+    if (node.removeAttribute) {
+      node.removeAttribute(PERSIST_ATTR_NAME)
+      const instance = Adopter.adopt(node)
+      const affixes = instance.affix()
+      if (affixes && Object.keys(affixes).length) {
+        node.setAttribute(PERSIST_ATTR_NAME, JSON.stringify(affixes))
+      }
     }
 
     if (deep) {

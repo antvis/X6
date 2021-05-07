@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import { clamp } from '../util'
+import { clamp } from './util'
 
 export namespace Util {
   export type RGBA = [number, number, number, number]

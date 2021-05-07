@@ -1,6 +1,6 @@
-import { Global } from '../../global'
 import { Text } from '../text/text'
 import { TextBase } from '../text/base'
+import { getFontSize } from '../text/util'
 
 @TSpan.register('Tspan')
 export class TSpan extends TextBase<SVGTSpanElement> {
@@ -26,11 +26,8 @@ export class TSpan extends TextBase<SVGTSpanElement> {
     }
 
     const index = text.indexOf(this)
-    const fontSize = Global.window
-      .getComputedStyle(this.node)
-      .getPropertyValue('font-size')
-    const dy = text.leading() * Number.parseFloat(fontSize)
-    return this.dy(index ? dy : 0).attr('x', text.x())
+    const dy = index > 0 ? text.leading() * getFontSize(this.node) : 0
+    return this.dy(dy).attr('x', text.x())
   }
 
   text(): string

@@ -1,5 +1,5 @@
+import { createHTMLNode, createSVGNode } from '../../util/dom'
 import { Global } from '../../global'
-import { createHTMLNode, createSVGNode } from '../../util'
 import { Registry } from './registry'
 import type { Base } from './base'
 import type { Dom } from '../dom'
@@ -12,7 +12,11 @@ export namespace Adopter {
   const store: WeakMap<Node, Base> = new WeakMap()
 
   export function cache(node: Node, instance?: Base | null) {
-    if (instance == null) {
+    if (typeof instance === 'undefined') {
+      return store.get(node)
+    }
+
+    if (instance === null) {
       store.delete(node)
     } else {
       store.set(node, instance)
@@ -39,7 +43,7 @@ export namespace Adopter {
     return new Type(node) as ElementMap<T>
   }
 
-  let adopter = adopt
+  const adopter = adopt
 
   export type Target<T extends Dom = Dom> = T | Node | string
 
@@ -109,11 +113,11 @@ export namespace Adopter {
     return (node as any) as TElement
   }
 
-  export function mock(instance = adopt) {
-    adopter = instance
-  }
+  // export function mock(instance = adopt) {
+  //   adopter = instance
+  // }
 
-  export function unmock() {
-    adopter = adopt
-  }
+  // export function unmock() {
+  //   adopter = adopt
+  // }
 }

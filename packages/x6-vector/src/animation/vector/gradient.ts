@@ -1,7 +1,7 @@
 import { Gradient } from '../../vector/gradient/gradient'
-import { SVGContainerAnimator } from './container'
+import { SVGWrapperAnimator } from './wrapper'
 
 export class SVGGradientAnimator<
   TSVGElement extends SVGGradientElement,
   TOwner extends Gradient<TSVGElement> = Gradient<TSVGElement>
-> extends SVGContainerAnimator<TSVGElement, TOwner> {}
+> extends SVGWrapperAnimator<TSVGElement, TOwner> {}

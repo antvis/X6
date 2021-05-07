@@ -1,4 +1,4 @@
-import { applyMixins } from '../../util'
+import { applyMixins } from '../../util/mixin'
 import { Poly } from '../poly/poly'
 import { LineExtension as MarkerLineExtension } from '../marker/exts'
 

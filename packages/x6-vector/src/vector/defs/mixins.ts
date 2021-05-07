@@ -1,6 +1,7 @@
-import { applyMixins } from '../../util'
+import { applyMixins } from '../../util/mixin'
 import { DefsExtension as MaskExtension } from '../mask/exts'
 import { DefsExtension as MarkerExtension } from '../marker/exts'
+import { DefsExtension as FilterExtension } from '../filter/exts'
 import { DefsExtension as PatternExtension } from '../pattern/exts'
 import { DefsExtension as ClipPathExtension } from '../clippath/exts'
 import { DefsExtension as GradientExtension } from '../gradient/exts'
@@ -23,6 +24,7 @@ declare module './defs' {
     extends ClipPathExtension<SVGDefsElement>,
       MaskExtension<SVGDefsElement>,
       MarkerExtension<SVGDefsElement>,
+      FilterExtension<SVGDefsElement>,
       PatternExtension<SVGDefsElement>,
       GradientExtension<SVGDefsElement>,
       LinearGradientExtension<SVGDefsElement>,
@@ -43,6 +45,7 @@ applyMixins(
   Defs,
   MaskExtension,
   MarkerExtension,
+  FilterExtension,
   PatternExtension,
   ClipPathExtension,
   GradientExtension,

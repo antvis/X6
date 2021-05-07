@@ -19,7 +19,10 @@ export class Style extends Vector<SVGStyleElement> {
     })
   }
 
-  addRule(selector: string, object?: Record<string | number, string | number>) {
+  addRule(
+    selector?: string,
+    object?: Record<string | number, string | number>,
+  ) {
     return this.addText(Style.cssRule(selector, object))
   }
 }
