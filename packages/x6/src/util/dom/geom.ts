@@ -148,12 +148,12 @@ export function getBBox(
 // BBox is calculated by the attribute on the node
 export function getBBoxByElementAttr(elem: SVGElement) {
   let node = elem
-  let tagName = elem.tagName.toLowerCase()
+  let tagName = node ? node.tagName.toLowerCase() : ''
 
   // find shape node
   while (tagName === 'g') {
-    node = elem.firstElementChild as SVGElement
-    tagName = node.tagName.toLowerCase()
+    node = node.firstElementChild as SVGElement
+    tagName = node ? node.tagName.toLowerCase() : ''
   }
 
   const attr = (name: string) => {
