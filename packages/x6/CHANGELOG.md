@@ -1,3 +1,10 @@
+## @antv/x6 [1.21.2](https://github.com/antvis/x6/compare/@antv/x6@1.21.1...@antv/x6@1.21.2) (2021-05-07)
+
+
+### Bug Fixes
+
+* 🐛 fix getBBoxByElementAttr ([0a540da](https://github.com/antvis/x6/commit/0a540da92bfde24750ea5fd58df247d3dc2f77ce))
+
 ## @antv/x6 [1.21.1](https://github.com/antvis/x6/compare/@antv/x6@1.21.0...@antv/x6@1.21.1) (2021-05-07)
 
 
