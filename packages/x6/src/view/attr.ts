@@ -78,7 +78,10 @@ export class AttrManager {
 
       const setDefine = definition as Attr.SetDefinition
       if (typeof setDefine.set === 'function') {
-        if (AttrManager.DELAY_ATTRS.includes(name)) {
+        if (
+          !Dom.isHTMLElement(elem) &&
+          AttrManager.DELAY_ATTRS.includes(name)
+        ) {
           if (delay == null) {
             delay = {}
           }
@@ -274,7 +277,7 @@ export class AttrManager {
       })
     }
 
-    if (elem instanceof HTMLElement) {
+    if (Dom.isHTMLElement(elem)) {
       // TODO: setting the `transform` attribute on HTMLElements
       // via `node.style.transform = 'matrix(...)';` would introduce
       // a breaking change (e.g. basic.TextBlock).
