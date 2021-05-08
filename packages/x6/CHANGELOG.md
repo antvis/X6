@@ -1,3 +1,10 @@
+## @antv/x6 [1.21.3](https://github.com/antvis/x6/compare/@antv/x6@1.21.2...@antv/x6@1.21.3) (2021-05-08)
+
+
+### Bug Fixes
+
+* 🐛 only delay svg attr ([5d804a2](https://github.com/antvis/x6/commit/5d804a253cb56b71dbf551f95a6160a079a7f6d2))
+
 ## @antv/x6 [1.21.2](https://github.com/antvis/x6/compare/@antv/x6@1.21.1...@antv/x6@1.21.2) (2021-05-07)
 
 
