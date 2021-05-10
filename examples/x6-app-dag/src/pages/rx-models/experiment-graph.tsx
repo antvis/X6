@@ -723,7 +723,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     const targetEdges: BaseEdge[] = ([] as any[]).concat(edges)
     console.log(targetEdges)
     this.deleteEdges(targetEdges)
-    this.delExperimentGraphElement(targetEdges.map((cell) => cell.getData()))
+    this.delExperimentGraphElement([], targetEdges.map((cell) => cell.getData()))
     return { success: true }
   }
 
