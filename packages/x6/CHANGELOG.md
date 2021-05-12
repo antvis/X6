@@ -1,3 +1,10 @@
+## @antv/x6 [1.21.4](https://github.com/antvis/x6/compare/@antv/x6@1.21.3...@antv/x6@1.21.4) (2021-05-12)
+
+
+### Bug Fixes
+
+* 🐛 revert getBoundingRect change ([703eead](https://github.com/antvis/x6/commit/703eeade93332890ec8d7e4879043db2e8257a75))
+
 ## @antv/x6 [1.21.3](https://github.com/antvis/x6/compare/@antv/x6@1.21.2...@antv/x6@1.21.3) (2021-05-08)
 
 
