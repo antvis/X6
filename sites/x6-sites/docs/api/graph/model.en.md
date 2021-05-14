@@ -268,10 +268,10 @@ hasCell(cell: Cell): boolean
 |------|----------------|:----:|--------|---------------------|
 | cell | string \| Cell |  ✓   |        | 节点/边 ID 或节点/边。 |
 
-### getCell(...)
+### getCellById(...)
 
 ```sign
-getCell<T extends Cell = Cell>(id: string): T
+getCellById(id: string)
 ```
 
 根据节点/边的 ID 获取节点/边。
