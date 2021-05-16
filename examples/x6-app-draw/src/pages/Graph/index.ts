@@ -1,6 +1,5 @@
 import { Graph, Addon, FunctionExt, Shape } from '@antv/x6'
 import './shape'
-import graphData from './data'
 
 export default class FlowGraph {
   public static graph: Graph
@@ -17,20 +16,31 @@ export default class FlowGraph {
         type: 'doubleMesh',
         args: [
           {
-            color: '#cccccc',
+            color: '#E7E8EA',
             thickness: 1,
           },
           {
-            color: '#5F95FF',
+            color: '#CBCED3',
             thickness: 1,
             factor: 4,
           },
         ],
       },
+      panning: {
+        enabled: true,
+        eventTypes: ['leftMouseDown', 'rightMouseDown', 'mouseWheel'],
+      },
+      mousewheel: {
+        enabled: true,
+        zoomAtMousePosition: true,
+        modifiers: 'ctrl',
+        minScale: 0.5,
+        maxScale: 3,
+      },
       selecting: {
         enabled: true,
         multiple: true,
-        rubberband: true,
+        rubberband: false,
         movable: true,
         showNodeSelectionBox: true,
         filter: ['groupNode'],
@@ -115,173 +125,78 @@ export default class FlowGraph {
     })
     this.initStencil()
     this.initShape()
-    this.initGraphShape()
     this.initEvent()
     return this.graph
   }
 
   private static initStencil() {
     this.stencil = new Addon.Stencil({
+      title: 'Flowchart',
       target: this.graph,
-      stencilGraphWidth: 280,
-      search: { rect: true },
-      collapsable: true,
-      groups: [
-        {
-          name: 'basic',
-          title: '基础节点',
-          graphHeight: 180,
-        },
-        {
-          name: 'combination',
-          title: '组合节点',
-          layoutOptions: {
-            columns: 1,
-            marginX: 60,
-          },
-          graphHeight: 260,
-        },
-        {
-          name: 'group',
-          title: '节点组',
-          graphHeight: 100,
-          layoutOptions: {
-            columns: 1,
-            marginX: 60,
-          },
-        },
-      ],
+      stencilGraphWidth: 214,
+      stencilGraphHeight: document.body.offsetHeight - 105,
+      layoutOptions: {
+        columns: 4,
+        columnWidth: 48,
+        rowHeight: 30,
+        marginY: 30,
+      },
     })
     const stencilContainer = document.querySelector('#stencil')
-    stencilContainer?.appendChild(this.stencil.container)
+    if (stencilContainer) {
+      stencilContainer.appendChild(this.stencil.container)
+    }
   }
 
   private static initShape() {
     const { graph } = this
     const r1 = graph.createNode({
-      shape: 'flow-chart-rect',
-      attrs: {
-        body: {
-          rx: 24,
-          ry: 24,
-        },
-        text: {
-          textWrap: {
-            text: '起始节点',
-          },
-        },
-      },
+      shape: 'rect',
+      width: 30,
+      height: 15,
     })
     const r2 = graph.createNode({
-      shape: 'flow-chart-rect',
+      shape: 'rect',
+      width: 30,
+      height: 15,
       attrs: {
-        text: {
-          textWrap: {
-            text: '流程节点',
-          },
+        body: {
+          rx: 4,
+          ry: 4,
         },
       },
     })
     const r3 = graph.createNode({
-      shape: 'flow-chart-rect',
-      width: 52,
-      height: 52,
-      angle: 45,
+      shape: 'polygon',
+      width: 30,
+      height: 15,
       attrs: {
-        'edit-text': {
-          style: {
-            transform: 'rotate(-45deg)',
-          },
-        },
-        text: {
-          textWrap: {
-            text: '判断节点',
-          },
-          transform: 'rotate(-45deg)',
-        },
-      },
-      ports: {
-        groups: {
-          top: {
-            position: {
-              name: 'top',
-              args: {
-                dx: -26,
-              },
-            },
-          },
-          right: {
-            position: {
-              name: 'right',
-              args: {
-                dy: -26,
-              },
-            },
-          },
-          bottom: {
-            position: {
-              name: 'bottom',
-              args: {
-                dx: 26,
-              },
-            },
-          },
-          left: {
-            position: {
-              name: 'left',
-              args: {
-                dy: 26,
-              },
-            },
-          },
+        body: {
+          refPoints: '0,10 10,0 20,10 10,20',
         },
       },
     })
     const r4 = graph.createNode({
-      shape: 'flow-chart-rect',
-      width: 70,
-      height: 70,
+      shape: 'polygon',
+      width: 30,
+      height: 15,
       attrs: {
         body: {
-          rx: 35,
-          ry: 35,
-        },
-        text: {
-          textWrap: {
-            text: '链接节点',
-          },
+          refPoints: '0,10 10,0 20,10 10,20',
         },
       },
     })
-
-    const c1 = graph.createNode({
-      shape: 'flow-chart-image-rect',
-    })
-    const c2 = graph.createNode({
-      shape: 'flow-chart-title-rect',
-    })
-    const c3 = graph.createNode({
-      shape: 'flow-chart-animate-text',
-    })
-
-    const g1 = graph.createNode({
-      shape: 'groupNode',
+    const r5 = graph.createNode({
+      shape: 'polygon',
+      width: 30,
+      height: 15,
       attrs: {
-        text: {
-          text: 'Group Name',
+        body: {
+          refPoints: '0,10 10,0 20,10 10,20',
         },
       },
-      data: {
-        parent: true,
-      },
     })
-    this.stencil.load([r1, r2, r3, r4], 'basic')
-    this.stencil.load([c1, c2, c3], 'combination')
-    this.stencil.load([g1], 'group')
-  }
-
-  private static initGraphShape() {
-    this.graph.fromJSON(graphData as any)
+    this.stencil.load([r1, r2, r3, r4, r5])
   }
 
   private static showPorts(ports: NodeListOf<SVGAElement>, show: boolean) {
@@ -297,7 +212,9 @@ export default class FlowGraph {
     graph.on('node:contextmenu', ({ cell, view }) => {
       const oldText = cell.attr('text/textWrap/text') as string
       const elem = view.container.querySelector('.x6-edit-text') as HTMLElement
-      if (elem == null) { return }
+      if (elem == null) {
+        return
+      }
       cell.attr('text/style/display', 'none')
       if (elem) {
         elem.style.display = ''
