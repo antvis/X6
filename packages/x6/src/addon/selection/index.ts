@@ -477,7 +477,11 @@ export class Selection extends View<Selection.EventArgs> {
   ) {
     const map: { [id: string]: boolean } = {}
     this.collection.toArray().forEach((cell) => {
-      if (!map[cell.id] && cell !== exclude) {
+      if (
+        !map[cell.id] &&
+        cell !== exclude &&
+        !otherOptions?.handledTranslation?.includes(cell)
+      ) {
         const options = {
           ...otherOptions,
           selection: this.cid,
