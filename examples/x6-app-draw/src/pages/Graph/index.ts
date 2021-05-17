@@ -138,8 +138,12 @@ export default class FlowGraph {
       layoutOptions: {
         columns: 4,
         columnWidth: 48,
-        rowHeight: 30,
-        marginY: 30,
+        rowHeight: 40,
+        marginY: 20,
+      },
+      getDropNode(node) {
+        const size = node.size()
+        return node.clone().size(size.width * 3, size.height * 3)
       },
     })
     const stencilContainer = document.querySelector('#stencil')
@@ -182,19 +186,14 @@ export default class FlowGraph {
       height: 15,
       attrs: {
         body: {
-          refPoints: '0,10 10,0 20,10 10,20',
+          refPoints: '10,0 40,0 30,20 0,20',
         },
       },
     })
     const r5 = graph.createNode({
-      shape: 'polygon',
-      width: 30,
-      height: 15,
-      attrs: {
-        body: {
-          refPoints: '0,10 10,0 20,10 10,20',
-        },
-      },
+      shape: 'circle',
+      width: 24,
+      height: 24,
     })
     this.stencil.load([r1, r2, r3, r4, r5])
   }
