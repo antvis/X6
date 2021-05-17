@@ -158,6 +158,11 @@ export default class FlowGraph {
       shape: 'rect',
       width: 30,
       height: 15,
+      attrs: {
+        body: {
+          strokeWidth: 1,
+        },
+      },
     })
     const r2 = graph.createNode({
       shape: 'rect',
@@ -167,6 +172,7 @@ export default class FlowGraph {
         body: {
           rx: 4,
           ry: 4,
+          strokeWidth: 1,
         },
       },
     })
@@ -177,6 +183,7 @@ export default class FlowGraph {
       attrs: {
         body: {
           refPoints: '0,10 10,0 20,10 10,20',
+          strokeWidth: 1,
         },
       },
     })
@@ -187,6 +194,7 @@ export default class FlowGraph {
       attrs: {
         body: {
           refPoints: '10,0 40,0 30,20 0,20',
+          strokeWidth: 1,
         },
       },
     })
@@ -194,6 +202,11 @@ export default class FlowGraph {
       shape: 'circle',
       width: 24,
       height: 24,
+      attrs: {
+        body: {
+          strokeWidth: 1,
+        },
+      },
     })
     this.stencil.load([r1, r2, r3, r4, r5])
   }
