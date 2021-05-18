@@ -12,6 +12,22 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.21.7
+
+## @antv/x6-app-draw [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.3...@antv/x6-app-draw@1.1.4) (2021-05-18)
+
+
+### Bug Fixes
+
+* 🐛 fix x6-react-components version in demo ([085ffab](https://github.com/antvis/x6/commit/085ffabe84e89e12bf47c3c8680c5cf1eb929593))
+* 🐛 x6-app-draw支持windows下ctrl组合快捷键 ([0253aaf](https://github.com/antvis/x6/commit/0253aaf7efc6a38739181f4d6315de73447e2017))
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.21.6
 
 ## @antv/x6-app-draw [1.1.5](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.4...@antv/x6-app-draw@1.1.5) (2021-05-14)
