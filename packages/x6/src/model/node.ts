@@ -387,10 +387,13 @@ export class Node<
     } else {
       this.startBatch('translate', options)
       this.store.set('position', translatedPosition, options)
-      options.handledTranslation = [this]
-      const children = this.children
-      if (children?.length) {
-        options.handledTranslation.push(...children)
+      options.handledTranslation = options.handledTranslation || []
+      if (!options.handledTranslation.includes(this)) {
+        options.handledTranslation.push(this)
+        const children = this.children
+        if (children?.length) {
+          options.handledTranslation.push(...children)
+        }
       }
       this.eachChild((child) => child.translate(tx, ty, options))
       this.stopBatch('translate', options)
