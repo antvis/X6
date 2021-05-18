@@ -1,3 +1,10 @@
+## @antv/x6 [1.21.6](https://github.com/antvis/x6/compare/@antv/x6@1.21.5...@antv/x6@1.21.6) (2021-05-18)
+
+
+### Bug Fixes
+
+* 🐛 fix node translation with selected children ([770d1d1](https://github.com/antvis/x6/commit/770d1d1e75575aaa7dce9f6c503af982393a076d))
+
 ## @antv/x6 [1.21.5](https://github.com/antvis/x6/compare/@antv/x6@1.21.4...@antv/x6@1.21.5) (2021-05-14)
 
 ## @antv/x6 [1.21.4](https://github.com/antvis/x6/compare/@antv/x6@1.21.3...@antv/x6@1.21.4) (2021-05-12)
