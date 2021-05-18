@@ -4,11 +4,48 @@
   background-color: #ffffff;
   overflow: auto;
   padding: 32px 0;
+  position: relative;
 
   > h1 {
     display: block;
     width: 800px;
     margin: 0 auto 32px auto;
+  }
+
+  .right-tab {
+    position: absolute;
+    right: 6%;
+    margin: 0;
+    list-style: none;
+    z-index: 1000;
+
+    > li {
+      margin-bottom: 10px;
+      cursor: pointer;
+
+      .el-button {
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid #dcdfe6;
+        color: #606266;
+        -webkit-appearance: none;
+        text-align: center;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        outline: 0;
+        margin: 0;
+        -webkit-transition: 0.1s;
+        transition: 0.1s;
+        font-weight: 500;
+        -ms-user-select: none;
+        padding: 7px 15px;
+        font-size: 12px;
+        border-radius: 4px;
+      }
+    }
   }
 }
 
@@ -18,8 +55,43 @@
 }
 
 .x6-graph {
-  width: 100%;
-  height: 100%;
-  box-shadow: 0 0 10px 1px #e9e9e9;
   margin: 0 auto;
+
+  table.gridtable {
+    table-layout: fixed;
+    width: 360px;
+    text-align: center;
+    color: #333333;
+    border: 1px solid #dfe6ec;
+    border-collapse: collapse;
+
+    tr:nth-child(2n + 1) td {
+      background-color: #fafafa;
+    }
+
+    tr:hover > td {
+      background-color: rgb(245, 247, 250);
+    }
+
+    th {
+      font-size: 13px;
+      height: 36px;
+      border: 1px solid #dfe6ec;
+      background-color: #e4edfb;
+      box-sizing: border-box;
+    }
+
+    td {
+      font-size: 12px;
+      padding: 0 10px;
+      width: 80px;
+      height: 36px;
+      border: 1px solid #dfe6ec;
+      background-color: #ffffff;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
