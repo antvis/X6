@@ -217,6 +217,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.has(cell as Cell)
   }
 
+  /**
+   * **Deprecation Notice:** `getCell` is deprecated and will be moved in next
+   * major release. Use `getCellById()` instead.
+   *
+   * @deprecated
+   */
   getCell<T extends Cell = Cell>(id: string) {
     return this.model.getCell<T>(id)
   }
