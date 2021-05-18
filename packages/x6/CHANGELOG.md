@@ -1,3 +1,10 @@
+## @antv/x6 [1.21.7](https://github.com/antvis/x6/compare/@antv/x6@1.21.6...@antv/x6@1.21.7) (2021-05-18)
+
+
+### Bug Fixes
+
+* 🐛 fix handledTranslation option passing to child node ([0244e0d](https://github.com/antvis/x6/commit/0244e0d919e9a7ebdd97dede4be456290560da8a))
+
 ## @antv/x6 [1.21.6](https://github.com/antvis/x6/compare/@antv/x6@1.21.5...@antv/x6@1.21.6) (2021-05-18)
 
 
