@@ -11,7 +11,13 @@ export class ScrollerManager extends Base {
   }
 
   get pannable() {
-    return this.widgetOptions && this.widgetOptions.pannable === true
+    if (this.widgetOptions) {
+      if (typeof this.widgetOptions.pannable === 'object') {
+        return this.widgetOptions.pannable.enabled
+      }
+      return !!this.widgetOptions.pannable
+    }
+    return false
   }
 
   protected init() {
@@ -24,15 +30,48 @@ export class ScrollerManager extends Base {
   }
 
   protected startListening() {
-    this.graph.on('blank:mousedown', this.preparePanning, this)
-    this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
-    this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
+    let eventTypes = []
+    const pannable = this.widgetOptions.pannable
+    if (typeof pannable === 'object') {
+      eventTypes = pannable.eventTypes || []
+    } else {
+      eventTypes = ['leftMouseDown']
+    }
+    if (eventTypes.includes('leftMouseDown')) {
+      this.graph.on('blank:mousedown', this.preparePanning, this)
+      this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
+      this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
+    }
+    if (eventTypes.includes('rightMouseDown')) {
+      this.onRightMouseDown = this.onRightMouseDown.bind(this)
+      this.view.$(this.graph.container).on('mousedown', this.onRightMouseDown)
+    }
   }
 
   protected stopListening() {
-    this.graph.off('blank:mousedown', this.preparePanning, this)
-    this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
-    this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
+    let eventTypes = []
+    const pannable = this.widgetOptions.pannable
+    if (typeof pannable === 'object') {
+      eventTypes = pannable.eventTypes || []
+    } else {
+      eventTypes = ['leftMouseDown']
+    }
+    if (eventTypes.includes('leftMouseDown')) {
+      this.graph.off('blank:mousedown', this.preparePanning, this)
+      this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
+      this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
+    }
+    if (eventTypes.includes('rightMouseDown')) {
+      this.view.$(this.graph.container).off('mousedown', this.onRightMouseDown)
+    }
+  }
+
+  protected onRightMouseDown(e: JQuery.MouseDownEvent) {
+    if (e.button === 2 && this.allowPanning(e, true) && this.widget) {
+      this.updateClassName(true)
+      this.widget.startPanning(e)
+      this.widget.once('pan:stop', () => this.updateClassName(false))
+    }
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
@@ -140,9 +179,10 @@ export class ScrollerManager extends Base {
 }
 
 export namespace ScrollerManager {
+  type EventType = 'leftMouseDown' | 'rightMouseDown'
   export interface Options extends Scroller.CommonOptions {
     enabled?: boolean
-    pannable?: boolean
+    pannable?: boolean | { enabled: boolean; eventTypes: EventType[] }
     /**
      * alt, ctrl, shift, meta
      */
