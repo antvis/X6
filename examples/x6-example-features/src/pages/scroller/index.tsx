@@ -54,7 +54,10 @@ export default class Example extends React.Component {
         // height: 400,
         pageVisible: true,
         pageBreak: true,
-        pannable: true,
+        pannable: {
+          enabled: true,
+          eventTypes: ['leftMouseDown', 'rightMouseDown'],
+        },
         // modifiers: 'shift',
       },
       minimap: {
