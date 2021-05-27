@@ -1,3 +1,10 @@
+# @antv/x6 [1.22.0](https://github.com/antvis/x6/compare/@antv/x6@1.21.7...@antv/x6@1.22.0) (2021-05-27)
+
+
+### Features
+
+* ✨ support panning scroller graph byrightmousedown ([2ceca37](https://github.com/antvis/x6/commit/2ceca3724e792dc0247398bf8790909597c50f31))
+
 ## @antv/x6 [1.21.7](https://github.com/antvis/x6/compare/@antv/x6@1.21.6...@antv/x6@1.21.7) (2021-05-18)
 
 
