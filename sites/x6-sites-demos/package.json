@@ -16,7 +16,7 @@
     "@ant-design/icons": "^4.2.1",
     "@antv/layout": "^0.1.9",
     "@antv/x6": "^1.22.0",
-    "@antv/x6-react-components": "^1.1.9",
+    "@antv/x6-react-components": "^1.1.10",
     "@antv/x6-react-shape": "^1.4.1",
     "@antv/x6-sites-demos-helper": "^1.2.1",
     "@types/d3-sankey": "^0.11.1",
