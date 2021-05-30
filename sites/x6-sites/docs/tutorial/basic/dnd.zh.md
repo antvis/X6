@@ -55,6 +55,54 @@ dnd.start(node, e)
 
 <iframe src="/demos/tutorial/basic/dnd/dnd"></iframe>
 
+### 常见问题
+
+1.怎么自定义拖拽节点的样式？
+
+```ts
+const dnd = new Addon.Dnd({
+  getDragNode(node) {
+    // 这里返回一个新的节点作为拖拽节点
+    return graph.createNode({
+      width: 100,
+      height: 100,
+      shape: 'rect',
+      attrs: {
+        body: {
+          fill: '#ccc'
+        }
+      }
+    })
+  }
+})
+```
+
+2.怎么自定义放置到画布上的节点样式？
+
+```ts
+const dnd = new Addon.Dnd({
+  getDropNode(node) {
+    const { width, height } = node.size()
+    // 返回一个新的节点作为实际放置到画布上的节点
+    return node.clone().size(width * 3, height * 3)
+  }
+})
+```
+
+3.怎么自定义放置到画布上节点的 ID？
+
+```ts
+const dnd = new Addon.Dnd({
+  getDropNode(node) {
+    const n = node.clone();
+    // 需要设置下面两个地方
+    n.id = "customId";
+    n.prop("id", "customId");
+    return n;
+  }
+})
+```
+
 ## Stencil
 
 Stencil 是 `Addon` 命名空间中的一个插件，是在 Dnd 基础上的进一步封装，提供了一个类似侧边栏的 UI 组件，并支持分组、折叠、搜索等能力。
