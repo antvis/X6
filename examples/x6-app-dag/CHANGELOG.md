@@ -7,6 +7,23 @@
 * 🐛 fix x6-react-components version in demo ([085ffab](https://github.com/antvis/x6/commit/085ffabe84e89e12bf47c3c8680c5cf1eb929593))
 * 🐛 Missing delExperimentGraphElement argument of x6-app-dag ([5306fb7](https://github.com/antvis/x6/commit/5306fb73f4d2c125e0344e210f01693758a30e56))
 
+
+
+
+
+### Dependencies
+
+* **@antv/x6-react-components:** upgraded to 1.1.10
+
+## @antv/x6-app-dag [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.3...@antv/x6-app-dag@1.1.4) (2021-05-30)
+
+
+### Bug Fixes
+
+* 🐛 disable panning before rubberband ([382a090](https://github.com/antvis/x6/commit/382a090fba9798ff66957458a640f5803cfcdcf6))
+* 🐛 fix x6-react-components version in demo ([085ffab](https://github.com/antvis/x6/commit/085ffabe84e89e12bf47c3c8680c5cf1eb929593))
+* 🐛 Missing delExperimentGraphElement argument of x6-app-dag ([5306fb7](https://github.com/antvis/x6/commit/5306fb73f4d2c125e0344e210f01693758a30e56))
+
 ## @antv/x6-app-dag [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.3...@antv/x6-app-dag@1.1.4) (2021-05-30)
 
 
