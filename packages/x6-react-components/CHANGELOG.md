@@ -1,3 +1,10 @@
+## @antv/x6-react-components [1.1.10](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.9...@antv/x6-react-components@1.1.10) (2021-05-30)
+
+
+### Bug Fixes
+
+* 🐛 fix x6-react-component release version ([508c959](https://github.com/antvis/x6/commit/508c9592e9c2dda5888713c5b69b470ac35697fa))
+
 ## @antv/x6-react-components [1.1.9](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.8...@antv/x6-react-components@1.1.9) (2021-04-01)
 
 
