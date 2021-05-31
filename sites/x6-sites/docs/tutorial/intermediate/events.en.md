@@ -22,8 +22,8 @@ redirect_from:
 | 移动鼠标 | `cell:mousemove`   | `node:mousemove`   | `edge:mousemove`   | `blank:mousemove`   |
 | 鼠标抬起 | `cell:mouseup`     | `node:mouseup`     | `edge:mouseup`     | `blank:mouseup`     |
 | 鼠标滚轮 | `cell:mousewheel`  | `node:mousewheel`  | `edge:mousewheel`  | `blank:mousewheel`  |
-| 鼠标进入 | `cell:mouseenter`  | `node:mouseenter`  | `edge:mouseenter`  | `blank:mouseenter`  |
-| 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `edge:mouseleave`  | `blank:mouseleave`  |
+| 鼠标进入 | `cell:mouseenter`  | `node:mouseenter`  | `edge:mouseenter`  | `graph:mouseenter`  |
+| 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `edge:mouseleave`  | `graph:mouseleave`  |
 
 [[warning]]
 | 需要注意的是，这里的 `mousemove` 事件和通常的鼠标移动事件有所区别，它需要在鼠标按下后移动鼠标才能触发。
@@ -39,7 +39,7 @@ graph.on('blank:click', ({ e, x, y }) => { })
 graph.on('cell:mouseenter', ({ e, cell, view }) => { })
 graph.on('node:mouseenter', ({ e, node, view }) => { })
 graph.on('edge:mouseenter', ({ e, edge, view }) => { })
-graph.on('blank:mouseenter', ({ e }) => { })
+graph.on('graph:mouseenter', ({ e }) => { })
 ```
 
 点击下面 Demo 中的画布和节点。
