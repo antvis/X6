@@ -87,8 +87,8 @@ redirect_from:
 
 ```ts
 { 
-  refWidth: 20, 
-  refWidth2: '75%',
+  refWidth: '75%', 
+  refWidth2: 20,
 }
 ```
 
@@ -110,8 +110,8 @@ redirect_from:
 
 ```ts
 { 
-  refHeight: 20, 
-  refHeight2: '75%',
+  refHeight: '75%', 
+  refHeight2: 20,
 }
 ```
 
