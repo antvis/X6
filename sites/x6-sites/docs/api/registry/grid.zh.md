@@ -129,36 +129,6 @@ new Graph({
 
 ## registry
 
-网格的定义如下：
-
-```sign
-export interface Options {
-  color: string     // 网格颜色
-  thickness: number // 网点大小/网线宽度
-}
-
-interface BaseDefinition<T extends Options = Options> extends Options {
-  markup: string
-  update: (
-    elem: Element,
-    options: {
-      sx: number // 画布在 X 轴的缩放比例
-      sy: number // 画布在 Y 轴的缩放比例
-      ox: number // 画布在 X 轴的偏移量
-      oy: number // 画布在 Y 轴的偏移量
-      width: number  // 画布宽度
-      height: number // 画布高度
-    } & T,
-  ) => void
-}
-
-export type Definition<T extends Options = Options> = T & BaseDefinition<T>
-
-export type CommonDefinition =
-  | Definition<Grid.Options>    // 适用于 dot/fixedDot/mesh 等简单网格
-  | Definition<Grid.Options>[]  // 适用于 doubleMesh 这类双线网格 
-```
-
 我们在 `Registry.Grid.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册网格定义，同时也将这两个方法分别挂载为 Graph 上的两个静态方法 `Graph.registerGrid` 和 `Graph.unregisterGrid`。
 
 ### register
@@ -177,3 +147,32 @@ unregister(name: string): Definition | null
 ```
 
 取消注册网格定义。
+
+### 示例
+
+这里以注册一个红色点状网格为例：
+
+```ts
+Graph.registerGrid('red-dot', {
+  color: 'red',
+  thickness: 1,
+  markup: 'rect',
+  update(elem, options) {
+    const width = options.thickness * options.sx
+    const height = options.thickness * options.sy
+    Dom.attr(elem, {
+      width,
+      height,
+      rx: width,
+      ry: height,
+      fill: options.color,
+    })
+  },
+})
+
+const graph = new Graph({
+  grid: {
+    type: 'red-dot',
+  }
+})
+```
