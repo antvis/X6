@@ -1,3 +1,10 @@
+## @antv/x6 [1.22.1](https://github.com/antvis/x6/compare/@antv/x6@1.22.0...@antv/x6@1.22.1) (2021-06-01)
+
+
+### Bug Fixes
+
+* 🐛 fix bbox calc error in firefox ([328eb7e](https://github.com/antvis/x6/commit/328eb7e980fae6091ca94ce20f867f3694788446))
+
 # @antv/x6 [1.22.0](https://github.com/antvis/x6/compare/@antv/x6@1.21.7...@antv/x6@1.22.0) (2021-05-27)
 
 
