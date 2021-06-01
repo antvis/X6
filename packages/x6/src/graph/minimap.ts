@@ -22,7 +22,7 @@ export class MiniMapManager extends Base {
 
 export namespace MiniMapManager {
   export interface Options
-    extends Omit<MiniMap.Options, 'scroller' | 'container'> {
+    extends Omit<MiniMap.Options, 'graph' | 'container'> {
     enabled: boolean
     container: HTMLElement
   }
