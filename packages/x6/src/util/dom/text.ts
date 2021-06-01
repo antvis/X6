@@ -6,6 +6,7 @@ import { Text } from '../text'
 import { attr } from './attr'
 import { Vector } from '../vector'
 import { createSvgElement, empty, remove } from './elem'
+import { Platform } from '../platform'
 
 function createTextPathNode(
   attrs: { d?: string; 'xlink:href'?: string },
@@ -632,7 +633,11 @@ export function breakText(
 
         lineHeight = heightValue.value
         if (heightValue.unit === 'em') {
-          lineHeight *= telem.getBBox().height
+          if (Platform.IS_FIREFOX) {
+            lineHeight *= tspan.getBBox().height
+          } else {
+            lineHeight *= telem.getBBox().height
+          }
         }
       }
 
