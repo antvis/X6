@@ -2,7 +2,7 @@ import { FunctionExt } from '../../util'
 import { View } from '../../view/view'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
-import { Scroller } from '../scroller'
+import { Point } from '../../geometry'
 
 namespace ClassName {
   export const root = 'widget-minimap'
@@ -21,11 +21,29 @@ export class MiniMap extends View {
   protected geometry: Util.ViewGeometry
   protected ratio: number
 
-  protected get scroller() {
-    return this.options.scroller
+  protected get graph() {
+    return this.options.graph
   }
 
-  constructor(options: Partial<MiniMap.Options> & { scroller: Scroller }) {
+  protected get scroller() {
+    return this.graph.scroller.widget
+  }
+
+  protected get graphContainer() {
+    if (this.scroller) {
+      return this.scroller.container
+    }
+    return this.graph.container
+  }
+
+  protected get $graphContainer() {
+    if (this.scroller) {
+      return this.scroller.$container
+    }
+    return this.$(this.graph.container)
+  }
+
+  constructor(options: Partial<MiniMap.Options> & { graph: Graph }) {
     super()
 
     this.options = {
@@ -67,7 +85,7 @@ export class MiniMap extends View {
       this.options.container.appendChild(this.container)
     }
 
-    this.sourceGraph = this.scroller.graph
+    this.sourceGraph = this.graph
     const targetGraphOptions: Graph.Options = {
       ...this.options.graphOptions,
       container: graphContainer,
@@ -102,10 +120,14 @@ export class MiniMap extends View {
   }
 
   protected startListening() {
-    this.scroller.$container.on(
-      `scroll${this.getEventNamespace()}`,
-      this.updateViewport,
-    )
+    if (this.scroller) {
+      this.$graphContainer.on(
+        `scroll${this.getEventNamespace()}`,
+        this.updateViewport,
+      )
+    } else {
+      this.sourceGraph.on('translate', this.updateViewport, this)
+    }
     this.sourceGraph.on('resize', this.updatePaper, this)
     this.delegateEvents({
       mousedown: 'startAction',
@@ -116,7 +138,11 @@ export class MiniMap extends View {
   }
 
   protected stopListening() {
-    this.scroller.$container.off(this.getEventNamespace())
+    if (this.scroller) {
+      this.$graphContainer.off(this.getEventNamespace())
+    } else {
+      this.sourceGraph.off('translate', this.updateViewport, this)
+    }
     this.sourceGraph.off('resize', this.updatePaper, this)
     this.undelegateEvents()
   }
@@ -141,7 +167,7 @@ export class MiniMap extends View {
     }
 
     const origin = this.sourceGraph.options
-    const scale = this.sourceGraph.scale()
+    const scale = this.sourceGraph.transform.getScale()
     const maxWidth = this.options.width - 2 * this.options.padding
     const maxHeight = this.options.height - 2 * this.options.padding
 
@@ -165,9 +191,16 @@ export class MiniMap extends View {
 
   protected updateViewport() {
     const ratio = this.ratio
-    const scale = this.sourceGraph.scale()
-    const scroller = this.scroller
-    const origin = scroller.clientToLocalPoint(0, 0)
+    const scale = this.sourceGraph.transform.getScale()
+
+    let origin = null
+    if (this.scroller) {
+      origin = this.scroller.clientToLocalPoint(0, 0)
+    } else {
+      const ctm = this.sourceGraph.matrix()
+      origin = new Point(-ctm.e / ctm.a, -ctm.f / ctm.d)
+    }
+
     const position = this.$(this.targetGraph.container).position()
     const translation = this.targetGraph.translate()
     translation.ty = translation.ty || 0
@@ -175,8 +208,8 @@ export class MiniMap extends View {
     this.geometry = {
       top: position.top + origin.y * ratio + translation.ty,
       left: position.left + origin.x * ratio + translation.tx,
-      width: (scroller.$container.innerWidth()! * ratio) / scale.sx,
-      height: (scroller.$container.innerHeight()! * ratio) / scale.sy,
+      width: (this.$graphContainer.innerWidth()! * ratio) / scale.sx,
+      height: (this.$graphContainer.innerHeight()! * ratio) / scale.sy,
     }
     this.$viewport.css(this.geometry)
   }
@@ -184,15 +217,18 @@ export class MiniMap extends View {
   protected startAction(evt: JQuery.MouseDownEvent) {
     const e = this.normalizeEvent(evt)
     const action = e.target === this.zoomHandle ? 'zooming' : 'panning'
+    const { tx, ty } = this.sourceGraph.translate()
     const eventData: Util.EventData = {
       action,
       clientX: e.clientX,
       clientY: e.clientY,
-      scrollLeft: this.scroller.container.scrollLeft,
-      scrollTop: this.scroller.container.scrollTop,
-      zoom: this.scroller.zoom(),
-      scale: this.sourceGraph.scale(),
+      scrollLeft: this.graphContainer.scrollLeft,
+      scrollTop: this.graphContainer.scrollTop,
+      zoom: this.sourceGraph.zoom(),
+      scale: this.sourceGraph.transform.getScale(),
       geometry: this.geometry,
+      translateX: tx,
+      translateY: ty,
     }
 
     this.delegateDocumentEvents(Util.documentEvents, eventData)
@@ -205,11 +241,18 @@ export class MiniMap extends View {
     const data = e.data as Util.EventData
     switch (data.action) {
       case 'panning': {
-        const scale = this.sourceGraph.scale()
+        const scale = this.sourceGraph.transform.getScale()
         const rx = (clientX - data.clientX) * scale.sx
         const ry = (clientY - data.clientY) * scale.sy
-        this.scroller.container.scrollLeft = data.scrollLeft + rx / this.ratio
-        this.scroller.container.scrollTop = data.scrollTop + ry / this.ratio
+        if (this.scroller) {
+          this.graphContainer.scrollLeft = data.scrollLeft + rx / this.ratio
+          this.graphContainer.scrollTop = data.scrollTop + ry / this.ratio
+        } else {
+          this.sourceGraph.translate(
+            data.translateX - rx / this.ratio,
+            data.translateY - ry / this.ratio,
+          )
+        }
         break
       }
 
@@ -224,7 +267,7 @@ export class MiniMap extends View {
         }
 
         data.frameId = requestAnimationFrame(() => {
-          this.scroller.zoom(delta * data.zoom, {
+          this.sourceGraph.zoom(delta * data.zoom, {
             absolute: true,
             minScale: this.options.minScale,
             maxScale: this.options.maxScale,
@@ -262,7 +305,7 @@ export class MiniMap extends View {
 
     const cx = (x - ts.tx) / this.ratio
     const cy = (y - ts.ty) / this.ratio
-    this.scroller.centerPoint(cx, cy)
+    this.sourceGraph.centerPoint(cx, cy)
   }
 
   @View.dispose()
@@ -273,7 +316,7 @@ export class MiniMap extends View {
 
 export namespace MiniMap {
   export interface Options {
-    scroller: Scroller
+    graph: Graph
     container?: HTMLElement
     width: number
     height: number
@@ -322,5 +365,7 @@ namespace Util {
     zoom: number
     scale: { sx: number; sy: number }
     geometry: ViewGeometry
+    translateX: number
+    translateY: number
   }
 }

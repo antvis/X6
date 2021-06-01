@@ -94,6 +94,21 @@ if (graph.isPannable()) {
 }
 ```
 
+如果需要支持右键拖拽，使用方法如下：
+
+```ts
+const graph = new Graph({
+  scroller: {
+    enabled: true,
+    pannable: {
+      enabled: true,
+      // 默认情况下只支持左键平移
+      eventTypes: ['leftMouseDown', 'rightMouseDown']
+    },
+  },
+})
+```
+
 ### modifiers
 
 修饰键(`'alt'`、`'ctrl'`、`'meta'`、`'shift'`)，设置修饰键后需要点击鼠标并按下修饰键才能触发画布拖拽。修饰键在某些场景下非常有用，比如同时开始框选和拖拽画布时，而框选和拖拽画布的触发时机都是鼠标左键在画布空白位置按下，这时可以为框选和拖拽画布设置不一样的修饰键，达到同时开启又不冲突的效果。
