@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-启用 [Scroller](/en/docs/tutorial/basic/scroller) 后可开启小地图，小地图是完整画布的预览，支持通过平移缩放小地图的视口来平移缩放画布。
+小地图是完整画布的预览，支持通过平移缩放小地图的视口来平移缩放画布。在 `v1.23.x` 版本之前，小地图需要配合 `scroller` 使用。
 
 ```ts
 const graph = new Graph({

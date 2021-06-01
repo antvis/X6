@@ -330,15 +330,10 @@ export class Hook extends Base implements Hook.IHook {
   createMiniMap() {
     const { enabled, ...options } = this.options.minimap
     if (enabled) {
-      const scroller = this.graph.scroller.widget
-      if (scroller == null) {
-        throw new Error('Minimap requires scroller be enabled.')
-      } else {
-        return new MiniMap({
-          scroller,
-          ...options,
-        })
-      }
+      return new MiniMap({
+        graph: this.graph,
+        ...options,
+      })
     }
     return null
   }
@@ -490,7 +485,8 @@ export class Hook extends Base implements Hook.IHook {
 
     const edge = edgeView ? edgeView.cell : null
     const terminalView = terminalType === 'target' ? targetView : sourceView
-    const terminalMagnet = terminalType === 'target' ? targetMagnet : sourceMagnet
+    const terminalMagnet =
+      terminalType === 'target' ? targetMagnet : sourceMagnet
 
     let valid = true
     const doValidate = (
