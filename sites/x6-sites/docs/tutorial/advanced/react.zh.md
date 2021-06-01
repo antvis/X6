@@ -214,6 +214,48 @@ graph.addNode({
 
 <iframe src="/demos/tutorial/advanced/react/react-shape"></iframe>
 
+**提升 React 节点挂载性能**
+
+当要挂载的 React 组件节点数量非常多时，挂载时长会比较长，此时可以通过 `@antv/x6-react-shape` 提供的 `usePortal` React Hook 来提升节点的挂载性能。具体做法为：
+
+```tsx
+import React, { useEffect } from 'react'
+import { Graph } from '@antv/x6'
+import { usePortal, ReactShape } from '@antv/x6-react-shape'
+
+const UNIQ_GRAPH_ID = 'UNIQ_GRAPH_ID' // 任意字符串，作为画布的唯一标识。注意：任意两张同时渲染的画布需要有不同的标识
+
+export const App: React.FC<{}> = () => {
+  const [Portal, setGraph] = usePortal(UNIQ_GRAPH_ID)
+
+  useEffect(() => {
+    const graph = new Graph({
+      // ... 图的配置项
+    })
+    setGraph(graph) // 在添加节点前，先将生成的 Graph 实例传入 setGrah
+
+    // 生成一组可被添加的节点
+    const nodes = data.map(dataItem => {
+      return new ReactShape({
+        view: UNIQ_GRAPH_ID, // 需要指定 view 属性为定义的标识
+        component: <CustomReactNode />, // 自定义的 React 节点
+        // .. 其它配置项
+      })
+    })
+
+    // 批量添加一组节点以提升挂载性能
+    graph.addCell(nodes)
+  }, [setGraph])
+
+  return (
+    <div>
+      {/* 在原有的 React 树中挂载 Portal */}
+      <Portal />
+    </div>
+  )
+}
+```
+
 [[warning]]
 | 需要注意的是，当 `component` 为 React 组件或函数时，将不能通过 `graph.toJSON()` 方法导出画布数据。所以我们提供了以下两种方案来解决数据导出问题。
 
