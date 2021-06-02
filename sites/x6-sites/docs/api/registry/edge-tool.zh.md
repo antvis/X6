@@ -133,7 +133,7 @@ graph.on('edge:mouseleave', ({ cell }) => {
 
 | 参数名             | 类型                                   | 默认值      | 说明                                                                                                                   |
 |--------------------|----------------------------------------|-------------|----------------------------------------------------------------------------------------------------------------------|
-| attrs              | `{ line: KeyValue; handle: KeyValue }` | `undefined` | 元素的属性。                                                                                                            |
+| attrs              | object | `{width: 20, height: 8, x: -10, y: -4, rx: 4, ry: 4, fill: '#333', stroke: '#fff', stroke-width: 2}` | 元素的属性。                                                                                                            |
 | precision          | number                                 | `0.5`       | 线段的两个端点的 X 或 Y 轴的坐标差小于 `precision` 时才渲染工具，默认 `0.5` 表示只对垂直和水平线段渲染工具。             |
 | threshold          | number                                 | `40`        | 线段长度超过 `threshold` 时才渲染工具。                                                                                 |
 | snapRadius         | number                                 | `10`        | 调整线段过程中的吸附半径。                                                                                              |
@@ -151,9 +151,7 @@ graph.addEdge({
     args: {
       snapRadius: 20,
       attrs: {
-        handle: {
-          fill: '#444',
-        },
+        fill: '#444',
       },
     },
   },
