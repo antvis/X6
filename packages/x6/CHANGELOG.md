@@ -1,3 +1,10 @@
+# @antv/x6 [1.23.0](https://github.com/antvis/x6/compare/@antv/x6@1.22.1...@antv/x6@1.23.0) (2021-06-02)
+
+
+### Features
+
+* ✨ support minimap in normal graph ([3ce87d9](https://github.com/antvis/x6/commit/3ce87d91a952e9b8bf61988cba1cc8cedd39b942))
+
 ## @antv/x6 [1.22.1](https://github.com/antvis/x6/compare/@antv/x6@1.22.0...@antv/x6@1.22.1) (2021-06-01)
 
 
