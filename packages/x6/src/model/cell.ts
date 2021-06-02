@@ -1134,28 +1134,43 @@ export class Cell<
 
   addTools(
     items: Cell.ToolItem | Cell.ToolItem[],
-    name?: string | null,
-    options: Cell.AddToolOptions = {},
+    options?: Cell.AddToolOptions,
+  ): void
+  addTools(
+    items: Cell.ToolItem | Cell.ToolItem[],
+    name: string,
+    options?: Cell.AddToolOptions,
+  ): void
+  addTools(
+    items: Cell.ToolItem | Cell.ToolItem[],
+    obj?: string | Cell.AddToolOptions,
+    options?: Cell.AddToolOptions,
   ) {
     const toolItems = Array.isArray(items) ? items : [items]
-    if (options.reset) {
-      this.setTools({ name, items: toolItems }, options)
-    } else {
-      let tools = ObjectExt.cloneDeep(this.getTools())
-      if (tools == null || name == null || tools.name === name) {
-        if (tools == null) {
-          tools = {} as Cell.Tools
-        }
+    const name = typeof obj === 'string' ? obj : null
+    const config =
+      typeof obj === 'object' ? obj : typeof options === 'object' ? options : {}
 
-        if (!tools.items) {
-          tools.items = []
-        }
-
-        tools.name = name
-        tools.items = [...tools.items, ...toolItems]
-
-        return this.setTools({ ...tools }, options)
+    if (config.reset) {
+      return this.setTools(
+        { name, items: toolItems, local: config.local },
+        config,
+      )
+    }
+    let tools = ObjectExt.cloneDeep(this.getTools())
+    if (tools == null || name == null || tools.name === name) {
+      if (tools == null) {
+        tools = {} as Cell.Tools
       }
+
+      if (!tools.items) {
+        tools.items = []
+      }
+
+      tools.name = name
+      tools.items = [...tools.items, ...toolItems]
+
+      return this.setTools({ ...tools }, config)
     }
   }
 
@@ -1536,6 +1551,7 @@ export namespace Cell {
 
   export interface AddToolOptions extends SetOptions {
     reset?: boolean
+    local?: boolean
   }
 
   export interface GetDescendantsOptions {

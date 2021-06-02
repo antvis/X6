@@ -2725,8 +2725,7 @@ if (rect.hasChanged('zIndex')) {
 
 ```sign
 addTools(
-  items: Cell.ToolItem | Cell.ToolItem[], 
-  name?: string | null , 
+  items: Cell.ToolItem | Cell.ToolItem[],
   options?: Cell.AddToolOptions,
 ): this
 ```
@@ -2738,37 +2737,10 @@ addTools(
 | 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                   |
 |------------------|----------------------------------|:----:|---------|----------------------------------------------------------------------------------------------------------------------|
 | items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具。                 |
-| name             | string                           |      |         | 工具集名称。当指定了工具集名称，且 `options.reset` 为 `false` 时，指定的名称与现有工具集名称相同时才会向工具集中添加工具。 |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                 |
+| options.local    | boolean                          |      | `false` | 工具是否渲染到节点/边的容器中，默认为 `false`，所有工具会渲染在 `x6-graph-svg-decorator` 下面，只有在 `options.reset` 为 `true` 为时生效                                                                            |
 | options.silent   | boolean                          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。                                                              |
 | options...others | object                           |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                 |
-
-#### setTools(...)
-
-```sign
-setTools(
-  tools?: Cell.Tools | Cell.ToolItem | Cell.ToolItem[] | null, 
-  options?: Cell.SetOptions,
-): this
-```
-
-设置工具集。
-
-<span class="tag-param">参数<span>
-
-| 名称             | 类型                                                   | 必选 | 默认值  | 描述                                                      |
-|------------------|--------------------------------------------------------|:----:|---------|---------------------------------------------------------|
-| tools            | Cell.Tools \| Cell.ToolItem \| Cell.ToolItem[] \| null |      |         | 工具集、小工具、小工具数组。                                 |
-| options.silent   | boolean                                                |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。 |
-| options...others | object                                                 |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
-
-当 `tools` 是 `Cell.Tools` 类型时，可以支持以下配置项
-
-| 名称        | 类型            | 必选 | 默认值      | 描述                                                                                                       |
-|-------------|-----------------|:----:|-------------|----------------------------------------------------------------------------------------------------------|
-| tools.name  | string          |      | `undefined` | 工具集名称。                                                                                                |
-| tools.local | boolean         |      | `false`     | 是否渲染到节点/边的容器中，默认为 `false` 表示渲染到画布容器中。                                             |
-| tools.items | Cell.ToolItem[] |      | `undefined` | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具集合。 |
 
 #### getTools()
 
@@ -2778,27 +2750,13 @@ getTools(): Cell.Tools | null
 
 获取工具集。
 
-#### hasTools(...)
-
-```sign
-hasTools(name?: string): boolean
-```
-
-是否包含小工具或包含指定名称的工具集。
-
-<span class="tag-param">参数<span>
-
-| 名称 | 类型   | 必选 | 默认值 | 描述        |
-|------|--------|:----:|--------|-----------|
-| name | string |      |        | 工具集名称。 |
-
 #### removeTools(...)
 
 ```sign
 removeTools(options?: Cell.SetOptions): this
 ```
 
-删除工具集。
+删除所有工具。
 
 <span class="tag-param">参数<span>
 
