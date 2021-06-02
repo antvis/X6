@@ -161,7 +161,8 @@ An entity relationship diagram (ERD) shows the relationships of entity sets stor
 Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We also welcome the github [issues](https://github.com/antvis/x6/issues).
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&_dt_no_comment=1&origin=11" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tFvBSaPCiHsAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" width="375" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Up-4S4v8H-0AAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群1" width="375" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*5FhnSb3ewfQAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群2" width="375" />
 </a>
 
 ## Development
