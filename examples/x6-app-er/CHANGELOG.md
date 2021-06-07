@@ -11,6 +11,21 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.23.3
+
+## @antv/x6-app-er [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.3...@antv/x6-app-er@1.1.4) (2021-06-07)
+
+
+### Bug Fixes
+
+* 🐛 fix x6-react-components version in demo ([085ffab](https://github.com/antvis/x6/commit/085ffabe84e89e12bf47c3c8680c5cf1eb929593))
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.23.2
 
 ## @antv/x6-app-er [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.3...@antv/x6-app-er@1.1.4) (2021-06-02)
