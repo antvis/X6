@@ -10,9 +10,8 @@ redirect_from:
     1. [X6 与 G6 的区别](#x6-与-g6-的区别)
     2. [X6 支持 Vue 吗](#x6-支持-vue-吗)
     3. [X6 浏览器兼容性](#浏览器兼容性)
-    4. [怎么兼容 IE](#怎么兼容-ie)
-    5. [怎么自定义节点的 ID](#自定义节点-id)
-    6. [怎么解决 angular 项目类型报错](#怎么解决-angular-项目类型报错)
+    4. [怎么自定义节点的 ID](#自定义节点-id)
+    5. [怎么解决 angular 项目类型报错](#怎么解决-angular-项目类型报错)
 2.	节点相关
     1. [怎么禁止节点移动](#怎么禁止节点移动)
     2. [怎么支持特定节点的放大缩小](#怎么支持特定节点的放大缩小)
@@ -37,33 +36,7 @@ X6 的核心能力和框架无关，在 X6 的基础上我们有 [x6-react-shape
 
 ### 浏览器兼容性
 
-现代浏览器以及 IE11
-
-### 怎么兼容 IE
-
-X6 是支持 `IE 11` 的，支持 [cdn](/zh/docs/tutorial/getting-started#安装) 和模块化引入方式：
-
-```ts
-import { Graph } from '@antv/x6/dist/x6'
-```
-
-如果要在 `IE 11` 下运行源码 `example` 下的示例，执行下面两个步骤：
-
-- 将所有 `import { Graph } from '@antv/x6` 替换为下面语句：
-
-```ts
-import { Graph } from '@antv/x6/dist/x6'
-```
-
-- 在 `.umirc.ts` 中增加以下配置：
-
-```ts
-{
-  targets: {
-    ie: 11,
-  },
-}
-```
+现代浏览器（Chrome、Firefox 、Safari 较新版本，IE11 部分功能不支持）
 
 #### 自定义节点 ID
 
