@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.2](https://github.com/antvis/x6/compare/@antv/x6@1.23.1...@antv/x6@1.23.2) (2021-06-07)
+
+
+### Bug Fixes
+
+* 🐛 optimize addTools params ([9fb3a51](https://github.com/antvis/x6/commit/9fb3a514c2d34dee61d1ee5acd68416ae5bd5cfa))
+
 ## @antv/x6 [1.23.1](https://github.com/antvis/x6/compare/@antv/x6@1.23.0...@antv/x6@1.23.1) (2021-06-02)
 
 # @antv/x6 [1.23.0](https://github.com/antvis/x6/compare/@antv/x6@1.22.1...@antv/x6@1.23.0) (2021-06-02)
