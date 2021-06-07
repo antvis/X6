@@ -123,6 +123,10 @@ export class Scroller extends View {
     }
 
     this.backgroundManager = new Scroller.Background(this)
+
+    if (!this.options.autoResize) {
+      this.update()
+    }
   }
 
   protected startListening() {
@@ -418,6 +422,10 @@ export class Scroller extends View {
       }
     } else if (typeof options.padding === 'number') {
       options.padding *= sx
+    }
+
+    if (!this.options.autoResize) {
+      options.contentArea = Rectangle.create()
     }
 
     return options
