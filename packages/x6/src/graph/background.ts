@@ -110,7 +110,7 @@ export class BackgroundManager extends Base {
       }
     }
       
-    if (typeof options.size === 'object' && options.image === this.optionCache.image) {
+    if (typeof options.size === 'object' && options.image === this.optionCache.image && options.repeat === this.optionCache.repeat) {
       this.optionCache.size = ObjectExt.clone(options.size);
     }
 
