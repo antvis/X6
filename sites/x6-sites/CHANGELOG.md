@@ -1,3 +1,44 @@
+# @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-06-09)
+
+
+### Bug Fixes
+
+* 🐛 fix add tools not work ([191eab3](https://github.com/antvis/x6/commit/191eab3d02bdea32755009d865a2929a131cb9e2))
+* 🐛 fix validateEdge trigger timming ([8bc943d](https://github.com/antvis/x6/commit/8bc943de5ec800d3cff4f68d95bb4d0b1713449c))
+* 🐛 optimize addTools params ([9fb3a51](https://github.com/antvis/x6/commit/9fb3a514c2d34dee61d1ee5acd68416ae5bd5cfa))
+* 🐛 optimize usage of mousewheel ([a2851cd](https://github.com/antvis/x6/commit/a2851cd862c9224bb66a8f9bda3e0035259fd940))
+* 🐛 remove single tool by name or index ([#565](https://github.com/antvis/x6/issues/565)) ([f87dc43](https://github.com/antvis/x6/commit/f87dc43e439bfd13b7afe193db096bacd456bdcd)), closes [#552](https://github.com/antvis/x6/issues/552)
+* 🐛 update layout version ([a37f640](https://github.com/antvis/x6/commit/a37f640c915e061d2fccc2ce2ae077e27c0bafd2))
+* add `placeholder` and `notFoundText` for stencil component ([#574](https://github.com/antvis/x6/issues/574)) ([c9100ab](https://github.com/antvis/x6/commit/c9100abb8576eaf55c5a9b0c5496f63c1796af5a)), closes [#555](https://github.com/antvis/x6/issues/555)
+* fix can not create node when mouseup in demo ([#628](https://github.com/antvis/x6/issues/628)) ([3597737](https://github.com/antvis/x6/commit/35977378e55270771930fd6ccb78d0cac62bd180))
+* fix contextmenu show multiple times ([50ef056](https://github.com/antvis/x6/commit/50ef0562b0036dbfa43ed7ffbff1fade2f06d272))
+* fix demo import path error ([f7817cc](https://github.com/antvis/x6/commit/f7817cc2111ce3f6838e0658a9b777529a7015a7))
+* fix editable cell demo ([e47a676](https://github.com/antvis/x6/commit/e47a676c71e8062291ecf3fe5f8a3603bd7469bb))
+* fix path error in custom router demo ([#620](https://github.com/antvis/x6/issues/620)) ([15c1e05](https://github.com/antvis/x6/commit/15c1e05d56e38d2c3f456845ed81e21375e67e22))
+* fix trigger multiple moved event when close movable config ([f651181](https://github.com/antvis/x6/commit/f65118150178df82ee795f4fc292f5ce91c78b6b))
+* x6 support ie 11 ([#585](https://github.com/antvis/x6/issues/585)) ([8cb2f48](https://github.com/antvis/x6/commit/8cb2f489d2f913dd9fa80dab5c50e1fffe7f6939))
+
+
+### Features
+
+* ✨  allow disable auto resize in some high performance scenario ([dd6681b](https://github.com/antvis/x6/commit/dd6681b53739bf48fa0a97166e16ada4a2c16896))
+* ✨ add containerParent config for dnd ([58fb4fd](https://github.com/antvis/x6/commit/58fb4fdd6a51c672e5a473773874081fe548fe0a))
+* ✨ add direction option for midside node-anchor ([b235c11](https://github.com/antvis/x6/commit/b235c1106b4041f257d4f0db5f30198e5c41c90d))
+* ✨ add rubberNode and rubberEdge config ([#949](https://github.com/antvis/x6/issues/949)) ([b715463](https://github.com/antvis/x6/commit/b71546332a91f7a894f453c691efee006fdf4ad0))
+* ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+* ✨ panning support rightMouseDown and mousehwheel ([3694cc0](https://github.com/antvis/x6/commit/3694cc080ca5d2a291ba6b2df8c25933bb39b80a))
+* ✨ support minimap in normal graph ([3ce87d9](https://github.com/antvis/x6/commit/3ce87d91a952e9b8bf61988cba1cc8cedd39b942))
+* add following config for selection ([#687](https://github.com/antvis/x6/issues/687)) ([5b52433](https://github.com/antvis/x6/commit/5b52433709089280320cc6b13e6442f31c1dcf30))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.23.4
+* **@antv/x6-react-components:** upgraded to 1.1.11
+
 # @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-06-07)
 
 
