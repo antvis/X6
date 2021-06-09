@@ -19,6 +19,27 @@
 * ✨ add util to test requestAnimationFrame ([739ef34](https://github.com/antvis/x6/commit/739ef34df20c0e5fbdebc3a5d58387d24a5e4afa))
 * ✨ auto detect vector type by tagName ([d6e0537](https://github.com/antvis/x6/commit/d6e053721f5fc3085c2a46831c11dad381ddb412))
 
+# @antv/x6-vector [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-vector@1.0.3...@antv/x6-vector@1.1.0) (2021-06-09)
+
+
+### Bug Fixes
+
+* 🐛 do not overwrite constructor when apply mixins ([d47267e](https://github.com/antvis/x6/commit/d47267e5a390ac51704b2289b241c9bf0a9c993b))
+* 🐛 fix apply mixins ([7c4dd17](https://github.com/antvis/x6/commit/7c4dd17a5a24312c38b0a3fb0ddf7d84594cc7fd))
+* 🐛 fix cached data type for adopter ([e5ed030](https://github.com/antvis/x6/commit/e5ed030176afd7e5e64c554d4af79a9414e32b07))
+* 🐛 fix extends detection errors by override lib.dom.d.ts ([d5eef84](https://github.com/antvis/x6/commit/d5eef840c0348040d91d4cf791cda54cfda5aa59))
+* 🐛 fix types ([fbfe949](https://github.com/antvis/x6/commit/fbfe949d6ffd0501defb5dfd863ddb5804530da8))
+* 🐛 should cache the instance and restore affix after inited ([8f9a4f6](https://github.com/antvis/x6/commit/8f9a4f66591d238396e8b7575ee21d82d18a2184))
+* 🐛 should trim the html or selector ([ebf3384](https://github.com/antvis/x6/commit/ebf33843127af1cfa6df6a43a1f03a63eea6fe5f))
+* 🐛 typos ([a728cf1](https://github.com/antvis/x6/commit/a728cf175f51d58d971e83f90745006aa40a090f))
+
+
+### Features
+
+* ✨ add animating ([9a45e3f](https://github.com/antvis/x6/commit/9a45e3f27467240711190fbb7451861005329174))
+* ✨ add util to test requestAnimationFrame ([739ef34](https://github.com/antvis/x6/commit/739ef34df20c0e5fbdebc3a5d58387d24a5e4afa))
+* ✨ auto detect vector type by tagName ([d6e0537](https://github.com/antvis/x6/commit/d6e053721f5fc3085c2a46831c11dad381ddb412))
+
 ## @antv/x6-vector [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-vector@1.0.2...@antv/x6-vector@1.0.3) (2021-04-01)
 
 ## @antv/x6-vector [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-vector@1.0.2...@antv/x6-vector@1.0.3) (2021-03-30)
