@@ -42,6 +42,53 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.23.5
+* **@antv/x6-vector:** upgraded to 1.1.0
+
+# @antv/x6-example-features [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.2.0) (2021-06-09)
+
+
+### Bug Fixes
+
+* 🐛 break text with chinese characters(double byte character) ([7f37319](https://github.com/antvis/x6/commit/7f373194d9a3722aab403319aa2a843a00a18825)), closes [#596](https://github.com/antvis/x6/issues/596)
+* 🐛 do not generate new commands on redoing/undoing ([1696f51](https://github.com/antvis/x6/commit/1696f519056a2cd57189b19532a758b24af3fe2a)), closes [#627](https://github.com/antvis/x6/issues/627)
+* 🐛 do not update pagesize automatically when set graph size ([fcb5f11](https://github.com/antvis/x6/commit/fcb5f11195c9e0418091ad55bb684294b189979e)), closes [#644](https://github.com/antvis/x6/issues/644) [#564](https://github.com/antvis/x6/issues/564)
+* 🐛 fix add tools not work ([191eab3](https://github.com/antvis/x6/commit/191eab3d02bdea32755009d865a2929a131cb9e2))
+* 🐛 fix model event trigger twice ([#789](https://github.com/antvis/x6/issues/789)) ([5520bc3](https://github.com/antvis/x6/commit/5520bc38ab4106287e6591c73aff8c6f96f675da))
+* 🐛 fix type error ([62a15bd](https://github.com/antvis/x6/commit/62a15bdf4929134eb87bfa736db1271be0a76613))
+* 🐛 fix x6-react-components version in demo ([085ffab](https://github.com/antvis/x6/commit/085ffabe84e89e12bf47c3c8680c5cf1eb929593))
+* 🐛 interact with input rendered in react component ([6eaec74](https://github.com/antvis/x6/commit/6eaec7412dd9826b331fc4bfb822e874ace939e1))
+* 🐛 linear gradient along edge path ([39619d3](https://github.com/antvis/x6/commit/39619d3baaab1af79cb0d2ecc08bb8859ef44065)), closes [#635](https://github.com/antvis/x6/issues/635)
+* 🐛 liner gradient not available on horizontal and vertical edges ([1817298](https://github.com/antvis/x6/commit/1817298f7788d0b5475cf53c516a0a9b177bfdd0)), closes [#635](https://github.com/antvis/x6/issues/635)
+* 🐛 set the async of minimapGraph to be the same as sourceGraph ([474d93c](https://github.com/antvis/x6/commit/474d93c9bc54cb469d75b72e6cd956c9671afcd2))
+* 🐛 should render vertices tool with lowest z-index ([da9ddf5](https://github.com/antvis/x6/commit/da9ddf5f068f84fbe1b359aad459252d49feab34)), closes [#638](https://github.com/antvis/x6/issues/638)
+* fix contextmenu show multiple times ([50ef056](https://github.com/antvis/x6/commit/50ef0562b0036dbfa43ed7ffbff1fade2f06d272))
+* fix demo import path error ([f7817cc](https://github.com/antvis/x6/commit/f7817cc2111ce3f6838e0658a9b777529a7015a7))
+* fix path error in custom router demo ([#620](https://github.com/antvis/x6/issues/620)) ([15c1e05](https://github.com/antvis/x6/commit/15c1e05d56e38d2c3f456845ed81e21375e67e22))
+* **wip:** 🐛 click event of contextmenu was not triggered ([fc3ff9e](https://github.com/antvis/x6/commit/fc3ff9e38de9b051bfed9043f70920d870b3b9f9))
+
+
+### Features
+
+* ✨ add `primer` and `useForeignObject` option for react-shape ([eca8186](https://github.com/antvis/x6/commit/eca818687662a5f84a6300944819220853bc1964))
+* ✨ add library for manipulating and animating SVG ([a67b4d2](https://github.com/antvis/x6/commit/a67b4d2e44395d9422664760afa0adaa2635813d))
+* ✨ add xmind demo ([03078ea](https://github.com/antvis/x6/commit/03078ea435563ebbd154b22ec23ffc288f3f6f9f))
+* ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+* ✨ random path demo ([1c3ff13](https://github.com/antvis/x6/commit/1c3ff13fc6a3c3cbdb478908e5596d8c067a6afd))
+* ✨ support panning scroller graph byrightmousedown ([2ceca37](https://github.com/antvis/x6/commit/2ceca3724e792dc0247398bf8790909597c50f31))
+
+
+### Performance Improvements
+
+* ⚡️ add getMatrixByElementAttr and getBBoxByElementAttr to reduce reflow ([a5a83d3](https://github.com/antvis/x6/commit/a5a83d341646fdc83b2e9a300010e5e60bc75831))
+* ⚡️ optimize node render performance ([433d25f](https://github.com/antvis/x6/commit/433d25ff4a8cb6bab662f1a2317f59c1d41aa7bd))
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.23.4
 * **@antv/x6-vector:** upgraded to 1.1.0
 * **@antv/x6-react-components:** upgraded to 1.1.11
