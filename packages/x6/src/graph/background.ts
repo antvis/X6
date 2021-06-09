@@ -110,6 +110,17 @@ export class BackgroundManager extends Base {
       }
     }
 
+    if (
+      typeof options.size === 'object' &&
+      this.optionCache &&
+      options.image === this.optionCache.image &&
+      (options as Background.ManaualItem).quality ===
+        (this.optionCache as Background.ManaualItem).quality &&
+      options.repeat === this.optionCache.repeat
+    ) {
+      this.optionCache.size = ObjectExt.clone(options.size)
+    }
+
     const style = this.elem.style
     style.backgroundRepeat = backgroundRepeat
     style.backgroundImage = `url(${uri})`
