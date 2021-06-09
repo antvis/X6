@@ -4,7 +4,7 @@ import { Background } from '../registry'
 import { Base } from './base'
 
 export class BackgroundManager extends Base {
-  protected optionCache: BackgroundManager.Options | null
+  protected optionsCache: BackgroundManager.Options | null
 
   protected get elem() {
     return this.view.background
@@ -110,20 +110,21 @@ export class BackgroundManager extends Base {
       }
     }
 
+    const cache = this.optionsCache
     if (
+      cache != null &&
       typeof options.size === 'object' &&
-      this.optionCache &&
-      options.image === this.optionCache.image &&
+      options.image === cache.image &&
+      options.repeat === cache.repeat &&
       (options as Background.ManaualItem).quality ===
-        (this.optionCache as Background.ManaualItem).quality &&
-      options.repeat === this.optionCache.repeat
+        (cache as Background.ManaualItem).quality
     ) {
-      this.optionCache.size = ObjectExt.clone(options.size)
+      cache.size = ObjectExt.clone(options.size)
     }
 
     const style = this.elem.style
-    style.backgroundRepeat = backgroundRepeat
     style.backgroundImage = `url(${uri})`
+    style.backgroundRepeat = backgroundRepeat
     style.opacity = opacity == null || opacity >= 1 ? '' : `${opacity}`
 
     this.updateBackgroundImage(options)
@@ -138,25 +139,25 @@ export class BackgroundManager extends Base {
   }
 
   update() {
-    if (this.optionCache) {
-      this.updateBackgroundImage(this.optionCache)
+    if (this.optionsCache) {
+      this.updateBackgroundImage(this.optionsCache)
     }
   }
 
   draw(options?: BackgroundManager.Options) {
+    const opts = options || {}
     this.updateBackgroundOptions(options)
-    const localOptions = options || {}
-    this.updateBackgroundColor(localOptions.color)
+    this.updateBackgroundColor(opts.color)
 
-    if (localOptions.image) {
+    if (opts.image) {
+      this.optionsCache = ObjectExt.clone(opts)
       const img = document.createElement('img')
       img.onload = () => this.drawBackgroundImage(img, options)
       img.setAttribute('crossorigin', 'anonymous')
-      img.src = localOptions.image
-      this.optionCache = ObjectExt.clone(localOptions)
+      img.src = opts.image
     } else {
       this.drawBackgroundImage(null)
-      this.optionCache = null
+      this.optionsCache = null
     }
   }
 
