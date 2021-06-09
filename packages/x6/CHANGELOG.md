@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.5](https://github.com/antvis/x6/compare/@antv/x6@1.23.4...@antv/x6@1.23.5) (2021-06-09)
+
+
+### Bug Fixes
+
+* 🐛 fix background size when not defined, fixed [#1070](https://github.com/antvis/x6/issues/1070) ([#1072](https://github.com/antvis/x6/issues/1072)) ([ada59be](https://github.com/antvis/x6/commit/ada59be847cb139040c8ee8b68603756194201cd))
+
 ## @antv/x6 [1.23.4](https://github.com/antvis/x6/compare/@antv/x6@1.23.3...@antv/x6@1.23.4) (2021-06-09)
 
 ## @antv/x6 [1.23.3](https://github.com/antvis/x6/compare/@antv/x6@1.23.2...@antv/x6@1.23.3) (2021-06-07)
