@@ -109,6 +109,10 @@ export class BackgroundManager extends Base {
         }
       }
     }
+      
+    if (typeof options.size === 'object' && options.image === this.optionCache.image) {
+      this.optionCache.size = ObjectExt.clone(options.size);
+    }
 
     const style = this.elem.style
     style.backgroundRepeat = backgroundRepeat
