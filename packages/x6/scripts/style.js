@@ -64,7 +64,9 @@ function makeStyleModule() {
   const source = path.join(dist, 'x6.css')
   const target = path.join(src, 'style/raw.ts')
   const content = fs.readFileSync(source, { encoding: 'utf8' })
-  const prev = fs.readFileSync(target, { encoding: 'utf8' })
+  const prev = fs.existsSync(target)
+    ? fs.readFileSync(target, { encoding: 'utf8' })
+    : null
   const curr = `/* eslint-disable */
 
 /**
