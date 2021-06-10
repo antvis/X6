@@ -37,7 +37,8 @@ type PatternMethod = {
 
 export class ContainerExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements PatternMethod {
+  implements PatternMethod
+{
   @Decorator.checkDefs
   pattern<Attributes extends SVGPatternAttributes>(
     width?: number | string | Attributes | null,
@@ -51,7 +52,8 @@ export class ContainerExtension<TSVGElement extends SVGElement>
 
 export class DefsExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements PatternMethod {
+  implements PatternMethod
+{
   pattern<Attributes extends SVGPatternAttributes>(
     width?: number | string | Attributes | null,
     height?: number | string | Pattern.Update | Attributes | null,

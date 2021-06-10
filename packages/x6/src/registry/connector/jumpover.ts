@@ -281,112 +281,108 @@ export interface JumpoverConnectorOptions extends Connector.BaseOptions {
 let jumppedLines: Line[]
 let skippedPoints: Point[]
 
-export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function (
-  sourcePoint,
-  targetPoint,
-  routePoints,
-  options = {},
-) {
-  jumppedLines = []
-  skippedPoints = []
+export const jumpover: Connector.Definition<JumpoverConnectorOptions> =
+  function (sourcePoint, targetPoint, routePoints, options = {}) {
+    jumppedLines = []
+    skippedPoints = []
 
-  setupUpdating(this)
+    setupUpdating(this)
 
-  const jumpSize = options.size || 5
-  const jumpType = options.type || 'arc'
-  const radius = options.radius || 0
-  // list of connector types not to jump over.
-  const ignoreConnectors = options.ignoreConnectors || ['smooth']
+    const jumpSize = options.size || 5
+    const jumpType = options.type || 'arc'
+    const radius = options.radius || 0
+    // list of connector types not to jump over.
+    const ignoreConnectors = options.ignoreConnectors || ['smooth']
 
-  const graph = this.graph
-  const model = graph.model
-  const allLinks = model.getEdges() as Edge[]
+    const graph = this.graph
+    const model = graph.model
+    const allLinks = model.getEdges() as Edge[]
 
-  // there is just one link, draw it directly
-  if (allLinks.length === 1) {
-    return buildPath(
-      createLines(sourcePoint, targetPoint, routePoints),
-      jumpSize,
-      jumpType,
-      radius,
-    )
+    // there is just one link, draw it directly
+    if (allLinks.length === 1) {
+      return buildPath(
+        createLines(sourcePoint, targetPoint, routePoints),
+        jumpSize,
+        jumpType,
+        radius,
+      )
+    }
+
+    const edge = this.cell
+    const thisIndex = allLinks.indexOf(edge)
+    const defaultConnector = graph.options.connecting.connector || {}
+
+    // not all links are meant to be jumped over.
+    const edges = allLinks.filter((link, idx) => {
+      const connector = link.getConnector() || (defaultConnector as any)
+
+      // avoid jumping over links with connector type listed in `ignored connectors`.
+      if (ignoreConnectors.includes(connector.name)) {
+        return false
+      }
+      // filter out links that are above this one and  have the same connector type
+      // otherwise there would double hoops for each intersection
+      if (idx > thisIndex) {
+        return connector.name !== 'jumpover'
+      }
+      return true
+    })
+
+    // find views for all links
+    const linkViews = edges.map((edge) => {
+      return graph.renderer.findViewByCell(edge) as EdgeView
+    })
+
+    // create lines for this link
+    const thisLines = createLines(sourcePoint, targetPoint, routePoints)
+
+    // create lines for all other links
+    const linkLines = linkViews.map((linkView) => {
+      if (linkView == null) {
+        return []
+      }
+      if (linkView === this) {
+        return thisLines
+      }
+      return createLines(
+        linkView.sourcePoint,
+        linkView.targetPoint,
+        linkView.routePoints,
+      )
+    })
+
+    // transform lines for this link by splitting with jump lines at
+    // points of intersection with other links
+    const jumpingLines: Line[] = []
+
+    thisLines.forEach((line) => {
+      // iterate all links and grab the intersections with this line
+      // these are then sorted by distance so the line can be split more easily
+
+      const intersections = edges
+        .reduce<Point[]>((memo, link, i) => {
+          // don't intersection with itself
+          if (link !== edge) {
+            const lineIntersections = findLineIntersections(line, linkLines[i])
+            memo.push(...lineIntersections)
+          }
+          return memo
+        }, [])
+        .sort((a, b) => getDistence(line.start, a) - getDistence(line.start, b))
+
+      if (intersections.length > 0) {
+        // split the line based on found intersection points
+        jumpingLines.push(...createJumps(line, intersections, jumpSize))
+      } else {
+        // without any intersection the line goes uninterrupted
+        jumpingLines.push(line)
+      }
+    })
+
+    const path = buildPath(jumpingLines, jumpSize, jumpType, radius)
+
+    jumppedLines = []
+    skippedPoints = []
+
+    return options.raw ? path : path.serialize()
   }
-
-  const edge = this.cell
-  const thisIndex = allLinks.indexOf(edge)
-  const defaultConnector = graph.options.connecting.connector || {}
-
-  // not all links are meant to be jumped over.
-  const edges = allLinks.filter((link, idx) => {
-    const connector = link.getConnector() || (defaultConnector as any)
-
-    // avoid jumping over links with connector type listed in `ignored connectors`.
-    if (ignoreConnectors.includes(connector.name)) {
-      return false
-    }
-    // filter out links that are above this one and  have the same connector type
-    // otherwise there would double hoops for each intersection
-    if (idx > thisIndex) {
-      return connector.name !== 'jumpover'
-    }
-    return true
-  })
-
-  // find views for all links
-  const linkViews = edges.map((edge) => {
-    return graph.renderer.findViewByCell(edge) as EdgeView
-  })
-
-  // create lines for this link
-  const thisLines = createLines(sourcePoint, targetPoint, routePoints)
-
-  // create lines for all other links
-  const linkLines = linkViews.map((linkView) => {
-    if (linkView == null) {
-      return []
-    }
-    if (linkView === this) {
-      return thisLines
-    }
-    return createLines(
-      linkView.sourcePoint,
-      linkView.targetPoint,
-      linkView.routePoints,
-    )
-  })
-
-  // transform lines for this link by splitting with jump lines at
-  // points of intersection with other links
-  const jumpingLines: Line[] = []
-
-  thisLines.forEach((line) => {
-    // iterate all links and grab the intersections with this line
-    // these are then sorted by distance so the line can be split more easily
-
-    const intersections = edges
-      .reduce<Point[]>((memo, link, i) => {
-        // don't intersection with itself
-        if (link !== edge) {
-          const lineIntersections = findLineIntersections(line, linkLines[i])
-          memo.push(...lineIntersections)
-        }
-        return memo
-      }, [])
-      .sort((a, b) => getDistence(line.start, a) - getDistence(line.start, b))
-
-    if (intersections.length > 0) {
-      // split the line based on found intersection points
-      jumpingLines.push(...createJumps(line, intersections, jumpSize))
-    } else {
-      // without any intersection the line goes uninterrupted
-      jumpingLines.push(line)
-    }
-  })
-
-  const path = buildPath(jumpingLines, jumpSize, jumpType, radius)
-
-  jumppedLines = []
-  skippedPoints = []
-
-  return options.raw ? path : path.serialize()
-}

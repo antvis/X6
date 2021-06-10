@@ -2,7 +2,7 @@ import { Node } from '../model/node'
 import { ObjectExt } from '../util'
 
 export class Base<
-  Properties extends Node.Properties = Node.Properties
+  Properties extends Node.Properties = Node.Properties,
 > extends Node<Properties> {
   get label() {
     return this.getLabel()

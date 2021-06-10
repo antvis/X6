@@ -9,7 +9,7 @@ describe('Dom', () => {
       })
 
       it('should return `false` for invalid element', () => {
-        const text = (document.createTextNode('') as any) as HTMLElement
+        const text = document.createTextNode('') as any as HTMLElement
         addClass(text, 'test')
         expect(hasClass(text, 'test')).toBe(false)
 

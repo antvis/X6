@@ -4,7 +4,7 @@ import { Path } from './path'
 import { SVGPathAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   path<Attributes extends SVGPathAttributes>(attrs?: Attributes | null): Path
   path<Attributes extends SVGPathAttributes>(

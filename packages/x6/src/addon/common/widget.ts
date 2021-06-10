@@ -5,7 +5,7 @@ import { Graph } from '../../graph'
 
 export class Widget<
   Options extends Widget.Options = Widget.Options,
-  EventArgs = any
+  EventArgs = any,
 > extends View<EventArgs> {
   // #region static
 

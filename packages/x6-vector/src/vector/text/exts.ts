@@ -3,7 +3,7 @@ import { Text } from './text'
 import { SVGTextAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   text<Attributes extends SVGTextAttributes>(attrs?: Attributes | null): Text
   text<Attributes extends SVGTextAttributes>(

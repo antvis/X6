@@ -10,7 +10,7 @@ import { TransformAnimator } from './transform'
 @DomAnimator.mixin(TransformAnimator)
 export class DomAnimator<
   TElement extends Element = Element,
-  TOwner extends Dom<TElement> = Dom<TElement>
+  TOwner extends Dom<TElement> = Dom<TElement>,
 > extends BaseAnimator<TElement, TOwner> {
   attr<T extends AttributesMap<TElement>>(attrs: T): this
   attr<T extends AttributesMap<TElement>, K extends keyof T>(
@@ -33,7 +33,7 @@ export class DomAnimator<
   protected queueAttrOrCSS<
     M extends 'attr' | 'css',
     T extends M extends 'attr' ? AttributesMap<TElement> : CSSProperties,
-    K extends keyof T
+    K extends keyof T,
   >(method: M, name: K | T, value?: T[K]): this {
     if (typeof name === 'string') {
       return this.queueAttrOrCSS(method, { [name]: value } as T)
@@ -102,5 +102,5 @@ export class DomAnimator<
 
 export interface DomAnimator<
   TElement extends Element = Element,
-  TOwner extends Dom<TElement> = Dom<TElement>
+  TOwner extends Dom<TElement> = Dom<TElement>,
 > extends TransformAnimator<TElement, TOwner> {}

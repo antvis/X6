@@ -3,7 +3,7 @@ import { Size } from '../common/size'
 import { Shape } from '../common/shape'
 
 export class Poly<
-  TSVGPolyElement extends SVGPolygonElement | SVGPolylineElement
+  TSVGPolyElement extends SVGPolygonElement | SVGPolylineElement,
 > extends Shape<TSVGPolyElement> {
   protected arr: PointArray | null
 

@@ -10,7 +10,8 @@ export interface IDisablable {
 
 export abstract class Disablable<EventArgs = any>
   extends Basecoat<EventArgs>
-  implements IDisablable {
+  implements IDisablable
+{
   private _disabled?: boolean
 
   public get disabled(): boolean {

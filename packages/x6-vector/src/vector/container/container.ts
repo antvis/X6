@@ -2,7 +2,7 @@ import { Vector } from '../vector/vector'
 import { Wrapper } from './wrapper'
 
 export class Container<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Wrapper<TSVGElement> {
   flatten() {
     this.eachChild((child) => {

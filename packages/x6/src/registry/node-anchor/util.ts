@@ -8,7 +8,7 @@ export interface ResolveOptions {
 
 // eslint-disable-next-line
 export function resolve<S extends Function, T>(fn: S): T {
-  return (function (
+  return function (
     this: EdgeView,
     view: EdgeView,
     magnet: SVGElement,
@@ -31,7 +31,7 @@ export function resolve<S extends Function, T>(fn: S): T {
       return fn.call(this, view, magnet, refPoint, options)
     }
     return fn.apply(this, arguments) // eslint-disable-line
-  } as any) as T
+  } as any as T
 }
 
 export function getPointAtEdge(edgeView: EdgeView, value: string | number) {

@@ -113,7 +113,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   getPrevious<T>(key: keyof D) {
     if (this.previous) {
       const ret = this.previous[key]
-      return ret == null ? undefined : ((ret as any) as T)
+      return ret == null ? undefined : (ret as any as T)
     }
 
     return undefined

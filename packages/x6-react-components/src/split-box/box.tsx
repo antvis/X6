@@ -2,14 +2,8 @@ import React from 'react'
 
 export class Box extends React.PureComponent<Box.Props> {
   render() {
-    const {
-      refIt,
-      className,
-      index,
-      currentSize,
-      oppositeSize,
-      vertical,
-    } = this.props
+    const { refIt, className, index, currentSize, oppositeSize, vertical } =
+      this.props
 
     const style = {
       ...this.props.style,

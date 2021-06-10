@@ -507,9 +507,9 @@ export class AttrManager {
       }
 
       if (!unrotatedRefBBox) {
-        const target = (isRefNodeRotatable
-          ? options.rotatableNode!
-          : rootNode) as SVGElement
+        const target = (
+          isRefNodeRotatable ? options.rotatableNode! : rootNode
+        ) as SVGElement
 
         unrotatedRefBBox = refNode
           ? Dom.getBBox(refNode as SVGElement, { target })

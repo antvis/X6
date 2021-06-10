@@ -9,7 +9,6 @@ import { EdgePreset } from './edge-preset'
 
 export class Halo extends Widget<Halo.Options> implements Handle {
   protected $container: JQuery<HTMLElement>
-
   protected $content: JQuery<HTMLElement>
 
   protected get type() {

@@ -4,7 +4,7 @@ import { Filter } from './filter'
 import { SVGFilterAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   @Decorator.checkDefs
   filter<Attributes extends SVGFilterAttributes>(attrs?: Attributes | null) {
@@ -13,7 +13,7 @@ export class ContainerExtension<
 }
 
 export class DefsExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   filter<Attributes extends SVGFilterAttributes>(attrs?: Attributes | null) {
     return Filter.create(attrs).appendTo(this)
@@ -21,7 +21,7 @@ export class DefsExtension<
 }
 
 export class ElementExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   filterRef() {
     return this.reference<Filter>('filter')
