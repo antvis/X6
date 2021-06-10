@@ -68,7 +68,7 @@ module.exports = {
     'no-return-assign': [2, 'except-parens'],
     'no-param-reassign': [2, { props: false }],
     'no-cond-assign': [2, 'except-parens'],
-    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'no-console': [2, { allow: ['warn', 'error'] }],
     '@typescript-eslint/no-unused-expressions': [
       2,
       { allowShortCircuit: true, allowTernary: true },
