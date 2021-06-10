@@ -38,7 +38,7 @@ function setCellsSelectedStatus(cells: Cell[], selected: boolean) {
 
 export class GraphCore<
   N extends Node<Node.Properties> = Node<Node.Properties>,
-  E extends Edge<Edge.Properties> = Edge<Edge.Properties>
+  E extends Edge<Edge.Properties> = Edge<Edge.Properties>,
 > {
   wrapper?: HTMLElement
 
@@ -53,9 +53,8 @@ export class GraphCore<
   graph?: Graph
 
   // 当前画布右键点击信息
-  contextMenuInfo$: BehaviorSubject<ContextMenuInfo> = new BehaviorSubject<ContextMenuInfo>(
-    null as any,
-  )
+  contextMenuInfo$: BehaviorSubject<ContextMenuInfo> =
+    new BehaviorSubject<ContextMenuInfo>(null as any)
 
   // 选中的节点
   selectedNodes$: BehaviorSubject<N[]> = new BehaviorSubject<N[]>([])

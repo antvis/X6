@@ -3,7 +3,7 @@ import { AttributesMap } from '../../dom/attributes'
 
 @Shape.register('Shape')
 export class Shape<
-  TSVGGraphicsElement extends SVGGraphicsElement
+  TSVGGraphicsElement extends SVGGraphicsElement,
 > extends Vector<TSVGGraphicsElement> {
   constructor()
   constructor(attrs?: AttributesMap<TSVGGraphicsElement> | null)

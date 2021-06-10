@@ -25,14 +25,8 @@ export class AutoScrollBox extends React.PureComponent<
   }
 
   render() {
-    const {
-      prefixCls,
-      children,
-      scrollX,
-      scrollY,
-      scrollBoxProps,
-      ...props
-    } = this.props
+    const { prefixCls, children, scrollX, scrollY, scrollBoxProps, ...props } =
+      this.props
     return (
       <ResizeDetector handleWidth={scrollX} handleHeight={scrollY} {...props}>
         {(size: { width: number; height: number }) => {

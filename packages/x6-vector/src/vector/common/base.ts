@@ -4,7 +4,7 @@ import { Dom } from '../../dom/dom'
 import type { Svg } from '../svg/svg'
 
 export class Base<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Dom<TSVGElement> {
   root(): Svg | null {
     const parent = this.parent<Svg>(Registry.getClass('Svg'))

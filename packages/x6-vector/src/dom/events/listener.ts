@@ -2,7 +2,7 @@ import { EventEmitter } from './emitter'
 import { TypeEventHandler } from './types'
 
 export class EventListener<
-  TElement extends Element
+  TElement extends Element,
 > extends EventEmitter<TElement> {}
 
 export interface EventListener<TElement extends Element>

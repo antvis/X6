@@ -21,7 +21,7 @@ import { FlagManager } from './flag'
 
 export class CellView<
   Entity extends Cell = Cell,
-  Options extends CellView.Options = CellView.Options
+  Options extends CellView.Options = CellView.Options,
 > extends View<CellView.EventArgs> {
   protected static defaults: Partial<CellView.Options> = {
     isSvgElement: true,
@@ -134,7 +134,7 @@ export class CellView<
   }
 
   protected getConstructor<T extends CellView.Definition>() {
-    return (this.constructor as any) as T
+    return this.constructor as any as T
   }
 
   protected ensureOptions(options: Partial<Options>) {
@@ -1026,7 +1026,7 @@ export namespace CellView {
   export interface Definition extends CellViewClass {
     new <
       Entity extends Cell = Cell,
-      Options extends CellView.Options = CellView.Options
+      Options extends CellView.Options = CellView.Options,
     >(
       cell: Entity,
       options: Partial<Options>,

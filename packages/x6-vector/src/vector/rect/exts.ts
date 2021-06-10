@@ -3,7 +3,7 @@ import { Rect } from './rect'
 import { SVGRectAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   rect<Attributes extends SVGRectAttributes>(attrs?: Attributes | null): Rect
   rect<Attributes extends SVGRectAttributes>(

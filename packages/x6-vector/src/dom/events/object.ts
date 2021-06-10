@@ -7,8 +7,9 @@ export class EventObject<
   TData = any,
   TCurrentTarget = any,
   TTarget = any,
-  TEvent extends Event = Event
-> implements EventObject.Event {
+  TEvent extends Event = Event,
+> implements EventObject.Event
+{
   isDefaultPrevented: () => boolean = Util.returnFalse
   isPropagationStopped: () => boolean = Util.returnFalse
   isImmediatePropagationStopped: () => boolean = Util.returnFalse
@@ -44,9 +45,9 @@ export class EventObject<
         : Util.returnFalse
 
       // Create target properties
-      this.target = (e.target as any) as TTarget
-      this.currentTarget = (e.currentTarget as any) as TCurrentTarget
-      this.relatedTarget = ((e as any) as MouseEvent).relatedTarget
+      this.target = e.target as any as TTarget
+      this.currentTarget = e.currentTarget as any as TCurrentTarget
+      this.relatedTarget = (e as any as MouseEvent).relatedTarget
       this.timeStamp = e.timeStamp
     }
 

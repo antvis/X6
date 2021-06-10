@@ -3,7 +3,8 @@ import { Morphable } from './morphable'
 
 export class MorphableBox
   extends Box
-  implements Morphable<Box.BoxArray, Box.BoxArray> {
+  implements Morphable<Box.BoxArray, Box.BoxArray>
+{
   fromArray(arr: Box.BoxArray) {
     this.x = arr[0]
     this.y = arr[0]

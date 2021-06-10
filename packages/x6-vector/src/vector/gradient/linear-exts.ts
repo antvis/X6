@@ -20,7 +20,8 @@ type GradientMethod = {
 
 export class ContainerExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements GradientMethod {
+  implements GradientMethod
+{
   @Decorator.checkDefs
   linearGradient<Attributes extends SVGLinearGradientAttributes>(
     update?: Gradient.Update<SVGLinearGradientElement> | Attributes | null,
@@ -32,7 +33,8 @@ export class ContainerExtension<TSVGElement extends SVGElement>
 
 export class DefsExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements GradientMethod {
+  implements GradientMethod
+{
   linearGradient<Attributes extends SVGLinearGradientAttributes>(
     update?: Gradient.Update<SVGLinearGradientElement> | Attributes | null,
     attrs?: Attributes | null,

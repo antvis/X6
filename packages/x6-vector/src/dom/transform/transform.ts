@@ -5,7 +5,8 @@ import { getTransformOrigin } from './util'
 
 export class Transform<TElement extends Element>
   extends Primer<TElement>
-  implements Matrix.Matrixifiable {
+  implements Matrix.Matrixifiable
+{
   transform(): Matrix.Transform
   transform(type: keyof Matrix.Transform): number
   transform(

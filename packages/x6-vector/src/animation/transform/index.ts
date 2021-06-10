@@ -10,7 +10,7 @@ import * as Util from './util'
 
 export class TransformAnimator<
   TElement extends Element = Element,
-  TOwner extends Dom<TElement> = Dom<TElement>
+  TOwner extends Dom<TElement> = Dom<TElement>,
 > extends BaseAnimator<TElement, TOwner> {
   transform(
     transforms: Matrix.MatrixLike | Matrix.TransformOptions,
@@ -78,7 +78,7 @@ export class TransformAnimator<
               if (!animator.done) {
                 const timeline = animator.scheduler()
                 if (timeline == null || !timeline.has(animator)) {
-                  const a = (animator as any) as TransformAnimator
+                  const a = animator as any as TransformAnimator
                   a.clearTransformExecutors()
                 }
               }

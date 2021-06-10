@@ -7,7 +7,7 @@ import { DomAnimator } from './dom'
 @SVGAnimator.register('SVG')
 export class SVGAnimator<
   TSVGElement extends SVGElement = SVGElement,
-  TOwner extends Vector<TSVGElement> = Vector<TSVGElement>
+  TOwner extends Vector<TSVGElement> = Vector<TSVGElement>,
 > extends DomAnimator<TSVGElement, TOwner> {
   x(x: number | string) {
     return this.queueNumber('x', x)

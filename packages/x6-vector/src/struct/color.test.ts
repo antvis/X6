@@ -9,10 +9,7 @@ describe('Color', () => {
         expect(Color.invert('#ffffff')).toEqual('#000000')
         expect(Color.invert([255, 255, 255, 1])).toEqual([0, 0, 0, 1])
         expect(Color.invert([100, 100, 100, 1], true)).toEqual([
-          255,
-          255,
-          255,
-          1,
+          255, 255, 255, 1,
         ])
         expect(Color.invert([200, 200, 200, 1], true)).toEqual([0, 0, 0, 1])
       })

@@ -1288,12 +1288,14 @@ export namespace Path {
 
     const path = new Path()
 
-    const commandRe = /(?:[a-zA-Z] *)(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)? *,? *)|(?:-?\.\d+ *,? *))+|(?:[a-zA-Z] *)(?! |\d|-|\.)/g
+    const commandRe =
+      /(?:[a-zA-Z] *)(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)? *,? *)|(?:-?\.\d+ *,? *))+|(?:[a-zA-Z] *)(?! |\d|-|\.)/g
     const commands = normalize(pathData).match(commandRe)
     if (commands != null) {
       for (let i = 0, ii = commands.length; i < ii; i += 1) {
         const command = commands[i]
-        const argRe = /(?:[a-zA-Z])|(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)?))|(?:(?:-?\.\d+))/g
+        const argRe =
+          /(?:[a-zA-Z])|(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)?))|(?:(?:-?\.\d+))/g
         // args = [type, coordinate1, coordinate2...]
         const args = command.match(argRe)
         if (args != null) {

@@ -2,7 +2,7 @@ import { Base } from '../common/base'
 import { Style } from './style'
 
 export class ElementExtension<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Base<TSVGElement> {
   style(
     selector: string,

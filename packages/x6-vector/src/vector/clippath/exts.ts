@@ -7,7 +7,7 @@ import { ClipPath } from './clippath'
 import { SVGClipPathAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   @Decorator.checkDefs
   clip<Attributes extends SVGClipPathAttributes>(
@@ -18,7 +18,7 @@ export class ContainerExtension<
 }
 
 export class DefsExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   clip<Attributes extends SVGClipPathAttributes>(
     attrs?: Attributes | null,
@@ -28,7 +28,7 @@ export class DefsExtension<
 }
 
 export class ElementExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   clipper() {
     return this.reference<ClipPath>('clip-path')

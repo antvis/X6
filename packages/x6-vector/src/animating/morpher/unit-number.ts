@@ -3,7 +3,8 @@ import { Morphable } from './morphable'
 
 export class MorphableUnitNumber
   extends UnitNumber
-  implements Morphable<UnitNumber.UnitNumberArray, UnitNumber.UnitNumberArray> {
+  implements Morphable<UnitNumber.UnitNumberArray, UnitNumber.UnitNumberArray>
+{
   fromArray(arr: UnitNumber.UnitNumberArray) {
     this.unit = arr[1] || ''
     if (typeof arr[0] === 'string') {

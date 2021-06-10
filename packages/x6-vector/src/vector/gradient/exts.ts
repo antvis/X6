@@ -23,14 +23,14 @@ type GradientType = keyof SVGGradientAttributesMap
 type GradientMethod = {
   gradient<
     Type extends GradientType,
-    Attributes extends SVGGradientAttributesMap[Type]
+    Attributes extends SVGGradientAttributesMap[Type],
   >(
     type: Type,
     attrs?: Attributes | null,
   ): SVGGradientElementMap[Type]
   gradient<
     Type extends GradientType,
-    Attributes extends SVGGradientAttributesMap[Type]
+    Attributes extends SVGGradientAttributesMap[Type],
   >(
     type: Type,
     update: Gradient.Update<SVGGradientElementMap[Type]>,
@@ -38,7 +38,7 @@ type GradientMethod = {
   ): SVGGradientElementMap[Type]
   gradient<
     Type extends GradientType,
-    Attributes extends SVGGradientAttributesMap[Type]
+    Attributes extends SVGGradientAttributesMap[Type],
   >(
     type: Type,
     update?: Gradient.Update<SVGGradientElementMap[Type]> | Attributes | null,
@@ -48,11 +48,12 @@ type GradientMethod = {
 
 export class ContainerExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements GradientMethod {
+  implements GradientMethod
+{
   @Decorator.checkDefs
   gradient<
     Type extends GradientType,
-    Attributes extends SVGGradientAttributesMap[Type]
+    Attributes extends SVGGradientAttributesMap[Type],
   >(
     type: Type,
     update?: Gradient.Update<SVGGradientElementMap[Type]> | Attributes | null,
@@ -64,10 +65,11 @@ export class ContainerExtension<TSVGElement extends SVGElement>
 
 export class DefsExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements GradientMethod {
+  implements GradientMethod
+{
   gradient<
     Type extends GradientType,
-    Attributes extends SVGGradientAttributesMap[Type]
+    Attributes extends SVGGradientAttributesMap[Type],
   >(
     type: Type,
     update?: Gradient.Update<SVGGradientElementMap[Type]> | Attributes | null,

@@ -4,7 +4,7 @@ import { Base } from '../common/base'
 
 @Vector.register('Vector')
 export class Vector<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Base<TSVGElement> {
   width(): number
   width(width: string | number | null): this

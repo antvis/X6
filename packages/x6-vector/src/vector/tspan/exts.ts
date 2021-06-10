@@ -3,7 +3,7 @@ import { TSpan } from './tspan'
 import { SVGTSpanAttributes } from './types'
 
 export class TextExtension<
-  TSVGTextElement extends SVGTextElement | SVGTSpanElement | SVGTextPathElement
+  TSVGTextElement extends SVGTextElement | SVGTSpanElement | SVGTextPathElement,
 > extends TextBase<TSVGTextElement> {
   tspan<Attributes extends SVGTSpanAttributes>(attrs?: Attributes | null): TSpan
   tspan<Attributes extends SVGTSpanAttributes>(

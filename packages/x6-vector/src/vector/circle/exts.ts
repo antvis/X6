@@ -3,7 +3,7 @@ import { Circle } from './circle'
 import { SVGCircleAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   circle<Attributes extends SVGCircleAttributes>(
     attrs?: Attributes | null,

@@ -110,7 +110,7 @@ export namespace Adopter {
     const lower = tagName.toLowerCase()
     const isSVG = lower !== 'dom' && Registry.isRegisted(lower)
     const node = isSVG ? createSVGNode(tagName) : createHTMLNode(tagName)
-    return (node as any) as TElement
+    return node as any as TElement
   }
 
   // export function mock(instance = adopt) {

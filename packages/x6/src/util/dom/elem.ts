@@ -41,7 +41,7 @@ export function createElement<T extends Element>(
   tagName: string,
   doc: Document = document,
 ): T {
-  return (doc.createElement(tagName) as any) as T
+  return doc.createElement(tagName) as any as T
 }
 
 export function createElementNS<T extends Element>(
@@ -49,7 +49,7 @@ export function createElementNS<T extends Element>(
   namespaceURI: string = ns.xhtml,
   doc: Document = document,
 ): T {
-  return (doc.createElementNS(namespaceURI, tagName) as any) as T
+  return doc.createElementNS(namespaceURI, tagName) as any as T
 }
 
 export function createSvgElement<T extends SVGElement>(
@@ -63,7 +63,7 @@ export function createSvgDocument(content?: string) {
   if (content) {
     const xml = `<svg xmlns="${ns.svg}" xmlns:xlink="${ns.xlink}" version="${svgVersion}">${content}</svg>`
     const { documentElement } = parseXML(xml, { async: false })
-    return (documentElement as any) as SVGSVGElement
+    return documentElement as any as SVGSVGElement
   }
 
   const svg = document.createElementNS(ns.svg, 'svg')

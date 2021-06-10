@@ -7,7 +7,8 @@ import { Graph } from './graph'
 
 export class HistoryManager
   extends Basecoat<HistoryManager.EventArgs>
-  implements IDisablable {
+  implements IDisablable
+{
   public readonly model: Model
   public readonly graph: Graph
   public readonly options: HistoryManager.CommonOptions

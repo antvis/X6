@@ -2,7 +2,7 @@ import { Node, Markup, ObjectExt } from '@antv/x6'
 import { Definition } from './registry'
 
 export class VueShape<
-  Properties extends VueShape.Properties = VueShape.Properties
+  Properties extends VueShape.Properties = VueShape.Properties,
 > extends Node<Properties> {
   get component() {
     return this.getComponent()

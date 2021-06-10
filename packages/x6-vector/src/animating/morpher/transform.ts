@@ -1,7 +1,8 @@
 import { Morphable } from './morphable'
 
 export class MorphableTransform
-  implements Morphable<MorphableTransform.Array, MorphableTransform.Array> {
+  implements Morphable<MorphableTransform.Array, MorphableTransform.Array>
+{
   scaleX: number
   scaleY: number
   shear: number

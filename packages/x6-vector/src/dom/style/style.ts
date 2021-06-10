@@ -49,7 +49,7 @@ export class Style<TElement extends Element> extends Base<TElement> {
       | string[],
     value?: string | number | null | boolean,
   ) {
-    const node = (this.node as any) as HTMLElement
+    const node = this.node as any as HTMLElement
 
     // get full style as object
     if (style == null || typeof style === 'boolean') {

@@ -13,7 +13,7 @@ import { Animation } from './animation'
 import { Interp } from '../common'
 
 export class Node<
-  Properties extends Node.Properties = Node.Properties
+  Properties extends Node.Properties = Node.Properties,
 > extends Cell<Properties> {
   protected static defaults: Node.Defaults = {
     angle: 0,

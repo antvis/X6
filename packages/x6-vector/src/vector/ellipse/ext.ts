@@ -3,7 +3,7 @@ import { Ellipse } from './ellipse'
 import { SVGEllipseAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   ellipse<Attributes extends SVGEllipseAttributes>(
     attrs?: Attributes | null,

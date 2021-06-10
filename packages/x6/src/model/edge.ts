@@ -18,7 +18,7 @@ import { Cell } from './cell'
 import { Node } from './node'
 
 export class Edge<
-  Properties extends Edge.Properties = Edge.Properties
+  Properties extends Edge.Properties = Edge.Properties,
 > extends Cell<Properties> {
   protected static defaults: Edge.Defaults = {}
   protected readonly store: Store<Edge.Properties>

@@ -98,7 +98,8 @@ export const NodeGroup: React.FC<Props> = (props) => {
             experimentGraph.deleteEdges(edge)
             return
           }
-          const sourceParentNode: X6DemoGroupNode | null = sourceNode.parent as X6DemoGroupNode
+          const sourceParentNode: X6DemoGroupNode | null =
+            sourceNode.parent as X6DemoGroupNode
           // 若源节点不可见，且存在父群组节点，则说明源节点的父群组节点已折叠，此时创建一个连接折叠父节点的桩
           if (
             !sourceNode.visible &&
@@ -146,7 +147,8 @@ export const NodeGroup: React.FC<Props> = (props) => {
             experimentGraph.deleteEdges(edge)
             return
           }
-          const targetParentNode: X6DemoGroupNode | null = targetNode.parent as X6DemoGroupNode
+          const targetParentNode: X6DemoGroupNode | null =
+            targetNode.parent as X6DemoGroupNode
           // 若源节点不可见，且存在父群组节点，则说明源节点的父群组节点已折叠，此时创建一个连接折叠父节点的桩
           if (
             !targetNode.visible &&
@@ -250,7 +252,8 @@ export const NodeGroup: React.FC<Props> = (props) => {
             experimentGraph.deleteEdges(edge)
             return
           }
-          const sourceParentNode: X6DemoGroupNode | null = sourceNode.parent as X6DemoGroupNode
+          const sourceParentNode: X6DemoGroupNode | null =
+            sourceNode.parent as X6DemoGroupNode
           // 若源节点不可见，且存在父群组节点，则说明源节点的父群组节点已折叠，此时创建一个连接折叠父节点的桩
           if (
             !sourceNode.visible &&
@@ -297,7 +300,8 @@ export const NodeGroup: React.FC<Props> = (props) => {
             experimentGraph.deleteEdges(edge)
             return
           }
-          const targetParentNode: X6DemoGroupNode | null = targetNode.parent as X6DemoGroupNode
+          const targetParentNode: X6DemoGroupNode | null =
+            targetNode.parent as X6DemoGroupNode
           // 若源节点不可见，且存在父群组节点，则说明源节点的父群组节点已折叠，此时创建一个连接折叠父节点的桩
           if (
             !targetNode.visible &&

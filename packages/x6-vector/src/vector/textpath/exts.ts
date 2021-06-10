@@ -6,7 +6,7 @@ import { SVGTextAttributes } from '../text/types'
 import { SVGTextPathAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   textPath<Attributes extends SVGTextPathAttributes>(
     text: string | Text,
@@ -29,7 +29,7 @@ export class ContainerExtension<
 }
 
 export class TextExtension<
-  TTSVGTextElement extends SVGTextElement | SVGTextPathElement
+  TTSVGTextElement extends SVGTextElement | SVGTextPathElement,
 > extends Base<TTSVGTextElement> {
   path<Attributes extends SVGTextPathAttributes>(
     track: string | Path,
@@ -71,7 +71,7 @@ export class TextExtension<
 }
 
 export class PathExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   text<Attributes extends SVGTextAttributes>(
     text: string | Text,

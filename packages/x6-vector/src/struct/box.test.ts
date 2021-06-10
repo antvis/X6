@@ -51,19 +51,13 @@ describe('Box', () => {
 
     it('should create a new box from parsed string with exponential values', () => {
       expect(new Box('-1.12e1 1e-2 +2e2 +.3e+4').toArray()).toEqual([
-        -11.2,
-        0.01,
-        200,
-        3000,
+        -11.2, 0.01, 200, 3000,
       ])
     })
 
     it('should create a new box with object input', () => {
       expect(new Box({ x: 1, y: 2, width: 3, height: 4 }).toArray()).toEqual([
-        1,
-        2,
-        3,
-        4,
+        1, 2, 3, 4,
       ])
     })
 

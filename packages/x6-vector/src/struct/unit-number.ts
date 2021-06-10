@@ -142,7 +142,8 @@ export namespace UnitNumber {
       : v
   }
 
-  export const REGEX_NUMBER_UNIT = /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([a-z%]*)$/i
+  export const REGEX_NUMBER_UNIT =
+    /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([a-z%]*)$/i
 
   export function parse(str: string): UnitNumberLike | null {
     const matches = str.match(REGEX_NUMBER_UNIT)

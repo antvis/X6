@@ -37,7 +37,8 @@ type MarkerMethod = {
 
 export class ContainerExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements MarkerMethod {
+  implements MarkerMethod
+{
   @Decorator.checkDefs
   marker<Attributes extends SVGMarkerAttributes>(
     width?: number | string | Attributes | null,
@@ -51,7 +52,8 @@ export class ContainerExtension<TSVGElement extends SVGElement>
 
 export class DefsExtension<TSVGElement extends SVGElement>
   extends Base<TSVGElement>
-  implements MarkerMethod {
+  implements MarkerMethod
+{
   marker<Attributes extends SVGMarkerAttributes>(
     width?: number | string | Attributes | null,
     height?: number | string | Marker.Update | Attributes | null,
@@ -67,7 +69,7 @@ export class LineExtension<
     | SVGLineElement
     | SVGPathElement
     | SVGPolygonElement
-    | SVGPolylineElement
+    | SVGPolylineElement,
 > extends Base<TSVGLineElement> {
   marker(type: MarkerType, marker: Marker): this
   marker<Attributes extends SVGMarkerAttributes>(

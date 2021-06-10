@@ -6,7 +6,7 @@ import { Graph } from '../../graph/graph'
 import { Base } from '../base'
 
 export class HTML<
-  Properties extends HTML.Properties = HTML.Properties
+  Properties extends HTML.Properties = HTML.Properties,
 > extends Base<Properties> {
   get html() {
     return this.getHTML()

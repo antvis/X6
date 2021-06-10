@@ -4,7 +4,7 @@ import { Image } from '../image/image'
 import { Vector } from './vector'
 
 export class FillStroke<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Base<TSVGElement> {
   fill(): string
   fill(color: string | Color | Color.RGBALike | Vector | null): this

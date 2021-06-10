@@ -4,7 +4,7 @@ import { SVGUseAttributes } from './types'
 import { Vector } from '../vector/vector'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   use<Attributes extends SVGUseAttributes>(attrs?: Attributes | null): Use
   use<Attributes extends SVGUseAttributes>(

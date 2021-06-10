@@ -12,15 +12,8 @@ export class Toolbar extends React.PureComponent<Toolbar.Props> {
   }
 
   render() {
-    const {
-      prefixCls,
-      className,
-      children,
-      extra,
-      size,
-      align,
-      hoverEffect,
-    } = this.props
+    const { prefixCls, className, children, extra, size, align, hoverEffect } =
+      this.props
 
     const baseCls = `${prefixCls}-toolbar`
     return (

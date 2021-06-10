@@ -2,7 +2,7 @@ import { Vector } from '../vector/vector'
 import { AttributesMap } from '../../dom/attributes'
 
 export class Wrapper<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Vector<TSVGElement> {
   constructor()
   constructor(attrs: AttributesMap<TSVGElement> | null)

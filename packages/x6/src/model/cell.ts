@@ -17,7 +17,7 @@ import { Node } from './node'
 import { Edge } from './edge'
 
 export class Cell<
-  Properties extends Cell.Properties = Cell.Properties
+  Properties extends Cell.Properties = Cell.Properties,
 > extends Basecoat<Cell.EventArgs> {
   // #region static
 

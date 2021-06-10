@@ -3,7 +3,7 @@ import { Image } from './image'
 import { SVGImageAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   image<Attributes extends SVGImageAttributes>(attrs?: Attributes | null): Image
   image<Attributes extends SVGImageAttributes>(
