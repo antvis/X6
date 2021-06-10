@@ -8,10 +8,13 @@ import { getFontSize } from './util'
 @Text.mixin(Overrides)
 @Text.register('Text')
 export class Text<
-    TSVGTextElement extends SVGTextElement | SVGTextPathElement = SVGTextElement
+    TSVGTextElement extends
+      | SVGTextElement
+      | SVGTextPathElement = SVGTextElement,
   >
   extends TextBase<TSVGTextElement>
-  implements Overrides.Depends {
+  implements Overrides.Depends
+{
   public affixes: Record<string | number, any> & {
     leading: number
   }

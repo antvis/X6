@@ -8,7 +8,7 @@ import { Registry } from './registry'
 import { AnimatorMap } from './types'
 
 export class AnimateExtension<
-  TElement extends Element
+  TElement extends Element,
 > extends Primer<TElement> {
   animate(options: Options): AnimatorMap<TElement>
   animate(duration?: number, delay?: number, when?: When): AnimatorMap<TElement>
@@ -31,7 +31,7 @@ export class AnimateExtension<
 const cache: WeakMap<Primer, Timeline> = new WeakMap()
 
 export class TimelineExtension<
-  TElement extends Element = Element
+  TElement extends Element = Element,
 > extends Primer<TElement> {
   scheduler(): Timeline
   scheduler(timeline: Timeline): this

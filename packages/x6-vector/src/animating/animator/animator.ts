@@ -16,7 +16,7 @@ import { Util } from './util'
 
 export class Animator<
   TAnimator,
-  TOwner extends Animator.Owner = Animator.Owner
+  TOwner extends Animator.Owner = Animator.Owner,
 > {
   public readonly id: number
   public readonly declarative: boolean

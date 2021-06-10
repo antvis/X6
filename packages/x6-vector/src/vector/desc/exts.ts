@@ -3,7 +3,7 @@ import { Desc } from './desc'
 import { SVGDescAttributes } from './types'
 
 export class ElementExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   desc<Attributes extends SVGDescAttributes>(attrs?: Attributes | null): Desc
   desc<Attributes extends SVGDescAttributes>(

@@ -3,7 +3,7 @@ import { Title } from './title'
 import { SVGTitleAttributes } from './types'
 
 export class ElementExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   title<Attributes extends SVGTitleAttributes>(attrs?: Attributes | null): Title
   title<Attributes extends SVGTitleAttributes>(

@@ -5,7 +5,7 @@ import { SVGAnimator } from '../svg'
 
 export class SVGPolyAnimator<
   TSVGElement extends SVGPolygonElement | SVGPolylineElement,
-  TOwner extends Poly<TSVGElement> = Poly<TSVGElement>
+  TOwner extends Poly<TSVGElement> = Poly<TSVGElement>,
 > extends SVGAnimator<TSVGElement, TOwner> {
   plot(d: string): this
   plot(points: [number, number][]): this

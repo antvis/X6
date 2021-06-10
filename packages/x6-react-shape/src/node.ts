@@ -2,7 +2,7 @@ import { Node, Markup, ObjectExt } from '@antv/x6'
 import { Definition } from './registry'
 
 export class ReactShape<
-  Properties extends ReactShape.Properties = ReactShape.Properties
+  Properties extends ReactShape.Properties = ReactShape.Properties,
 > extends Node<Properties> {
   get component() {
     return this.getComponent()

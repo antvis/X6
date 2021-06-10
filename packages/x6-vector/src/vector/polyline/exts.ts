@@ -3,7 +3,7 @@ import { Polyline } from './polyline'
 import { SVGPolylineAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   polyline<Attributes extends SVGPolylineAttributes>(
     attrs?: Attributes | null,

@@ -4,7 +4,7 @@ import { StringExt, FunctionExt, Platform } from '../util'
 export class Registry<
   Entity,
   Presets = KeyValue<Entity>,
-  OptionalType = never
+  OptionalType = never,
 > {
   public readonly data: KeyValue<Entity>
   public readonly options: Registry.Options<Entity | OptionalType>
@@ -140,7 +140,7 @@ export namespace Registry {
   export function create<
     Entity,
     Presets = KeyValue<Entity>,
-    OptionalType = never
+    OptionalType = never,
   >(options: Options<Entity | OptionalType>) {
     return new Registry<Entity, Presets, OptionalType>(options)
   }

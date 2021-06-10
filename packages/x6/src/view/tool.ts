@@ -289,7 +289,7 @@ export namespace ToolsView {
 export namespace ToolsView {
   export class ToolItem<
     TargetView extends CellView = CellView,
-    Options extends ToolItem.Options = ToolItem.Options
+    Options extends ToolItem.Options = ToolItem.Options,
   > extends View {
     // #region static
 
@@ -368,7 +368,7 @@ export namespace ToolsView {
     protected init() {}
 
     protected getOptions(options: Partial<Options>): Options {
-      const ctor = (this.constructor as any) as ToolItem
+      const ctor = this.constructor as any as ToolItem
       return ctor.getOptions(options) as Options
     }
 

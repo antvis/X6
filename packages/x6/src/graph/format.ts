@@ -83,9 +83,8 @@ export class FormatManager extends Base {
         // by that next step when all the stylesheets are re-enabled again.
         const defaultComputedStyle: KeyValue<string> = {}
         Object.keys(computedStyle).forEach((property) => {
-          defaultComputedStyle[property] = computedStyle.getPropertyValue(
-            property,
-          )
+          defaultComputedStyle[property] =
+            computedStyle.getPropertyValue(property)
         })
 
         defaultComputedStyles[index] = defaultComputedStyle

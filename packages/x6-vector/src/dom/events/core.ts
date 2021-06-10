@@ -96,7 +96,7 @@ export namespace Core {
           Util.addEventListener(
             elem as Element,
             type,
-            (mainHandler as any) as EventListener,
+            mainHandler as any as EventListener,
           )
         }
       }
@@ -188,7 +188,7 @@ export namespace Core {
           Util.removeEventListener(
             elem as Element,
             type,
-            (store.handler as any) as EventListener,
+            store.handler as any as EventListener,
           )
         }
 

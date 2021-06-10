@@ -216,9 +216,7 @@ export namespace Markup {
       : Dom.createElement('div')
   }
 
-  export function renderMarkup(
-    markup: Markup,
-  ): {
+  export function renderMarkup(markup: Markup): {
     elem?: Element
     selectors?: Selectors
   } {

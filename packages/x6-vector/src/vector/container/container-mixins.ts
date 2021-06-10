@@ -31,7 +31,7 @@ import { Container } from './container'
 
 declare module './container' {
   interface Container<
-    TSVGElement extends SVGElement = SVGElement
+    TSVGElement extends SVGElement = SVGElement,
   > extends AExtension<TSVGElement>,
       GExtension<TSVGElement>,
       SvgExtension<TSVGElement>,

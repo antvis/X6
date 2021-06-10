@@ -3,7 +3,7 @@ import { Polygon } from './polygon'
 import { SVGPolygonAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   polygon<Attributes extends SVGPolygonAttributes>(
     attrs?: Attributes | null,
