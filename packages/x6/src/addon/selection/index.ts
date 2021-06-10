@@ -538,7 +538,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected notifyBoxEvent<
     K extends keyof Selection.BoxEventArgs,
-    T extends JQuery.TriggeredEvent
+    T extends JQuery.TriggeredEvent,
   >(name: K, e: T, x: number, y: number) {
     const data = this.getEventData<EventData.SelectionBox>(e)
     const view = data.activeView

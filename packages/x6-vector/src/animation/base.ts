@@ -7,7 +7,7 @@ import { Registry } from './registry'
 export class BaseAnimator<
   TElement extends Element = Element,
   TOwner extends Dom<TElement> = Dom<TElement>,
-  TAnimator = AnimatorMap<TElement>
+  TAnimator = AnimatorMap<TElement>,
 > extends Animator<TAnimator, TOwner> {
   element(): TOwner
   element(elem: TOwner): this

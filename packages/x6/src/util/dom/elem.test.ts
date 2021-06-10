@@ -41,7 +41,7 @@ Vector.create(
 
 export function setupTest() {
   document.body.appendChild(wrap)
-  const byId = <T>(id: string) => (document.getElementById(id) as any) as T
+  const byId = <T>(id: string) => document.getElementById(id) as any as T
   return {
     wrap,
     svgContainer: byId<SVGSVGElement>('svg-container'),
@@ -98,7 +98,7 @@ describe('Dom', () => {
 
     describe('#ensureId', () => {
       it('should set a id when id is empty', () => {
-        const node = (document.createElement('g') as any) as SVGElement
+        const node = document.createElement('g') as any as SVGElement
         expect(node.id).toBe('')
 
         const id = ensureId(node)
@@ -106,7 +106,7 @@ describe('Dom', () => {
       })
 
       it('should not overwrite if id exited', () => {
-        const node = (document.createElement('g') as any) as SVGElement
+        const node = document.createElement('g') as any as SVGElement
         expect(node.id).toBe('')
 
         const id = ensureId(node)

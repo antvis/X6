@@ -26,7 +26,7 @@ export function getTransformOrigin(
     const node = t.node
     const { height, width, x, y } =
       node instanceof Global.window.SVGElement
-        ? ((t as any) as Vector).bbox()
+        ? (t as any as Vector).bbox()
         : (node as HTMLElement).getBoundingClientRect()
 
     // And only overwrite if string was passed for this specific axis

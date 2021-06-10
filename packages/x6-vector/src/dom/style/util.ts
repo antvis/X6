@@ -35,7 +35,7 @@ export namespace Util {
       return false
     }
 
-    const style = ((node as any) as HTMLElement).style
+    const style = (node as any as HTMLElement).style
     if (!style) {
       return false
     }
@@ -262,7 +262,7 @@ export namespace Util {
       return typeof name === 'undefined' ? {} : undefined
     }
 
-    const styleDeclaration = ((node as any) as HTMLElement).style
+    const styleDeclaration = (node as any as HTMLElement).style
 
     if (typeof name === 'undefined') {
       const result: CSSProperties = {}
@@ -336,7 +336,7 @@ export namespace Util {
   const cache: WeakMap<Node, string> = new WeakMap()
 
   export function isHiddenWithinTree<TElement extends Element>(node: TElement) {
-    const style = ((node as any) as HTMLElement).style
+    const style = (node as any as HTMLElement).style
     return (
       style.display === 'none' ||
       (style.display === '' && css(node, 'display') === 'none')
@@ -373,7 +373,7 @@ export namespace Util {
     node: TElement,
     show: boolean,
   ) {
-    const style = ((node as any) as HTMLElement).style
+    const style = (node as any as HTMLElement).style
     if (!style) {
       return
     }

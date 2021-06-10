@@ -3,7 +3,7 @@ import { ForeignObject } from './foreignobject'
 import { SVGForeignObjectAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   foreignObject<Attributes extends SVGForeignObjectAttributes>(
     attrs?: Attributes | null,
