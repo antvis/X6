@@ -1,13 +1,13 @@
 {
   "devDependencies": {
-    "@types/node": "^14.14.37",
-    "fs-extra": "^9.1.0",
-    "lint-staged": "^10.5.4",
+    "@types/node": "^15.12.2",
+    "fs-extra": "^10.0.0",
+    "lint-staged": "^11.0.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.1",
     "pretty-quick": "^3.1.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.0.0",
     "typescript": "^4.2.3"
   }
 }
