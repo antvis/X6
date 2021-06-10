@@ -61,14 +61,8 @@ export function formatNodeInfoToNodeMeta(
   inputPortConnectedMap: { [k: string]: boolean } = {},
 ) {
   const portItems: any[] = []
-  const {
-    id,
-    nodeInstanceId,
-    positionX,
-    positionY,
-    inPorts,
-    outPorts,
-  } = nodeData
+  const { id, nodeInstanceId, positionX, positionY, inPorts, outPorts } =
+    nodeData
   sortBy(inPorts, 'sequence').forEach((inPort: any) => {
     portItems.push({
       ...inPort,

@@ -5,7 +5,7 @@ import { Referent } from '../container/referent'
 import { Stop } from './stop'
 
 export abstract class Gradient<
-  TSVGGradientElement extends SVGGradientElement
+  TSVGGradientElement extends SVGGradientElement,
 > extends Referent<TSVGGradientElement> {
   abstract from(x: number | string, y: number | string): this
 

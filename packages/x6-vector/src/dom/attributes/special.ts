@@ -189,17 +189,16 @@ export namespace Special {
     'srcLang',
   ]
   arr.forEach((attributeName) => {
-    specials[attributeName] = specials[
-      attributeName.toLowerCase()
-    ] = new Special(
-      Type.STRING,
-      attributeName,
-      attributeName.toLowerCase(), // attributeName
-      null, // attributeNamespace
-      false, // mustUseProperty
-      false, // sanitizeURL
-      false, // removeEmptyString
-    )
+    specials[attributeName] = specials[attributeName.toLowerCase()] =
+      new Special(
+        Type.STRING,
+        attributeName,
+        attributeName.toLowerCase(), // attributeName
+        null, // attributeNamespace
+        false, // mustUseProperty
+        false, // sanitizeURL
+        false, // removeEmptyString
+      )
   })
 }
 
@@ -531,16 +530,15 @@ export namespace Special {
 export namespace Special {
   const arr = ['src', 'href', 'action', 'formAction']
   arr.forEach((attributeName) => {
-    specials[attributeName] = specials[
-      attributeName.toLowerCase()
-    ] = new Special(
-      Type.STRING,
-      attributeName,
-      attributeName.toLowerCase(), // attributeName
-      null, // attributeNamespace
-      false, // mustUseProperty
-      true, // sanitizeURL
-      true, // removeEmptyString
-    )
+    specials[attributeName] = specials[attributeName.toLowerCase()] =
+      new Special(
+        Type.STRING,
+        attributeName,
+        attributeName.toLowerCase(), // attributeName
+        null, // attributeNamespace
+        false, // mustUseProperty
+        true, // sanitizeURL
+        true, // removeEmptyString
+      )
   })
 }

@@ -1,5 +1,5 @@
 import { Referent } from './referent'
 
 export class Vessel<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Referent<TSVGElement> {}

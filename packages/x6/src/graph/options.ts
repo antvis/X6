@@ -211,7 +211,7 @@ export namespace Options {
   export function parseOptionGroup<
     K extends KeyValue,
     S extends KeyValue = KeyValue,
-    T = any
+    T = any,
   >(graph: Graph, arg: T, options: S): K {
     const result: any = {}
     Object.keys(options || {}).forEach((key) => {

@@ -12,9 +12,7 @@ interface Payload {
 
 const action: any = 'react'
 
-export function createPortal(
-  uniqViewId: string,
-): {
+export function createPortal(uniqViewId: string): {
   Portal: React.FC<Record<string, any>>
   setGraph: (graph: Graph) => void
 } {

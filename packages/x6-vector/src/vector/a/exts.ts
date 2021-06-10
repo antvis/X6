@@ -3,7 +3,7 @@ import { A } from './a'
 import { SVGAAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   link(): A
   link<Attributes extends SVGAAttributes>(attrs: Attributes): A
@@ -20,7 +20,7 @@ export class ContainerExtension<
 }
 
 export class ElementExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   unlink() {
     const link = this.linker()

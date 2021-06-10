@@ -25,7 +25,7 @@ import { ToolsView } from './tool'
 
 export class EdgeView<
   Entity extends Edge = Edge,
-  Options extends EdgeView.Options = EdgeView.Options
+  Options extends EdgeView.Options = EdgeView.Options,
 > extends CellView<Entity, Options> {
   protected readonly POINT_ROUNDING = 2
   public path: Path
@@ -1512,14 +1512,8 @@ export class EdgeView<
     }
 
     if (typeof options === 'object') {
-      const {
-        duration,
-        reversed,
-        selector,
-        rotate,
-        timing,
-        ...others
-      } = options
+      const { duration, reversed, selector, rotate, timing, ...others } =
+        options
       Object.keys(others).forEach((key) => {
         attrs[key] = others[key]
       })
@@ -2421,8 +2415,8 @@ export class EdgeView<
 
     let terminal
     const type = data.terminalType
-    const closestView = (data.closestView as any) as CellView
-    const closestMagnet = (data.closestMagnet as any) as Element
+    const closestView = data.closestView as any as CellView
+    const closestMagnet = data.closestMagnet as any as Element
     const changed = prevMagnet !== closestMagnet
 
     if (prevView && changed) {

@@ -190,12 +190,14 @@ export class Transform extends Widget<Transform.Options> {
 
   protected toValidResizeDirection(dir: string): Node.ResizeDirection {
     return (
-      ({
-        top: 'top-left',
-        bottom: 'bottom-right',
-        left: 'bottom-left',
-        right: 'top-right',
-      } as KeyValue)[dir] || dir
+      (
+        {
+          top: 'top-left',
+          bottom: 'bottom-right',
+          left: 'bottom-left',
+          right: 'top-right',
+        } as KeyValue
+      )[dir] || dir
     )
   }
 
@@ -222,12 +224,14 @@ export class Transform extends Widget<Transform.Options> {
     })
 
     const direction = this.toValidResizeDirection(relativeDirection)
-    const selector = ({
-      'top-right': 'bottomLeft',
-      'top-left': 'bottomRight',
-      'bottom-left': 'topRight',
-      'bottom-right': 'topLeft',
-    } as KeyValue)[direction]
+    const selector = (
+      {
+        'top-right': 'bottomLeft',
+        'top-left': 'bottomRight',
+        'bottom-left': 'topRight',
+        'bottom-right': 'topLeft',
+      } as KeyValue
+    )[direction]
     const angle = Angle.normalize(this.node.getAngle())
 
     this.setEventData<EventData.Resizing>(evt, {

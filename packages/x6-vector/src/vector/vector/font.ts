@@ -2,7 +2,7 @@ import { Base } from '../common/base'
 import { Text } from '../text/text'
 
 export class FontStyle<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Base<TSVGElement> {
   font(key: string): string | number
   font(attrs: FontStyle.Attributes): this
@@ -16,7 +16,7 @@ export class FontStyle<
     }
 
     if (a === 'leading') {
-      const text = (this as any) as Text // eslint-disable-line
+      const text = this as any as Text // eslint-disable-line
       if (text.leading) {
         return text.leading(v)
       }

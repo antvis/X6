@@ -6,43 +6,41 @@ export interface OrthEndpointOptions extends ResolveOptions {
   padding: number
 }
 
-const orthogonal: NodeAnchor.ResolvedDefinition<OrthEndpointOptions> = function (
-  view,
-  magnet,
-  refPoint,
-  options,
-) {
-  const angle = view.cell.getAngle()
-  const bbox = view.getBBoxOfElement(magnet)
-  const result = bbox.getCenter()
-  const topLeft = bbox.getTopLeft()
-  const bottomRight = bbox.getBottomRight()
+const orthogonal: NodeAnchor.ResolvedDefinition<OrthEndpointOptions> =
+  function (view, magnet, refPoint, options) {
+    const angle = view.cell.getAngle()
+    const bbox = view.getBBoxOfElement(magnet)
+    const result = bbox.getCenter()
+    const topLeft = bbox.getTopLeft()
+    const bottomRight = bbox.getBottomRight()
 
-  let padding = options.padding
-  if (!Number.isFinite(padding)) {
-    padding = 0
+    let padding = options.padding
+    if (!Number.isFinite(padding)) {
+      padding = 0
+    }
+
+    if (
+      topLeft.y + padding <= refPoint.y &&
+      refPoint.y <= bottomRight.y - padding
+    ) {
+      const dy = refPoint.y - result.y
+      result.x +=
+        angle === 0 || angle === 180
+          ? 0
+          : (dy * 1) / Math.tan(Angle.toRad(angle))
+      result.y += dy
+    } else if (
+      topLeft.x + padding <= refPoint.x &&
+      refPoint.x <= bottomRight.x - padding
+    ) {
+      const dx = refPoint.x - result.x
+      result.y +=
+        angle === 90 || angle === 270 ? 0 : dx * Math.tan(Angle.toRad(angle))
+      result.x += dx
+    }
+
+    return result
   }
-
-  if (
-    topLeft.y + padding <= refPoint.y &&
-    refPoint.y <= bottomRight.y - padding
-  ) {
-    const dy = refPoint.y - result.y
-    result.x +=
-      angle === 0 || angle === 180 ? 0 : (dy * 1) / Math.tan(Angle.toRad(angle))
-    result.y += dy
-  } else if (
-    topLeft.x + padding <= refPoint.x &&
-    refPoint.x <= bottomRight.x - padding
-  ) {
-    const dx = refPoint.x - result.x
-    result.y +=
-      angle === 90 || angle === 270 ? 0 : dx * Math.tan(Angle.toRad(angle))
-    result.x += dx
-  }
-
-  return result
-}
 
 /**
  * Tries to place the anchor of the edge inside the view bbox so that the

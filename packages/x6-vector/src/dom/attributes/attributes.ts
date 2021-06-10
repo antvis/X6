@@ -7,10 +7,11 @@ import { AttributesBase } from './base'
 export class Attributes<
     TElement extends Element,
     Attributes extends AttributesMap<TElement> = AttributesMap<TElement>,
-    Keys extends keyof Attributes = keyof Attributes
+    Keys extends keyof Attributes = keyof Attributes,
   >
   extends Base<TElement>
-  implements AttributesBase {
+  implements AttributesBase
+{
   attr(): Record<string, string | number | boolean | undefined | null> & {
     style: CSSProperties
   }
@@ -19,9 +20,10 @@ export class Attributes<
   ): Record<string, string | number | boolean | undefined | null> & {
     style?: CSSProperties
   }
-  attr(
-    names: string[],
-  ): Record<string, string | number | boolean | undefined | null> & {
+  attr(names: string[]): Record<
+    string,
+    string | number | boolean | undefined | null
+  > & {
     style?: CSSProperties
   }
 

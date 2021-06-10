@@ -3,7 +3,8 @@ import { Morphable } from './morphable'
 
 export class MorphableMatrix
   extends Matrix
-  implements Morphable<Matrix.MatrixArray, Matrix.MatrixArray> {
+  implements Morphable<Matrix.MatrixArray, Matrix.MatrixArray>
+{
   fromArray(arr: Matrix.MatrixArray) {
     this.a = arr[0]
     this.b = arr[1]

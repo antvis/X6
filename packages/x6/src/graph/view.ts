@@ -7,23 +7,14 @@ import { Graph } from './graph'
 
 export class GraphView extends View {
   public readonly container: HTMLElement
-
   public readonly background: HTMLDivElement
-
   public readonly grid: HTMLDivElement
-
   public readonly svg: SVGSVGElement
-
   public readonly defs: SVGDefsElement
-
   public readonly viewport: SVGGElement
-
   public readonly primer: SVGGElement
-
   public readonly stage: SVGGElement
-
   public readonly decorator: SVGGElement
-
   public readonly overlay: SVGGElement
 
   private restore: () => void
@@ -640,8 +631,10 @@ export namespace GraphView {
     [`mousedown   .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
     [`touchstart  .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
     [`dragstart   .${prefixCls}-cell image`]: 'onImageDragStart',
-    [`mousedown   .${prefixCls}-edge .${prefixCls}-edge-label`]: 'onLabelMouseDown',
-    [`touchstart  .${prefixCls}-edge .${prefixCls}-edge-label`]: 'onLabelMouseDown',
+    [`mousedown   .${prefixCls}-edge .${prefixCls}-edge-label`]:
+      'onLabelMouseDown',
+    [`touchstart  .${prefixCls}-edge .${prefixCls}-edge-label`]:
+      'onLabelMouseDown',
   }
 
   export const documentEvents = {

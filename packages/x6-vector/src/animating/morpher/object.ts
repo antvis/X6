@@ -2,8 +2,9 @@ import { Morphable } from './morphable'
 import { Util } from './util'
 
 export class MorphableObject<
-  T extends Record<string, any> = Record<string, any>
-> implements Morphable<any[], T> {
+  T extends Record<string, any> = Record<string, any>,
+> implements Morphable<any[], T>
+{
   protected values: any[]
 
   constructor(input?: any[] | T) {

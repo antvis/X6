@@ -7,7 +7,7 @@ import { Mask } from './mask'
 import { SVGMaskAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   @Decorator.checkDefs
   mask<Attributes extends SVGMaskAttributes>(attrs?: Attributes | null) {
@@ -16,7 +16,7 @@ export class ContainerExtension<
 }
 
 export class DefsExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   mask<Attributes extends SVGMaskAttributes>(attrs?: Attributes | null) {
     return Mask.create(attrs).appendTo(this)
@@ -24,7 +24,7 @@ export class DefsExtension<
 }
 
 export class ElementExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   masker() {
     return this.reference<Mask>('mask')

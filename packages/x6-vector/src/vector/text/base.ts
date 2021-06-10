@@ -4,7 +4,7 @@ import { UnitNumber } from '../../struct/unit-number'
 import { Shape } from '../common/shape'
 
 export class TextBase<
-  TSVGTextElement extends SVGTextElement | SVGTSpanElement | SVGTextPathElement
+  TSVGTextElement extends SVGTextElement | SVGTSpanElement | SVGTextPathElement,
 > extends Shape<TSVGTextElement> {
   protected building = false
 

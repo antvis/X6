@@ -10,7 +10,7 @@ const contentSelector = '.text-block-content'
 const registryName = getName('text-block')
 
 export class TextBlock<
-  Properties extends TextBlock.Properties = TextBlock.Properties
+  Properties extends TextBlock.Properties = TextBlock.Properties,
 > extends Node<Properties> {
   public readonly store: Store<TextBlock.Properties>
 

@@ -8,7 +8,7 @@ export class Viewbox<
     | SVGSVGElement
     | SVGSymbolElement
     | SVGPatternElement
-    | SVGMarkerElement
+    | SVGMarkerElement,
 > extends Vector<TSVGElement> {
   viewbox(): Box
   viewbox(box: Box.BoxLike): this

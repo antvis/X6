@@ -3,7 +3,7 @@ import { Line } from './line'
 import { SVGLineAttributes } from './types'
 
 export class ContainerExtension<
-  TSVGElement extends SVGElement
+  TSVGElement extends SVGElement,
 > extends Base<TSVGElement> {
   line<Attributes extends SVGLineAttributes>(attrs?: Attributes | null): Line
   line<Attributes extends SVGLineAttributes>(

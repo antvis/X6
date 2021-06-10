@@ -4,7 +4,7 @@ import type { Svg } from '../svg/svg'
 import { Base } from '../common/base'
 
 export class Transform<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Base<TSVGElement> {
   /**
    * Moves an element to a different parent (similar to addTo), but without
@@ -46,7 +46,7 @@ export class Transform<
   }
 
   ctm() {
-    const node = (this.node as any) as SVGGraphicsElement
+    const node = this.node as any as SVGGraphicsElement
     return new Matrix(node.getCTM())
   }
 
@@ -55,7 +55,7 @@ export class Transform<
      This is needed because FF does not return the transformation matrix
      for the inner coordinate system when getScreenCTM() is called on nested svgs.
      However all other Browsers do that */
-    const svg = (this as any) as Svg
+    const svg = this as any as Svg
     if (typeof svg.isRoot === 'function' && !svg.isRoot()) {
       const rect = svg.rect(1, 1)
       const m = rect.node.getScreenCTM()
@@ -63,7 +63,7 @@ export class Transform<
       return new Matrix(m)
     }
 
-    const node = (this.node as any) as SVGGraphicsElement
+    const node = this.node as any as SVGGraphicsElement
     return new Matrix(node.getScreenCTM())
   }
 }

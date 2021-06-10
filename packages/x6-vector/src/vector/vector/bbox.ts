@@ -6,7 +6,7 @@ import { Global } from '../../global'
 import { Point } from '../../struct/point'
 
 export class BBox<
-  TSVGElement extends SVGElement = SVGElement
+  TSVGElement extends SVGElement = SVGElement,
 > extends Base<TSVGElement> {
   bbox() {
     const getBBox = (node: SVGGraphicsElement) => node.getBBox()

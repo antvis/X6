@@ -14,7 +14,7 @@ interface EventBase<
   TData = any,
   TCurrentTarget = any,
   TTarget = any,
-  TEvent extends EventRaw = any
+  TEvent extends EventRaw = any,
 > extends EventObject<TDelegateTarget, TData, TCurrentTarget, TTarget, TEvent> {
   relatedTarget?: undefined
 
@@ -66,7 +66,7 @@ interface ChangeEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends EventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'change'
 }
@@ -75,7 +75,7 @@ interface ResizeEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends EventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'resize'
 }
@@ -84,7 +84,7 @@ interface ScrollEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends EventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'scroll'
 }
@@ -93,7 +93,7 @@ interface SelectEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends EventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'select'
 }
@@ -102,7 +102,7 @@ interface SubmitEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends EventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'submit'
 }
@@ -112,7 +112,7 @@ interface UIEventBase<
   TData = any,
   TCurrentTarget = any,
   TTarget = any,
-  TEvent extends UIEventRaw = any
+  TEvent extends UIEventRaw = any,
 > extends EventObject<TDelegateTarget, TData, TCurrentTarget, TTarget, TEvent> {
   bubbles: boolean
   cancelable: boolean
@@ -126,7 +126,7 @@ interface MouseEventBase<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends UIEventBase<
     TDelegateTarget,
     TData,
@@ -177,7 +177,7 @@ interface ClickEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   relatedTarget?: null
   type: 'click'
@@ -187,7 +187,7 @@ interface ContextMenuEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   relatedTarget?: null
   type: 'contextmenu'
@@ -197,7 +197,7 @@ interface DoubleClickEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   relatedTarget?: null
   type: 'dblclick'
@@ -207,7 +207,7 @@ interface MouseDownEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   relatedTarget?: null
   type: 'mousedown'
@@ -217,7 +217,7 @@ interface MouseEnterEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'mouseenter'
 }
@@ -226,7 +226,7 @@ interface MouseLeaveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'mouseleave'
 }
@@ -235,7 +235,7 @@ interface MouseMoveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   relatedTarget?: null
   type: 'mousemove'
@@ -245,7 +245,7 @@ interface MouseOutEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'mouseout'
 }
@@ -254,7 +254,7 @@ interface MouseOverEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'mouseover'
 }
@@ -263,7 +263,7 @@ interface MouseUpEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends MouseEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   relatedTarget?: null
   type: 'mouseup'
@@ -273,7 +273,7 @@ interface DragEventBase<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends UIEventBase<
     TDelegateTarget,
     TData,
@@ -286,7 +286,7 @@ interface DragEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'drag'
 }
@@ -295,7 +295,7 @@ interface DragEndEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'dragend'
 }
@@ -304,7 +304,7 @@ interface DragEnterEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'dragenter'
 }
@@ -313,7 +313,7 @@ interface DragExitEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'dragexit'
 }
@@ -322,7 +322,7 @@ interface DragLeaveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'dragleave'
 }
@@ -331,7 +331,7 @@ interface DragOverEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'dragover'
 }
@@ -340,7 +340,7 @@ interface DragStartEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'dragstart'
 }
@@ -349,7 +349,7 @@ interface DropEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends DragEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'drop'
 }
@@ -358,7 +358,7 @@ interface KeyboardEventBase<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends UIEventBase<
     TDelegateTarget,
     TData,
@@ -410,7 +410,7 @@ interface KeyDownEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends KeyboardEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'keydown'
 }
@@ -419,7 +419,7 @@ interface KeyPressEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends KeyboardEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'keypress'
 }
@@ -428,7 +428,7 @@ interface KeyUpEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends KeyboardEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'keyup'
 }
@@ -437,7 +437,7 @@ interface TouchEventBase<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends UIEventBase<
     TDelegateTarget,
     TData,
@@ -488,7 +488,7 @@ interface TouchCancelEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends TouchEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'touchcancel'
 }
@@ -497,7 +497,7 @@ interface TouchEndEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends TouchEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'touchend'
 }
@@ -506,7 +506,7 @@ interface TouchMoveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends TouchEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'touchmove'
 }
@@ -515,7 +515,7 @@ interface TouchStartEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends TouchEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'touchstart'
 }
@@ -524,7 +524,7 @@ interface FocusEventBase<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends UIEventBase<
     TDelegateTarget,
     TData,
@@ -575,7 +575,7 @@ interface BlurEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends FocusEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'blur'
 }
@@ -584,7 +584,7 @@ interface FocusEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends FocusEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'focus'
 }
@@ -593,7 +593,7 @@ interface FocusInEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends FocusEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'focusin'
 }
@@ -602,7 +602,7 @@ interface FocusOutEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
-  TTarget = any
+  TTarget = any,
 > extends FocusEventBase<TDelegateTarget, TData, TCurrentTarget, TTarget> {
   type: 'focusout'
 }
@@ -611,7 +611,7 @@ interface TypeToTriggeredEventMap<
   TDelegateTarget,
   TData,
   TCurrentTarget,
-  TTarget
+  TTarget,
 > {
   // Event
 
@@ -691,7 +691,7 @@ export type TypeEventHandler<
     TData,
     TCurrentTarget,
     TTarget
-  >
+  >,
 > = EventHandlerBase<
   TCurrentTarget,
   TypeToTriggeredEventMap<
@@ -706,7 +706,7 @@ export interface TypeEventHandlers<
   TDelegateTarget,
   TData,
   TCurrentTarget,
-  TTarget
+  TTarget,
 > extends TypeEventHandlersBase<
     TDelegateTarget,
     TData,

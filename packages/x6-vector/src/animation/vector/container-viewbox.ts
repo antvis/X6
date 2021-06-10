@@ -10,7 +10,7 @@ export class SVGViewboxAnimator<
     | SVGSymbolElement
     | SVGPatternElement
     | SVGMarkerElement,
-  TOwner extends Viewbox<TSVGElement> = Viewbox<TSVGElement>
+  TOwner extends Viewbox<TSVGElement> = Viewbox<TSVGElement>,
 > extends SVGAnimator<TSVGElement, TOwner> {
   zoom(level: number, point: Point.PointLike) {
     if (this.retarget('zoom', level, point)) {
