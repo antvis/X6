@@ -944,6 +944,15 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
   }
 
+  getFrontNodeFromPoint(x: number, y: number): Node | null
+  getFrontNodeFromPoint(p: Point.PointLike): Node | null
+  getFrontNodeFromPoint(x: number | Point.PointLike, y?: number) {
+    return this.getNodesFromPoint(x as number, y as number).reduce(
+      (acc, cur) => ((cur?.zIndex ?? 0) > (acc?.zIndex ?? 0) ? cur : acc),
+      null as Node | null,
+    )
+  }
+
   /**
    * Returns an array of nodes whose bounding box top/left coordinate
    * falls into the rectangle.

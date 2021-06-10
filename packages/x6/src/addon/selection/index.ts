@@ -72,6 +72,7 @@ export class Selection extends View<Selection.EventArgs> {
       {
         [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
         [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+        [`click .${this.boxClassName}`]: 'onSelectionBoxClick',
       },
       true,
     )
@@ -358,6 +359,15 @@ export class Selection extends View<Selection.EventArgs> {
       originX: client.x,
       originY: client.y,
     })
+  }
+
+  protected onSelectionBoxClick(evt: JQuery.ClickEvent) {
+    evt.stopPropagation()
+    const localPoint = this.graph.clientToGraph(evt.clientX, evt.clientY)
+    const node = this.graph.model.getFrontNodeFromPoint(localPoint)
+    if (node && this.graph.isSelectionEnabled()) {
+      this.graph.resetSelection(node)
+    }
   }
 
   protected getSelectionOffset(client: Point, data: EventData.Translating) {
