@@ -1,8 +1,8 @@
 {
   "devDependencies": {
-    "@types/jest": "^26.0.22",
+    "@types/jest": "^26.0.23",
     "coveralls": "^3.1.0",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.4"
+    "jest": "^27.0.4",
+    "ts-jest": "^27.0.3"
   }
 }
