@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.7](https://github.com/antvis/x6/compare/@antv/x6@1.23.6...@antv/x6@1.23.7) (2021-06-11)
+
+
+### Bug Fixes
+
+* 🐛 check target file before read it ([8e8be17](https://github.com/antvis/x6/commit/8e8be17818421042ac6c1bd3d0176d1f9b79bb20))
+
 ## @antv/x6 [1.23.6](https://github.com/antvis/x6/compare/@antv/x6@1.23.5...@antv/x6@1.23.6) (2021-06-09)
 
 ## @antv/x6 [1.23.5](https://github.com/antvis/x6/compare/@antv/x6@1.23.4...@antv/x6@1.23.5) (2021-06-09)
