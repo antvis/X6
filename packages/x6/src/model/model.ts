@@ -301,6 +301,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   ): Cell | null {
     const cell = typeof obj === 'string' ? this.getCell(obj) : obj
     if (cell && this.has(cell)) {
+      cell.parent?.getChildren()
       return this.collection.remove(cell, options)
     }
     return null
