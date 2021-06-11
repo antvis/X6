@@ -96,8 +96,18 @@ export namespace Commits {
       commit.gitTags = commit.gitTags.trim()
     })
 
+    debug('git log filter dir: %o', dir)
     debug('git log filter query: %o', gitLogFilterQuery)
-    debug('filtered commits: %O', commits)
+    debug('filtered commits count: %o', commits.length)
+    // debug(
+    //   'filtered commits: %O',
+    //   commits.map((c) => ({
+    //     hash: c.hash,
+    //     committerDate: c.committerDate,
+    //     subject: c.subject,
+    //     author: c.author.name,
+    //   })),
+    // )
 
     return commits
   }
