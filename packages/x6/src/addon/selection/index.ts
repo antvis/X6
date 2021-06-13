@@ -124,7 +124,12 @@ export class Selection extends View<Selection.EventArgs> {
     node,
     options,
   }: Collection.EventArgs['node:change:position']) {
-    if (this.options.showNodeSelectionBox !== true && !this.translating) {
+    // Executes only if showNodeSelectionBox is false and is triggered manually
+    if (
+      this.options.showNodeSelectionBox !== true &&
+      !this.translating &&
+      options.ui
+    ) {
       this.translating = true
       const current = node.position()
       const previous = node.previous('position')!
@@ -538,7 +543,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected notifyBoxEvent<
     K extends keyof Selection.BoxEventArgs,
-    T extends JQuery.TriggeredEvent,
+    T extends JQuery.TriggeredEvent
   >(name: K, e: T, x: number, y: number) {
     const data = this.getEventData<EventData.SelectionBox>(e)
     const view = data.activeView
