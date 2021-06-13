@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.8](https://github.com/antvis/x6/compare/@antv/x6@1.23.7...@antv/x6@1.23.8) (2021-06-13)
+
+
+### Bug Fixes
+
+* 🐛 not clean selection when mousedown ([d6195a7](https://github.com/antvis/x6/commit/d6195a74f3765d65fcdf42dd0de7739fb8867f75))
+
 ## @antv/x6 [1.23.7](https://github.com/antvis/x6/compare/@antv/x6@1.23.6...@antv/x6@1.23.7) (2021-06-11)
 
 
