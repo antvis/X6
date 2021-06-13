@@ -40,6 +40,7 @@ export class SelectionManager extends Base {
 
   protected startListening() {
     this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
+    this.graph.on('blank:click', this.onBlankClick, this)
     this.graph.on('cell:mousemove', this.onCellMouseMove, this)
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
     this.widget.on('box:mousedown', this.onBoxMouseDown, this)
@@ -47,6 +48,7 @@ export class SelectionManager extends Base {
 
   protected stopListening() {
     this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
+    this.graph.off('blank:click', this.onBlankClick, this)
     this.graph.off('cell:mousemove', this.onCellMouseMove, this)
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
     this.widget.off('box:mousedown', this.onBoxMouseDown, this)
@@ -60,9 +62,11 @@ export class SelectionManager extends Base {
         !this.graph.panning.allowPanning(e, true))
     ) {
       this.startRubberband(e)
-    } else {
-      this.clean()
     }
+  }
+
+  protected onBlankClick() {
+    this.clean()
   }
 
   allowRubberband(e: JQuery.MouseDownEvent, strict?: boolean) {
