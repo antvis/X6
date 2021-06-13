@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-svg-to-shape",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "convert svg to shape definition",
   "scripts": {
     "start": "umi dev",
@@ -23,7 +23,7 @@
     ]
   },
   "dependencies": {
-    "@antv/x6": "^1.23.7",
+    "@antv/x6": "^1.23.8",
     "@umijs/preset-react": "1.x",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
