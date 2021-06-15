@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@antv/x6": "^1.23.9",
-    "@antv/x6-vector": "^1.1.1",
+    "@antv/x6-vector": "^1.1.2",
     "@antv/x6-react-components": "^1.1.12",
     "@antv/x6-react-shape": "^1.4.2",
     "antd": "^4.4.2",
