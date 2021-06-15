@@ -61,10 +61,12 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6-vector/test/coverage/lcov.info
-          flags: x6_vector
+          flags: "x6-vector"
+          verbose: true
       - name: 💡　Codecov(x6-geometry)
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6-geometry/test/coverage/lcov.info
-          flags: x6_geometry
+          flags: "x6-geometry"
+          verbose: true
