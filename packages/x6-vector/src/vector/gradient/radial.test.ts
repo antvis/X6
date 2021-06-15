@@ -4,7 +4,7 @@ import { RadialGradient } from './radial'
 
 describe('RadialGradient', () => {
   describe('constructor()', () => {
-    it('creates a new object of type RadialGradient', () => {
+    it('should create a new object of type RadialGradient', () => {
       const gradient = new RadialGradient()
       expect(gradient).toBeInstanceOf(RadialGradient)
       expect(gradient.type).toBe('radialGradient')

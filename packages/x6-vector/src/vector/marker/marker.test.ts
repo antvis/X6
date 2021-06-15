@@ -107,25 +107,25 @@ describe('Marker', () => {
       expect(path.reference('marker-end')).toBeNull()
     })
 
-    it('creates a marker and applies it to the marker-start attribute', () => {
+    it('should create a marker and applies it to the marker-start attribute', () => {
       path.marker('start', 10, 12)
       const marker = path.reference('marker-start')!
       expect(path.node.getAttribute('marker-start')).toBe(marker.toString())
     })
 
-    it('creates a marker and applies it to the marker-mid attribute', () => {
+    it('should create a marker and applies it to the marker-mid attribute', () => {
       path.marker('mid', 10, 12)
       const marker = path.reference('marker-mid')!
       expect(path.node.getAttribute('marker-mid')).toBe(marker.toString())
     })
 
-    it('creates a marker and applies it to the marker-end attribute', () => {
+    it('should create a marker and applies it to the marker-end attribute', () => {
       path.marker('end', 10, 12)
       const marker = path.reference('marker-end')!
       expect(path.node.getAttribute('marker-end')).toBe(marker.toString())
     })
 
-    it('creates a marker and applies it to the marker attribute', () => {
+    it('should create a marker and applies it to the marker attribute', () => {
       path.marker('all', 10, 12)
       const marker = path.reference('marker')!
       expect(path.node.getAttribute('marker')).toBe(marker.toString())
