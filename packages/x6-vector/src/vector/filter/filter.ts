@@ -16,7 +16,7 @@ export class Filter extends Referent<SVGFilterElement> {
     return this.attr('primitiveUnits', units)
   }
 
-  update(handler: Filter.Update) {
+  update(handler?: Filter.Update | null) {
     this.clear()
 
     if (typeof handler === 'function') {
