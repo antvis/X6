@@ -1,3 +1,10 @@
+## @antv/x6-vector [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-vector@1.1.1...@antv/x6-vector@1.1.2) (2021-06-15)
+
+
+### Bug Fixes
+
+* 🐛 typos ([f7b1720](https://github.com/antvis/x6/commit/f7b1720280910bbfa1360494853fc0a511a22fdd))
+
 ## @antv/x6-vector [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-vector@1.1.0...@antv/x6-vector@1.1.1) (2021-06-15)
 
 ## @antv/x6-vector [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-vector@1.1.0...@antv/x6-vector@1.1.1) (2021-06-11)
