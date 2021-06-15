@@ -5,7 +5,7 @@ import { LinearGradient } from './linear'
 
 describe('LinearGradient', () => {
   describe('constructor()', () => {
-    it('creates a new object of type LinearGradient', () => {
+    it('should create a new object of type LinearGradient', () => {
       const gradient = new LinearGradient()
       expect(gradient).toBeInstanceOf(LinearGradient)
       expect(gradient.type).toBe('linearGradient')
