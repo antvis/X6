@@ -17,7 +17,7 @@ import { Node } from './node'
 import { Edge } from './edge'
 
 export class Cell<
-  Properties extends Cell.Properties = Cell.Properties,
+  Properties extends Cell.Properties = Cell.Properties
 > extends Basecoat<Cell.EventArgs> {
   // #region static
 
@@ -750,15 +750,13 @@ export class Cell<
   }
 
   getParent() {
-    let parent = this._parent
-    if (parent == null && this.store) {
-      const parentId = this.getParentId()
-      if (parentId != null && this.model) {
-        parent = this.model.getCell(parentId)
-        this._parent = parent
-      }
+    const parentId = this.getParentId()
+    if (parentId && this.model) {
+      const parent = this.model.getCell(parentId)
+      this._parent = parent
+      return parent
     }
-    return parent
+    return null
   }
 
   getParentId() {
@@ -766,17 +764,15 @@ export class Cell<
   }
 
   getChildren() {
-    let children = this._children
-    if (children == null) {
-      const childrenIds = this.store.get('children')
-      if (childrenIds && childrenIds.length && this.model) {
-        children = childrenIds
-          .map((id) => this.model?.getCell(id))
-          .filter((cell) => cell != null) as Cell[]
-        this._children = children
-      }
+    const childrenIds = this.store.get('children')
+    if (childrenIds && childrenIds.length && this.model) {
+      const children = childrenIds
+        .map((id) => this.model?.getCell(id))
+        .filter((cell) => cell != null) as Cell[]
+      this._children = children
+      return [...children]
     }
-    return children ? [...children] : null
+    return null
   }
 
   hasParent() {
@@ -1055,20 +1051,20 @@ export class Cell<
   }
 
   remove(options: Cell.RemoveOptions = {}) {
-    const parent = this.getParent()
-    if (parent) {
-      parent.removeChild(this, options)
-    } else {
-      this.batchUpdate('remove', () => {
-        if (options.deep !== false) {
-          this.eachChild((child) => child.remove(options))
-        }
+    this.batchUpdate('remove', () => {
+      const parent = this.getParent()
+      if (parent) {
+        parent.removeChild(this, options)
+      }
 
-        if (this.model) {
-          this.model.removeCell(this, options)
-        }
-      })
-    }
+      if (options.deep !== false) {
+        this.eachChild((child) => child.remove(options))
+      }
+
+      if (this.model) {
+        this.model.removeCell(this, options)
+      }
+    })
     return this
   }
 
