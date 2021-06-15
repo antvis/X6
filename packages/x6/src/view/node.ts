@@ -13,7 +13,7 @@ import { AttrManager } from './attr'
 
 export class NodeView<
   Entity extends Node = Node,
-  Options extends NodeView.Options = NodeView.Options,
+  Options extends NodeView.Options = NodeView.Options
 > extends CellView<Entity, Options> {
   public scalableNode: Element | null = null
   public rotatableNode: Element | null = null
@@ -21,8 +21,7 @@ export class NodeView<
   protected readonly rotatableSelector: string = 'rotatable'
   protected readonly defaultPortMarkup = Markup.getPortMarkup()
   protected readonly defaultPortLabelMarkup = Markup.getPortLabelMarkup()
-  protected readonly defaultPortContainerMarkup =
-    Markup.getPortContainerMarkup()
+  protected readonly defaultPortContainerMarkup = Markup.getPortContainerMarkup()
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   protected get [Symbol.toStringTag]() {
@@ -817,12 +816,10 @@ export class NodeView<
 
     let candidates =
       typeof findParent === 'function'
-        ? (
-            FunctionExt.call(findParent, graph, {
-              view: this,
-              node: this.cell,
-            }) as Cell[]
-          ).filter((c) => {
+        ? (FunctionExt.call(findParent, graph, {
+            view: this,
+            node: this.cell,
+          }) as Cell[]).filter((c) => {
             return (
               Cell.isCell(c) &&
               this.cell.id !== c.id &&
@@ -895,6 +892,7 @@ export class NodeView<
   finalizeEmbedding(e: JQuery.MouseUpEvent, data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
+    const view = graph.findViewByCell(cell)
     const parent = cell.getParent()
     const candidateView = data.candidateEmbedView
     if (candidateView) {
@@ -913,16 +911,19 @@ export class NodeView<
     })
 
     const localPoint = graph.snapToGrid(e.clientX, e.clientY)
-    this.notify('node:embedded', {
-      e,
-      cell,
-      x: localPoint.x,
-      y: localPoint.y,
-      node: cell,
-      view: graph.findViewByCell(cell),
-      previousParent: parent,
-      currentParent: cell.getParent(),
-    })
+
+    if (view) {
+      view.notify('node:embedded', {
+        e,
+        cell,
+        x: localPoint.x,
+        y: localPoint.y,
+        node: cell,
+        view: graph.findViewByCell(cell),
+        previousParent: parent,
+        currentParent: cell.getParent(),
+      })
+    }
   }
 
   getDelegatedView() {
