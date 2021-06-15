@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.9](https://github.com/antvis/x6/compare/@antv/x6@1.23.8...@antv/x6@1.23.9) (2021-06-15)
+
+
+### Bug Fixes
+
+* 🐛 translateSelectionNodes is only triggered manually ([6d445da](https://github.com/antvis/x6/commit/6d445dac3a83f5e39d0ed8ce2b05e6055a6decaa))
+
 ## @antv/x6 [1.23.8](https://github.com/antvis/x6/compare/@antv/x6@1.23.7...@antv/x6@1.23.8) (2021-06-13)
 
 
