@@ -1,0 +1,110 @@
+{
+  "cells": [
+    {
+      "position": {
+        "x": 80,
+        "y": 80
+      },
+      "size": {
+        "width": 160,
+        "height": 60
+      },
+      "attrs": {
+        "text": {
+          "text": "parent"
+        }
+      },
+      "shape": "rect",
+      "portMarkup": [
+        {
+          "tagName": "circle",
+          "selector": "portBody",
+          "attrs": {
+            "r": 6,
+            "magnet": "true",
+            "stroke": "#000",
+            "fill": "#fff",
+            "strokeWidth": 2,
+            "stroke-width": 2
+          }
+        }
+      ],
+      "ports": {
+        "groups": {
+          "in": {
+            "position": {
+              "name": "top"
+            }
+          },
+          "out": {
+            "position": {
+              "name": "bottom"
+            }
+          }
+        },
+        "items": []
+      },
+      "id": "1",
+      "children": ["2"],
+      "zIndex": 1
+    },
+    {
+      "position": {
+        "x": 320,
+        "y": 320
+      },
+      "size": {
+        "width": 160,
+        "height": 60
+      },
+      "attrs": {
+        "text": {
+          "text": "child"
+        }
+      },
+      "shape": "rect",
+      "portMarkup": [
+        {
+          "tagName": "circle",
+          "selector": "portBody",
+          "attrs": {
+            "r": 6,
+            "magnet": "true",
+            "stroke": "#000",
+            "fill": "#fff",
+            "strokeWidth": 2,
+            "stroke-width": 2
+          }
+        }
+      ],
+      "ports": {
+        "groups": {
+          "in": {
+            "position": {
+              "name": "top"
+            }
+          },
+          "out": {
+            "position": {
+              "name": "bottom"
+            }
+          }
+        },
+        "items": []
+      },
+      "id": "2",
+      "zIndex": 2
+    },
+    {
+      "shape": "edge",
+      "id": "8a15dd65-7dc1-4f89-b0b8-1e621dbc4cfd",
+      "source": {
+        "cell": "1"
+      },
+      "target": {
+        "cell": "2"
+      },
+      "zIndex": 3
+    }
+  ]
+}
