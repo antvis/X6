@@ -10,10 +10,10 @@ coverage:
         flags:
           - x6
       x6-vector:
+        target: 80% # will fail a Pull Request if coverage is less than 80%
         flags:
           - x6-vector
       x6-geometry:
-        target: 80% # will fail a Pull Request if coverage is less than 80%
         flags:
           - x6-geometry
 
