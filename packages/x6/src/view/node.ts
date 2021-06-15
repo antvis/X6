@@ -1126,10 +1126,8 @@ export class NodeView<
 
     if (!data.moving) {
       data.moving = true
-      const moving = this.getEventData<EventData.Moving>(e)
-      const view = moving.targetView
-      view.addClass('node-moving')
-      this.notifyNodeMove('node:move', e, x, y, view.cell)
+      this.addClass('node-moving')
+      this.notifyNodeMove('node:move', e, x, y, this.cell)
     }
 
     const scroller = this.graph.scroller.widget
@@ -1161,10 +1159,8 @@ export class NodeView<
     }
 
     if (data.moving) {
-      const meta = this.getEventData<EventData.Moving>(e)
-      const view = meta.targetView
-      view.removeClass('node-moving')
-      this.notifyNodeMove('node:moved', e, x, y, view.cell)
+      this.removeClass('node-moving')
+      this.notifyNodeMove('node:moved', e, x, y, this.cell)
     }
 
     data.moving = false
