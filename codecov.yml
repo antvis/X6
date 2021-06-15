@@ -1,4 +1,8 @@
+# Setting coverage targets per flag
 coverage:
+  range: 60..95
+  round: down
+  precision: 2
   status:
     project:
       default: off
@@ -9,13 +13,14 @@ coverage:
         flags:
           - x6-vector
       x6-geometry:
+        target: 80% # will fail a Pull Request if coverage is less than 80%
         flags:
           - x6-geometry
 
 flags:
-  # filter the folder(s) you wish to measure by that flag
   x6:
     paths:
+      # filter the folder(s) you wish to measure by that flag
       - packages/x6
   x6-vector:
     paths:
@@ -23,3 +28,8 @@ flags:
   x6-geometry:
     paths:
       - packages/x6-geometry
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: true # only post the comment if coverage changes
