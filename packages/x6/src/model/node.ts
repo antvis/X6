@@ -1089,7 +1089,7 @@ export namespace Node {
 }
 
 export namespace Node {
-  export const registry = Registry.create<
+  export const registry: any = Registry.create<
     Definition,
     never,
     Config & { inherit?: string | Definition }
@@ -1126,9 +1126,9 @@ export namespace Node {
         config.constructorName = shape
       }
 
-      const ctor = parent.define.call(parent, config)
+      const ctor: Definition = parent.define.call(parent, config)
       ctor.config({ shape })
-      return ctor
+      return ctor as any
     },
   })
 

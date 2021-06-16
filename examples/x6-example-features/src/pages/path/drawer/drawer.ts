@@ -1,6 +1,6 @@
-import { ObjectExt, Dom, Vector } from '../../util'
-import { Point } from '../../geometry'
-import { View } from '../../view'
+import { ObjectExt, Dom, Vector } from '@antv/x6/lib/util'
+import { Point } from '@antv/x6/lib/geometry'
+import { View } from '@antv/x6/lib/view'
 
 // need: <meta http-equiv="x-ua-compatible" content="IE=Edge" />
 export class PathDrawer extends View {
@@ -519,6 +519,7 @@ export class PathDrawer extends View {
   }
 }
 
+// eslint-disable-next-line
 export namespace PathDrawer {
   export interface Options {
     /**

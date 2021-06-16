@@ -17,7 +17,7 @@ import { Node } from './node'
 import { Edge } from './edge'
 
 export class Cell<
-  Properties extends Cell.Properties = Cell.Properties
+  Properties extends Cell.Properties = Cell.Properties,
 > extends Basecoat<Cell.EventArgs> {
   // #region static
 
@@ -749,18 +749,18 @@ export class Cell<
     return this.getChildren()
   }
 
-  getParent() {
+  getParentId() {
+    return this.store.get('parent')
+  }
+
+  getParent<T extends Cell = Cell>(): T | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      const parent = this.model.getCell(parentId)
+      const parent = this.model.getCell<T>(parentId)
       this._parent = parent
       return parent
     }
     return null
-  }
-
-  getParentId() {
-    return this.store.get('parent')
   }
 
   getChildren() {
@@ -816,8 +816,8 @@ export class Cell<
     return this.children != null && index >= 0 ? this.children[index] : null
   }
 
-  getAncestors(options: { deep?: boolean } = {}) {
-    const ancestors = []
+  getAncestors(options: { deep?: boolean } = {}): Cell[] {
+    const ancestors: Cell[] = []
     let parent = this.getParent()
     while (parent) {
       ancestors.push(parent)
