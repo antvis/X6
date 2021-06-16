@@ -1,6 +1,6 @@
 name: 🔂　Surge PR Preview
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - sites/x6-sites/**
       - sites/x6-sites-demos/**
