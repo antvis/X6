@@ -1,4 +1,4 @@
-name: 🤝　Contributors
+name: 🤝　Update Contributors
 on:
   schedule:
     - cron: '0 1 * * *'

@@ -2,7 +2,6 @@ name: 🚫　Delete Stale Releases
 on:
   repository_dispatch:
     types: [released]
-
 jobs:
   clean:
     runs-on: ubuntu-latest
