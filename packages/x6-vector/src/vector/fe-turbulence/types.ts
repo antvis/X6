@@ -5,6 +5,10 @@ import {
   SVGFilterPrimitiveAttributes,
 } from '../types/attributes-core'
 
+export type StitchTiles = 'noStitch' | 'stitch'
+
+export type Type = 'translate' | 'scale' | 'rotate' | 'skewX' | 'skewY'
+
 export interface SVGFETurbulenceAttributes
   extends SVGCoreAttributes<SVGFETurbulenceElement>,
     SVGStyleAttributes,
@@ -13,6 +17,6 @@ export interface SVGFETurbulenceAttributes
   baseFrequency?: number
   numOctaves?: number
   seed?: number
-  stitchTiles?: 'noStitch' | 'stitch'
-  type?: 'translate' | 'scale' | 'rotate' | 'skewX' | 'skewY'
+  type?: Type
+  stitchTiles?: StitchTiles
 }
