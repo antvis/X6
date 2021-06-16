@@ -534,7 +534,7 @@ export interface HTMLAttributesTagNameMap {
   audio: HTMLAudioAttributes<HTMLAudioElement>
   b: HTMLAttributes<HTMLElement>
   base: HTMLBaseAttributes<HTMLBaseElement>
-  basefont: HTMLAttributes<HTMLBaseFontElement>
+  basefont: HTMLAttributes<HTMLElement> // TODO: Fix type error of HTMLBaseFontElement
   bdi: HTMLAttributes<HTMLElement>
   bdo: HTMLAttributes<HTMLElement>
   big: HTMLAttributes<HTMLElement>
