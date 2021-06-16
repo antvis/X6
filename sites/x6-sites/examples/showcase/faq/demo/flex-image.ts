@@ -1,4 +1,4 @@
-import { Graph, Node, Shape } from '@antv/x6'
+import { Graph, Shape } from '@antv/x6'
 
 class FlexImage extends Shape.Image {
   private url: string

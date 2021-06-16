@@ -39,7 +39,7 @@ import removeEmptyAttrs from 'svgo/plugins/removeEmptyAttrs'
 import removeEmptyContainers from 'svgo/plugins/removeEmptyContainers'
 import mergePaths from 'svgo/plugins/mergePaths'
 import removeUnusedNS from 'svgo/plugins/removeUnusedNS'
-import removeOffCanvasPaths from 'svgo/plugins/removeOffCanvasPaths'
+// import removeOffCanvasPaths from 'svgo/plugins/removeOffCanvasPaths'
 import reusePaths from 'svgo/plugins/reusePaths'
 import sortAttrs from 'svgo/plugins/sortAttrs'
 import sortDefsChildren from 'svgo/plugins/sortDefsChildren'
@@ -171,7 +171,7 @@ export function optimize(svgText, settings) {
     minifyStyles,
     convertStyleToAttrs,
     cleanupIDs,
-    //prefixIds,
+    // prefixIds,
     removeRasterImages,
     removeUselessDefs,
     cleanupNumericValues,
@@ -203,13 +203,13 @@ export function optimize(svgText, settings) {
     removeTitle,
     removeDesc,
     removeDimensions,
-    //removeAttrs,
-    //removeElementsByAttr,
-    //removeAttributesBySelector,
-    //addClassesToSVGElement,
+    // removeAttrs,
+    // removeElementsByAttr,
+    // removeAttributesBySelector,
+    // addClassesToSVGElement,
     removeStyleElement,
     removeScriptElement,
-    //addAttributesToSVGElement,
+    // addAttributesToSVGElement,
   }
 
   // activate/deactivate plugins
