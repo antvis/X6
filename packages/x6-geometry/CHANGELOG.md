@@ -1,3 +1,10 @@
+## @antv/x6-geometry [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.5...@antv/x6-geometry@1.0.6) (2021-06-16)
+
+
+### Bug Fixes
+
+* update dependencies and fix type errors ([#1103](https://github.com/antvis/x6/issues/1103)) ([056b862](https://github.com/antvis/x6/commit/056b862b4efe7dbdc559cac7194c2453996acc07))
+
 ## @antv/x6-geometry [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.4...@antv/x6-geometry@1.0.5) (2021-06-15)
 
 ## @antv/x6-geometry [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.4...@antv/x6-geometry@1.0.5) (2021-06-11)
