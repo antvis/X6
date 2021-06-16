@@ -749,19 +749,18 @@ export class Cell<
     return this.getChildren()
   }
 
+  getParentId() {
+    return this.store.get('parent')
+  }
+
   getParent<T extends Cell = Cell>(): T | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      // get parent from model
       const parent = this.model.getCell<T>(parentId)
       this._parent = parent
       return parent
     }
     return null
-  }
-
-  getParentId() {
-    return this.store.get('parent')
   }
 
   getChildren() {
