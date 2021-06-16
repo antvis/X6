@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react-shape",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "X6 shape for rendering react components.",
   "main": "lib/index.js",
   "module": "es/index.js",
