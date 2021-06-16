@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Edge, CellView, EdgeView, Dom, Vector } from '@antv/x6'
+import { Graph, Edge, CellView, EdgeView, Vector } from '@antv/x6'
 import '../index.less'
 
 class CustomEdgeView extends EdgeView {
