@@ -17,7 +17,7 @@ import { Node } from './node'
 import { Edge } from './edge'
 
 export class Cell<
-  Properties extends Cell.Properties = Cell.Properties
+  Properties extends Cell.Properties = Cell.Properties,
 > extends Basecoat<Cell.EventArgs> {
   // #region static
 
@@ -749,10 +749,10 @@ export class Cell<
     return this.getChildren()
   }
 
-  getParent() {
+  getParent(): Cell | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      const parent = this.model.getCell(parentId)
+      const parent = this.model.getCell<Cell>(parentId)
       this._parent = parent
       return parent
     }
