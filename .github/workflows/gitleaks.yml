@@ -1,13 +1,11 @@
 name: 🥤　GitLeaks
-
 on:
+  pull_request_target:
   push:
     branches:
       - master
       - alpha
       - beta
-  pull_request_target:
-
 jobs:
   gitleaks:
     runs-on: ubuntu-latest
