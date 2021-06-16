@@ -1,3 +1,14 @@
+## @antv/x6 [1.23.10](https://github.com/antvis/x6/compare/@antv/x6@1.23.9...@antv/x6@1.23.10) (2021-06-16)
+
+
+### Bug Fixes
+
+* 🐛 fix node:move event triggered source ([cca97ff](https://github.com/antvis/x6/commit/cca97ff1ed44a45ca6ef0acf9b2c2d38070cb4cb))
+* 🐛 fix the embedded triggered source ([a922aa4](https://github.com/antvis/x6/commit/a922aa42b6a726fd7daf45d283d5b4a9c792e4a8))
+* 🐛 optimize cell remove method ([c6fd5da](https://github.com/antvis/x6/commit/c6fd5da9e5b8b89b3eff13f1026da0298ac397e9))
+* 🐛 specify return type ([cea7ae1](https://github.com/antvis/x6/commit/cea7ae11364d4bc521d41cc254d6c35484a34b8a))
+* update dependencies and fix type errors ([#1103](https://github.com/antvis/x6/issues/1103)) ([056b862](https://github.com/antvis/x6/commit/056b862b4efe7dbdc559cac7194c2453996acc07))
+
 ## @antv/x6 [1.23.9](https://github.com/antvis/x6/compare/@antv/x6@1.23.8...@antv/x6@1.23.9) (2021-06-15)
 
 
