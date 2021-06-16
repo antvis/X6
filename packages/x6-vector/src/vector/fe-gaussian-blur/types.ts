@@ -4,13 +4,18 @@ import {
   SVGPresentationAttributes,
   SVGFilterPrimitiveAttributes,
 } from '../types/attributes-core'
+import { In } from '../fe-blend/types'
+
+export { In }
+
+export type EdgeMode = 'duplicate' | 'wrap' | 'none'
 
 export interface SVGFEGaussianBlurAttributes
   extends SVGCoreAttributes<SVGFEGaussianBlurElement>,
     SVGStyleAttributes,
     SVGPresentationAttributes,
     SVGFilterPrimitiveAttributes {
-  in?: string
+  in?: In | string
   stdDeviation?: number
-  edgeMode?: 'duplicate' | 'wrap' | 'none'
+  edgeMode?: EdgeMode
 }

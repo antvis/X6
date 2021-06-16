@@ -23,12 +23,20 @@ export type BlendMode =
   | 'color'
   | 'luminosity'
 
+export type In =
+  | 'SourceGraphic'
+  | 'SourceAlpha'
+  | 'BackgroundImage'
+  | 'BackgroundAlpha'
+  | 'FillPaint'
+  | 'StrokePaint'
+
 export interface SVGFEBlendAttributes
   extends SVGCoreAttributes<SVGFEBlendElement>,
     SVGStyleAttributes,
     SVGPresentationAttributes,
     SVGFilterPrimitiveAttributes {
-  in?: string
-  in2?: string
+  in?: In | string
+  in2?: In | string
   mode?: BlendMode
 }

@@ -9,4 +9,7 @@ export interface SVGFEFloodAttributes
   extends SVGCoreAttributes<SVGFEFloodElement>,
     SVGStyleAttributes,
     SVGPresentationAttributes,
-    SVGFilterPrimitiveAttributes {}
+    SVGFilterPrimitiveAttributes {
+  floodColor?: string
+  floodOpacity?: number
+}
