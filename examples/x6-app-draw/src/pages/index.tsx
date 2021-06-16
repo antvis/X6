@@ -42,10 +42,7 @@ export default function () {
   return (
     <div className={styles.wrap}>
       <div className={styles.header}>
-        <img
-          src="https://gw.alipayobjects.com/zos/bmw-prod/d42241ab-a3a2-41ba-84c3-93f075d3c3b8.svg"
-          alt=""
-        />
+        <span className={styles.text}>X6</span>
         <span>
           <GithubOutlined onClick={openGithub} />
         </span>
