@@ -1,3 +1,12 @@
+## @antv/x6-sites-demos-helper [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.2.0...@antv/x6-sites-demos-helper@1.2.1) (2021-06-16)
+
+
+### Bug Fixes
+
+* 🐛 fix lack of deps in demo ([a6232fc](https://github.com/antvis/x6/commit/a6232fc35934cb6b31e735af040fb8115813bb12))
+* 🐛 temporarily disable stackblitz ([d454ba2](https://github.com/antvis/x6/commit/d454ba2d4ae3e45ad2fabc8074c79121abd5de6b))
+* update dependencies and fix type errors ([#1103](https://github.com/antvis/x6/issues/1103)) ([056b862](https://github.com/antvis/x6/commit/056b862b4efe7dbdc559cac7194c2453996acc07))
+
 ## @antv/x6-sites-demos-helper [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.2.0...@antv/x6-sites-demos-helper@1.2.1) (2021-06-15)
 
 
