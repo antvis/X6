@@ -1242,7 +1242,7 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  export const registry = Registry.create<
+  export const registry: any = Registry.create<
     Definition,
     never,
     Config & { inherit?: string | Definition }
@@ -1279,9 +1279,9 @@ export namespace Edge {
         others.constructorName = shape
       }
 
-      const ctor = parent.define.call(parent, others)
+      const ctor: Definition = parent.define.call(parent, others)
       ctor.config({ shape })
-      return ctor
+      return ctor as any
     },
   })
 
