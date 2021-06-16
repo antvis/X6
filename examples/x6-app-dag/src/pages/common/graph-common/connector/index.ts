@@ -1,4 +1,4 @@
-import { Graph, Path } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
 Graph.registerConnector(
   'pai',

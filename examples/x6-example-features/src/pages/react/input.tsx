@@ -1,5 +1,4 @@
 import React from 'react'
-import { Input } from 'antd'
 import { Graph, Node, Color } from '@antv/x6'
 import '@antv/x6-react-shape'
 import '../index.less'
