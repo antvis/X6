@@ -1,11 +1,9 @@
 name: 🔑　Update License
-
 on:
   schedule:
     - cron: '0 3 1 1 *' # At 03:00 on day-of-month 1 in January.
-
 jobs:
-  run:
+  update:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

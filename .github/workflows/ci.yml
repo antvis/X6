@@ -1,6 +1,6 @@
 name: 👷　CI
-
 on:
+  pull_request_target:
   push:
     branches:
       - master
@@ -8,8 +8,6 @@ on:
       - next-major
       - alpha
       - beta
-  pull_request_target:
-
 jobs:
   ci:
     runs-on: ubuntu-latest

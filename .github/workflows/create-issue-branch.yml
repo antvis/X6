@@ -1,7 +1,7 @@
 name: 🚧　Create Issue Branch
 on:
   issue_comment:
-      types: [created]
+    types: [created]
 jobs:
   cib:
     runs-on: ubuntu-latest

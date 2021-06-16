@@ -19,6 +19,7 @@ jobs:
       - uses: Naturalclar/issue-action@v2.0.1
         with:
           title-or-body: title
+          github-token: ${{ env.bot_token }}
           parameters: >
             [
               {
@@ -30,4 +31,3 @@ jobs:
                 "labels": ["help-wanted"]
               }
             ]
-          github-token: ${{ env.bot_token }}
