@@ -752,7 +752,7 @@ export class Cell<
   getParent(): Cell | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      const parent: Cell = this.model.getCell(parentId)
+      const parent: any = this.model.getCell(parentId)
       this._parent = parent
       return parent
     }
@@ -816,7 +816,7 @@ export class Cell<
     return this.children != null && index >= 0 ? this.children[index] : null
   }
 
-  getAncestors(options: { deep?: boolean } = {}) {
+  getAncestors(options: { deep?: boolean } = {}): Cell[] {
     const ancestors: Cell[] = []
     let parent = this.getParent()
     while (parent) {
