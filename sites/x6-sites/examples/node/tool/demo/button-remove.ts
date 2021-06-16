@@ -1,7 +1,7 @@
-import { Graph, Color, CellView } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
 const graph = new Graph({
-  container: document.getElementById('container'),
+  container: document.getElementById('container')!,
   grid: true,
 })
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Graph, Dom, Shape, Node, Path } from '@antv/x6'
+import { Graph, Dom, Shape, Node } from '@antv/x6'
 import { Tooltip } from 'antd'
 import classnames from 'classnames'
 import '@antv/x6-react-shape'
