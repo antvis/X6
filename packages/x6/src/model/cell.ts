@@ -741,7 +741,7 @@ export class Cell<
 
   // #region parent children
 
-  get parent() {
+  get parent(): Cell | null {
     return this.getParent()
   }
 
