@@ -741,7 +741,7 @@ export class Cell<
 
   // #region parent children
 
-  get parent(): Cell | null {
+  get parent() {
     return this.getParent()
   }
 
@@ -749,10 +749,10 @@ export class Cell<
     return this.getChildren()
   }
 
-  getParent(): Cell | null {
+  getParent<T extends Cell = Cell>(): T | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      const parent: any = this.model.getCell(parentId)
+      const parent = this.model.getCell<T>(parentId)
       this._parent = parent
       return parent
     }
