@@ -3,8 +3,8 @@ import SVGO from 'SVGO'
 import classnames from 'classnames'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { monokai } from 'react-syntax-highlighter/dist/esm/styles/hljs'
-import * as svgo from './svgo'
 import { Graph, Markup } from '@antv/x6'
+import * as svgo from './svgo'
 import { App } from '../index'
 import './content.less'
 
@@ -138,8 +138,6 @@ graph.addNode({
   }
 
   render() {
-    const tab = this.props.tab
-
     return (
       <div className="body">
         <div className="output">
