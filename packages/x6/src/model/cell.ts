@@ -752,7 +752,7 @@ export class Cell<
   getParent(): Cell | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      const parent = this.model.getCell(parentId)
+      const parent: Cell = this.model.getCell(parentId)
       this._parent = parent
       return parent
     }
