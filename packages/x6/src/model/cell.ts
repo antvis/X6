@@ -741,7 +741,7 @@ export class Cell<
 
   // #region parent children
 
-  get parent() {
+  get parent(): Cell | null {
     return this.getParent()
   }
 
@@ -752,7 +752,7 @@ export class Cell<
   getParent(): Cell | null {
     const parentId = this.getParentId()
     if (parentId && this.model) {
-      const parent = this.model.getCell<Cell>(parentId)
+      const parent: Cell = this.model.getCell(parentId)
       this._parent = parent
       return parent
     }
@@ -817,8 +817,8 @@ export class Cell<
   }
 
   getAncestors(options: { deep?: boolean } = {}) {
-    const ancestors = []
-    let parent = this.getParent()
+    const ancestors: Cell[] = []
+    let parent: Cell | null = this.getParent()
     while (parent) {
       ancestors.push(parent)
       parent = options.deep !== false ? parent.getParent() : null
