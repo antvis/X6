@@ -20,14 +20,15 @@ export class TSpan extends TextBase<SVGTSpanElement> {
     // mark new line
     this.affix('newLined', true)
 
-    const text = this.parent()
+    const text = this.parent<Text>()
     if (text == null || !(text instanceof Text)) {
       return this
     }
 
     const index = text.indexOf(this)
     const dy = index > 0 ? text.leading() * getFontSize(this.node) : 0
-    return this.dy(dy).attr('x', text.x())
+    this.dy(dy).attr('x', text.x())
+    return this
   }
 
   text(): string
