@@ -1,3 +1,10 @@
+## @antv/x6-react-components [1.1.13](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.12...@antv/x6-react-components@1.1.13) (2021-06-16)
+
+
+### Bug Fixes
+
+* update dependencies and fix type errors ([#1103](https://github.com/antvis/x6/issues/1103)) ([056b862](https://github.com/antvis/x6/commit/056b862b4efe7dbdc559cac7194c2453996acc07))
+
 ## @antv/x6-react-components [1.1.12](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.11...@antv/x6-react-components@1.1.12) (2021-06-11)
 
 ## @antv/x6-react-components [1.1.11](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.10...@antv/x6-react-components@1.1.11) (2021-06-09)
