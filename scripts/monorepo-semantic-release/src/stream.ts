@@ -18,6 +18,6 @@ export class RescopedStream extends Writable {
 
 export namespace RescopedStream {
   export function get(stream: NodeJS.WriteStream, scope: string) {
-    return (new RescopedStream(stream, scope) as Writable) as NodeJS.WriteStream
+    return new RescopedStream(stream, scope) as Writable as NodeJS.WriteStream
   }
 }
