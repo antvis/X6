@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEMergeNodeAttributes, In } from './types'
 
-@FEMergeNode.register('FEMergeNode')
-export class FEMergeNode extends FeBase<SVGFEMergeNodeElement> {
+@FEMergeNode.register('FeMergeNode')
+export class FEMergeNode extends FEBase<SVGFEMergeNodeElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this

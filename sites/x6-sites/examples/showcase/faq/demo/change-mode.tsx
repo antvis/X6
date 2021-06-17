@@ -29,7 +29,7 @@ class Example extends React.Component {
       vertexMovable: true,
       vertexAddable: true,
       vertexDeletable: true,
-    }
+    },
   }
 
   componentDidMount() {
@@ -38,7 +38,7 @@ class Example extends React.Component {
       grid: true,
       width: 760,
       height: 380,
-      interacting: () => this.state.interactingMap
+      interacting: () => this.state.interactingMap,
     })
 
     graph.addNode({
@@ -54,7 +54,7 @@ class Example extends React.Component {
           fill: '#efdbff',
           rx: 2,
           ry: 2,
-        }
+        },
       },
       ports: [
         {
@@ -65,7 +65,7 @@ class Example extends React.Component {
               stroke: '#9254de',
             },
           },
-        }
+        },
       ],
     })
 
@@ -82,9 +82,9 @@ class Example extends React.Component {
           fill: '#efdbff',
           rx: 2,
           ry: 2,
-        }
+        },
       },
-      movable: true
+      movable: true,
     })
 
     graph.addEdge({
@@ -97,44 +97,54 @@ class Example extends React.Component {
       source: [280, 150],
       target: [480, 150],
       label: 'arrowhead',
-      tools: ['target-arrowhead']
+      tools: ['target-arrowhead'],
     })
-    
+
     graph.addEdge({
       source: [280, 220],
       target: [480, 220],
       label: 'vertices',
-      tools: ['vertices']
+      tools: ['vertices'],
     })
   }
 
   onChange = (key: string, val: boolean) => {
-    this.setState(Object.assign(this.state.interactingMap, {
+    this.setState((prevState: any) => ({
+      ...prevState.interactingMap,
       [key]: val,
     }))
-  };
+  }
 
   refContainer = (container: HTMLDivElement) => {
     this.container = container
   }
 
   render() {
-    console.log(this.state.interactingMap)
     return (
       <div className="x6-graph-wrap" style={{ width: '100%', height: '100%' }}>
         <div ref={this.refContainer} className="x6-graph" />
-        <div style={{ position: 'absolute', top: 116, right: 16, lineHeight: 3, textAlign: 'right' }}>
-          {Object.keys(interactingLabel).map((item: keyof typeof interactingLabel) => (
-            <div key={item}>
-              <span>{interactingLabel[item]}：</span>
-              <Switch
-                checkedChildren="开启"
-                unCheckedChildren="关闭"
-                checked={this.state.interactingMap[item]}
-                onChange={val => this.onChange(item, val)}
-              />
-            </div>
-          ))}
+        <div
+          style={{
+            position: 'absolute',
+            top: 116,
+            right: 16,
+            lineHeight: 3,
+            textAlign: 'right',
+          }}
+        >
+          {Object.keys(interactingLabel).map(
+            (item: keyof typeof interactingLabel) => (
+              <div key={item}>
+                <span>{interactingLabel[item]}：</span>
+                <Switch
+                  checkedChildren="开启"
+                  unCheckedChildren="关闭"
+                  checked={this.state.interactingMap[item]}
+                  onChange={(val) => this.onChange(item, val)}
+                />
+              </div>
+            ),
+          )}
         </div>
       </div>
     )

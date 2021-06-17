@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEBlendAttributes, In, BlendMode } from './types'
 
-@FeBlend.register('FeBlend')
-export class FeBlend extends FeBase<SVGFEBlendElement> {
+@FEBlend.register('FeBlend')
+export class FEBlend extends FEBase<SVGFEBlendElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this
@@ -26,11 +26,11 @@ export class FeBlend extends FeBase<SVGFEBlendElement> {
   }
 }
 
-export namespace FeBlend {
+export namespace FEBlend {
   export function create<Attributes extends SVGFEBlendAttributes>(
     attrs?: Attributes | null,
   ) {
-    const elem = new FeBlend()
+    const elem = new FEBlend()
     if (attrs) {
       elem.attr(attrs)
     }

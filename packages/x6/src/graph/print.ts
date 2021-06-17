@@ -187,7 +187,7 @@ export class PrintManager extends Base {
       $style.html(css)
     } else {
       JQuery('head').append(
-        `'<style type="text/css" id="${id}">${css}</style>'`,
+        `'<style type="text/css" id="${id}">${css}</style>'`, // lgtm[js/html-constructed-from-input]
       )
     }
   }

@@ -1,10 +1,10 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEMergeAttributes } from './types'
 import { FEMergeNode } from '../fe-merge-node/fe-merge-node'
 import { SVGFEMergeNodeAttributes } from '../fe-merge-node/types'
 
-@FEMerge.register('FEMerge')
-export class FEMerge extends FeBase<SVGFEMergeElement> {
+@FEMerge.register('FeMerge')
+export class FEMerge extends FEBase<SVGFEMergeElement> {
   feMergeNode<Attributes extends SVGFEMergeNodeAttributes>(
     attrs?: Attributes | null,
   ) {

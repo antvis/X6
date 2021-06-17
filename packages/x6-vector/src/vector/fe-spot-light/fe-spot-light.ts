@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFESpotLightAttributes } from './types'
 
-@FESpotLight.register('FESpotLight')
-export class FESpotLight extends FeBase<SVGFESpotLightElement> {
+@FESpotLight.register('FeSpotLight')
+export class FESpotLight extends FEBase<SVGFESpotLightElement> {
   x(): number | string
   x(x: number | string | null): this
   x(x?: number | string | null) {

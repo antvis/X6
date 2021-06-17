@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEFuncAAttributes } from './types'
 
-@FEFuncA.register('FEFuncA')
-export class FEFuncA extends FeBase<SVGFEFuncAElement> {}
+@FEFuncA.register('FeFuncA')
+export class FEFuncA extends FEBase<SVGFEFuncAElement> {}
 
 export namespace FEFuncA {
   export function create<Attributes extends SVGFEFuncAAttributes>(

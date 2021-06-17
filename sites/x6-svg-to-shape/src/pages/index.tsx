@@ -14,7 +14,9 @@ export default class App extends React.Component<App.Props, App.State> {
   }
 
   onToggleMenu = () => {
-    this.setState({ menuVisible: !this.state.menuVisible })
+    this.setState((prevState) => ({
+      menuVisible: !prevState.menuVisible,
+    }))
   }
 
   onHideMenu = () => {

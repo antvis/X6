@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEDistantLightAttributes } from './types'
 
-@FEDistantLight.register('FEDistantLight')
-export class FEDistantLight extends FeBase<SVGFEDistantLightElement> {
+@FEDistantLight.register('FeDistantLight')
+export class FEDistantLight extends FEBase<SVGFEDistantLightElement> {
   azimuth(): number
   azimuth(v: number | null): this
   azimuth(v?: number | null) {

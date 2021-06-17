@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEFloodAttributes } from './types'
 
-@FEFlood.register('FEFlood')
-export class FEFlood extends FeBase<SVGFEFloodElement> {
+@FEFlood.register('FeFlood')
+export class FEFlood extends FEBase<SVGFEFloodElement> {
   color(): string
   color(color: string | null): this
   color(color?: string | null) {

@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEConvolveMatrixAttributes, In, EdgeMode } from './types'
 
-@FEConvolveMatrix.register('FEConvolveMatrix')
-export class FEConvolveMatrix extends FeBase<SVGFEConvolveMatrixElement> {
+@FEConvolveMatrix.register('FeConvolveMatrix')
+export class FEConvolveMatrix extends FEBase<SVGFEConvolveMatrixElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this

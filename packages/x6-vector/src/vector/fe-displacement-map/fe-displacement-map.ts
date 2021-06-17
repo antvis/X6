@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEDisplacementMapAttributes, In, Channel } from './types'
 
-@FEDisplacementMap.register('FEDisplacementMap')
-export class FEDisplacementMap extends FeBase<SVGFEDisplacementMapElement> {
+@FEDisplacementMap.register('FeDisplacementMap')
+export class FEDisplacementMap extends FEBase<SVGFEDisplacementMapElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this

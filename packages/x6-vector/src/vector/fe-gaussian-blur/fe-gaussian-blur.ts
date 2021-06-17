@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEGaussianBlurAttributes, In, EdgeMode } from './types'
 
-@FEGaussianBlur.register('FEGaussianBlur')
-export class FEGaussianBlur extends FeBase<SVGFEGaussianBlurElement> {
+@FEGaussianBlur.register('FeGaussianBlur')
+export class FEGaussianBlur extends FEBase<SVGFEGaussianBlurElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this
