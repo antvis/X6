@@ -1,3 +1,7 @@
+queries:
+  - exclude: js/use-before-declaration
+  - exclude: js/polynomial-redos
+
 extraction:
   javascript:
     index:
