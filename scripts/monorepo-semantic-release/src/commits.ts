@@ -45,8 +45,8 @@ export namespace Commits {
     check(cwd, 'cwd: directory')
     check(dir, 'dir: path')
 
-    cwd = Util.cleanPath(cwd) // eslint-disable-line
-    dir = Util.cleanPath(dir, cwd) // eslint-disable-line
+    cwd = Util.fixPath(cwd) // eslint-disable-line
+    dir = Util.fixPath(dir, cwd) // eslint-disable-line
 
     check(dir, 'dir: directory')
     check(lastHead, 'lastHead: alphanumeric{40}?')
