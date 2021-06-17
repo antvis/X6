@@ -12,34 +12,40 @@ export namespace Synchronizer {
     `${probe}${pkg ? `:${pkg.name}` : ''}`
 
   export function create(packages: Package[]) {
-    const ee = new EventEmitter()
-    const todo = () => packages.filter((p) => p.result == null)
-
-    // Emitter with memo: next subscribers will receive promises from the past if exists.
+    const events = new EventEmitter()
     const store: {
-      evt: { [key: string]: any }
-      subscr: { [key: string]: any }
+      evt: { [key: string]: Promise<any> }
+      subscr: { [key: string]: Promise<any> }
     } = {
       evt: {},
       subscr: {},
     }
 
+    const todo = () => packages.filter((pkg) => pkg.result == null)
+
     const emit = (probe: string, pkg?: Package) => {
       const name = getEventName(probe, pkg)
-      debug('ready: %s', name)
-      return store.evt[name] || (store.evt[name] = ee.emit(name))
+      debug('emit: %s', name)
+      if (store.evt[name] == null) {
+        store.evt[name] = events.emit(name)
+      }
+      return store.evt[name]
     }
 
     const once = (probe: string, pkg?: Package) => {
       const name = getEventName(probe, pkg)
-      return (
-        store.evt[name] ||
-        store.subscr[name] ||
-        (store.subscr[name] = ee.once(name))
-      )
+      if (store.evt[name]) {
+        return store.evt[name]
+      }
+
+      if (store.subscr[name] == null) {
+        store.subscr[name] = events.once(name)
+      }
+
+      return store.subscr[name]
     }
 
-    const waitFor = (probe: string, pkg: Package) => {
+    const waitFor = (probe: string, pkg: Package): Promise<any> => {
       const name = getEventName(probe, pkg)
       const cache = pkg as any
       return cache[name] || (cache[name] = once(probe, pkg))
@@ -54,29 +60,30 @@ export namespace Synchronizer {
       if (
         todo()
           .filter(filter)
-          .every((p) => p.hasOwnProperty(probe))
+          // eslint-disable-next-line no-prototype-builtins
+          .every((pkg) => pkg.hasOwnProperty(probe))
       ) {
-        debug('ready: %s', probe)
+        debug('waitForAll: %s', probe)
         emit(probe)
       }
 
       return promise
     }
 
-    const lucky: { [key: string]: any } = {}
+    const lucky: { [key: string]: Promise<any> } = {}
 
     // Only the first lucky package passes the probe.
     const getLucky = (probe: string, pkg: Package) => {
       if (lucky[probe]) {
         return
       }
-      const name = getEventName(probe, pkg)
-      debug('lucky: %s', name)
+
+      debug('lucky: %s', getEventName(probe, pkg))
       lucky[probe] = emit(probe, pkg)
     }
 
     return {
-      ee,
+      ee: events,
       emit,
       once,
       todo,
