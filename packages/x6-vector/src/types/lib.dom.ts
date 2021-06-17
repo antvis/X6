@@ -24,6 +24,18 @@ interface SVGAElement {
   readonly x6_vector_type: 'a'
 }
 
+interface SVGAnimateElement {
+  readonly x6_vector_type: 'animate'
+}
+
+interface SVGAnimateMotionElement {
+  readonly x6_vector_type: 'animateMotion'
+}
+
+interface SVGAnimateTransformElement {
+  readonly x6_vector_type: 'animateTransform'
+}
+
 interface SVGCircleElement {
   readonly x6_vector_type: 'circle'
 }
