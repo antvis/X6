@@ -31,9 +31,6 @@ export default class FlowGraph {
         eventTypes: ['leftMouseDown', 'rightMouseDown', 'mouseWheel'],
         modifiers: 'ctrl',
       },
-      scroller: {
-        enabled: true,
-      },
       mousewheel: {
         enabled: true,
         zoomAtMousePosition: true,
@@ -96,6 +93,14 @@ export default class FlowGraph {
       snapline: true,
       keyboard: true,
       history: true,
+      minimap: {
+        enabled: true,
+        container: document.getElementById('minimap')!,
+        width: 198,
+        height: 198,
+        padding: 10,
+      },
+      clipboard: true,
     })
     this.initStencil()
     this.initShape()
@@ -188,59 +193,73 @@ export default class FlowGraph {
   }
 
   private static initKeyboard() {
-    // const copy = () => {
-    //   const { graph } = FlowGraph
-    //   const cells = graph.getSelectedCells()
-    //   if (cells.length) {
-    //     graph.copy(cells)
-    //   }
-    //   return false
-    // }
-    // const cut = () => {
-    //   const { graph } = FlowGraph
-    //   const cells = graph.getSelectedCells()
-    //   if (cells.length) {
-    //     graph.cut(cells)
-    //   }
-    //   return false
-    // }
-    // const paste = () => {
-    //   const { graph } = FlowGraph
-    //   if (!graph.isClipboardEmpty()) {
-    //     const cells = graph.paste({ offset: 32 })
-    //     graph.cleanSelection()
-    //     graph.select(cells)
-    //   }
-    //   return false
-    // }
-    // graph.bindKey(['meta+z', 'ctrl+z'], () => {
-    //   if (history.canUndo()) {
-    //     history.undo()
-    //   }
-    //   return false
-    // })
-    // graph.bindKey(['meta+shift+z', 'ctrl+y'], () => {
-    //   if (history.canRedo()) {
-    //     history.redo()
-    //   }
-    //   return false
-    // })
-    // graph.bindKey(['meta+d', 'ctrl+d'], () => {
-    //   graph.clearCells()
-    //   return false
-    // })
-    // graph.bindKey(['meta+s', 'ctrl+s'], () => {
-    //   graph.toPNG((datauri: string) => {
-    //     DataUri.downloadDataUri(datauri, 'chart.png')
-    //   })
-    //   return false
-    // })
-    // graph.bindKey(['meta+p', 'ctrl+p'], () => {
-    //   graph.printPreview()
-    //   return false
-    // })
-    // graph.bindKey(['meta+c', 'ctrl+c'], copy)
-    // graph.bindKey(['meta+v', 'ctrl+v'], paste)
-    // graph.bindKey(['meta+x', 'ctrl+x'], cut)
+    const { graph } = this
+    // copy cut paste
+    graph.bindKey(['meta+c', 'ctrl+c'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.copy(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+x', 'ctrl+x'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.cut(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+v', 'ctrl+v'], () => {
+      if (!graph.isClipboardEmpty()) {
+        const cells = graph.paste({ offset: 32 })
+        graph.cleanSelection()
+        graph.select(cells)
+      }
+      return false
+    })
+
+    //undo redo
+    graph.bindKey(['meta+z', 'ctrl+z'], () => {
+      if (graph.history.canUndo()) {
+        graph.history.undo()
+      }
+      return false
+    })
+    graph.bindKey(['meta+shift+z', 'ctrl+shift+z'], () => {
+      if (graph.history.canRedo()) {
+        graph.history.redo()
+      }
+      return false
+    })
+
+    // select all
+    graph.bindKey(['meta+a', 'ctrl+a'], () => {
+      const nodes = graph.getNodes()
+      if (nodes) {
+        graph.select(nodes)
+      }
+    })
+
+    //delete
+    graph.bindKey('backspace', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.removeCells(cells)
+      }
+    })
+
+    // zoom
+    graph.bindKey(['ctrl+1', 'meta+1'], () => {
+      const zoom = graph.zoom()
+      if (zoom < 1.5) {
+        graph.zoom(0.1)
+      }
+    })
+    graph.bindKey(['ctrl+2', 'meta+2'], () => {
+      const zoom = graph.zoom()
+      if (zoom > 0.5) {
+        graph.zoom(-0.1)
+      }
+    })
   }
 }

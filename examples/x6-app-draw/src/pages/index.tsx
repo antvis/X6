@@ -51,6 +51,7 @@ export default function () {
       <div className={styles.content}>
         <div id="stencil" className={styles.shapes}></div>
         <div id="container" className="x6-graph" />
+        <div id="minimap" className={styles.minimap}></div>
       </div>
     </div>
   )

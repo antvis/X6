@@ -26,6 +26,7 @@
   .content {
     display: flex;
     height: calc(100% - 105px);
+    position: relative;
     .shapes {
       position: relative;
       width: 214px;
@@ -38,6 +39,16 @@
       height: 100%;
       padding: 0 24px;
       border-left: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .minimap {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 200px;
+      height: 200px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fafbfc;
     }
   }
 }
