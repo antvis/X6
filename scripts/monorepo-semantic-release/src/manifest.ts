@@ -49,6 +49,7 @@ export namespace Manifest {
 
     const checkDeps = (scope: string) => {
       if (
+        // eslint-disable-next-line no-prototype-builtins
         manifest.hasOwnProperty(scope) &&
         typeof manifest[scope] !== 'object'
       ) {
