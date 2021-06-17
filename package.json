@@ -60,5 +60,9 @@
     "husky": "^6.0.0",
     "is-ci": "^3.0.0",
     "lerna": "^4.0.0"
+  },
+  "resolutions": {
+    "monaco-editor-webpack-plugin": "2.0.0",
+    "monaco-editor": "0.21.0"
   }
 }
