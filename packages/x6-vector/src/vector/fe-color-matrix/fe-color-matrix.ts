@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEColorMatrixAttributes, In, Type } from './types'
 
-@FeColorMatrix.register('FeColorMatrix')
-export class FeColorMatrix extends FeBase<SVGFEColorMatrixElement> {
+@FEColorMatrix.register('FeColorMatrix')
+export class FEColorMatrix extends FEBase<SVGFEColorMatrixElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this
@@ -24,11 +24,11 @@ export class FeColorMatrix extends FeBase<SVGFEColorMatrixElement> {
   }
 }
 
-export namespace FeColorMatrix {
+export namespace FEColorMatrix {
   export function create<Attributes extends SVGFEColorMatrixAttributes>(
     attrs?: Attributes | null,
   ) {
-    const elem = new FeColorMatrix()
+    const elem = new FEColorMatrix()
     if (attrs) {
       elem.attr(attrs)
     }

@@ -90,7 +90,7 @@ export namespace Circle {
     const circle = new Circle()
     if (size == null) {
       circle.size(0)
-    } else if (size != null && typeof size === 'object') {
+    } else if (typeof size === 'object') {
       circle.size(0).attr(size)
     } else {
       circle.size(size)

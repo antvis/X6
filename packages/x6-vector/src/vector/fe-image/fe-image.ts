@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEImageAttributes } from './types'
 
-@FEImage.register('FEImage')
-export class FEImage extends FeBase<SVGFEImageElement> {
+@FEImage.register('FeImage')
+export class FEImage extends FEBase<SVGFEImageElement> {
   preserveAspectRatio(): string
   preserveAspectRatio(v: string | null): this
   preserveAspectRatio(v?: string | null) {
