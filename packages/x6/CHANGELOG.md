@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.12](https://github.com/antvis/x6/compare/@antv/x6@1.23.11...@antv/x6@1.23.12) (2021-06-17)
+
+
+### Bug Fixes
+
+* 🐛 fix demo error in x6 sites ([#1108](https://github.com/antvis/x6/issues/1108)) ([575aba0](https://github.com/antvis/x6/commit/575aba08c8901cc7753adcf7568d44b5845bc6e4))
+
 ## @antv/x6 [1.23.11](https://github.com/antvis/x6/compare/@antv/x6@1.23.10...@antv/x6@1.23.11) (2021-06-17)
 
 
