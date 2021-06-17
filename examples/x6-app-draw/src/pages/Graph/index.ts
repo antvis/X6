@@ -22,13 +22,17 @@ export default class FlowGraph {
           {
             color: '#CBCED3',
             thickness: 1,
-            factor: 4,
+            factor: 5,
           },
         ],
       },
       panning: {
         enabled: true,
         eventTypes: ['leftMouseDown', 'rightMouseDown', 'mouseWheel'],
+        modifiers: 'ctrl',
+      },
+      scroller: {
+        enabled: true,
       },
       mousewheel: {
         enabled: true,
@@ -65,17 +69,10 @@ export default class FlowGraph {
               },
             },
             zIndex: 0,
-            tools: [
-              {
-                name: 'segments',
-                args: {
-                  attrs: {
-                    fill: '#459CDB',
-                  },
-                },
-              },
-            ],
           })
+        },
+        validateConnection({ targetMagnet }) {
+          return !!targetMagnet
         },
       },
       highlighting: {
@@ -89,10 +86,21 @@ export default class FlowGraph {
           },
         },
       },
+      resizing: true,
+      rotating: true,
+      selecting: {
+        enabled: true,
+        rubberband: true,
+        showNodeSelectionBox: true,
+      },
+      snapline: true,
+      keyboard: true,
+      history: true,
     })
     this.initStencil()
     this.initShape()
     this.initEvent()
+    this.initKeyboard()
     return this.graph
   }
 
@@ -177,5 +185,62 @@ export default class FlowGraph {
       ) as NodeListOf<SVGElement>
       this.showPorts(ports, false)
     })
+  }
+
+  private static initKeyboard() {
+    // const copy = () => {
+    //   const { graph } = FlowGraph
+    //   const cells = graph.getSelectedCells()
+    //   if (cells.length) {
+    //     graph.copy(cells)
+    //   }
+    //   return false
+    // }
+    // const cut = () => {
+    //   const { graph } = FlowGraph
+    //   const cells = graph.getSelectedCells()
+    //   if (cells.length) {
+    //     graph.cut(cells)
+    //   }
+    //   return false
+    // }
+    // const paste = () => {
+    //   const { graph } = FlowGraph
+    //   if (!graph.isClipboardEmpty()) {
+    //     const cells = graph.paste({ offset: 32 })
+    //     graph.cleanSelection()
+    //     graph.select(cells)
+    //   }
+    //   return false
+    // }
+    // graph.bindKey(['meta+z', 'ctrl+z'], () => {
+    //   if (history.canUndo()) {
+    //     history.undo()
+    //   }
+    //   return false
+    // })
+    // graph.bindKey(['meta+shift+z', 'ctrl+y'], () => {
+    //   if (history.canRedo()) {
+    //     history.redo()
+    //   }
+    //   return false
+    // })
+    // graph.bindKey(['meta+d', 'ctrl+d'], () => {
+    //   graph.clearCells()
+    //   return false
+    // })
+    // graph.bindKey(['meta+s', 'ctrl+s'], () => {
+    //   graph.toPNG((datauri: string) => {
+    //     DataUri.downloadDataUri(datauri, 'chart.png')
+    //   })
+    //   return false
+    // })
+    // graph.bindKey(['meta+p', 'ctrl+p'], () => {
+    //   graph.printPreview()
+    //   return false
+    // })
+    // graph.bindKey(['meta+c', 'ctrl+c'], copy)
+    // graph.bindKey(['meta+v', 'ctrl+v'], paste)
+    // graph.bindKey(['meta+x', 'ctrl+x'], cut)
   }
 }
