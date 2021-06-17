@@ -1,4 +1,7 @@
 import { SVGAAttributes } from '../a/types'
+import { SVGAnimateAttributes } from '../animate/types'
+import { SVGAnimateMotionAttributes } from '../animate-motion/types'
+import { SVGAnimateTransformAttributes } from '../animate-transform/types'
 import { SVGCircleAttributes } from '../circle/types'
 import { SVGClipPathAttributes } from '../clippath/types'
 import { SVGDefsAttributes } from '../defs/types'
@@ -61,6 +64,9 @@ import { SVGCoreAttributes } from './attributes-core'
 
 export interface SVGAttributesTagNameMap {
   a: SVGAAttributes
+  animate: SVGAnimateAttributes
+  animateMotion: SVGAnimateMotionAttributes
+  animateTransform: SVGAnimateTransformAttributes
   circle: SVGCircleAttributes
   clipPath: SVGClipPathAttributes
   defs: SVGDefsAttributes
@@ -122,6 +128,9 @@ export interface SVGAttributesTagNameMap {
 // prettier-ignore
 export type SVGAttributesMap<T> =
   T extends SVGAElement ? SVGAAttributes :
+  T extends SVGAnimateElement ? SVGAnimateAttributes :
+  T extends SVGAnimateMotionElement ? SVGAnimateMotionAttributes :
+  T extends SVGAnimateTransformElement ? SVGAnimateTransformAttributes :
   T extends SVGCircleElement ? SVGCircleAttributes :
   T extends SVGClipPathElement ? SVGClipPathAttributes :
   T extends SVGDefsElement ? SVGDefsAttributes :
