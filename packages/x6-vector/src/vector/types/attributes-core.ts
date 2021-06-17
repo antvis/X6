@@ -451,3 +451,168 @@ export interface SVGTransferFunctionAttributes {
   exponent?: number
   offset?: number
 }
+
+export interface AnimationAttributeTargetAttributes {
+  /**
+   * The `attributeName` attribute indicates the name of the CSS property or
+   * attribute of the target element that is going to be changed during an
+   * animation.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/attributeName
+   */
+  attributeName?: string
+  /**
+   * The `attributeType` attribute specifies the namespace in which the target
+   * attribute and its associated values are defined.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/attributeType
+   * @deprecated This feature is no longer recommended. Though some browsers
+   * might still support it, it may have already been removed from the relevant
+   * web standards, may be in the process of being dropped, or may only be kept
+   *  for compatibility purposes. Avoid using it, and update existing code if
+   * possible; see the compatibility table at the bottom of this page to guide
+   * your decision. Be aware that this feature may cease to work at any time.
+   */
+  attributeType?: 'CSS' | 'XML' | 'auto'
+}
+
+export interface SVGAnimationTimingAttributes {
+  /**
+   * The `begin` attribute defines when an animation should begin or when an
+   * element should be discarded.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/begin
+   */
+  begin?: string
+  /**
+   * The `dur` attribute indicates the simple duration of an animation.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dur
+   */
+  dur?: string
+  /**
+   * The `end` attribute defines an end value for the animation that can
+   * constrain the active duration.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/end
+   */
+  end?: string
+  /**
+   * The `min` attribute specifies the minimum value of the active animation
+   * duration.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/min
+   */
+  min?: string
+  /**
+   * The `max` attribute specifies the maximum value of the active animation
+   * duration.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/max
+   */
+  max?: string
+  /**
+   * The `restart` attribute specifies whether or not an animation can restart.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/restart
+   */
+  restart?: 'always' | 'whenNotActive' | 'never'
+  /**
+   * The `repeatCount` attribute indicates the number of times an animation will
+   * take place.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatCount
+   */
+  repeatCount?: number | 'indefinite'
+  /**
+   * The `repeatDur` attribute specifies the total duration for repeating an
+   * animation.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatDur
+   */
+  repeatDur?: string | 'indefinite'
+  /**
+   * The `fill` attribute defines the final state of the animation
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill#animate
+   */
+  fill?: 'freeze' | 'remove'
+}
+
+export interface SVGAnimationValueAttributes {
+  /**
+   * The `calcMode` attribute specifies the interpolation mode for the animation.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/calcMode
+   */
+  calcMode?: 'discrete' | 'linear' | 'paced' | 'spline'
+  /**
+   * The `values` attribute has different meanings, depending upon the context
+   * where it's used, either it defines a sequence of values used over the
+   * course of an animation, or it's a list of numbers for a color matrix,
+   * which is interpreted differently depending on the type of color change
+   * to be performed.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/values
+   */
+  values?: string
+  /**
+   * The `keyTimes` attribute represents a list of time values used to control
+   * the pacing of the animation. Each time in the list corresponds to a value
+   * in the `values` attribute list, and defines when the value is used in the
+   * animation. Each time value in the `keyTimes` list is specified as a
+   * floating point value between `0` and `1` (inclusive), representing a
+   * proportional offset into the duration of the animation element.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keyTimes
+   */
+  keyTimes?: string
+  /**
+   * The `keySplines` attribute defines a set of **Bézier curve** control
+   * points associated with the keyTimes list, defining a cubic Bézier function
+   * that controls interval pacing.
+   *
+   * This attribute is ignored unless the `calcMode` attribute is set to spline.
+   *
+   * If there are any errors in the `keySplines` specification (bad values,
+   * too many or too few values), the animation will not occur.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keySplines
+   */
+  keySplines?: string
+  /**
+   * The `from` attribute indicates the initial value of the attribute that
+   * will be modified during the animation. When used with the to attribute,
+   * the animation will change the modified attribute from the `from` value to
+   * the `to` value. When used with the `by` attribute, the animation will
+   * change the attribute relatively from the `from` value by the value
+   * specified in `by`.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/From
+   */
+  from?: string | number
+  /**
+   * The `to` attribute indicates the final value of the attribute that will
+   * be modified during the animation. The value of the attribute will change
+   * between the `from` attribute value and this value.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/To
+   */
+  to?: string | number
+  /**
+   * The `by` attribute specifies a relative offset value for an attribute
+   * that will be modified during an animation.
+   *
+   * The starting value for the attribute is either indicated by specifying
+   * it as value for the attribute given in the `attributeName` or the `from`
+   * attribute.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/by
+   */
+  by?: string | number
+}
+
+export interface SVGAnimationAdditionAttributes {
+  /**
+   * The `additive` attribute controls whether or not an animation is additive.
+   *
+   * It is frequently useful to define animation as an offset or delta to an
+   * attribute's value, rather than as absolute values.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/additive
+   */
+  additive?: 'replace' | 'sum'
+  /**
+   * The `accumulate` attribute controls whether or not an animation is
+   * cumulative.
+   *
+   * It is frequently useful for repeated animations to build upon the
+   * previous results, accumulating with each iteration. This attribute
+   * said to the animation if the value is added to the previous animated
+   * attribute's value on each iteration.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/accumulate
+   */
+  accumulate?: 'none' | 'sum'
+}
