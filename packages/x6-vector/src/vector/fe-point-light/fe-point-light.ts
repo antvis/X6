@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEPointLightAttributes } from './types'
 
-@FEPointLight.register('FEPointLight')
-export class FEPointLight extends FeBase<SVGFEPointLightElement> {
+@FEPointLight.register('FePointLight')
+export class FEPointLight extends FEBase<SVGFEPointLightElement> {
   x(): number
   x(x: number | null): this
   x(x?: number | null) {

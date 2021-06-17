@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFETileAttributes, In } from './types'
 
-@FETile.register('FETile')
-export class FETile extends FeBase<SVGFETileElement> {
+@FETile.register('FeTile')
+export class FETile extends FEBase<SVGFETileElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this
