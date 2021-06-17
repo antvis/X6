@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFETurbulenceAttributes, Type, StitchTiles } from './types'
 
-@FETurbulence.register('FETurbulence')
-export class FETurbulence extends FeBase<SVGFETurbulenceElement> {
+@FETurbulence.register('FeTurbulence')
+export class FETurbulence extends FEBase<SVGFETurbulenceElement> {
   baseFrequency(): number
   baseFrequency(v: number | null): this
   baseFrequency(v?: number | null) {

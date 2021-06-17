@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFECompositeAttributes, In, Operator } from './types'
 
-@FEComposite.register('FEComposite')
-export class FEComposite extends FeBase<SVGFECompositeElement> {
+@FEComposite.register('FeComposite')
+export class FEComposite extends FEBase<SVGFECompositeElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this

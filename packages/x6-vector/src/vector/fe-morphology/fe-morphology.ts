@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEMorphologyAttributes, In, Operator } from './types'
 
-@FEMorphology.register('FEMorphology')
-export class FEMorphology extends FeBase<SVGFEMorphologyElement> {
+@FEMorphology.register('FeMorphology')
+export class FEMorphology extends FEBase<SVGFEMorphologyElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this

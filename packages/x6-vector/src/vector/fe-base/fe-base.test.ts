@@ -1,10 +1,10 @@
 import { Filter } from '../filter/filter'
-import { FeBlend } from '../fe-blend/fe-blend'
+import { FEBlend } from '../fe-blend/fe-blend'
 
 describe('FeBase', () => {
   describe('filter()', () => {
     it('should return null when element not appended to filter', () => {
-      expect(FeBlend.create().filter()).toBeNull()
+      expect(FEBlend.create().filter()).toBeNull()
     })
 
     it('should return the parent filter element', () => {
