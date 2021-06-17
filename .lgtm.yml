@@ -1,3 +1,6 @@
+# @see https://help.semmle.com/lgtm-enterprise/user/help/lgtm.yml-configuration-file.html
+# @template https://lgtm.com/static/downloads/lgtm.template.yml
+
 queries:
   - exclude: js/use-before-declaration
   - exclude: js/polynomial-redos
