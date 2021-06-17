@@ -29101,17 +29101,6 @@ __webpack_require__.r(__webpack_exports__);
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -29176,11 +29165,10 @@ var HTMLWorker = /** @class */ (function () {
     };
     HTMLWorker.prototype.format = function (uri, range, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var document, formattingOptions, textEdits;
+            var document, textEdits;
             return __generator(this, function (_a) {
                 document = this._getTextDocument(uri);
-                formattingOptions = __assign(__assign({}, this._languageSettings.format), options);
-                textEdits = this._languageService.format(document, range, formattingOptions);
+                textEdits = this._languageService.format(document, range, this._languageSettings && this._languageSettings.format);
                 return [2 /*return*/, Promise.resolve(textEdits)];
             });
         });
