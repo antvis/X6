@@ -16,19 +16,20 @@ export namespace Plugin {
   const debug = getDebugger('msr:inline-plugin')
 
   function updateManifestDeps(pkg: Package, path: string) {
-    // Get and parse manifest file contents.
     const manifest = Manifest.get(path)
-    const content = manifest.__contents__ as string
+    const content = manifest.__contents__ as string // eslint-disable-line
     const indent = detectIndent(content).indent
     const trailingWhitespace = detectNewline(content) || ''
+    let dirty = false
 
     const updateDependency = (scope: string, name: string, version: string) => {
       if (manifest[scope] && manifest[scope][name]) {
+        dirty = true
         manifest[scope][name] = `^${version}`
       }
     }
 
-    pkg.localDeps &&
+    if (pkg.localDeps) {
       pkg.localDeps.forEach((p) => {
         // Get version of dependency.
         const release = p.nextRelease || p.lastRelease
@@ -45,12 +46,15 @@ export namespace Plugin {
         // updateDependency('peerDependencies', p.name, release.version)
         // updateDependency('optionalDependencies', p.name, release.version)
       })
+    }
 
     // Write package.json back out.
-    fse.writeFileSync(
-      path,
-      JSON.stringify(manifest, null, indent) + trailingWhitespace,
-    )
+    if (dirty) {
+      fse.writeFileSync(
+        path,
+        JSON.stringify(manifest, null, indent) + trailingWhitespace,
+      )
+    }
   }
 
   function hasChangedDeep(packages: Package[], ignore: Package[] = []) {
@@ -81,9 +85,9 @@ export namespace Plugin {
     const { cwd } = multiContext
     const { emit, todo, waitFor, waitForAll, getLucky } = synchronizer
     const releaseMap: { [key: string]: SemanticRelease.Release[] } = {}
-    let successExeCount = 0
+    let succeedCount = 0
 
-    return function create(pkg: Package) {
+    return function (pkg: Package) {
       const { deps, plugins1, plugins2, dir, path, name } = pkg
       let scopedCommits: Commits.Commit[]
 
@@ -92,16 +96,11 @@ export namespace Plugin {
         context: SemanticRelease.Context,
       ) => {
         // Restore context for plugins that does not rely on parsed opts.
-        Object.assign(context.options, (context.options as any)._pkgOptions)
-
+        Object.assign(context.options, (context.options as any)._pkgOptions) // eslint-disable-line
         // And bind actual logger.
         Object.assign(pkg.logger, context.logger)
 
         pkg.ready = true
-        emit(
-          'readyForRelease',
-          todo().find((p) => !p.ready),
-        )
 
         const res = await plugins1.verifyConditions(context)
         debug('verified conditions: %s', pkg.name)
@@ -155,6 +154,7 @@ export namespace Plugin {
         if (pkg.manifest.optionalDependencies) {
           names.push(...Object.keys(pkg.manifest.optionalDependencies))
         }
+
         const ignore = pkg.localDeps.filter((item) => names.includes(item.name))
         if (pkg.nextType == null && hasChangedDeep(pkg.localDeps, ignore)) {
           pkg.nextType = 'patch'
@@ -318,22 +318,24 @@ export namespace Plugin {
         ctx.releases = releaseMap[pkg.name]
         const ret = await plugins1.success(ctx)
 
+        // eslint-disable-next-line no-console
         console.log(
           `Release: ${pkg.name}`,
-          `Progress: ${successExeCount}/${totalCount}`,
+          `Progress: ${succeedCount}/${totalCount}`,
         )
 
-        if (successExeCount < totalCount) {
-          successExeCount += 1
+        if (succeedCount < totalCount) {
+          succeedCount += 1
         }
 
-        if (successExeCount === totalCount) {
+        if (succeedCount === totalCount) {
           ctx.releases = Object.keys(releaseMap)
             .sort()
             .reduce<SemanticRelease.Release[]>((memo, key) => {
               return [...memo, ...releaseMap[key]]
             }, [])
 
+          // eslint-disable-next-line no-console
           console.log('Comment Issue: ', ctx.releases)
 
           const shouldComment = ctx.releases.some(

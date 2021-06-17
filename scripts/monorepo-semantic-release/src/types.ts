@@ -3,7 +3,6 @@ import SemanticRelease from 'semantic-release'
 export interface Options {
   debug?: boolean
   firstParent?: boolean
-  sequential?: boolean
 }
 
 export interface Context {
@@ -25,8 +24,8 @@ export interface Package {
   plugins1: any
   plugins2: any
   logger: Logger
-  options: SemanticRelease.Options
   localDeps: Package[]
+  options: SemanticRelease.Options
   result?: SemanticRelease.Result
   lastRelease?: SemanticRelease.LastRelease
   nextRelease?: SemanticRelease.NextRelease
