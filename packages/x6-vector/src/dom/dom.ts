@@ -52,13 +52,12 @@ export class Dom<TElement extends Element = Element> extends Primer<TElement> {
   matches(selector: string): boolean {
     const elem = this.node
     const node = this.node as any
-    const matcher = elem.matches
-    // eslint-disable-next-line no-unused-expressions
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    node.matchesSelector ||
+    const matcher =
+      elem.matches ||
+      node.matchesSelector ||
+      node.webkitMatchesSelector ||
       node.msMatchesSelector ||
       node.mozMatchesSelector ||
-      elem.webkitMatchesSelector ||
       node.oMatchesSelector ||
       null
     return matcher ? matcher.call(elem, selector) : false

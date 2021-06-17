@@ -1,8 +1,8 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEOffsetAttributes, In } from './types'
 
-@FEOffset.register('FEOffset')
-export class FEOffset extends FeBase<SVGFEOffsetElement> {
+@FEOffset.register('FeOffset')
+export class FEOffset extends FEBase<SVGFEOffsetElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this

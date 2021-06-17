@@ -1,4 +1,4 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEDiffuseLightingAttributes, In } from './types'
 import { SVGFESpotLightAttributes } from '../fe-spot-light/types'
 import { SVGFEPointLightAttributes } from '../fe-point-light/types'
@@ -7,8 +7,8 @@ import { FESpotLight } from '../fe-spot-light/fe-spot-light'
 import { FEPointLight } from '../fe-point-light/fe-point-light'
 import { FEDistantLight } from '../fe-distant-light/fe-distant-light'
 
-@FEDiffuseLighting.register('FEDiffuseLighting')
-export class FEDiffuseLighting extends FeBase<SVGFEDiffuseLightingElement> {
+@FEDiffuseLighting.register('FeDiffuseLighting')
+export class FEDiffuseLighting extends FEBase<SVGFEDiffuseLightingElement> {
   feDistantLight<Attributes extends SVGFEDistantLightAttributes>(
     attrs?: Attributes | null,
   ) {

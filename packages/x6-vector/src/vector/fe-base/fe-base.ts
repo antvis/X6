@@ -1,7 +1,7 @@
 import { Base } from '../common/base'
 import { Filter } from '../filter/filter'
 
-export class FeBase<
+export class FEBase<
   T extends
     | SVGFEBlendElement
     | SVGFEColorMatrixElement

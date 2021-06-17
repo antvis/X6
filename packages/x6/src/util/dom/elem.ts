@@ -61,7 +61,7 @@ export function createSvgElement<T extends SVGElement>(
 
 export function createSvgDocument(content?: string) {
   if (content) {
-    const xml = `<svg xmlns="${ns.svg}" xmlns:xlink="${ns.xlink}" version="${svgVersion}">${content}</svg>`
+    const xml = `<svg xmlns="${ns.svg}" xmlns:xlink="${ns.xlink}" version="${svgVersion}">${content}</svg>` // lgtm[js/html-constructed-from-input]
     const { documentElement } = parseXML(xml, { async: false })
     return documentElement as any as SVGSVGElement
   }
