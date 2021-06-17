@@ -13,6 +13,7 @@ import { ContainerExtension as LinearGradientExtension } from '../gradient/linea
 import { ContainerExtension as RadialGradientExtension } from '../gradient/radial-exts'
 import { ContainerExtension as SymbolExtension } from '../symbol/exts'
 import { ContainerExtension as FilterExtension } from '../filter/exts'
+import { ContainerExtension as SwitchExtension } from '../switch/exts'
 // shapes
 import { ContainerExtension as CircleExtension } from '../circle/exts'
 import { ContainerExtension as EllipseExtension } from '../ellipse/ext'
@@ -38,6 +39,7 @@ declare module './container' {
       MaskExtension<TSVGElement>,
       MarkerExtension<TSVGElement>,
       SymbolExtension<TSVGElement>,
+      SwitchExtension<TSVGElement>,
       FilterExtension<TSVGElement>,
       PatternExtension<TSVGElement>,
       ClipPathExtension<TSVGElement>,
@@ -68,6 +70,7 @@ applyMixins(
   MarkerExtension,
   FilterExtension,
   SymbolExtension,
+  SwitchExtension,
   PatternExtension,
   ClipPathExtension,
   GradientExtension,
