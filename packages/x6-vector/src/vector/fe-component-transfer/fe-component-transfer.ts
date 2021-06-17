@@ -1,4 +1,4 @@
-import { FeBase } from '../fe-base/fe-base'
+import { FEBase } from '../fe-base/fe-base'
 import { SVGFEFuncAAttributes } from '../fe-func-a/types'
 import { SVGFEFuncBAttributes } from '../fe-func-b/types'
 import { SVGFEFuncGAttributes } from '../fe-func-g/types'
@@ -9,8 +9,8 @@ import { FEFuncG } from '../fe-func-g/fe-func-g'
 import { FEFuncR } from '../fe-func-r/fe-func-r'
 import { SVGFEComponentTransferAttributes, In } from './types'
 
-@FeComponentTransfer.register('FeComponentTransfer')
-export class FeComponentTransfer extends FeBase<SVGFEComponentTransferElement> {
+@FEComponentTransfer.register('FeComponentTransfer')
+export class FEComponentTransfer extends FEBase<SVGFEComponentTransferElement> {
   in(): In | string
   in(type: In): this
   in(type: string): this
@@ -36,11 +36,11 @@ export class FeComponentTransfer extends FeBase<SVGFEComponentTransferElement> {
   }
 }
 
-export namespace FeComponentTransfer {
+export namespace FEComponentTransfer {
   export function create<Attributes extends SVGFEComponentTransferAttributes>(
     attrs?: Attributes | null,
   ) {
-    const elem = new FeComponentTransfer()
+    const elem = new FEComponentTransfer()
     if (attrs) {
       elem.attr(attrs)
     }
