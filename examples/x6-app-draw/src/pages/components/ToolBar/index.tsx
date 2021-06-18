@@ -5,12 +5,10 @@ import { DataUri } from '@antv/x6'
 import {
   ClearOutlined,
   SaveOutlined,
-  PrinterOutlined,
   UndoOutlined,
   RedoOutlined,
-  CopyOutlined,
-  ScissorOutlined,
-  SnippetsOutlined,
+  ZoomInOutlined,
+  ZoomOutOutlined,
 } from '@ant-design/icons'
 import '@antv/x6-react-components/es/toolbar/style/index.css'
 
@@ -20,37 +18,11 @@ const Group = Toolbar.Group
 export default function () {
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
-
-  const copy = () => {
-    const { graph } = FlowGraph
-    const cells = graph.getSelectedCells()
-    if (cells.length) {
-      graph.copy(cells)
-    }
-    return false
-  }
-
-  const cut = () => {
-    const { graph } = FlowGraph
-    const cells = graph.getSelectedCells()
-    if (cells.length) {
-      graph.cut(cells)
-    }
-    return false
-  }
-
-  const paste = () => {
-    const { graph } = FlowGraph
-    if (!graph.isClipboardEmpty()) {
-      const cells = graph.paste({ offset: 32 })
-      graph.cleanSelection()
-      graph.select(cells)
-    }
-    return false
-  }
+  const [zoom, setZoom] = useState(1)
 
   useEffect(() => {
     const { graph } = FlowGraph
+    // history
     const { history } = graph
     setCanUndo(history.canUndo())
     setCanRedo(history.canRedo())
@@ -58,36 +30,11 @@ export default function () {
       setCanUndo(history.canUndo())
       setCanRedo(history.canRedo())
     })
-
-    graph.bindKey(['meta+z', 'ctrl+z'], () => {
-      if (history.canUndo()) {
-        history.undo()
-      }
-      return false
+    // zoom
+    setZoom(graph.zoom())
+    graph.on('scale', () => {
+      setZoom(graph.zoom())
     })
-    graph.bindKey(['meta+shift+z', 'ctrl+y'], () => {
-      if (history.canRedo()) {
-        history.redo()
-      }
-      return false
-    })
-    graph.bindKey(['meta+d', 'ctrl+d'], () => {
-      graph.clearCells()
-      return false
-    })
-    graph.bindKey(['meta+s', 'ctrl+s'], () => {
-      graph.toPNG((datauri: string) => {
-        DataUri.downloadDataUri(datauri, 'chart.png')
-      })
-      return false
-    })
-    graph.bindKey(['meta+p', 'ctrl+p'], () => {
-      graph.printPreview()
-      return false
-    })
-    graph.bindKey(['meta+c', 'ctrl+c'], copy)
-    graph.bindKey(['meta+v', 'ctrl+v'], paste)
-    graph.bindKey(['meta+x', 'ctrl+x'], cut)
   }, [])
 
   const handleClick = (name: string) => {
@@ -104,20 +51,14 @@ export default function () {
         break
       case 'save':
         graph.toPNG((datauri: string) => {
-          DataUri.downloadDataUri(datauri, 'chart.png')
+          DataUri.downloadDataUri(datauri, 'flowchart.png')
         })
         break
-      case 'print':
-        graph.printPreview()
+      case 'zoomIn':
+        graph.zoom(0.1)
         break
-      case 'copy':
-        copy()
-        break
-      case 'cut':
-        cut()
-        break
-      case 'paste':
-        paste()
+      case 'zoomOut':
+        graph.zoom(-0.1)
         break
       default:
         break
@@ -136,6 +77,23 @@ export default function () {
         </Group>
         <Group>
           <Item
+            name="zoomIn"
+            tooltip="ZoomIn (Cmd + 1, Ctrl + 1)"
+            icon={<ZoomInOutlined />}
+            disabled={zoom > 1.5}
+          />
+          <Item
+            name="zoomOut"
+            tooltip="ZoomOut (Cmd + 2, Ctrl + 2)"
+            icon={<ZoomOutOutlined />}
+            disabled={zoom < 0.5}
+          />
+          <span style={{ lineHeight: '28px', fontSize: 12, marginRight: 4 }}>
+            {`${(zoom * 100).toFixed(0)}%`}
+          </span>
+        </Group>
+        <Group>
+          <Item
             name="undo"
             tooltip="Undo (Cmd + Z, Ctrl + Z)"
             icon={<UndoOutlined />}
@@ -149,20 +107,10 @@ export default function () {
           />
         </Group>
         <Group>
-          <Item name="copy" tooltip="Copy (Cmd + C, Ctrl + C)" icon={<CopyOutlined />} />
-          <Item name="cut" tooltip="Cut (Cmd + X, Ctrl + X)" icon={<ScissorOutlined />} />
           <Item
-            name="paste"
-            tooltip="Paste (Cmd + V, Ctrl + V)"
-            icon={<SnippetsOutlined />}
-          />
-        </Group>
-        <Group>
-          <Item name="save" icon={<SaveOutlined />} tooltip="Save (Cmd + S, Ctrl + S)" />
-          <Item
-            name="print"
-            icon={<PrinterOutlined />}
-            tooltip="Print (Cmd + P, Ctrl + P)"
+            name="save"
+            icon={<SaveOutlined />}
+            tooltip="Save (Cmd + S, Ctrl + S)"
           />
         </Group>
       </Toolbar>
