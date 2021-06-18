@@ -17,4 +17,6 @@ export default defineConfig({
       },
     ],
   ],
+  favicon:
+    'https://gw.alipayobjects.com/zos/bmw-prod/5698a54a-c02f-4fd6-9976-185e378fc118.ico',
 })

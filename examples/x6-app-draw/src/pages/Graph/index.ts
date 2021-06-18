@@ -1,6 +1,5 @@
-import { Graph, Addon, FunctionExt, Shape } from '@antv/x6'
+import { Graph, Addon, Shape } from '@antv/x6'
 import './shape'
-import graphData from './data'
 
 export default class FlowGraph {
   public static graph: Graph
@@ -17,274 +16,159 @@ export default class FlowGraph {
         type: 'doubleMesh',
         args: [
           {
-            color: '#cccccc',
+            color: '#E7E8EA',
             thickness: 1,
           },
           {
-            color: '#5F95FF',
+            color: '#CBCED3',
             thickness: 1,
-            factor: 4,
+            factor: 5,
           },
         ],
       },
-      selecting: {
+      panning: {
         enabled: true,
-        multiple: true,
-        rubberband: true,
-        movable: true,
-        showNodeSelectionBox: true,
-        filter: ['groupNode'],
+        eventTypes: ['leftMouseDown', 'rightMouseDown', 'mouseWheel'],
+        modifiers: 'ctrl',
+      },
+      mousewheel: {
+        enabled: true,
+        zoomAtMousePosition: true,
+        modifiers: 'ctrl',
+        minScale: 0.5,
+        maxScale: 3,
       },
       connecting: {
+        router: 'manhattan',
+        connector: {
+          name: 'rounded',
+          args: {
+            radius: 8,
+          },
+        },
         anchor: 'center',
         connectionPoint: 'anchor',
         allowBlank: false,
-        highlight: true,
-        snap: true,
+        snap: {
+          radius: 20,
+        },
         createEdge() {
           return new Shape.Edge({
             attrs: {
               line: {
-                stroke: '#5F95FF',
+                stroke: '#000',
                 strokeWidth: 1,
                 targetMarker: {
-                  name: 'classic',
-                  size: 8,
+                  name: 'block',
+                  width: 12,
+                  height: 8,
                 },
               },
-            },
-            router: {
-              name: 'manhattan',
             },
             zIndex: 0,
           })
         },
-        validateConnection({
-          sourceView,
-          targetView,
-          sourceMagnet,
-          targetMagnet,
-        }) {
-          if (sourceView === targetView) {
-            return false
-          }
-          if (!sourceMagnet) {
-            return false
-          }
-          if (!targetMagnet) {
-            return false
-          }
-          return true
+        validateConnection({ targetMagnet }) {
+          return !!targetMagnet
         },
       },
       highlighting: {
-        magnetAvailable: {
+        magnetAdsorbed: {
           name: 'stroke',
           args: {
-            padding: 4,
             attrs: {
-              strokeWidth: 4,
-              stroke: 'rgba(223,234,255)',
+              fill: '#D06269',
+              stroke: '#D06269',
             },
           },
         },
       },
+      resizing: true,
+      rotating: true,
+      selecting: {
+        enabled: true,
+        rubberband: true,
+        showNodeSelectionBox: true,
+      },
       snapline: true,
+      keyboard: true,
       history: true,
-      clipboard: {
+      minimap: {
         enabled: true,
+        container: document.getElementById('minimap')!,
+        width: 198,
+        height: 198,
+        padding: 10,
       },
-      keyboard: {
-        enabled: true,
-      },
-      embedding: {
-        enabled: true,
-        findParent({ node }) {
-          const bbox = node.getBBox()
-          return this.getNodes().filter((node) => {
-            // 只有 data.parent 为 true 的节点才是父节点
-            const data = node.getData<any>()
-            if (data && data.parent) {
-              const targetBBox = node.getBBox()
-              return bbox.isIntersectWithRect(targetBBox)
-            }
-            return false
-          })
-        },
-      },
+      clipboard: true,
     })
     this.initStencil()
     this.initShape()
-    this.initGraphShape()
     this.initEvent()
+    this.initKeyboard()
     return this.graph
   }
 
   private static initStencil() {
     this.stencil = new Addon.Stencil({
+      title: 'Flowchart',
       target: this.graph,
-      stencilGraphWidth: 280,
-      search: { rect: true },
-      collapsable: true,
-      groups: [
-        {
-          name: 'basic',
-          title: '基础节点',
-          graphHeight: 180,
-        },
-        {
-          name: 'combination',
-          title: '组合节点',
-          layoutOptions: {
-            columns: 1,
-            marginX: 60,
-          },
-          graphHeight: 260,
-        },
-        {
-          name: 'group',
-          title: '节点组',
-          graphHeight: 100,
-          layoutOptions: {
-            columns: 1,
-            marginX: 60,
-          },
-        },
-      ],
+      stencilGraphWidth: 214,
+      stencilGraphHeight: document.body.offsetHeight - 105,
+      layoutOptions: {
+        columns: 4,
+        columnWidth: 48,
+        rowHeight: 40,
+        marginY: 20,
+      },
+      getDropNode(node) {
+        const size = node.size()
+        return node.clone().size(size.width * 3, size.height * 3)
+      },
     })
     const stencilContainer = document.querySelector('#stencil')
-    stencilContainer?.appendChild(this.stencil.container)
+    if (stencilContainer) {
+      stencilContainer.appendChild(this.stencil.container)
+    }
   }
 
   private static initShape() {
     const { graph } = this
     const r1 = graph.createNode({
-      shape: 'flow-chart-rect',
-      attrs: {
-        body: {
-          rx: 24,
-          ry: 24,
-        },
-        text: {
-          textWrap: {
-            text: '起始节点',
-          },
-        },
-      },
+      shape: 'custom-rect',
     })
     const r2 = graph.createNode({
-      shape: 'flow-chart-rect',
+      shape: 'custom-rect',
       attrs: {
-        text: {
-          textWrap: {
-            text: '流程节点',
-          },
+        body: {
+          rx: 4,
+          ry: 4,
         },
       },
     })
     const r3 = graph.createNode({
-      shape: 'flow-chart-rect',
-      width: 52,
-      height: 52,
-      angle: 45,
+      shape: 'custom-polygon',
       attrs: {
-        'edit-text': {
-          style: {
-            transform: 'rotate(-45deg)',
-          },
-        },
-        text: {
-          textWrap: {
-            text: '判断节点',
-          },
-          transform: 'rotate(-45deg)',
-        },
-      },
-      ports: {
-        groups: {
-          top: {
-            position: {
-              name: 'top',
-              args: {
-                dx: -26,
-              },
-            },
-          },
-          right: {
-            position: {
-              name: 'right',
-              args: {
-                dy: -26,
-              },
-            },
-          },
-          bottom: {
-            position: {
-              name: 'bottom',
-              args: {
-                dx: 26,
-              },
-            },
-          },
-          left: {
-            position: {
-              name: 'left',
-              args: {
-                dy: 26,
-              },
-            },
-          },
+        body: {
+          refPoints: '0,10 10,0 20,10 10,20',
         },
       },
     })
     const r4 = graph.createNode({
-      shape: 'flow-chart-rect',
-      width: 70,
-      height: 70,
+      shape: 'custom-polygon',
       attrs: {
         body: {
-          rx: 35,
-          ry: 35,
-        },
-        text: {
-          textWrap: {
-            text: '链接节点',
-          },
+          refPoints: '10,0 40,0 30,20 0,20',
         },
       },
     })
-
-    const c1 = graph.createNode({
-      shape: 'flow-chart-image-rect',
+    const r5 = graph.createNode({
+      shape: 'custom-circle',
     })
-    const c2 = graph.createNode({
-      shape: 'flow-chart-title-rect',
-    })
-    const c3 = graph.createNode({
-      shape: 'flow-chart-animate-text',
-    })
-
-    const g1 = graph.createNode({
-      shape: 'groupNode',
-      attrs: {
-        text: {
-          text: 'Group Name',
-        },
-      },
-      data: {
-        parent: true,
-      },
-    })
-    this.stencil.load([r1, r2, r3, r4], 'basic')
-    this.stencil.load([c1, c2, c3], 'combination')
-    this.stencil.load([g1], 'group')
+    this.stencil.load([r1, r2, r3, r4, r5])
   }
 
-  private static initGraphShape() {
-    this.graph.fromJSON(graphData as any)
-  }
-
-  private static showPorts(ports: NodeListOf<SVGAElement>, show: boolean) {
+  private static showPorts(ports: NodeListOf<SVGElement>, show: boolean) {
     for (let i = 0, len = ports.length; i < len; i = i + 1) {
       ports[i].style.visibility = show ? 'visible' : 'hidden'
     }
@@ -294,69 +178,87 @@ export default class FlowGraph {
     const { graph } = this
     const container = document.getElementById('container')!
 
-    graph.on('node:contextmenu', ({ cell, view }) => {
-      const oldText = cell.attr('text/textWrap/text') as string
-      const elem = view.container.querySelector('.x6-edit-text') as HTMLElement
-      if (elem == null) { return }
-      cell.attr('text/style/display', 'none')
-      if (elem) {
-        elem.style.display = ''
-        elem.contentEditable = 'true'
-        elem.innerText = oldText
-        elem.focus()
-      }
-      const onBlur = () => {
-        cell.attr('text/textWrap/text', elem.innerText)
-        cell.attr('text/style/display', '')
-        elem.style.display = 'none'
-        elem.contentEditable = 'false'
-      }
-      elem.addEventListener('blur', () => {
-        onBlur()
-        elem.removeEventListener('blur', onBlur)
-      })
+    graph.on('node:mouseenter', () => {
+      const ports = container.querySelectorAll(
+        '.x6-port-body',
+      ) as NodeListOf<SVGElement>
+      this.showPorts(ports, true)
     })
-    graph.on(
-      'node:mouseenter',
-      FunctionExt.debounce(() => {
-        const ports = container.querySelectorAll(
-          '.x6-port-body',
-        ) as NodeListOf<SVGAElement>
-        this.showPorts(ports, true)
-      }),
-      500,
-    )
     graph.on('node:mouseleave', () => {
       const ports = container.querySelectorAll(
         '.x6-port-body',
-      ) as NodeListOf<SVGAElement>
+      ) as NodeListOf<SVGElement>
       this.showPorts(ports, false)
     })
+  }
 
-    graph.on('node:collapse', ({ node, e }) => {
-      e.stopPropagation()
-      node.toggleCollapse()
-      const collapsed = node.isCollapsed()
-      const cells = node.getDescendants()
-      cells.forEach((n) => {
-        if (collapsed) {
-          n.hide()
-        } else {
-          n.show()
-        }
-      })
+  private static initKeyboard() {
+    const { graph } = this
+    // copy cut paste
+    graph.bindKey(['meta+c', 'ctrl+c'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.copy(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+x', 'ctrl+x'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.cut(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+v', 'ctrl+v'], () => {
+      if (!graph.isClipboardEmpty()) {
+        const cells = graph.paste({ offset: 32 })
+        graph.cleanSelection()
+        graph.select(cells)
+      }
+      return false
     })
 
-    graph.on('node:embedded', ({ cell }) => {
-      if (cell.shape !== 'groupNode') {
-        cell.toFront()
+    //undo redo
+    graph.bindKey(['meta+z', 'ctrl+z'], () => {
+      if (graph.history.canUndo()) {
+        graph.history.undo()
+      }
+      return false
+    })
+    graph.bindKey(['meta+shift+z', 'ctrl+shift+z'], () => {
+      if (graph.history.canRedo()) {
+        graph.history.redo()
+      }
+      return false
+    })
+
+    // select all
+    graph.bindKey(['meta+a', 'ctrl+a'], () => {
+      const nodes = graph.getNodes()
+      if (nodes) {
+        graph.select(nodes)
       }
     })
 
+    //delete
     graph.bindKey('backspace', () => {
       const cells = graph.getSelectedCells()
       if (cells.length) {
         graph.removeCells(cells)
+      }
+    })
+
+    // zoom
+    graph.bindKey(['ctrl+1', 'meta+1'], () => {
+      const zoom = graph.zoom()
+      if (zoom < 1.5) {
+        graph.zoom(0.1)
+      }
+    })
+    graph.bindKey(['ctrl+2', 'meta+2'], () => {
+      const zoom = graph.zoom()
+      if (zoom > 0.5) {
+        graph.zoom(-0.1)
       }
     })
   }

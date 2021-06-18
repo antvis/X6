@@ -1,176 +1,47 @@
-/* 
-html5doctor.com Reset Stylesheet
-v1.4.1 
-2010-03-01
-Author: Richard Clark - http://richclarkdesign.com
-*/
-
-html,
-body,
-div,
-span,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-abbr,
-address,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-samp,
-small,
-strong,
-sub,
-sup,
-var,
-b,
-i,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
+.x6-widget-stencil {
+  background-color: #fff;
+  .x6-widget-stencil-title {
+    background-color: #fff;
+  }
 }
 
-body {
-  line-height: 1;
+// resizing
+.x6-widget-transform {
+  margin: -1px 0 0 -1px;
+  padding: 0px;
+  border: 1px solid #239edd;
+  > div {
+    border: 1px solid #239edd;
+  }
+  > div:hover {
+    background-color: #3dafe4;
+  }
+  .x6-widget-transform-active-handle {
+    background-color: #3dafe4;
+  }
+}
+.x6-widget-transform-resize {
+  border-radius: 0;
 }
 
-:focus {
-  outline: 1;
+// selection
+.x6-widget-selection-inner {
+  border: 1px solid #239edd;
+}
+.x6-widget-selection-box {
+  opacity: 0;
 }
 
-article,
-aside,
-canvas,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section,
-summary {
-  display: block;
+// snapline
+.x6-widget-snapline-vertical {
+  border-right-color: #239edd;
+}
+.x6-widget-snapline-horizontal {
+  border-bottom-color: #239edd;
 }
 
-nav ul {
-  list-style: none;
-}
-
-blockquote,
-q {
-  quotes: none;
-}
-
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-  content: '';
-  content: none;
-}
-
-a {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
-}
-
-ins {
-  background-color: #ff9;
-  color: #000;
-  text-decoration: none;
-}
-
-mark {
-  background-color: #ff9;
-  color: #000;
-  font-style: italic;
-  font-weight: bold;
-}
-
-del {
-  text-decoration: line-through;
-}
-
-abbr[title],
-dfn[title] {
-  border-bottom: 1px dotted #000;
-  cursor: help;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-hr {
-  display: block;
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #cccccc;
-  margin: 1em 0;
-  padding: 0;
-}
-
-input,
-select {
-  vertical-align: middle;
+// minimap
+.x6-widget-minimap-viewport,
+.x6-widget-minimap-viewport-zoom {
+  border: 2px solid #3371dd;
 }
