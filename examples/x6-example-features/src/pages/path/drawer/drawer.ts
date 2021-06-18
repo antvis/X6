@@ -1,6 +1,4 @@
-import { ObjectExt, Dom, Vector } from '@antv/x6/lib/util'
-import { Point } from '@antv/x6/lib/geometry'
-import { View } from '@antv/x6/lib/view'
+import { ObjectExt, Dom, Vector, Point, View } from '@antv/x6'
 
 // need: <meta http-equiv="x-ua-compatible" content="IE=Edge" />
 export class PathDrawer extends View {
