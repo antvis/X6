@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { PathDrawer } from './drawer'
-import '../index.less'
+import '../../index.less'
 import './drawer.less'
 
 export default class Example extends React.Component {
