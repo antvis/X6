@@ -1,3 +1,5 @@
+## @antv/x6-sites-demos [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.3...@antv/x6-sites-demos@1.1.4) (2021-06-18)
+
 ## @antv/x6-sites-demos [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.3...@antv/x6-sites-demos@1.1.4) (2021-06-17)
 
 ## @antv/x6-sites-demos [1.1.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.3...@antv/x6-sites-demos@1.1.4) (2021-06-17)
