@@ -383,19 +383,21 @@ export class Node<
         ...options.transition,
         interp: Interp.object,
       })
-      this.eachChild((child) => child.translate(tx, ty, options))
+      this.eachChild((child) => {
+        const excluded = options.exclude?.includes(child)
+        if (!excluded) {
+          child.translate(tx, ty, options)
+        }
+      })
     } else {
       this.startBatch('translate', options)
       this.store.set('position', translatedPosition, options)
-      options.handledTranslation = options.handledTranslation || []
-      if (!options.handledTranslation.includes(this)) {
-        options.handledTranslation.push(this)
-        const children = this.children
-        if (children?.length) {
-          options.handledTranslation.push(...children)
+      this.eachChild((child) => {
+        const excluded = options.exclude?.includes(child)
+        if (!excluded) {
+          child.translate(tx, ty, options)
         }
-      }
-      this.eachChild((child) => child.translate(tx, ty, options))
+      })
       this.stopBatch('translate', options)
     }
 
@@ -1018,6 +1020,7 @@ export namespace Node {
   export interface TranslateOptions extends Cell.TranslateOptions {
     transition?: boolean | Animation.StartOptions<Point.PointLike>
     restrict?: Rectangle.RectangleLike | null
+    exclude?: Cell[]
   }
 
   export interface RotateOptions extends SetOptions {
