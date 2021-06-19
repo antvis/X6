@@ -729,6 +729,7 @@ export namespace Options {
       rubberband: false,
       rubberNode: true,
       rubberEdge: false, // next version will set to true
+      pointerEvents: 'auto',
       multiple: true,
       movable: true,
       strict: false,
