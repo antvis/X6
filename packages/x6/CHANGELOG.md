@@ -1,3 +1,10 @@
+# @antv/x6 [1.24.0](https://github.com/antvis/x6/compare/@antv/x6@1.23.13...@antv/x6@1.24.0) (2021-06-19)
+
+
+### Features
+
+* ✨ optimize selection event handle ([#1115](https://github.com/antvis/x6/issues/1115)) ([41fe23b](https://github.com/antvis/x6/commit/41fe23b6b959782487c0db03215fcfcf5c821b87))
+
 ## @antv/x6 [1.23.13](https://github.com/antvis/x6/compare/@antv/x6@1.23.12...@antv/x6@1.23.13) (2021-06-19)
 
 
