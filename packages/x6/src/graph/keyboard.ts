@@ -73,7 +73,9 @@ export class Keyboard extends Disposable implements IDisablable {
 
   private focus() {
     const target = this.target as HTMLElement
-    target.focus()
+    target.focus({
+      preventScroll: true,
+    })
   }
 
   private getKeys(keys: string | string[]) {
