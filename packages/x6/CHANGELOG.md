@@ -1,3 +1,10 @@
+## @antv/x6 [1.23.13](https://github.com/antvis/x6/compare/@antv/x6@1.23.12...@antv/x6@1.23.13) (2021-06-19)
+
+
+### Bug Fixes
+
+* 🐛 preventScroll when focus graph ([#1116](https://github.com/antvis/x6/issues/1116)) ([9b66853](https://github.com/antvis/x6/commit/9b66853e143825de669fa5c97e1540971e835bed))
+
 ## @antv/x6 [1.23.12](https://github.com/antvis/x6/compare/@antv/x6@1.23.11...@antv/x6@1.23.12) (2021-06-17)
 
 
