@@ -124,12 +124,14 @@ export class Selection extends View<Selection.EventArgs> {
     node,
     options,
   }: Collection.EventArgs['node:change:position']) {
-    // Executes only if showNodeSelectionBox is false and is triggered manually
-    if (
-      this.options.showNodeSelectionBox !== true &&
+    const allowTranslating =
+      (this.options.showNodeSelectionBox !== true ||
+        this.options.pointerEvents === 'none') &&
       !this.translating &&
+      !options.selection &&
       options.ui
-    ) {
+
+    if (allowTranslating) {
       this.translating = true
       const current = node.position()
       const previous = node.previous('position')!
@@ -371,7 +373,8 @@ export class Selection extends View<Selection.EventArgs> {
     const restrict = this.graph.hook.getRestrictArea()
     if (restrict) {
       const cells = this.collection.toArray()
-      const totalBBox = Cell.getCellsBBox(cells)!
+      const totalBBox =
+        Cell.getCellsBBox(cells, { deep: true }) || Rectangle.create()
       const minDx = restrict.x - totalBBox.x
       const minDy = restrict.y - totalBBox.y
       const maxDx =
@@ -481,20 +484,32 @@ export class Selection extends View<Selection.EventArgs> {
     otherOptions?: KeyValue,
   ) {
     const map: { [id: string]: boolean } = {}
+    const excluded: Cell[] = []
+
     this.collection.toArray().forEach((cell) => {
-      if (
-        !map[cell.id] &&
-        cell !== exclude &&
-        !otherOptions?.handledTranslation?.includes(cell)
-      ) {
+      cell.getDescendants({ deep: true }).forEach((child) => {
+        map[child.id] = true
+      })
+    })
+    if (otherOptions && otherOptions.translateBy) {
+      const currentCell = this.graph.getCellById(otherOptions.translateBy)
+      if (currentCell) {
+        map[currentCell.id] = true
+        currentCell.getDescendants({ deep: true }).forEach((child) => {
+          map[child.id] = true
+        })
+        excluded.push(currentCell)
+      }
+    }
+
+    this.collection.toArray().forEach((cell) => {
+      if (!map[cell.id]) {
         const options = {
           ...otherOptions,
           selection: this.cid,
+          exclude: excluded,
         }
         cell.translate(dx, dy, options)
-        cell.getDescendants({ deep: true }).forEach((child) => {
-          map[child.id] = true
-        })
         this.graph.model.getConnectedEdges(cell).forEach((edge) => {
           if (!map[edge.id]) {
             edge.translate(dx, dy, options)
@@ -730,6 +745,7 @@ export class Selection extends View<Selection.EventArgs> {
             top: bbox.y,
             width: bbox.width,
             height: bbox.height,
+            pointerEvents: this.options.pointerEvents || 'auto',
           })
           .appendTo(this.container)
         this.showSelected()
@@ -995,9 +1011,12 @@ export namespace Selection {
     useCellGeometry?: boolean
     content?: Content
 
-    // can select node or edge when rubberband
+    // Can select node or edge when rubberband
     rubberNode?: boolean
     rubberEdge?: boolean
+
+    // Whether to respond event on the selectionBox
+    pointerEvents?: 'none' | 'auto'
   }
 
   export interface Options extends CommonOptions {
