@@ -1542,7 +1542,6 @@ export namespace Cell {
     tx?: number
     ty?: number
     translateBy?: string | number
-    handledTranslation?: Cell[]
   }
 
   export interface AddToolOptions extends SetOptions {
