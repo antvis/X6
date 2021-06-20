@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "clean": "gatsby clean",
@@ -18,7 +18,7 @@
     "@antv/gatsby-theme-antv": "^1.0.3",
     "@antv/x6": "^1.24.0",
     "@antv/x6-react-components": "^1.1.13",
-    "@antv/x6-react-shape": "^1.4.3",
+    "@antv/x6-react-shape": "^1.4.4",
     "@antv/layout": "^0.1.9",
     "@antv/hierarchy": "^0.6.6",
     "antd": "^4.4.2",
