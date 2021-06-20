@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [1.2.7](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.6...@antv/x6-vue-shape@1.2.7) (2021-06-20)
+
+
+### Bug Fixes
+
+* 🐛 unmount component when node unmount ([#1118](https://github.com/antvis/x6/issues/1118)) ([35e3d07](https://github.com/antvis/x6/commit/35e3d0712250723ca349443c332ee5332ae7ae24))
+
 ## @antv/x6-vue-shape [1.2.6](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.5...@antv/x6-vue-shape@1.2.6) (2021-06-16)
 
 
