@@ -1,3 +1,10 @@
+## @antv/x6-react-shape [1.4.4](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.4.3...@antv/x6-react-shape@1.4.4) (2021-06-20)
+
+
+### Bug Fixes
+
+* 🐛 unmount component when node unmount ([#1118](https://github.com/antvis/x6/issues/1118)) ([35e3d07](https://github.com/antvis/x6/commit/35e3d0712250723ca349443c332ee5332ae7ae24))
+
 ## @antv/x6-react-shape [1.4.3](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.4.2...@antv/x6-react-shape@1.4.3) (2021-06-16)
 
 
