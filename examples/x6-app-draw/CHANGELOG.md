@@ -1,3 +1,18 @@
+## @antv/x6-app-draw [1.1.5](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.4...@antv/x6-app-draw@1.1.5) (2021-06-21)
+
+
+### Bug Fixes
+
+* optimize flow chart demo ([#1110](https://github.com/antvis/x6/issues/1110)) ([c6093c4](https://github.com/antvis/x6/commit/c6093c40b150720e8b67e4eac8badd3c90ec2490))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.24.1
+
 ## @antv/x6-app-draw [1.1.5](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.4...@antv/x6-app-draw@1.1.5) (2021-06-19)
 
 
