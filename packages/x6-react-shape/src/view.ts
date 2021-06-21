@@ -77,12 +77,6 @@ export class ReactShapeView extends NodeView<ReactShape> {
     super.onMouseDown(e, x, y)
   }
 
-  unmount() {
-    Portal.disconnect(this.cell.id)
-    this.unmountReactComponent()
-    return this
-  }
-
   @NodeView.dispose()
   dispose() {
     Portal.disconnect(this.cell.id)
