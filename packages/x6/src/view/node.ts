@@ -1022,6 +1022,7 @@ export class NodeView<
     const edgeView = data.edgeView
     if (edgeView) {
       edgeView.onMouseMove(e, x, y)
+      this.autoScrollGraph(e.clientX, e.clientY)
     } else {
       const graph = this.graph
       const magnetThreshold = graph.options.magnetThreshold as any
@@ -1133,10 +1134,7 @@ export class NodeView<
       this.notifyNodeMove('node:move', e, x, y, this.cell)
     }
 
-    const scroller = this.graph.scroller.widget
-    if (scroller) {
-      scroller.autoScroll(e.clientX, e.clientY)
-    }
+    this.autoScrollGraph(e.clientX, e.clientY)
 
     const posX = Util.snapToGrid(x + offset.x, gridSize)
     const posY = Util.snapToGrid(y + offset.y, gridSize)
@@ -1168,6 +1166,13 @@ export class NodeView<
 
     data.moving = false
     data.embedding = false
+  }
+
+  protected autoScrollGraph(x: number, y: number) {
+    const scroller = this.graph.scroller.widget
+    if (scroller) {
+      scroller.autoScroll(x, y)
+    }
   }
 
   // #endregion
