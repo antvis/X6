@@ -5,6 +5,13 @@
 
 * 🐛 fix running error of x6-example-demo ([#1111](https://github.com/antvis/x6/issues/1111)) ([a9256b0](https://github.com/antvis/x6/commit/a9256b03ddc64fa64ef5336542429f7b34dfce0f))
 
+## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-06-21)
+
+
+### Bug Fixes
+
+* 🐛 fix running error of x6-example-demo ([#1111](https://github.com/antvis/x6/issues/1111)) ([a9256b0](https://github.com/antvis/x6/commit/a9256b03ddc64fa64ef5336542429f7b34dfce0f))
+
 
 
 
