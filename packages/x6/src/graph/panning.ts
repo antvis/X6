@@ -150,18 +150,37 @@ export class PanningManager extends Base {
     }
   }
 
+  autoPanning(x: number, y: number) {
+    const buffer = 10
+    const graphArea = this.graph.getGraphArea()
+
+    let dx = 0
+    let dy = 0
+    if (x <= graphArea.left + buffer) {
+      dx = -buffer
+    }
+
+    if (y <= graphArea.top + buffer) {
+      dy = -buffer
+    }
+
+    if (x >= graphArea.right - buffer) {
+      dx = buffer
+    }
+
+    if (y >= graphArea.bottom - buffer) {
+      dy = buffer
+    }
+
+    if (dx !== 0 || dy !== 0) {
+      this.graph.translateBy(-dx, -dy)
+    }
+  }
+
   enablePanning() {
     if (!this.pannable) {
       this.widgetOptions.enabled = true
       this.updateClassName()
-      // if (
-      //   ModifierKey.equals(
-      //     this.graph.options.panning.modifiers,
-      //     this.graph.options.selecting.modifiers,
-      //   )
-      // ) {
-      //   this.graph.selection.disableRubberband()
-      // }
     }
   }
 
