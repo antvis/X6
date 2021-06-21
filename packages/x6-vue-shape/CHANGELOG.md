@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [1.2.8](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.7...@antv/x6-vue-shape@1.2.8) (2021-06-21)
+
+
+### Bug Fixes
+
+* 🐛 revert add unmont method ([#1125](https://github.com/antvis/x6/issues/1125)) ([d2e0032](https://github.com/antvis/x6/commit/d2e00323c04f7ff9bda784c8569d613a9ee93aa0))
+
 ## @antv/x6-vue-shape [1.2.7](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.6...@antv/x6-vue-shape@1.2.7) (2021-06-20)
 
 
