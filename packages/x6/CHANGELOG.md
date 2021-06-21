@@ -1,3 +1,10 @@
+## @antv/x6 [1.24.2](https://github.com/antvis/x6/compare/@antv/x6@1.24.1...@antv/x6@1.24.2) (2021-06-21)
+
+
+### Bug Fixes
+
+* 🐛 auto scroll graph when drag magnet ([#1121](https://github.com/antvis/x6/issues/1121)) ([fde89fc](https://github.com/antvis/x6/commit/fde89fcf14e4dec9d9bf15489290cc145c29e400))
+
 ## @antv/x6 [1.24.1](https://github.com/antvis/x6/compare/@antv/x6@1.24.0...@antv/x6@1.24.1) (2021-06-21)
 
 
