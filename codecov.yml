@@ -33,3 +33,6 @@ comment:
   layout: "reach, diff, flags, files"
   behavior: default
   require_changes: true # only post the comment if coverage changes
+
+github_checks:
+  annotations: false
