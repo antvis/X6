@@ -12,7 +12,7 @@
     "@antv/x6": "^1.24.2",
     "@antv/x6-vector": "^1.2.1",
     "@antv/x6-react-components": "^1.1.13",
-    "@antv/x6-react-shape": "^1.4.4",
+    "@antv/x6-react-shape": "^1.4.5",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
