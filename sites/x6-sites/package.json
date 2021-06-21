@@ -18,7 +18,7 @@
     "@antv/gatsby-theme-antv": "^1.0.3",
     "@antv/x6": "^1.24.2",
     "@antv/x6-react-components": "^1.1.13",
-    "@antv/x6-react-shape": "^1.4.4",
+    "@antv/x6-react-shape": "^1.4.5",
     "@antv/layout": "^0.1.9",
     "@antv/hierarchy": "^0.6.6",
     "antd": "^4.4.2",
