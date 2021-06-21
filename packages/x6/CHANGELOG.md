@@ -1,3 +1,10 @@
+## @antv/x6 [1.24.1](https://github.com/antvis/x6/compare/@antv/x6@1.24.0...@antv/x6@1.24.1) (2021-06-21)
+
+
+### Bug Fixes
+
+* 🐛 revert fix scroller content size ([#1120](https://github.com/antvis/x6/issues/1120)) ([7546ea2](https://github.com/antvis/x6/commit/7546ea2b878d0037eec0362184464664cd797b69))
+
 # @antv/x6 [1.24.0](https://github.com/antvis/x6/compare/@antv/x6@1.23.13...@antv/x6@1.24.0) (2021-06-19)
 
 
