@@ -1,3 +1,11 @@
+## @antv/x6 [1.24.3](https://github.com/antvis/x6/compare/@antv/x6@1.24.2...@antv/x6@1.24.3) (2021-06-22)
+
+
+### Bug Fixes
+
+* 🐛 fix alerts of lgtm ([3e75128](https://github.com/antvis/x6/commit/3e75128390a0e649cc2c9e4ee86eb4f534b99f23))
+* 🐛 fix type definitions ([a6922f8](https://github.com/antvis/x6/commit/a6922f81c80566877e2ca41af5261e6bb12aa4f5))
+
 ## @antv/x6 [1.24.2](https://github.com/antvis/x6/compare/@antv/x6@1.24.1...@antv/x6@1.24.2) (2021-06-21)
 
 
