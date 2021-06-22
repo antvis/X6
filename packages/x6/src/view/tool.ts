@@ -522,8 +522,8 @@ export namespace ToolsView {
 
       if (
         (tag == null || tag === toStringTag) &&
-        typeof view.graph != null &&
-        typeof view.cell != null &&
+        view.graph != null &&
+        view.cell != null &&
         typeof view.config === 'function' &&
         typeof view.update === 'function' &&
         typeof view.focus === 'function' &&
