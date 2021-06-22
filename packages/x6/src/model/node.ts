@@ -1092,7 +1092,7 @@ export namespace Node {
 }
 
 export namespace Node {
-  export const registry: any = Registry.create<
+  export const registry = Registry.create<
     Definition,
     never,
     Config & { inherit?: string | Definition }
