@@ -1242,7 +1242,7 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  export const registry: any = Registry.create<
+  export const registry = Registry.create<
     Definition,
     never,
     Config & { inherit?: string | Definition }
