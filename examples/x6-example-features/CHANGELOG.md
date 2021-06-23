@@ -1,3 +1,18 @@
+## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-06-23)
+
+
+### Bug Fixes
+
+* 🐛 fix running error of x6-example-demo ([#1111](https://github.com/antvis/x6/issues/1111)) ([a9256b0](https://github.com/antvis/x6/commit/a9256b03ddc64fa64ef5336542429f7b34dfce0f))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.24.4
+
 ## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-06-22)
 
 
