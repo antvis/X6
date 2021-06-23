@@ -36,3 +36,7 @@ comment:
 
 github_checks:
   annotations: false
+  
+flag_management:
+  default_rules:
+     carryforward: false
