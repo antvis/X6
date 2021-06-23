@@ -676,6 +676,9 @@ export class CellView<
   addTools(options: ToolsView.Options | null): this
   addTools(tools: ToolsView | null): this
   addTools(config: ToolsView | ToolsView.Options | null) {
+    if (!this.can('toolsAddable')) {
+      return this
+    }
     this.removeTools()
     if (config) {
       const tools = ToolsView.isToolsView(config)
@@ -902,6 +905,9 @@ export namespace CellView {
     nodeMovable?: Interactable
     magnetConnectable?: Interactable
     stopDelegateOnDragging?: Interactable
+
+    // general
+    toolsAddable?: Interactable
   }
 
   export type InteractionNames = keyof InteractionMap
