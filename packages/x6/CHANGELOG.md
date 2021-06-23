@@ -1,3 +1,10 @@
+## @antv/x6 [1.24.4](https://github.com/antvis/x6/compare/@antv/x6@1.24.3...@antv/x6@1.24.4) (2021-06-23)
+
+
+### Bug Fixes
+
+* 🐛 add toolsAddable config for interacting ([#1124](https://github.com/antvis/x6/issues/1124)) ([5dde09c](https://github.com/antvis/x6/commit/5dde09c4fc99e395947d8839adb67ab6c20abbe7))
+
 ## @antv/x6 [1.24.3](https://github.com/antvis/x6/compare/@antv/x6@1.24.2...@antv/x6@1.24.3) (2021-06-22)
 
 
