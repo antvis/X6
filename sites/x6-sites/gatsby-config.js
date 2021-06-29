@@ -66,6 +66,8 @@ module.exports = {
     description: 'JavaScript diagramming library',
     siteUrl: 'https://x6.antv.vision',
     githubUrl: repository,
+    showGithubStar: true,
+    showGithubCorner: false,
     showLanguageSwitcher: false,
     versions: {
       [version]: 'https://x6.antv.vision',
