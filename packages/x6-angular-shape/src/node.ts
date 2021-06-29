@@ -1,16 +1,10 @@
-import { Injector } from '@angular/core'
 import { Node, Markup, ObjectExt } from '@antv/x6'
-import { Content } from './registry'
 
 export class AngularShape<
   Properties extends AngularShape.Properties = AngularShape.Properties,
 > extends Node<Properties> {
-  getContent(): Content {
-    return this.store.get('content')
-  }
-
-  getInjector(): Injector {
-    return this.store.get('injector')
+  getComponentName(): string {
+    return this.store.get('componentName')
   }
 }
 
@@ -26,7 +20,7 @@ export namespace AngularShape {
   export interface Properties extends Node.Properties {
     primer?: Primer
     useForeignObject?: boolean
-    content: Content
+    componentName: string
   }
 }
 

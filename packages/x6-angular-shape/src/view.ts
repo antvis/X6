@@ -24,8 +24,7 @@ export class AngularShapeView extends NodeView<AngularShape> {
     const root = this.getContentContainer();
     if (root) {
       const node = this.cell;
-      const content = this.graph.hook.getAngularContent(node);
-      const injector = this.graph.hook.getAngularInjector(node);
+      const { injector, content } = this.graph.hook.getAngularContent(node);
       const applicationRef = injector.get(ApplicationRef);
       const viewContainerRef = injector.get(ViewContainerRef);
       const componentFactoryResolver = injector.get(ComponentFactoryResolver);
@@ -34,12 +33,8 @@ export class AngularShapeView extends NodeView<AngularShape> {
         const portal = new TemplatePortal(content, viewContainerRef);
         domOutlet.attachTemplatePortal(portal);
       } else {
-        try {
-          const portal = new ComponentPortal(content as any, viewContainerRef);
-          domOutlet.attachComponentPortal(portal);
-        } catch (error) {
-          throw Error(`x6-angular-shape: The param 'content' should be the instanceof TemplateRef or ComponentType! Angular: ${error}`);
-        }
+        const portal = new ComponentPortal(content as any, viewContainerRef);
+        domOutlet.attachComponentPortal(portal);
       }
     }
   }

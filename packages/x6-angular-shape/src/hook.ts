@@ -1,34 +1,30 @@
-import { Graph } from '@antv/x6';
-import { Content } from './registry';
+import { FunctionExt, Graph } from '@antv/x6';
+import { ContentArgs, registry } from './registry';
 import { AngularShape } from './node';
-import { Injector } from '@angular/core';
 
 declare module '@antv/x6/lib/graph/hook' {
   namespace Hook {
     interface IHook {
-      getAngularContent(this: Graph, node: AngularShape): Content;
-      getAngularInjector(this: Graph, node: AngularShape): Injector;
+      getAngularContent(this: Graph, node: AngularShape): ContentArgs;
     }
   }
 
   interface Hook {
-    getAngularContent(node: AngularShape): Content;
-    getAngularInjector(node: AngularShape): Injector;
+    getAngularContent(node: AngularShape): ContentArgs;
   }
 }
 
 Graph.Hook.prototype.getAngularContent = function (node: AngularShape) {
-  let res = node.getContent();
-  if (!res) {
-    throw new Error(`x6-angular-shape: You have to pass param 'injector' and it should be the instance of TemplateRef or ComponentType!`);
+  let name = node.getComponentName();
+  if (!name) {
+    throw new Error(`x6-angular-shape: You have to pass param 'componentName'!`);
   }
-  return res;
-};
-
-Graph.Hook.prototype.getAngularInjector = function (node: AngularShape) {
-  const res = node.getInjector();
-  if (!res) {
-    throw new Error(`x6-angular-shape: You have to pass param 'injector' and it should be the instance of Injector!`);
+  const content = registry.get(name);
+  if (content == null) {
+    return registry.onNotFound(name);
+  } else if (typeof content === 'function') {
+    const contentArgs = FunctionExt.call(content, this.graph, node as any);
+    return contentArgs;
   }
-  return res as Injector;
+  return content;
 };
