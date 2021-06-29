@@ -1,10 +1,10 @@
 ---
-title: 使用 HTML/React/Vue 渲染
+title: 使用 HTML/React/Vue/Angular 渲染
 order: 4
 redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
-  - /en/docs/tutorial/advanced
+  - /zh/docs
+  - /zh/docs/tutorial
+  - /zh/docs/tutorial/advanced
 ---
 
 在 SVG 中有一个特殊的 `<foreignObject>` 元素，在该元素中可以内嵌任何 XHTML 元素，所以我们可以借助该元素来渲染 HTML 元素和 React 组件到需要位置。
@@ -410,6 +410,112 @@ Graph.registerVueComponent(
   true
 );
 ```
+
+### 渲染 Angular 节点
+
+我们提供了一个独立的包 `@antv/x6-angular-shape` 来使用 Vue(2/3) 渲染节点。
+
+```shell
+# npm
+npm install @antv/x6-angular-shape
+
+# yarn
+yarn add @antv/x6-angular-shape
+
+```
+
+#### 使用
+
+将Angular component作为节点渲染。
+```ts
+// other package from angular
+import '@antv/x6-angular-shape'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  @ViewChild('demoTpl', { static: true }) demoTpl: TemplateRef<void>;
+
+  addAngularComponent(): void {
+    Graph.registerAngularContent('demo-component', { injector: this.injector, content: NodeComponent });
+    this.graph.addNode({
+      x: 40,
+      y: 40,
+      width: 160,
+      height: 30,
+      shape: 'angular-shape',
+      componentName: 'demo-component'
+    });
+  }
+}
+```
+
+将Angular template作为节点渲染。
+```html
+<ng-template #demoTpl>
+  <div>Angular Template</div>
+</ng-template>
+```
+```ts
+// other package from angular
+import '@antv/x6-angular-shape'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  @ViewChild('demoTpl', { static: true }) demoTpl: TemplateRef<void>;
+
+  addAngularTemplate(): void {
+    Graph.registerAngularContent('demo-template', { injector: this.injector, content: this.demoTpl });
+    this.graph.addNode({
+      x: 240,
+      y: 40,
+      width: 160,
+      height: 30,
+      shape: 'angular-shape',
+      componentName: 'demo-template'
+    });
+  }
+}
+```
+
+在注册函数中, 使用回调函数进行渲染，这种方式使得你可以读取节点中的一些属性。
+
+```ts
+// other package from angular
+import '@antv/x6-angular-shape'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  @ViewChild('demoTpl', { static: true }) demoTpl: TemplateRef<void>;
+
+  addAngularWithCallback(): void {
+    Graph.registerAngularContent('demo-template', (node) => {
+      const data = node.getData();
+      console.log(data);
+      return { injector: this.injector, content: this.demoTpl };
+    });
+    this.graph.addNode({
+      x: 240,
+      y: 40,
+      width: 160,
+      height: 30,
+      shape: 'angular-shape',
+      componentName: 'demo-template'
+    });
+  }
+}
+```
+
+可以参考[ngx-x6-demo](https://github.com/Eve-Sama/ngx-x6-demo)，当中详细介绍了在Angular中使用x6的一些用法，包括前文提到的Angular组件渲染。
+
 
 ## 渲染标签
 
