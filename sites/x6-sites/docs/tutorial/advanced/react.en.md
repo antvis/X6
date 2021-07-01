@@ -413,7 +413,7 @@ Graph.registerVueComponent(
 
 ### 渲染 Angular 节点
 
-我们提供了一个独立的包 `@antv/x6-angular-shape` 来使用 Vue(2/3) 渲染节点。
+我们提供了一个独立的包 `@antv/x6-angular-shape` 以支持将Angular的组件/模板作为节点进行渲染。
 
 ```shell
 # npm
