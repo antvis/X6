@@ -55,7 +55,10 @@ class GroupComponent extends React.Component<IProps, IState> {
       <div className="group">
         <div className="header">
           <span>
-            <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*rYacTYE0PR0AAAAAAAAAAAAAARQnAQ" />
+            <img
+              src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*rYacTYE0PR0AAAAAAAAAAAAAARQnAQ"
+              alt="group"
+            />
             <span>Group</span>
           </span>
           <span className="btn" onClick={this.onCollapse}>
@@ -87,7 +90,6 @@ export default class Example extends React.Component {
     this.graph = graph
     this.initShape()
     this.initEvent()
-    console.log(this.toJson())
   }
 
   initShape = () => {
