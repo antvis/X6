@@ -1,0 +1,70 @@
+{
+  "name": "@antv/x6-angualr-shape",
+  "version": "1.4.4",
+  "description": "X6 shape for rendering angualr components.",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "unpkg": "dist/x6-angualr-shape.js",
+  "jsdelivr": "dist/x6-angualr-shape.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist",
+    "es",
+    "lib"
+  ],
+  "keywords": [
+    "shape",
+    "angualr",
+    "render",
+    "x6",
+    "antv"
+  ],
+  "scripts": {
+    "clean": "rimraf dist es lib",
+    "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
+    "watch": "watch 'yarn build' ./src",
+    "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
+    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:umd": "rollup -c",
+    "build:watch": "yarn build:esm --w",
+    "build:watch:esm": "yarn build:esm --w",
+    "build:watch:cjs": "yarn build:cjs --w",
+    "build": "run-p build:cjs build:esm build:umd",
+    "prebuild": "run-s lint clean",
+    "prepare": "yarn build",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix"
+    ]
+  },
+  "peerDependencies": {
+    "@angular/core": "~10.2.3",
+    "@angular/cdk": "~10.2.7",
+    "@antv/x6": ">=1.0.0"
+  },
+  "devDependencies": {
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.2"
+  },
+  "author": {
+    "name": "bubkoo",
+    "email": "bubkoo.wy@gmail.com"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "https://github.com/antvis/x6",
+  "bugs": {
+    "url": "https://github.com/antvis/x6/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/antvis/x6.git",
+    "directory": "packages/x6-angular-shape"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}
