@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Layout, Modal, Typography } from 'antd'
+import React from 'react'
+import { Layout } from 'antd'
 import { useObservableState } from '@/common/hooks/useObservableState'
 import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 import { GithubOutlined } from '@ant-design/icons'
@@ -9,7 +9,6 @@ import { ExperimentTitle } from './experiment-title'
 import css from './index.less'
 
 const { Header } = Layout
-const { Title, Paragraph, Text } = Typography
 
 interface IProps {
   experimentId: string
@@ -18,7 +17,6 @@ interface IProps {
 export const GuideHeader: React.FC<IProps> = (props) => {
   const expGraph = useExperimentGraph(props.experimentId)
   const [activeExperiment] = useObservableState(expGraph.experiment$)
-  const [designShow, setDesignShow] = useState(true)
 
   const openGithub = () => {
     window.open(

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { Modal, Typography, Popover } from 'antd';
+import React from 'react';
+import { Popover } from 'antd';
 import {
   CompressOutlined,
   OneToOneOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
   GithubOutlined,
-  AntDesignOutlined,
 } from '@ant-design/icons';
 import classNames from 'classnames';
 import styles from './index.less';
@@ -19,11 +18,8 @@ interface Props {
   onRealContent: () => void;
 }
 
-const { Title, Paragraph, Text } = Typography;
-
 const GraphToolbar: React.FC<Props> = (props) => {
   const { className, onZoomIn, onZoomOut, onFitContent, onRealContent } = props;
-  const [designShow, setDesignShow] = useState(true);
 
   const onViewSource = () => {
     window.open(
