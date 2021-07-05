@@ -1,11 +1,11 @@
 {
-  "name": "@antv/x6-angualr-shape",
+  "name": "@antv/x6-angular-shape",
   "version": "1.0.0",
-  "description": "X6 shape for rendering angualr components.",
+  "description": "X6 shape for rendering angular components.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6-angualr-shape.js",
-  "jsdelivr": "dist/x6-angualr-shape.js",
+  "unpkg": "dist/x6-angular-shape.js",
+  "jsdelivr": "dist/x6-angular-shape.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
@@ -14,7 +14,7 @@
   ],
   "keywords": [
     "shape",
-    "angualr",
+    "angular",
     "render",
     "x6",
     "antv"
