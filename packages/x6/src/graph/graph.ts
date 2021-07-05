@@ -1427,6 +1427,58 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
+  // #region panning
+
+  isPannable() {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      return this.scroller.pannable
+    }
+    return this.panning.pannable
+  }
+
+  enablePanning() {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      this.scroller.enablePanning()
+    } else {
+      this.panning.enablePanning()
+    }
+
+    return this
+  }
+
+  disablePanning() {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      this.scroller.disablePanning()
+    } else {
+      this.panning.disablePanning()
+    }
+
+    return this
+  }
+
+  togglePanning(pannable?: boolean) {
+    if (pannable == null) {
+      if (this.isPannable()) {
+        this.disablePanning()
+      } else {
+        this.enablePanning()
+      }
+    } else if (pannable !== this.isPannable()) {
+      if (pannable) {
+        this.enablePanning()
+      } else {
+        this.disablePanning()
+      }
+    }
+
+    return this
+  }
+
+  // #endregion
+
   // #region scroller
 
   @Decorator.checkScroller()
@@ -1529,39 +1581,6 @@ export class Graph extends Basecoat<EventArgs> {
     scroller.transitionToRect(rect, options)
     return this
   }
-
-  isPannable() {
-    return this.scroller.pannable
-  }
-
-  enablePanning() {
-    this.scroller.enablePanning()
-    return this
-  }
-
-  disablePanning() {
-    this.scroller.disablePanning()
-    return this
-  }
-
-  togglePanning(pannable?: boolean) {
-    if (pannable == null) {
-      if (this.isPannable()) {
-        this.disablePanning()
-      } else {
-        this.enablePanning()
-      }
-    } else if (pannable !== this.isPannable()) {
-      if (pannable) {
-        this.enablePanning()
-      } else {
-        this.disablePanning()
-      }
-    }
-
-    return this
-  }
-
   // #endregion
 
   // #region selection
