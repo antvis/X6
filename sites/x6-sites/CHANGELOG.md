@@ -1,3 +1,10 @@
+# @antv/x6-sites [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.2.0...@antv/x6-sites@1.3.0) (2021-07-05)
+
+
+### Features
+
+* add angualr shape ([#1141](https://github.com/antvis/x6/issues/1141)) ([698ecd7](https://github.com/antvis/x6/commit/698ecd75bd3a60ee6ebcd42129aa1a92b812fab2))
+
 ## @antv/x6-sites [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.2.0...@antv/x6-sites@1.2.1) (2021-06-23)
 
 ## @antv/x6-sites [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.2.0...@antv/x6-sites@1.2.1) (2021-06-23)
