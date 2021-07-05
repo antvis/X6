@@ -5,7 +5,7 @@ export default config({
     {
       name: 'X6AngularShape',
       format: 'umd',
-      file: 'dist/x6-angualr-shape.js',
+      file: 'dist/x6-angular-shape.js',
       sourcemap: true,
       globals: {
         angular: 'Angular',
