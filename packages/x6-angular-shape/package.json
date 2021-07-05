@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-angualr-shape",
-  "version": "1.4.4",
+  "version": "1.0.0",
   "description": "X6 shape for rendering angualr components.",
   "main": "lib/index.js",
   "module": "es/index.js",
