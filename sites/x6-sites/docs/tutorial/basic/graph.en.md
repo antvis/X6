@@ -50,6 +50,15 @@ const graph = new Graph({
 })
 ```
 
+可以通过以下 API 来启用/禁止画布平移：
+
+```ts
+graph.isPannable() // 画布是否可以平移
+graph.enablePanning() // 启用画布平移
+graph.disablePanning() // 禁止画布平移
+graph.togglePanning() // 切换画布平移状态
+```
+
 ### 画布缩放
 
 普通画布(未开启 [scroller](/en/docs/tutorial/basic/scroller) 模式)通过开启 [mousewheel](/en/docs/tutorial/basic/mousewheel) 选项来支持画布缩放。这里说明怎么通过代码来进行画布缩放：
