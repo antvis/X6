@@ -3,7 +3,10 @@ coverage:
   range: 60..95
   round: down
   precision: 2
+  # allow test coverage to drop by 1%, assume that it's typically due to CI problems
+  threshold: 1
   status:
+    patch: off
     project:
       default: off
       x6:
