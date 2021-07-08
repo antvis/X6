@@ -258,7 +258,7 @@ export class Stencil extends View {
             cell,
             keyword,
             filter,
-            keyword.toLowerCase() !== keyword,
+            false,
           )
         }
 
@@ -316,7 +316,7 @@ export class Stencil extends View {
             if (val != null) {
               val = `${val}`
               if (ignoreCase) {
-                val = val.toLowerCase()
+                return val.toLowerCase().indexOf(keyword.toLowerCase()) >= 0
               }
               return val.indexOf(keyword) >= 0
             }
