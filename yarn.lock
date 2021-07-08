@@ -10,6 +10,22 @@
     lodash.debounce "^4.0.8"
     lodash.throttle "^4.1.1"
 
+"@angular/cdk@~10.2.7":
+  version "10.2.7"
+  resolved "https://registry.npmjs.org/@angular/cdk/-/cdk-10.2.7.tgz#0ff82eb91b2653ea26909c57a460d4593b44f186"
+  integrity sha512-ZQjDfTRTn7JuAKsf3jiIdU2XBaxxGBi/ZWYv5Pb3HCl6B4PISsIE5VWRhkoUogoAB0MiFHpjnWeIqknJEm11YQ==
+  dependencies:
+    tslib "^2.0.0"
+  optionalDependencies:
+    parse5 "^5.0.0"
+
+"@angular/core@~10.2.3":
+  version "10.2.5"
+  resolved "https://registry.npmjs.org/@angular/core/-/core-10.2.5.tgz#2050b0dbb180aa98c2ec46bba6d4827565ba2a2d"
+  integrity sha512-krhOKNTj5XE92Rk9ASX5KmgTF72j7qT2PLVxrGEVjuUKjBY2XaK3TV0Kotq9zI3qa9WgeCrP/Njn6jlKQCCAEQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ant-design/colors@^3.1.0":
   version "3.2.2"
   resolved "https://registry.npmjs.org/@ant-design/colors/-/colors-3.2.2.tgz#5ad43d619e911f3488ebac303d606e66a8423903"
