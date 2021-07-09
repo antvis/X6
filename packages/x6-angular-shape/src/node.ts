@@ -49,7 +49,7 @@ export namespace AngularShape {
 
     return markup
   }
-  const data ={
+  const data = {
     view: 'angular-shape-view',
     markup: getMarkup(true),
     attrs: {
@@ -113,7 +113,7 @@ export namespace AngularShape {
       return metadata
     },
   }
-  AngularShape.config(data as any);
+  AngularShape.config(data as any)
 
   Node.registry.register('angular-shape', AngularShape, true)
 }
