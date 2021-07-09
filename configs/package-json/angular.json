@@ -1,0 +1,12 @@
+{
+  "peerDependencies": {
+    "@angular/core": ">=10.2.3",
+    "@angular/cdk": ">=10.2.3",
+    "@angular/common": "^10.2.3"
+  },
+  "devDependencies": {
+    "@angular/core": "^10.2.3",
+    "@angular/cdk": "^10.2.3",
+    "@angular/common": "^10.2.3"
+  }
+}
