@@ -1,10 +1,8 @@
 # Setting coverage targets per flag
 coverage:
-  range: 60..95
   round: down
+  range: 60..95
   precision: 2
-  # allow test coverage to drop by 1%, assume that it's typically due to CI problems
-  threshold: 1
   status:
     patch: off
     project:
@@ -39,7 +37,8 @@ comment:
 
 github_checks:
   annotations: false
-  
+
 flag_management:
   default_rules:
-     carryforward: false
+    threshold: 1%
+    carryforward: false
