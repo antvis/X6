@@ -1,3 +1,10 @@
+## @antv/x6 [1.24.5](https://github.com/antvis/x6/compare/@antv/x6@1.24.4...@antv/x6@1.24.5) (2021-07-09)
+
+
+### Bug Fixes
+
+* 🐛 unified panning api ([#1151](https://github.com/antvis/x6/issues/1151)) ([fc78817](https://github.com/antvis/x6/commit/fc7881731bfc5c7cde698ca8948dfa0c40f891fc))
+
 ## @antv/x6 [1.24.4](https://github.com/antvis/x6/compare/@antv/x6@1.24.3...@antv/x6@1.24.4) (2021-06-23)
 
 
