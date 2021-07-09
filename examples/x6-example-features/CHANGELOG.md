@@ -1,3 +1,13 @@
+## @antv/x6-example-features [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.1...@antv/x6-example-features@1.2.2) (2021-07-09)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.24.5
+
 ## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-07-05)
 
 
