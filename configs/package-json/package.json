@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-package-json",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "bin": {
     "package-compare": "./bin/package-compare.js",
     "package-inherit": "./bin/package-inherit.js"
