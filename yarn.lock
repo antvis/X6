@@ -10,6 +10,29 @@
     lodash.debounce "^4.0.8"
     lodash.throttle "^4.1.1"
 
+"@angular/cdk@^10.2.3":
+  version "10.2.7"
+  resolved "https://registry.nlark.com/@angular/cdk/download/@angular/cdk-10.2.7.tgz#0ff82eb91b2653ea26909c57a460d4593b44f186"
+  integrity sha1-D/guuRsmU+omkJxXpGDUWTtE8YY=
+  dependencies:
+    tslib "^2.0.0"
+  optionalDependencies:
+    parse5 "^5.0.0"
+
+"@angular/common@^10.2.3":
+  version "10.2.5"
+  resolved "https://registry.nlark.com/@angular/common/download/@angular/common-10.2.5.tgz#5313f530446998e2f7af2dc43611addcfa6fd1c1"
+  integrity sha1-UxP1MERpmOL3ry3ENhGt3Ppv0cE=
+  dependencies:
+    tslib "^2.0.0"
+
+"@angular/core@^10.2.3":
+  version "10.2.5"
+  resolved "https://registry.nlark.com/@angular/core/download/@angular/core-10.2.5.tgz#2050b0dbb180aa98c2ec46bba6d4827565ba2a2d"
+  integrity sha1-IFCw27GAqpjC7Ea7ptSCdWW6Ki0=
+  dependencies:
+    tslib "^2.0.0"
+
 "@ant-design/colors@^3.1.0":
   version "3.2.2"
   resolved "https://registry.npmjs.org/@ant-design/colors/-/colors-3.2.2.tgz#5ad43d619e911f3488ebac303d606e66a8423903"
@@ -20996,15 +21019,15 @@ moment@2.x, moment@^2.15.1, moment@^2.22.1, moment@^2.24.0, moment@^2.25.3, mome
 
 monaco-editor-webpack-plugin@2.0.0, monaco-editor-webpack-plugin@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.npmjs.org/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-2.0.0.tgz#196052f23678285deca7a7baf4d7aebe9d1ff9e1"
-  integrity sha512-z3nUGhnNis8eHcPepqrxyt3XwrnHD76E4KwV2ozWlBwYM6B3R5YYqzy40ECfJWqRFcwT4DhaLYaXOk5ym4MZhA==
+  resolved "https://registry.nlark.com/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-2.0.0.tgz#196052f23678285deca7a7baf4d7aebe9d1ff9e1"
+  integrity sha1-GWBS8jZ4KF3sp6e69Neuvp0f+eE=
   dependencies:
     loader-utils "^2.0.0"
 
 monaco-editor@*, monaco-editor@0.21.0, monaco-editor@^0.21.0:
   version "0.21.0"
-  resolved "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.21.0.tgz#35d964cbeff8b035d574bb113e9491331810d5f1"
-  integrity sha512-fUmW7iC+wKWMetD44iVacEoSi+RqkA+C0vQvAk/FkEugg70iwGGLj5WoheAULaxLASQbYiapD2+85FJ0cnErYg==
+  resolved "https://registry.nlark.com/monaco-editor/download/monaco-editor-0.21.0.tgz?cache=0&sync_timestamp=1623961471145&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmonaco-editor%2Fdownload%2Fmonaco-editor-0.21.0.tgz#35d964cbeff8b035d574bb113e9491331810d5f1"
+  integrity sha1-Ndlky+/4sDXVdLsRPpSRMxgQ1fE=
 
 moo@^0.5.0:
   version "0.5.1"
