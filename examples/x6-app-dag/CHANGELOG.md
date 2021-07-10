@@ -1,3 +1,5 @@
+## @antv/x6-app-dag [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.5...@antv/x6-app-dag@1.1.6) (2021-07-10)
+
 ## @antv/x6-app-dag [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.5...@antv/x6-app-dag@1.1.6) (2021-07-09)
 
 
