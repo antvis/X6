@@ -132,6 +132,17 @@ describe('rectangle', () => {
     })
   })
 
+  describe('#left,top,right,bottom', () => {
+    it('should return properties of rectangle', () => {
+      const obj = { x: 1, y: 2, width: 3, height: 4 }
+      const rect = Rectangle.create(obj)
+      expect(rect.left).toEqual(obj.x)
+      expect(rect.top).toEqual(obj.y)
+      expect(rect.right).toEqual(obj.x + obj.width)
+      expect(rect.bottom).toEqual(obj.y + obj.height)
+    })
+  })
+
   describe('#valueOf', () => {
     it('should return JSON object', () => {
       const obj = { x: 1, y: 2, width: 3, height: 4 }
@@ -455,7 +466,19 @@ describe('rectangle', () => {
     })
   })
 
-  describe('#union', () => {})
+  describe('#union', () => {
+    it('should return the unioned rectangle', () => {
+      const rect1 = new Rectangle(-1, -1, 3, 3)
+      const rect2 = new Rectangle(0, 0, 4, 4)
+      const rect = rect1.union(rect2)
+      expect(rect.toJSON()).toEqual({
+        x: -1,
+        y: -1,
+        width: 5,
+        height: 5,
+      })
+    })
+  })
 
   describe('#getNearestSideToPoint', () => {
     it('should return the nearest side to point when point is on the side', () => {

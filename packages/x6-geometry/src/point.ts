@@ -1,16 +1,14 @@
+import type { Rectangle } from './rectangle'
 import { Util } from './util'
 import { Angle } from './angle'
 import { Geometry } from './geometry'
-import { Rectangle } from './rectangle'
 
 export class Point extends Geometry implements Point.PointLike {
   public x: number
   public y: number
 
-  protected get [Symbol.toStringTag]() {
-    return Point.toStringTag
-  }
-
+  constructor()
+  constructor(x?: number, y?: number)
   constructor(x?: number, y?: number) {
     super()
     this.x = x == null ? 0 : x
@@ -35,10 +33,6 @@ export class Point extends Geometry implements Point.PointLike {
     return this
   }
 
-  /**
-   * Update the point's `x` and `y` coordinates with new values and return the
-   * point itself. Useful for chaining.
-   */
   update(x: number, y: number): this
   update(p: Point.PointLike | Point.PointData): this
   update(x: number | Point.PointLike | Point.PointData, y?: number): this {
@@ -68,8 +62,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Scale point by `sx` and `sy` around the given `origin`. If origin is not
-   * specified, the point is scaled around `0,0`.
+   * Scale point by `sx` and `sy` around the given `origin`. If origin is
+   * not specified, the point is scaled around `0, 0`.
    */
   scale(
     sx: number,
@@ -391,29 +385,8 @@ export class Point extends Geometry implements Point.PointLike {
 }
 
 export namespace Point {
-  export const toStringTag = `X6.Geometry.${Point.name}`
-
   export function isPoint(instance: any): instance is Point {
-    if (instance == null) {
-      return false
-    }
-    if (instance instanceof Point) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const point = instance as Point
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof point.x === 'number' &&
-      typeof point.y === 'number' &&
-      typeof point.toPolar === 'function'
-    ) {
-      return true
-    }
-
-    return false
+    return instance != null && instance instanceof Point
   }
 }
 
