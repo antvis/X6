@@ -6,18 +6,14 @@ import { Geometry } from './geometry'
 export class Polyline extends Geometry {
   points: Point[]
 
-  protected get [Symbol.toStringTag]() {
-    return Polyline.toStringTag
-  }
-
-  get start() {
+  public get start() {
     if (this.points.length === 0) {
       return null
     }
     return this.points[0]
   }
 
-  get end() {
+  public get end() {
     if (this.points.length === 0) {
       return null
     }
@@ -621,29 +617,8 @@ export class Polyline extends Geometry {
 }
 
 export namespace Polyline {
-  export const toStringTag = `X6.Geometry.${Polyline.name}`
-
   export function isPolyline(instance: any): instance is Polyline {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Polyline) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const polyline = instance as Polyline
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof polyline.toHull === 'function' &&
-      typeof polyline.simplify === 'function'
-    ) {
-      return true
-    }
-
-    return false
+    return instance != null && instance instanceof Polyline
   }
 }
 
