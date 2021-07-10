@@ -6,88 +6,84 @@ import { Ellipse } from './ellipse'
 import { Geometry } from './geometry'
 
 export class Rectangle extends Geometry implements Rectangle.RectangleLike {
-  x: number
-  y: number
-  width: number
-  height: number
+  public x: number
+  public y: number
+  public width: number
+  public height: number
 
-  protected get [Symbol.toStringTag]() {
-    return Rectangle.toStringTag
-  }
-
-  get left() {
+  public get left() {
     return this.x
   }
 
-  get top() {
+  public get top() {
     return this.y
   }
 
-  get right() {
+  public get right() {
     return this.x + this.width
   }
 
-  get bottom() {
+  public get bottom() {
     return this.y + this.height
   }
 
-  get origin() {
+  public get origin() {
     return new Point(this.x, this.y)
   }
 
-  get topLeft() {
+  public get topLeft() {
     return new Point(this.x, this.y)
   }
 
-  get topCenter() {
+  public get topCenter() {
     return new Point(this.x + this.width / 2, this.y)
   }
 
-  get topRight() {
+  public get topRight() {
     return new Point(this.x + this.width, this.y)
   }
 
-  get center() {
+  public get center() {
     return new Point(this.x + this.width / 2, this.y + this.height / 2)
   }
 
-  get bottomLeft() {
+  public get bottomLeft() {
     return new Point(this.x, this.y + this.height)
   }
 
-  get bottomCenter() {
+  public get bottomCenter() {
     return new Point(this.x + this.width / 2, this.y + this.height)
   }
 
-  get bottomRight() {
+  public get bottomRight() {
     return new Point(this.x + this.width, this.y + this.height)
   }
 
-  get corner() {
+  public get corner() {
     return new Point(this.x + this.width, this.y + this.height)
   }
 
-  get rightMiddle() {
+  public get rightMiddle() {
     return new Point(this.x + this.width, this.y + this.height / 2)
   }
 
-  get leftMiddle() {
+  public get leftMiddle() {
     return new Point(this.x, this.y + this.height / 2)
   }
 
-  get topLine() {
+  public get topLine() {
     return new Line(this.topLeft, this.topRight)
   }
 
-  get rightLine() {
+  public get rightLine() {
     return new Line(this.topRight, this.bottomRight)
   }
 
-  get bottomLine() {
+  public get bottomLine() {
     return new Line(this.bottomLeft, this.bottomRight)
   }
 
-  get leftLine() {
+  public get leftLine() {
     return new Line(this.topLeft, this.bottomLeft)
   }
 
@@ -681,17 +677,20 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     const ref = Point.clone(p)
     if (this.containsPoint(ref)) {
       const side = this.getNearestSideToPoint(ref)
-      switch (side) {
-        case 'right':
-          return new Point(this.x + this.width, ref.y)
-        case 'left':
-          return new Point(this.x, ref.y)
-        case 'bottom':
-          return new Point(ref.x, this.y + this.height)
-        case 'top':
-          return new Point(ref.x, this.y)
-        default:
-          break
+      if (side === 'left') {
+        return new Point(this.x, ref.y)
+      }
+
+      if (side === 'top') {
+        return new Point(ref.x, this.y)
+      }
+
+      if (side === 'right') {
+        return new Point(this.x + this.width, ref.y)
+      }
+
+      if (side === 'bottom') {
+        return new Point(ref.x, this.y + this.height)
       }
     }
 
@@ -722,33 +721,8 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
 }
 
 export namespace Rectangle {
-  export const toStringTag = `X6.Geometry.${Rectangle.name}`
-
   export function isRectangle(instance: any): instance is Rectangle {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Rectangle) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const rect = instance as Rectangle
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof rect.x === 'number' &&
-      typeof rect.y === 'number' &&
-      typeof rect.width === 'number' &&
-      typeof rect.height === 'number' &&
-      typeof rect.inflate === 'function' &&
-      typeof rect.moveAndExpand === 'function'
-    ) {
-      return true
-    }
-
-    return false
+    return instance != null && instance instanceof Rectangle
   }
 }
 

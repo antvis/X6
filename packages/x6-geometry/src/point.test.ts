@@ -20,6 +20,17 @@ describe('point', () => {
     })
   })
 
+  describe('#Point.isPoint', () => {
+    it('should return true when the given object a point instance', () => {
+      expect(Point.isPoint(new Point())).toBeTruthy()
+      expect(Point.isPoint(new Point(1, 1))).toBeTruthy()
+    })
+
+    it('should return false when the given object is not a point instance', () => {
+      expect(Point.isPoint({ x: 1, y: 1 })).toBeFalsy()
+    })
+  })
+
   describe('#Point.isPointLike', () => {
     it('should return true when the given object is a point-like object', () => {
       expect(Point.isPointLike({ x: 1, y: 2 })).toBeTruthy()
