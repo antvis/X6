@@ -1,5 +1,5 @@
-import { Point } from './point'
-import { JSONObject, JSONArray } from './types'
+import type { Point } from './point'
+import type { JSONObject, JSONArray } from './types'
 
 export abstract class Geometry {
   abstract scale(
@@ -14,15 +14,10 @@ export abstract class Geometry {
   ): this
 
   abstract translate(tx: number, ty: number): this
-
   abstract translate(p: Point.PointLike | Point.PointData): this
-
-  abstract equals(g: any): boolean
-
   abstract clone(): Geometry
-
+  abstract equals(g: any): boolean
   abstract toJSON(): JSONObject | JSONArray
-
   abstract serialize(): string
 
   valueOf() {

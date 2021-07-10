@@ -5,16 +5,12 @@ import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
 
 export class Curve extends Geometry {
-  start: Point
-  end: Point
-  controlPoint1: Point
-  controlPoint2: Point
+  public start: Point
+  public end: Point
+  public controlPoint1: Point
+  public controlPoint2: Point
 
-  PRECISION = 3
-
-  protected get [Symbol.toStringTag]() {
-    return Curve.toStringTag
-  }
+  public PRECISION = 3
 
   constructor(
     start: Point.PointLike | Point.PointData,
@@ -774,33 +770,8 @@ export class Curve extends Geometry {
 }
 
 export namespace Curve {
-  export const toStringTag = `X6.Geometry.${Curve.name}`
-
   export function isCurve(instance: any): instance is Curve {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Curve) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const curve = instance as Curve
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      Point.isPoint(curve.start) &&
-      Point.isPoint(curve.controlPoint1) &&
-      Point.isPoint(curve.controlPoint2) &&
-      Point.isPoint(curve.end) &&
-      typeof curve.toPoints === 'function' &&
-      typeof curve.toPolyline === 'function'
-    ) {
-      return true
-    }
-
-    return false
+    return instance != null && instance instanceof Curve
   }
 }
 

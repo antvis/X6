@@ -17,10 +17,6 @@ export class Path extends Geometry {
   protected readonly PRECISION: number = 3
   public segments: Segment[]
 
-  protected get [Symbol.toStringTag]() {
-    return Path.toStringTag
-  }
-
   constructor()
   constructor(line: Line)
   constructor(curve: Curve)
@@ -1245,31 +1241,8 @@ export class Path extends Geometry {
 }
 
 export namespace Path {
-  export const toStringTag = `X6.Geometry.${Path.name}`
-
   export function isPath(instance: any): instance is Path {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Path) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const path = instance as Path
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      Array.isArray(path.segments) &&
-      typeof path.moveTo === 'function' &&
-      typeof path.lineTo === 'function' &&
-      typeof path.curveTo === 'function'
-    ) {
-      return true
-    }
-
-    return false
+    return instance != null && instance instanceof Path
   }
 }
 
