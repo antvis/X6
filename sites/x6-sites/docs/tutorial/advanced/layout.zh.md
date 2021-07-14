@@ -68,49 +68,6 @@ graph.fromJSON(newModel)
 
 ```
 
-如果你的 `Layout` 使用的是 `0.1.7` 之前的版本，使用方式所有不同：
-
-```ts
-import { Graph } from '@antv/x6'
-import { Layout } from '@antv/layout' // umd模式下， const { Layout } = window.AntVLayout
-
-const graph = new Graph({
-  container: document.getElementById('container'),
-  width: 600,
-  height: 400,
-})
-
-const model = {
-  nodes: [
-    {
-      id: 'node1',
-    }, {
-      id: 'node2',
-    },
-  ],
-  edges: [
-    {
-      source: 'node1',
-      target: 'node2',
-    },
-  ],
-}
-
-const gridLayout = new Layout({
-  type: 'grid',
-  width: 600,
-  height: 400,
-  center: [300, 200],
-  rows: 4,
-  cols: 4,
-})
-
-const newModel = gridLayout.layout(model)
-
-graph.fromJSON(newModel)
-
-```
-
 ## 布局
 
 ### 网格布局
@@ -120,7 +77,9 @@ graph.fromJSON(newModel)
 <iframe src="/demos/tutorial/advanced/layout/grid"></iframe>
 
 ```ts
-const gridLayout = new Layout({
+import { GridLayout } from '@antv/layout'
+
+const gridLayout = new GridLayout({
   type: 'grid',
   width: 600,
   height: 400,
@@ -139,10 +98,11 @@ const gridLayout = new Layout({
 | width                 | number             |  `false` |    -       | 布局区域宽度 |
 | height                | number             |  `false` |    -       | 布局区域高度 |
 | center                | [number, number]   |  `false` |    -       | 布局中心点 |
-| preventOverlap        | boolean            |  `false` |    `false` | 是否防止重叠，必须配合下面属性 `nodeSize`，只有设置了与当前图节点大小相同的 `nodeSize` 值，才能够进行节点重叠的碰撞检测 |
-| preventOverlapPadding | number             |  `false` |    10      | 避免重叠时节点的间距 `padding`。`preventOverlap` 为 `true` 时生效 |
+| preventOverlap        | boolean            |  `false` |    `false` | 是否防止重叠 |
+| preventOverlapPadding | number             |  `false` |    10      | 防止叠时节点的间距 `padding`。`preventOverlap` 为 `true` 时生效 |
 | rows                  | number             |  `false` |    -       | 网格的行数，不设置时算法根据节点数量、布局空间、`cols`（若指定）自动计算 |
 | cols                  | number             |  `false` |    -       | 网格的列数，不设置时算法根据节点数量、布局空间、`rows`（若指定）自动计算 |
+| condense              | boolean            |  `false` |    `false` | 为 `false` 时表示利用所有可用画布空间，为 `true` 时表示利用最小的画布空间 |
 | sortBy                | string             |  `false` |    -       | 指定排序的依据（节点属性名），数值越高则该节点被放置得越中心。若不设置，则会计算节点的度数，度数越高，节点将被放置得越中心 |
 | nodeSize              | number \| number[] |  `false` |    30      | 统一设置节点的尺寸 |
 
@@ -153,7 +113,9 @@ const gridLayout = new Layout({
 <iframe src="/demos/tutorial/advanced/layout/circular"></iframe>
 
 ```ts
-const circularLayout = new Layout({
+import { CircularLayout } from '@antv/layout'
+
+const circularLayout = new CircularLayout({
   type: 'circular',
   width: 600,
   height: 400,
@@ -175,7 +137,6 @@ const circularLayout = new Layout({
 | endRadius         | number           |  `false` |    `null`      | 螺旋状布局的结束半径 |
 | clockwise         | boolean          |  `false` |    `true`      | 是否顺时针排列 |
 | divisions         | number           |  `false` |    1           | 节点在环上的分段数（几个段将均匀分布），在 `endRadius - startRadius != 0` 时生效 |
-| divisions         | number           |  `false` |    1           | 节点在环上的分段数（几个段将均匀分布），在 `endRadius - startRadius != 0` 时生效 |
 | ordering          | string           |  `false` |    `null`      | 节点在环上排序的依据。默认 `null` 代表直接使用数据中的顺序。`topology` 按照拓扑排序。`degree` 按照度数大小排序 |
 | angleRatio        | number           |  `false` |    1           | 从第一个节点到最后节点之间相隔多少个 `2*PI` |
 
@@ -186,7 +147,9 @@ Dagre 是一种层次布局。
 <iframe src="/demos/tutorial/advanced/layout/dagre"></iframe>
 
 ```ts
-const dagreLayout = new Layout({
+import { DagreLayout } from '@antv/layout'
+
+const dagreLayout = new DagreLayout({
   type: 'dagre',
   rankdir: 'LR',
   align: 'UL',
@@ -208,4 +171,3 @@ const dagreLayout = new Layout({
 | nodesepFunc       | function                        |  `false` |    -          | 节点间距（px）的回调函数，通过该参数可以对不同节点设置不同的节点间距。 |
 | ranksepFunc       | function                        |  `false` |    -          | 层间距（px）的回调函数，通过该参数可以对不同节点设置不同的层间距。 |
 | controlPoints     | boolean                         |  `false` |   `true`      | 是否保留布局连线的控制点 |
-| nodeSize          | number \| number[] \| undefined |  `false` |   `undefined` | 节点的尺寸，默认为 `undefined`，代表从节点的 `size` 属性中获取。 |
