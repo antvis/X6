@@ -314,6 +314,12 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
         nextGraph.nodes = oldGraph.nodes.filter(
           (node) => !nodes.includes(node.id.toString()),
         )
+        nextGraph.links = oldGraph.links.filter(
+          (link) =>
+            !nodes.find((node) =>
+              [link.source.toString(), link.target.toString()].includes(node),
+            ),
+        )
       } else {
         nextGraph.links = oldGraph.links.filter((link) => {
           return !links.find((delLink) => {
