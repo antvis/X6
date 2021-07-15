@@ -16,14 +16,15 @@ export class Line extends Geometry {
     )
   }
 
+  constructor()
   constructor(x1: number, y1: number, x2: number, y2: number)
   constructor(
     p1: Point.PointLike | Point.PointData,
     p2: Point.PointLike | Point.PointData,
   )
   constructor(
-    x1: number | Point.PointLike | Point.PointData,
-    y1: number | Point.PointLike | Point.PointData,
+    x1?: number | Point.PointLike | Point.PointData,
+    y1?: number | Point.PointLike | Point.PointData,
     x2?: number,
     y2?: number,
   ) {
@@ -145,8 +146,8 @@ export class Line extends Geometry {
    * whether the angle of incline can be computed for a given line.
    */
   angle() {
-    const horizontal = new Point(this.start.x + 1, this.start.y)
-    return this.start.angleBetween(this.end, horizontal)
+    const ref = new Point(this.start.x + 1, this.start.y)
+    return this.start.angleBetween(this.end, ref)
   }
 
   /**
