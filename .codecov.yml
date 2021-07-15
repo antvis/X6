@@ -8,13 +8,16 @@ coverage:
     project:
       default: off
       x6:
+        threshold: 1%
         flags:
           - x6
       x6-vector:
+        threshold: 1%
         target: 80% # will fail a Pull Request if coverage is less than 80%
         flags:
           - x6-vector
       x6-geometry:
+        threshold: 1%
         flags:
           - x6-geometry
 
@@ -40,5 +43,4 @@ github_checks:
 
 flag_management:
   default_rules:
-    threshold: 1%
     carryforward: false
