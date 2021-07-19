@@ -44,11 +44,21 @@ export class AngularShapeView extends NodeView<AngularShape> {
         injector,
       )
       if (content instanceof TemplateRef) {
-        const portal = new TemplatePortal(content, viewContainerRef)
+        let portal;
+        if (node.data != null){
+          portal = new TemplatePortal(content, viewContainerRef, {data: node.data});
+        }else{
+           portal = new TemplatePortal(content, viewContainerRef);
+        }
         domOutlet.attachTemplatePortal(portal)
       } else {
-        const portal = new ComponentPortal(content as any, viewContainerRef)
-        domOutlet.attachComponentPortal(portal)
+        let portal;
+        if (node.data != null){
+          portal = new ComponentPortal(content, viewContainerRef, node.data);
+        }else{
+          portal = new ComponentPortal(content, viewContainerRef);
+        }
+        domOutlet.attachComponentPortal(portal);
       }
     }
   }
