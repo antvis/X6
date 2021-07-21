@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.3.1) (2021-07-21)
+
+
+### Bug Fixes
+
+* 🐛 unified panning api ([#1151](https://github.com/antvis/x6/issues/1151)) ([fc78817](https://github.com/antvis/x6/commit/fc7881731bfc5c7cde698ca8948dfa0c40f891fc))
+* fix angular typo ([#1154](https://github.com/antvis/x6/issues/1154)) ([a8533e9](https://github.com/antvis/x6/commit/a8533e9a04ea8e0188dafa6c172e44189ff84dea))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.24.6
+
 ## @antv/x6-sites [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.3.1) (2021-07-10)
 
 
