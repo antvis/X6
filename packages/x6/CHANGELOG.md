@@ -1,3 +1,10 @@
+## @antv/x6 [1.24.7](https://github.com/antvis/x6/compare/@antv/x6@1.24.6...@antv/x6@1.24.7) (2021-07-21)
+
+
+### Bug Fixes
+
+* 🐛 revert optimze find snap elem ([#1192](https://github.com/antvis/x6/issues/1192)) ([c7bbc27](https://github.com/antvis/x6/commit/c7bbc2747c2851401aabc94417f8bab6fee1e8ea))
+
 ## @antv/x6 [1.24.6](https://github.com/antvis/x6/compare/@antv/x6@1.24.5...@antv/x6@1.24.6) (2021-07-21)
 
 ## @antv/x6 [1.24.5](https://github.com/antvis/x6/compare/@antv/x6@1.24.4...@antv/x6@1.24.5) (2021-07-09)
