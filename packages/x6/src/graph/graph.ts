@@ -780,15 +780,15 @@ export class Graph extends Basecoat<EventArgs> {
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
     options?: Transform.FitToContentOptions,
-  ): Rectangle
-  fitToContent(options?: Transform.FitToContentFullOptions): Rectangle
+  ): undefined
+  fitToContent(options?: Transform.FitToContentFullOptions): undefined
   fitToContent(
     gridWidth?: number | Transform.FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
     options?: Transform.FitToContentOptions,
   ) {
-    return this.transform.fitToContent(gridWidth, gridHeight, padding, options)
+    this.transform.fitToContent(gridWidth, gridHeight, padding, options)
   }
 
   scaleContentToFit(options: Transform.ScaleContentToFitOptions = {}) {

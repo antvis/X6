@@ -12884,6 +12884,13 @@ fastclick@1.0.6:
   resolved "https://registry.npmjs.org/fastclick/-/fastclick-1.0.6.tgz#161625b27b1a5806405936bda9a2c1926d06be6a"
   integrity sha1-FhYlsnsaWAZAWTa9qaLBkm0Gvmo=
 
+fastdom@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/fastdom/-/fastdom-1.0.10.tgz#4f2c7c9b24e7e249fc70c63131842b859b92bf09"
+  integrity sha512-sbL4h358IlZn8VsTvA5TYnKVLYif46XhPEll+HTSxVtDSpqZEO/17D/QqlxE9V2K7AQ82GXeYeQLU2HWwKgk1A==
+  dependencies:
+    strictdom "^1.0.1"
+
 fastest-levenshtein@^1.0.12:
   version "1.0.12"
   resolved "https://registry.npmjs.org/fastest-levenshtein/-/fastest-levenshtein-1.0.12.tgz#9990f7d3a88cc5a9ffd1f1745745251700d497e2"
@@ -21017,14 +21024,14 @@ moment@2.x, moment@^2.15.1, moment@^2.22.1, moment@^2.24.0, moment@^2.25.3, mome
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-monaco-editor-webpack-plugin@2.0.0, monaco-editor-webpack-plugin@^2.0.0:
+monaco-editor-webpack-plugin@^2.0.0:
   version "2.0.0"
   resolved "https://registry.nlark.com/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-2.0.0.tgz#196052f23678285deca7a7baf4d7aebe9d1ff9e1"
   integrity sha1-GWBS8jZ4KF3sp6e69Neuvp0f+eE=
   dependencies:
     loader-utils "^2.0.0"
 
-monaco-editor@*, monaco-editor@0.21.0, monaco-editor@^0.21.0:
+monaco-editor@*, monaco-editor@^0.21.0:
   version "0.21.0"
   resolved "https://registry.nlark.com/monaco-editor/download/monaco-editor-0.21.0.tgz?cache=0&sync_timestamp=1623961471145&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmonaco-editor%2Fdownload%2Fmonaco-editor-0.21.0.tgz#35d964cbeff8b035d574bb113e9491331810d5f1"
   integrity sha1-Ndlky+/4sDXVdLsRPpSRMxgQ1fE=
@@ -28672,6 +28679,11 @@ strict-uri-encode@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
   integrity sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
+
+strictdom@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/strictdom/-/strictdom-1.0.1.tgz#189de91649f73d44d59b8432efa68ef9d2659460"
+  integrity sha1-GJ3pFkn3PUTVm4Qy76aO+dJllGA=
 
 string-argv@0.3.1, string-argv@~0.3.1:
   version "0.3.1"

@@ -1,3 +1,4 @@
+import fastdom from 'fastdom'
 import { KeyValue } from '../types'
 import { Dom, FunctionExt } from '../util'
 import { Point, Rectangle } from '../geometry'
@@ -990,32 +991,33 @@ export class Renderer extends Base {
   ) {
     // Highly inspired by the jquery.sortElements plugin by Padolsey.
     // See http://james.padolsey.com/javascript/sorting-elements-with-jquery/.
+    fastdom.mutate(() => {
+      const placements = elems.map((elem) => {
+        const parentNode = elem.parentNode!
+        // Since the element itself will change position, we have
+        // to have some way of storing it's original position in
+        // the DOM. The easiest way is to have a 'flag' node:
+        const nextSibling = parentNode.insertBefore(
+          document.createTextNode(''),
+          elem.nextSibling,
+        )
 
-    const placements = elems.map((elem) => {
-      const parentNode = elem.parentNode!
-      // Since the element itself will change position, we have
-      // to have some way of storing it's original position in
-      // the DOM. The easiest way is to have a 'flag' node:
-      const nextSibling = parentNode.insertBefore(
-        document.createTextNode(''),
-        elem.nextSibling,
-      )
+        return (targetNode: Element) => {
+          if (parentNode === targetNode) {
+            throw new Error(
+              "You can't sort elements if any one is a descendant of another.",
+            )
+          }
 
-      return (targetNode: Element) => {
-        if (parentNode === targetNode) {
-          throw new Error(
-            "You can't sort elements if any one is a descendant of another.",
-          )
+          // Insert before flag
+          parentNode.insertBefore(targetNode, nextSibling)
+          // Remove flag
+          parentNode.removeChild(nextSibling)
         }
+      })
 
-        // Insert before flag
-        parentNode.insertBefore(targetNode, nextSibling)
-        // Remove flag
-        parentNode.removeChild(nextSibling)
-      }
+      elems.sort(comparator).forEach((elem, index) => placements[index](elem))
     })
-
-    elems.sort(comparator).forEach((elem, index) => placements[index](elem))
   }
 
   sortViewsExact() {
@@ -1118,12 +1120,16 @@ export class Renderer extends Base {
       case 'approx': {
         const zIndex = view.cell.getZIndex()
         const pivot = this.addZPivot(zIndex)
-        stage.insertBefore(view.container, pivot)
+        fastdom.mutate(() => {
+          stage.insertBefore(view.container, pivot)
+        })
         break
       }
       case 'exact':
       default:
-        stage.appendChild(view.container)
+        fastdom.mutate(() => {
+          stage.appendChild(view.container)
+        })
         break
     }
   }

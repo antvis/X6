@@ -67,6 +67,7 @@
   ],
   "dependencies": {
     "csstype": "^3.0.3",
+    "fastdom": "^1.0.10",
     "jquery": "^3.5.1",
     "jquery-mousewheel": "^3.1.13",
     "lodash-es": "^4.17.15",

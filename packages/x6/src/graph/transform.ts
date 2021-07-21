@@ -1,3 +1,4 @@
+import fastdom from 'fastdom'
 import { Dom, NumberExt } from '../util'
 import { Point, Rectangle } from '../geometry'
 import { Transform } from '../addon/transform'
@@ -112,8 +113,10 @@ export class TransformManager extends Base {
       h = Math.round(h)
     }
 
-    this.container.style.width = w == null ? '' : `${w}px`
-    this.container.style.height = h == null ? '' : `${h}px`
+    fastdom.mutate(() => {
+      this.container.style.width = w == null ? '' : `${w}px`
+      this.container.style.height = h == null ? '' : `${h}px`
+    })
 
     const size = this.getComputedSize()
     this.graph.trigger('resize', { ...size })
@@ -264,99 +267,103 @@ export class TransformManager extends Base {
     padding?: NumberExt.SideOptions,
     options?: TransformManager.FitToContentOptions,
   ) {
-    if (typeof gridWidth === 'object') {
-      const opts = gridWidth
-      gridWidth = opts.gridWidth || 1 // eslint-disable-line
-      gridHeight = opts.gridHeight || 1 // eslint-disable-line
-      padding = opts.padding || 0 // eslint-disable-line
-      options = opts // eslint-disable-line
-    } else {
-      gridWidth = gridWidth || 1 // eslint-disable-line
-      gridHeight = gridHeight || 1 // eslint-disable-line
-      padding = padding || 0 // eslint-disable-line
-      if (options == null) {
-        options = {} // eslint-disable-line
+    fastdom.measure(() => {
+      if (typeof gridWidth === 'object') {
+        const opts = gridWidth
+        gridWidth = opts.gridWidth || 1 // eslint-disable-line
+        gridHeight = opts.gridHeight || 1 // eslint-disable-line
+        padding = opts.padding || 0 // eslint-disable-line
+        options = opts // eslint-disable-line
+      } else {
+        gridWidth = gridWidth || 1 // eslint-disable-line
+        gridHeight = gridHeight || 1 // eslint-disable-line
+        padding = padding || 0 // eslint-disable-line
+        if (options == null) {
+          options = {} // eslint-disable-line
+        }
       }
-    }
 
-    const paddings = NumberExt.normalizeSides(padding)
-    const border = options.border || 0
-    const contentArea = options.contentArea
-      ? Rectangle.create(options.contentArea)
-      : this.getContentArea(options)
+      const paddings = NumberExt.normalizeSides(padding)
+      const border = options.border || 0
+      const contentArea = options.contentArea
+        ? Rectangle.create(options.contentArea)
+        : this.getContentArea(options)
 
-    if (border > 0) {
-      contentArea.inflate(border)
-    }
+      if (border > 0) {
+        contentArea.inflate(border)
+      }
 
-    const scale = this.getScale()
-    const translate = this.getTranslation()
-    const sx = scale.sx
-    const sy = scale.sy
+      const scale = this.getScale()
+      const translate = this.getTranslation()
+      const sx = scale.sx
+      const sy = scale.sy
 
-    contentArea.x *= sx
-    contentArea.y *= sy
-    contentArea.width *= sx
-    contentArea.height *= sy
+      contentArea.x *= sx
+      contentArea.y *= sy
+      contentArea.width *= sx
+      contentArea.height *= sy
 
-    let width =
-      Math.max(Math.ceil((contentArea.width + contentArea.x) / gridWidth), 1) *
-      gridWidth
+      let width =
+        Math.max(
+          Math.ceil((contentArea.width + contentArea.x) / gridWidth),
+          1,
+        ) * gridWidth
 
-    let height =
-      Math.max(
-        Math.ceil((contentArea.height + contentArea.y) / gridHeight),
-        1,
-      ) * gridHeight
+      let height =
+        Math.max(
+          Math.ceil((contentArea.height + contentArea.y) / gridHeight),
+          1,
+        ) * gridHeight
 
-    let tx = 0
-    let ty = 0
+      let tx = 0
+      let ty = 0
 
-    if (
-      (options.allowNewOrigin === 'negative' && contentArea.x < 0) ||
-      (options.allowNewOrigin === 'positive' && contentArea.x >= 0) ||
-      options.allowNewOrigin === 'any'
-    ) {
-      tx = Math.ceil(-contentArea.x / gridWidth) * gridWidth
-      tx += paddings.left
-      width += tx
-    }
+      if (
+        (options.allowNewOrigin === 'negative' && contentArea.x < 0) ||
+        (options.allowNewOrigin === 'positive' && contentArea.x >= 0) ||
+        options.allowNewOrigin === 'any'
+      ) {
+        tx = Math.ceil(-contentArea.x / gridWidth) * gridWidth
+        tx += paddings.left
+        width += tx
+      }
 
-    if (
-      (options.allowNewOrigin === 'negative' && contentArea.y < 0) ||
-      (options.allowNewOrigin === 'positive' && contentArea.y >= 0) ||
-      options.allowNewOrigin === 'any'
-    ) {
-      ty = Math.ceil(-contentArea.y / gridHeight) * gridHeight
-      ty += paddings.top
-      height += ty
-    }
+      if (
+        (options.allowNewOrigin === 'negative' && contentArea.y < 0) ||
+        (options.allowNewOrigin === 'positive' && contentArea.y >= 0) ||
+        options.allowNewOrigin === 'any'
+      ) {
+        ty = Math.ceil(-contentArea.y / gridHeight) * gridHeight
+        ty += paddings.top
+        height += ty
+      }
 
-    width += paddings.right
-    height += paddings.bottom
+      width += paddings.right
+      height += paddings.bottom
 
-    // Make sure the resulting width and height are greater than minimum.
-    width = Math.max(width, options.minWidth || 0)
-    height = Math.max(height, options.minHeight || 0)
+      // Make sure the resulting width and height are greater than minimum.
+      width = Math.max(width, options.minWidth || 0)
+      height = Math.max(height, options.minHeight || 0)
 
-    // Make sure the resulting width and height are lesser than maximum.
-    width = Math.min(width, options.maxWidth || Number.MAX_SAFE_INTEGER)
-    height = Math.min(height, options.maxHeight || Number.MAX_SAFE_INTEGER)
+      // Make sure the resulting width and height are lesser than maximum.
+      width = Math.min(width, options.maxWidth || Number.MAX_SAFE_INTEGER)
+      height = Math.min(height, options.maxHeight || Number.MAX_SAFE_INTEGER)
 
-    const size = this.getComputedSize()
-    const sizeChanged = width !== size.width || height !== size.height
-    const originChanged = tx !== translate.tx || ty !== translate.ty
+      const size = this.getComputedSize()
+      const sizeChanged = width !== size.width || height !== size.height
+      const originChanged = tx !== translate.tx || ty !== translate.ty
 
-    // Change the dimensions only if there is a size discrepency or an origin change
-    if (originChanged) {
-      this.translate(tx, ty)
-    }
+      fastdom.mutate(() => {
+        // Change the dimensions only if there is a size discrepency or an origin change
+        if (originChanged) {
+          this.translate(tx, ty)
+        }
 
-    if (sizeChanged) {
-      this.resize(width, height)
-    }
-
-    return new Rectangle(-tx / sx, -ty / sy, width / sx, height / sy)
+        if (sizeChanged) {
+          this.resize(width, height)
+        }
+      })
+    })
   }
 
   scaleContentToFit(options: TransformManager.ScaleContentToFitOptions = {}) {
