@@ -2361,37 +2361,53 @@ export class EdgeView<
     const pos = new Point(x, y)
 
     views.forEach((view) => {
-      const elems = []
-
       if (view.container.getAttribute('magnet') !== 'false') {
-        elems.push({
-          bbox: view.cell.getBBox(),
-          magnet: view.container,
-        })
-      }
-
-      view.container.querySelectorAll('[magnet]').forEach((magnet) => {
-        elems.push({
-          bbox: view.getBBoxOfElement(magnet),
-          magnet,
-        })
-      })
-
-      elems.forEach((elem) => {
-        const { magnet, bbox } = elem
-        distance = bbox.getCenter().distance(pos)
-
+        // Find distance from the center of the cell to pointer coordinates
+        distance = view.cell.getBBox().getCenter().distance(pos)
+        // the connection is looked up in a circle area by `distance < r`
         if (distance < radius && distance < minDistance) {
           if (
-            prevMagnet === magnet ||
+            prevMagnet === view.container ||
             graph.hook.validateConnection(
               ...data.getValidateConnectionArgs(view, null),
-              view.getEdgeTerminal(magnet, x, y, this.cell, data.terminalType),
+              view.getEdgeTerminal(
+                view.container,
+                x,
+                y,
+                this.cell,
+                data.terminalType,
+              ),
             )
           ) {
             minDistance = distance
             data.closestView = view
-            data.closestMagnet = magnet
+            data.closestMagnet = view.container
+          }
+        }
+      }
+
+      view.container.querySelectorAll('[magnet]').forEach((magnet) => {
+        if (magnet.getAttribute('magnet') !== 'false') {
+          const bbox = view.getBBoxOfElement(magnet)
+          distance = pos.distance(bbox.getCenter())
+          if (distance < radius && distance < minDistance) {
+            if (
+              prevMagnet === magnet ||
+              graph.hook.validateConnection(
+                ...data.getValidateConnectionArgs(view, magnet),
+                view.getEdgeTerminal(
+                  magnet,
+                  x,
+                  y,
+                  this.cell,
+                  data.terminalType,
+                ),
+              )
+            ) {
+              minDistance = distance
+              data.closestView = view
+              data.closestMagnet = magnet
+            }
           }
         }
       })
