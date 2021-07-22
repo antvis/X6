@@ -271,6 +271,8 @@ export class Selection extends View<Selection.EventArgs> {
       clientY: evt.clientY,
       offsetX: x,
       offsetY: y,
+      scrollerX: 0,
+      scrollerY: 0,
     })
 
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
@@ -426,6 +428,14 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
+  protected autoScrollGraph(x: number, y: number) {
+    const scroller = this.graph.scroller.widget
+    if (scroller) {
+      return scroller.autoScroll(x, y)
+    }
+    return { scrollerX: 0, scrollerY: 0 }
+  }
+
   protected adjustSelection(evt: JQuery.MouseMoveEvent) {
     const e = this.normalizeEvent(evt)
     const eventData = this.getEventData<EventData.Common>(e)
@@ -438,8 +448,17 @@ export class Selection extends View<Selection.EventArgs> {
           this.showRubberband()
           data.moving = true
         }
-        const dx = e.clientX - data.clientX
-        const dy = e.clientY - data.clientY
+
+        const { scrollerX, scrollerY } = this.autoScrollGraph(
+          e.clientX,
+          e.clientY,
+        )
+        data.scrollerX += scrollerX
+        data.scrollerY += scrollerY
+
+        const dx = e.clientX - data.clientX + data.scrollerX
+        const dy = e.clientY - data.clientY + data.scrollerY
+
         const left = parseInt(this.$container.css('left'), 10)
         const top = parseInt(this.$container.css('top'), 10)
         this.$container.css({
@@ -1154,6 +1173,8 @@ namespace EventData {
     clientY: number
     offsetX: number
     offsetY: number
+    scrollerX: number
+    scrollerY: number
   }
 
   export interface Translating extends Common {
