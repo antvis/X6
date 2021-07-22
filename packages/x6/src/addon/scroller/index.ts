@@ -979,6 +979,7 @@ export class Scroller extends View {
     this.container.scrollLeft -= dx
     this.clientX = e.clientX
     this.clientY = e.clientY
+    this.trigger('panning', { e })
   }
 
   stopPanning(e: JQuery.MouseUpEvent) {
@@ -1066,6 +1067,11 @@ export class Scroller extends View {
 
     if (dy !== 0) {
       container.scrollTop += dy
+    }
+
+    return {
+      scrollerX: dx,
+      scrollerY: dy,
     }
   }
 
