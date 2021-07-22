@@ -1,3 +1,10 @@
+## @antv/x6 [1.24.8](https://github.com/antvis/x6/compare/@antv/x6@1.24.7...@antv/x6@1.24.8) (2021-07-22)
+
+
+### Bug Fixes
+
+* 🐛 auto scroller when selection over graph ([#1197](https://github.com/antvis/x6/issues/1197)) ([ffc801b](https://github.com/antvis/x6/commit/ffc801b9550fd55a03a2642051a84ef586d88ee7))
+
 ## @antv/x6 [1.24.7](https://github.com/antvis/x6/compare/@antv/x6@1.24.6...@antv/x6@1.24.7) (2021-07-21)
 
 
