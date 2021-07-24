@@ -7,12 +7,14 @@ import { Vertices } from './vertices'
 import { Segments } from './segments'
 import { SourceAnchor, TargetAnchor } from './anchor'
 import { SourceArrowhead, TargetArrowhead } from './arrowhead'
+import { CellEditor } from './editor'
 
 export namespace NodeTool {
   export const presets = {
     boundary: Boundary,
     button: Button,
     'button-remove': Button.Remove,
+    'node-editor': CellEditor.NodeEditor,
   }
 
   export type Definition = ToolsView.ToolItem.Definition
@@ -81,6 +83,7 @@ export namespace EdgeTool {
     'target-anchor': TargetAnchor,
     'source-arrowhead': SourceArrowhead,
     'target-arrowhead': TargetArrowhead,
+    'edge-editor': CellEditor.EdgeEditor,
   }
 
   export type Definition = NodeTool.Definition
