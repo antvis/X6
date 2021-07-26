@@ -122,6 +122,7 @@ class MenubarItemInner extends React.PureComponent<
         document.documentElement,
         'click',
         this.onDocumentClick,
+        true
       ).remove
     }
   }
