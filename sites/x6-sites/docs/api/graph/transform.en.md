@@ -327,7 +327,7 @@ zoomToRect(rect: Rectangle.RectangleLike, options?: Options): this
 | 名称                        | 类型                    | 必选 | 默认值  | 描述                                                                                          |
 |-----------------------------|-------------------------|:----:|---------|---------------------------------------------------------------------------------------------|
 | rect                        | Rectangle.RectangleLike |  ✓   |         | 矩形区域。                                                                                     |
-| options.padding             | number                  |      | -       | 边距。                                                                                         |
+| options.padding             | number \| { left: number, top: number, right: number, bottom: number }                |      | -       | 边距。                                                                                         |
 | options.contentArea         | Rectangle.RectangleLike |      | -       | 内容区域，默认获取画布内容区域。                                                                |
 | options.viewportArea        | Rectangle.RectangleLike |      | -       | 视口区域，默认获取画布视口。                                                                    |
 | options.scaleGrid           | number                  |      | -       | 修正缩放比例为 `scaleGrid` 的整倍数。                                                          |
