@@ -1,3 +1,25 @@
+# @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2021-07-27)
+
+
+### Bug Fixes
+
+* 🐛 change type of padding in ScaleContentToFitOptions ([#1203](https://github.com/antvis/x6/issues/1203)) ([692ea04](https://github.com/antvis/x6/commit/692ea043854095535273e7a9ff2e4f8809faee81))
+* 🐛 unified panning api ([#1151](https://github.com/antvis/x6/issues/1151)) ([fc78817](https://github.com/antvis/x6/commit/fc7881731bfc5c7cde698ca8948dfa0c40f891fc))
+* fix angular typo ([#1154](https://github.com/antvis/x6/issues/1154)) ([a8533e9](https://github.com/antvis/x6/commit/a8533e9a04ea8e0188dafa6c172e44189ff84dea))
+
+
+### Features
+
+* ✨ add cell-editor tool ([#1202](https://github.com/antvis/x6/issues/1202)) ([2286097](https://github.com/antvis/x6/commit/228609783e1b3a3ff579ce9d38cf2e70dacd4931))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.25.0
+
 ## @antv/x6-sites [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.3.1) (2021-07-22)
 
 
