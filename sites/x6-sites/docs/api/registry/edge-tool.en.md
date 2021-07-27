@@ -67,8 +67,7 @@ graph.on('edge:mouseleave', ({ cell }) => {
 - [button](#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
 - [button-remove](#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
 - [source-arrowhead-和-target-arrowhead](#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
-
-
+- [edge-editor](#edge-editor) 提供边上文本编辑功能。
   
 ## presets
 
@@ -395,6 +394,38 @@ graph.on('edge:mouseleave', ({ cell }) => {
 ```
 
 <iframe src="/demos/api/registry/edge-tool/arrowhead"></iframe>
+
+### edge-editor
+
+提供边上文本编辑功能。
+
+<span class="tag-param">参数<span>
+
+| 参数名  | 类型                      | 默认值      | 说明                                                    |
+|---------|---------------------------|-------------|-------------------------------------------------------|
+| event       | JQuery.MouseEventBase     | -           | 触发文本编辑的事件参数 |
+| attrs/fontSize   | string       | `14`         | 编辑文本字体大小 |
+| attrs/color  | string | `#000`         | 编辑文本字体颜色 |
+| attrs/fontFamily  | string   | `Arial, helvetica, sans-serif`| 编辑文本的字体 |
+| attrs/backgroundColor  | string   | `#fff`| 编辑区域的背景色 |
+| getText  | (this: CellView, args: {cell: Cell}) => string   | - | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+| setText | (this: CellView, args: {cell: Cell, value: string}) => void  | - | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法 |
+
+<span class="tag-example">使用</span>
+
+```ts
+// 双击进入编辑模式
+graph.on('edge:dblclick', ({ cell, e }) => {
+  cell.addTools({
+    name: 'edge-editor',
+    args: {
+      event: e,
+    },
+  })
+})
+```
+
+<iframe src="/demos/api/registry/node-tool/editor"></iframe>
 
 ## registry
 
