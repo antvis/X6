@@ -382,7 +382,7 @@ export class TransformManager extends Base {
       return
     }
 
-    const padding = options.padding || 0
+    const padding = NumberExt.normalizeSides(options.padding)
     const minScale = options.minScale || 0
     const maxScale = options.maxScale || Number.MAX_SAFE_INTEGER
     const minScaleX = options.minScaleX || minScale
@@ -404,7 +404,12 @@ export class TransformManager extends Base {
       }
     }
 
-    fittingBox = Rectangle.create(fittingBox).inflate(-padding)
+    fittingBox = Rectangle.create(fittingBox).moveAndExpand({
+      x: padding.left,
+      y: padding.top,
+      width: -padding.left - padding.right,
+      height: -padding.top - padding.bottom,
+    })
 
     const currentScale = this.getScale()
 
@@ -606,7 +611,7 @@ export namespace TransformManager {
   }
 
   export interface ScaleContentToFitOptions extends GetContentAreaOptions {
-    padding?: number
+    padding?: NumberExt.SideOptions
     minScale?: number
     maxScale?: number
     minScaleX?: number
