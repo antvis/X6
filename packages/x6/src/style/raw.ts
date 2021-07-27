@@ -1241,4 +1241,23 @@ export const content = `.x6-graph {
     display: none;
   }
 }
+.x6-cell-tool-editor {
+  position: relative;
+  display: inline-block;
+  min-height: 1em;
+  padding: 0px;
+  margin: 0px;
+  line-height: 1;
+  text-align: center;
+  outline: none;
+  white-space: normal;
+  transform-origin: 0px 0px;
+  overflow-wrap: normal;
+  vertical-align: top;
+  -webkit-user-drag: none;
+}
+.x6-edge-tool-editor {
+  border: 1px solid #275FC5;
+  border-radius: 2px;
+}
 `

@@ -62,6 +62,7 @@ graph.on('node:mouseleave', ({ node }) => {
 - [button](#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
 - [button-remove](#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
 - [boundary](#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [node-editor](#node-editor) 提供节点文本编辑功能。
   
 
 ## presets
@@ -231,6 +232,38 @@ const source = graph.addNode({
 ```
 
 <iframe src="/demos/api/registry/node-tool/boundary"></iframe>
+
+### node-editor
+
+提供节点上文本编辑功能。
+
+<span class="tag-param">参数<span>
+
+| 参数名  | 类型                      | 默认值      | 说明                                                    |
+|---------|---------------------------|-------------|-------------------------------------------------------|
+| event       | JQuery.MouseEventBase     | -           | 触发文本编辑的事件参数 |
+| attrs/fontSize   | string       | `14`         | 编辑文本字体大小 |
+| attrs/color  | string | `#000`         | 编辑文本字体颜色 |
+| attrs/fontFamily  | string   | `Arial, helvetica, sans-serif`| 编辑文本的字体 |
+| attrs/backgroundColor  | string   | `#fff`| 编辑区域的背景色 |
+| getText  | (this: CellView, args: {cell: Cell}) => string   | - | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+| setText | (this: CellView, args: {cell: Cell, value: string}) => void  | - | 设置新文本，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+
+<span class="tag-example">使用</span>
+
+```ts
+// 双击进入编辑模式
+graph.on('node:dblclick', ({ cell, e }) => {
+  node.addTools({
+    name: 'node-editor',
+    args: {
+      event: e,
+    },
+  })
+})
+```
+
+<iframe src="/demos/api/registry/node-tool/editor"></iframe>
 
 ## registry
 

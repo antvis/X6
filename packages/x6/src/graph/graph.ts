@@ -648,12 +648,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  /**
-   * **Deprecation Notice:** `scale` is deprecated and will be moved in next
-   * major release. Use `zoom()` instead.
-   *
-   * @deprecated
-   */
   scale(): Dom.Scale
   scale(sx: number, sy?: number, cx?: number, cy?: number): this
   scale(sx?: number, sy: number = sx as number, cx = 0, cy = 0) {
