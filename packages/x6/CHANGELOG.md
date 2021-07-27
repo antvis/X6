@@ -1,3 +1,15 @@
+# @antv/x6 [1.25.0](https://github.com/antvis/x6/compare/@antv/x6@1.24.8...@antv/x6@1.25.0) (2021-07-27)
+
+
+### Bug Fixes
+
+* 🐛 change type of padding in ScaleContentToFitOptions ([#1203](https://github.com/antvis/x6/issues/1203)) ([692ea04](https://github.com/antvis/x6/commit/692ea043854095535273e7a9ff2e4f8809faee81))
+
+
+### Features
+
+* ✨ add cell-editor tool ([#1202](https://github.com/antvis/x6/issues/1202)) ([2286097](https://github.com/antvis/x6/commit/228609783e1b3a3ff579ce9d38cf2e70dacd4931))
+
 ## @antv/x6 [1.24.8](https://github.com/antvis/x6/compare/@antv/x6@1.24.7...@antv/x6@1.24.8) (2021-07-22)
 
 
