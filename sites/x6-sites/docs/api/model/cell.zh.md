@@ -749,7 +749,7 @@ setMarkup(markup: Markup, options?: Cell.SetOptions): this
 | 名称             | 类型              | 必选 | 默认值  | 描述                                                     |
 |------------------|-------------------|:----:|---------|----------------------------------------------------------|
 | markup           | [Markup](#markup) |  ✓   |         |                                                          |
-| options.silent   | boolean           |      | `false` | 为 `true` 时不触不触发 `'change:markup'` 事件和画布重绘。 |
+| options.silent   | boolean           |      | `false` | 为 `true` 时不触发 `'change:markup'` 事件和画布重绘。 |
 | options...others | object            |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -786,7 +786,7 @@ removeMarkup(options?: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                     |
 |------------------|---------|------|---------|--------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:markup'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:markup'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -856,7 +856,7 @@ setAttrs(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
 | attrs             | Attr.CellAttrs \| null \| undefined |  ✓   |         |                                                                                        |
 | options.overwrite | boolean                             |      | `false` | 为 `true` 时替换现有属性，否则根据 `options.deep` 选项进行深度或浅度 merge。             |
 | options.deep      | boolean                             |      | `true`  | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
-| options.silent    | boolean                             |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。                                |
+| options.silent    | boolean                             |      | `false` | 为 `true` 时不触发 `'change:attrs'` 事件和画布重绘。                                |
 | options...others  | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
 <span class="tag-example">用法</span>
@@ -923,7 +923,7 @@ console.log(cell.getAttrs())
 // }
 ```
 
-当 `options.silent` 为 true 时不触不触发 `'change:attrs'` 事件和画布重绘。
+当 `options.silent` 为 true 时不触发 `'change:attrs'` 事件和画布重绘。
 
 ```ts
 cell.setAttrs(myAttrs, { silent: true })
@@ -948,7 +948,7 @@ replaceAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}): this
 | 名称             | 类型                                | 必选 | 默认值  | 描述                                                    |
 |------------------|-------------------------------------|:----:|---------|---------------------------------------------------------|
 | attrs            | Attr.CellAttrs \| null \| undefined |  ✓   |         |                                                         |
-| options.silent   | boolean                             |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。 |
+| options.silent   | boolean                             |      | `false` | 为 `true` 时不触发 `'change:attrs'` 事件和画布重绘。 |
 | options...others | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                  |
 
 #### updateAttrs(...)
@@ -964,7 +964,7 @@ updateAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}): this
 | 名称             | 类型                                | 必选 | 默认值  | 描述                                                    |
 |------------------|-------------------------------------|:----:|---------|---------------------------------------------------------|
 | attrs            | Attr.CellAttrs \| null \| undefined |  ✓   |         |                                                         |
-| options.silent   | boolean                             |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。 |
+| options.silent   | boolean                             |      | `false` | 为 `true` 时不触发 `'change:attrs'` 事件和画布重绘。 |
 | options...others | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                  |
 
 #### removeAttrs(...)
@@ -1083,7 +1083,7 @@ setAttrByPath(path: string | string[], value: Attr.ComplexAttrValue, options?: C
 |------------------|-----------------------|:----:|---------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | path             | string \| string[]    |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
 | value            | Attr.ComplexAttrValue |  ✓   |         | 新属性值。                                                                                                                                           |
-| options.silent   | boolean               |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。                                                                                             |
+| options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `'change:attrs'` 事件和画布重绘。                                                                                             |
 | options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                              |
 
 
@@ -1135,7 +1135,7 @@ console.log(cell.getAttrs())
 // }
 ```
 
-当 `options.silent` 为 true 时不触不触发 `'change:attrs'` 事件和画布重绘。
+当 `options.silent` 为 true 时不触发 `'change:attrs'` 事件和画布重绘。
 
 ```ts
 cell.setAttrByPath('body', { stroke: '#000000' }, { silent: true })
@@ -1339,7 +1339,7 @@ setZIndex(zIndex: number, options?: Cell.SetOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                     |
 |------------------|---------|:----:|---------|----------------------------------------------------------|
 | zIndex           | number  |  ✓   |         |                                                          |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:zIndex'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:zIndex'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 
@@ -1377,7 +1377,7 @@ removeZIndex(options?: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                     |
 |------------------|---------|------|---------|--------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:zIndex'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:zIndex'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -1412,7 +1412,7 @@ toFront(options?: Cell.ToFrontOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                     |
 |------------------|---------|------|---------|--------------------------------------------------------|
 | options.deep     | boolean |      | `false` | 为 `true` 时同时更新所有子节点/边的层级。                 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:zIndex'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:zIndex'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -1454,7 +1454,7 @@ toBack(options?: Cell.ToBackOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                     |
 |------------------|---------|------|---------|--------------------------------------------------------|
 | options.deep     | boolean |      | `false` | 为 `true` 时同时更新所有子节点/边的层级。                 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:zIndex'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:zIndex'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -1511,7 +1511,7 @@ show(options?: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                      |
 |------------------|---------|:----:|---------|---------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:visible'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:visible'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 <span class="tag-example">用法</span>
@@ -1546,7 +1546,7 @@ hide(options?: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                      |
 |------------------|---------|:----:|---------|---------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:visible'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:visible'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 <span class="tag-example">用法</span>
@@ -1598,7 +1598,7 @@ setVisible(visible: boolean, options?: Cell.SetOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                      |
 |------------------|---------|:----:|---------|-----------------------------------------------------------|
 | visible          | boolean |  ✓   |         |                                                           |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:visible'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:visible'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 <span class="tag-example">用法</span>
@@ -1635,7 +1635,7 @@ toggleVisible(options?: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                      |
 |------------------|---------|:----:|---------|---------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:visible'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:visible'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 <span class="tag-example">用法</span>
@@ -1709,7 +1709,7 @@ setData(data: any, options?: Cell.SetDataOptions): this
 | data              | any     |  ✓   |         |                                                                                        |
 | options.overwrite | boolean |      | `false` | 为 `true` 时替换现有值，否则根据 `options.deep` 选项进行深度或浅度 merge。               |
 | options.deep      | boolean |      | `true`  | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
-| options.silent    | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。                                 |
+| options.silent    | boolean |      | `false` | 为 `true` 时不触发 `'change:data'` 事件和画布重绘。                                 |
 | options...others  | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
 默认与原数据进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，并触发 `'change:data'` 事件和画布重绘：
@@ -1755,7 +1755,7 @@ replaceData(data: any, options: Cell.SetOptions = {}): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
 |------------------|---------|:----:|---------|--------------------------------------------------------|
 | data             | any     |  ✓   |         |                                                        |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:data'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 #### updateData(...)
@@ -1771,7 +1771,7 @@ updateData(data: any, options: Cell.SetOptions = {}): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
 |------------------|---------|:----:|---------|--------------------------------------------------------|
 | data             | any     |  ✓   |         |                                                        |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:data'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 #### removeData(...)
@@ -1788,7 +1788,7 @@ removeData(options: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
 |------------------|---------|------|---------|------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:data'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 <span class="tag-example">用法</span>
@@ -1844,7 +1844,7 @@ setParent(parent: Cell | null, options?: Cell.SetOptions): this
 | 名称             | 类型         | 必选 | 默认值  | 描述                                                     |
 |------------------|--------------|:----:|---------|--------------------------------------------------------|
 | parent           | Cell \| null |  ✓   |         | 父节点或 `null`，当 `parent` 为 `null` 时删除父节点。      |
-| options.silent   | boolean      |      | `false` | 为 `true` 时不触不触发 `'change:parent'` 事件和画布重绘。 |
+| options.silent   | boolean      |      | `false` | 为 `true` 时不触发 `'change:parent'` 事件和画布重绘。 |
 | options...others | object       |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -1927,7 +1927,7 @@ setChildren(children: Cell[] | null, options?: Cell.SetOptions)
 | 名称             | 类型           | 必选 | 默认值  | 描述                                                            |
 |------------------|----------------|:----:|---------|---------------------------------------------------------------|
 | children         | Cell[] \| null |  ✓   |         | 子节点/边数组或 `null`，当 `children` 为 `null` 时清空子节点/边。 |
-| options.silent   | boolean        |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。      |
+| options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。      |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                          |
 
 
@@ -2177,7 +2177,7 @@ insertTo(parent: Cell, index?: number, options?: Cell.SetOptions): this
 |------------------|---------|:----:|---------|--------------------------------------------------------|
 | parent           | Cell    |  ✓   |         | 父节点。                                                  |
 | index            | number  |      |         | 要插入的索引位置，缺省时插入到末尾。                       |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:parent'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:parent'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 #### addChild(...)
@@ -2193,7 +2193,7 @@ addChild(child: Cell, options?: Cell.SetOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                       |
 |------------------|---------|:----:|---------|----------------------------------------------------------|
 | child            | Cell    |  ✓   |         | 指定的节点/边。                                             |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                     |
 
 #### insertChild(...)
@@ -2210,7 +2210,7 @@ insertChild(child: Cell, index?: number, options?: Cell.SetOptions): this
 |------------------|---------|:----:|---------|----------------------------------------------------------|
 | child            | Cell    |  ✓   |         | 指定的节点/边。                                             |
 | index            | number  |      |         | 要插入的索引位置，缺省时插入到末尾。                         |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                     |
 
 #### embed(...)
@@ -2226,7 +2226,7 @@ embed(child: Cell, options?: Cell.SetOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                       |
 |------------------|---------|:----:|---------|----------------------------------------------------------|
 | child            | Cell    |  ✓   |         | 指定的节点/边。                                             |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                     |
 
 #### unembed(...)
@@ -2242,7 +2242,7 @@ unembed(child: Cell, options?: Cell.SetOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                       |
 |------------------|---------|:----:|---------|----------------------------------------------------------|
 | child            | Cell    |  ✓   |         | 指定的节点/边。                                             |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                     |
 
 #### removeFromParent(...)
@@ -2258,7 +2258,7 @@ removeFromParent(options?: Cell.RemoveOptions): this
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                          |
 |------------------|---------|:----:|---------|-------------------------------------------------------------|
 | options.deep     | boolean |      | `true`  | 默认递归移除所有子节点/边，设置为 `false` 时只移除当前节点/边。 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。    |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。    |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                        |
 
 #### removeChild(...)
@@ -2275,7 +2275,7 @@ removeChild(child: Cell, options?: Cell.RemoveOptions): Cell | null
 |------------------|---------|:----:|---------|-------------------------------------------------------------|
 | child            | Cell    |  ✓   |         | 指定的节点/边。                                                |
 | options.deep     | boolean |      | `true`  | 默认递归移除所有子节点/边，设置为 `false` 时只移除当前节点/边。 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。    |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。    |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                        |
 
 <span class="tag-return">返回值</span>
@@ -2294,7 +2294,7 @@ removeChildAt(index: number, options?: Cell.RemoveOptions): Cell | null
 |------------------|---------|:----:|---------|-------------------------------------------------------------|
 | index            | number  |  ✓   |         | 指定的索引位置。                                               |
 | options.deep     | boolean |      | `true`  | 默认递归移除所有子节点/边，设置为 `false` 时只移除当前节点/边。 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:children'` 事件和画布重绘。    |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:children'` 事件和画布重绘。    |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                        |
 
 <span class="tag-return">返回值</span>
@@ -2387,7 +2387,7 @@ setProp(props: Partial<Properties>, options?: Cell.SetOptions): this
 | key              | string              |  ✓   |         | 属性名称。                                                                                           |
 | value            | any                 |  ✓   |         | 属性值。                                                                                             |
 | props            | Partial<Properties> |  ✓   |         | 属性键值对，将与现有属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。 |
-| options.silent   | boolean             |      | `false` | 为 `true` 时不触不触发 `'change:markup'` 事件和画布重绘。                                            |
+| options.silent   | boolean             |      | `false` | 为 `true` 时不触发 `'change:markup'` 事件和画布重绘。                                            |
 | options...others | object              |      |         | 其他自定义键值对，可以在事件回调中使用。                                                              |
 
 <span class="tag-example">用法</span>
@@ -2438,7 +2438,7 @@ removeProp(path: string | string[], options?: Cell.SetOptions): this
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                     |
 |------------------|--------------------|:----:|---------|--------------------------------------------------------|
 | path             | string \| string[] |  ✓   |         | 属性路径。                                                |
-| options.silent   | boolean            |      | `false` | 为 `true` 时不触不触发 `'change:markup'` 事件和画布重绘。 |
+| options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `'change:markup'` 事件和画布重绘。 |
 | options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                   |
 
 <span class="tag-example">用法</span>
@@ -2739,7 +2739,7 @@ addTools(
 | items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具。                 |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                 |
 | options.local    | boolean                          |      | `false` | 工具是否渲染到节点/边的容器中，默认为 `false`，所有工具会渲染在 `x6-graph-svg-decorator` 下面，只有在 `options.reset` 为 `true` 为时生效                                                                            |
-| options.silent   | boolean                          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。                                                              |
+| options.silent   | boolean                          |      | `false` | 为 `true` 时不触发 `'change:tools'` 事件和小工具重绘。                                                              |
 | options...others | object                           |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                 |
 
 #### getTools()
@@ -2762,7 +2762,7 @@ removeTools(options?: Cell.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                      |
 |------------------|---------|:----:|---------|---------------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。 |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:tools'` 事件和小工具重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 
@@ -2788,7 +2788,7 @@ removeTool(index: number, options?: Cell.SetOptions): this
 | 名称             | 类型             | 必选 | 默认值  | 描述                                                      |
 |------------------|------------------|:----:|---------|---------------------------------------------------------|
 | nameOrIndex      | string \| number |  ✓   |         | 工具名称或索引。                                           |
-| options.silent   | boolean          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。 |
+| options.silent   | boolean          |      | `false` | 为 `true` 时不触发 `'change:tools'` 事件和小工具重绘。 |
 | options...others | object           |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 ### 动画 Transition
