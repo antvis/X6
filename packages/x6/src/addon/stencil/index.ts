@@ -315,7 +315,7 @@ export class Stencil extends View {
             let val = cell.getPropByPath<string>(path)
             if (val != null) {
               val = `${val}`
-              if (ignoreCase) {
+              if (!ignoreCase) {
                 val = val.toLowerCase()
               }
               return val.indexOf(keyword) >= 0
