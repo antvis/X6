@@ -218,8 +218,12 @@ export class HistoryManager
     } else if (Util.isChangeEvent(event)) {
       const data = cmd.data as HistoryManager.ChangingData
       const key = data.key
-      if (key) {
-        const value = revert ? data.prev[key] : data.next[key]
+      const value = revert ? data.prev[key] : data.next[key]
+      if (key === 'children') {
+        cell.setChildren(value)
+      } else if (key === 'parent') {
+        cell.setParent(value)
+      } else if (key) {
         cell.prop(key, value, options)
       }
     } else {
