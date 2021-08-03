@@ -348,16 +348,13 @@ export class Cell<
 
     if (typeof key === 'string' || Array.isArray(key)) {
       if (arguments.length === 1) {
-        return Array.isArray(key)
-          ? this.getPropByPath(key)
-          : this.getPropByPath(key)
+        return this.getPropByPath(key)
       }
 
       if (value == null) {
-        return Array.isArray(key)
-          ? this.removePropByPath(key)
-          : this.removeAttrByPath(key, options || {})
+        return this.removePropByPath(key, options || {})
       }
+
       return this.setPropByPath(key, value, options || {})
     }
 
