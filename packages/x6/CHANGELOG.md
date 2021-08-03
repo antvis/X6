@@ -1,3 +1,11 @@
+## @antv/x6 [1.25.1](https://github.com/antvis/x6/compare/@antv/x6@1.25.0...@antv/x6@1.25.1) (2021-08-03)
+
+
+### Bug Fixes
+
+* 🐛 remove prop not remove attr ([#1225](https://github.com/antvis/x6/issues/1225)) ([ba2350d](https://github.com/antvis/x6/commit/ba2350dcc930a9a4ab350862db67a5415fe41cfd))
+* 🐛 Stencil searches are case sensitive ([#1211](https://github.com/antvis/x6/issues/1211)) ([c28289c](https://github.com/antvis/x6/commit/c28289c3c9f0552b14c81999542374649271e495))
+
 # @antv/x6 [1.25.0](https://github.com/antvis/x6/compare/@antv/x6@1.24.8...@antv/x6@1.25.0) (2021-07-27)
 
 
