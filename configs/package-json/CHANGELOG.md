@@ -1,5 +1,7 @@
 ## @antv/x6-package-json [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-package-json@1.0.0...@antv/x6-package-json@1.0.1) (2021-08-06)
 
+## @antv/x6-package-json [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-package-json@1.0.0...@antv/x6-package-json@1.0.1) (2021-08-06)
+
 ## @antv/x6-package-json [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-package-json@1.0.0...@antv/x6-package-json@1.0.1) (2021-08-03)
 
 ## @antv/x6-package-json [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-package-json@1.0.0...@antv/x6-package-json@1.0.1) (2021-07-27)
