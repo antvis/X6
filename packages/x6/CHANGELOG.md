@@ -1,3 +1,10 @@
+## @antv/x6 [1.25.3](https://github.com/antvis/x6/compare/@antv/x6@1.25.2...@antv/x6@1.25.3) (2021-08-06)
+
+
+### Bug Fixes
+
+* 🐛 translateSelected nodes exclude self ([#1238](https://github.com/antvis/x6/issues/1238)) ([31a3442](https://github.com/antvis/x6/commit/31a3442c92265e12830b28de2988b23008ca4666))
+
 ## @antv/x6 [1.25.2](https://github.com/antvis/x6/compare/@antv/x6@1.25.1...@antv/x6@1.25.2) (2021-08-06)
 
 
