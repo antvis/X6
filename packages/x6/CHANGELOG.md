@@ -1,3 +1,10 @@
+## @antv/x6 [1.25.2](https://github.com/antvis/x6/compare/@antv/x6@1.25.1...@antv/x6@1.25.2) (2021-08-06)
+
+
+### Bug Fixes
+
+* 🐛 fix scroller content size when not autoResize ([#1237](https://github.com/antvis/x6/issues/1237)) ([1010f39](https://github.com/antvis/x6/commit/1010f394e6a6390dae74ba30dfbb4493e5193ddc))
+
 ## @antv/x6 [1.25.1](https://github.com/antvis/x6/compare/@antv/x6@1.25.0...@antv/x6@1.25.1) (2021-08-03)
 
 
