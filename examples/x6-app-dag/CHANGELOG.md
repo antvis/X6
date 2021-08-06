@@ -11,6 +11,21 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.25.3
+
+## @antv/x6-app-dag [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.5...@antv/x6-app-dag@1.1.6) (2021-08-06)
+
+
+### Bug Fixes
+
+* 🐛 fix delete node connection not delete ([#1167](https://github.com/antvis/x6/issues/1167)) ([2b0ab54](https://github.com/antvis/x6/commit/2b0ab54892527e5ba32b50adb5f21523ab2459ab))
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.25.2
 
 ## @antv/x6-app-dag [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.1.5...@antv/x6-app-dag@1.1.6) (2021-08-03)
