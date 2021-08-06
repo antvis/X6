@@ -124,12 +124,18 @@ export class Selection extends View<Selection.EventArgs> {
     node,
     options,
   }: Collection.EventArgs['node:change:position']) {
-    const allowTranslating =
-      (this.options.showNodeSelectionBox !== true ||
-        this.options.pointerEvents === 'none') &&
-      !this.translating &&
-      !options.selection &&
-      options.ui
+    const { showNodeSelectionBox, pointerEvents } = this.options
+    const { ui, selection } = options
+    let allowTranslating = !this.translating
+
+    /* Scenarios where this method is not called:
+     * 1. ShowNodeSelection is true or ponterEvents is none
+     * 2. Avoid circular calls with the selection tag
+     */
+    allowTranslating =
+      allowTranslating &&
+      (showNodeSelectionBox !== true || pointerEvents === 'none')
+    allowTranslating = allowTranslating && ui && !selection
 
     if (allowTranslating) {
       this.translating = true
@@ -504,6 +510,10 @@ export class Selection extends View<Selection.EventArgs> {
   ) {
     const map: { [id: string]: boolean } = {}
     const excluded: Cell[] = []
+
+    if (exclude) {
+      map[exclude.id] = true
+    }
 
     this.collection.toArray().forEach((cell) => {
       cell.getDescendants({ deep: true }).forEach((child) => {
