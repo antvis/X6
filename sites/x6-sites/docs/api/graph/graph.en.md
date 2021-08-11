@@ -19,6 +19,7 @@ new Graph(options: Options)
 | [width](#width)                                         | number                        |      | `undefined`                   | 画布宽度，默认使用容器宽度。                                                               |
 | [height](#height)                                       | number                        |      | `undefined`                   | 画布高度，默认使用容器高度。                                                       |                                                              |
 | [autoResize](#autoresize)                                         | boolean \| Element \| Document                       |      | `false`                   | 是否监听容器大小改变，并自动更新画布大小。默认监听画布容器，也可以指定监听的元素，如 `Docuemnt`。                                                               |
+| [panning](#panning) | object|      | { enabled: false, eventTypes: ['leftMouseDown'],}  | 画布是否可以拖动
 | [grid](/en/docs/api/graph/grid)                                           | boolean \| number \| object   |      | `false`                       | 网格，默认使用 `10px` 的网格，但不绘制网格背景。                                            |
 | [background](/en/docs/api/graph/background)                               | false \| object               |      | `false`                       | 背景，默认不绘制背景。                                                                     |
 | [snapline](/en/docs/api/graph/snapline)                                   | boolean \| object             |      | `false`                       | 对齐线，默认禁用。                                                                         |
@@ -94,7 +95,53 @@ const graph = new Graph({
 
 <iframe src="/demos/api/graph/auto-resize"></iframe>
 
+### panning
 
+画布通过开启 `panning` 选项来支持拖拽平移。
+
+```ts
+const graph = new Graph({
+  panning: true,
+})
+
+// 等同于
+const graph = new Graph({
+  panning: {
+    enabled: true,
+  },
+})
+```
+
+拖拽可能和其他操作冲突，此时可以设置 `modifiers` 参数，设置修饰键后需要按下修饰键并点击鼠标才能触发画布拖拽。
+
+```ts
+const graph = new Graph({
+  panning: {
+    enabled: true,
+    modifiers: 'shift',
+  },
+})
+```
+
+还可以配置 `eventTypes` 来设置触发画布拖拽的行为，支持 `leftMouseDown`、 `rightMouseDown`、`mouseWheel`，默认为 `['leftMouseDown']` 。
+
+```ts
+const graph = new Graph({
+  panning: {
+    enabled: true,
+    eventTypes: ['leftMouseDown', 'rightMouseDown', 'mouseWheel']
+  },
+})
+```
+
+可以通过以下 API 来启用/禁止画布平移：
+
+```ts
+graph.isPannable() // 画布是否可以平移
+graph.enablePanning() // 启用画布平移
+graph.disablePanning() // 禁止画布平移
+graph.togglePanning() // 切换画布平移状态
+```
 
 ## 方法
 
