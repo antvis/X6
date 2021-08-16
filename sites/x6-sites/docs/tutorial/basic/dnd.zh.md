@@ -93,13 +93,8 @@ const dnd = new Addon.Dnd({
 
 ```ts
 const dnd = new Addon.Dnd({
-  getDropNode(node) {
-    const n = node.clone();
-    // 需要设置下面两个地方
-    n.id = "customId";
-    n.prop("id", "customId");
-    return n;
-  }
+  getDragNode: (node) => node.clone({ keepId: true }),
+  getDropNode: (node) => node.clone({ keepId: true }),
 })
 ```
 
