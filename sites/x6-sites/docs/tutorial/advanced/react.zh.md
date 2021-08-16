@@ -424,9 +424,18 @@ yarn add @antv/x6-angular-shape
 
 ```
 
-#### 使用
+将Angular component作为节点渲染，并且允许你传递参数给组件。
+```ts
+import { Component, Input } from '@angular/core';
 
-将Angular component作为节点渲染。
+@Component({
+  selector: 'app-node',
+  template: `<div>{{ title }}</div>`
+})
+export class NodeComponent {
+  @Input() title: string;
+}
+```
 ```ts
 // other package from angular
 import '@antv/x6-angular-shape'
@@ -441,6 +450,13 @@ export class AppComponent {
   addAngularComponent(): void {
     Graph.registerAngularContent('demo-component', { injector: this.injector, content: NodeComponent });
     this.graph.addNode({
+      data: {
+        // You can pass data to the component, only if you wrap attribute with ngArguments
+        ngArguments: {
+          // Declare @Input() in the component, then it will be assignmented
+          title: 'Angular Component'
+        }
+      },
       x: 40,
       y: 40,
       width: 160,
@@ -452,10 +468,10 @@ export class AppComponent {
 }
 ```
 
-将Angular template作为节点渲染。
+将Angular template作为节点渲染，并且允许你传递参数给模板。
 ```html
-<ng-template #demoTpl>
-  <div>Angular Template</div>
+<ng-template #demoTpl let-data="ngArguments">
+  <div>{{ data.title }}</div>
 </ng-template>
 ```
 ```ts
@@ -472,19 +488,22 @@ export class AppComponent {
   addAngularTemplate(): void {
     Graph.registerAngularContent('demo-template', { injector: this.injector, content: this.demoTpl });
     this.graph.addNode({
+      data: {
+        ngArguments: {
+          title: 'Angular Template'
+        }
+      },
       x: 240,
       y: 40,
       width: 160,
       height: 30,
       shape: 'angular-shape',
       componentName: 'demo-template'
-    });
   }
 }
 ```
 
 在注册函数中, 使用回调函数进行渲染，这种方式使得你可以读取节点中的一些属性。
-
 ```ts
 // other package from angular
 import '@antv/x6-angular-shape'
@@ -503,6 +522,11 @@ export class AppComponent {
       return { injector: this.injector, content: this.demoTpl };
     });
     this.graph.addNode({
+      data: {
+        ngArguments: {
+          title: 'Angular Callback'
+        }
+      },
       x: 240,
       y: 40,
       width: 160,
