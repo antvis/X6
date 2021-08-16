@@ -1,3 +1,10 @@
+# @antv/x6-sites-demos [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.4...@antv/x6-sites-demos@1.2.0) (2021-08-16)
+
+
+### Features
+
+* ✨ add cell-editor tool ([#1202](https://github.com/antvis/x6/issues/1202)) ([2286097](https://github.com/antvis/x6/commit/228609783e1b3a3ff579ce9d38cf2e70dacd4931))
+
 # @antv/x6-sites-demos [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.4...@antv/x6-sites-demos@1.2.0) (2021-08-06)
 
 
