@@ -1,3 +1,10 @@
+# @antv/x6-angular-shape [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.0.0...@antv/x6-angular-shape@1.1.0) (2021-08-16)
+
+
+### Features
+
+* x6-angular-shape support pass arguments ([#1250](https://github.com/antvis/x6/issues/1250)) ([2a47d4a](https://github.com/antvis/x6/commit/2a47d4ad4ff313fc1e18e7327ba759ecf3f3867d))
+
 # @antv/x6-angular-shape 1.0.0 (2021-07-10)
 
 
