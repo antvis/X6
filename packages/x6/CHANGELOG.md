@@ -1,3 +1,10 @@
+## @antv/x6 [1.25.4](https://github.com/antvis/x6/compare/@antv/x6@1.25.3...@antv/x6@1.25.4) (2021-08-17)
+
+
+### Bug Fixes
+
+* 🐛 add keepId for node clone ([#1254](https://github.com/antvis/x6/issues/1254)) ([7c51152](https://github.com/antvis/x6/commit/7c51152f03998c26b740eec640961193c29ebd34))
+
 ## @antv/x6 [1.25.3](https://github.com/antvis/x6/compare/@antv/x6@1.25.2...@antv/x6@1.25.3) (2021-08-06)
 
 
