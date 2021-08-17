@@ -1377,7 +1377,9 @@ export class Cell<
   ): this extends Node ? Node : this extends Edge ? Edge : Cell {
     if (!options.deep) {
       const data = { ...this.store.get() }
-      delete data.id
+      if (!options.keepId) {
+        delete data.id
+      }
       delete data.parent
       delete data.children
       const ctor = this.constructor as typeof Cell
@@ -1557,6 +1559,7 @@ export namespace Cell {
 
   export interface CloneOptions {
     deep?: boolean
+    keepId?: boolean
   }
 }
 
