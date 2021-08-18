@@ -28,29 +28,12 @@ export function inherit(cls: Function, base: Function) {
       : ((tmp.prototype = base.prototype), new (tmp as any)())
 }
 
-class A {}
-const isNativeClass =
-  /^\s*class\s+/.test(`${A}`) || /^\s*class\s*\{/.test(`${class {}}`)
-
 /**
  * Extends class with specified class name.
  */
 // eslint-disable-next-line
-export function createClass<T>(className: string, base: Function): T {
-  let cls
-  if (isNativeClass) {
-    // eslint-disable-next-line no-new-func
-    cls = new Function('base', `return class ${className} extends base { }`)(
-      base,
-    )
-  } else {
-    // eslint-disable-next-line no-new-func
-    cls = new Function(
-      'base',
-      `return function ${className}() { return base.apply(this, arguments) }`,
-    )(base)
-    inherit(cls, base)
-  }
+export function createClass<T>(className: string, base: any): T {
+  let cls = class extends base {}
 
-  return cls as T
+  return cls as any
 }
