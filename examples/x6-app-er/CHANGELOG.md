@@ -1,3 +1,5 @@
+## @antv/x6-app-er [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.5...@antv/x6-app-er@1.1.6) (2021-08-18)
+
 ## @antv/x6-app-er [1.1.7](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.6...@antv/x6-app-er@1.1.7) (2021-08-18)
 
 
