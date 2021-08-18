@@ -750,26 +750,30 @@ export class Cell<
     return this.store.get('parent')
   }
 
-  getParent<T extends Cell = Cell>(): T | null {
-    const parentId = this.getParentId()
-    if (parentId && this.model) {
-      const parent = this.model.getCell<T>(parentId)
-      this._parent = parent
-      return parent
+  getParent() {
+    let parent = this._parent
+    if (parent == null && this.store) {
+      const parentId = this.getParentId()
+      if (parentId != null && this.model) {
+        parent = this.model.getCell(parentId)
+        this._parent = parent
+      }
     }
-    return null
+    return parent
   }
 
   getChildren() {
-    const childrenIds = this.store.get('children')
-    if (childrenIds && childrenIds.length && this.model) {
-      const children = childrenIds
-        .map((id) => this.model?.getCell(id))
-        .filter((cell) => cell != null) as Cell[]
-      this._children = children
-      return [...children]
+    let children = this._children
+    if (children == null) {
+      const childrenIds = this.store.get('children')
+      if (childrenIds && childrenIds.length && this.model) {
+        children = childrenIds
+          .map((id) => this.model?.getCell(id))
+          .filter((cell) => cell != null) as Cell[]
+        this._children = children
+      }
     }
-    return null
+    return children ? [...children] : null
   }
 
   hasParent() {
