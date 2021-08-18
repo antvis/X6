@@ -1,3 +1,10 @@
+## @antv/x6 [1.25.5](https://github.com/antvis/x6/compare/@antv/x6@1.25.4...@antv/x6@1.25.5) (2021-08-18)
+
+
+### Bug Fixes
+
+* 🐛 optimize get child method ([#1262](https://github.com/antvis/x6/issues/1262)) ([c7212bb](https://github.com/antvis/x6/commit/c7212bb1ec059f2d2379f0b6c8ffe0e6edd52aad))
+
 ## @antv/x6 [1.25.4](https://github.com/antvis/x6/compare/@antv/x6@1.25.3...@antv/x6@1.25.4) (2021-08-17)
 
 
