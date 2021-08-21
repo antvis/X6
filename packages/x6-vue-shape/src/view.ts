@@ -4,6 +4,8 @@ import { VueShape } from './node'
 import { VueComponent } from './registry'
 
 export class VueShapeView extends NodeView<VueShape> {
+  private vm: any
+
   protected init() {
     super.init()
   }
@@ -34,14 +36,13 @@ export class VueShapeView extends NodeView<VueShape> {
         const div = document.createElement('div')
         div.style.width = '100%'
         div.style.height = '100%'
-        let instance = null
         if (typeof component === 'string') {
           div.innerHTML = component
-          instance = new Vue({ el: div })
+          this.vm = new Vue({ el: div })
         } else {
           const { template, ...other } = component as VueComponent
           div.innerHTML = template
-          instance = new Vue({
+          this.vm = new Vue({
             el: div,
             provide() {
               return {
@@ -52,9 +53,9 @@ export class VueShapeView extends NodeView<VueShape> {
             ...other,
           })
         }
-        root.appendChild(instance.$el)
+        root.appendChild(this.vm.$el)
       } else if (isVue3) {
-        createApp({
+        this.vm = createApp({
           render() {
             return h(component as any)
           },
@@ -72,6 +73,11 @@ export class VueShapeView extends NodeView<VueShape> {
   protected unmountVueComponent() {
     const root = this.getComponentContainer()
     root.innerHTML = ''
+    if (this.vm) {
+      isVue2 && this.vm.$destroy()
+      isVue3 && this.vm.unmount()
+      this.vm = null
+    }
     return root
   }
 
