@@ -688,15 +688,15 @@ export class Cell<
 
   // #region data
 
-  get data() {
+  get data(): Properties['data'] {
     return this.getData()
   }
 
-  set data(val: any) {
+  set data(val: Properties['data']) {
     this.setData(val)
   }
 
-  getData<T>() {
+  getData<T>(): Properties['data'] {
     return this.store.get<T>('data')
   }
 
