@@ -696,11 +696,11 @@ export class Cell<
     this.setData(val)
   }
 
-  getData<T>() {
+  getData<T>(): T {
     return this.store.get<T>('data')
   }
 
-  setData(data: any, options: Cell.SetDataOptions = {}) {
+  setData<T>(data: T, options: Cell.SetDataOptions = {}) {
     if (data == null) {
       this.removeData(options)
     } else {
@@ -721,12 +721,12 @@ export class Cell<
     return this
   }
 
-  replaceData(data: any, options: Cell.SetOptions = {}) {
-    return this.setData(data, { ...options, overwrite: true })
+  replaceData<T>(data: T, options: Cell.SetOptions = {}) {
+    return this.setData<T>(data, { ...options, overwrite: true })
   }
 
-  updateData(data: any, options: Cell.SetOptions = {}) {
-    return this.setData(data, { ...options, deep: false })
+  updateData<T>(data: T, options: Cell.SetOptions = {}) {
+    return this.setData<T>(data, { ...options, deep: false })
   }
 
   removeData(options: Cell.SetOptions = {}) {
