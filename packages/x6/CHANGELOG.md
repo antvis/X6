@@ -1,3 +1,10 @@
+# @antv/x6 [1.26.0](https://github.com/antvis/x6/compare/@antv/x6@1.25.5...@antv/x6@1.26.0) (2021-08-24)
+
+
+### Features
+
+* 🎸 为定义业务数据的 data 属性提供类型定义 ([#1278](https://github.com/antvis/x6/issues/1278)) ([412d035](https://github.com/antvis/x6/commit/412d035687c6caf235f2afb1fa23d830d2a5f002))
+
 ## @antv/x6 [1.25.5](https://github.com/antvis/x6/compare/@antv/x6@1.25.4...@antv/x6@1.25.5) (2021-08-18)
 
 
