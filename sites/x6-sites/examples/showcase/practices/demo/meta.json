@@ -1,6 +1,14 @@
 {
   "demos": [
     {
+      "filename": "flowchart.ts",
+      "title": {
+        "zh": "流程编排",
+        "en": "Flow Chart"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*h5uqQ4UARxsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "algo-flow.tsx",
       "title": {
         "zh": "人工智能建模流程",
