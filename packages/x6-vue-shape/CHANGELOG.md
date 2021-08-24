@@ -1,3 +1,18 @@
+## @antv/x6-vue-shape [1.2.9](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.8...@antv/x6-vue-shape@1.2.9) (2021-08-24)
+
+
+### Bug Fixes
+
+* **x6-vue-shape:** clear vue instance ([#1264](https://github.com/antvis/x6/issues/1264)) ([98d98ca](https://github.com/antvis/x6/commit/98d98ca17c92b357c162b6e118a1e8d6fe72b4d7)), closes [#1261](https://github.com/antvis/x6/issues/1261)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.26.0
+
 ## @antv/x6-vue-shape [1.2.8](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.7...@antv/x6-vue-shape@1.2.8) (2021-06-21)
 
 
