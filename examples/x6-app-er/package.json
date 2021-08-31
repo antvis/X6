@@ -22,7 +22,7 @@
     ]
   },
   "dependencies": {
-    "@antv/x6": "^1.26.0",
+    "@antv/x6": "^1.26.1",
     "@antv/x6-react-components": "^1.1.13",
     "@antv/x6-react-shape": "^1.4.5",
     "antd": "^4.4.2",
