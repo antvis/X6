@@ -1,3 +1,10 @@
+## @antv/x6 [1.26.1](https://github.com/antvis/x6/compare/@antv/x6@1.26.0...@antv/x6@1.26.1) (2021-08-31)
+
+
+### Bug Fixes
+
+* 🐛 not stopPropagation when mousedown ([#1305](https://github.com/antvis/x6/issues/1305)) ([6a3f96d](https://github.com/antvis/x6/commit/6a3f96d3b5754def401084e023dad466c013cc49))
+
 # @antv/x6 [1.26.0](https://github.com/antvis/x6/compare/@antv/x6@1.25.5...@antv/x6@1.26.0) (2021-08-24)
 
 
