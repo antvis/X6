@@ -9,8 +9,8 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "^1.26.1",
-    "@antv/x6-react-components": "^1.1.13",
+    "@antv/x6": "^1.26.2",
+    "@antv/x6-react-components": "^1.1.14",
     "antd": "^4.4.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
