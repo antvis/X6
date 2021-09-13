@@ -51,10 +51,10 @@
     }
   },
   "dependencies": {
-    "@commitlint/cli": "^12.1.4",
-    "@commitlint/config-conventional": "^12.1.4",
-    "devmoji": "^2.2.1",
-    "husky": "^6.0.0",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "devmoji": "^2.3.0",
+    "husky": "^7.0.2",
     "is-ci": "^3.0.0",
     "lerna": "^4.0.0"
   },
