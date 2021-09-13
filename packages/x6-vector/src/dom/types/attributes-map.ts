@@ -527,14 +527,14 @@ export interface HTMLAttributesTagNameMap {
   a: HTMLAnchorAttributes<HTMLAnchorElement>
   abbr: HTMLAttributes<HTMLElement>
   address: HTMLAttributes<HTMLElement>
-  applet: HTMLAttributes<HTMLAppletElement>
+  applet: HTMLAttributes<HTMLElement>
   area: HTMLAreaAttributes<HTMLAreaElement>
   article: HTMLAttributes<HTMLElement>
   aside: HTMLAttributes<HTMLElement>
   audio: HTMLAudioAttributes<HTMLAudioElement>
   b: HTMLAttributes<HTMLElement>
   base: HTMLBaseAttributes<HTMLBaseElement>
-  basefont: HTMLAttributes<HTMLElement> // TODO: Fix type error of HTMLBaseFontElement
+  basefont: HTMLAttributes<HTMLElement>
   bdi: HTMLAttributes<HTMLElement>
   bdo: HTMLAttributes<HTMLElement>
   big: HTMLAttributes<HTMLElement>
