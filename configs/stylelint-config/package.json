@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/stylelint-config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./lib/index.js",
   "license": "MIT",
   "files": [
