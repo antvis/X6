@@ -101,10 +101,11 @@ export namespace DataUri {
   }
 
   export function downloadBlob(blob: Blob, fileName: string) {
-    if (window.navigator.msSaveBlob) {
+    const msSaveBlob = (window.navigator as any).msSaveBlob
+    if (msSaveBlob) {
       // requires IE 10+
       // pulls up a save dialog
-      window.navigator.msSaveBlob(blob, fileName)
+      msSaveBlob(blob, fileName)
     } else {
       // other browsers
       // downloads directly in Chrome and Safari

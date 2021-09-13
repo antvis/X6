@@ -1,11 +1,11 @@
 let animationFrameTime = 0
 
 const nativeRequestAnimationFrame =
-  window.requestAnimationFrame || window.webkitRequestAnimationFrame
+  window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame
 
 export const cancelAnimationFrame = (
   window.cancelAnimationFrame ||
-  window.webkitCancelAnimationFrame ||
+  (window as any).webkitCancelAnimationFrame ||
   window.clearTimeout
 ).bind(window)
 
