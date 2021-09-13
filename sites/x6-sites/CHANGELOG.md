@@ -1,3 +1,30 @@
+# @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2021-09-13)
+
+
+### Bug Fixes
+
+* 🐛 add keepId for node clone ([#1254](https://github.com/antvis/x6/issues/1254)) ([7c51152](https://github.com/antvis/x6/commit/7c51152f03998c26b740eec640961193c29ebd34))
+* 🐛 change type of padding in ScaleContentToFitOptions ([#1203](https://github.com/antvis/x6/issues/1203)) ([692ea04](https://github.com/antvis/x6/commit/692ea043854095535273e7a9ff2e4f8809faee81))
+* 🐛 unified panning api ([#1151](https://github.com/antvis/x6/issues/1151)) ([fc78817](https://github.com/antvis/x6/commit/fc7881731bfc5c7cde698ca8948dfa0c40f891fc))
+* curve demo ([#1306](https://github.com/antvis/x6/issues/1306)) ([292a03a](https://github.com/antvis/x6/commit/292a03a401922a038edd27a3fab8662a28c246d0))
+* fix angular typo ([#1154](https://github.com/antvis/x6/issues/1154)) ([a8533e9](https://github.com/antvis/x6/commit/a8533e9a04ea8e0188dafa6c172e44189ff84dea))
+
+
+### Features
+
+* ✨ add cell-editor tool ([#1202](https://github.com/antvis/x6/issues/1202)) ([2286097](https://github.com/antvis/x6/commit/228609783e1b3a3ff579ce9d38cf2e70dacd4931))
+* x6-angular-shape support pass arguments ([#1250](https://github.com/antvis/x6/issues/1250)) ([2a47d4a](https://github.com/antvis/x6/commit/2a47d4ad4ff313fc1e18e7327ba759ecf3f3867d))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.26.2
+* **@antv/x6-react-components:** upgraded to 1.1.14
+* **@antv/x6-react-shape:** upgraded to 1.4.6
+
 # @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2021-08-31)
 
 
