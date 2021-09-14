@@ -1,5 +1,5 @@
 import { Application, Context } from 'probot'
-// import { WIP } from './wip'
+import { WIP } from './wip'
 // import { PRTriage } from './pr-triage'
 
 export = (app: Application) => {
@@ -7,6 +7,6 @@ export = (app: Application) => {
     context.log(`event: ${context.name}`)
   })
 
-  // WIP.start(app)
+  WIP.start(app)
   // PRTriage.start(app)
 }
