@@ -4,16 +4,43 @@ import { ReactShape } from './node'
 import { Definition } from './registry'
 
 export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
+  static throttleChangeTypes = ['position', 'size']
+
+  private scheduledAnimationFrame = false
+
   constructor(props: Wrap.Props) {
     super(props)
     this.state = { tick: 0 }
   }
 
-  componentDidMount() {
-    this.props.node.on('change:*', () => {
-      // eslint-disable-next-line react/no-access-state-in-setstate
-      this.setState({ tick: this.state.tick + 1 })
+  throttleUpdateFunc = () => {
+    if (this.scheduledAnimationFrame) {
+      return
+    }
+    this.scheduledAnimationFrame = true
+    window.requestAnimationFrame(() => {
+      this.setState((state) => {
+        this.scheduledAnimationFrame = false
+        return { tick: state.tick + 1 }
+      })
     })
+  }
+
+  onChange = (e: any) => {
+    if (Wrap.throttleChangeTypes.includes(e.key)) {
+      this.throttleUpdateFunc()
+      return
+    }
+    // eslint-disable-next-line react/no-access-state-in-setstate
+    this.setState({ tick: this.state.tick + 1 })
+  }
+
+  componentDidMount() {
+    this.props.node.on('change:*', this.onChange)
+  }
+
+  componentWillUnmount() {
+    this.props.node.off('change:*', this.onChange)
   }
 
   clone(elem: React.ReactElement) {
