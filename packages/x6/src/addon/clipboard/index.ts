@@ -41,7 +41,7 @@ export class Clipboard {
   }
 
   paste(graph: Graph | Model, options: Clipboard.PasteOptions = {}) {
-    const localOptions = { ...options, ...this.options }
+    const localOptions = { ...this.options, ...options }
     const { offset, edgeProps, nodeProps } = localOptions
 
     let dx = 20
