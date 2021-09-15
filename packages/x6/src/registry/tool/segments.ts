@@ -325,6 +325,8 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
       edgeView.notifyMouseUp(normalizedEvent, coords.x, coords.y)
     }
     edgeView.checkMouseleave(normalizedEvent)
+
+    options.onChanged && options.onChanged({ edge: edgeView.cell, edgeView })
   }
 
   protected updateHandle(
@@ -379,6 +381,7 @@ export namespace Segments {
     ) => Edge.TerminalCellData['anchor']
     createHandle?: (options: Handle.Options) => Handle
     processHandle?: (handle: Handle) => void
+    onChanged?: (options: { edge: Edge, edgeView: EdgeView }) => void
   }
 
   export interface EventData {
