@@ -77,23 +77,26 @@ export namespace Status {
         item.external_id.startsWith(`[${checkName}]`),
     )
 
+    context.log(
+      `[wip] Found ${checkRuns.length} checkrun${
+        checkRuns.length > 1 ? 's' : ''
+      }`,
+    )
+
     if (checkRuns.length === 0) {
-      context.log('[wip] No previous check runs.')
       return true
     }
 
-    context.log(`[wip] Found check runs: ${checkRuns.length}`)
-
     const [{ conclusion, output }] = checkRuns
-    const isWip = conclusion !== 'success'
-    const hasOverride = output != null && /override/.test(output.title)
-    const preOverride = nextState.override === true
-
     context.log(
-      `[wip] Found check run: ${JSON.stringify({ conclusion, output })}`,
+      `[wip] First checkrun: ${JSON.stringify({ conclusion, output })}`,
     )
 
-    return isWip !== nextState.wip || hasOverride !== preOverride
+    const isWip = conclusion !== 'success'
+    const override =
+      output != null && output.title != null && /override/.test(output.title)
+
+    return isWip !== nextState.wip || override !== nextState.override
   }
 
   export async function update(
@@ -128,9 +131,10 @@ export namespace Status {
 
     const output = Util.getOutput(context, nextState)
 
-    context.log(`[wip] Create check run.`)
+    context.log(`[wip] Create checkrun.`)
     context.log(`  metadata: ${JSON.stringify(options)}`)
-    context.log(`  output: ${JSON.stringify(output)}`)
+    context.log(`  output.title: ${output.title}`)
+    context.log(`  output.summary: ${output.summary}`)
 
     const metadata = {
       ...options,
