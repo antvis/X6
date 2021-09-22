@@ -1,3 +1,13 @@
+## @antv/x6-angular-shape [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.1.0...@antv/x6-angular-shape@1.1.1) (2021-09-22)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.26.3
+
 ## @antv/x6-angular-shape [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.1.0...@antv/x6-angular-shape@1.1.1) (2021-09-13)
 
 
