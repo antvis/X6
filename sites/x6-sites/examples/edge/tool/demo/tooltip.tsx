@@ -2,36 +2,54 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
 import { Graph, ToolsView, EdgeView } from '@antv/x6'
-
 class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
-  private delay = 100
-  private timer: number
   private knob: HTMLDivElement
-  private tooltipVisible: boolean
 
   render() {
-    super.render()
-    this.knob = ToolsView.createElement('div', false) as HTMLDivElement
-    this.knob.style.position = 'absolute'
-    this.container.appendChild(this.knob)
-    this.updatePosition()
-    document.addEventListener('mousemove', this.onMouseMove)
-
+    if (!this.knob) {
+      this.knob = ToolsView.createElement('div', false) as HTMLDivElement
+      this.knob.style.position = 'absolute'
+      this.container.appendChild(this.knob)
+    }
     return this
   }
 
   private toggleTooltip(visible: boolean) {
     ReactDom.unmountComponentAtNode(this.knob)
-
     if (visible) {
       ReactDom.render(
-        <Tooltip title={this.options.tooltip} visible={true}>
+        <Tooltip
+          title={this.options.tooltip}
+          visible={true}
+          destroyTooltipOnHide
+        >
           <div />
         </Tooltip>,
         this.knob,
       )
     }
-    this.tooltipVisible = visible
+  }
+
+  private onMosueEnter({ e }: { e: MouseEvent }) {
+    this.updatePosition(e)
+    this.toggleTooltip(true)
+  }
+
+  private onMouseLeave() {
+    this.updatePosition()
+    this.toggleTooltip(false)
+  }
+
+  private onMouseMove() {
+    this.updatePosition()
+    this.toggleTooltip(false)
+  }
+
+  delegateEvents() {
+    this.cellView.on('cell:mouseenter', this.onMosueEnter, this)
+    this.cellView.on('cell:mouseleave', this.onMouseLeave, this)
+    this.cellView.on('cell:mousemove', this.onMouseMove, this)
+    return super.delegateEvents()
   }
 
   private updatePosition(e?: MouseEvent) {
@@ -48,31 +66,10 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
     }
   }
 
-  private onMouseLeave() {
-    this.updatePosition()
-    window.clearTimeout(this.timer)
-    window.setTimeout(() => this.toggleTooltip(false), this.delay)
-    document.removeEventListener('mousemove', this.onMouseMove)
-  }
-
-  private onMouseMove = (e: MouseEvent) => {
-    window.clearTimeout(this.timer)
-    this.updatePosition(e)
-    this.timer = window.setTimeout(() => {
-      if (this.tooltipVisible) {
-        this.toggleTooltip(false)
-      }
-      this.toggleTooltip(true)
-    }, this.delay)
-  }
-
-  delegateEvents() {
-    this.cellView.on('cell:mouseleave', this.onMouseLeave, this)
-    return super.delegateEvents()
-  }
-
   protected onRemove() {
+    this.cellView.off('cell:mouseenter', this.onMosueEnter, this)
     this.cellView.off('cell:mouseleave', this.onMouseLeave, this)
+    this.cellView.off('cell:mousemove', this.onMouseMove, this)
   }
 }
 
@@ -85,7 +82,6 @@ export interface TooltipToolOptions extends ToolsView.ToolItem.Options {
   tooltip?: string
 }
 
-Graph.registerNodeTool('tooltip', TooltipTool, true)
 Graph.registerEdgeTool('tooltip', TooltipTool, true)
 
 const graph = new Graph({
@@ -94,50 +90,22 @@ const graph = new Graph({
 })
 
 const edge1 = graph.addEdge({
-  source: { x: 40, y: 40 },
-  target: { x: 380, y: 40 },
-  vertices: [
-    { x: 40, y: 80 },
-    { x: 200, y: 80 },
-    { x: 200, y: 40 },
-  ],
+  source: { x: 320, y: 200 },
+  target: { x: 580, y: 300 },
   attrs: {
     line: {
-      stroke: '#3c4260',
+      stroke: '#bfbfbf',
       strokeWidth: 2,
       targetMarker: 'classic',
     },
   },
-})
-
-graph.addEdge({
-  source: { x: 40, y: 160 },
-  target: { x: 380, y: 160 },
-  vertices: [
-    { x: 40, y: 200 },
-    { x: 200, y: 200 },
-    { x: 200, y: 160 },
-  ],
-  attrs: {
-    line: {
-      stroke: '#3c4260',
-      strokeWidth: 2,
-    },
-  },
-  connector: 'smooth',
-})
-
-graph.on('cell:mouseenter', ({ cell }) => {
-  cell.addTools([
+  router: 'manhattan',
+  tools: [
     {
       name: 'tooltip',
       args: {
-        tooltip: cell === edge1 ? 'edge 1 tooltip' : 'edge 2 tooltip ',
+        tooltip: 'tooltip content',
       },
     },
-  ])
-})
-
-graph.on('cell:mouseleave', ({ cell }) => {
-  cell.removeTools()
+  ],
 })
