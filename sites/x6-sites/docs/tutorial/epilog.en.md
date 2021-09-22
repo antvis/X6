@@ -78,10 +78,18 @@ new graph({
 
 ### HTML/React/Vue节点渲染出错
 
-HTML/React/Vue 节点内容都是渲染在 SVG 的 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 节点内部，因为浏览器的兼容性问题，经常会出现一些异常的渲染行为。可以通过以下方式来规避：
+HTML/React/Vue 节点内容都是渲染在 SVG 的 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 节点内部，因为浏览器的兼容性问题，经常会出现一些异常的渲染行为。主要表现形式为：
 
-- 节点 css 中不要使用 `position:absolute` 和 `position:relative`
-- 节点 css 中不要使用 `transform`
+- 节点内容展示不全
+- 节点内容闪烁
+
+可以通过以下方式来规避：
+
+- 节点内部元素的 css 样式中不要使用 `position:absolute` 和 `position:relative`
+- 节点内部元素的 css 样式中不要使用 `transform`
+- 节点内部元素的 css 样式中不要使用 `opacity`
+
+以上是实践过程中的临时解决方案，后续我们也会采用新的技术方案来彻底解决这个问题。
 
 ### node:moved 事件中 x、y 参数
 
