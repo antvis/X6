@@ -1,3 +1,18 @@
+# @antv/x6-react-shape [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.4.6...@antv/x6-react-shape@1.5.0) (2021-09-22)
+
+
+### Features
+
+* **react-shape:** ✨ add throttle to size and position ([#1335](https://github.com/antvis/x6/issues/1335)) ([4a87588](https://github.com/antvis/x6/commit/4a8758807fe3d303532626d196163c8e988fcba6))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.26.3
+
 ## @antv/x6-react-shape [1.4.6](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.4.5...@antv/x6-react-shape@1.4.6) (2021-09-13)
 
 
