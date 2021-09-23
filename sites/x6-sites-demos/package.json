@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites-demos",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "workspaces": [
     "packages/**/*"
   ],
@@ -18,7 +18,7 @@
     "@antv/x6": "^1.26.3",
     "@antv/x6-react-components": "^1.1.14",
     "@antv/x6-react-shape": "^1.5.0",
-    "@antv/x6-sites-demos-helper": "^1.2.2",
+    "@antv/x6-sites-demos-helper": "^1.2.3",
     "@types/d3-sankey": "^0.11.1",
     "@types/highlight.js": "^9.12.4",
     "@types/react": "^16.9.19",
