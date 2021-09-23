@@ -89,7 +89,7 @@ const graph = new Graph({
   grid: true,
 })
 
-const edge1 = graph.addEdge({
+graph.addEdge({
   source: { x: 320, y: 200 },
   target: { x: 580, y: 300 },
   attrs: {
