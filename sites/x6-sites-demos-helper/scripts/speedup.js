@@ -7,9 +7,8 @@ const repo = fs.realpathSync(process.cwd())
 const parts = repo.split('/')
 const index = parts.indexOf('packages')
 const root = index >= 0 ? parts.slice(0, index).join('/') : repo
-const home = path.resolve(root, '../../')
 const configDir = 'node_modules/react-scripts/config'
-const configFile = path.join(home, configDir, 'webpack.config.js')
+const configFile = path.join(root, configDir, 'webpack.config.js')
 let content = fs.readFileSync(configFile, { encoding: 'utf8' })
 const esbuild = `const ESBuildPlugin = require('esbuild-webpack-plugin').default;`
 
