@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.4.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.4.2) (2021-09-23)
+
+
+### Bug Fixes
+
+* 🐛 change home path in speedup js ([#1369](https://github.com/antvis/x6/issues/1369)) ([a234833](https://github.com/antvis/x6/commit/a234833240bad1f7d51f0fadf8b9db9392c44064))
+
 ## @antv/x6-sites [1.4.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.0...@antv/x6-sites@1.4.1) (2021-09-22)
 
 # @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2021-09-22)
