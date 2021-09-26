@@ -64,7 +64,7 @@ jobs:
         run: yarn build:sites
 
       - name: 🔑　Generate Token
-        uses: bubkoo/use-app-token@v1
+        uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}

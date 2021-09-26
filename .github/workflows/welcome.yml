@@ -8,12 +8,12 @@ jobs:
   welcome:
     runs-on: ubuntu-latest
     steps:
-      - uses: bubkoo/use-app-token@v1
+      - uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - uses: bubkoo/welcome-action@v1
+      - uses: wow-actions/welcome@v1
         with:
           GITHUB_TOKEN: ${{ env.bot_token }}
           FIRST_ISSUE: |
