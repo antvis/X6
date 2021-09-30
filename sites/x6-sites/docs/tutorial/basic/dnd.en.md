@@ -26,13 +26,11 @@ const dnd = new Addon.Dnd(options)
 | 选项                         | 类型                                                                                | 必选 | 默认值  | 说明                                                                                                                                                                                                                                              |
 |------------------------------|-------------------------------------------------------------------------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | options.target               | Graph                                                                               |  ✓️  |         | 目标画布。                                                                                                                                                                                                                                         |
-| options.scaled               | boolean                                                                             |      | `false` | 是否根据目标画布的缩放比例缩放拖拽的节点。                                                                                                                                                                                                         |
 | options.delegateGraphOptions | Graph.Options                                                                       |      |         | 拖拽开始时，创建代理画布的选项。                                                                                                                                                                                                                    |
 | options.getDragNode          | (sourceNode: Node, options: GetDragNodeOptions) => Node                             |      |         | 拖拽开始时，获取代理节点（实际被拖拽的节点），默认克隆传入的节点。                                                                                                                                                                                     |
 | options.getDropNode          | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |         | 拖拽结束时，获取放置到目标画布的节点，默认克隆代理节点。                                                                                                                                                                                             |
 | options.validateNode         | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |         | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                                                                                                                                                                      |
 | options.animation            | boolean \| { duration?: number; easing?: string }                                   |      | `false` | 拖拽结束时，而且目标节点不能添加到目标画布时，是否使用动画将代理画布移动到开始拖动的位置。选项 `duration` 和 `easing` 对应 JQuery 的 [.animate( properties [, duration ] [, easing ] [, complete ] )](https://api.jquery.com/animate/) 方法中的参数。 |
-| options.containerParent      | HTMLElement                                                                         |      | `document.body` | 拖拽容器挂载在哪个父节点下面 |
 
 ### Step 2 开始拖拽
 
@@ -57,7 +55,18 @@ dnd.start(node, e)
 
 ### 常见问题
 
-1.怎么自定义拖拽节点的样式？
+1. 为什么拖拽节点到画布后，ID 发生了改变
+
+根据上面的拖拽细节我们会发现整体拖拽流程是：源节点 -> 拖拽节点 -> 放置节点，默认是将源节点克隆一份变为拖拽节点，拖拽节点克隆一份变为放置节点，在克隆的过程中会重置节点 ID，如果想保持原来节点 ID，可以进行以下操作：
+
+```ts
+const dnd = new Addon.Dnd({
+  getDragNode: (node) => node.clone({ keepId: true }),
+  getDropNode: (node) => node.clone({ keepId: true }),
+})
+```
+
+2.怎么自定义拖拽节点的样式？
 
 ```ts
 const dnd = new Addon.Dnd({
@@ -77,7 +86,7 @@ const dnd = new Addon.Dnd({
 })
 ```
 
-2.怎么自定义放置到画布上的节点样式？
+3.怎么自定义放置到画布上的节点样式？
 
 ```ts
 const dnd = new Addon.Dnd({
@@ -86,15 +95,6 @@ const dnd = new Addon.Dnd({
     // 返回一个新的节点作为实际放置到画布上的节点
     return node.clone().size(width * 3, height * 3)
   }
-})
-```
-
-3.怎么自定义放置到画布上节点的 ID？
-
-```ts
-const dnd = new Addon.Dnd({
-  getDragNode: (node) => node.clone({ keepId: true }),
-  getDropNode: (node) => node.clone({ keepId: true }),
 })
 ```
 
@@ -147,54 +147,7 @@ export interface Group {
 }
 ```
 
-初始化时，按照 `options.groups` 提供的分组，在每个分组中根据 `options.stencilGraphXxx` 系列选项渲染一个模板画布。
-
-Stencil 还提供了强大的搜索能力。
-
-第一种方式是自定义搜索函数：
-
-```ts
-// 只搜索 rect 节点
-const stencil = new Addon.Stencil({
-  search: (cell, keyword, groupName, stencil) => {
-    if (keyword) {
-      return cell.shape === 'rect'
-    }
-    return true
-  }
-})
-```
-
-还有一种更快捷的方式，提供 `shape` 和搜索条件的键值对，其中 `shape` 可以使用通配符 `*`，代表所有类型节点：
-
-```ts
-// 只搜索 rect 节点
-const stencil = new Addon.Stencil({
-  search: {
-    rect: true,
-  }
-})
-```
-
-它还支持按照节点属性值来进行搜索，下面做一个对比：
-
-```ts
-// 搜索 text 包含关键字的 rect 节点
-const stencil = new Addon.Stencil({
-  search: (cell, keyword, groupName, stencil) => {
-    if (keyword) {
-      return cell.shape === 'rect' && cell.attr('text/text').includes(keyword)
-    }
-    return true
-  }
-})
-
-const stencil = new Addon.Stencil({
-  search: {
-    rect: 'attrs/text/text', // 属性路径还支持数组格式，只要一项满足条件即可被搜索到
-  }
-})
-```
+初始化时，按照 `options.groups` 提供的分组，在每个分组中会渲染一个模板画布。
 
 ### Step 2 挂载到页面
 
@@ -243,3 +196,63 @@ stencil.load([c2.clone(), r2, r3, c3], 'group2')
 当我们在模板节点上按下鼠标开始拖动时，就等同于使用该节点调用了 [dnd.start(node, e)](#step-2-开始拖拽) 方法来触发拖拽，更多定制选项请参考上一节 [Dnd 使用教程](#dnd)。
 
 <iframe src="/demos/tutorial/basic/dnd/stencil"></iframe>
+
+### 其他功能
+
+#### 搜索
+
+Stencil 还提供了强大的搜索能力。
+
+第一种方式是自定义搜索函数：
+
+```ts
+// 只搜索 rect 节点
+const stencil = new Addon.Stencil({
+  search: (cell, keyword, groupName, stencil) => {
+    if (keyword) {
+      return cell.shape === 'rect'
+    }
+    return true
+  }
+})
+```
+
+还有一种更快捷的方式，提供 `shape` 和搜索条件的键值对，其中 `shape` 可以使用通配符 `*`，代表所有类型节点：
+
+```ts
+// 只搜索 rect 节点
+const stencil = new Addon.Stencil({
+  search: {
+    rect: true,
+  }
+})
+```
+
+它还支持按照节点属性值来进行搜索，下面做一个对比：
+
+```ts
+// 搜索 text 包含关键字的 rect 节点
+const stencil = new Addon.Stencil({
+  search: (cell, keyword, groupName, stencil) => {
+    if (keyword) {
+      return cell.shape === 'rect' && cell.attr('text/text').includes(keyword)
+    }
+    return true
+  }
+})
+
+const stencil = new Addon.Stencil({
+  search: {
+    rect: 'attrs/text/text', // 属性路径还支持数组格式，只要一项满足条件即可被搜索到
+  }
+})
+```
+
+#### 动态修改 group 大小
+
+我们可以通过 stencil 提供的 `resizeGroup` 动态修改 group 的大小。
+
+```ts
+// 第一个参数是 group 的 name
+stencil.resizeGroup('group1', { width: 200, height: 200 })
+```
