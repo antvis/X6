@@ -118,7 +118,7 @@ const graph = new Graph({
 
 ## 自动扩展父节点
 
-通过监听 `node:change:position` 事件，当节点移动时自动扩展/收缩父节点的大小，使父节点完全包围住字节点。
+通过监听 `node:change:position` 事件，当节点移动时自动扩展/收缩父节点的大小，使父节点完全包围住子节点。
 
 ```ts
 graph.on('node:change:size', ({ node, options }) => {
