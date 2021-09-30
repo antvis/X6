@@ -253,7 +253,8 @@ export class Transform extends Widget<Transform.Options> {
 
     const view = this.graph.findViewByCell(this.node) as NodeView
     const center = this.node.getBBox().getCenter()
-    const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
+    const e = this.normalizeEvent(evt)
+    const client = this.graph.snapToGrid(e.clientX, e.clientY)
     this.setEventData<EventData.Rotating>(evt, {
       center,
       action: 'rotating',
