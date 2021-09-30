@@ -1,3 +1,15 @@
+# @antv/x6 [1.27.0](https://github.com/antvis/x6/compare/@antv/x6@1.26.3...@antv/x6@1.27.0) (2021-09-30)
+
+
+### Bug Fixes
+
+* 🐛 normalize event before get clientX ([#1387](https://github.com/antvis/x6/issues/1387)) ([ba4aedc](https://github.com/antvis/x6/commit/ba4aedc49793fa681cd73a4790ab4dc34e3cf936))
+
+
+### Features
+
+* ✨ add resizeGroup for stencil ([#1388](https://github.com/antvis/x6/issues/1388)) ([4baba33](https://github.com/antvis/x6/commit/4baba3326bc9ecbbd9c272fcfa4ee3d3c0389db3))
+
 ## @antv/x6 [1.26.3](https://github.com/antvis/x6/compare/@antv/x6@1.26.2...@antv/x6@1.26.3) (2021-09-22)
 
 
