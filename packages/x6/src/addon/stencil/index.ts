@@ -443,6 +443,14 @@ export class Stencil extends View {
     return this
   }
 
+  resizeGroup(groupName: string, size: { width: number; height: number }) {
+    const graph = this.graphs[groupName]
+    if (graph) {
+      graph.resize(size.width, size.height)
+    }
+    return this
+  }
+
   onRemove() {
     Object.keys(this.graphs).forEach((groupName) => {
       const graph = this.graphs[groupName]
