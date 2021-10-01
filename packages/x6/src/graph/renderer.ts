@@ -1190,6 +1190,11 @@ export class Renderer extends Base {
           const bbox = Dom.getBBox(view.container as SVGElement, {
             target: this.view.stage,
           })
+          if (bbox.width === 0) {
+            bbox.inflate(1, 0)
+          } else if (bbox.height === 0) {
+            bbox.inflate(0, 1)
+          }
           return options.strict
             ? area.containsRect(bbox)
             : area.isIntersectWithRect(bbox)
