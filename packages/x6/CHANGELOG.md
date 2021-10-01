@@ -1,3 +1,15 @@
+## @antv/x6 [1.27.2](https://github.com/antvis/x6/compare/@antv/x6@1.27.1...@antv/x6@1.27.2) (2021-10-01)
+
+
+### Bug Fixes
+
+* 🐛 can not select flat edge ([#1394](https://github.com/antvis/x6/issues/1394)) ([89ae2cc](https://github.com/antvis/x6/commit/89ae2ccdc02ae2dfb8d4f9a1b10dd81a77a59b10))
+
+
+### Performance Improvements
+
+* ⚡️ improve box selection performance ([#1393](https://github.com/antvis/x6/issues/1393)) ([175aa58](https://github.com/antvis/x6/commit/175aa587202fa687555815a448c9bf80926b166e))
+
 ## @antv/x6 [1.27.1](https://github.com/antvis/x6/compare/@antv/x6@1.27.0...@antv/x6@1.27.1) (2021-10-01)
 
 
