@@ -1010,6 +1010,11 @@ export class Model extends Basecoat<Model.EventArgs> {
     const strict = opts && opts.strict
     return this.getEdges().filter((edge) => {
       const bbox = edge.getBBox()
+      if (bbox.width === 0) {
+        bbox.inflate(1, 0)
+      } else if (bbox.height === 0) {
+        bbox.inflate(0, 1)
+      }
       return strict ? rect.containsRect(bbox) : rect.isIntersectWithRect(bbox)
     })
   }
