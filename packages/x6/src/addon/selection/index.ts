@@ -314,7 +314,7 @@ export class Selection extends View<Selection.EventArgs> {
         height /= scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
         const cells = this.getCellViewsInArea(rect).map((view) => view.cell)
-        this.reset(cells)
+        this.collection.reset(cells, { ui: true })
         this.hideRubberband()
         break
       }
