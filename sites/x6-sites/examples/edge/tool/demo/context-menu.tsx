@@ -8,20 +8,18 @@ class ContextMenuTool extends ToolsView.ToolItem<
   ContextMenuToolOptions
 > {
   private knob: HTMLDivElement
+  private timer: number
 
   render() {
-    super.render()
-    this.knob = ToolsView.createElement('div', false) as HTMLDivElement
-    this.knob.style.position = 'absolute'
-    this.container.appendChild(this.knob)
-    this.updatePosition(this.options)
-    setTimeout(() => {
-      this.toggleTooltip(true)
-    })
+    if (!this.knob) {
+      this.knob = ToolsView.createElement('div', false) as HTMLDivElement
+      this.knob.style.position = 'absolute'
+      this.container.appendChild(this.knob)
+    }
     return this
   }
 
-  private toggleTooltip(visible: boolean) {
+  private toggleContextMenu(visible: boolean) {
     ReactDom.unmountComponentAtNode(this.knob)
     document.removeEventListener('mousedown', this.onMouseDown)
 
@@ -40,9 +38,10 @@ class ContextMenuTool extends ToolsView.ToolItem<
     }
   }
 
-  private updatePosition(pos?: { x: number; y: number }) {
+  private updatePosition(e?: MouseEvent) {
     const style = this.knob.style
-    if (pos) {
+    if (e) {
+      const pos = this.graph.clientToGraph(e.clientX, e.clientY)
       style.left = `${pos.x}px`
       style.top = `${pos.y}px`
     } else {
@@ -51,14 +50,29 @@ class ContextMenuTool extends ToolsView.ToolItem<
     }
   }
 
-  private onMouseDown = (e: MouseEvent) => {
-    setTimeout(() => {
+  private onMouseDown = () => {
+    this.timer = window.setTimeout(() => {
       this.updatePosition()
-      this.toggleTooltip(false)
-      if (this.options.onHide) {
-        this.options.onHide.call(this)
-      }
+      this.toggleContextMenu(false)
     }, 200)
+  }
+
+  private onContextMenu({ e }: { e: MouseEvent }) {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = 0
+    }
+    this.updatePosition(e)
+    this.toggleContextMenu(true)
+  }
+
+  delegateEvents() {
+    this.cellView.on('cell:contextmenu', this.onContextMenu, this)
+    return super.delegateEvents()
+  }
+
+  protected onRemove() {
+    this.cellView.off('cell:contextmenu', this.onContextMenu, this)
   }
 }
 
@@ -68,21 +82,14 @@ ContextMenuTool.config({
 })
 
 export interface ContextMenuToolOptions extends ToolsView.ToolItem.Options {
-  x: number
-  y: number
-  menu?: Menu | (() => Menu)
-  onHide?: (this: ContextMenuTool) => void
+  menu: React.ReactElement
 }
 
 Graph.registerEdgeTool('contextmenu', ContextMenuTool, true)
 Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
 
-const onMenuClick = (e: any) => {
-  console.log('menu click ', e)
-}
-
 const menu = (
-  <Menu onClick={onMenuClick}>
+  <Menu>
     <Menu.Item>1st menu item</Menu.Item>
     <Menu.Item>2nd menu item</Menu.Item>
     <Menu.Item>
@@ -111,6 +118,14 @@ const source = graph.addNode({
       strokeWidth: 1,
     },
   },
+  tools: [
+    {
+      name: 'contextmenu',
+      args: {
+        menu,
+      },
+    },
+  ],
 })
 
 const target = graph.addNode({
@@ -125,6 +140,14 @@ const target = graph.addNode({
       strokeWidth: 1,
     },
   },
+  tools: [
+    {
+      name: 'contextmenu',
+      args: {
+        menu,
+      },
+    },
+  ],
 })
 
 graph.addEdge({
@@ -136,21 +159,12 @@ graph.addEdge({
       strokeWidth: 1,
     },
   },
-})
-
-graph.on('cell:contextmenu', ({ cell, e }) => {
-  const p = graph.clientToGraph(e.clientX, e.clientY)
-  cell.addTools([
+  tools: [
     {
       name: 'contextmenu',
       args: {
         menu,
-        x: p.x,
-        y: p.y,
-        onHide() {
-          this.cell.removeTools()
-        },
       },
     },
-  ])
+  ],
 })
