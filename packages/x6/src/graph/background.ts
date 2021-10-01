@@ -63,6 +63,12 @@ export class BackgroundManager extends Base {
       return
     }
 
+    // draw multiple times to show the last image
+    const cache = this.optionsCache
+    if (cache && cache.image !== options.image) {
+      return
+    }
+
     let uri
     const opacity = options.opacity
     const backgroundSize: any = options.size
@@ -110,7 +116,6 @@ export class BackgroundManager extends Base {
       }
     }
 
-    const cache = this.optionsCache
     if (
       cache != null &&
       typeof options.size === 'object' &&
