@@ -1,3 +1,10 @@
+## @antv/x6 [1.27.1](https://github.com/antvis/x6/compare/@antv/x6@1.27.0...@antv/x6@1.27.1) (2021-10-01)
+
+
+### Bug Fixes
+
+* 🐛 draw background multiple times to show the last image ([#1389](https://github.com/antvis/x6/issues/1389)) ([e44098d](https://github.com/antvis/x6/commit/e44098d04b886d9b54b752bee2dcaa57db6b5a3f))
+
 # @antv/x6 [1.27.0](https://github.com/antvis/x6/compare/@antv/x6@1.26.3...@antv/x6@1.27.0) (2021-09-30)
 
 
