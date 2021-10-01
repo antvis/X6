@@ -6,10 +6,118 @@ redirect_from:
   - /en/docs/tutorial
 ---
 
+## 1.27.x
+
+- 1.27.0
+  - ✨ `stencil` 中增加 `resizeGroup` 方法 ([#1388](https://github.com/antvis/x6/issues/1388)) ([4baba33](https://github.com/antvis/x6/commit/4baba3326bc9ecbbd9c272fcfa4ee3d3c0389db3))
+  - 🐛 修复移动端旋转节点报错问题 ([#1387](https://github.com/antvis/x6/issues/1387)) ([ba4aedc](https://github.com/antvis/x6/commit/ba4aedc49793fa681cd73a4790ab4dc34e3cf936))
+## 1.26.x
+
+- 1.26.3
+  - 🐛 修复节点粘贴位置偏移问题 ([#1350](https://github.com/antvis/x6/issues/1350)) ([016303c](https://github.com/antvis/x6/commit/016303c936ccbc23e7bbb80c8461e4ba9fe8d14f))
+  - `segments & vertices` 工具增加 `onChanged` 回调参数 ([#1348](https://github.com/antvis/x6/issues/1348)) ([502856c](https://github.com/antvis/x6/commit/502856c3b89a4613859c7152ec212253ec7919d8))
+
+- 1.26.1
+  - 🐛 解决批量移动选中节点不触发 `node:moved` 事件问题 ([#1305](https://github.com/antvis/x6/issues/1305)) ([6a3f96d](https://github.com/antvis/x6/commit/6a3f96d3b5754def401084e023dad466c013cc49))
+## 1.25.x
+
+- 1.25.4
+  * 🐛 `cell clone` 方法中增加 `keepId` 配置 ([#1254](https://github.com/antvis/x6/issues/1254)) ([7c51152](https://github.com/antvis/x6/commit/7c51152f03998c26b740eec640961193c29ebd34))
+
+- 1.25.1
+  - 🐛 `prop` 方法优化 ([#1225](https://github.com/antvis/x6/issues/1225)) ([ba2350d](https://github.com/antvis/x6/commit/ba2350dcc930a9a4ab350862db67a5415fe41cfd))
+  - 🐛 `stencil` 的搜索逻辑修改为对大小写敏感 ([#1211](https://github.com/antvis/x6/issues/1211)) ([c28289c](https://github.com/antvis/x6/commit/c28289c3c9f0552b14c81999542374649271e495))
+
+- 1.25.0
+  - ✨ 内置 `cell-editor` 工具 ([#1202](https://github.com/antvis/x6/issues/1202)) ([2286097](https://github.com/antvis/x6/commit/228609783e1b3a3ff579ce9d38cf2e70dacd4931))
+  - 🐛 `scaleContentToFit` 的 `padding` 配置支持四个方向 ([#1203](https://github.com/antvis/x6/issues/1203)) ([692ea04](https://github.com/antvis/x6/commit/692ea043854095535273e7a9ff2e4f8809faee81))
+## 1.24.x
+
+- 1.24.8
+  * 🐛 框选超出画布时开启画布自动滚动 ([#1197](https://github.com/antvis/x6/issues/1197)) ([ffc801b](https://github.com/antvis/x6/commit/ffc801b9550fd55a03a2642051a84ef586d88ee7))
+
+- 1.24.5
+  - 🐛 统一scroller画布和普通画布的 `panning api` ([#1151](https://github.com/antvis/x6/issues/1151)) ([fc78817](https://github.com/antvis/x6/commit/fc7881731bfc5c7cde698ca8948dfa0c40f891fc))
+
+- 1.24.4
+  - 🐛 增加 `toolsAddable` 配置 ([#1124](https://github.com/antvis/x6/issues/1124)) ([5dde09c](https://github.com/antvis/x6/commit/5dde09c4fc99e395947d8839adb67ab6c20abbe7))
+
+- 1.24.2
+  - 🐛 新建连线的时候如果超出画布自动滚动画布 ([#1121](https://github.com/antvis/x6/issues/1121)) ([fde89fc](https://github.com/antvis/x6/commit/fde89fcf14e4dec9d9bf15489290cc145c29e400))
+
+- 1.24.0
+  - ✨ 解决群组中多个选中节点平移相互影响问题 ([#1115](https://github.com/antvis/x6/issues/1115)) ([41fe23b](https://github.com/antvis/x6/commit/41fe23b6b959782487c0db03215fcfcf5c821b87))
+## 1.23.x
+
+- 1.23.13
+  - 🐛 画布在聚焦后取消自动滚动 ([#1116](https://github.com/antvis/x6/issues/1116)) ([9b66853](https://github.com/antvis/x6/commit/9b66853e143825de669fa5c97e1540971e835bed))
+
+- 1.23.10
+  - 🐛 修复 `node:move` 事件的触发机制 ([cca97ff](https://github.com/antvis/x6/commit/cca97ff1ed44a45ca6ef0acf9b2c2d38070cb4cb))
+  - 🐛 修复 `embedded` 事件的触发机制 ([a922aa4](https://github.com/antvis/x6/commit/a922aa42b6a726fd7daf45d283d5b4a9c792e4a8))
+  - 🐛 优化 `cell.remove` 方法 ([c6fd5da](https://github.com/antvis/x6/commit/c6fd5da9e5b8b89b3eff13f1026da0298ac397e9))
+
+- 1.23.8
+  - 🐛 `mousedown` 事件中不取消选中效果 ([d6195a7](https://github.com/antvis/x6/commit/d6195a74f3765d65fcdf42dd0de7739fb8867f75))
+
+- 1.23.5
+  - 🐛 修复画布背景图片不自动缩放问题 [#1070](https://github.com/antvis/x6/issues/1070) ([#1072](https://github.com/antvis/x6/issues/1072)) ([ada59be](https://github.com/antvis/x6/commit/ada59be847cb139040c8ee8b68603756194201cd))
+
+- 1.23.3
+  - 🐛 修复 scroller 画布在 `autoResize` 为 false 下内容区域尺寸不固定问题 ([1a77b44](https://github.com/antvis/x6/commit/1a77b4464c6397c407d848adb17f8aa90131d63d))
+
+- 1.23.2
+  - 🐛 优化 `addTools` 参数 ([9fb3a51](https://github.com/antvis/x6/commit/9fb3a514c2d34dee61d1ee5acd68416ae5bd5cfa))
+
+- 1.23.0
+  - ✨ 在普通画布中支持 `minimap` ([3ce87d9](https://github.com/antvis/x6/commit/3ce87d91a952e9b8bf61988cba1cc8cedd39b942))
+## 1.22.x
+
+- 1.22.1
+  - 🐛 兼容 firefox 下文本 `bbox` 计算误差 ([328eb7e](https://github.com/antvis/x6/commit/328eb7e980fae6091ca94ce20f867f3694788446))
+
+- 1.22.0
+  - ✨ `scroller` 画布支持右键平移 ([2ceca37](https://github.com/antvis/x6/commit/2ceca3724e792dc0247398bf8790909597c50f31))
+## 1.21.x
+
+- 1.21.1
+  - 🐛 节点属性中支持 `css` 变量 ([c4dde7e](https://github.com/antvis/x6/commit/c4dde7e498c5b892a181e86d9908519bc0e2c200))
+
+- 1.21.0
+  - ✨ `selecting` 中增加 `rubberNode` 和 `rubberEdge` 配置 ([#949](https://github.com/antvis/x6/issues/949)) ([b715463](https://github.com/antvis/x6/commit/b71546332a91f7a894f453c691efee006fdf4ad0))
+## 1.20.x
+
+- 1.20.0
+  - ✨ `panning` 支持右键和触摸板 ([3694cc0](https://github.com/antvis/x6/commit/3694cc080ca5d2a291ba6b2df8c25933bb39b80a))
+  - 🐛 重构 `mousewheel` 的实现 ([a2851cd](https://github.com/antvis/x6/commit/a2851cd862c9224bb66a8f9bda3e0035259fd940))
+## 1.19.x
+
+- 1.19.6
+  - 🐛 `validateEdge` 修改成同步调用 ([57a6f2b](https://github.com/antvis/x6/commit/57a6f2be0685c91dced5208103051ad30742e87f))
+
+- 1.19.4
+  - ⚡️ 优化 `marker` 的渲染性能 ([6e90b6b](https://github.com/antvis/x6/commit/6e90b6b308a854dad97acf7c0577900731c08d9d))
+  - ⚡️ 优化节点渲染性能 ([433d25f](https://github.com/antvis/x6/commit/433d25ff4a8cb6bab662f1a2317f59c1d41aa7bd))
+  - ⚡️ 减少 `sortViews` 过程中的 dom 操作  ([79800b8](https://github.com/antvis/x6/commit/79800b8c4c007513bfd57abee2c7066fdfdc678e))
+
+- 1.19.0
+  - ✨ 优化 scroller 画布性能 ([#909](https://github.com/antvis/x6/issues/909)) ([1346223](https://github.com/antvis/x6/commit/134622397cab7312cb8e9cfc3f78901008a7b49f))
+  - ✨ 优化 `keyboard target` 聚焦时机以提高拖拽性能 ([f3c04ca](https://github.com/antvis/x6/commit/f3c04ca02945d14e7912a963a11fe89908e1a4c8))
+
 ## 1.18.x
 
+- 1.18.5
+  - 🐛 修复 `setProp` 方法会修改节点 ID 问题 ([44be23e](https://github.com/antvis/x6/commit/44be23ed5500a3b219ee4774990e8caee58269c3))
+
+- 1.18.4
+  - 🐛 连接桩不能被连接时鼠标为默认状态 ([2a1aa21](https://github.com/antvis/x6/commit/2a1aa2167e73f0bf2992bf2ef264c0401025a3f3))
+  - 🐛 npm 包中加入 src 目录源码 ([d2901a8](https://github.com/antvis/x6/commit/d2901a86a065dd5b6537fdf6d7a1249ed4e10a1e))
+
+- 1.18.3
+  - 🐛 优化滚轮缩放因子计算方式 ([#855](https://github.com/antvis/x6/issues/855)) ([8a3ecce](https://github.com/antvis/x6/commit/8a3eccec6856a8ff7bfb4464dfed43a0c27097a4))
+
 - 1.18.0
-  - 修复画布坐标错乱问题 ([319f30f](https://github.com/antvis/x6/commit/319f30f5e68587623d85a2759142feaf37ac46fc))
+  - 🐛 修复画布坐标错乱问题 ([319f30f](https://github.com/antvis/x6/commit/319f30f5e68587623d85a2759142feaf37ac46fc))
 
 ## 1.17.x
 
