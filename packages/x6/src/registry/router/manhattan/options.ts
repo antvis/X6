@@ -47,6 +47,11 @@ export interface ResolvedOptions {
   excludeShapes: string[]
 
   /**
+   * Should certain hidden nodes not be considered as obstacles?
+   */
+  excludeHiddenNodes: boolean
+
+  /**
    * Possible starting directions from a node.
    */
   startDirections: Direction[]
@@ -136,6 +141,7 @@ export const defaults: ManhattanRouterOptions = {
   perpendicular: true,
   excludeTerminals: [],
   excludeShapes: [], // ['text']
+  excludeHiddenNodes: false,
   startDirections: ['top', 'right', 'bottom', 'left'],
   endDirections: ['top', 'right', 'bottom', 'left'],
   directionMap: {

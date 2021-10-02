@@ -172,9 +172,11 @@ graph.addEdge({
 | maximumLoops       | number                   |    否    | `2000`                               | 最大迭代次数，到达最大迭代次数后将使用候补路由。                                             |
 | maxDirectionChange | number                   |    否    | `90`                                 | 最大旋转角度。                                                                              |
 | excludeTerminals   | ('source' \| 'target')[] |    否    | `[]`                                 | 忽略起始或终止节点，忽略后不参与障碍物计算。                                                 |
-| excludeShapes      | string[]                 |    否    | `[]`                                 | 忽略指定节点名的节点，忽略后不参与障碍物计算。                                               |
+| excludeShapes      | string[]                 |    否    | `[]`                                 | 忽略指定形状的节点，忽略后不参与障碍物计算。                                               |
+| excludeHiddenNodes | boolean                  |    否    | `false`                              | 忽略隐藏的节点，忽略后不参与障碍物计算。                                               |
 | startDirections    | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向开始路由。                                                                    |
 | endDirections      | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向结束路由。                                                                    |
+
 
 例如：
 
