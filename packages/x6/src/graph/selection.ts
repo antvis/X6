@@ -1,6 +1,5 @@
 import { ModifierKey } from '../types'
 import { Selection } from '../addon/selection'
-import { Collection } from '../model/collection'
 import { Cell } from '../model/cell'
 import { EventArgs } from './events'
 import { Base } from './base'
@@ -138,7 +137,7 @@ export class SelectionManager extends Base {
 
   select(
     cells: Cell | string | (Cell | string)[],
-    options: Collection.AddOptions = {},
+    options: Selection.AddOptions = {},
   ) {
     const selected = this.getCells(cells)
     if (selected.length) {
@@ -153,7 +152,7 @@ export class SelectionManager extends Base {
 
   unselect(
     cells: Cell | string | (Cell | string)[],
-    options: Collection.RemoveOptions = {},
+    options: Selection.RemoveOptions = {},
   ) {
     this.widget.unselect(this.getCells(cells), options)
     return this
@@ -161,14 +160,14 @@ export class SelectionManager extends Base {
 
   reset(
     cells?: Cell | string | (Cell | string)[],
-    options: Collection.SetOptions = {},
+    options: Selection.SetOptions = {},
   ) {
     this.widget.reset(cells ? this.getCells(cells) : [], options)
     return this
   }
 
-  clean() {
-    this.widget.clean()
+  clean(options: Selection.SetOptions = {}) {
+    this.widget.clean(options)
     return this
   }
 
@@ -264,4 +263,8 @@ export namespace SelectionManager {
 
   export type Filter = Selection.Filter
   export type Content = Selection.Content
+
+  export type SetOptions = Selection.SetOptions
+  export type AddOptions = Selection.AddOptions
+  export type RemoveOptions = Selection.RemoveOptions
 }
