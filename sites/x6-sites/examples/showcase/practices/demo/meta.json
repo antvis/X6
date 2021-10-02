@@ -49,7 +49,7 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*w5SUSIvTxPAAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "../../../edge/tool/demo/path-editor.ts",
+      "filename": "path-editor.ts",
       "title": {
         "zh": "路径编辑器",
         "en": "Path Editor"
