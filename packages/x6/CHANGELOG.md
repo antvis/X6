@@ -1,3 +1,17 @@
+# @antv/x6 [1.28.0](https://github.com/antvis/x6/compare/@antv/x6@1.27.2...@antv/x6@1.28.0) (2021-10-02)
+
+
+### Bug Fixes
+
+* 🐛 modify the font size even if the text does not change ([#1397](https://github.com/antvis/x6/issues/1397)) ([f93c290](https://github.com/antvis/x6/commit/f93c290abd8e546e76feb914c4f0457aa6f1bbbf))
+* 🐛 stop propagation when enable following ([#1398](https://github.com/antvis/x6/issues/1398)) ([59cbe44](https://github.com/antvis/x6/commit/59cbe44cf308e7b452ac0fba37dd19c86324e475))
+
+
+### Features
+
+* ✨ add batch for selection ([#1399](https://github.com/antvis/x6/issues/1399)) ([276abac](https://github.com/antvis/x6/commit/276abac2949bd6c2160e749e0d4e41d9201ae08e))
+* ✨ add excludeHiddenNodes for manhattan router ([#1400](https://github.com/antvis/x6/issues/1400)) ([c57908f](https://github.com/antvis/x6/commit/c57908fc7e6183319f27a8acc0e3567e76d11e6e))
+
 ## @antv/x6 [1.27.2](https://github.com/antvis/x6/compare/@antv/x6@1.27.1...@antv/x6@1.27.2) (2021-10-01)
 
 
