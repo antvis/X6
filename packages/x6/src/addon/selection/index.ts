@@ -173,22 +173,27 @@ export class Selection extends View<Selection.EventArgs> {
     return this.collection.toArray()
   }
 
-  select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
+  select(cells: Cell | Cell[], options: Selection.AddOptions = {}) {
     options.dryrun = true
     const items = this.filter(Array.isArray(cells) ? cells : [cells])
     this.collection.add(items, options)
     return this
   }
 
-  unselect(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
+  unselect(cells: Cell | Cell[], options: Selection.RemoveOptions = {}) {
     // dryrun to prevent cell be removed from graph
     options.dryrun = true
     this.collection.remove(Array.isArray(cells) ? cells : [cells], options)
     return this
   }
 
-  reset(cells?: Cell | Cell[], options: Collection.SetOptions = {}) {
+  reset(cells?: Cell | Cell[], options: Selection.SetOptions = {}) {
     if (cells) {
+      if (options.batch) {
+        this.collection.reset(cells, { ...options, ui: true })
+        return this
+      }
+
       const prev = this.cells
       const next = this.filter(Array.isArray(cells) ? cells : [cells])
       const prevMap: KeyValue<Cell> = {}
@@ -226,9 +231,13 @@ export class Selection extends View<Selection.EventArgs> {
     return this.clean(options)
   }
 
-  clean(options: Collection.SetOptions = {}) {
+  clean(options: Selection.SetOptions = {}) {
     if (this.length) {
-      this.collection.reset([], { ...options, ui: true })
+      if (options.batch === false) {
+        this.unselect(this.cells, options)
+      } else {
+        this.collection.reset([], { ...options, ui: true })
+      }
     }
     return this
   }
@@ -314,7 +323,7 @@ export class Selection extends View<Selection.EventArgs> {
         height /= scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
         const cells = this.getCellViewsInArea(rect).map((view) => view.cell)
-        this.collection.reset(cells, { ui: true })
+        this.reset(cells, { batch: true })
         this.hideRubberband()
         break
       }
@@ -1069,6 +1078,14 @@ export namespace Selection {
     | null
     | (string | { id: string })[]
     | ((this: Graph, cell: Cell) => boolean)
+
+  export interface SetOptions extends Collection.SetOptions {
+    batch?: boolean
+  }
+
+  export interface AddOptions extends Collection.AddOptions {}
+
+  export interface RemoveOptions extends Collection.RemoveOptions {}
 }
 
 export namespace Selection {
