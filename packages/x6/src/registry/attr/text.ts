@@ -39,13 +39,13 @@ export const text: Attr.Definition = {
     const fontSize = (attrs['font-size'] || attrs.fontSize) as string
     const textHash = JSON.stringify([text, options])
 
+    if (fontSize) {
+      elem.setAttribute('font-size', fontSize)
+    }
+
     // Updates the text only if there was a change in the string
     // or any of its attributes.
     if (cache == null || cache !== textHash) {
-      if (fontSize) {
-        elem.setAttribute('font-size', fontSize)
-      }
-
       // Text Along Path Selector
       const textPath = options.textPath as any
       if (textPath != null && typeof textPath === 'object') {
