@@ -349,7 +349,10 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: JQuery.MouseDownEvent) {
-    // evt.stopPropagation()
+    if (!this.options.following) {
+      evt.stopPropagation()
+    }
+
     const e = this.normalizeEvent(evt)
 
     if (this.options.movable) {
