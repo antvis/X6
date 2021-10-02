@@ -1757,13 +1757,16 @@ export class Graph extends Basecoat<EventArgs> {
     return this.selection.isEmpty()
   }
 
-  cleanSelection() {
-    this.selection.clean()
+  cleanSelection(options?: Selection.SetOptions) {
+    this.selection.clean(options)
     return this
   }
 
-  resetSelection(cells?: Cell | string | (Cell | string)[]) {
-    this.selection.reset(cells)
+  resetSelection(
+    cells?: Cell | string | (Cell | string)[],
+    options?: Selection.SetOptions,
+  ) {
+    this.selection.reset(cells, options)
     return this
   }
 
@@ -1781,7 +1784,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   select(
     cells: Cell | string | (Cell | string)[],
-    options: Collection.AddOptions = {},
+    options?: Selection.AddOptions,
   ) {
     this.selection.select(cells, options)
     return this
@@ -1789,7 +1792,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   unselect(
     cells: Cell | string | (Cell | string)[],
-    options: Collection.RemoveOptions = {},
+    options?: Selection.RemoveOptions,
   ) {
     this.selection.unselect(cells, options)
     return this
