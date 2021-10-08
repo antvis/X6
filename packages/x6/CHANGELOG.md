@@ -1,3 +1,10 @@
+## @antv/x6 [1.28.1](https://github.com/antvis/x6/compare/@antv/x6@1.28.0...@antv/x6@1.28.1) (2021-10-08)
+
+
+### Bug Fixes
+
+* 🐛 fiter nodes when rubberband ([#1408](https://github.com/antvis/x6/issues/1408)) ([35ad628](https://github.com/antvis/x6/commit/35ad628a1b51630aedbed038eb0ff05c6575ca09))
+
 # @antv/x6 [1.28.0](https://github.com/antvis/x6/compare/@antv/x6@1.27.2...@antv/x6@1.28.0) (2021-10-02)
 
 
