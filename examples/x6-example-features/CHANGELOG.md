@@ -1,3 +1,18 @@
+## @antv/x6-example-features [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.1...@antv/x6-example-features@1.2.2) (2021-10-08)
+
+
+### Bug Fixes
+
+* 🐛 optimize contextmenu tools ([#1391](https://github.com/antvis/x6/issues/1391)) ([4d0b1e8](https://github.com/antvis/x6/commit/4d0b1e8e413d2f9a8dec30ca48ca04e1a560a060))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.28.1
+
 ## @antv/x6-example-features [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.1...@antv/x6-example-features@1.2.2) (2021-10-02)
 
 
