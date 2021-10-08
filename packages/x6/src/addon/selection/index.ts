@@ -190,7 +190,8 @@ export class Selection extends View<Selection.EventArgs> {
   reset(cells?: Cell | Cell[], options: Selection.SetOptions = {}) {
     if (cells) {
       if (options.batch) {
-        this.collection.reset(cells, { ...options, ui: true })
+        const filterCells = this.filter(Array.isArray(cells) ? cells : [cells])
+        this.collection.reset(filterCells, { ...options, ui: true })
         return this
       }
 
