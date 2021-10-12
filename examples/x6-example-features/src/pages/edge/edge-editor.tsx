@@ -31,7 +31,7 @@ export default class Example extends React.Component {
         },
       })
       edge = graph.addEdge({
-        source: node.getBBox().center,
+        source: node,
         target: pos,
         attrs: {
           line: {
@@ -68,7 +68,9 @@ export default class Example extends React.Component {
         const vertices = edge.getVertices()
         if (closed) {
           if (vertices.length >= 2) {
-            edge.setTarget(node.getBBox().center)
+            const center = node.getBBox().center
+            edge.setSource(center)
+            edge.setTarget(center)
             graph.removeNode(node)
             node = null
             print()
@@ -79,6 +81,8 @@ export default class Example extends React.Component {
           }
         } else {
           if (vertices.length >= 1) {
+            const center = node.getBBox().center
+            edge.setSource(center)
             edge.setTarget(vertices[vertices.length - 1])
             graph.removeNode(node)
             node = null
@@ -93,21 +97,17 @@ export default class Example extends React.Component {
       }
     }
 
-    graph.on('blank:click', ({ e }) => {
-      const pos = graph.clientToLocal(e.clientX, e.clientY)
-      init(pos)
+    graph.on('blank:click', ({ x, y }) => {
+      init({ x, y })
       this.container.addEventListener('mousemove', onMouseMove)
     })
 
-    graph.on('edge:click', ({ e }) => {
-      const pos = graph.clientToLocal(e.clientX, e.clientY)
-      if (edge) {
-        const nodes = graph.getNodesFromPoint(pos.x, pos.y)
-        if (nodes.length && nodes[0] === node) {
-          finish(true)
-        } else {
-          addVertices(pos)
-        }
+    graph.on('edge:click', ({ x, y }) => {
+      const nodes = graph.getNodesFromPoint(x, y)
+      if (nodes.length && nodes[0] === node) {
+        finish(true)
+      } else {
+        addVertices({ x, y })
       }
     })
 
