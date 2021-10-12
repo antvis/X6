@@ -26,7 +26,7 @@
     "@ant-design/icons": "^4.2.1",
     "@antv/x6": "^1.28.1",
     "@antv/x6-react-components": "^1.1.14",
-    "@antv/x6-react-shape": "^1.4.6",
+    "@antv/x6-react-shape": "^1.5.1",
     "@types/dompurify": "^2.0.4",
     "ahooks": "^2.7.0",
     "antd": "^4.4.2",
