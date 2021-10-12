@@ -1,3 +1,5 @@
+## @antv/stylelint-config [1.0.1](https://github.com/antvis/x6/compare/@antv/stylelint-config@1.0.0...@antv/stylelint-config@1.0.1) (2021-10-12)
+
 ## @antv/stylelint-config [1.0.1](https://github.com/antvis/x6/compare/@antv/stylelint-config@1.0.0...@antv/stylelint-config@1.0.1) (2021-10-08)
 
 ## @antv/stylelint-config [1.0.1](https://github.com/antvis/x6/compare/@antv/stylelint-config@1.0.0...@antv/stylelint-config@1.0.1) (2021-10-02)
