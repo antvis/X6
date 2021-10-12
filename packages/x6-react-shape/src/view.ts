@@ -22,9 +22,13 @@ export class ReactShapeView extends NodeView<ReactShape> {
   confirmUpdate(flag: number) {
     const ret = super.confirmUpdate(flag)
     return this.handleAction(ret, ReactShapeView.action, () => {
-      Scheduler.scheduleTask(() => {
+      if (Scheduler) {
+        Scheduler.scheduleTask(() => {
+          this.renderReactComponent()
+        })
+      } else {
         this.renderReactComponent()
-      })
+      }
     })
   }
 
