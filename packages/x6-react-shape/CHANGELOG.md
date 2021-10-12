@@ -1,3 +1,11 @@
+## @antv/x6-react-shape [1.5.1](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.5.0...@antv/x6-react-shape@1.5.1) (2021-10-12)
+
+
+### Bug Fixes
+
+* 🐛 update x6-react-shape ([#1424](https://github.com/antvis/x6/issues/1424)) ([6521622](https://github.com/antvis/x6/commit/65216222e77652e407d76d40ec1d088988a86905))
+* 🐛 update x6-react-shape version ([#1422](https://github.com/antvis/x6/issues/1422)) ([c6c0a42](https://github.com/antvis/x6/commit/c6c0a42c6c4db44d2ad69174194b396d9e9956c7))
+
 # @antv/x6-react-shape [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.4.6...@antv/x6-react-shape@1.5.0) (2021-09-22)
 
 
