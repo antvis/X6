@@ -167,7 +167,7 @@ Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We
 
 ## Development
 
-This repo is base on [lerna](https://github.com/lerna/lerna) with the following structor:
+This repo is based on [lerna](https://github.com/lerna/lerna) with the following structure:
 
 ```
 .
