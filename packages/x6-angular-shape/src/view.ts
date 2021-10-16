@@ -67,9 +67,9 @@ export class AngularShapeView extends NodeView<AngularShape> {
     return root
   }
 
-  unmount() {
-    this.unmountAngularContent()
-    return this
+  // unmount() {
+  //  this.unmountAngularContent()
+  //  return this
   }
 
   @NodeView.dispose()
