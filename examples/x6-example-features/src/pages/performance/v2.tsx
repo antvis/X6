@@ -246,7 +246,7 @@ export default class Example extends React.Component {
 
   addNodesWithPorts = () => {
     const nodes = []
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 500; i++) {
       nodes.push({
         id: i + '',
         x: Math.floor(Math.random() * 1600),
