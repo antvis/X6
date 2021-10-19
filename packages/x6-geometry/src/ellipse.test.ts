@@ -234,6 +234,16 @@ describe('ellipse', () => {
     })
   })
 
+  describe('#rotate', () => {
+    it('should rotate the ellipse', () => {
+      const ellipse = new Ellipse(0, 0, 3, 4).rotate(90)
+      expect(ellipse.x).toEqual(0)
+      expect(ellipse.y).toEqual(0)
+      expect(ellipse.a).toEqual(4)
+      expect(Math.round(ellipse.b)).toEqual(3)
+    })
+  })
+
   describe('#translate', () => {
     it('should translate the ellipse with the given `dx` and `dy`', () => {
       const ellipse = new Ellipse(1, 2, 3, 4).translate(3, 4)

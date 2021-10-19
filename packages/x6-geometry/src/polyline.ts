@@ -7,17 +7,11 @@ export class Polyline extends Geometry {
   points: Point[]
 
   public get start() {
-    if (this.points.length === 0) {
-      return null
-    }
-    return this.points[0]
+    return this.points[0] || null
   }
 
   public get end() {
-    if (this.points.length === 0) {
-      return null
-    }
-    return this.points[this.points.length - 1]
+    return this.points[this.points.length - 1] || null
   }
 
   constructor(points?: (Point.PointLike | Point.PointData)[] | string) {
@@ -51,6 +45,11 @@ export class Polyline extends Geometry {
   translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {
     const t = Point.create(dx, dy)
     this.points.forEach((p) => p.translate(t.x, t.y))
+    return this
+  }
+
+  round(precision = 0) {
+    this.points.forEach((p) => p.round(precision))
     return this
   }
 
@@ -113,16 +112,12 @@ export class Polyline extends Geometry {
   }
 
   closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
-    const cpLength = this.closestPointLength(p)
-    if (cpLength === 0) {
-      return 0
-    }
-
     const length = this.length()
     if (length === 0) {
       return 0
     }
 
+    const cpLength = this.closestPointLength(p)
     return cpLength / length
   }
 
@@ -612,7 +607,7 @@ export class Polyline extends Geometry {
   }
 
   serialize() {
-    return this.points.map((p) => `${p.x}, ${p.y}`).join(' ')
+    return this.points.map((p) => `${p.serialize()}`).join(' ')
   }
 }
 
