@@ -1,6 +1,6 @@
 import { Point } from './point'
 
-describe('point', () => {
+describe('Point', () => {
   describe('#constructor', () => {
     it('should create a point instance', () => {
       expect(new Point()).toBeInstanceOf(Point)
