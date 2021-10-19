@@ -44,6 +44,7 @@ export namespace ReactShape {
     | 'polyline'
 
   export interface Properties extends Node.Properties {
+    simple?: boolean
     primer?: Primer
     useForeignObject?: boolean
     component?: Definition | string
@@ -51,34 +52,43 @@ export namespace ReactShape {
 }
 
 export namespace ReactShape {
-  function getMarkup(useForeignObject: boolean, primer: Primer = 'rect') {
-    const markup: Markup.JSONMarkup[] = [
-      {
-        tagName: primer,
-        selector: 'body',
-      },
-    ]
+  function getMarkup(
+    simple: boolean,
+    useForeignObject: boolean,
+    primer: Primer = 'rect',
+  ) {
+    const markup: Markup.JSONMarkup[] = []
+    const content = useForeignObject
+      ? Markup.getForeignObjectMarkup()
+      : {
+          tagName: 'g',
+          selector: 'content',
+        }
 
-    if (useForeignObject) {
-      markup.push(Markup.getForeignObjectMarkup())
+    if (simple) {
+      markup.push(content)
     } else {
-      markup.push({
-        tagName: 'g',
-        selector: 'content',
-      })
+      markup.push(
+        ...[
+          {
+            tagName: primer,
+            selector: 'body',
+          },
+          content,
+          {
+            tagName: 'text',
+            selector: 'label',
+          },
+        ],
+      )
     }
-
-    markup.push({
-      tagName: 'text',
-      selector: 'label',
-    })
 
     return markup
   }
 
   ReactShape.config<Properties>({
     view: 'react-shape-view',
-    markup: getMarkup(true),
+    markup: getMarkup(false, true),
     attrs: {
       body: {
         fill: 'none',
@@ -102,38 +112,47 @@ export namespace ReactShape {
     propHooks(metadata: Properties) {
       if (metadata.markup == null) {
         const primer = metadata.primer
-        const useForeignObject = metadata.useForeignObject
-        if (primer != null || useForeignObject != null) {
-          metadata.markup = getMarkup(useForeignObject !== false, primer)
-          if (primer) {
-            if (metadata.attrs == null) {
-              metadata.attrs = {}
-            }
-            let attrs = {}
-            if (primer === 'circle') {
-              attrs = {
-                refCx: '50%',
-                refCy: '50%',
-                refR: '50%',
-              }
-            } else if (primer === 'ellipse') {
-              attrs = {
-                refCx: '50%',
-                refCy: '50%',
-                refRx: '50%',
-                refRy: '50%',
-              }
-            }
+        const useForeignObject = metadata.useForeignObject !== false
 
-            if (primer !== 'rect') {
-              metadata.attrs = ObjectExt.merge({}, metadata.attrs, {
-                body: {
-                  refWidth: null,
-                  refHeight: null,
-                  ...attrs,
-                },
-              })
+        if (primer && primer !== 'rect') {
+          metadata.markup = getMarkup(false, useForeignObject, primer)
+          let attrs = {}
+          if (primer === 'circle') {
+            attrs = {
+              refCx: '50%',
+              refCy: '50%',
+              refR: '50%',
             }
+          } else if (primer === 'ellipse') {
+            attrs = {
+              refCx: '50%',
+              refCy: '50%',
+              refRx: '50%',
+              refRy: '50%',
+            }
+          }
+          metadata.attrs = ObjectExt.merge(
+            {},
+            {
+              body: {
+                refWidth: null,
+                refHeight: null,
+                ...attrs,
+              },
+            },
+            metadata.attrs || {},
+          )
+        } else {
+          if (metadata.simple) {
+            metadata.markup = getMarkup(true, useForeignObject)
+            metadata.attrs = ObjectExt.merge(
+              {},
+              {
+                body: null,
+                label: null,
+              },
+              metadata.attrs || {},
+            )
           }
         }
       }
