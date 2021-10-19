@@ -28,7 +28,7 @@ redirect_from:
 ### 方式一：构造函数
 
 
-我们在 X6 的 `Shape` 命名空间中内置了一些基础节点，如 `Rect`、`Circle`、`Ecllipse` 等，可以使用这些节点的构造函数来创建节点。
+我们在 X6 的 `Shape` 命名空间中内置了一些基础节点，如 `Rect`、`Circle`、`Ellipse` 等，可以使用这些节点的构造函数来创建节点。
 
 ```ts
 import { Shape } from '@antv/x6'
