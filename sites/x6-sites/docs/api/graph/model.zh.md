@@ -394,7 +394,7 @@ getRootNodes(): Node[]
 isRootNode(cell: Cell | string): boolean
 ```
 
-返回指定的节点是否是跟节点。
+返回指定的节点是否是根节点。
 
 <span class="tag-param">参数<span>
 
