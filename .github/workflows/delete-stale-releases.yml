@@ -23,4 +23,5 @@ jobs:
             @antv/x6-react@**
             @antv/x6-vue-shape@**
             @antv/x6-react-shape@**
+            @antv/x6-angular-shape@**
             @antv/x6-react-components@**
