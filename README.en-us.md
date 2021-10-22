@@ -1,3 +1,5 @@
+[简体中文](/README.md) | English
+
 <p align="center"><img src="/flow.svg"></p>
 
 <p align="center"><strong>JavaScript diagramming library that uses SVG and HTML for rendering.</strong></p>
@@ -20,7 +22,6 @@
 <a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
 </p>
 
-[简体中文](/README.md) | English
 
 ## Features
 
