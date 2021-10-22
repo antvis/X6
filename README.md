@@ -1,3 +1,5 @@
+简体中文 | [English](/README.en-us.md)
+
 <p align="center"><img src="/flow.svg"></p>
 
 <p align="center"><strong>X6 是 AntV 旗下的图编辑引擎</strong></p>
@@ -21,7 +23,6 @@
 <a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
 </p>
 
-简体中文 | [English](/README.en-us.md)
 
 ## 特性
 
