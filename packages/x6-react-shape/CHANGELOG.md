@@ -1,3 +1,10 @@
+## @antv/x6-react-shape [1.5.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.5.1...@antv/x6-react-shape@1.5.2) (2021-10-22)
+
+
+### Performance Improvements
+
+* ⚡️ add simple config to remove rect and text element ([#1449](https://github.com/antvis/x6/issues/1449)) ([4452563](https://github.com/antvis/x6/commit/4452563876a48fd90664c633e7e0e2debd750816))
+
 ## @antv/x6-react-shape [1.5.1](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.5.0...@antv/x6-react-shape@1.5.1) (2021-10-12)
 
 
