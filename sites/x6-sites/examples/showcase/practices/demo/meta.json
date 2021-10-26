@@ -55,6 +55,14 @@
         "en": "Path Editor"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*dz6aS5gtapUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "class.ts",
+      "title": {
+        "zh": "UML 类图",
+        "en": "UML Class"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*cbgtS5uNnOcAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
