@@ -68,9 +68,8 @@ export const TextBlock = Base.define({
   attrHooks: {
     text: {
       set(text: string, { cell, view, refBBox, elem, attrs }) {
-        if (elem instanceof HTMLElement) {
-          elem.textContent = text
-        } else {
+        elem.textContent = text
+        if (!(elem instanceof HTMLElement)) {
           // No foreign object
           const style = (attrs.style as Attr.SimpleAttrs) || {}
           const wrapValue = { text, width: -5, height: '100%' }
