@@ -43,9 +43,9 @@ export class AngularShapeView extends NodeView<AngularShape> {
         applicationRef,
         injector,
       )
-      const ngArguments =
-        (node.data?.ngArguments as { [key: string]: any }) || {}
       if (content instanceof TemplateRef) {
+        const ngArguments =
+          (node.data?.ngArguments as { [key: string]: any }) || {}
         const portal = new TemplatePortal(content, viewContainerRef, {
           ngArguments,
         })
@@ -53,10 +53,18 @@ export class AngularShapeView extends NodeView<AngularShape> {
       } else {
         const portal = new ComponentPortal(content, viewContainerRef)
         const componentRef = domOutlet.attachComponentPortal(portal)
-        Object.keys(ngArguments).forEach(
-          (v) => (componentRef.instance[v] = ngArguments[v]),
-        )
-        componentRef.changeDetectorRef.detectChanges()
+        // 将用户传入的ngArguments依次赋值到component的属性当中
+        const renderComponentInstance = () => {
+          const ngArguments =
+            (node.data?.ngArguments as { [key: string]: any }) || {}
+          Object.keys(ngArguments).forEach(
+            (v) => (componentRef.instance[v] = ngArguments[v]),
+          )
+          componentRef.changeDetectorRef.detectChanges()
+        }
+        renderComponentInstance()
+        // 监听用户调用setData方法
+        node.on('change:data', () => renderComponentInstance())
       }
     }
   }
