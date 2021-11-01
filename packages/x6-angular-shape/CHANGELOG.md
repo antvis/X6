@@ -1,3 +1,10 @@
+# @antv/x6-angular-shape [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.1.2...@antv/x6-angular-shape@1.2.0) (2021-11-01)
+
+
+### Features
+
+* ✨ Angular Component支持使用setData进行更新 ([#1475](https://github.com/antvis/x6/issues/1475)) ([111813f](https://github.com/antvis/x6/commit/111813fb742ef6f464edea0b55d6c2f630fec8a7))
+
 ## @antv/x6-angular-shape [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.1.1...@antv/x6-angular-shape@1.1.2) (2021-10-22)
 
 
