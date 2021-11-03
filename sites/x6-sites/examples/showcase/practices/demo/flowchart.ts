@@ -1,7 +1,8 @@
 import { Graph, Shape, Addon } from '@antv/x6'
 import insertCss from 'insert-css'
 
-preWork() // 为了协助代码演示
+// 为了协助代码演示
+preWork()
 
 // #region 初始化画布
 const graph = new Graph({
@@ -103,7 +104,6 @@ document.getElementById('stencil')!.appendChild(stencil.container)
 // #endregion
 
 // #region 快捷键与事件
-
 // copy cut paste
 graph.bindKey(['meta+c', 'ctrl+c'], () => {
   const cells = graph.getSelectedCells()
@@ -371,9 +371,8 @@ Graph.registerNode(
     ],
     attrs: {
       body: {
-        strokeWidth: 1,
-        stroke: '#26C160',
-        fill: '#26C160',
+        stroke: '#5F95FF',
+        fill: '#5F95FF',
       },
       image: {
         width: 26,
@@ -443,88 +442,50 @@ const r6 = graph.createNode({
 })
 stencil.load([r1, r2, r3, r4, r5, r6], 'group1')
 
-const m1 = graph.createNode({
-  shape: 'custom-image',
-  label: 'Client',
-  attrs: {
-    image: {
-      'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/687b6cb9-4b97-42a6-96d0-34b3099133ac.svg',
-    },
+const imageShapes = [
+  {
+    label: 'Client',
+    image:
+      'https://gw.alipayobjects.com/zos/bmw-prod/687b6cb9-4b97-42a6-96d0-34b3099133ac.svg',
   },
-})
-const m2 = graph.createNode({
-  shape: 'custom-image',
-  label: 'Http',
-  attrs: {
-    body: {
-      stroke: '#2CB9FF',
-      fill: '#2CB9FF',
-    },
-    image: {
-      'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/dc1ced06-417d-466f-927b-b4a4d3265791.svg',
-    },
+  {
+    label: 'Http',
+    image:
+      'https://gw.alipayobjects.com/zos/bmw-prod/dc1ced06-417d-466f-927b-b4a4d3265791.svg',
   },
-})
-const m3 = graph.createNode({
-  shape: 'custom-image',
-  label: 'Api',
-  attrs: {
-    body: {
-      stroke: '#5AB0BE',
-      fill: '#5AB0BE',
-    },
-    image: {
-      'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/c55d7ae1-8d20-4585-bd8f-ca23653a4489.svg',
-    },
+  {
+    label: 'Api',
+    image:
+      'https://gw.alipayobjects.com/zos/bmw-prod/c55d7ae1-8d20-4585-bd8f-ca23653a4489.svg',
   },
-})
-const m4 = graph.createNode({
-  shape: 'custom-image',
-  label: 'Sql',
-  attrs: {
-    body: {
-      stroke: '#E6475B',
-      fill: '#E6475B',
-    },
-    image: {
-      'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/6eb71764-18ed-4149-b868-53ad1542c405.svg',
-    },
+  {
+    label: 'Sql',
+    image:
+      'https://gw.alipayobjects.com/zos/bmw-prod/6eb71764-18ed-4149-b868-53ad1542c405.svg',
   },
-})
-const m5 = graph.createNode({
-  shape: 'custom-image',
-  label: 'Clound',
-  attrs: {
-    body: {
-      stroke: '#DA2625',
-      fill: '#DA2625',
-    },
-    image: {
-      'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/c36fe7cb-dc24-4854-aeb5-88d8dc36d52e.svg',
-    },
+  {
+    label: 'Clound',
+    image:
+      'https://gw.alipayobjects.com/zos/bmw-prod/c36fe7cb-dc24-4854-aeb5-88d8dc36d52e.svg',
   },
-})
-const m6 = graph.createNode({
-  shape: 'custom-image',
-  label: 'Mq',
-  attrs: {
-    body: {
-      stroke: '#FFB15F',
-      fill: '#FFB15F',
-    },
-    image: {
-      'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/2010ac9f-40e7-49d4-8c4a-4fcf2f83033b.svg',
-    },
+  {
+    label: 'Mq',
+    image:
+      'https://gw.alipayobjects.com/zos/bmw-prod/2010ac9f-40e7-49d4-8c4a-4fcf2f83033b.svg',
   },
-})
-
-stencil.load([m1, m2, m3, m4, m5, m6], 'group2')
+]
+const imageNodes = imageShapes.map((item) =>
+  graph.createNode({
+    shape: 'custom-image',
+    label: item.label,
+    attrs: {
+      image: {
+        'xlink:href': item.image,
+      },
+    },
+  }),
+)
+stencil.load(imageNodes, 'group2')
 // #endregion
 
 function preWork() {
