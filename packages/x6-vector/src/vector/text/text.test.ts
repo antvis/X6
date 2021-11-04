@@ -1,5 +1,5 @@
 import { Path } from '../path/path'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { TextPath } from '../textpath/textpath'
 import { TSpan } from '../tspan/tspan'
 import { Text } from './text'
@@ -27,7 +27,7 @@ describe('Text', () => {
     })
 
     it('should increase dy after empty line', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const text = svg.text('Hello World\n\nHow is it\ngoing')
       expect(text.children().length).toBe(4)
       expect(text.get(0)!.node.textContent).toBe('Hello World')
@@ -96,7 +96,7 @@ describe('Text', () => {
 
   describe('rebuild()', () => {
     it('should rebuild the text', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const text = new Text().addTo(svg)
       text.text((t) => {
         t.tspan('Hello World').newLine()
@@ -112,7 +112,7 @@ describe('Text', () => {
     })
 
     it('should not rebuild the text', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const text = new Text().addTo(svg)
       text.text((t) => {
         t.tspan('Hello World').newLine()

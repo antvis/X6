@@ -1,14 +1,14 @@
 import sinon from 'sinon'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Text } from '../text/text'
 
 describe('Vector', () => {
   describe('font()', () => {
-    let svg: Svg
+    let svg: SVG
     let txt: Text
 
     beforeEach(() => {
-      svg = new Svg().appendTo(document.body)
+      svg = new SVG().appendTo(document.body)
       txt = svg.text('Some text')
     })
 

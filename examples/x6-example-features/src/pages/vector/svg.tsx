@@ -1,14 +1,14 @@
 import React from 'react'
-import { Svg } from '@antv/x6-vector'
+import { SVG } from '@antv/x6-vector'
 import '../index.less'
-
-console.log(Svg)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    new Svg().appendTo(this.container)
+    const svg = new SVG()
+    svg.rect(100, 100)
+    svg.appendTo(this.container)
   }
 
   refContainer = (container: HTMLDivElement) => {

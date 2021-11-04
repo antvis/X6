@@ -1,6 +1,6 @@
 import { Pattern } from '../pattern/pattern'
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 
 describe('Vector', () => {
   describe('fill()', () => {
@@ -29,14 +29,14 @@ describe('Vector', () => {
       })
 
       it('should set a fill pattern when pattern given', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const pattern = svg.pattern()
         const rect = svg.rect(100, 100)
         expect(rect.fill(pattern).attr('fill')).toBe(pattern.url())
       })
 
       it('should set a fill pattern when image given', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const image = svg.image('http://via.placeholder.com/120x80')
         const rect = svg.rect(100, 100)
         expect(rect.fill(image).attr('fill')).toBe(
@@ -45,7 +45,7 @@ describe('Vector', () => {
       })
 
       it('should set a fill pattern when image url given', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const rect = svg.rect()
         rect.fill(
           'https://www.centerforempathy.org/wp-content/uploads/2019/11/placeholder.png',
@@ -95,14 +95,14 @@ describe('Vector', () => {
       })
 
       it('should sets a stroke pattern when pattern given', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const pattern = svg.pattern()
         const rect = svg.rect(100, 100)
         expect(rect.stroke(pattern).attr('stroke')).toBe(pattern.url())
       })
 
       it('should set a stroke pattern when image given', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const image = svg.image('http://via.placeholder.com/120x80')
         const rect = svg.rect(100, 100)
         expect(rect.stroke(image).attr('stroke')).toBe(

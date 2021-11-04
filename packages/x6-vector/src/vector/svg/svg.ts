@@ -6,9 +6,9 @@ import { Viewbox } from '../container/viewbox'
 import { Defs } from '../defs/defs'
 import { SVGSVGAttributes } from './types'
 
-@Svg.mixin(Viewbox)
-@Svg.register('Svg')
-export class Svg extends Container<SVGSVGElement> {
+@SVG.mixin(Viewbox)
+@SVG.register('Svg')
+export class SVG extends Container<SVGSVGElement> {
   constructor()
   constructor(attrs: SVGSVGAttributes | null)
   constructor(node: SVGSVGElement | null, attrs?: SVGSVGAttributes | null)
@@ -73,13 +73,13 @@ export class Svg extends Container<SVGSVGElement> {
   }
 }
 
-export interface Svg extends Viewbox<SVGSVGElement> {}
+export interface SVG extends Viewbox<SVGSVGElement> {}
 
-export namespace Svg {
+export namespace SVG {
   export function create<Attributes extends SVGSVGAttributes>(
     attrs?: Attributes | null,
   ) {
-    const svg = new Svg()
+    const svg = new SVG()
     if (attrs) {
       svg.attr(attrs)
     }
