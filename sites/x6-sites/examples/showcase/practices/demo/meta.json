@@ -6,7 +6,7 @@
         "zh": "流程图",
         "en": "Flow Chart"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Rr7oSJTcR10AAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*JSr-RbwCgmcAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "algo-flow.tsx",
@@ -15,6 +15,14 @@
         "en": "Flow for AI Model"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3A0IR44lo60AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "er.ts",
+      "title": {
+        "zh": "ER 图",
+        "en": "ER"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*1TPwTaOHnyYAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "validate-connection.ts",
@@ -62,7 +70,7 @@
         "zh": "UML 类图",
         "en": "UML Class"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*cbgtS5uNnOcAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OaCpR7t_mVoAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
