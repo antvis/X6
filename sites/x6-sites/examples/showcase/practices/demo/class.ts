@@ -39,18 +39,21 @@ Graph.registerNode(
       rect: {
         width: 160,
       },
+      body: {
+        stroke: '#fff',
+      },
       'name-rect': {
-        fill: '#FC8830',
+        fill: '#5f95ff',
         stroke: '#fff',
         strokeWidth: 0.5,
       },
       'attrs-rect': {
-        fill: '#fda059',
+        fill: '#eff4ff',
         stroke: '#fff',
         strokeWidth: 0.5,
       },
       'methods-rect': {
-        fill: '#fda059',
+        fill: '#eff4ff',
         stroke: '#fff',
         strokeWidth: 0.5,
       },
@@ -60,7 +63,7 @@ Graph.registerNode(
         refX: 0.5,
         textAnchor: 'middle',
         fontWeight: 'bold',
-        fill: 'black',
+        fill: '#fff',
         fontSize: 12,
       },
       'attrs-text': {
@@ -69,7 +72,7 @@ Graph.registerNode(
         refX: 5,
         textAnchor: 'left',
         fill: 'black',
-        fontSize: 12,
+        fontSize: 10,
       },
       'methods-text': {
         ref: 'methods-rect',
@@ -77,7 +80,7 @@ Graph.registerNode(
         refX: 5,
         textAnchor: 'left',
         fill: 'black',
-        fontSize: 12,
+        fontSize: 10,
       },
     },
     propHooks(meta) {
