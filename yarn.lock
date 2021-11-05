@@ -179,10 +179,10 @@
     probe.gl "^3.1.1"
     reflect-metadata "^0.1.13"
 
-"@antv/gatsby-theme-antv@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.nlark.com/@antv/gatsby-theme-antv/download/@antv/gatsby-theme-antv-1.1.6.tgz?cache=0&sync_timestamp=1624502856058&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40antv%2Fgatsby-theme-antv%2Fdownload%2F%40antv%2Fgatsby-theme-antv-1.1.6.tgz#1066d86b78c18adc4cf8a91d0aae88c82d6c40e5"
-  integrity sha1-EGbYa3jBitxM+KkdCq6IyC1sQOU=
+"@antv/gatsby-theme-antv@^1.1.13":
+  version "1.1.13"
+  resolved "https://registry.npmjs.org/@antv/gatsby-theme-antv/-/gatsby-theme-antv-1.1.13.tgz#1acf9055de52ff5ffc8e73bdd02c7920f0284ef8"
+  integrity sha512-SUfmwviW6wsL8dPBZzv8ULs/yyR4bx82XB8/x4fERFk0Ut2On4q54ekwG5OgBban8bsivsPNTTWkp7+x/cRhjQ==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@hot-loader/react-dom" "^16.9.0+4.12.11"
