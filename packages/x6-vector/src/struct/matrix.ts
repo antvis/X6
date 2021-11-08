@@ -87,10 +87,6 @@ export class Matrix implements Matrix.MatrixLike {
     this.f = source.f != null ? source.f : base.f
   }
 
-  clone() {
-    return new Matrix(this)
-  }
-
   equals(other: Matrix.Raw) {
     if (other instanceof Matrix && other === this) {
       return true
@@ -425,6 +421,21 @@ export class Matrix implements Matrix.MatrixLike {
     return this
   }
 
+  clone() {
+    return new Matrix(this)
+  }
+
+  toJSON(): Matrix.MatrixLike {
+    return {
+      a: this.a,
+      b: this.b,
+      c: this.c,
+      d: this.d,
+      e: this.e,
+      f: this.f,
+    }
+  }
+
   toArray(): Matrix.MatrixArray {
     return [this.a, this.b, this.c, this.d, this.e, this.f]
   }
@@ -434,14 +445,7 @@ export class Matrix implements Matrix.MatrixLike {
   }
 
   valueOf(): Matrix.MatrixLike {
-    return {
-      a: this.a,
-      b: this.b,
-      c: this.c,
-      d: this.d,
-      e: this.e,
-      f: this.f,
-    }
+    return this.toJSON()
   }
 }
 

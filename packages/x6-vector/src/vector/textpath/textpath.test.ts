@@ -1,11 +1,11 @@
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Text } from '../text/text'
 import { Path } from '../path/path'
 import { TextPath } from './textpath'
 import { TSpan } from '../tspan/tspan'
 
 describe('TextPath', () => {
-  let svg: Svg
+  let svg: SVG
   let text: Text
   let path: Path
 
@@ -14,7 +14,7 @@ describe('TextPath', () => {
     'M 100 200 C 200 100 300  0 400 100 C 500 200 600 300 700 200 C 800 100 900 100 900 100'
 
   beforeEach(() => {
-    svg = new Svg().addTo(document.body)
+    svg = new SVG().addTo(document.body)
     text = svg.text(txt)
     path = svg.path(data)
   })

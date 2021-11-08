@@ -2,32 +2,32 @@ import { Point } from './point'
 import { Matrix } from './matrix'
 
 export class Box implements Box.BoxLike {
-  x: number
-  y: number
-  width: number
-  height: number
+  public x: number
+  public y: number
+  public width: number
+  public height: number
 
-  get w() {
+  public get w() {
     return this.width
   }
 
-  get h() {
+  public get h() {
     return this.height
   }
 
-  get x2() {
+  public get x2() {
     return this.x + this.width
   }
 
-  get y2() {
+  public get y2() {
     return this.y + this.height
   }
 
-  get cx() {
+  public get cx() {
     return this.x + this.width / 2
   }
 
-  get cy() {
+  public get cy() {
     return this.y + this.height / 2
   }
 
@@ -66,10 +66,6 @@ export class Box implements Box.BoxLike {
     return this
   }
 
-  isNull() {
-    return Box.isNull(this)
-  }
-
   merge(box: Box.BoxLike) {
     const x = Math.min(this.x, box.x)
     const y = Math.min(this.y, box.y)
@@ -78,7 +74,15 @@ export class Box implements Box.BoxLike {
     return new Box(x, y, width, height)
   }
 
-  transform(matrix: Matrix | Matrix.Raw) {
+  isNull() {
+    return Box.isNull(this)
+  }
+
+  transform(matrix: Matrix.Raw) {
+    return this.clone().transformO(matrix)
+  }
+
+  transformO(matrix: Matrix.Raw) {
     const m = matrix instanceof Matrix ? matrix : new Matrix(matrix)
 
     let xMin = Number.POSITIVE_INFINITY
@@ -101,15 +105,28 @@ export class Box implements Box.BoxLike {
       yMax = Math.max(yMax, point.y)
     })
 
-    return new Box(xMin, yMin, xMax - xMin, yMax - yMin)
+    this.x = xMin
+    this.y = yMin
+    this.width = xMax - xMin
+    this.height = yMax - yMin
+
+    return this
   }
 
-  toString() {
-    return `${this.x} ${this.y} ${this.width} ${this.height}`
+  clone() {
+    return new Box(this)
+  }
+
+  toJSON(): Box.BoxLike {
+    return { x: this.x, y: this.y, width: this.width, height: this.height }
   }
 
   toArray(): Box.BoxArray {
     return [this.x, this.y, this.width, this.height]
+  }
+
+  toString() {
+    return `${this.x} ${this.y} ${this.width} ${this.height}`
   }
 
   valueOf() {
@@ -123,6 +140,8 @@ export namespace Box {
     height: number
   }
 
+  export type BoxArray = [number, number, number, number]
+
   export interface BoxObject {
     x?: number
     y?: number
@@ -131,8 +150,6 @@ export namespace Box {
     width?: number
     height?: number
   }
-
-  export type BoxArray = [number, number, number, number]
 
   export function isNull(box: BoxLike) {
     return !box.width && !box.height && !box.x && !box.y

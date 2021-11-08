@@ -1,4 +1,4 @@
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { ClipPath } from './clippath'
 
 describe('ClipPath', () => {
@@ -14,7 +14,7 @@ describe('ClipPath', () => {
 
   describe('remove()', () => {
     it('should unclip all targets', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const clip = svg.clip()
       const rect = svg.rect(100, 100).clipWith(clip)
       expect(clip.remove()).toBe(clip)
@@ -28,7 +28,7 @@ describe('ClipPath', () => {
     })
 
     it('should get all targets of this clipPath', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const clip = svg.clip()
       const rect = svg.rect(100, 100).clipWith(clip)
       expect(clip.targets()).toEqual([rect])

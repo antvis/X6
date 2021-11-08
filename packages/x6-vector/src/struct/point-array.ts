@@ -4,6 +4,26 @@ import { TypeArray } from './type-array'
 import { UnitNumber } from './unit-number'
 
 export class PointArray extends TypeArray<[number, number]> {
+  parse(raw: string | [number, number][] | number[] = [0, 0]) {
+    const array: number[] = Array.isArray(raw)
+      ? Array.prototype.concat.apply([], raw)
+      : raw
+          .trim()
+          .split(/[\s,]+/)
+          .map((str) => Number.parseFloat(str))
+
+    if (array.length % 2 !== 0) {
+      array.pop()
+    }
+
+    const points: [number, number][] = []
+    for (let i = 0, l = array.length; i < l; i += 2) {
+      points.push([array[i], array[i + 1]])
+    }
+
+    return points
+  }
+
   bbox() {
     let maxX = Number.NEGATIVE_INFINITY
     let maxY = Number.NEGATIVE_INFINITY
@@ -32,26 +52,6 @@ export class PointArray extends TypeArray<[number, number]> {
     }
 
     return this
-  }
-
-  parse(raw: string | [number, number][] | number[] = [0, 0]) {
-    const array: number[] = Array.isArray(raw)
-      ? Array.prototype.concat.apply([], raw)
-      : raw
-          .trim()
-          .split(/[\s,]+/)
-          .map((str) => Number.parseFloat(str))
-
-    if (array.length % 2 !== 0) {
-      array.pop()
-    }
-
-    const points: [number, number][] = []
-    for (let i = 0, l = array.length; i < l; i += 2) {
-      points.push([array[i], array[i + 1]])
-    }
-
-    return points
   }
 
   size(width: number | string, height: number | string) {

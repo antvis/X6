@@ -6,6 +6,14 @@ import { TypeArray } from './type-array'
 import { UnitNumber } from './unit-number'
 
 export class PathArray extends TypeArray<Path.Segment> {
+  parse(d: string | number[] | PathArray | Path.Segment[] = 'M0 0') {
+    return d instanceof PathArray
+      ? d.toArray()
+      : parse(
+          Array.isArray(d) ? Array.prototype.concat.apply([], d).toString() : d,
+        )
+  }
+
   bbox() {
     return withPathContext((path) => {
       path.setAttribute('d', this.toString())
@@ -94,14 +102,6 @@ export class PathArray extends TypeArray<Path.Segment> {
     }
 
     return this
-  }
-
-  parse(d: string | number[] | PathArray | Path.Segment[] = 'M0 0') {
-    return d instanceof PathArray
-      ? d.toArray()
-      : parse(
-          Array.isArray(d) ? Array.prototype.concat.apply([], d).toString() : d,
-        )
   }
 
   toString(): string {
