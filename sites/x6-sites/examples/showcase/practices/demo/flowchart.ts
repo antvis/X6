@@ -288,7 +288,7 @@ Graph.registerNode(
       },
       text: {
         fontSize: 12,
-        color: '#262626',
+        fill: '#262626',
       },
     },
     ports: { ...ports },
@@ -310,7 +310,7 @@ Graph.registerNode(
       },
       text: {
         fontSize: 12,
-        color: '#262626',
+        fill: '#262626',
       },
     },
     ports: {
@@ -342,7 +342,7 @@ Graph.registerNode(
       },
       text: {
         fontSize: 12,
-        color: '#262626',
+        fill: '#262626',
       },
     },
     ports: { ...ports },
