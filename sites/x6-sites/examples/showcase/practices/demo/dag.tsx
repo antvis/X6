@@ -314,6 +314,7 @@ fetch('../data/dag.json')
   .then((data) => {
     init(data)
     showNodeStatus(nodeStatusList)
+    graph.centerContent()
   })
 
 insertCss(`
