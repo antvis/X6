@@ -258,4 +258,5 @@ fetch('../data/class.json')
       }
     })
     graph.resetCells(cells)
+    graph.zoomToFit({ padding: 10, maxScale: 1 })
   })

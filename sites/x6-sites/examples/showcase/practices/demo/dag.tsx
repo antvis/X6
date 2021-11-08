@@ -201,8 +201,6 @@ const nodeStatusList = [
 
 const graph: Graph = new Graph({
   container: document.getElementById('container')!,
-  width: 800,
-  height: 600,
   panning: {
     enabled: true,
     eventTypes: ['leftMouseDown', 'mouseWheel'],
