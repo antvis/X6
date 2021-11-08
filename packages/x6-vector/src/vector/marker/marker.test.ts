@@ -1,6 +1,6 @@
 import { G } from '../g/g'
 import { Path } from '../path/path'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Marker } from './marker'
 
 describe('Marker', () => {
@@ -64,7 +64,7 @@ describe('Marker', () => {
     })
 
     it('should create an instance from container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const g = svg.group()
       const marker = g.marker()
       expect(marker).toBeInstanceOf(Marker)
@@ -78,11 +78,11 @@ describe('Marker', () => {
 
   describe('Line extension', () => {
     let path: Path
-    let svg: Svg
+    let svg: SVG
 
     beforeEach(() => {
       // because we use `reference` here we need to put it into the live dom
-      svg = new Svg().addTo(document.body)
+      svg = new SVG().addTo(document.body)
       path = svg.path(
         'M 100 200 C 200 100 300  0 400 100 C 500 200 600 300 700 200 C 800 100 900 100 900 100',
       )

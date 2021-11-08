@@ -2,10 +2,10 @@ import { Circle } from '../circle/circle'
 import { G } from '../g/g'
 import { Line } from '../line/line'
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 
 describe('Container', () => {
-  let svg: Svg
+  let svg: SVG
   let rect1: Rect
   let group1: G
   let rect2: Rect
@@ -20,7 +20,7 @@ describe('Container', () => {
   let rect3: Rect
 
   beforeEach(() => {
-    svg = new Svg().appendTo(document.body)
+    svg = new SVG().appendTo(document.body)
     rect1 = svg.rect(100, 100).id('rect1')
     group1 = svg.group().id('group1')
     rect2 = group1.rect(100, 100).id('rect2')

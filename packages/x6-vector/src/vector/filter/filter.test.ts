@@ -1,5 +1,5 @@
 import { G } from '../g/g'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Filter } from './filter'
 
 describe('Filter', () => {
@@ -14,12 +14,12 @@ describe('Filter', () => {
     })
 
     it('should create an instance from container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       expect(svg.filter()).toBeInstanceOf(Filter)
     })
 
     it('should create an instance from container with given attributes', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const filter = svg.filter({ id: 'foo' })
       expect(filter.id()).toEqual('foo')
     })
@@ -60,7 +60,7 @@ describe('Filter', () => {
 
   describe('targets()', () => {
     it('should get all targets of this filter', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const filter = svg.filter()
       const rect = svg.rect(100, 100).filterWith(filter)
       expect(filter.targets()).toEqual([rect])
@@ -76,7 +76,7 @@ describe('Filter', () => {
 
   describe('remove()', () => {
     it('should unfilter all targets', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const filter = svg.filter()
       const rect = svg.rect(100, 100).filterWith(filter)
       expect(filter.targets()).toEqual([rect])

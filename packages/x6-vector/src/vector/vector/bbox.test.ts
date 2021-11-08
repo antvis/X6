@@ -2,12 +2,12 @@ import { Global } from '../../global'
 import { Box } from '../../struct/box'
 import { Matrix } from '../../struct/matrix'
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 
 describe('Vector', () => {
   describe('bbox()', () => {
     it('should returns the bounding box of the element', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const rect = svg.rect().size(100, 200).move(20, 30)
 
       expect(rect.bbox()).toBeInstanceOf(Box)
@@ -38,7 +38,7 @@ describe('Vector', () => {
       document.body.style.margin = '0px'
       document.body.style.padding = '0px'
 
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const rect = new Rect()
         .size(100, 200)
         .move(20, 30)
@@ -57,7 +57,7 @@ describe('Vector', () => {
     })
 
     it('should return the rbox box of the element in the coordinate system of the passed element', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const group = svg.group().translate(1, 1)
       const rect = new Rect()
         .size(100, 200)
@@ -80,7 +80,7 @@ describe('Vector', () => {
 
   describe('containsPoint()', () => {
     it('checks if a point is in the elements borders', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const rect = svg.rect(100, 100)
 
       expect(rect.containsPoint(50, 50)).toBe(true)

@@ -1,5 +1,5 @@
 import { G } from '../g/g'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Polygon } from './polygon'
 
 describe('Polygon', () => {
@@ -30,7 +30,7 @@ describe('Polygon', () => {
 
   describe('x()', () => {
     it(`should set the x value of the polygon and returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.x(50)).toBe(line)
       expect(line.bbox().x).toBe(50)
@@ -38,7 +38,7 @@ describe('Polygon', () => {
     })
 
     it(`should get the x value of the polygon`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.x(50).x()).toBe(50)
       svg.remove()
@@ -47,7 +47,7 @@ describe('Polygon', () => {
 
   describe('y()', () => {
     it(`should set the y value of the polygonand returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.y(50)).toBe(line)
       expect(line.bbox().y).toBe(50)
@@ -55,7 +55,7 @@ describe('Polygon', () => {
     })
 
     it(`should get the y value of the polygon`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.y(50).y()).toBe(50)
       svg.remove()
@@ -64,7 +64,7 @@ describe('Polygon', () => {
 
   describe('width()', () => {
     it(`should set the width of the polygonand returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.width(50)).toBe(line)
       expect(line.bbox().width).toBe(50)
@@ -72,7 +72,7 @@ describe('Polygon', () => {
     })
 
     it(`should get the width of the polygon`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.width(50).width()).toBe(50)
       svg.remove()
@@ -81,7 +81,7 @@ describe('Polygon', () => {
 
   describe('height()', () => {
     it(`should set the height of the polygonand returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.height(50)).toBe(line)
       expect(line.bbox().height).toBe(50)
@@ -89,7 +89,7 @@ describe('Polygon', () => {
     })
 
     it(`should get the height of the polygon`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.polygon('1, 2, 3, 4')
       expect(line.height(50).height()).toBe(50)
       svg.remove()

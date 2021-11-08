@@ -1,5 +1,5 @@
 import { G } from '../g/g'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { defaultAttributes } from '../vector/overrides'
 import { LinearGradient } from './linear'
 
@@ -16,19 +16,19 @@ describe('LinearGradient', () => {
     })
 
     it('should create an instance from container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       expect(svg.linearGradient()).toBeInstanceOf(LinearGradient)
       expect(svg.gradient('linear')).toBeInstanceOf(LinearGradient)
     })
 
     it('should create an instance from container with given attributes', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const gradient = svg.linearGradient({ id: 'foo' })
       expect(gradient.id()).toEqual('foo')
     })
 
     it('should create an instance from container with given update function and attributes', () => {
-      const svg = new Svg()
+      const svg = new SVG()
 
       const gradient1 = svg.linearGradient((instance) => instance.stop(0.1), {
         id: 'foo',
@@ -88,7 +88,7 @@ describe('LinearGradient', () => {
 
   describe('targets()', () => {
     it('should get all targets of this pattern', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const gradient = svg.linearGradient()
       const rect = svg.rect(100, 100).fill(gradient)
       expect(gradient.targets()).toEqual([rect])
@@ -98,7 +98,7 @@ describe('LinearGradient', () => {
 
   describe('remove()', () => {
     it('should ungradient all targets', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const gradient = svg.linearGradient()
       const rect = svg.rect(100, 100).fill(gradient)
       expect(gradient.targets()).toEqual([rect])
