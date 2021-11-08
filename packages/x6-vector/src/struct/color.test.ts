@@ -307,6 +307,42 @@ describe('Color', () => {
     })
   })
 
+  describe('clone()', () => {
+    it('should clone a color', () => {
+      const color1 = new Color()
+      const clone1 = color1.clone()
+      expect(clone1).not.toBe(color1)
+      expect(clone1.r).toBe(255)
+      expect(clone1.g).toBe(255)
+      expect(clone1.b).toBe(255)
+      expect(clone1.a).toBe(1)
+
+      const color2 = new Color(4, 3, 2, 1)
+      const clone2 = color2.clone()
+      expect(clone2).not.toBe(color2)
+      expect(clone2.r).toBe(4)
+      expect(clone2.g).toBe(3)
+      expect(clone2.b).toBe(2)
+      expect(clone2.a).toBe(1)
+    })
+  })
+
+  describe('toJSON()', () => {
+    it('should create an object representation of Color', () => {
+      const obj1 = new Color().toJSON()
+      expect(obj1.r).toBe(255)
+      expect(obj1.g).toBe(255)
+      expect(obj1.b).toBe(255)
+      expect(obj1.a).toBe(1)
+
+      const obj2 = new Color(4, 3, 2, 1).toJSON()
+      expect(obj2.r).toBe(4)
+      expect(obj2.g).toBe(3)
+      expect(obj2.b).toBe(2)
+      expect(obj2.a).toBe(1)
+    })
+  })
+
   describe('toArray()', () => {
     it('should convert color to rgba array', () => {
       expect(new Color().toArray()).toEqual([255, 255, 255, 1])

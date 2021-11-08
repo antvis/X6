@@ -107,6 +107,14 @@ export class Color implements Color.RGBALike {
     return Color.makeGrey(Math.round((this.r + this.g + this.b) / 3), this.a)
   }
 
+  clone() {
+    return new Color(this)
+  }
+
+  toJSON(): Color.RGBALike {
+    return { r: this.r, g: this.g, b: this.b, a: this.a }
+  }
+
   toArray(): Color.RGBA {
     return [this.r, this.g, this.b, this.a]
   }

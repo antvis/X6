@@ -1,6 +1,6 @@
 import { UnitNumber } from './unit-number'
 
-describe('SVGNumber', () => {
+describe('UnitNumber', () => {
   let number: UnitNumber
 
   beforeEach(() => {
@@ -245,10 +245,26 @@ describe('SVGNumber', () => {
     })
   })
 
-  describe('convert()', () => {
+  describe('unitize()', () => {
     it('should change the unit of the number', () => {
-      const number = new UnitNumber('12px').convert('%')
+      const number = new UnitNumber('12px').unitize('%')
       expect(number.toString()).toBe('1200%')
+    })
+  })
+
+  describe('clone()', () => {
+    it('should clone an UnitNumber', () => {
+      const num1 = new UnitNumber()
+      const clone1 = num1.clone()
+      expect(clone1).not.toBe(num1)
+      expect(clone1.unit).toBe('')
+      expect(clone1.value).toBe(0)
+
+      const num2 = new UnitNumber('1px')
+      const clone2 = num2.clone()
+      expect(clone2).not.toBe(num2)
+      expect(clone2.unit).toBe('px')
+      expect(clone2.value).toBe(1)
     })
   })
 
@@ -353,8 +369,8 @@ describe('SVGNumber', () => {
       })
 
       it('should plus with a number and a string take unit into account', () => {
-        expect(UnitNumber.plus(1, '2')).toBe('3')
-        expect(UnitNumber.plus('1', 2)).toBe('3')
+        expect(UnitNumber.plus(1, '2')).toBe(3)
+        expect(UnitNumber.plus('1', 2)).toBe(3)
 
         expect(UnitNumber.plus(1, '2%')).toBe('102%')
         expect(UnitNumber.plus('1%', 2)).toBe('200.999999%')
@@ -367,8 +383,8 @@ describe('SVGNumber', () => {
       })
 
       it('should plus with two strings take unit into account', () => {
-        expect(UnitNumber.plus('1', '2')).toBe('3')
-        expect(UnitNumber.plus('1', '2')).toBe('3')
+        expect(UnitNumber.plus('1', '2')).toBe(3)
+        expect(UnitNumber.plus('1', 2)).toBe(3)
 
         expect(UnitNumber.plus('1', '2%')).toBe('102%')
         expect(UnitNumber.plus('1%', '2')).toBe('200.999999%')
@@ -390,8 +406,8 @@ describe('SVGNumber', () => {
       })
 
       it('should minus with a number and a string take unit into account', () => {
-        expect(UnitNumber.minus(1, '2')).toBe('-1')
-        expect(UnitNumber.minus('1', 2)).toBe('-1')
+        expect(UnitNumber.minus(1, '2')).toBe(-1)
+        expect(UnitNumber.minus('1', 2)).toBe(-1)
 
         expect(UnitNumber.minus(1, '2%')).toBe('98%')
         expect(UnitNumber.minus('1%', 2)).toBe('-199%')
@@ -404,8 +420,8 @@ describe('SVGNumber', () => {
       })
 
       it('should minus with two strings take unit into account', () => {
-        expect(UnitNumber.minus('1', '2')).toBe('-1')
-        expect(UnitNumber.minus('1', '2')).toBe('-1')
+        expect(UnitNumber.minus('1', '2')).toBe(-1)
+        expect(UnitNumber.minus('1', 2)).toBe(-1)
 
         expect(UnitNumber.minus('1', '2%')).toBe('98%')
         expect(UnitNumber.minus('1%', '2')).toBe('-199%')
@@ -427,8 +443,8 @@ describe('SVGNumber', () => {
       })
 
       it('should times with a number and a string take unit into account', () => {
-        expect(UnitNumber.times(1, '2')).toBe('2')
-        expect(UnitNumber.times('1', 2)).toBe('2')
+        expect(UnitNumber.times(1, '2')).toBe(2)
+        expect(UnitNumber.times('1', 2)).toBe(2)
 
         expect(UnitNumber.times(1, '2%')).toBe('2%')
         expect(UnitNumber.times('1%', 2)).toBe('2%')
@@ -441,8 +457,8 @@ describe('SVGNumber', () => {
       })
 
       it('should times with two strings take unit into account', () => {
-        expect(UnitNumber.times('1', '2')).toBe('2')
-        expect(UnitNumber.times('1', '2')).toBe('2')
+        expect(UnitNumber.times('1', '2')).toBe(2)
+        expect(UnitNumber.times('1', 2)).toBe(2)
 
         expect(UnitNumber.times('1', '2%')).toBe('2%')
         expect(UnitNumber.times('1%', '2')).toBe('2%')
@@ -464,8 +480,8 @@ describe('SVGNumber', () => {
       })
 
       it('should divide with a number and a string take unit into account', () => {
-        expect(UnitNumber.divide(1, '2')).toBe('0.5')
-        expect(UnitNumber.divide('1', 2)).toBe('0.5')
+        expect(UnitNumber.divide(1, '2')).toBe(0.5)
+        expect(UnitNumber.divide('1', 2)).toBe(0.5)
 
         expect(UnitNumber.divide(1, '2%')).toBe('5000%')
         expect(UnitNumber.divide('1%', 2)).toBe('0.5%')
@@ -478,8 +494,8 @@ describe('SVGNumber', () => {
       })
 
       it('should divide with two strings take unit into account', () => {
-        expect(UnitNumber.divide('1', '2')).toBe('0.5')
-        expect(UnitNumber.divide('1', '2')).toBe('0.5')
+        expect(UnitNumber.divide('1', '2')).toBe(0.5)
+        expect(UnitNumber.divide('1', 2)).toBe(0.5)
 
         expect(UnitNumber.divide('1', '2%')).toBe('5000%')
         expect(UnitNumber.divide('1%', '2')).toBe('0.5%')

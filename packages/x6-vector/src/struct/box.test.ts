@@ -143,6 +143,22 @@ describe('Box', () => {
     })
   })
 
+  describe('toJSON()', () => {
+    it('should create an object representation of Box', () => {
+      const obj1 = new Box().toJSON()
+      expect(obj1.x).toBe(0)
+      expect(obj1.y).toBe(0)
+      expect(obj1.width).toBe(0)
+      expect(obj1.height).toBe(0)
+
+      const obj2 = new Box(1, 2, 3, 4).toJSON()
+      expect(obj2.x).toBe(1)
+      expect(obj2.y).toBe(2)
+      expect(obj2.width).toBe(3)
+      expect(obj2.height).toBe(4)
+    })
+  })
+
   describe('toArray()', () => {
     it('should return an array representation of the box', () => {
       expect(new Box(1, 2, 3, 4).toArray()).toEqual([1, 2, 3, 4])

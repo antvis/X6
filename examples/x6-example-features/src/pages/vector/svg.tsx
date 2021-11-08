@@ -7,8 +7,15 @@ export default class Example extends React.Component {
 
   componentDidMount() {
     const svg = new SVG()
-    svg.rect(100, 100)
+    const rect = svg.rect(100, 100).node
     svg.appendTo(this.container)
+    rect.animate(
+      [{ fill: '#000000' }, { fill: '#0000FF' }, { fill: '#00FFFF' }],
+      {
+        duration: 3000,
+        iterations: Infinity,
+      },
+    )
   }
 
   refContainer = (container: HTMLDivElement) => {

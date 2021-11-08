@@ -70,6 +70,13 @@ describe('Point', () => {
     })
   })
 
+  describe('valueOf()', () => {
+    it('should create an array representation of Point', () => {
+      const p = new Point(1, 2)
+      expect(p.valueOf()).toEqual([1, 2])
+    })
+  })
+
   describe('toJSON()', () => {
     it('should create an object representation of Point', () => {
       const obj1 = new Point().toJSON()

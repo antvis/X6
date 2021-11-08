@@ -12,7 +12,7 @@ export class Pattern extends Vessel<SVGPatternElement> {
     return new Box()
   }
 
-  targets<TVector extends Vector>() {
+  targets<TVector extends Vector>(): TVector[] {
     return this.findTargets<TVector>('fill')
   }
 
