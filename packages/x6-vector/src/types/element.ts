@@ -11,7 +11,7 @@ import { RadialGradient } from '../vector/gradient/radial'
 import { Marker } from '../vector/marker/marker'
 import { Mask } from '../vector/mask/mask'
 import { Pattern } from '../vector/pattern/pattern'
-import { Svg } from '../vector/svg/svg'
+import { SVG } from '../vector/svg/svg'
 import { Symbol } from '../vector/symbol/symbol'
 import { Dom } from '../dom/dom'
 import { Vector } from '../vector/vector/vector'
@@ -44,7 +44,7 @@ export type ElementMap<T> =
   T extends SVGMarkerElement         ? Marker :
   T extends SVGMaskElement           ? Mask :
   T extends SVGPatternElement        ? Pattern :
-  T extends SVGSVGElement            ? Svg :
+  T extends SVGSVGElement            ? SVG :
   T extends SVGSymbolElement         ? Symbol : // eslint-disable-line
 
   T extends SVGCircleElement         ? Circle :

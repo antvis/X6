@@ -1,15 +1,15 @@
 import { Box } from '../../struct/box'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { TSpan } from '../tspan/tspan'
 import { Text } from './text'
 
 describe('TextBase', () => {
-  let svg: Svg
+  let svg: SVG
   let text: Text
   let tspan: TSpan
 
   beforeEach(() => {
-    svg = new Svg().appendTo(document.body)
+    svg = new SVG().appendTo(document.body)
     text = svg.text('Hello World\nIn two lines')
     tspan = text.get<TSpan>(0)!
   })

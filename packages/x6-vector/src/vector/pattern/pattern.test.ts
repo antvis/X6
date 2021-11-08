@@ -1,5 +1,5 @@
 import { G } from '../g/g'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Pattern } from './pattern'
 
 describe('Pattern', () => {
@@ -60,7 +60,7 @@ describe('Pattern', () => {
     })
 
     it('should create an instance from container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const g = svg.group()
       const pattern = g.pattern()
       expect(pattern).toBeInstanceOf(Pattern)
@@ -95,7 +95,7 @@ describe('Pattern', () => {
 
   describe('targets()', () => {
     it('should get all targets of this pattern', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const pattern = svg.pattern()
       const rect = svg.rect(100, 100).fill(pattern)
       expect(pattern.targets()).toEqual([rect])

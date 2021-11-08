@@ -9,7 +9,7 @@ export class Mask extends Vessel<SVGMaskElement> {
     return super.remove()
   }
 
-  targets<TVector extends Vector>() {
+  targets<TVector extends Vector>(): TVector[] {
     return this.findTargets<TVector>('mask')
   }
 }
