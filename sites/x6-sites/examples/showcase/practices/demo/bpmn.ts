@@ -39,7 +39,7 @@ Graph.registerNode(
         ry: 6,
         stroke: '#5F95FF',
         fill: '#EFF4FF',
-        strokeWidth: 2,
+        strokeWidth: 1,
       },
       img: {
         x: 6,
