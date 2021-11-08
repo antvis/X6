@@ -25,12 +25,20 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*1TPwTaOHnyYAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "mindmap.ts",
+      "title": {
+        "zh": "思维导图",
+        "en": "MindMap"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*GsEGSaBkc84AAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "bpmn.ts",
       "title": {
         "zh": "BPMN",
         "en": "BPMN"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*UioxSrG1GJQAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aPSySa8oz4sAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "validate-connection.ts",
