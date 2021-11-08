@@ -94,7 +94,6 @@ Graph.registerNode(
 
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
   connecting: {
     router: {
       name: 'er',
@@ -128,4 +127,5 @@ fetch('../data/er.json')
       }
     })
     graph.resetCells(cells)
+    graph.zoomToFit({ padding: 10, maxScale: 1 })
   })
