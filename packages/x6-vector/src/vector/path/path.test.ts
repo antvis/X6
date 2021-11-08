@@ -1,5 +1,5 @@
 import { PathArray } from '../../struct/path-array'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Path } from './path'
 
 describe('Path', () => {
@@ -42,7 +42,7 @@ describe('Path', () => {
 
   describe('x()', () => {
     it('should get the x position of the path', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M10 10 50, 50')
       expect(path.x()).toBe(10)
@@ -51,7 +51,7 @@ describe('Path', () => {
     })
 
     it('should set the x position of the path and returns itself', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       expect(path.x(100)).toBe(path)
@@ -63,7 +63,7 @@ describe('Path', () => {
 
   describe('y()', () => {
     it('gets the y position of the path', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M10 10 50, 50')
       expect(path.y()).toBe(10)
@@ -72,7 +72,7 @@ describe('Path', () => {
     })
 
     it('sets the y position of the path and returns itself', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       expect(path.y(100)).toBe(path)
@@ -84,7 +84,7 @@ describe('Path', () => {
 
   describe('width()', () => {
     it('should get the width of the path', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       expect(path.width()).toBe(50)
@@ -93,7 +93,7 @@ describe('Path', () => {
     })
 
     it('should set the width of the path and returns itself', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       expect(path.width(100)).toBe(path)
@@ -105,7 +105,7 @@ describe('Path', () => {
 
   describe('height()', () => {
     it('should get the height of the path', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       expect(path.height()).toBe(50)
@@ -114,7 +114,7 @@ describe('Path', () => {
     })
 
     it('should set the height of the path and returns itself', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       expect(path.height(100)).toBe(path)
@@ -126,7 +126,7 @@ describe('Path', () => {
 
   describe('size()', () => {
     it('should set the size of the path', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       path.size(100, 100)
@@ -136,7 +136,7 @@ describe('Path', () => {
     })
 
     it('should change height proportionally', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       path.size(100, null)
@@ -146,7 +146,7 @@ describe('Path', () => {
     })
 
     it('should change width proportionally', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       path.size(null, 100)
@@ -158,7 +158,7 @@ describe('Path', () => {
 
   describe('move()', () => {
     it('should move the path along x and y axis', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
 
       const path = svg.path('M0 0 50, 50')
       path.move(50, 50)

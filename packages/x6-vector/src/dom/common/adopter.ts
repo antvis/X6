@@ -3,7 +3,7 @@ import { Global } from '../../global'
 import { Registry } from './registry'
 import type { Base } from './base'
 import type { Dom } from '../dom'
-import type { Svg } from '../../vector'
+import type { SVG } from '../../vector'
 import type { ElementMap } from '../../types'
 import type { HTMLAttributesTagNameMap } from '../types'
 import type { SVGAttributesTagNameMap } from '../../vector/types'
@@ -47,8 +47,8 @@ export namespace Adopter {
 
   export type Target<T extends Dom = Dom> = T | Node | string
 
-  export function makeInstance(): Svg
-  export function makeInstance(node: undefined | null): Svg
+  export function makeInstance(): SVG
+  export function makeInstance(node: undefined | null): SVG
   export function makeInstance<T extends Dom>(instance: T): T
   export function makeInstance<T extends Dom>(target: Target<T>): T
   export function makeInstance<T extends Node>(node: T): ElementMap<T>

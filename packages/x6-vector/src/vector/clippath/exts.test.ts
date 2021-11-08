@@ -1,11 +1,11 @@
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { ClipPath } from './clippath'
 
 describe('ClipPath', () => {
   describe('clipper()', () => {
     it('should return the instance of ClipPath the current element is clipped with', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const clip = svg.clip()
       const rect = svg.rect(100, 100).clipWith(clip)
       expect(rect.clipper()).toEqual(clip)
@@ -25,7 +25,7 @@ describe('ClipPath', () => {
     })
 
     it('should create a clipPath and appends the passed element to it to clip current element', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const circle = svg.circle(40)
       const rect = svg.rect(100, 100).clipWith(circle)
       const clipper = circle.parent()!

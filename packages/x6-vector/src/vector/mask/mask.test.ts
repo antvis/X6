@@ -1,4 +1,4 @@
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Mask } from './mask'
 
 describe('Mask', () => {
@@ -12,7 +12,7 @@ describe('Mask', () => {
     })
 
     it('should create a maskPath in the container', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const mask = svg.mask()
       expect(mask).toBeInstanceOf(Mask)
       expect(svg.defs().children()).toEqual([mask])
@@ -22,7 +22,7 @@ describe('Mask', () => {
 
   describe('remove()', () => {
     it('should unmask all targets', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const mask = svg.mask()
       const rect = svg.rect(100, 100).maskWith(mask)
       expect(mask.remove()).toBe(mask)
@@ -33,7 +33,7 @@ describe('Mask', () => {
 
   describe('targets()', () => {
     it('should get all targets of this maskPath', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const mask = svg.mask()
       const rect = svg.rect(100, 100).maskWith(mask)
       expect(mask.targets()).toEqual([rect])

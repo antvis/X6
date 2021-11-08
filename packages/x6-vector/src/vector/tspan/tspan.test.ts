@@ -1,4 +1,4 @@
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Text } from '../text/text'
 import { TSpan } from './tspan'
 import { getFontSize } from '../text/util'
@@ -101,7 +101,7 @@ describe('TSpan', () => {
     })
 
     it('should set dy corresponding to line and leading', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const text = new Text().leading(2).build(true).addTo(svg)
       text.tspan('First Line').newLine()
       text.tspan('Second Line').newLine()

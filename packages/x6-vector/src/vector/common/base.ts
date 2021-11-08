@@ -1,13 +1,13 @@
 import { namespaces } from '../../util/dom'
 import { Registry } from '../../dom/common/registry'
 import { Dom } from '../../dom/dom'
-import type { Svg } from '../svg/svg'
+import type { SVG } from '../svg/svg'
 
 export class Base<
   TSVGElement extends SVGElement = SVGElement,
 > extends Dom<TSVGElement> {
-  root(): Svg | null {
-    const parent = this.parent<Svg>(Registry.getClass('Svg'))
+  root(): SVG | null {
+    const parent = this.parent<SVG>(Registry.getClass('Svg'))
     return parent ? parent.root() : null
   }
 
