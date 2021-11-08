@@ -4,19 +4,19 @@ import { Matrix } from '../../struct/matrix'
 import { Point } from '../../struct/point'
 import { G } from '../g/g'
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 
 describe('Vector', () => {
   describe('toParent()', () => {
     it('should return itself', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const g = svg.group()
       const rect = g.rect(100, 100)
       expect(rect.toParent(svg)).toBe(rect)
     })
 
     it('should do nothing if the parent is the the current element', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const g = svg.group()
       const parent = g.parent()
       const index = g.index()
@@ -27,7 +27,7 @@ describe('Vector', () => {
     })
 
     it('should move the element to a different container without changing its visual representation [1]', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const g = svg.group().matrix(1, 0, 1, 1, 0, 1)
       const rect = g.rect(100, 100)
       rect.toParent(svg)
@@ -37,7 +37,7 @@ describe('Vector', () => {
     })
 
     it('should move the element to a different container without changing its visual representation [2]', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const g = svg.group().translate(10, 20)
       const rect = g.rect(100, 100)
       const g2 = svg.group().rotate(10)
@@ -55,7 +55,7 @@ describe('Vector', () => {
     })
 
     it('should insert the element at the specified position', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const g = svg.group()
       const rect = g.rect(100, 100)
       svg.rect(100, 100)
@@ -66,7 +66,7 @@ describe('Vector', () => {
 
   describe('toRoot()', () => {
     it('should call `toParent()` with root node', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const g = svg.group().matrix(1, 0, 1, 1, 0, 1)
       const rect = g.rect(100, 100)
       const spy = sinon.spy(rect, 'toParent')
@@ -116,7 +116,7 @@ describe('Vector', () => {
         Global.window.SVGGraphicsElement.prototype,
         'getScreenCTM',
       )
-      const svg = new Svg().nested()
+      const svg = new SVG().nested()
       svg.screenCTM()
       expect(spy.callCount).toEqual(1)
     })

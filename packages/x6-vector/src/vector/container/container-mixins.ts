@@ -2,6 +2,9 @@ import { applyMixins } from '../../util/mixin'
 
 // containers
 import { ContainerExtension as AExtension } from '../a/exts'
+import { ContainerExtension as AnimateExtension } from '../animate/exts'
+import { ContainerExtension as AnimateMotionExtension } from '../animate-motion/exts'
+import { ContainerExtension as AnimateTransformExtension } from '../animate-transform/exts'
 import { ContainerExtension as GExtension } from '../g/exts'
 import { ContainerExtension as SvgExtension } from '../svg/exts'
 import { ContainerExtension as MaskExtension } from '../mask/exts'
@@ -34,6 +37,11 @@ declare module './container' {
   interface Container<
     TSVGElement extends SVGElement = SVGElement,
   > extends AExtension<TSVGElement>,
+      // animation
+      AnimateExtension<TSVGElement>,
+      AnimateMotionExtension<TSVGElement>,
+      AnimateTransformExtension<TSVGElement>,
+      //
       GExtension<TSVGElement>,
       SvgExtension<TSVGElement>,
       MaskExtension<TSVGElement>,
@@ -64,6 +72,9 @@ declare module './container' {
 applyMixins(
   Container,
   AExtension,
+  AnimateExtension,
+  AnimateMotionExtension,
+  AnimateTransformExtension,
   GExtension,
   SvgExtension,
   MaskExtension,

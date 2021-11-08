@@ -1,5 +1,5 @@
 import { Pattern } from '../pattern/pattern'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Image } from './image'
 
 describe('Image', () => {
@@ -39,7 +39,7 @@ describe('Image', () => {
     })
 
     it('should create an instance in the container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const image = svg.image()
       expect(image).toBeInstanceOf(Image)
     })

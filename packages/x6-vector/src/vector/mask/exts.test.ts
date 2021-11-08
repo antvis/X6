@@ -1,11 +1,11 @@
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Mask } from './mask'
 
 describe('Mask Extension', () => {
   describe('masker()', () => {
     it('should return the instance of Mask the current element is maskped with', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const mask = svg.mask()
       const rect = svg.rect(100, 100).maskWith(mask)
       expect(rect.masker()).toEqual(mask)
@@ -25,7 +25,7 @@ describe('Mask Extension', () => {
     })
 
     it('should create a maskPath and appends the passed element to it to mask current element', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const circle = svg.circle(40)
       const rect = svg.rect(100, 100).maskWith(circle)
       expect(circle.parent()).toBeInstanceOf(Mask)

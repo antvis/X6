@@ -1,6 +1,7 @@
 import './vector/mixins'
 
 import './container/container-mixins'
+import './common/shape-mixins'
 import './fragment/mixins'
 import './defs/mixins'
 import './line/mixins'
@@ -13,6 +14,9 @@ export * from './fragment/fragment'
 export * from './vector/vector'
 
 export * from './a/a'
+export * from './animate/animate'
+export * from './animate-motion/animate-motion'
+export * from './animate-transform/animate-transform'
 export * from './circle/circle'
 export * from './clippath/clippath'
 export * from './defs/defs'

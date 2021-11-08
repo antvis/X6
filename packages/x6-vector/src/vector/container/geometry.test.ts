@@ -1,15 +1,15 @@
 import { G } from '../g/g'
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 
 describe('ContainerGeometry', () => {
-  let svg: Svg
+  let svg: SVG
   let g: G
 
   beforeEach(() => {
     document.body.style.margin = '0px'
     document.body.style.padding = '0px'
-    svg = new Svg().appendTo(document.body)
+    svg = new SVG().appendTo(document.body)
     g = svg.group()
   })
 

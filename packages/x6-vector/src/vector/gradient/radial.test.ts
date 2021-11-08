@@ -1,5 +1,5 @@
 import { G } from '../g/g'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { RadialGradient } from './radial'
 
 describe('RadialGradient', () => {
@@ -15,19 +15,19 @@ describe('RadialGradient', () => {
     })
 
     it('should create an instance from container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       expect(svg.radialGradient()).toBeInstanceOf(RadialGradient)
       expect(svg.gradient('radial')).toBeInstanceOf(RadialGradient)
     })
 
     it('should create an instance from container with given attributes', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const gradient = svg.radialGradient({ id: 'foo' })
       expect(gradient.id()).toEqual('foo')
     })
 
     it('should create an instance from container with given update function and attributes', () => {
-      const svg = new Svg()
+      const svg = new SVG()
 
       const gradient1 = svg.radialGradient((instance) => instance.stop(0.1), {
         id: 'foo',
@@ -87,7 +87,7 @@ describe('RadialGradient', () => {
 
   describe('targets()', () => {
     it('should get all targets of this pattern', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const gradient = svg.radialGradient()
       const rect = svg.rect(100, 100).fill(gradient)
       expect(gradient.targets()).toEqual([rect])

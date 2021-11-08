@@ -1,5 +1,5 @@
 import { createHTMLNode, createSVGNode } from '../../util/dom'
-import { G, Svg } from '../../vector'
+import { G, SVG } from '../../vector'
 import { Dom } from '../dom'
 import { Adopter } from './adopter'
 
@@ -46,9 +46,9 @@ describe('Adopter', () => {
 
   describe('makeInstance()', () => {
     it('should create a svg instance with nil arg', () => {
-      expect(Adopter.makeInstance()).toBeInstanceOf(Svg)
-      expect(Adopter.makeInstance(null)).toBeInstanceOf(Svg)
-      expect(Adopter.makeInstance(undefined)).toBeInstanceOf(Svg)
+      expect(Adopter.makeInstance()).toBeInstanceOf(SVG)
+      expect(Adopter.makeInstance(null)).toBeInstanceOf(SVG)
+      expect(Adopter.makeInstance(undefined)).toBeInstanceOf(SVG)
     })
   })
 })

@@ -1,8 +1,8 @@
 import { Matrix } from './matrix'
 
 export class Point implements Point.PointLike {
-  x: number
-  y: number
+  public x: number
+  public y: number
 
   constructor()
   constructor(p: Point.PointLike)
@@ -30,6 +30,14 @@ export class Point implements Point.PointLike {
 
   toArray(): Point.PointArray {
     return [this.x, this.y]
+  }
+
+  toString() {
+    return `${this.x} ${this.y}`
+  }
+
+  valueOf() {
+    return this.toArray()
   }
 
   transform(matrix: Matrix.Raw) {

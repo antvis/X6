@@ -1,5 +1,5 @@
 import { Rect } from '../rect/rect'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Use } from './use'
 
 describe('Use', () => {
@@ -34,7 +34,7 @@ describe('Use', () => {
     })
 
     it('should create an use element linked to the given element', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const rect = svg.rect(100, 100)
       const use = svg.use(rect)
 

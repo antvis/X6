@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 import { createSVGNode, namespaces } from '../util/dom'
-import { Circle, G, Rect, Svg, TSpan } from '../vector'
+import { Circle, G, Rect, SVG, TSpan } from '../vector'
 import { Dom } from './dom'
 import { Fragment } from '../vector/fragment/fragment'
 
@@ -246,7 +246,7 @@ describe('Dom', () => {
 
   describe('contains()', () => {
     it('should return `true` if the element is ancestor of the given element', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const group1 = svg.group().addClass('test')
       const group2 = group1.group()
       const rect = group2.rect()
@@ -262,7 +262,7 @@ describe('Dom', () => {
     })
 
     it('should return `false` if the element is ancestor of the given element', () => {
-      expect(new Svg().contains(new G())).toBeFalse()
+      expect(new SVG().contains(new G())).toBeFalse()
     })
   })
 
@@ -290,13 +290,13 @@ describe('Dom', () => {
   })
 
   describe('parent()', () => {
-    let svg: Svg
+    let svg: SVG
     let rect: Rect
     let group1: G
     let group2: G
 
     beforeEach(() => {
-      svg = new Svg().addTo(document.body)
+      svg = new SVG().addTo(document.body)
       group1 = svg.group().addClass('test')
       group2 = group1.group()
       rect = group2.rect()
@@ -311,7 +311,7 @@ describe('Dom', () => {
     })
 
     it('should return the closest parent with the correct type', () => {
-      expect(rect.parent(Svg)).toBe(svg)
+      expect(rect.parent(SVG)).toBe(svg)
     })
 
     it('should return the closest parent matching the selector', () => {
@@ -319,7 +319,7 @@ describe('Dom', () => {
     })
 
     it('should return `null` if the element do not have a parent', () => {
-      expect(new Svg().parent()).toBe(null)
+      expect(new SVG().parent()).toBe(null)
     })
 
     it('should return `null` if it cannot find a parent matching the argument', () => {
@@ -328,14 +328,14 @@ describe('Dom', () => {
 
     it('should return `null` if it cannot find a parent matching the argument in a #document-fragment', () => {
       const fragment = document.createDocumentFragment()
-      const svg = new Svg().addTo(fragment)
+      const svg = new SVG().addTo(fragment)
       const rect = svg.rect()
       expect(rect.parent('.not-there')).toBe(null)
     })
 
     it('should return Dom if parent is #document-fragment', () => {
       const fragment = document.createDocumentFragment()
-      const svg = new Svg().addTo(fragment)
+      const svg = new SVG().addTo(fragment)
       expect(svg.parent()).toBeInstanceOf(Dom)
     })
 
@@ -347,7 +347,7 @@ describe('Dom', () => {
   describe('parents()', () => {
     let div1: Dom
     let div2: Dom
-    let svg: Svg
+    let svg: SVG
     let rect: Rect
     let group1: G
     let group2: G
@@ -355,7 +355,7 @@ describe('Dom', () => {
     beforeEach(() => {
       div1 = new Dom().appendTo(document.body)
       div2 = new Dom().appendTo(div1)
-      svg = new Svg().appendTo(div2)
+      svg = new SVG().appendTo(div2)
       group1 = svg.group().addClass('test')
       group2 = group1.group()
       rect = group2.rect()
@@ -374,7 +374,7 @@ describe('Dom', () => {
     })
 
     it('should return all the ancestors until the specified type', () => {
-      expect(rect.parents(Svg)).toEqual([group2, group1])
+      expect(rect.parents(SVG)).toEqual([group2, group1])
     })
 
     it('should return all the ancestors until the specified selector', () => {
@@ -452,7 +452,7 @@ describe('Dom', () => {
       const node = createSVGNode('svg')
       g.add(node)
       expect(g.children().length).toBe(1)
-      expect(g.get(0)).toBeInstanceOf(Svg)
+      expect(g.get(0)).toBeInstanceOf(SVG)
     })
   })
 
@@ -938,11 +938,11 @@ describe('Dom', () => {
   })
 
   describe('wrap()', () => {
-    let svg: Svg
+    let svg: SVG
     let rect: Rect
 
     beforeEach(function () {
-      svg = new Svg()
+      svg = new SVG()
       rect = svg.rect()
     })
 
@@ -1032,7 +1032,7 @@ describe('Dom', () => {
       })
 
       it('should replace the current element with the imported elements with `outerXML` is `true`', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const g = svg.group()
         g.xml('<rect /><circle />', true, namespaces.svg)
         expect(svg.children()[0]).toBeInstanceOf(Rect)
@@ -1040,7 +1040,7 @@ describe('Dom', () => {
       })
 
       it('should return the parent when `outerXML` is `true`', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         const g = svg.group()
         expect(g.xml('<rect /><circle />', true, namespaces.svg)).toBe(svg)
         expect(svg.children()[0]).toBeInstanceOf(Rect)
@@ -1048,7 +1048,7 @@ describe('Dom', () => {
       })
 
       it('should work without a parent', () => {
-        const svg = new Svg()
+        const svg = new SVG()
         expect(svg.xml('<rect /><circle />', undefined, namespaces.svg)).toBe(
           svg,
         )
@@ -1062,12 +1062,12 @@ describe('Dom', () => {
     })
 
     describe('getter', () => {
-      let svg: Svg
+      let svg: SVG
       let group: G
       let rect: Rect
 
       beforeEach(() => {
-        svg = new Svg().removeNamespace()
+        svg = new SVG().removeNamespace()
         group = svg.group()
         rect = group.rect(123.456, 234.567)
       })
@@ -1100,7 +1100,7 @@ describe('Dom', () => {
         expect(
           svg.xml((el) => {
             if (el instanceof Rect) return new Circle()
-            if (el instanceof Svg) el.removeNamespace()
+            if (el instanceof SVG) el.removeNamespace()
           }),
         ).toBe('<svg><g><circle></circle></g></svg>')
       })
@@ -1110,7 +1110,7 @@ describe('Dom', () => {
         expect(svg.xml(() => false)).toBe('')
         expect(
           svg.xml((el) => {
-            if (el instanceof Svg) {
+            if (el instanceof SVG) {
               el.removeNamespace()
             } else {
               return false

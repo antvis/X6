@@ -51,16 +51,24 @@ export class UnitNumber implements UnitNumber.UnitNumberLike {
     return new UnitNumber(this.value / input.value, this.unit || input.unit)
   }
 
-  convert(unit: string) {
+  unitize(unit: string) {
     return new UnitNumber(this.value, unit)
   }
 
-  toArray(): UnitNumber.UnitNumberArray {
-    return [this.value, this.unit]
+  naturalize() {
+    return this.unit ? this.toString() : this.valueOf()
+  }
+
+  clone() {
+    return new UnitNumber(this)
   }
 
   toJSON(): UnitNumber.UnitNumberLike {
     return { value: this.value, unit: this.unit }
+  }
+
+  toArray(): UnitNumber.UnitNumberArray {
+    return [this.value, this.unit]
   }
 
   toString() {
@@ -108,28 +116,28 @@ export namespace UnitNumber {
     if (typeof left === 'number' && typeof right === 'number') {
       return left + right
     }
-    return create(left).plus(right).toString()
+    return create(left).plus(right).naturalize()
   }
 
   export function minus(left: Raw, right: Raw) {
     if (typeof left === 'number' && typeof right === 'number') {
       return left - right
     }
-    return create(left).minus(right).toString()
+    return create(left).minus(right).naturalize()
   }
 
   export function times(left: Raw, right: Raw) {
     if (typeof left === 'number' && typeof right === 'number') {
       return left * right
     }
-    return create(left).times(right).toString()
+    return create(left).times(right).naturalize()
   }
 
   export function divide(left: Raw, right: Raw) {
     if (typeof left === 'number' && typeof right === 'number') {
       return left / right
     }
-    return create(left).divide(right).toString()
+    return create(left).divide(right).naturalize()
   }
 
   export function normalize(v: number) {
@@ -142,11 +150,10 @@ export namespace UnitNumber {
       : v
   }
 
-  export const REGEX_NUMBER_UNIT =
-    /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([a-z%]*)$/i
+  export const REGEX = /^([+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?)([a-z%]*)$/i
 
   export function parse(str: string): UnitNumberLike | null {
-    const matches = str.match(REGEX_NUMBER_UNIT)
+    const matches = str.match(REGEX)
     if (matches) {
       let value = normalize(Number.parseFloat(matches[1]))
       const unit = matches[5] || ''

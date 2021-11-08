@@ -1,5 +1,5 @@
 import { PointArray } from '../../struct/point-array'
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Line } from './line'
 
 describe('Line', () => {
@@ -70,7 +70,7 @@ describe('Line', () => {
 
   describe('move()', () => {
     it('should move the line along x and y axis', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       line.move(50, 50)
       const bbox = line.bbox()
@@ -137,7 +137,7 @@ describe('Line', () => {
 
   describe('size()', () => {
     it('should set the size of the line', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       line.size(50, 50)
       const bbox = line.bbox()
@@ -149,7 +149,7 @@ describe('Line', () => {
     })
 
     it('should change the height proportionally', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       line.size(50, null)
       const bbox = line.bbox()
@@ -161,7 +161,7 @@ describe('Line', () => {
     })
 
     it('should change the width proportionally', () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       line.size(null, 50)
       const bbox = line.bbox()
@@ -175,7 +175,7 @@ describe('Line', () => {
 
   describe('x()', () => {
     it(`should set the x value of the line and returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line()
 
       expect(line.x(50)).toBe(line)
@@ -185,7 +185,7 @@ describe('Line', () => {
     })
 
     it(`should get the x value of the line`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line()
       expect(line.x(50).x()).toBe(50)
 
@@ -195,7 +195,7 @@ describe('Line', () => {
 
   describe('y()', () => {
     it(`should set the y value of the lineand returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line()
       expect(line.y(50)).toBe(line)
       expect(line.bbox().y).toBe(50)
@@ -204,7 +204,7 @@ describe('Line', () => {
     })
 
     it(`should get the y value of the line`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line()
       expect(line.y(50).y()).toBe(50)
 
@@ -214,7 +214,7 @@ describe('Line', () => {
 
   describe('width()', () => {
     it(`should set the width of the lineand returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       expect(line.width(50)).toBe(line)
       expect(line.bbox().width).toBe(50)
@@ -223,7 +223,7 @@ describe('Line', () => {
     })
 
     it(`should get the width of the line`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       expect(line.width(50).width()).toBe(50)
 
@@ -233,7 +233,7 @@ describe('Line', () => {
 
   describe('height()', () => {
     it(`should set the height of the lineand returns itself`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       expect(line.height(50)).toBe(line)
       expect(line.bbox().height).toBe(50)
@@ -242,7 +242,7 @@ describe('Line', () => {
     })
 
     it(`should get the height of the line`, () => {
-      const svg = new Svg().appendTo(document.body)
+      const svg = new SVG().appendTo(document.body)
       const line = svg.line(1, 2, 3, 4)
       expect(line.height(50).height()).toBe(50)
 

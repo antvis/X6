@@ -452,6 +452,8 @@ export interface SVGTransferFunctionAttributes {
   offset?: number
 }
 
+export type AnimationAttributeTargetAttributeType = 'CSS' | 'XML' | 'auto'
+
 export interface AnimationAttributeTargetAttributes {
   /**
    * The `attributeName` attribute indicates the name of the CSS property or
@@ -471,8 +473,13 @@ export interface AnimationAttributeTargetAttributes {
    * possible; see the compatibility table at the bottom of this page to guide
    * your decision. Be aware that this feature may cease to work at any time.
    */
-  attributeType?: 'CSS' | 'XML' | 'auto'
+  attributeType?: AnimationAttributeTargetAttributeType
 }
+
+export type SVGAnimationTimingRestartMode = 'always' | 'whenNotActive' | 'never'
+export type SVGAnimationTimingRepeatCount = number | 'indefinite'
+export type SVGAnimationTimingRepeatDuration = string | 'indefinite'
+export type SVGAnimationTimingFillMode = 'freeze' | 'remove'
 
 export interface SVGAnimationTimingAttributes {
   /**
@@ -508,32 +515,38 @@ export interface SVGAnimationTimingAttributes {
    * The `restart` attribute specifies whether or not an animation can restart.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/restart
    */
-  restart?: 'always' | 'whenNotActive' | 'never'
+  restart?: SVGAnimationTimingRestartMode
   /**
    * The `repeatCount` attribute indicates the number of times an animation will
    * take place.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatCount
    */
-  repeatCount?: number | 'indefinite'
+  repeatCount?: SVGAnimationTimingRepeatCount
   /**
    * The `repeatDur` attribute specifies the total duration for repeating an
    * animation.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatDur
    */
-  repeatDur?: string | 'indefinite'
+  repeatDur?: SVGAnimationTimingRepeatDuration
   /**
    * The `fill` attribute defines the final state of the animation
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill#animate
    */
-  fill?: 'freeze' | 'remove'
+  fill?: SVGAnimationTimingFillMode
 }
+
+export type SVGAnimationValueCalcMode =
+  | 'discrete'
+  | 'linear'
+  | 'paced'
+  | 'spline'
 
 export interface SVGAnimationValueAttributes {
   /**
    * The `calcMode` attribute specifies the interpolation mode for the animation.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/calcMode
    */
-  calcMode?: 'discrete' | 'linear' | 'paced' | 'spline'
+  calcMode?: SVGAnimationValueCalcMode
   /**
    * The `values` attribute has different meanings, depending upon the context
    * where it's used, either it defines a sequence of values used over the
@@ -595,6 +608,9 @@ export interface SVGAnimationValueAttributes {
   by?: string | number
 }
 
+export type SVGAnimationAdditionAttributeAdditive = 'replace' | 'sum'
+export type SVGAnimationAdditionAttributeAccumulate = 'none' | 'sum'
+
 export interface SVGAnimationAdditionAttributes {
   /**
    * The `additive` attribute controls whether or not an animation is additive.
@@ -603,7 +619,7 @@ export interface SVGAnimationAdditionAttributes {
    * attribute's value, rather than as absolute values.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/additive
    */
-  additive?: 'replace' | 'sum'
+  additive?: SVGAnimationAdditionAttributeAdditive
   /**
    * The `accumulate` attribute controls whether or not an animation is
    * cumulative.
@@ -614,5 +630,5 @@ export interface SVGAnimationAdditionAttributes {
    * attribute's value on each iteration.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/accumulate
    */
-  accumulate?: 'none' | 'sum'
+  accumulate?: SVGAnimationAdditionAttributeAccumulate
 }

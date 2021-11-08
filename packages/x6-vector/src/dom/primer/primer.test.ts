@@ -1,6 +1,6 @@
 import { Dom } from '../dom'
 import { G } from '../../vector/g/g'
-import { Svg } from '../../vector/svg/svg'
+import { SVG } from '../../vector/svg/svg'
 
 describe('Dom', () => {
   describe('constructor', () => {
@@ -39,7 +39,7 @@ describe('Dom', () => {
       expect(g.type.toLowerCase()).toEqual('g')
       expect(g.node).toBeInstanceOf(SVGGElement)
 
-      const svg = new Svg({ x: 10, y: 10 })
+      const svg = new SVG({ x: 10, y: 10 })
       expect(svg.type.toLowerCase()).toEqual('svg')
       expect(svg.node).toBeInstanceOf(SVGSVGElement)
       expect(svg.attr('x')).toEqual(10)

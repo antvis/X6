@@ -1,4 +1,4 @@
-import { Svg } from '../svg/svg'
+import { SVG } from '../svg/svg'
 import { Switch } from './switch'
 
 describe('Switch', () => {
@@ -8,12 +8,12 @@ describe('Switch', () => {
     })
 
     it('should create an instance from container', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       expect(svg.switch()).toBeInstanceOf(Switch)
     })
 
     it('should create an instance from container with given attributes', () => {
-      const svg = new Svg()
+      const svg = new SVG()
       const elem = svg.switch({ id: 'foo' })
       expect(elem.id()).toEqual('foo')
     })
