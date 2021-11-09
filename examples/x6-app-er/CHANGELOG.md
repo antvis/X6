@@ -1,3 +1,10 @@
+## @antv/x6-app-er [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.5...@antv/x6-app-er@1.1.6) (2021-11-09)
+
+
+### Bug Fixes
+
+* 🐛 update x6-react-shape version ([#1425](https://github.com/antvis/x6/issues/1425)) ([65e6923](https://github.com/antvis/x6/commit/65e6923b99d48641542203b549d5703a6a1f4be3))
+
 ## @antv/x6-app-er [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.5...@antv/x6-app-er@1.1.6) (2021-11-08)
 
 
