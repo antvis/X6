@@ -1,3 +1,5 @@
+## @antv/eslint-config [1.0.1](https://github.com/antvis/x6/compare/@antv/eslint-config@1.0.0...@antv/eslint-config@1.0.1) (2021-11-09)
+
 ## @antv/eslint-config [1.0.1](https://github.com/antvis/x6/compare/@antv/eslint-config@1.0.0...@antv/eslint-config@1.0.1) (2021-11-08)
 
 ## @antv/eslint-config [1.0.1](https://github.com/antvis/x6/compare/@antv/eslint-config@1.0.0...@antv/eslint-config@1.0.1) (2021-11-08)
