@@ -123,7 +123,7 @@ graph.addEdge({
 ```ts
 class RedEdge extends Edge { }
 
-RedRect.config({
+RedEdge.config({
   attrs: {
     line: {
       stroke: 'red',
@@ -143,7 +143,7 @@ const RedEdge = Edge.define({
   },
 })
 
-Graph.registerEdge('red-edge', RedRect)
+Graph.registerEdge('red-edge', RedEdge)
 ```
 
 该方法将其调用者（如上面的 `Edge`）作为基类，继承出一个新的边，然后调用新边的静态方法 `config` 来配置默认选项。
