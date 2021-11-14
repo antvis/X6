@@ -206,11 +206,11 @@ module.exports = {
         },
       },
       {
-        slug: 'interaction',
-        icon: 'tool',
+        slug: 'animation',
+        icon: 'scatter',
         title: {
-          zh: '交互定制',
-          en: 'Interaction',
+          zh: '动画',
+          en: 'Animation',
         },
       },
       {
@@ -219,14 +219,6 @@ module.exports = {
         title: {
           zh: '布局',
           en: 'Layout',
-        },
-      },
-      {
-        slug: 'animation',
-        icon: 'scatter',
-        title: {
-          zh: '动画',
-          en: 'Animation',
         },
       },
     ],
