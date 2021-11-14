@@ -5,7 +5,7 @@ class EditableCellTool extends ToolsView.ToolItem<
   EdgeView,
   EditableCellToolOptions
 > {
-  private editorContent: HTMLDivElement 
+  private editorContent: HTMLDivElement
 
   render() {
     super.render()
@@ -51,7 +51,7 @@ class EditableCellTool extends ToolsView.ToolItem<
     this.container.appendChild(editorParent)
 
     this.init()
-  
+
     return this
   }
 
@@ -83,11 +83,11 @@ class EditableCellTool extends ToolsView.ToolItem<
           attrs: {
             text: {
               text: value,
-            }
+            },
           },
           position: {
             distance: this.getDistance(),
-          }
+          },
         })
       }
       document.removeEventListener('mousedown', this.onMouseDown)
@@ -98,7 +98,10 @@ class EditableCellTool extends ToolsView.ToolItem<
     const cell = this.cell
     if (cell.isEdge()) {
       const targetPoint = cell.getTargetPoint()
-      const cross = cell.getSourceNode()!.getBBox().intersectsWithLineFromCenterToPoint(targetPoint)!
+      const cross = cell
+        .getSourceNode()!
+        .getBBox()
+        .intersectsWithLineFromCenterToPoint(targetPoint)!
       const p = new Point(this.options.x, this.options.y)
       return p.distance(cross)
     }
@@ -132,16 +135,16 @@ const source = graph.addNode({
   height: 40,
   attrs: {
     body: {
-      fill: '#f5f5f5',
-      stroke: '#d9d9d9',
+      stroke: '#5F95FF',
+      fill: '#EFF4FF',
       strokeWidth: 1,
     },
     text: {
       textWrap: {
         text: '',
         width: -10,
-      }
-    }
+      },
+    },
   },
 })
 
@@ -152,16 +155,16 @@ const target = graph.addNode({
   height: 40,
   attrs: {
     body: {
-      fill: '#f5f5f5',
-      stroke: '#d9d9d9',
+      stroke: '#5F95FF',
+      fill: '#EFF4FF',
       strokeWidth: 1,
     },
     text: {
       textWrap: {
         text: '',
         width: -10,
-      }
-    }
+      },
+    },
   },
 })
 
@@ -170,8 +173,8 @@ graph.addEdge({
   target,
   attrs: {
     line: {
-      stroke: '#a0a0a0',
-      strokeWidth: 1,
+      stroke: '#A2B1C3',
+      strokeWidth: 2,
     },
   },
 })
