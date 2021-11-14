@@ -89,22 +89,48 @@ const graph = new Graph({
   grid: true,
 })
 
-graph.addEdge({
-  source: { x: 320, y: 200 },
-  target: { x: 580, y: 300 },
+const source = graph.addNode({
+  x: 180,
+  y: 60,
+  width: 100,
+  height: 40,
   attrs: {
-    line: {
-      stroke: '#bfbfbf',
-      strokeWidth: 2,
-      targetMarker: 'classic',
+    body: {
+      stroke: '#5F95FF',
+      fill: '#EFF4FF',
+      strokeWidth: 1,
     },
   },
-  router: 'manhattan',
+})
+
+const target = graph.addNode({
+  x: 320,
+  y: 250,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      stroke: '#5F95FF',
+      fill: '#EFF4FF',
+      strokeWidth: 1,
+    },
+  },
+})
+
+graph.addEdge({
+  source,
+  target,
+  attrs: {
+    line: {
+      stroke: '#A2B1C3',
+      strokeWidth: 2,
+    },
+  },
   tools: [
     {
       name: 'tooltip',
       args: {
-        tooltip: 'tooltip content',
+        tooltip: 'Tooltip Content',
       },
     },
   ],
