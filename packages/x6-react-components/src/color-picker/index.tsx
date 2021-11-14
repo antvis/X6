@@ -5,7 +5,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { Popover } from 'antd'
 import { PopoverProps } from 'antd/es/popover'
-import 'antd/es/popover/style'
+import 'antd/es/popover/style/index.css'
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import {
   SketchPicker,
