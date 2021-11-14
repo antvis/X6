@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "animateAlongPath.ts",
+      "title": {
+        "zh": "沿路径运动",
+        "en": "Animate Along Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*WKlrTLW6zN0AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

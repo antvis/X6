@@ -325,7 +325,7 @@ insertCss(`
   height: 100%;
   background-color: #fff;
   border: 1px solid #c2c8d5;
-  border-left: 4px solid #1890ff;
+  border-left: 4px solid #5F95FF;
   border-radius: 4px;
   box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06);
 }

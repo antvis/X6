@@ -1,13 +1,15 @@
-.x6-node {
-  image {
-    visibility: hidden;
-    cursor: pointer;
+.mindmap {
+  .x6-node {
+    image {
+      visibility: hidden;
+      cursor: pointer;
+    }
+    &:hover image {
+      visibility: visible;
+    }
   }
-  &:hover image {
-    visibility: visible;
-  }
-}
 
-.x6-node-selected rect {
-  stroke-width: 2px;
+  .x6-node-selected rect {
+    stroke-width: 2px;
+  }
 }
