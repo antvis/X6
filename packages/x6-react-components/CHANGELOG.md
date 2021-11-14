@@ -1,3 +1,10 @@
+## @antv/x6-react-components [1.1.15](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.14...@antv/x6-react-components@1.1.15) (2021-11-14)
+
+
+### Bug Fixes
+
+* import css replace less ([#1548](https://github.com/antvis/x6/issues/1548)) ([9ca4ef1](https://github.com/antvis/x6/commit/9ca4ef1553b903ce1da83e20bd9e007d1e85f993))
+
 ## @antv/x6-react-components [1.1.14](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.13...@antv/x6-react-components@1.1.14) (2021-09-13)
 
 ## @antv/x6-react-components [1.1.13](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.12...@antv/x6-react-components@1.1.13) (2021-06-16)
