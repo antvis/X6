@@ -218,12 +218,12 @@ graph.addEdge({
 
 X6 默认提供了以下几种连接器，点击下面的链接查看每种连接器的使用方式。
 
-- [normal]()
-- [rounded]()
-- [smooth]()
-- [jumpover]()
+- [normal](/zh/docs/api/registry/connector#normal)
+- [rounded](/zh/docs/api/registry/connector#rounded)
+- [smooth](/zh/docs/api/registry/connector#smooth)
+- [jumpover](/zh/docs/api/registry/connector#jumpover)
 
-另外，我们也可以注册自定义连接器，详情请参考[自定义连接器]()。
+另外，我们也可以注册自定义连接器，详情请参考[自定义连接器](/zh/docs/api/registry/connector#register)。
 
 ### labels
 
