@@ -25,7 +25,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@antv/x6": "^1.28.1",
-    "@antv/x6-react-components": "^1.1.14",
+    "@antv/x6-react-components": "^1.1.15",
     "@antv/x6-react-shape": "^1.5.2",
     "@types/dompurify": "^2.0.4",
     "ahooks": "^2.7.0",
