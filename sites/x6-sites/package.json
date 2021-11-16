@@ -17,7 +17,7 @@
   "dependencies": {
     "@antv/gatsby-theme-antv": "^1.1.13",
     "@antv/x6": "^1.28.1",
-    "@antv/x6-react-components": "^1.1.14",
+    "@antv/x6-react-components": "^1.1.15",
     "@antv/x6-react-shape": "^1.5.2",
     "@antv/layout": "^0.1.9",
     "@antv/hierarchy": "^0.6.6",
