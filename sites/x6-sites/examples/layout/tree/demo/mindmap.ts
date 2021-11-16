@@ -3,7 +3,6 @@ import Hierarchy from '@antv/hierarchy'
 
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
   connecting: {
     connector: 'smooth',
   },
@@ -21,7 +20,7 @@ fetch('../data/algorithm-category.json')
         return 16
       },
       getHGap() {
-        return 100
+        return 80
       },
       getVGap() {
         return 1
@@ -43,7 +42,7 @@ fetch('../data/algorithm-category.json')
           height: 16,
           attrs: {
             body: {
-              fill: '#855af2',
+              fill: '#5F95FF',
               stroke: 'transparent',
             },
           },
@@ -56,7 +55,7 @@ fetch('../data/algorithm-category.json')
             target: `${item.id}`,
             attrs: {
               line: {
-                stroke: '#ccc',
+                stroke: '#A2B1C3',
                 strokeWidth: 1,
                 targetMarker: null,
               },

@@ -22,13 +22,13 @@ const edges = [
 for (let i = 1; i <= 12; i++) {
   data.nodes!.push({
     id: `${i}`,
-    shape: 'rect',
-    width: 60,
-    height: 30,
+    shape: 'circle',
+    width: 32,
+    height: 32,
     label: i,
     attrs: {
       body: {
-        fill: '#855af2',
+        fill: '#5F95FF',
         stroke: 'transparent',
       },
       label: {
@@ -44,8 +44,8 @@ edges.forEach((edge: [string, string]) => {
     target: edge[1],
     attrs: {
       line: {
-        stroke: '#fd6d6f',
-        strokeWidth: 1,
+        stroke: '#A2B1C3',
+        strokeWidth: 2,
       },
     },
   })
@@ -53,7 +53,6 @@ edges.forEach((edge: [string, string]) => {
 
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
 })
 
 const dagreLayout = new DagreLayout({
