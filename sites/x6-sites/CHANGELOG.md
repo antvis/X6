@@ -1,3 +1,25 @@
+# @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2021-11-16)
+
+
+### Bug Fixes
+
+* 🐛 add keepId for node clone ([#1254](https://github.com/antvis/x6/issues/1254)) ([cef5862](https://github.com/antvis/x6/commit/cef58628902aa97efa62f022203ebcaca3639092))
+* 🐛 change home path in speedup js ([#1369](https://github.com/antvis/x6/issues/1369)) ([31f8960](https://github.com/antvis/x6/commit/31f8960e72b0567bb13683e51db8b97207604c0b))
+* 🐛 change type of padding in ScaleContentToFitOptions ([#1203](https://github.com/antvis/x6/issues/1203)) ([1031d06](https://github.com/antvis/x6/commit/1031d0653b4641adfc27b7572b57d23fec0cc182))
+* 🐛 optimize contextmenu tools ([#1391](https://github.com/antvis/x6/issues/1391)) ([cc01fdf](https://github.com/antvis/x6/commit/cc01fdf208f4fbd283a6ce3d7a106716e8e10300))
+* 🐛 unified panning api ([#1151](https://github.com/antvis/x6/issues/1151)) ([d60e9d8](https://github.com/antvis/x6/commit/d60e9d882dfa85bf39b47ba75a6379b5cbd1a965))
+* 🐛 update x6-react-shape version ([#1425](https://github.com/antvis/x6/issues/1425)) ([4208846](https://github.com/antvis/x6/commit/4208846337326d8983f1662faa8da67efd8568b4))
+* curve demo ([#1306](https://github.com/antvis/x6/issues/1306)) ([de13692](https://github.com/antvis/x6/commit/de1369282f00e24180c7269e3373e67ae79aa338))
+* fix angular typo ([#1154](https://github.com/antvis/x6/issues/1154)) ([25b47c3](https://github.com/antvis/x6/commit/25b47c39b9d036a6d55a28450792d4f788bf903f))
+
+
+### Features
+
+* ✨ add cell-editor tool ([#1202](https://github.com/antvis/x6/issues/1202)) ([98e80d1](https://github.com/antvis/x6/commit/98e80d10c9bfbd0c8486944dd212db2db731a225))
+* ✨ add excludeHiddenNodes for manhattan router ([#1400](https://github.com/antvis/x6/issues/1400)) ([28a472a](https://github.com/antvis/x6/commit/28a472ab8e3097ffd12be0fb8909c084156e5afd))
+* ✨ add resizeGroup for stencil ([#1388](https://github.com/antvis/x6/issues/1388)) ([d9bec60](https://github.com/antvis/x6/commit/d9bec60ce3819f45151ac8d1336e2ae94842d3d4))
+* x6-angular-shape support pass arguments ([#1250](https://github.com/antvis/x6/issues/1250)) ([b683f82](https://github.com/antvis/x6/commit/b683f82d70c05f993db46394bcc50d221b02443e))
+
 # @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2021-11-08)
 
 
