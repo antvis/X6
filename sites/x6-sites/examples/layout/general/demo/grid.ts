@@ -6,26 +6,7 @@ const data: Model.FromJSONData = {
   edges: [],
 }
 const keyPoints = [
-  20,
-  12,
-  12,
-  4,
-  18,
-  12,
-  12,
-  6,
-  16,
-  17,
-  17,
-  10,
-  10,
-  3,
-  3,
-  2,
-  2,
-  9,
-  9,
-  10,
+  20, 12, 12, 4, 18, 12, 12, 6, 16, 17, 17, 10, 10, 3, 3, 2, 2, 9, 9, 10,
 ]
 
 for (let i = 1; i <= 21; i++) {
@@ -36,7 +17,7 @@ for (let i = 1; i <= 21; i++) {
     height: 32,
     attrs: {
       body: {
-        fill: keyPoints.includes(i) ? '#fd6d6f' : '#855af2',
+        fill: '#5F95FF',
         stroke: 'transparent',
       },
       label: {
@@ -53,7 +34,8 @@ for (let i = 0; i < keyPoints.length; i += 2) {
     target: `${keyPoints[i + 1]}`,
     attrs: {
       line: {
-        stroke: '#fd6d6f',
+        stroke: '#A2B1C3',
+        strokeWidth: 2,
         targetMarker: null,
       },
     },
@@ -62,7 +44,6 @@ for (let i = 0; i < keyPoints.length; i += 2) {
 
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
 })
 
 const gridLayout = new GridLayout({

@@ -3,7 +3,6 @@ import { ForceLayout } from '@antv/layout'
 
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
 })
 
 const originData = {
@@ -61,7 +60,7 @@ const getModelFromOriginData = (data: typeof originData) => {
       y: item.y,
       attrs: {
         body: {
-          fill: '#855af2',
+          fill: '#5F95FF',
           stroke: 'transparent',
         },
       },
@@ -73,8 +72,8 @@ const getModelFromOriginData = (data: typeof originData) => {
       target: item.target,
       attrs: {
         line: {
-          stroke: '#ccc',
-          strokeWidth: 1,
+          stroke: '#A2B1C3',
+          strokeWidth: 2,
           targetMarker: null,
         },
       },

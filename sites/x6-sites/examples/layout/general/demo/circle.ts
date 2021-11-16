@@ -5,16 +5,20 @@ const data: Model.FromJSONData = {
   nodes: [],
 }
 
-for (let i = 1; i <= 24; i++) {
+for (let i = 1; i <= 16; i++) {
   data.nodes!.push({
     id: `${i}`,
-    shape: 'rect',
-    width: 24,
-    height: 24,
-    label: '💜',
+    shape: 'circle',
+    width: 30,
+    height: 30,
+    label: `${i}`,
     attrs: {
       body: {
         stroke: 'transparent',
+        fill: '#5F95FF',
+      },
+      label: {
+        fill: '#fff',
       },
     },
   })
@@ -22,7 +26,6 @@ for (let i = 1; i <= 24; i++) {
 
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
 })
 
 const circularLayout = new CircularLayout({
