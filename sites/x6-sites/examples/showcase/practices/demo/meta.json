@@ -41,6 +41,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aPSySa8oz4sAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "swimlane.ts",
+      "title": {
+        "zh": "泳道图",
+        "en": "Swimlane"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mUVrSJMkP1UAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "validate-connection.ts",
       "title": {
         "zh": "链接桩验证/高亮/自动吸附",
