@@ -378,8 +378,6 @@ graph.bindKey('tab', (e) => {
 
 render()
 
-render()
-
 insertCss(`
   .x6-node image {
     visibility: hidden;
