@@ -31,7 +31,7 @@ isNode(cell: Cell): cell is Node
 ### isEdge(...)
 
 ```sign
-isNode(cell: Cell): cell is Edge
+isEdge(cell: Cell): cell is Edge
 ```
 
 返回指定的 Cell 是否是边。
