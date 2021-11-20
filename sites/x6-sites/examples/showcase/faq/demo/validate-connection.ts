@@ -1,70 +1,257 @@
-import { Graph, Edge, EdgeView, Shape } from '@antv/x6'
+import { Graph, Edge, Shape, NodeView } from '@antv/x6'
 
+// 定义节点
+class MyShape extends Shape.Rect {
+  getInPorts() {
+    return this.getPortsByGroup('in')
+  }
+
+  getOutPorts() {
+    return this.getPortsByGroup('out')
+  }
+
+  getUsedInPorts(graph: Graph) {
+    const incomingEdges = graph.getIncomingEdges(this) || []
+    return incomingEdges.map((edge: Edge) => {
+      const portId = edge.getTargetPortId()
+      return this.getPort(portId!)
+    })
+  }
+
+  getNewInPorts(length: number) {
+    return Array.from(
+      {
+        length,
+      },
+      () => {
+        return {
+          group: 'in',
+        }
+      },
+    )
+  }
+
+  updateInPorts(graph: Graph) {
+    const minNumberOfPorts = 2
+    const ports = this.getInPorts()
+    const usedPorts = this.getUsedInPorts(graph)
+    const newPorts = this.getNewInPorts(
+      Math.max(minNumberOfPorts - usedPorts.length, 1),
+    )
+
+    if (
+      ports.length === minNumberOfPorts &&
+      ports.length - usedPorts.length > 0
+    ) {
+      // noop
+    } else if (ports.length === usedPorts.length) {
+      this.addPorts(newPorts)
+    } else if (ports.length + 1 > usedPorts.length) {
+      this.prop(
+        ['ports', 'items'],
+        this.getOutPorts().concat(usedPorts).concat(newPorts),
+        {
+          rewrite: true,
+        },
+      )
+    }
+
+    return this
+  }
+}
+
+MyShape.config({
+  attrs: {
+    root: {
+      magnet: false,
+    },
+    body: {
+      fill: '#EFF4FF',
+      stroke: '#5F95FF',
+      strokeWidth: 1,
+    },
+  },
+  ports: {
+    items: [
+      {
+        group: 'out',
+      },
+    ],
+    groups: {
+      in: {
+        position: {
+          name: 'top',
+        },
+        attrs: {
+          portBody: {
+            magnet: 'passive',
+            r: 6,
+            stroke: '#5F95FF',
+            fill: '#fff',
+            strokeWidth: 1,
+          },
+        },
+      },
+      out: {
+        position: {
+          name: 'bottom',
+        },
+        attrs: {
+          portBody: {
+            magnet: true,
+            r: 6,
+            fill: '#fff',
+            stroke: '#5F95FF',
+            strokeWidth: 1,
+          },
+        },
+      },
+    },
+  },
+  portMarkup: [
+    {
+      tagName: 'circle',
+      selector: 'portBody',
+    },
+  ],
+})
+
+// 高亮
+const magnetAvailabilityHighlighter = {
+  name: 'stroke',
+  args: {
+    attrs: {
+      fill: '#fff',
+      stroke: '#47C769',
+    },
+  },
+}
+
+// 画布
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: true,
+  highlighting: {
+    magnetAvailable: magnetAvailabilityHighlighter,
+    magnetAdsorbed: {
+      name: 'stroke',
+      args: {
+        attrs: {
+          fill: '#fff',
+          stroke: '#31d0c6',
+        },
+      },
+    },
+  },
   connecting: {
-    validateMagnet({ cell, magnet }) {
-      let count = 0
-      const connectionCount = magnet.getAttribute('connection-count')
-      const max = connectionCount ? parseInt(connectionCount, 10) : Number.MAX_SAFE_INTEGER
-      const outgoingEdges = graph.getOutgoingEdges(cell)
-      if (outgoingEdges) {
-        outgoingEdges.forEach((edge: Edge) => {
-          const edgeView = graph.findViewByCell(edge) as EdgeView
-          if (edgeView.sourceMagnet === magnet) {
-            count += 1
-          }
-        })
-      }
-      return count < max
+    snap: true,
+    allowBlank: false,
+    allowLoop: false,
+    highlight: true,
+    connector: 'rounded',
+    connectionPoint: 'boundary',
+    router: {
+      name: 'er',
+      args: {
+        direction: 'V',
+      },
     },
     createEdge() {
       return new Shape.Edge({
         attrs: {
-        line: {
-          stroke: 'orange',
+          line: {
+            stroke: '#A2B1C3',
+            strokeWidth: 1,
+            targetMarker: {
+              name: 'classic',
+              size: 7,
+            },
+          },
         },
-      },
       })
-    }
+    },
+    validateConnection({ sourceView, targetView, targetMagnet }) {
+      if (!targetMagnet) {
+        return false
+      }
+
+      if (targetMagnet.getAttribute('port-group') !== 'in') {
+        return false
+      }
+
+      if (targetView) {
+        const node = targetView.cell
+        if (node instanceof MyShape) {
+          const portId = targetMagnet.getAttribute('port')
+          const usedInPorts = node.getUsedInPorts(graph)
+          if (usedInPorts.find((port) => port && port.id === portId)) {
+            return false
+          }
+        }
+      }
+
+      return true
+    },
+  },
+})
+
+graph.addNode(
+  new MyShape().resize(120, 40).position(200, 50).updateInPorts(graph),
+)
+
+graph.addNode(
+  new MyShape().resize(120, 40).position(400, 50).updateInPorts(graph),
+)
+
+graph.addNode(
+  new MyShape().resize(120, 40).position(300, 250).updateInPorts(graph),
+)
+
+function update(view: NodeView) {
+  const cell = view.cell
+  if (cell instanceof MyShape) {
+    cell.getInPorts().forEach((port) => {
+      const portNode = view.findPortElem(port.id!, 'portBody')
+      view.unhighlight(portNode, {
+        highlighter: magnetAvailabilityHighlighter,
+      })
+    })
+    cell.updateInPorts(graph)
+  }
+}
+
+graph.on('edge:connected', ({ previousView, currentView }) => {
+  if (previousView) {
+    update(previousView as NodeView)
+  }
+  if (currentView) {
+    update(currentView as NodeView)
   }
 })
 
-graph.addNode({
-  shape: 'rect',
-  x: 280,
-  y: 280,
-  width: 160,
-  height: 60,
-  ports: [
+graph.on('edge:removed', ({ edge, options }) => {
+  if (!options.ui) {
+    return
+  }
+
+  const target = edge.getTargetCell()
+  if (target instanceof MyShape) {
+    target.updateInPorts(graph)
+  }
+})
+
+graph.on('edge:mouseenter', ({ edge }) => {
+  edge.addTools([
+    'source-arrowhead',
+    'target-arrowhead',
     {
-      id: 'a',
-      attrs: {
-        circle: {
-          magnet: true,
-          connectionCount: 3, // 自定义属性，控制连接桩可连接多少条边
-        }
+      name: 'button-remove',
+      args: {
+        distance: -30,
       },
-      position: 'top'
     },
-    {
-      id: 'b',
-      attrs: {
-        circle: {
-          magnet: true,
-          connectionCount: 0, // 自定义属性，控制连接桩可连接多少条边
-        }
-      }
-    },
-  ],
-  attrs: {
-    body: {
-      fill: '#f5f5f5',
-      stroke: '#d9d9d9',
-      strokeWidth: 1,
-      magnet: true,
-      connectionCount: 2, // 自定义属性，控制节点可连接多少条边
-    },
-  },
+  ])
+})
+
+graph.on('edge:mouseleave', ({ edge }) => {
+  edge.removeTools()
 })

@@ -6,7 +6,6 @@ const container = document.getElementById('container')!
 
 const graph = new Graph({
   container,
-  grid: true,
 })
 
 const init = (pos: { x: number; y: number }) => {
@@ -29,7 +28,7 @@ const init = (pos: { x: number; y: number }) => {
     attrs: {
       line: {
         targetMarker: null,
-        stroke: '#A2B1C3',
+        stroke: '#5F95FF',
         strokeWidth: 2,
       },
     },

@@ -39,6 +39,7 @@ Graph.registerNode(
         'xlink:href':
           'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SYCuQ6HHs5cAAAAAAAAAAAAAARQnAQ',
         event: 'add:topic',
+        class: 'topic-image',
       },
       label: {
         fontSize: 14,
@@ -379,11 +380,11 @@ graph.bindKey('tab', (e) => {
 render()
 
 insertCss(`
-  .x6-node image {
+  .topic-image {
     visibility: hidden;
     cursor: pointer;
   }
-  .x6-node:hover image {
+  .x6-node:hover .topic-image {
     visibility: visible;
   }
   .x6-node-selected rect {

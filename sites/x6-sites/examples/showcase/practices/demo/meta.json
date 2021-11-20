@@ -11,8 +11,8 @@
     {
       "filename": "dag.tsx",
       "title": {
-        "zh": "人工智能建模流程",
-        "en": "Flow for AI Model"
+        "zh": "人工智能建模 DAG 图",
+        "en": "DAG for AI Model"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*RPiGRaSus3UAAAAAAAAAAAAAARQnAQ"
     },
@@ -57,28 +57,12 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Z3ebTKy0w9cAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "validate-connection.ts",
-      "title": {
-        "zh": "链接桩验证/高亮/自动吸附",
-        "en": "Validattion/Highlight/Absorb of Port"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*chF2SIucKCUAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "tree.ts",
-      "title": {
-        "zh": "展开/折叠树",
-        "en": "Expand/Collapse the Tree"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*dJiNTJ2h3GAAAAAAAAAAAAAAARQnAQ"
-    },
-    {
       "filename": "org.ts",
       "title": {
         "zh": "组织架构图",
         "en": "Organizational Charts"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mxDSTpxbMYYAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FWx5SYDzLw4AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "orgchart.ts",
@@ -86,15 +70,7 @@
         "zh": "组织架构图（自动布局）",
         "en": "Organizational Charts"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*w5SUSIvTxPAAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "path-editor.ts",
-      "title": {
-        "zh": "路径编辑器",
-        "en": "Path Editor"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*dz6aS5gtapUAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-1_wQ6zLmMYAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "class.ts",
@@ -103,6 +79,14 @@
         "en": "UML Class"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OaCpR7t_mVoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "tree.ts",
+      "title": {
+        "zh": "展开/折叠树",
+        "en": "Expand/Collapse the Tree"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XDnNRqnj4WkAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
