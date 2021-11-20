@@ -10,4 +10,4 @@ window.x6 = require('@antv/x6')
 window.x6ReactShape = require('@antv/x6-react-shape')
 window.layout = require('@antv/layout')
 window.hierarchy = require('@antv/hierarchy')
-
+window.elkjs = require('elkjs/lib/elk.bundled.js')
