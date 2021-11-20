@@ -10,12 +10,13 @@
   },
   "dependencies": {
     "@antv/x6": "^1.28.1",
-    "@antv/x6-vector": "^1.2.4",
     "@antv/x6-react-components": "^1.1.14",
     "@antv/x6-react-shape": "^1.5.2",
+    "@antv/x6-vector": "^1.2.4",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
+    "elkjs": "^0.7.1",
     "react": "^16.12.0",
     "react-dom": "^16.8.6",
     "react-helmet": "^6.0.0"
