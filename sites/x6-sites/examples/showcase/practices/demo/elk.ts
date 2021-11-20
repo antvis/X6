@@ -1,5 +1,4 @@
 import { Graph, Cell } from '@antv/x6'
-////import ELK, { ElkNode, ElkExtendedEdge, ElkEdge } from 'elkjs/lib/elk-api.js';
 import ELK, { ElkNode, ElkEdge, ElkExtendedEdge } from 'elkjs'
 
 Graph.registerNode(
@@ -174,7 +173,7 @@ fetch('../data/elkdata.json')
       addEdges(res.edges || [])
       graph.resetCells(cells)
       graph.zoomToFit({
-        padding: 10,
+        padding: 20,
         maxScale: 1,
       })
     })

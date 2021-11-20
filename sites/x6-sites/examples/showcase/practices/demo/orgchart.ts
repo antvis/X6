@@ -90,9 +90,9 @@ Graph.registerNode(
         ry: 10,
         refWidth: '100%',
         refHeight: '100%',
-        fill: '#FFF',
-        stroke: '#000',
-        strokeWidth: 0,
+        fill: '#5F95FF',
+        stroke: '#5F95FF',
+        strokeWidth: 1,
         pointerEvents: 'visiblePainted',
       },
       '.image': {
@@ -105,6 +105,7 @@ Graph.registerNode(
       '.rank': {
         refX: 0.95,
         refY: 0.5,
+        fill: '#fff',
         fontFamily: 'Courier New',
         fontSize: 13,
         textAnchor: 'end',
@@ -113,6 +114,7 @@ Graph.registerNode(
       '.name': {
         refX: 0.95,
         refY: 0.7,
+        fill: '#fff',
         fontFamily: 'Arial',
         fontSize: 14,
         fontWeight: '600',
@@ -131,13 +133,13 @@ Graph.registerNode(
       '.btn > circle': {
         r: 10,
         fill: 'transparent',
-        stroke: '#333',
+        stroke: '#fff',
         strokeWidth: 1,
       },
       '.btn.add > text': {
         fontSize: 20,
         fontWeight: 800,
-        stroke: '#000',
+        fill: '#fff',
         x: -5.5,
         y: 7,
         fontFamily: 'Times New Roman',
@@ -146,7 +148,7 @@ Graph.registerNode(
       '.btn.del > text': {
         fontSize: 28,
         fontWeight: 500,
-        stroke: '#000',
+        fill: '#fff',
         x: -4.5,
         y: 6,
         fontFamily: 'Times New Roman',
@@ -164,8 +166,8 @@ Graph.registerEdge(
     zIndex: -1,
     attrs: {
       line: {
-        stroke: '#585858',
-        strokeWidth: 3,
+        strokeWidth: 2,
+        stroke: '#A2B1C3',
         sourceMarker: null,
         targetMarker: null,
       },
@@ -183,10 +185,8 @@ const dir = 'LR' // LR RL TB BT
 
 // 创建画布
 const graph = new Graph({
-  container: document.getElementById('container'),
-  grid: true,
+  container: document.getElementById('container')!,
   scroller: true,
-  snapline: true,
   interacting: false,
 })
 
@@ -194,13 +194,10 @@ const graph = new Graph({
 function setup() {
   graph.on('node:add', ({ e, node }) => {
     e.stopPropagation()
-    const bg = Color.randomHex()
     const member = createNode(
       'Employee',
       'New Employee',
       Math.random() < 0.5 ? male : female,
-      bg,
-      Color.invert(bg, true),
     )
     graph.freeze()
     graph.addCell([member, createEdge(node, member)])
@@ -288,28 +285,17 @@ function layout() {
   graph.unfreeze()
 }
 
-function createNode(
-  rank: string,
-  name: string,
-  image: string,
-  background: string,
-  textColor = '#000',
-) {
+function createNode(rank: string, name: string, image: string) {
   return graph.createNode({
     shape: 'org-node',
     attrs: {
-      '.card': { fill: background },
       '.image': { xlinkHref: image },
       '.rank': {
-        fill: textColor,
         text: Dom.breakText(rank, { width: 160, height: 45 }),
       },
       '.name': {
-        fill: textColor,
         text: Dom.breakText(name, { width: 160, height: 45 }),
       },
-      '.btn > circle': { stroke: textColor },
-      '.btn > text': { fill: textColor, stroke: textColor },
     },
   })
 }
@@ -323,27 +309,12 @@ function createEdge(source: Cell, target: Cell) {
 }
 
 const nodes = [
-  createNode('Founder & Chairman', 'Pierre Omidyar', male, '#31d0c6'),
-  createNode('President & CEO', 'Margaret C. Whitman', female, '#31d0c6'),
-  createNode('President, PayPal', 'Scott Thompson', male, '#7c68fc'),
-  createNode(
-    'President, Ebay Global Marketplaces',
-    'Devin Wenig',
-    male,
-    '#7c68fc',
-  ),
-  createNode(
-    'Senior Vice President Human Resources',
-    'Jeffrey S. Skoll',
-    male,
-    '#fe854f',
-  ),
-  createNode(
-    'Senior Vice President Controller',
-    'Steven P. Westly',
-    male,
-    '#feb663',
-  ),
+  createNode('Founder & Chairman', 'Pierre Omidyar', male),
+  createNode('President & CEO', 'Margaret C. Whitman', female),
+  createNode('President, PayPal', 'Scott Thompson', male),
+  createNode('President, Ebay Global Marketplaces', 'Devin Wenig', male),
+  createNode('Senior Vice President Human Resources', 'Jeffrey S. Skoll', male),
+  createNode('Senior Vice President Controller', 'Steven P. Westly', male),
 ]
 
 const edges = [
