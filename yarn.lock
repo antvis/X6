@@ -11419,6 +11419,11 @@ elegant-spinner@^1.0.1:
   resolved "https://registry.npmjs.org/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
 
+elkjs@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.npmjs.org/elkjs/-/elkjs-0.7.1.tgz#4751c5e918a4988139baf7f214e010aea22de969"
+  integrity sha512-lD86RWdh480/UuRoHhRcnv2IMkIcK6yMDEuT8TPBIbO3db4HfnVF+1lgYdQi99Ck0yb+lg5Eb46JCHI5uOsmAw==
+
 elliptic@^6.5.3:
   version "6.5.4"
   resolved "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
@@ -21340,14 +21345,14 @@ moment@2.x, moment@^2.15.1, moment@^2.22.1, moment@^2.24.0, moment@^2.25.3, mome
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-monaco-editor-webpack-plugin@2.0.0, monaco-editor-webpack-plugin@^2.0.0:
+monaco-editor-webpack-plugin@^2.0.0:
   version "2.0.0"
   resolved "https://registry.nlark.com/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-2.0.0.tgz#196052f23678285deca7a7baf4d7aebe9d1ff9e1"
   integrity sha1-GWBS8jZ4KF3sp6e69Neuvp0f+eE=
   dependencies:
     loader-utils "^2.0.0"
 
-monaco-editor@*, monaco-editor@0.21.0, monaco-editor@^0.21.0:
+monaco-editor@*, monaco-editor@^0.21.0:
   version "0.21.0"
   resolved "https://registry.nlark.com/monaco-editor/download/monaco-editor-0.21.0.tgz?cache=0&sync_timestamp=1623961471145&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmonaco-editor%2Fdownload%2Fmonaco-editor-0.21.0.tgz#35d964cbeff8b035d574bb113e9491331810d5f1"
   integrity sha1-Ndlky+/4sDXVdLsRPpSRMxgQ1fE=
