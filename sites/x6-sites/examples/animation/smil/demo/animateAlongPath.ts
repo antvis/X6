@@ -10,7 +10,7 @@ const path = graph.addNode({
   y: 200,
   width: 400,
   height: 80,
-  path: 'M 10 300 Q 150 100 300 300 T 600 300Z',
+  path: 'M20,50 C20,-50 180,150 180,50 C180-50 20,150 20,50 z',
   attrs: {
     body: {
       fill: '#EFF4FF',
