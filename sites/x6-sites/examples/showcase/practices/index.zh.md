@@ -1,5 +1,5 @@
 ---
-title: 业务实践
+title: 业务场景
 order: 10
 redirect_from:
   - /zh/examples/practices

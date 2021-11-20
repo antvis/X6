@@ -20,9 +20,9 @@ graph.addNode({
       textWrap: {
         text: '使用 textWrap 实现文本换行',
         width: -10, // 宽度减少 10px
-      }
-    }
-  }
+      },
+    },
+  },
 })
 
 graph.addNode({
@@ -61,7 +61,7 @@ graph.addNode({
       refY: -8,
       stroke: '#9254de',
       fill: '#efdbff',
-    }
+    },
   },
-  label: '根据文本的大小确定节点的宽高'
+  label: '根据文本的大小确定节点的宽高',
 })

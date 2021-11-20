@@ -73,8 +73,8 @@ TreeNode.config({
       refWidth: '100%',
       refHeight: '100%',
       strokeWidth: 1,
-      fill: '#ffffff',
-      stroke: '#a0a0a0',
+      fill: '#EFF4FF',
+      stroke: '#5F95FF',
     },
     label: {
       textWrap: {
@@ -92,7 +92,7 @@ TreeNode.config({
       refY: '50%',
     },
     button: {
-      fill: '#4C65DD',
+      fill: '#5F95FF',
       stroke: 'none',
       x: -10,
       y: -10,
@@ -124,7 +124,7 @@ TreeEdge.config({
   zIndex: 1,
   attrs: {
     line: {
-      stroke: '#a0a0a0',
+      stroke: '#A2B1C3',
       strokeWidth: 1,
       targetMarker: null,
     },
@@ -138,15 +138,11 @@ Edge.registry.register('tree-edge', TreeEdge, true)
 // 初始化画布
 const graph = new Graph({
   container: document.getElementById('container')!,
-  grid: 1,
   async: true,
   frozen: true,
   scroller: true,
   interacting: false,
   sorting: 'approx',
-  background: {
-    color: '#f5f5f5',
-  },
   connecting: {
     anchor: 'orth',
     connector: 'rounded',

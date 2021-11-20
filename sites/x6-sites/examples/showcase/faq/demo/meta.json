@@ -1,36 +1,20 @@
 {
   "demos": [
     {
-      "filename": "flex-image.ts",
-      "title": {
-        "zh": "根据图片大小缩放节点",
-        "en": "Resize Node According to the Image Size"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*AhNyQ5453mEAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "change-mode.tsx",
-      "title": {
-        "zh": "切换交互模式",
-        "en": "Switch Interacting"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YmthRqMeb7AAAAAAAAAAAAAAARQnAQ"
-    },
-    {
       "filename": "validate-connection.ts",
       "title": {
-        "zh": "限制连接边的数量",
-        "en": "Limit Connected Edges"
+        "zh": "链接桩验证/高亮/自动吸附",
+        "en": "Validattion/Highlight/Absorb of Port"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*f_ztRpTun3AAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Gi4OSoXvPzgAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "text-wrap.ts",
+      "filename": "path-editor.ts",
       "title": {
-        "zh": "文本换行",
-        "en": "Text Wrap"
+        "zh": "路径编辑器",
+        "en": "Path Editor"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-gIBRKiYraoAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*drmQQb_VAUsAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
