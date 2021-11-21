@@ -1,3 +1,5 @@
+## @antv/x6-vector [1.2.4](https://github.com/antvis/x6/compare/@antv/x6-vector@1.2.3...@antv/x6-vector@1.2.4) (2021-11-21)
+
 ## @antv/x6-vector [1.2.4](https://github.com/antvis/x6/compare/@antv/x6-vector@1.2.3...@antv/x6-vector@1.2.4) (2021-11-20)
 
 ## @antv/x6-vector [1.2.4](https://github.com/antvis/x6/compare/@antv/x6-vector@1.2.3...@antv/x6-vector@1.2.4) (2021-11-16)
