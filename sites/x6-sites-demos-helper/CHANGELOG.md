@@ -1,3 +1,10 @@
+## @antv/x6-sites-demos-helper [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.2.1...@antv/x6-sites-demos-helper@1.2.2) (2021-11-21)
+
+
+### Bug Fixes
+
+* 🐛 change home path in speedup js ([#1369](https://github.com/antvis/x6/issues/1369)) ([31f8960](https://github.com/antvis/x6/commit/31f8960e72b0567bb13683e51db8b97207604c0b))
+
 ## @antv/x6-sites-demos-helper [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@1.2.1...@antv/x6-sites-demos-helper@1.2.2) (2021-11-08)
 
 
