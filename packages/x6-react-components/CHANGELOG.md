@@ -1,3 +1,12 @@
+## @antv/x6-react-components [1.1.16](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.15...@antv/x6-react-components@1.1.16) (2021-11-21)
+
+
+### Bug Fixes
+
+* 🐛 revert react-color version ([#1576](https://github.com/antvis/x6/issues/1576)) ([bcaa3a2](https://github.com/antvis/x6/commit/bcaa3a24bb5fa614d5c4299488af676000ed5b79))
+* fix react-color version to avoid bug ([#1571](https://github.com/antvis/x6/issues/1571)) ([d2d6d6c](https://github.com/antvis/x6/commit/d2d6d6c661d40ddaf3df2d794c3fbd67703a4027))
+* fix react-color version to avoid bug ([#1579](https://github.com/antvis/x6/issues/1579)) ([8c6ae95](https://github.com/antvis/x6/commit/8c6ae95ec39e71069f0d0791c99530f41b9f35aa))
+
 ## @antv/x6-react-components [1.1.15](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.14...@antv/x6-react-components@1.1.15) (2021-11-14)
 
 
