@@ -122,38 +122,38 @@ graph.addEdge({
 
 ## App Demos Build with X6
 
-### Flowchart
-
-A [flowchart](https://en.wikipedia.org/wiki/Flowchart) is a type of diagram that represents a workflow or process. A flowchart can also be defined as a diagrammatic representation of an algorithm, a step-by-step approach to solving a task.
-
-- Online Demo: [https://x6.antv.vision/apps/draw](https://x6.antv.vision/apps/draw)
-- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-draw](https://github.com/antvis/x6/tree/master/examples/x6-app-draw)
-
-<a href="https://x6.antv.vision/apps/draw" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vFqjSZ-dXKkAAAAAAAAAAAAAARQnAQ" alt="draw" />
-</a>
-
-### DAG
-
-DAG is short for [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph), which is a [directed graph](https://en.wikipedia.org/wiki/Directed_graph) with no [directed cycles](https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph). It was originally a common data structure in the computer field. Due to the excellent characteristics brought by the unique topology structure, it is often used to deal with dynamic programming, searching for the shortest path in navigation, data compression and other algorithms.
-
-- Online Demo: [https://x6.antv.vision/apps/dag](https://x6.antv.vision/apps/dag)
-- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-dag](https://github.com/antvis/x6/tree/master/examples/x6-app-dag)
-
-<a href="https://x6.antv.vision/apps/dag" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pJmUSoDLVWEAAAAAAAAAAAAAARQnAQ" alt="dag" />
-</a>
-
-### ERD
-
-An entity relationship diagram (ERD) shows the relationships of entity sets stored in a database. An entity in this context is an object, a component of data. An entity set is a collection of similar entities. These entities can have attributes that define its properties. By defining the entities, their attributes, and showing the relationships between them, an ER diagram illustrates the logical structure of databases.
-
-- Online Demo: [https://x6.antv.vision/apps/er](https://x6.antv.vision/apps/er)
-- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-er](https://github.com/antvis/x6/tree/master/examples/x6-app-er)
-
-<a href="https://x6.antv.vision/apps/er" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ" alt="er" />
-</a>
+<center>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#flowchart" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*JSr-RbwCgmcAAAAAAAAAAAAAARQnAQ" alt="Flow"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#dag" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*RPiGRaSus3UAAAAAAAAAAAAAARQnAQ" alt="Dag"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#mindmap" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="200" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*GsEGSaBkc84AAAAAAAAAAAAAARQnAQ" alt="MindMap"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#bpmn" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="200" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aPSySa8oz4sAAAAAAAAAAAAAARQnAQ" alt="BPMN"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#class" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OaCpR7t_mVoAAAAAAAAAAAAAARQnAQ" alt="Class"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#org" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FWx5SYDzLw4AAAAAAAAAAAAAARQnAQ" alt="ORG"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#er" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*7yVJQoM6-9AAAAAAAAAAAAAAARQnAQ" alt="ER"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#swimlane" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mUVrSJMkP1UAAAAAAAAAAAAAARQnAQ" alt="SwimLane"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#tree" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XDnNRqnj4WkAAAAAAAAAAAAAARQnAQ" alt="Tree"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#elk" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Z3ebTKy0w9cAAAAAAAAAAAAAARQnAQ" alt="ELK"/>
+  </a>
+</center>
 
 ## Communication
 
