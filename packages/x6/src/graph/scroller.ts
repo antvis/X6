@@ -44,7 +44,7 @@ export class ScrollerManager extends Base {
     }
     if (eventTypes.includes('rightMouseDown')) {
       this.onRightMouseDown = this.onRightMouseDown.bind(this)
-      this.view.$(this.graph.container).on('mousedown', this.onRightMouseDown)
+      this.view.$(this.widget!.container).on('mousedown', this.onRightMouseDown)
     }
   }
 
@@ -62,7 +62,9 @@ export class ScrollerManager extends Base {
       this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
     }
     if (eventTypes.includes('rightMouseDown')) {
-      this.view.$(this.graph.container).off('mousedown', this.onRightMouseDown)
+      this.view
+        .$(this.widget!.container)
+        .off('mousedown', this.onRightMouseDown)
     }
   }
 
