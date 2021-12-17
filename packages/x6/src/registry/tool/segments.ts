@@ -381,7 +381,7 @@ export namespace Segments {
     ) => Edge.TerminalCellData['anchor']
     createHandle?: (options: Handle.Options) => Handle
     processHandle?: (handle: Handle) => void
-    onChanged?: (options: { edge: Edge, edgeView: EdgeView }) => void
+    onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
   }
 
   export interface EventData {
