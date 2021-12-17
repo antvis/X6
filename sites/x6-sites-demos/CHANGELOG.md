@@ -1,3 +1,23 @@
+# @antv/x6-sites-demos [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.4...@antv/x6-sites-demos@1.2.0) (2021-12-17)
+
+
+### Bug Fixes
+
+* 🐛 update x6-react-shape version ([#1425](https://github.com/antvis/x6/issues/1425)) ([4208846](https://github.com/antvis/x6/commit/4208846337326d8983f1662faa8da67efd8568b4))
+
+
+### Features
+
+* ✨ add cell-editor tool ([#1202](https://github.com/antvis/x6/issues/1202)) ([98e80d1](https://github.com/antvis/x6/commit/98e80d10c9bfbd0c8486944dd212db2db731a225))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.28.2
+
 # @antv/x6-sites-demos [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.4...@antv/x6-sites-demos@1.2.0) (2021-11-08)
 
 
