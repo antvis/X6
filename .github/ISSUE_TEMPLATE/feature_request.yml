@@ -1,0 +1,53 @@
+name: 💡 Feature Request
+description: Create a feature request for X6
+labels: ["template: story"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a feature request! Please fill out this form as completely as possible.
+  - type: markdown
+    attributes:
+      value: 'Feature requests will be converted to the GitHub Discussions "💡 Ideas" section (https://github.com/antvis/X6/discussions/categories/ideas)'
+  - type: textarea
+    attributes:
+      label: Describe the feature you'd like to request
+      description: A clear and concise description of what you want and what your use case is. The more context & description you provide the team the better it will help us understand your problem and save time.
+    validations:
+      required: true
+  - type: textarea
+    id: describe_solution
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: describe_alternatives
+    attributes:
+      label: Describe alternatives you've considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: true
+  - type: input
+    id: code_link
+    attributes:
+      label: Your Example Website or App
+      description: |
+        Which website or app were you using when the bug happened?
+        Note:
+        - Your bug will may get fixed much faster if we can run your code and it doesn't have dependencies other than the G6 npm package.
+        - To create a shareable code example you can use Stackblitz (https://stackblitz.com/) or CodeSandbox (https://codesandbox.io/s/new). Please no localhost URLs.
+        - Please read these tips for providing a minimal example: https://stackoverflow.com/help/mcve.
+      placeholder: |
+        e.g. Stackblitz, Code Sandbox app url
+  - type: textarea
+    id: screenshots_or_videos
+    attributes:
+      label: Screenshots or Videos
+      description: |
+        If applicable, add screenshots or a video to help explain your problem.
+        Please do share examples (links, image, video etc) from other libraries or frameworks if you think that will help capture your idea.
+        For more information on the supported file image/file types and the file size limits, please refer
+        to the following link: https://docs.github.com/en/github/writing-on-github/working-with-advanced-formatting/attaching-files
+      placeholder: |
+        You can drag your video or image files inside of this editor ↓
