@@ -1,34 +1,33 @@
+简体中文 | [English](/README.en-us.md)
+
 <p align="center"><img src="/flow.svg"></p>
 
 <p align="center"><strong>X6 是 AntV 旗下的图编辑引擎</strong></p>
-<p align="center"><strong>提供了开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建流程图、DAG 图、ER 图等图应用。</strong></p>
+<p align="center"><strong>提供简单易用的节点定制能力和开箱即用的交互组件，方便我们快速搭建流程图、DAG 图、ER 图等图应用</strong></p>
+<p align="center"><a href="https://x6.antv.vision/zh/docs/tutorial/about">教程</a> • <a href="https://x6.antv.vision/zh/examples/gallery">示例</a> • <a href="https://x6.antv.vision/zh/docs/api/graph">API</a></p>
+
+<p align="center">
+<a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/workflow/status/antvis/x6/%F0%9F%91%B7%E3%80%80CI/master?logo=github&style=flat-square"></a>
+<a href="https://app.codecov.io/gh/antvis/X6"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/antvis/x6?logo=codecov&style=flat-square&token=15CO54WYUV"></a>
+<a href="https://lgtm.com/projects/g/antvis/x6/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square"></a>
+<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square"></a>
+<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=flat-square"></a>
+</p>
 
 <p align="center">
 <a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=flat-square" alt="MIT License"></a>
 <a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=flat-square"></a>
 <a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square"></a>
 <a href="https://x6.antv.vision"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=flat-square&logo=google-chrome&logoColor=0076D6"></a>
-<a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/workflow/status/antvis/x6/%F0%9F%91%B7%E3%80%80CI/master?logo=github&style=flat-square"></a>
-<a href="https://coveralls.io/github/antvis/x6"><img alt="coverage" src="https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square"></a>
-<a href="https://lgtm.com/projects/g/antvis/x6/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square"></a>
 </p>
 
-<p align="center">
-<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square"></a>
-<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=flat-square"></a>
-<a href="https://david-dm.org/antvis/x6"><img alt="NPM Dependencies" src="https://david-dm.org/antvis/x6.svg?style=flat-square"></a>
-<a href="https://david-dm.org/antvis/x6?path=packages/x6"><img alt="Dependency Status" src="https://david-dm.org/antvis/x6.svg?style=flat-square&path=packages/x6"></a>
-<a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
-</p>
-
-简体中文 | [English](/README.en-us.md)
 
 ## 特性
 
-- 🌱　极易定制：支持使用 SVG/HTML/React/Vue 定制节点样式和交互；
-- 🚀　开箱即用：内置 10+ 图编辑配套扩展，如框选、对齐线、小地图等；
-- 🧲　数据驱动：基于 MVC 架构，用户更加专注于数据逻辑和业务逻辑；
-- 💯　事件驱动：可以监听图表内发生的任何事件。
+- 🌱　极易定制：支持使用 SVG/HTML/React/Vue 定制节点样式和交互
+- 🚀　开箱即用：内置 10+ 图编辑配套扩展，如框选、对齐线、小地图等
+- 🧲　数据驱动：基于 MVC 架构，用户更加专注于数据逻辑和业务逻辑
+- 💯　事件驱动：完备的事件系统，可以监听图表内发生的任何事件
 
 ## 安装
 
@@ -126,38 +125,38 @@ graph.addEdge({
 
 ## 应用案例
 
-### 流程图
-
-[流程图](https://en.wikipedia.org/wiki/Flowchart)是常用用于表示业务流程。
-
-- 在线示例：[https://x6.antv.vision/apps/draw](https://x6.antv.vision/apps/draw)
-- 源码链接：[https://github.com/antvis/x6/tree/master/examples/x6-app-draw](https://github.com/antvis/x6/tree/master/examples/x6-app-draw)
-
-<a href="https://x6.antv.vision/apps/draw" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vFqjSZ-dXKkAAAAAAAAAAAAAARQnAQ" alt="draw" />
-</a>
-
-### DAG 图
-
-DAG是[有向无环图](https://en.wikipedia.org/wiki/Directed_acyclic_graph)的缩写，它是一个[有向](https://en.wikipedia.org/wiki/Directed_graph)，没有[环](https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph)的图形。它最初是计算机领域中一种常见的数据结构。由于其独特的拓扑结构所带来的优良特性，常被用于处理动态规划、导航中寻找最短路径、数据压缩等算法。
-
-- 在线示例：[https://x6.antv.vision/apps/dag](https://x6.antv.vision/apps/dag)
-- 源码链接：[https://github.com/antvis/x6/tree/master/examples/x6-app-dag](https://github.com/antvis/x6/tree/master/examples/x6-app-dag)
-
-<a href="https://x6.antv.vision/apps/dag" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pJmUSoDLVWEAAAAAAAAAAAAAARQnAQ" alt="dag" />
-</a>
-
-### ERD 图
-
-实体关系图 (ERD) 显示了存储在数据库中的实体集之间的关系。实体集是类似实体的集合，这些实体可以定义其属性，通过定义实体、它们的属性并显示它们之间的关系。ER 图经常用来说明了数据库的逻辑结构。
-
-- 在线示例：[https://x6.antv.vision/apps/er](https://x6.antv.vision/apps/er)
-- 源码链接：[https://github.com/antvis/x6/tree/master/examples/x6-app-er](https://github.com/antvis/x6/tree/master/examples/x6-app-er)
-
-<a href="https://x6.antv.vision/apps/er" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ" alt="er" />
-</a>
+<center>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#flowchart" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*JSr-RbwCgmcAAAAAAAAAAAAAARQnAQ" alt="Flow"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#dag" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*RPiGRaSus3UAAAAAAAAAAAAAARQnAQ" alt="Dag"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#mindmap" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="200" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*GsEGSaBkc84AAAAAAAAAAAAAARQnAQ" alt="MindMap"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#bpmn" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="200" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aPSySa8oz4sAAAAAAAAAAAAAARQnAQ" alt="BPMN"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#class" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OaCpR7t_mVoAAAAAAAAAAAAAARQnAQ" alt="Class"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#org" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FWx5SYDzLw4AAAAAAAAAAAAAARQnAQ" alt="ORG"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#er" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*7yVJQoM6-9AAAAAAAAAAAAAAARQnAQ" alt="ER"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#swimlane" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mUVrSJMkP1UAAAAAAAAAAAAAARQnAQ" alt="SwimLane"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#tree" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XDnNRqnj4WkAAAAAAAAAAAAAARQnAQ" alt="Tree"/>
+  </a>
+  <a href="https://x6.antv.vision/zh/examples/showcase/practices#elk" target="_blank" rel="noopener noreferrer">
+    <img width="400" height="250" style="margin-bottom: 20px" src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Z3ebTKy0w9cAAAAAAAAAAAAAARQnAQ" alt="ELK"/>
+  </a>
+</center>
 
 ## 如何交流
 
