@@ -1,3 +1,20 @@
+# @antv/x6 [1.29.0](https://github.com/antvis/x6/compare/@antv/x6@1.28.1...@antv/x6@1.29.0) (2021-12-17)
+
+
+### Bug Fixes
+
+* 🐛 fix lint error ([#1649](https://github.com/antvis/x6/issues/1649)) ([f793682](https://github.com/antvis/x6/commit/f7936826f026169ccf094cee28f54bb13d15ef9b))
+* 🐛 get children or parent delay ([#1641](https://github.com/antvis/x6/issues/1641)) ([8508b91](https://github.com/antvis/x6/commit/8508b91da297fef7819d6404854f4592466dec62))
+* 🐛 listen mousedown event on scroller container ([#1642](https://github.com/antvis/x6/issues/1642)) ([7687cb2](https://github.com/antvis/x6/commit/7687cb201a7b2be38b67524f99d4226b9e3e30d1))
+* 🐛 release x6 v1.28.2 ([#1654](https://github.com/antvis/x6/issues/1654)) ([745b90a](https://github.com/antvis/x6/commit/745b90ac94dbbd9443ecf1456e6a5aa9eb646594))
+* 🐛 update x6 version ([#1655](https://github.com/antvis/x6/issues/1655)) ([07037be](https://github.com/antvis/x6/commit/07037beb59537d0feaa47ac1ab629d8c9b8c3a8b))
+* 🐛 update x6-vector version ([#1656](https://github.com/antvis/x6/issues/1656)) ([d4d2125](https://github.com/antvis/x6/commit/d4d21251cc42d263327ea72edb8a038d7ef71c89))
+
+
+### Features
+
+* ✨ update x6 and x6-vector version ([#1659](https://github.com/antvis/x6/issues/1659)) ([a199b59](https://github.com/antvis/x6/commit/a199b590d5f108b51162e276b432fbb3737d2c14))
+
 ## @antv/x6 [1.28.1](https://github.com/antvis/x6/compare/@antv/x6@1.28.0...@antv/x6@1.28.1) (2021-10-08)
 
 
