@@ -3,7 +3,7 @@ import { Point } from '../../geometry'
 import { Graph } from '../../graph'
 import { View } from '../../view/view'
 import { EdgeView } from '../../view/edge'
-import { Edge } from './../../model/edge'
+import { Edge } from '../../model/edge'
 import { ToolsView } from '../../view/tool'
 import { Attr } from '../attr'
 
@@ -287,7 +287,7 @@ export namespace Vertices {
     attrs?: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
     createHandle?: (options: Handle.Options) => Handle
     processHandle?: (handle: Handle) => void
-    onChanged?: (options: { edge: Edge, edgeView: EdgeView }) => void
+    onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
   }
 }
 
