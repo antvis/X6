@@ -1,3 +1,18 @@
+## @antv/x6-svg-to-shape [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.4...@antv/x6-svg-to-shape@1.0.5) (2021-12-17)
+
+
+### Bug Fixes
+
+* 🐛 fix lint error ([#1649](https://github.com/antvis/x6/issues/1649)) ([f793682](https://github.com/antvis/x6/commit/f7936826f026169ccf094cee28f54bb13d15ef9b))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.28.2
+
 ## @antv/x6-svg-to-shape [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.3...@antv/x6-svg-to-shape@1.0.4) (2021-12-13)
 
 
