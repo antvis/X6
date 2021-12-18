@@ -1,3 +1,15 @@
+# @antv/x6-vector [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-vector@1.2.3...@antv/x6-vector@1.3.0) (2021-12-18)
+
+
+### Bug Fixes
+
+* 🐛 update x6-vector version ([#1656](https://github.com/antvis/x6/issues/1656)) ([d4d2125](https://github.com/antvis/x6/commit/d4d21251cc42d263327ea72edb8a038d7ef71c89))
+
+
+### Features
+
+* ✨ update x6 and x6-vector version ([#1659](https://github.com/antvis/x6/issues/1659)) ([a199b59](https://github.com/antvis/x6/commit/a199b590d5f108b51162e276b432fbb3737d2c14))
+
 # @antv/x6-vector [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-vector@1.2.3...@antv/x6-vector@1.3.0) (2021-12-17)
 
 
