@@ -3,6 +3,7 @@ description: 给 X6 提出新的功能要求。
 labels: ["template: story"]
 body:
   - type: textarea
+    id: describe_feature
     attributes:
       label: 功能描述
       description: 请尽可能详尽地说明这个功能的场景以及解决了什么问题。
