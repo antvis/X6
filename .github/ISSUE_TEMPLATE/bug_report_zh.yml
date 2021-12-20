@@ -20,7 +20,7 @@ body:
     attributes:
       label: 重现链接
       description: |
-        可以使用 CodeSandbox（https://codesandbox.io/s/new）或者 StackBlitz（https://stackblitz.com/）重现你的问题。
+        可以使用 CodeSandbox(https://codesandbox.io/s/new) 或者 StackBlitz(https://stackblitz.com/) 重现你的问题。
       placeholder: |
         示例: CodeSandBox 或者 StackBlitz URL
     validations:
