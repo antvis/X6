@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.4.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.4.2) (2021-12-20)
+
+
+### Bug Fixes
+
+* 🐛 release x6 v1.28.2 ([#1654](https://github.com/antvis/x6/issues/1654)) ([745b90a](https://github.com/antvis/x6/commit/745b90ac94dbbd9443ecf1456e6a5aa9eb646594))
+
 ## @antv/x6-sites [1.4.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.4.2) (2021-12-18)
 
 
