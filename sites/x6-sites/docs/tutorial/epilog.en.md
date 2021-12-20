@@ -2,8 +2,8 @@
 title: 常见问题
 order: 9
 redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
+  - /zh/docs
+  - /zh/docs/tutorial
 ---
 
 1.	一般问题
@@ -11,6 +11,7 @@ redirect_from:
     2. [X6 支持 Vue 吗](#x6-支持-vue-吗)
     3. [X6 浏览器兼容性](#浏览器兼容性)
     4. [怎么解决 angular 项目类型报错](#怎么解决-angular-项目类型报错)
+    5. [导出图片样式缺失](#导出图片样式缺失)
 2.	节点相关
     1. [怎么禁止节点移动](#怎么禁止节点移动)
     2. [怎么支持特定节点的放大缩小](#怎么支持特定节点的放大缩小)
@@ -45,6 +46,22 @@ X6 的核心能力和框架无关，在 X6 的基础上我们有 [x6-react-shape
 "compilerOptions": {
   "skipLibCheck": true,
 },
+```
+
+#### 导出图片样式缺失
+
+在 React/Vue/Angular/HTML 节点中，导出图片时会出现样式缺失的现象，暂时解决方案，将缺失的样式补充到 `stylesheet` 属性中或者使用行内样式:
+
+```ts
+this.graph.toSVG((dataUri: string) => {
+  // todo
+}, {
+  stylesheet: `
+    .my-element {
+      font-size: 12px;
+    }
+  ` 
+})
 ```
 
 ### 怎么禁止节点移动
@@ -90,7 +107,6 @@ HTML/React/Vue 节点内容都是渲染在 SVG 的 [foreignObject](https://devel
 - 节点内部元素的 css 样式中不要使用 `opacity`
 
 以上是实践过程中的临时解决方案，后续我们也会采用新的技术方案来彻底解决这个问题。
-
 ### node:moved 事件中 x、y 参数
 
 在 `node:moved` 事件中参数中，`x`、`y` 参数经常引起歧义，这里说明一下：`x` 和 `y` 指定的是鼠标相对于画布的位置，而不是节点的位置，要获取节点的位置，可以：
