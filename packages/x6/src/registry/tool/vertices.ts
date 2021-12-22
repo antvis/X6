@@ -262,7 +262,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     edgeView.cell.startBatch('add-vertex', { ui: true, toolId: this.cid })
     const index = edgeView.getVertexIndex(vertex.x, vertex.y)
     this.snapVertex(vertex, index)
-    edgeView.cell.setVertexAt(index, vertex, {
+    edgeView.cell.insertVertex(vertex, index, {
       ui: true,
       toolId: this.cid,
     })
