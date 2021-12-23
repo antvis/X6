@@ -166,7 +166,8 @@ graph.addEdge({
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&_dt_no_comment=1&origin=11" target="_blank" rel="noopener noreferrer">
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Up-4S4v8H-0AAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群1" width="375" />
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*5FhnSb3ewfQAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群2" width="375" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4Y_5S7i26LAAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群2" width="375" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*KHB4QJAsW4QAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群3" width="375" />
 </a>
 
 ## 如何开发
