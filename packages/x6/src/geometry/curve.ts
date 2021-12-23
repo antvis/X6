@@ -788,16 +788,20 @@ export namespace Curve {
     const tag = instance[Symbol.toStringTag]
     const curve = instance as Curve
 
-    if (
-      (tag == null || tag === toStringTag) &&
-      Point.isPoint(curve.start) &&
-      Point.isPoint(curve.controlPoint1) &&
-      Point.isPoint(curve.controlPoint2) &&
-      Point.isPoint(curve.end) &&
-      typeof curve.toPoints === 'function' &&
-      typeof curve.toPolyline === 'function'
-    ) {
-      return true
+    try {
+      if (
+        (tag == null || tag === toStringTag) &&
+        Point.isPoint(curve.start) &&
+        Point.isPoint(curve.controlPoint1) &&
+        Point.isPoint(curve.controlPoint2) &&
+        Point.isPoint(curve.end) &&
+        typeof curve.toPoints === 'function' &&
+        typeof curve.toPolyline === 'function'
+      ) {
+        return true
+      }
+    } catch (e) {
+      return false
     }
 
     return false
