@@ -1,3 +1,11 @@
+## @antv/x6 [1.29.1](https://github.com/antvis/x6/compare/@antv/x6@1.29.0...@antv/x6@1.29.1) (2021-12-24)
+
+
+### Bug Fixes
+
+* 🐛 add exception check for isLine and isCurve ([#1686](https://github.com/antvis/x6/issues/1686)) ([25c17b7](https://github.com/antvis/x6/commit/25c17b7679589b065c77625526ac0884fef05035))
+* 🐛 unexpected feedback in "vertices" edge tool ([#1680](https://github.com/antvis/x6/issues/1680)) ([307584f](https://github.com/antvis/x6/commit/307584f017cedcaf9bc4f4e5b4eefdcabcb35926)), closes [antvis/X6#1679](https://github.com/antvis/X6/issues/1679)
+
 # @antv/x6 [1.29.0](https://github.com/antvis/x6/compare/@antv/x6@1.28.1...@antv/x6@1.29.0) (2021-12-17)
 
 
