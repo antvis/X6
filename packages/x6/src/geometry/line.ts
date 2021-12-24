@@ -531,16 +531,20 @@ export namespace Line {
     const tag = instance[Symbol.toStringTag]
     const line = instance as Line
 
-    if (
-      (tag == null || tag === toStringTag) &&
-      Point.isPoint(line.start) &&
-      Point.isPoint(line.end) &&
-      typeof line.vector === 'function' &&
-      typeof line.bearing === 'function' &&
-      typeof line.parallel === 'function' &&
-      typeof line.intersect === 'function'
-    ) {
-      return true
+    try {
+      if (
+        (tag == null || tag === toStringTag) &&
+        Point.isPoint(line.start) &&
+        Point.isPoint(line.end) &&
+        typeof line.vector === 'function' &&
+        typeof line.bearing === 'function' &&
+        typeof line.parallel === 'function' &&
+        typeof line.intersect === 'function'
+      ) {
+        return true
+      }
+    } catch (e) {
+      return false
     }
 
     return false
