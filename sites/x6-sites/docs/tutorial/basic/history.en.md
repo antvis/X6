@@ -1,5 +1,5 @@
 ---
-title: 撤销/重做 Redo/Undo
+title: 撤销/重做 Undo/Redo
 order: 7
 redirect_from:
   - /en/docs
