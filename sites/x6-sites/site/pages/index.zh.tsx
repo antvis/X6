@@ -10,20 +10,17 @@ const IndexPage = () => {
   const { t, i18n } = useTranslation()
   const features = [
     {
-      icon:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aiSwSLVyR14AAAAAAAAAAAAAARQnAQ',
+      icon: 'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aiSwSLVyR14AAAAAAAAAAAAAARQnAQ',
       title: t('快速上手，极易定制'),
       description: t('提供基于低学习成本的 SVG/HTML/CSS 的节点定制能力'),
     },
     {
-      icon:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*zNTESJL7HJgAAAAAAAAAAAAAARQnAQ',
+      icon: 'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*zNTESJL7HJgAAAAAAAAAAAAAARQnAQ',
       title: t('组件完备，开箱即用'),
       description: t('内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等'),
     },
     {
-      icon:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vQNVQoydZIIAAAAAAAAAAAAAARQnAQ',
+      icon: 'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vQNVQoydZIIAAAAAAAAAAAAAARQnAQ',
       title: t('灵活，可扩展'),
       description: t(
         '画布、节点、边、属性、工具等均可以通过注册机制自由、灵活扩展',
@@ -33,43 +30,35 @@ const IndexPage = () => {
   const companies = [
     {
       name: '阿里云',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*V_xMRIvw2iwAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*V_xMRIvw2iwAAAAAAAAAAABkARQnAQ',
     },
     {
       name: '支付宝',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*lYDrRZvcvD4AAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*lYDrRZvcvD4AAAAAAAAAAABkARQnAQ',
     },
     {
       name: '天猫',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*BQrxRK6oemMAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*BQrxRK6oemMAAAAAAAAAAABkARQnAQ',
     },
     {
       name: '淘宝网',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*1l8-TqUr7UcAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*1l8-TqUr7UcAAAAAAAAAAABkARQnAQ',
     },
     {
       name: '网商银行',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ZAKFQJ5Bz4MAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ZAKFQJ5Bz4MAAAAAAAAAAABkARQnAQ',
     },
     {
       name: '京东',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*yh-HRr3hCpgAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*yh-HRr3hCpgAAAAAAAAAAABkARQnAQ',
     },
     {
       name: 'yunos',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_js7SaNosUwAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_js7SaNosUwAAAAAAAAAAABkARQnAQ',
     },
     {
       name: '菜鸟',
-      img:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*TgV-RZDODJIAAAAAAAAAAABkARQnAQ',
+      img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*TgV-RZDODJIAAAAAAAAAAABkARQnAQ',
     },
   ]
   const bannerButtons = [
@@ -87,57 +76,22 @@ const IndexPage = () => {
   const notifications = [
     {
       type: 'News',
-      title: 'X6 1.0 正式发布！',
-      date: '2020.11.22',
-      link: 'https://www.yuque.com/antv/blog/2020x6',
+      title: 'X6：深度打磨，日臻完善',
+      date: '2021.11.22',
+      link: 'https://www.yuque.com/antv/blog/2021x6',
     },
   ]
-
-  const cases = [
-    {
-      name: 'dag',
-      desc: 'DAG',
-      image:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pJmUSoDLVWEAAAAAAAAAAAAAARQnAQ',
-      href: 'https://x6.antv.vision/apps/dag/',
-    },
-    {
-      name: 'draw',
-      desc: '流程图',
-      image:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vFqjSZ-dXKkAAAAAAAAAAAAAARQnAQ',
-      href: 'https://x6.antv.vision/apps/draw/',
-    },
-    {
-      name: 'er',
-      desc: 'ER',
-      image:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ',
-      href: 'https://x6.antv.vision/apps/er/',
-    },
-  ]
-
-  const goWebSites = (url: string) => {
-    window.open(url, '_blank')
-  }
 
   return (
     <>
       <SEO title={t('X6 图编辑引擎')} titleSuffix="AntV" lang={i18n.language} />
       <Banner
         coverImage={
-          <div className="gallery">
-            {cases.map((item) => (
-              <div
-                key={item.name}
-                className={item.name}
-                desc={item.desc}
-                onClick={goWebSites.bind(this, item.href)}
-              >
-                <img src={item.image} alt={item.desc} />
-              </div>
-            ))}
-          </div>
+          <img
+            style={{ marginTop: 80 }}
+            src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tDVBQoFQkskAAAAAAAAAAAAAARQnAQ"
+            alt="X6"
+          />
         }
         title={t('X6 图编辑引擎')}
         description={t(
