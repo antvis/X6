@@ -16,7 +16,12 @@ const graph = new Graph({
     maxScale: 3,
   },
   connecting: {
-    router: 'manhattan',
+    router: {
+      name: 'manhattan',
+      args: {
+        padding: 1,
+      },
+    },
     connector: {
       name: 'rounded',
       args: {
