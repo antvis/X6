@@ -15,10 +15,6 @@ export default class Example extends React.Component {
     message.success(`${name} clicked`, 10)
   }
 
-  onMenuItemClick = () => {
-    this.onMenuClick('undo')
-  }
-
   render() {
     return (
       <div style={{ height: 240, padding: 32 }}>
@@ -34,16 +30,28 @@ export default class Example extends React.Component {
         >
           <Menubar extra={<div>Extra Component</div>}>
             <MenubarItem text="File">
-              <Menu>
-                <MenuItem hotkey="Cmd+N">New File</MenuItem>
-                <MenuItem hotkey="Cmd+Shift+N">New Window</MenuItem>
+              <Menu onClick={this.onMenuClick}>
+                <MenuItem name="newFile" hotkey="Cmd+N">
+                  New File
+                </MenuItem>
+                <MenuItem name="newWindow" hotkey="Cmd+Shift+N">
+                  New Window
+                </MenuItem>
                 <Divider />
-                <MenuItem hotkey="Cmd+O">Open...</MenuItem>
-                <MenuItem>Open Workspace...</MenuItem>
+                <MenuItem name="open" hotkey="Cmd+O">
+                  Open...
+                </MenuItem>
+                <MenuItem name="openWorkspace">Open Workspace...</MenuItem>
                 <Divider />
-                <MenuItem hotkey="Cmd+S">Save</MenuItem>
-                <MenuItem hotkey="Cmd+Shift+S">Save As...</MenuItem>
-                <MenuItem hotkey="Cmd+Alt+S">Save All</MenuItem>
+                <MenuItem name="save" hotkey="Cmd+S">
+                  Save
+                </MenuItem>
+                <MenuItem name="saveAs" hotkey="Cmd+Shift+S">
+                  Save As...
+                </MenuItem>
+                <MenuItem name="saveAll" hotkey="Cmd+Alt+S">
+                  Save All
+                </MenuItem>
               </Menu>
             </MenubarItem>
             <MenubarItem text="Edit">
