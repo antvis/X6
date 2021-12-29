@@ -410,10 +410,12 @@ Graph.registerVueComponent(
   true
 );
 ```
-对应的构造节点的方式也要对应变化，component属性必须使用id形式，不可直接使用vue组件选项相关对象属性
+
+对应的构造节点的方式也要对应变化，component属性必须使用id形式，不可直接使用vue组件选项相关对象属性。
 
 使用graph构造节点
-```
+
+```ts
 import Count from 'Count.vue'
 
 const data = { num: 0 }
@@ -440,8 +442,10 @@ graph.addNode({
   component: 'count-component' //这里就是不同的地方，需要使用Graph.registerVueComponent注册时的id
 });
 ```
+
 或者`VueShape`来构造节点
-```
+
+```ts
 import { VueShape } from '@antv/x6-vue-shape';
 const myVueNode = new VueShape({
   width: 200,
