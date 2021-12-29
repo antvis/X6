@@ -396,11 +396,11 @@ export default ({
 [详细 demo](https://codesandbox.io/s/vue-shape-8ciig)
 
 [[warning]]
-| 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.toJSON()` 方法导出画布数据。我们同样提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
+| 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.JSON()`和`graph.fromJSON()` 方法正确导出和导入画布数据，因此我们提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
 
 ```ts
 Graph.registerVueComponent(
-  "count-component",
+  'count-component',
   {
     template: `<count></count>`,
     components: {
@@ -409,6 +409,58 @@ Graph.registerVueComponent(
   },
   true
 );
+```
+
+对应的构造节点的方式也要对应变化，component属性必须使用id形式，不可直接使用vue组件选项相关对象属性。
+
+使用graph构造节点
+
+```ts
+import Count from 'Count.vue'
+
+const data = { num: 0 }
+const graph = new Graph({
+  container: document.getElementById('app'),
+  width: 600,
+  height: 600,
+  grid: true,
+});
+
+graph.addNode({
+  shape: 'vue-shape',
+  width: 200,
+  height: 200,
+  x: 100,
+  y: 100,
+  attrs: {
+    body: {
+      width: 200,
+      height: 200,
+      stroke: 'red',
+    }
+  },
+  component: 'count-component' //这里就是不同的地方，需要使用Graph.registerVueComponent注册时的id
+});
+```
+
+或者`VueShape`来构造节点
+
+```ts
+import { VueShape } from '@antv/x6-vue-shape';
+const myVueNode = new VueShape({
+  width: 200,
+  height: 200,
+  x: 100,
+  y: 100,
+  attrs: {
+    body: {
+      width: 200,
+      height: 200,
+      stroke: 'red',
+    }
+  },
+  component: 'count-component' //这里就是不同的地方，需要使用Graph.registerVueComponent注册时的id
+});
 ```
 
 ### 渲染 Angular 节点
