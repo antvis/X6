@@ -1,3 +1,16 @@
+## @antv/x6-example-features [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.1...@antv/x6-example-features@1.2.2) (2021-12-30)
+
+
+### Bug Fixes
+
+* 🐛 optimize contextmenu tools ([#1391](https://github.com/antvis/x6/issues/1391)) ([cc01fdf](https://github.com/antvis/x6/commit/cc01fdf208f4fbd283a6ce3d7a106716e8e10300))
+* 🐛 update x6-react-shape version ([#1425](https://github.com/antvis/x6/issues/1425)) ([4208846](https://github.com/antvis/x6/commit/4208846337326d8983f1662faa8da67efd8568b4))
+
+
+### Performance Improvements
+
+* ⚡️ add simple config to remove rect and text element ([#1449](https://github.com/antvis/x6/issues/1449)) ([0b5f241](https://github.com/antvis/x6/commit/0b5f2413f0b907316784149027615ae2d09616a4))
+
 ## @antv/x6-example-features [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.1...@antv/x6-example-features@1.2.2) (2021-12-28)
 
 
