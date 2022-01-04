@@ -252,7 +252,7 @@ const source = graph.addNode({
 
 ```ts
 // 双击进入编辑模式
-graph.on('node:dblclick', ({ cell, e }) => {
+graph.on('node:dblclick', ({ node, e }) => {
   node.addTools({
     name: 'node-editor',
     args: {
