@@ -1447,7 +1447,7 @@ export namespace Model {
         }
       }
       throw new Error(
-        'The `shape` should be specipied when creating a node/edge instance',
+        'The `shape` should be specified when creating a node/edge instance',
       )
     })
   }
