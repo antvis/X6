@@ -118,7 +118,7 @@ const graph = new Graph({
   snapline: {
     enabled: true,
     filter(node) {
-      return node.type === 'rect'
+      return node.shape === 'rect'
     },
   },
 })

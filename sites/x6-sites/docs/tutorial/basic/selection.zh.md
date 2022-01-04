@@ -167,7 +167,7 @@ const graph = new Graph({
   selecting: {
     enabled: true,
     filter(node) {
-      return node.type === 'rect'
+      return node.shape === 'rect'
     },
   },
 })
