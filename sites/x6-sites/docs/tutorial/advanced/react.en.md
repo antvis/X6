@@ -2,9 +2,9 @@
 title: 使用 HTML/React/Vue/Angular 渲染
 order: 4
 redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/advanced
+  - /en/docs
+  - /en/docs/tutorial
+  - /en/docs/tutorial/advanced
 ---
 
 在 SVG 中有一个特殊的 `<foreignObject>` 元素，在该元素中可以内嵌任何 XHTML 元素，所以我们可以借助该元素来渲染 HTML 元素和 React 组件到需要位置。
@@ -96,10 +96,6 @@ const node = graph.addNode({
 [[warning]]
 | 需要注意的是，当 `html` 属性为 HTML 元素或函数时，将不能通过 `graph.toJSON()` 方法导出画布数据。所以我们提供了以下两种方案来解决数据导出问题。
 
-**方案一**
-
-使用 `Graph.registerHTMLComponent(...)` 方法将 HTML 元素或返回 HTML 元素的函数注册到系统中。
-
 ```ts
 // 注册 HTML 元素
 Graph.registerHTMLComponent('my-html1', elem)
@@ -126,23 +122,6 @@ graph.addNode({
   html: 'my-html1',
 })
 ```
-
-**方案二**
-
-创建 Graph 时通过 `getHTMLComponent` 选项来动态返回节点的 HTML 元素。
-
-```ts
-const graph = new Graph({
-  getHTMLComponent(node) {
-    const data = node.getData()
-    if (data.flag) {
-      return document.createElement('div')
-    }
-    return document.createElement('p')
-  }
-})
-```
-
 ### 渲染 React 节点
 
 我们提供了一个独立的包 `@antv/x6-react-shape` 来使用 React 渲染节点。
@@ -261,6 +240,33 @@ export const App: React.FC<{}> = () => {
 
 **方案一**
 
+使用 `Graph.registerNode(...)` 方法将 React 组件注册到系统中。
+
+```ts
+Graph.registerNode('my-node', {
+  inherit: 'react-shape',
+  x: 200,
+  y: 150,
+  width: 150,
+  height: 100,
+  component: <MyComponent />
+})
+```
+
+然后将节点的 `shape` 属性指定为注册的节点名称
+
+```ts
+graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  shape: 'my-node',
+})
+```
+
+**方案二**
+
 使用 `Graph.registerReactComponent(...)` 方法将 React 组件或返回 React 组件的函数注册到系统中。
 
 ```ts
@@ -287,22 +293,6 @@ graph.addNode({
 })
 ```
 
-**方案二**
-
-创建 Graph 时通过 `getReactComponent` 选项来动态返回节点的 React 组件。
-
-```ts
-const graph = new Graph({
-  getReactComponent(node: ReactShape) {
-    const data = node.getData()
-    if (data.flag) {
-      return (<div>{data.text}</div>)
-    }
-
-    return (<MyComponent text="Hello" />)
-  }
-})
-```
 
 ### 渲染 Vue 节点
 
@@ -328,41 +318,37 @@ import '@antv/x6-vue-shape'
 ```tsx
 import Count from 'Count.vue'
 
-const data = { num: 0 }
 const graph = new Graph({
-  container: document.getElementById('app'),
+  container: document.getElementById("app"),
   width: 600,
-  height: 600,
+  height: 400,
   grid: true,
 });
 
-graph.addNode({
-  shape: 'vue-shape',
-  width: 200,
-  height: 200,
-  x: 100,
-  y: 100,
-  attrs: {
-    body: {
-      width: 200,
-      height: 200,
-      stroke: 'red',
-    }
-  },
+Graph.registerNode("my-count", {
+  inherit: "vue-shape",
+  x: 200,
+  y: 150,
+  width: 150,
+  height: 100,
   component: {
-    template: `<count :num="num" @add="add()"></count>`,
-    data() {
-      return data
-    },
-    methods: {
-      add: () => {
-        data.num += 1
-      }
-    },
+    template: `<Count />`,
     components: {
       Count,
-    }
-  }
+    },
+  },
+});
+
+graph.addNode({
+  id: "1",
+  shape: "my-count",
+  x: 400,
+  y: 150,
+  width: 150,
+  height: 100,
+  data: {
+    num: 0,
+  },
 });
 ```
 
@@ -371,38 +357,86 @@ graph.addNode({
 ```vue
 <template>
   <div>
-    <div>{{ num }}</div>
-    <button @click="click()">add</button>
+    <el-button @click="add()">内部Add: {{ num }} </el-button>
   </div>
 </template>
 
 <script>
-export default ({
-  name: 'Count',
-  props: {
-    num: Number
+export default {
+  name: "Count",
+  inject: ["getGraph", "getNode"],
+  data() {
+    return {
+      num: 0,
+    };
   },
-  inject: ['getGraph', 'getNode'],
+  mounted() {
+    const self = this;
+    const node = this.getNode();
+    // 监听数据改变事件
+    node.on("change:data", ({ current }) => {
+      self.num = current.num;
+    });
+  },
   methods: {
-    click() {
-      this.$emit('add')
-      this.getNode().attr('body/strokeWidth', this.num + 1)
-    }
-  }
-});
+    add() {
+      const node = this.getNode();
+      const { num } = node.getData();
+      node.setData({
+        num: num + 1,
+      });
+    },
+  },
+};
 </script>
 ```
 
 [详细 demo](https://codesandbox.io/s/vue-shape-8ciig)
 
 [[warning]]
-| 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.toJSON()` 和 `graph.fromJSON()` 方法正确导出和导入画布数据，因此我们提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
+| 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.JSON()`和`graph.fromJSON()` 方法正确导出和导入画布数据，因此我们提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
+
+**方案一**
+
+使用 `Graph.registerNode(...)` 方法将 Vue 组件注册到系统中。
+
+```ts
+Graph.registerNode("my-count", {
+  inherit: "vue-shape",
+  x: 200,
+  y: 150,
+  width: 150,
+  height: 100,
+  component: {
+    template: `<Count />`,
+    components: {
+      Count,
+    },
+  },
+});
+```
+
+然后将节点的 `shape` 属性指定为注册的节点名称
+
+```ts
+graph.addNode({
+  shape: "my-count",
+  x: 400,
+  y: 150,
+  width: 150,
+  height: 100,
+});
+```
+
+**方案二**
+
+使用 `Graph.registerVueComponent(...)` 方法将 Vue 组件注册到系统中。
 
 ```ts
 Graph.registerVueComponent(
-  'count-component',
+  "count",
   {
-    template: `<count></count>`,
+    template: `<Count />`,
     components: {
       Count,
     },
@@ -411,56 +445,17 @@ Graph.registerVueComponent(
 );
 ```
 
-对应的构造节点的方式也要对应变化，component属性必须使用id形式，不可直接使用vue组件选项相关对象属性。
-
-使用graph构造节点
+然后将节点的 `component` 属性指定为注册的组件名。
 
 ```ts
-import Count from 'Count.vue'
-
-const data = { num: 0 }
-const graph = new Graph({
-  container: document.getElementById('app'),
-  width: 600,
-  height: 600,
-  grid: true,
-});
-
 graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
   shape: 'vue-shape',
-  width: 200,
-  height: 200,
-  x: 100,
-  y: 100,
-  attrs: {
-    body: {
-      width: 200,
-      height: 200,
-      stroke: 'red',
-    }
-  },
-  component: 'count-component' //这里就是不同的地方，需要使用Graph.registerVueComponent注册时的id
-});
-```
-
-或者`VueShape`来构造节点
-
-```ts
-import { VueShape } from '@antv/x6-vue-shape';
-const myVueNode = new VueShape({
-  width: 200,
-  height: 200,
-  x: 100,
-  y: 100,
-  attrs: {
-    body: {
-      width: 200,
-      height: 200,
-      stroke: 'red',
-    }
-  },
-  component: 'count-component' //这里就是不同的地方，需要使用Graph.registerVueComponent注册时的id
-});
+  component: 'count',
+})
 ```
 
 ### 渲染 Angular 节点
@@ -476,9 +471,18 @@ yarn add @antv/x6-angular-shape
 
 ```
 
-#### 使用
+将Angular component作为节点渲染，并且允许你传递参数给组件。
+```ts
+import { Component, Input } from '@angular/core';
 
-将Angular component作为节点渲染。
+@Component({
+  selector: 'app-node',
+  template: `<div>{{ title }}</div>`
+})
+export class NodeComponent {
+  @Input() title: string;
+}
+```
 ```ts
 // other package from angular
 import '@antv/x6-angular-shape'
@@ -493,6 +497,13 @@ export class AppComponent {
   addAngularComponent(): void {
     Graph.registerAngularContent('demo-component', { injector: this.injector, content: NodeComponent });
     this.graph.addNode({
+      data: {
+        // You can pass data to the component, only if you wrap attribute with ngArguments
+        ngArguments: {
+          // Declare @Input() in the component, then it will be assignmented
+          title: 'Angular Component'
+        }
+      },
       x: 40,
       y: 40,
       width: 160,
@@ -504,10 +515,10 @@ export class AppComponent {
 }
 ```
 
-将Angular template作为节点渲染。
+将Angular template作为节点渲染，并且允许你传递参数给模板。
 ```html
-<ng-template #demoTpl>
-  <div>Angular Template</div>
+<ng-template #demoTpl let-data="ngArguments">
+  <div>{{ data.title }}</div>
 </ng-template>
 ```
 ```ts
@@ -524,19 +535,22 @@ export class AppComponent {
   addAngularTemplate(): void {
     Graph.registerAngularContent('demo-template', { injector: this.injector, content: this.demoTpl });
     this.graph.addNode({
+      data: {
+        ngArguments: {
+          title: 'Angular Template'
+        }
+      },
       x: 240,
       y: 40,
       width: 160,
       height: 30,
       shape: 'angular-shape',
       componentName: 'demo-template'
-    });
   }
 }
 ```
 
 在注册函数中, 使用回调函数进行渲染，这种方式使得你可以读取节点中的一些属性。
-
 ```ts
 // other package from angular
 import '@antv/x6-angular-shape'
@@ -555,6 +569,11 @@ export class AppComponent {
       return { injector: this.injector, content: this.demoTpl };
     });
     this.graph.addNode({
+      data: {
+        ngArguments: {
+          title: 'Angular Callback'
+        }
+      },
       x: 240,
       y: 40,
       width: 160,
