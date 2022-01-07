@@ -98,6 +98,14 @@ const dnd = new Addon.Dnd({
 })
 ```
 
+4.怎么获取放置到画布上节点的位置？
+
+```ts
+graph.on('node:added', ({ node }) => {
+  const { x, y } = node.position()
+})
+```
+
 ## Stencil
 
 Stencil 是 `Addon` 命名空间中的一个插件，是在 Dnd 基础上的进一步封装，提供了一个类似侧边栏的 UI 组件，并支持分组、折叠、搜索等能力。
