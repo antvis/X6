@@ -1,3 +1,13 @@
+## @antv/x6-app-draw [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.5...@antv/x6-app-draw@1.1.6) (2022-01-07)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.29.2
+
 ## @antv/x6-app-draw [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.5...@antv/x6-app-draw@1.1.6) (2021-12-30)
 
 ## @antv/x6-app-draw [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.5...@antv/x6-app-draw@1.1.6) (2021-12-28)
