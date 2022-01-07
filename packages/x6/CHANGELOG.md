@@ -1,3 +1,11 @@
+## @antv/x6 [1.29.2](https://github.com/antvis/x6/compare/@antv/x6@1.29.1...@antv/x6@1.29.2) (2022-01-07)
+
+
+### Bug Fixes
+
+* 🐛 add zindex for x6-widget-dne ([#1722](https://github.com/antvis/x6/issues/1722)) ([bf5b932](https://github.com/antvis/x6/commit/bf5b9329bd0d929ecba66c82af7f1ad934663669))
+* fix typo in model ([#1720](https://github.com/antvis/x6/issues/1720)) ([4119a1e](https://github.com/antvis/x6/commit/4119a1e62420e765dedac55311ca80d9c5c4441b))
+
 ## @antv/x6 [1.29.1](https://github.com/antvis/x6/compare/@antv/x6@1.29.0...@antv/x6@1.29.1) (2021-12-24)
 
 
