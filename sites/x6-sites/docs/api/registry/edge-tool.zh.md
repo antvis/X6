@@ -36,7 +36,7 @@ edge.addTools([
 ])
 ```
 
-场景二：鼠动态添加/删除小工具。
+场景二：鼠标动态添加/删除小工具。
 
 ```ts
 graph.on('edge:mouseenter', ({ cell }) => {
@@ -49,7 +49,7 @@ graph.on('edge:mouseenter', ({ cell }) => {
       },
     ],
     'onhover', // 工具集名称，可省略
-  })
+  )
 })
 
 graph.on('edge:mouseleave', ({ cell }) => {
