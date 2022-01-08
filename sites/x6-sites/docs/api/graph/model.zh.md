@@ -282,6 +282,21 @@ getCellById(id: string)
 |------|--------|:----:|--------|-------------|
 | cell | string |  ✓   |        | 节点/边的 ID。 |
 
+### updateCellId(...)
+
+```sign
+updateCellId(cell: Cell, newId: string)
+```
+
+更新节点或者边的 ID，会返回新创建的节点/边。
+
+<span class="tag-param">参数<span>
+
+| 名称 | 类型   | 必选 | 默认值 | 描述          |
+|------|--------|:----:|--------|-------------|
+| cell | Cell   |  ✓   |        | 节点/边。 |
+| newId |string |  ✓   |        | 新的 ID。 |
+
 ### getCells()
 
 ```sign
