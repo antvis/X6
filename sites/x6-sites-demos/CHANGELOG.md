@@ -11,6 +11,21 @@
 
 ### Dependencies
 
+* **@antv/x6:** upgraded to 1.29.4
+
+## @antv/x6-sites-demos [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.0...@antv/x6-sites-demos@1.2.1) (2022-01-08)
+
+
+### Bug Fixes
+
+* 🐛 update x6 version ([#1655](https://github.com/antvis/x6/issues/1655)) ([07037be](https://github.com/antvis/x6/commit/07037beb59537d0feaa47ac1ab629d8c9b8c3a8b))
+
+
+
+
+
+### Dependencies
+
 * **@antv/x6:** upgraded to 1.29.3
 
 ## @antv/x6-sites-demos [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.0...@antv/x6-sites-demos@1.2.1) (2022-01-07)
