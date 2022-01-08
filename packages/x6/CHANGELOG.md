@@ -1,3 +1,10 @@
+## @antv/x6 [1.29.4](https://github.com/antvis/x6/compare/@antv/x6@1.29.3...@antv/x6@1.29.4) (2022-01-08)
+
+
+### Bug Fixes
+
+* 🐛 stop panning when mouseleave body ([#1741](https://github.com/antvis/x6/issues/1741)) ([d23ea46](https://github.com/antvis/x6/commit/d23ea460109e3f487dbc249db9545e8d440f0789))
+
 ## @antv/x6 [1.29.3](https://github.com/antvis/x6/compare/@antv/x6@1.29.2...@antv/x6@1.29.3) (2022-01-08)
 
 
