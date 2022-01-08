@@ -1,3 +1,10 @@
+## @antv/x6 [1.29.3](https://github.com/antvis/x6/compare/@antv/x6@1.29.2...@antv/x6@1.29.3) (2022-01-08)
+
+
+### Bug Fixes
+
+* 🐛 add updateCellId api ([#1739](https://github.com/antvis/x6/issues/1739)) ([78cdb3b](https://github.com/antvis/x6/commit/78cdb3bd56e7655ffcb2e5046d00f5d4f932cd3c))
+
 ## @antv/x6 [1.29.2](https://github.com/antvis/x6/compare/@antv/x6@1.29.1...@antv/x6@1.29.2) (2022-01-07)
 
 
