@@ -496,6 +496,10 @@ export class Graph extends Basecoat<EventArgs> {
     return result
   }
 
+  updateCellId(cell: Cell, newId: string) {
+    return this.model.updateCellId(cell, newId)
+  }
+
   // #endregion
 
   // #region view

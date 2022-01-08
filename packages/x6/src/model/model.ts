@@ -306,6 +306,36 @@ export class Model extends Basecoat<Model.EventArgs> {
     return null
   }
 
+  updateCellId(cell: Cell, newId: string) {
+    this.startBatch('update', { id: newId })
+    cell.prop('id', newId)
+    const newCell = cell.clone({ keepId: true })
+    this.addCell(newCell)
+
+    // update connected edge terminal
+    const edges = this.getConnectedEdges(cell)
+    edges.forEach((edge) => {
+      const sourceCell = edge.getSourceCell()
+      const targetCell = edge.getTargetCell()
+      if (sourceCell === cell) {
+        edge.setSource({
+          ...edge.getSource(),
+          cell: newId,
+        })
+      }
+      if (targetCell === cell) {
+        edge.setTarget({
+          ...edge.getTarget(),
+          cell: newId,
+        })
+      }
+    })
+
+    this.removeCell(cell)
+    this.startBatch('update', { id: newId })
+    return newCell
+  }
+
   removeCells(cells: (Cell | string)[], options: Cell.RemoveOptions = {}) {
     if (cells.length) {
       return this.batchUpdate('remove', () => {
