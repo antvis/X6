@@ -91,6 +91,7 @@ export class PanningManager extends Base {
     this.view.$(document.body).on({
       'mousemove.panning touchmove.panning': this.pan.bind(this),
       'mouseup.panning touchend.panning': this.stopPanning.bind(this),
+      'mouseleave.panning': this.stopPanning.bind(this),
     })
     this.view.$(window).on('mouseup.panning', this.stopPanning.bind(this))
   }
