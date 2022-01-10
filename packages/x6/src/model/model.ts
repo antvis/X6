@@ -332,7 +332,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
 
     this.removeCell(cell)
-    this.startBatch('update', { id: newId })
+    this.stopBatch('update', { id: newId })
     return newCell
   }
 
