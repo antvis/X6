@@ -1,3 +1,10 @@
+## @antv/x6 [1.29.5](https://github.com/antvis/x6/compare/@antv/x6@1.29.4...@antv/x6@1.29.5) (2022-01-10)
+
+
+### Bug Fixes
+
+* 🐛 change startBatch to stopBatch ([#1744](https://github.com/antvis/x6/issues/1744)) ([7d9a2de](https://github.com/antvis/x6/commit/7d9a2deb4cd0d5bccc14a75af45daa9c4215b076))
+
 ## @antv/x6 [1.29.4](https://github.com/antvis/x6/compare/@antv/x6@1.29.3...@antv/x6@1.29.4) (2022-01-08)
 
 
