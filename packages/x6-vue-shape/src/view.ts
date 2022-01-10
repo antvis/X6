@@ -81,9 +81,10 @@ export class VueShapeView extends NodeView<VueShape> {
     return root
   }
 
-  @NodeView.dispose()
-  dispose() {
+  unmount() {
     this.unmountVueComponent()
+    super.unmount()
+    return this
   }
 }
 
