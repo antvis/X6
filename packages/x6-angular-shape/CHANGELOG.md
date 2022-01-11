@@ -1,3 +1,10 @@
+# @antv/x6-angular-shape [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.2.0...@antv/x6-angular-shape@1.3.0) (2022-01-11)
+
+
+### Features
+
+* ✨ dispose components when unmount ([#1745](https://github.com/antvis/x6/issues/1745)) ([2bcd45f](https://github.com/antvis/x6/commit/2bcd45f818cfad5c19011660b30bbdd602787cd7))
+
 # @antv/x6-angular-shape [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-angular-shape@1.1.2...@antv/x6-angular-shape@1.2.0) (2021-11-01)
 
 
