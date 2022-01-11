@@ -1,3 +1,10 @@
+# @antv/x6-react-shape [1.6.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.5.2...@antv/x6-react-shape@1.6.0) (2022-01-11)
+
+
+### Features
+
+* ✨ dispose components when unmount ([#1745](https://github.com/antvis/x6/issues/1745)) ([2bcd45f](https://github.com/antvis/x6/commit/2bcd45f818cfad5c19011660b30bbdd602787cd7))
+
 ## @antv/x6-react-shape [1.5.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.5.1...@antv/x6-react-shape@1.5.2) (2021-10-22)
 
 
