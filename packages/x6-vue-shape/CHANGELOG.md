@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.3.0...@antv/x6-vue-shape@1.3.1) (2022-01-12)
+
+
+### Bug Fixes
+
+* 🐛 change vue vm instance ([#1751](https://github.com/antvis/x6/issues/1751)) ([bcf1485](https://github.com/antvis/x6/commit/bcf148584e4dfa9d468033914aec4cc96e90e07c))
+
 # @antv/x6-vue-shape [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.2.10...@antv/x6-vue-shape@1.3.0) (2022-01-11)
 
 
