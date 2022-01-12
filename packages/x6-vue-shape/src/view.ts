@@ -65,7 +65,8 @@ export class VueShapeView extends NodeView<VueShape> {
               getNode: () => node,
             }
           },
-        }).mount(root)
+        })
+        this.vm.mount(root)
       }
     }
   }
