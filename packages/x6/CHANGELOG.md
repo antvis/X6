@@ -1,3 +1,10 @@
+## @antv/x6 [1.29.6](https://github.com/antvis/x6/compare/@antv/x6@1.29.5...@antv/x6@1.29.6) (2022-01-13)
+
+
+### Bug Fixes
+
+* node input cannot get focus when keyboard options.global is enabled ([#1754](https://github.com/antvis/x6/issues/1754)) ([61b26b7](https://github.com/antvis/x6/commit/61b26b70688164de1a794029cd877f6ecdc98fb2)), closes [Close#1753](https://github.com/Close/issues/1753)
+
 ## @antv/x6 [1.29.5](https://github.com/antvis/x6/compare/@antv/x6@1.29.4...@antv/x6@1.29.5) (2022-01-10)
 
 
