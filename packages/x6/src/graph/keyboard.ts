@@ -2,6 +2,7 @@ import Mousetrap from 'mousetrap'
 import { Dom, FunctionExt } from '../util'
 import { Disposable, IDisablable } from '../common'
 import { Graph } from './graph'
+import { EventArgs } from './events'
 
 export class Keyboard extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
@@ -71,7 +72,11 @@ export class Keyboard extends Disposable implements IDisablable {
     this.mousetrap.unbind(this.getKeys(keys), action)
   }
 
-  private focus() {
+  private focus(e: EventArgs['node:mouseup']) {
+    const isInputEvent = this.isInputEvent(e.e)
+    if (isInputEvent) {
+      return
+    }
     const target = this.target as HTMLElement
     target.focus({
       preventScroll: true,
@@ -112,13 +117,18 @@ export class Keyboard extends Disposable implements IDisablable {
     return false
   }
 
+  isInputEvent(e: KeyboardEvent | JQuery.MouseUpEvent) {
+    const target = e.target as Element
+    const tagName = target && target.tagName.toLowerCase()
+    return tagName === 'input'
+  }
+
   isEnabledForEvent(e: KeyboardEvent) {
     const allowed = !this.disabled && this.isGraphEvent(e)
+    const isInputEvent = this.isInputEvent(e)
     if (allowed) {
-      const target = e.target as Element
-      const tagName = target && target.tagName.toLowerCase()
       const code = e.keyCode || e.which
-      if (tagName === 'input' && (code === 8 || code === 46)) {
+      if (isInputEvent && (code === 8 || code === 46)) {
         return false
       }
       if (this.options.guard) {
