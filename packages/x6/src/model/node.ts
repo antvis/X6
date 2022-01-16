@@ -787,6 +787,17 @@ export class Node<
     return this
   }
 
+  insertPort(
+    index: number,
+    port: PortManager.PortMetadata,
+    options?: Node.SetOptions,
+  ) {
+    const ports = [...this.ports.items]
+    ports.splice(index, 0, port)
+    this.setPropByPath('ports/items', ports, options)
+    return this
+  }
+
   removePort(
     port: PortManager.PortMetadata | string,
     options: Node.SetOptions = {},
