@@ -634,7 +634,6 @@ addPort(port: PortMetadata, options?: Node.SetOptions): this
 | options.silent   | boolean                |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object                 |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
-
 #### addPorts(...)
 
 ```sign
@@ -651,6 +650,23 @@ addPorts(ports: PortMetadata[], options?: Node.SetOptions)
 | options.silent   | boolean                  |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object                   |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
+
+#### insertPort(...)
+
+```sign
+insertPort(index: number, port: PortMetadata, options?: Node.SetOptions): this
+```
+
+在指定位置添加连接桩。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                   | 必选 | 默认值  | 描述                                                |
+|------------------|------------------------|:----:|---------|---------------------------------------------------|
+| index            | number                 |  ✓   |         | 连接桩位置。                                             |
+| port             | [PortMetadata](#ports) |  ✓   |         | 链接桩。                                             |
+| options.silent   | boolean                |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
+| options...others | object                 |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
 #### hasPort(...)
 

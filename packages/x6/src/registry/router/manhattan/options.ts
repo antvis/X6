@@ -162,8 +162,8 @@ export const defaults: ManhattanRouterOptions = {
 
     return [
       { cost, offsetX: step, offsetY: 0 },
-      { cost, offsetX: 0, offsetY: step },
       { cost, offsetX: -step, offsetY: 0 },
+      { cost, offsetX: 0, offsetY: step },
       { cost, offsetX: 0, offsetY: -step },
     ]
   },
