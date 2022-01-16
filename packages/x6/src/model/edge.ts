@@ -905,9 +905,11 @@ export class Edge<
   }
 
   getPolyline() {
-    const points = [this.getSourcePoint(), this.getTargetPoint()]
-    const vertices = this.getVertices()
-    vertices.forEach((p) => points.push(Point.create(p)))
+    const points = [
+      this.getSourcePoint(),
+      ...this.getVertices().map((vertice) => Point.create(vertice)),
+      this.getTargetPoint(),
+    ]
     return new Polyline(points)
   }
 
