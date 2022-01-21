@@ -99,7 +99,7 @@ export class CellEditor extends ToolsView.ToolItem<
       const value = this.editor.innerText.replace(/\n$/, '') || ''
       // set value
       const setText = this.options.setText
-      if (typeof setText === 'function') {
+      if (value !== '' && typeof setText === 'function') {
         FunctionExt.call(setText, this.cellView, {
           cell: this.cell,
           value,

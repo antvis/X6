@@ -48,8 +48,10 @@ graph.addEdge({
 
 graph.on('cell:dblclick', ({ cell, e }) => {
   const isNode = cell.isNode()
+  const name = cell.isNode() ? 'node-editor' : 'edge-editor'
+  cell.removeTool(name)
   cell.addTools({
-    name: isNode ? 'node-editor' : 'edge-editor',
+    name,
     args: {
       event: e,
       attrs: {

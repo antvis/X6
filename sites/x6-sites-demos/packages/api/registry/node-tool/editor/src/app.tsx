@@ -54,9 +54,11 @@ export default class Example extends React.Component {
     })
 
     graph.on('cell:dblclick', ({ cell, e }) => {
+      const name = cell.isEdge() ? 'edge-editor' : 'node-editor'
+      cell.removeTool(name)
       cell.addTools([
         {
-          name: cell.isEdge() ? 'edge-editor' : 'node-editor',
+          name,
           args: {
             event: e,
           },
