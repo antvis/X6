@@ -1,3 +1,15 @@
+# @antv/x6 [1.30.0](https://github.com/antvis/x6/compare/@antv/x6@1.29.6...@antv/x6@1.30.0) (2022-01-22)
+
+
+### Bug Fixes
+
+* 🐛 not create label when text is empty ([#1783](https://github.com/antvis/x6/issues/1783)) ([ed1fcd1](https://github.com/antvis/x6/commit/ed1fcd1f26601150d1b7913b8eaaf329a958af53))
+
+
+### Features
+
+* ✨ add insertPort api ([#1763](https://github.com/antvis/x6/issues/1763)) ([6809dba](https://github.com/antvis/x6/commit/6809dba2d86308d0b315d0c6164f91d80e8a40ff))
+
 ## @antv/x6 [1.29.6](https://github.com/antvis/x6/compare/@antv/x6@1.29.5...@antv/x6@1.29.6) (2022-01-13)
 
 
