@@ -126,7 +126,7 @@ export class MiniMap extends View {
         this.updateViewport,
       )
     } else {
-      this.sourceGraph.on('translate', this.updateViewport, this)
+      this.sourceGraph.on('translate', this.onSourceTranslate, this)
     }
     this.sourceGraph.on('resize', this.updatePaper, this)
     this.delegateEvents({
@@ -141,7 +141,7 @@ export class MiniMap extends View {
     if (this.scroller) {
       this.$graphContainer.off(this.getEventNamespace())
     } else {
-      this.sourceGraph.off('translate', this.updateViewport, this)
+      this.sourceGraph.off('translate', this.onSourceTranslate, this)
     }
     this.sourceGraph.off('resize', this.updatePaper, this)
     this.undelegateEvents()
@@ -187,6 +187,11 @@ export class MiniMap extends View {
     this.targetGraph.scale(ratio, ratio)
     this.updateViewport()
     return this
+  }
+
+  protected onSourceTranslate() {
+    const { width, height } = this.sourceGraph.options
+    this.updatePaper(width, height)
   }
 
   protected updateViewport() {
