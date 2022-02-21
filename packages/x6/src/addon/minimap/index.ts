@@ -20,6 +20,9 @@ export class MiniMap extends View {
   protected readonly targetGraph: Graph
   protected geometry: Util.ViewGeometry
   protected ratio: number
+  // Marks whether targetGraph is being transformed or scaled
+  // If yes we update updateViewport only
+  private targetGraphTransforming: boolean
 
   protected get graph() {
     return this.options.graph
@@ -126,7 +129,8 @@ export class MiniMap extends View {
         this.updateViewport,
       )
     } else {
-      this.sourceGraph.on('translate', this.updateViewport, this)
+      this.sourceGraph.on('translate', this.onSourceGraphTransform, this)
+      this.sourceGraph.on('scale', this.onSourceGraphTransform, this)
     }
     this.sourceGraph.on('resize', this.updatePaper, this)
     this.delegateEvents({
@@ -141,7 +145,8 @@ export class MiniMap extends View {
     if (this.scroller) {
       this.$graphContainer.off(this.getEventNamespace())
     } else {
-      this.sourceGraph.off('translate', this.updateViewport, this)
+      this.sourceGraph.off('translate', this.onSourceGraphTransform, this)
+      this.sourceGraph.off('scale', this.onSourceGraphTransform, this)
     }
     this.sourceGraph.off('resize', this.updatePaper, this)
     this.undelegateEvents()
@@ -151,6 +156,17 @@ export class MiniMap extends View {
     this.targetGraph.view.remove()
     this.stopListening()
     this.targetGraph.dispose()
+  }
+
+  protected onSourceGraphTransform() {
+    if (!this.targetGraphTransforming) {
+      this.updatePaper(
+        this.sourceGraph.options.width,
+        this.sourceGraph.options.height,
+      )
+    } else {
+      this.updateViewport()
+    }
   }
 
   protected updatePaper(width: number, height: number): this
@@ -230,7 +246,7 @@ export class MiniMap extends View {
       translateX: tx,
       translateY: ty,
     }
-
+    this.targetGraphTransforming = true
     this.delegateDocumentEvents(Util.documentEvents, eventData)
   }
 
@@ -283,6 +299,7 @@ export class MiniMap extends View {
 
   protected stopAction() {
     this.undelegateDocumentEvents()
+    this.targetGraphTransforming = false
   }
 
   protected scrollTo(evt: JQuery.MouseDownEvent) {
