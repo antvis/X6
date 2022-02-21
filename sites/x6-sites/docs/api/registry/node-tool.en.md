@@ -16,7 +16,6 @@ redirect_from:
 graph.addNode({
   ...,
   tools: [
-    { name: 'tool-name' },
     {
       name: 'button-remove',
       args: { x: 10, y: 10 },
@@ -26,7 +25,6 @@ graph.addNode({
 
 // 创建节点后添加小工具
 node.addTools([
-  { name: 'tool-name' },
   {
     name: 'button-remove',
     args: { x: 10, y: 10 },
@@ -40,19 +38,17 @@ node.addTools([
 graph.on('node:mouseenter', ({ node }) => {
   node.addTools(
     [
-      { name: 'tool-name' },
       {
         name: 'button-remove',
-        args: { distance: 20  },
+         args: { x: 10, y: 10 },
       },
     ],
-    'onhover', // 工具集名称，可省略
   )
 })
 
 graph.on('node:mouseleave', ({ node }) => {
-  if (node.hasTools('onhover')) {
-    node.removeTools()
+  if (node.hasTool('button-remove')) {
+    node.removeTool('button-remove')
   }
 })
 ```
@@ -63,7 +59,6 @@ graph.on('node:mouseleave', ({ node }) => {
 - [button-remove](#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
 - [boundary](#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
 - [node-editor](#node-editor) 提供节点文本编辑功能。
-  
 
 ## presets
 
@@ -73,14 +68,14 @@ graph.on('node:mouseleave', ({ node }) => {
 
 <span class="tag-param">参数<span>
 
-| 参数名  | 类型                      | 默认值      | 说明                                                    |
-|---------|---------------------------|-------------|-------------------------------------------------------|
-| x       | number \| string          | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。 |
-| y       | number \| string          | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。 |
-| offset  | number \| Point.PointLike | `0`         | 在 `x` 和 `y` 基础上的偏移量。                           |
-| rotate  | boolean                   | `undefined` | 是否跟随节点旋转。                                       |
-| markup  | Markup.JSONMarkup         | `undefined` | 渲染按钮的 Markup 定义。                                 |
-| onClick | KeyValue                  | `undefined` | 点击按钮的回调函数。                                     |
+| 参数名   | 类型                                | 默认值      | 说明                                                    |
+|---------|------------------------------------|-------------|-------------------------------------------------------|
+| x       | number \| string                   | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。      |
+| y       | number \| string                   | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。      |
+| offset  | number \| { x: number, y: number } | `0`         | 在 `x` 和 `y` 基础上的偏移量。                           |
+| rotate  | boolean                            | `undefined` | 是否跟随节点旋转。                                       |
+| markup  | Markup.JSONMarkup                  | `undefined` | 渲染按钮的 Markup 定义。                                |
+| onClick | (args: {e: JQuery.MouseDownEvent, cell: Cell, view: CellView }) => void  | `undefined` | 点击按钮的回调函数。|
 
 <span class="tag-example">使用</span>
 
@@ -136,12 +131,14 @@ graph.on('node:mouseleave', ({ node }) => {
 
 <span class="tag-param">参数<span>
 
-| 参数名 | 类型                      | 默认值      | 说明                                                    |
-|--------|---------------------------|-------------|-------------------------------------------------------|
-| x      | number \| string          | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。 |
-| y      | number \| string          | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。 |
-| offset | number \| Point.PointLike | `0`         | 在 `distance` 基础上的偏移量。                           |
-| rotate | boolean                   | `undefined` | 是否跟随边旋转。                                         |
+| 参数名 | 类型                                 | 默认值      | 说明                                                    |
+|--------|------------------------------------|-------------|-------------------------------------------------------|
+| x      | number \| string                   | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。      |
+| y      | number \| string                   | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。      |
+| offset | number \| { x: number, y: number } | `0`         | 在 `distance` 基础上的偏移量。                           |
+| rotate | boolean                            | `undefined` | 是否跟随边旋转。                                         |
+| markup | Markup.JSONMarkup                  | `undefined` | 渲染按钮的 Markup 定义。                                 |
+| onClick| (args: {e: JQuery.MouseDownEvent, cell: Cell, view: CellView }) => void  | `undefined` | 点击按钮的回调函数。 |
 
 <span class="tag-example">使用</span>
 
@@ -247,7 +244,7 @@ const source = graph.addNode({
 | attrs/fontFamily  | string   | `Arial, helvetica, sans-serif`| 编辑文本的字体 |
 | attrs/backgroundColor  | string   | `#fff`| 编辑区域的背景色 |
 | getText  | (this: CellView, args: {cell: Cell}) => string   | - | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
-| setText | (this: CellView, args: {cell: Cell, value: string}) => void  | - | 设置新文本，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+| setText | (this: CellView, args: {cell: Cell, value: string}) => void  | - | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法 |
 
 <span class="tag-example">使用</span>
 
