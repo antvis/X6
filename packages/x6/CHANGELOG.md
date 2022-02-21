@@ -1,3 +1,10 @@
+## @antv/x6 [1.30.1](https://github.com/antvis/x6/compare/@antv/x6@1.30.0...@antv/x6@1.30.1) (2022-02-21)
+
+
+### Bug Fixes
+
+* 🐛 fix source graph and target graph not updating synchronously when transform in panning mode ([#1832](https://github.com/antvis/x6/issues/1832)) ([0de1f22](https://github.com/antvis/x6/commit/0de1f2227158fc8c6c6f762de64b8a50118292a9))
+
 # @antv/x6 [1.30.0](https://github.com/antvis/x6/compare/@antv/x6@1.29.6...@antv/x6@1.30.0) (2022-01-22)
 
 
