@@ -48,13 +48,12 @@ graph.on('edge:mouseenter', ({ cell }) => {
         args: { distance: 20  },
       },
     ],
-    'onhover', // 工具集名称，可省略
   )
 })
 
 graph.on('edge:mouseleave', ({ cell }) => {
-  if (cell.hasTools('onhover')) {
-    cell.removeTools()
+  if (cell.hasTool('button-remove')) {
+    cell.removeTool('button-remove')
   }
 })
 ```
@@ -68,7 +67,7 @@ graph.on('edge:mouseleave', ({ cell }) => {
 - [button-remove](#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
 - [source-arrowhead-和-target-arrowhead](#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
 - [edge-editor](#edge-editor) 提供边上文本编辑功能。
-  
+
 ## presets
 
 ### vertices
@@ -217,7 +216,7 @@ graph.addEdge({
 | offset   | number \| Point.PointLike | `0`         | 在 `distance` 基础上的偏移量。 |
 | rotate   | boolean                   | `undefined` | 是否跟随边旋转。               |
 | markup   | Markup.JSONMarkup         | `undefined` | 渲染按钮的 Markup 定义。       |
-| onClick  | KeyValue                  | `undefined` | 点击按钮的回调函数。           |
+| onClick  | (args: {e: JQuery.MouseDownEvent, cell: Cell, view: CellView }) => void  | `undefined` | 点击按钮的回调函数。 |
 
 <span class="tag-example">使用</span>
 
@@ -322,6 +321,9 @@ graph.addEdge({
 | distance | number                    | `60`        | 偏离起点的距离或比例。         |
 | offset   | number \| Point.PointLike | `0`         | 在 `distance` 基础上的偏移量。 |
 | rotate   | boolean                   | `undefined` | 是否跟随边旋转。               |
+| markup   | Markup.JSONMarkup         | `undefined` | 渲染按钮的 Markup 定义。       |
+| onClick| (args: {e: JQuery.MouseDownEvent, cell: Cell, view: CellView }) => void  | `undefined` | 点击按钮的回调函数。 |
+
 
 <span class="tag-example">使用</span>
 
