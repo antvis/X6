@@ -16,7 +16,6 @@ redirect_from:
 graph.addNode({
   ...,
   tools: [
-    { name: 'tool-name' },
     {
       name: 'button-remove',
       args: { x: 10, y: 10 },
@@ -26,7 +25,6 @@ graph.addNode({
 
 // 创建节点后添加小工具
 node.addTools([
-  { name: 'tool-name' },
   {
     name: 'button-remove',
     args: { x: 10, y: 10 },
@@ -40,19 +38,17 @@ node.addTools([
 graph.on('node:mouseenter', ({ node }) => {
   node.addTools(
     [
-      { name: 'tool-name' },
       {
         name: 'button-remove',
-        args: { distance: 20  },
+         args: { x: 10, y: 10 },
       },
     ],
-    'onhover', // 工具集名称，可省略
   )
 })
 
 graph.on('node:mouseleave', ({ node }) => {
-  if (node.hasTools('onhover')) {
-    node.removeTools()
+  if (node.hasTool('button-remove')) {
+    node.removeTool('button-remove')
   }
 })
 ```
@@ -72,14 +68,14 @@ graph.on('node:mouseleave', ({ node }) => {
 
 <span class="tag-param">参数<span>
 
-| 参数名  | 类型                      | 默认值      | 说明                                                    |
-|---------|---------------------------|-------------|-------------------------------------------------------|
-| x       | number \| string          | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。 |
-| y       | number \| string          | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。 |
-| offset  | number \| Point.PointLike | `0`         | 在 `x` 和 `y` 基础上的偏移量。                           |
-| rotate  | boolean                   | `undefined` | 是否跟随节点旋转。                                       |
-| markup  | Markup.JSONMarkup         | `undefined` | 渲染按钮的 Markup 定义。                                 |
-| onClick | KeyValue                  | `undefined` | 点击按钮的回调函数。                                     |
+| 参数名   | 类型                                | 默认值      | 说明                                                    |
+|---------|------------------------------------|-------------|-------------------------------------------------------|
+| x       | number \| string                   | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。      |
+| y       | number \| string                   | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。      |
+| offset  | number \| { x: number, y: number } | `0`         | 在 `x` 和 `y` 基础上的偏移量。                           |
+| rotate  | boolean                            | `undefined` | 是否跟随节点旋转。                                       |
+| markup  | Markup.JSONMarkup                  | `undefined` | 渲染按钮的 Markup 定义。                                |
+| onClick | (args: {e: JQuery.MouseDownEvent, cell: Cell, view: CellView }) => void  | `undefined` | 点击按钮的回调函数。|
 
 <span class="tag-example">使用</span>
 
@@ -135,12 +131,14 @@ graph.on('node:mouseleave', ({ node }) => {
 
 <span class="tag-param">参数<span>
 
-| 参数名 | 类型                      | 默认值      | 说明                                                    |
-|--------|---------------------------|-------------|-------------------------------------------------------|
-| x      | number \| string          | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。 |
-| y      | number \| string          | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。 |
-| offset | number \| Point.PointLike | `0`         | 在 `distance` 基础上的偏移量。                           |
-| rotate | boolean                   | `undefined` | 是否跟随边旋转。                                         |
+| 参数名 | 类型                                 | 默认值      | 说明                                                    |
+|--------|------------------------------------|-------------|-------------------------------------------------------|
+| x      | number \| string                   | `0`         | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。      |
+| y      | number \| string                   | `0`         | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。      |
+| offset | number \| { x: number, y: number } | `0`         | 在 `distance` 基础上的偏移量。                           |
+| rotate | boolean                            | `undefined` | 是否跟随边旋转。                                         |
+| markup | Markup.JSONMarkup                  | `undefined` | 渲染按钮的 Markup 定义。                                 |
+| onClick| (args: {e: JQuery.MouseDownEvent, cell: Cell, view: CellView }) => void  | `undefined` | 点击按钮的回调函数。 |
 
 <span class="tag-example">使用</span>
 
