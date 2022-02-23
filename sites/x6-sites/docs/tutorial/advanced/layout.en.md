@@ -67,8 +67,51 @@ const newModel = gridLayout.layout(model)
 graph.fromJSON(newModel)
 
 ```
+#### 布局流程
 
-## 布局
+- 选定一种布局方式，比如上面的 `grid`，如果不知道使用哪种布局方式，可以在[这里](https://g6.antv.vision/zh/examples/gallery#category-%E5%8A%9B%E5%AF%BC%E5%90%91%E5%9B%BE%E5%B8%83%E5%B1%80) 看效果图，布局配置可以参考对应的文档。
+- 构造布局数据，其实布局所需要的数据很简单：
+```ts
+// 下面是布局所需要的数据格式
+{
+  nodes: [
+    {
+      id: 'node1',
+      size: {
+        width: 30,
+        height: 40,
+      }
+    },
+    {
+      id: 'node2',
+      size: {
+        width: 30,
+        height: 40,
+      }
+    }
+  ],
+  edges: [
+    {
+      source: 'node1',
+      target: 'node2',
+    }
+  ]
+}
+```
+- 执行布局方法后，布局算法会在你传入的数据基础上增加节点的 x、y 属性，拿到节点的位置后，就可以将节点移动到指定位置。
+
+[[warning]]
+| 需要注意的是，布局算法返回的 x、y 其实是节点的中心点坐标，在 X6 中，节点的 x、y 其实是左上角坐标，所以布局之后，我们需要做一次坐标转换。
+
+```ts
+const layoutData = gridLayout.layout(originData);
+layoutData.nodes.forEach(node => {
+  node.x -= node.size.width / 2;
+  node.y -= node.size.height / 2;
+})
+```
+
+## 常用布局
 
 ### 网格布局
 
