@@ -18,7 +18,7 @@ new Graph(options: Options)
 | [container](#container)                                 | HTMLElement                   |  ✓   |                               | 画布的容器。
 | [width](#width)                                         | number                        |      | `undefined`                   | 画布宽度，默认使用容器宽度。                                                               |
 | [height](#height)                                       | number                        |      | `undefined`                   | 画布高度，默认使用容器高度。                                                       |                                                              |
-| [autoResize](#autoresize)                                         | boolean \| Element \| Document                       |      | `false`                   | 是否监听容器大小改变，并自动更新画布大小。默认监听画布容器，也可以指定监听的元素，如 `Docuemnt`。                                                               |
+| [autoResize](#autoresize)                                         | boolean \| Element \| Document                       |      | `false`                   | 是否监听容器大小改变，并自动更新画布大小。默认监听画布容器，也可以指定监听的元素，如 `Document`。                                                               |
 | [panning](#panning) | object|      | { enabled: false, eventTypes: ['leftMouseDown'],}  | 画布是否可以拖动
 | [grid](/en/docs/api/graph/grid)                                           | boolean \| number \| object   |      | `false`                       | 网格，默认使用 `10px` 的网格，但不绘制网格背景。                                            |
 | [background](/en/docs/api/graph/background)                               | false \| object               |      | `false`                       | 背景，默认不绘制背景。                                                                     |
@@ -72,7 +72,7 @@ new Graph(options: Options)
 
 ### autoResize
 
-是否监听容器大小改变，并自动更新画布大小，默认为 `false`。默认监听画布容器，也可以指定监听的元素，如 `Docuemnt`。
+是否监听容器大小改变，并自动更新画布大小，默认为 `false`。默认监听画布容器，也可以指定监听的元素，如 `Document`。
 
 需要注意的是，目前仅支持 flex 布局，例如像下面这样指定画布容器及其父节点的样式：
 
