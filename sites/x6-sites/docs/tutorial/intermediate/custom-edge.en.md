@@ -11,7 +11,7 @@ redirect_from:
 
 ## 原理
 
-自定义节点实际上是从基础边派生（继承）出我们自己的边，并覆盖基类的某些选项和方法。
+自定义边实际上是从基础边派生（继承）出我们自己的边，并覆盖基类的某些选项和方法。
 
 ### 三步法
 
@@ -100,7 +100,7 @@ Graph.registerEdge(name: string, cls: typeof Edge, overwrite?: boolean)
 | cls       | typeof Edge | 是       |        | 边类，直接或间接继承 Edge 的类。                    |
 | overwrite | Boolean     | 否       | false  | 重名时是否覆盖，默认为 `false` 不覆盖（重名时报错）。 |
 
-例如，注册名为 `'edge'` 的节点。
+例如，注册名为 `'edge'` 的边。
 
 ```ts
 Graph.registerEdge('edge', Edge)
@@ -148,7 +148,7 @@ Graph.registerEdge('red-edge', RedEdge)
 
 该方法将其调用者（如上面的 `Edge`）作为基类，继承出一个新的边，然后调用新边的静态方法 `config` 来配置默认选项。
 
-需要注意的是，上面代码生成的 `RedEdge` 类的类名并不是 `'RedEdge'`，而是系统自动生成的类名，当指定 `constructorName` 选项后，其大驼峰（CamelCase）形式将作为新节点的类名。
+需要注意的是，上面代码生成的 `RedEdge` 类的类名并不是 `'RedEdge'`，而是系统自动生成的类名，当指定 `constructorName` 选项后，其大驼峰（CamelCase）形式将作为新边的类名。
 
 ```ts
 const RedEdge = Edge.define({
@@ -163,11 +163,11 @@ const RedEdge = Edge.define({
 Graph.registerEdge('red-edge', RedEdge)
 ```
 
-如果我们提供了 `shape` 选项，那么系统将自动为你注册节点。当没有指定 `constructorName` 选项时，`shape` 的大驼峰形式（CamelCase）也将作新边的类名，也就是说下面代码定义的边的类名为 `'RedEdge'`。
+如果我们提供了 `shape` 选项，那么系统将自动为你注册边。当没有指定 `constructorName` 选项时，`shape` 的大驼峰形式（CamelCase）也将作新边的类名，也就是说下面代码定义的边的类名为 `'RedEdge'`。
 
 ```ts
 Edge.define({
-  shape: 'red-edge', // 自动注册名为 'red-edge' 的节点，并且节点类名为 'RedEdge'。
+  shape: 'red-edge', // 自动注册名为 'red-edge' 的边，并且边的类名为 'RedEdge'。
   attrs: {
     line: {
       stroke: 'red',
@@ -181,7 +181,7 @@ Edge.define({
 | 名称            | 是否必选 | 类型   | 说明                                                                             |
 |-----------------|---------|--------|--------------------------------------------------------------------------------|
 | constructorName | 否       | String | 类名。                                                                            |
-| shape           | 否       | String | 自动注册的节点名，当 `constructorName` 缺省时其大驼峰（CamelCase）形式也将作为类名。 |
+| shape           | 否       | String | 自动注册的边名，当 `constructorName` 缺省时其大驼峰（CamelCase）形式也将作为类名。 |
 | ...others       |          | Object | [config 方法](#第二步配置)的选项。            
 
 
@@ -199,7 +199,7 @@ Graph.registerEdge(name: string, options: Object, overwrite?: boolean)
 | options   | Object  | 是       |        | 选项。                                             |
 | overwrite | Boolean | 否       | false  | 重名时是否覆盖，默认为 `false` 不覆盖（重名时报错）。 |
 
-通过 `options.inherit` 来指定继承的基类，默认值为 `Edge` 类，支持字符串或节点类，当 `options.inherit` 为字符串时将自动从已注册的边中找到对应的边作为基类，`options` 的其他选项与 [define 方法](#便捷方法一)一致。当 `options.constructorName` 类名缺省时，第一个参数 `name` 的大驼峰形式（CamelCase）也将作为自定义边的类名。
+通过 `options.inherit` 来指定继承的基类，默认值为 `Edge` 类，支持字符串或边类，当 `options.inherit` 为字符串时将自动从已注册的边中找到对应的边作为基类，`options` 的其他选项与 [define 方法](#便捷方法一)一致。当 `options.constructorName` 类名缺省时，第一个参数 `name` 的大驼峰形式（CamelCase）也将作为自定义边的类名。
 
 ```ts
 Graph.registerNode('red-edge', {
