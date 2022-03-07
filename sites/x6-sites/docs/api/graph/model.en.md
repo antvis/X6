@@ -94,7 +94,7 @@ removeNode(node: Node, options?: RemoveOptions): Node | null
 ### createEdge(...)
 
 ```sign
-createNode(metadata: Edge.Metadata): Edge
+createEdge(metadata: Edge.Metadata): Edge
 ```
 
 创建边。
