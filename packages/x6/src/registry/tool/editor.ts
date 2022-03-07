@@ -99,7 +99,7 @@ export class CellEditor extends ToolsView.ToolItem<
       const value = this.editor.innerText.replace(/\n$/, '') || ''
       // set value
       const setText = this.options.setText
-      if (value !== '' && typeof setText === 'function') {
+      if (typeof setText === 'function') {
         FunctionExt.call(setText, this.cellView, {
           cell: this.cell,
           value,
@@ -223,7 +223,11 @@ export namespace CellEditor {
           },
         })
       } else {
-        edge.prop(`labels/${index}/attrs/label/text`, value)
+        if (value) {
+          edge.prop(`labels/${index}/attrs/label/text`, value)
+        } else if (typeof index === 'number') {
+          edge.removeLabelAt(index)
+        }
       }
     },
   })
