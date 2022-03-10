@@ -1,3 +1,10 @@
+## @antv/x6 [1.30.2](https://github.com/antvis/x6/compare/@antv/x6@1.30.1...@antv/x6@1.30.2) (2022-03-10)
+
+
+### Bug Fixes
+
+* 🐛 optimize setText for edge-editor ([#1877](https://github.com/antvis/x6/issues/1877)) ([928b678](https://github.com/antvis/x6/commit/928b678f35ddf495ce73a405d0e0d1f568b6d660))
+
 ## @antv/x6 [1.30.1](https://github.com/antvis/x6/compare/@antv/x6@1.30.0...@antv/x6@1.30.1) (2022-02-21)
 
 
