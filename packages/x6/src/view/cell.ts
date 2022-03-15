@@ -895,6 +895,7 @@ export namespace CellView {
     // edge
     edgeMovable?: Interactable
     edgeLabelMovable?: Interactable
+    edgeLabelClickable?: Interactable
     arrowheadMovable?: Interactable
     vertexMovable?: Interactable
     vertexAddable?: Interactable
