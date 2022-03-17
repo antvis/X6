@@ -151,7 +151,7 @@ export namespace CellEditor {
       color: string
       backgroundColor: string
     }
-    labelAddable: boolean
+    labelAddable?: boolean
     getText: (
       this: CellView,
       args: {
