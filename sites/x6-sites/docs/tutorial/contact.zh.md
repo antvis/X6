@@ -17,3 +17,4 @@ redirect_from:
 
 <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Up-4S4v8H-0AAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群1" width="375" />
 <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*5FhnSb3ewfQAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群2" width="375" />
+<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*KHB4QJAsW4QAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群3" width="375" />
