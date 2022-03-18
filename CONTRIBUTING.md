@@ -110,8 +110,8 @@ Look at [these files](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJyg
 
 X6 uses semantic versioning in release process based on [semver](https://semver.org/).
 
-- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/maintenance-releases.md)
-- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/pre-releases.md)
+- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/maintenance-releases.md)
+- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/pre-releases.md)
 
 ### Branch Strategy
 
