@@ -36,12 +36,12 @@ export class AlgoNode extends React.Component<{ node?: Node }> {
 
     return (
       <div className={`node ${status}`}>
-        <img src={image.logo} />
+        <img src={image.logo} alt="logo" />
         <span className="label">{label}</span>
         <span className="status">
-          {status === 'success' && <img src={image.success} />}
-          {status === 'failed' && <img src={image.failed} />}
-          {status === 'running' && <img src={image.running} />}
+          {status === 'success' && <img src={image.success} alt="success" />}
+          {status === 'failed' && <img src={image.failed} alt="failed" />}
+          {status === 'running' && <img src={image.running} alt="running" />}
         </span>
       </div>
     )

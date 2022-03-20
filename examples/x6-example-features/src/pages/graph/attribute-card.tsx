@@ -154,6 +154,7 @@ export class AttributeCard extends React.Component<
   }
 }
 
+// eslint-disable-next-line
 export namespace AttributeCard {
   export interface Props {
     attrs: {

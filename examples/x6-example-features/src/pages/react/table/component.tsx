@@ -135,6 +135,7 @@ export class Component extends React.Component<Component.Props> {
   }
 }
 
+// eslint-disable-next-line
 export namespace Component {
   export interface Props {
     node?: Node

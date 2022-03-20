@@ -228,6 +228,7 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
   }
 }
 
+// eslint-disable-next-line
 export namespace GridCard {
   export interface Props {
     onGridSizeChange: (size: number) => void

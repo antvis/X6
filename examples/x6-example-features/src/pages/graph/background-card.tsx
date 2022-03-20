@@ -212,6 +212,7 @@ export class BackgroundCard extends React.Component<
   }
 }
 
+// eslint-disable-next-line
 export namespace BackgroundCard {
   export interface Props {
     onChange: (res: Graph.BackgroundOptions) => void

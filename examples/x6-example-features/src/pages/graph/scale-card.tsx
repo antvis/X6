@@ -122,6 +122,7 @@ export class ScaleContentToFitCard extends React.Component<
   }
 }
 
+// eslint-disable-next-line
 export namespace ScaleContentToFitCard {
   export interface Props {
     onChange: (options: State) => void

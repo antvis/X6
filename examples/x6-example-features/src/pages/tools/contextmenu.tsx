@@ -31,7 +31,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
           trigger={['contextMenu']}
           overlay={this.options.menu}
         >
-          <a />
+          <a href="#" />
         </Dropdown>,
         this.knob,
       )
