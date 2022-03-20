@@ -26,7 +26,7 @@ class BallView extends NodeView {
     })
 
     this.cell.on('change:position', ({ cell, current }) => {
-      const node = (cell as any) as Node
+      const node = cell as any as Node
       this.angle = Point.create(node.getPosition()).theta(
         node.previous('position'),
       )
@@ -128,7 +128,7 @@ class BallView extends NodeView {
 
     // Change the marker arrow color.
     this.edge.on('change:target', ({ cell }) => {
-      const edge = (cell as any) as Edge
+      const edge = cell as any as Edge
       const sourcePoint = edge.getSourcePoint()!
       const targetPoint = edge.getTargetPoint()!
       const dist = sourcePoint.distance(targetPoint)

@@ -42,7 +42,7 @@ export default class Example extends React.Component {
             stroke: '#9254de',
           },
         },
-      }, 
+      },
       {
         id: '2',
         shape: 'rect',
@@ -57,7 +57,7 @@ export default class Example extends React.Component {
             stroke: '#9254de',
           },
         },
-      }, 
+      },
       {
         id: '3',
         shape: 'rect',
@@ -72,7 +72,7 @@ export default class Example extends React.Component {
             stroke: '#9254de',
           },
         },
-      }, 
+      },
       {
         id: '4',
         shape: 'rect',
@@ -87,7 +87,7 @@ export default class Example extends React.Component {
             stroke: '#9254de',
           },
         },
-      }, 
+      },
       {
         id: '5',
         shape: 'rect',
@@ -185,8 +185,8 @@ export default class Example extends React.Component {
   }
 
   onPositionPoint = () => {
-    this.graph1.positionPoint({x: 50, y: 60}, 100, 100)
-    this.graph2.positionPoint({x: 50, y: 60}, 100, 100)
+    this.graph1.positionPoint({ x: 50, y: 60 }, 100, 100)
+    this.graph2.positionPoint({ x: 50, y: 60 }, 100, 100)
   }
 
   onPositionRect = () => {
@@ -214,23 +214,37 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div> 
+      <div>
         <div className="x6-graph-wrap" style={{ display: 'flex' }}>
           <div ref={this.refContainer1} className="x6-graph" />
           <div ref={this.refContainer2} className="x6-graph" />
         </div>
-        <div style={{
-          display: 'flex',
-          flexFlow: 'wrap',
-          flexShrink: 0,
-          padding: '24px 48px',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            flexFlow: 'wrap',
+            flexShrink: 0,
+            padding: '24px 48px',
+          }}
+        >
           <Button onClick={() => this.onZoom(0.1)}>ZoomIn</Button>
           <Button onClick={() => this.onZoom(-0.1)}>ZoomOut</Button>
-          <Button onClick={() => this.onZoom(0.1, { center: {x: 300, y: 200} })}>ZoomIn At [300, 200]</Button>
-          <Button onClick={() => this.onZoom(-0.1, { center: {x: 300, y: 200} })}>ZoomOut At [300, 200]</Button>
+          <Button
+            onClick={() => this.onZoom(0.1, { center: { x: 300, y: 200 } })}
+          >
+            ZoomIn At [300, 200]
+          </Button>
+          <Button
+            onClick={() => this.onZoom(-0.1, { center: { x: 300, y: 200 } })}
+          >
+            ZoomOut At [300, 200]
+          </Button>
           <Button onClick={() => this.onZoomTo(1.5)}>ZoomTo</Button>
-          <Button onClick={() => this.onZoomTo(1.5, { center: {x: 200, y: 100} })}>ZoomTo At [200, 100]</Button>
+          <Button
+            onClick={() => this.onZoomTo(1.5, { center: { x: 200, y: 100 } })}
+          >
+            ZoomTo At [200, 100]
+          </Button>
           <Button onClick={() => this.onZoomToRect()}>ZoomToRect</Button>
           <Button onClick={() => this.onZoomToFit()}>ZoomToFit</Button>
           <Button onClick={() => this.onCenterPoint()}>CenterPoint</Button>
@@ -239,7 +253,9 @@ export default class Example extends React.Component {
           <Button onClick={() => this.onCenterCell()}>CenterCell</Button>
           <Button onClick={() => this.onPositionPoint()}>PositionPoint</Button>
           <Button onClick={() => this.onPositionRect()}>PositionRect</Button>
-          <Button onClick={() => this.onPositionContent()}>PositionContent</Button>
+          <Button onClick={() => this.onPositionContent()}>
+            PositionContent
+          </Button>
           <Button onClick={() => this.onPositionCell()}>PositionCell</Button>
         </div>
       </div>

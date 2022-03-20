@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import {
   Graph,
   Node,
@@ -138,7 +139,7 @@ Graph.registerEdge(
             return defaults
           }
 
-          const attr = (val as {}) as AngleEdge.AngleOptions
+          const attr = val as {} as AngleEdge.AngleOptions
           var angleRadius = attr.radius || 40
           var angleStart = attr.start || 'self'
           var anglePie = attr.pie || false
@@ -181,7 +182,7 @@ Graph.registerEdge(
         set(val, options) {
           let text = ''
           const view = options.view as EdgeView
-          const attr = (val as {}) as AngleEdge.AngleTextOptions
+          const attr = val as {} as AngleEdge.AngleTextOptions
 
           let meta = AngleEdge.getArcMeta(view, attr.type, { radius: 40 })
           if (meta) {
@@ -213,8 +214,8 @@ Graph.registerEdge(
             line = new Line(connectionPoint, p).setLength(distance)
           } else {
             const c = new Line(arcPoint1, arcPoint2).getCenter()
-            ;(line = new Line(connectionPoint, c).setLength(distance)),
-              largeArcFlag && line.scale(-1, -1, line.start)
+            line = new Line(connectionPoint, c).setLength(distance)
+            largeArcFlag && line.scale(-1, -1, line.start)
           }
 
           const pos = line.end
@@ -237,7 +238,7 @@ namespace Cache {
     if (!(cacheKey in cache)) {
       cache[cacheKey] = {}
     }
-    return (cache[cacheKey] as Object) as {
+    return cache[cacheKey] as Object as {
       [key: string]: AngleEdge.Metadata | null
     }
   }

@@ -163,7 +163,7 @@ export default class Example extends React.Component {
           if (!magnet) {
             return true
           }
-          var cell = (cellView.cell as any) as TogglableRect
+          var cell = cellView.cell as any as TogglableRect
           var portId = magnet.getAttribute('port')
           return portId ? !cell.isPortCollapsed(portId) : true
         },
@@ -180,7 +180,7 @@ export default class Example extends React.Component {
       e.stopPropagation()
       var portId = magnet.getAttribute('port')
       if (portId) {
-        const rect = (view.cell as any) as TogglableRect
+        const rect = view.cell as any as TogglableRect
         rect.expandPort(portId)
       }
     })
@@ -191,13 +191,13 @@ export default class Example extends React.Component {
         const visible = current !== false
         const sourceCell = cell.getSourceCell()
         if (sourceCell) {
-          const rect = (sourceCell as any) as TogglableRect
+          const rect = sourceCell as any as TogglableRect
           rect.onConnectedEdgeVisibleChange(cell, 'source', visible)
         }
 
         const targetCell = cell.getTargetCell()
         if (targetCell) {
-          const rect = (targetCell as any) as TogglableRect
+          const rect = targetCell as any as TogglableRect
           rect.onConnectedEdgeVisibleChange(cell, 'target', visible)
         }
       }

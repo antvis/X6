@@ -73,7 +73,7 @@ export default class Example extends React.Component {
         })
         nodes.push(a)
       })
-      
+
       Array.from({ length: num }).forEach(() => {
         const a = graph.createEdge({
           shape: 'performance_normal_edge',
@@ -92,7 +92,7 @@ export default class Example extends React.Component {
     function test(num: number, iterations: number) {
       const { nodes, edges } = mockCells(num)
       graph.model.resetCells(nodes)
-      
+
       const startTime = new Date().getTime()
       graph.model.addCells(edges)
       if (ASYNC) {
@@ -121,7 +121,11 @@ export default class Example extends React.Component {
     function output() {
       const res = Object.keys(result).map((key: string) => ({
         num: parseInt(key, 10),
-        time: parseFloat((result[key].reduce((pre, cur) => pre + cur, 0) / ITERATIONS).toFixed(3)),
+        time: parseFloat(
+          (result[key].reduce((pre, cur) => pre + cur, 0) / ITERATIONS).toFixed(
+            3,
+          ),
+        ),
         type: ASYNC ? 'async' : 'sync',
       }))
       document.getElementById('result')!.innerText = JSON.stringify(res)
@@ -137,7 +141,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
-        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }}/>
+        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }} />
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )

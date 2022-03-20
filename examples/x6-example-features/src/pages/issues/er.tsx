@@ -56,14 +56,10 @@ export default class Example extends React.Component {
 
     graph.on('edge:connected', ({ edge }) => {
       graph.batchUpdate(() => {
-        const {
-          port: sourcePort,
-          ...source
-        } = edge.getSource() as Edge.TerminalCellData
-        const {
-          port: targetPort,
-          ...target
-        } = edge.getTarget() as Edge.TerminalCellData
+        const { port: sourcePort, ...source } =
+          edge.getSource() as Edge.TerminalCellData
+        const { port: targetPort, ...target } =
+          edge.getTarget() as Edge.TerminalCellData
 
         edge.removeProp('source')
         edge.removeProp('target')

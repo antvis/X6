@@ -202,8 +202,7 @@ export default class Example extends React.Component {
                 {
                   tagName: 'path',
                   attrs: {
-                    d:
-                      'M -4 -0.8 L -7.2 2.4 L -4 5.6 L -4 3.2 L 1.6 3.2 L 1.6 1.6 L -4 1.6 L -4 -0.8 Z M 7.2 -2.4 L 4 -5.6 L 4 -3.2 L -1.6 -3.2 L -1.6 -1.6 L 4 -1.6 L 4 0.8 L 7.2 -2.4 Z',
+                    d: 'M -4 -0.8 L -7.2 2.4 L -4 5.6 L -4 3.2 L 1.6 3.2 L 1.6 1.6 L -4 1.6 L -4 -0.8 Z M 7.2 -2.4 L 4 -5.6 L 4 -3.2 L -1.6 -3.2 L -1.6 -1.6 L 4 -1.6 L 4 0.8 L 7.2 -2.4 Z',
                     cursor: 'pointer',
                     strokeWidth: 2,
                     fill: '#fff',
@@ -241,8 +240,7 @@ export default class Example extends React.Component {
                 {
                   tagName: 'path',
                   attrs: {
-                    d:
-                      'M -4 -0.8 L -7.2 2.4 L -4 5.6 L -4 3.2 L 1.6 3.2 L 1.6 1.6 L -4 1.6 L -4 -0.8 Z M 7.2 -2.4 L 4 -5.6 L 4 -3.2 L -1.6 -3.2 L -1.6 -1.6 L 4 -1.6 L 4 0.8 L 7.2 -2.4 Z',
+                    d: 'M -4 -0.8 L -7.2 2.4 L -4 5.6 L -4 3.2 L 1.6 3.2 L 1.6 1.6 L -4 1.6 L -4 -0.8 Z M 7.2 -2.4 L 4 -5.6 L 4 -3.2 L -1.6 -3.2 L -1.6 -1.6 L 4 -1.6 L 4 0.8 L 7.2 -2.4 Z',
                     cursor: 'pointer',
                     strokeWidth: 2,
                     fill: '#fff',

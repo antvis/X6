@@ -107,8 +107,7 @@ export default class Example extends React.Component {
         label: {
           textAnchor: 'left',
           refX: 8,
-          text:
-            'Thisissomeveryveryverylong word. Words will break according to usual rules.',
+          text: 'Thisissomeveryveryverylong word. Words will break according to usual rules.',
           textWrap: {
             width: 144,
             height: 32,
@@ -134,8 +133,7 @@ export default class Example extends React.Component {
         label: {
           textAnchor: 'left',
           refX: 8,
-          text:
-            'Thisissomeveryveryverylong word. Words will break according to usual rules.',
+          text: 'Thisissomeveryveryverylong word. Words will break according to usual rules.',
           textWrap: {
             width: 144,
             height: 32,
