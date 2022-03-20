@@ -20,7 +20,6 @@ jobs:
           group: '(?!^)@.*$'
           exclude: |
             @antv/x6@**
-            @antv/x6-react@**
             @antv/x6-vue-shape@**
             @antv/x6-react-shape@**
             @antv/x6-angular-shape@**

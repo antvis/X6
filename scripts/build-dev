@@ -1,6 +1,7 @@
 #!/bin/sh
 
 lerna run build --stream --scope @antv/eslint-config
+lerna run build --stream --scope @antv/stylelint-config
 
 wait
 
