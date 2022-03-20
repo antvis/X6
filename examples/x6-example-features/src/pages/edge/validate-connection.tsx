@@ -14,7 +14,9 @@ export default class Example extends React.Component {
         validateMagnet({ cell, magnet }) {
           let count = 0
           const connectionCount = magnet.getAttribute('connection-count')
-          const max = connectionCount ? parseInt(connectionCount, 10) : Number.MAX_SAFE_INTEGER
+          const max = connectionCount
+            ? parseInt(connectionCount, 10)
+            : Number.MAX_SAFE_INTEGER
           const outgoingEdges = graph.getOutgoingEdges(cell)
           if (outgoingEdges) {
             outgoingEdges.forEach((edge: Edge) => {

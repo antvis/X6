@@ -181,7 +181,7 @@ export default class Example extends React.Component<
 
     edges.shift()
 
-    this.viewport = (viewportTemplate.clone() as any) as Node
+    this.viewport = viewportTemplate.clone() as any as Node
 
     console.time('perf-reset')
 

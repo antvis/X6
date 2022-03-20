@@ -82,7 +82,7 @@ export default class Example extends React.Component {
       height: 60,
       useForeignObject: false,
       component: () => {
-        return  <circle stroke="red" cx="30" cy="30" r="30"/>
+        return <circle stroke="red" cx="30" cy="30" r="30" />
       },
     })
 

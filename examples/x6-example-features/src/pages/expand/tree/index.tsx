@@ -87,7 +87,7 @@ export default class Example extends React.Component {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
-        <div id="minimap"/>
+        <div id="minimap" />
       </div>
     )
   }

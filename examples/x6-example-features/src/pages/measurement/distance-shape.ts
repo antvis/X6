@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { Graph, Shape, EdgeView, Edge, Registry, Point, Angle } from '@antv/x6'
 
 Graph.registerNode(
@@ -138,7 +139,7 @@ export const DistanceEdgeBase = Graph.registerEdge(
       distanceAnchor: {
         set(val, { view }) {
           if (typeof val === 'object') {
-            const attr = (val as {}) as DistanceEdge.DistanceAnchorOptions
+            const attr = val as {} as DistanceEdge.DistanceAnchorOptions
             const edgeView = view as EdgeView
             const anchor = edgeView.getTerminalAnchor(attr.type)
             const kont = edgeView.getTerminalConnectionPoint(attr.type)
@@ -151,7 +152,7 @@ export const DistanceEdgeBase = Graph.registerEdge(
       distanceText: {
         set(val, options) {
           const view = options.view as EdgeView
-          const attr = (val as {}) as DistanceEdge.DistanceTextOptions
+          const attr = val as {} as DistanceEdge.DistanceTextOptions
           const text = DistanceEdge.getDistanceText(view, attr)
           const raw = Registry.Attr.presets.text as Registry.Attr.SetDefinition
           raw.set.call(this, text, options)

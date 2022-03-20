@@ -156,7 +156,11 @@ export default class Example extends React.Component {
     function output() {
       const res = Object.keys(result).map((key: string) => ({
         num: parseInt(key, 10),
-        time: parseFloat((result[key].reduce((pre, cur) => pre + cur, 0) / ITERATIONS).toFixed(3)),
+        time: parseFloat(
+          (result[key].reduce((pre, cur) => pre + cur, 0) / ITERATIONS).toFixed(
+            3,
+          ),
+        ),
         type: ASYNC ? 'async' : 'sync',
       }))
       document.getElementById('result')!.innerText = JSON.stringify(res)
@@ -172,7 +176,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
-        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }}/>
+        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }} />
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )

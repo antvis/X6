@@ -43,8 +43,7 @@ const data = {
       y: 40,
       attrs: {
         label: {
-          text:
-            'testing测试测试测试thisisaveryveryveryveryveryverylongword jsvascriptjsvascriptjsvascript',
+          text: 'testing测试测试测试thisisaveryveryveryveryveryverylongword jsvascriptjsvascriptjsvascript',
         },
       },
     },
