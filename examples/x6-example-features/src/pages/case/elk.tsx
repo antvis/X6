@@ -155,7 +155,7 @@ export default class Example extends React.Component {
       const { bendPoints = [] } = edge.sections[0]
 
       if (pos) {
-        bendPoints.map((bendPoint: Position) => {
+        bendPoints.forEach((bendPoint: Position) => {
           bendPoint.x += pos.x
           bendPoint.y += pos.y
         })

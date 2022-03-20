@@ -94,6 +94,7 @@ export default class Example extends React.Component<
   }
 }
 
+// eslint-disable-next-line
 namespace Example {
   export interface Props {}
   export interface State {

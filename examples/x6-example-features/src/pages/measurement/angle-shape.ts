@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import {
   Graph,
   Node,
@@ -231,6 +231,7 @@ Graph.registerEdge(
   true,
 )
 
+// eslint-disable-next-line
 namespace Cache {
   function ensure(view: EdgeView) {
     const cacheKey = 'angleData'
@@ -262,6 +263,7 @@ namespace Cache {
   }
 }
 
+// eslint-disable-next-line
 namespace AngleEdge {
   export type AngleStart = 'self' | 'source' | 'target'
   export type AngleDirection = 'clockwise' | 'anticlockwise' | 'small' | 'large'
