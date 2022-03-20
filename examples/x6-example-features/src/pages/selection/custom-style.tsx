@@ -27,7 +27,7 @@ export default class Example extends React.Component {
         },
       },
     })
-    
+
     const target = graph.addNode({
       shape: 'rect',
       x: 320,
@@ -41,7 +41,7 @@ export default class Example extends React.Component {
         },
       },
     })
-    
+
     graph.addEdge({
       source,
       target,
@@ -51,33 +51,32 @@ export default class Example extends React.Component {
         },
       },
     })
-    
-    graph.on('selection:changed', (args: {
-      added: Cell[],
-      removed: Cell[],
-      selected: Cell[],
-    }) => {
-      args.added.forEach((cell: Cell) => {
-        if (cell.isNode()) {
-          cell.attr('body', {
-            fill: '#ffd591',
-            stroke: '#ffa940',
-          })
-        } else {
-          cell.attr('line/stroke', '#ffa940')
-        }
-      })
-      args.removed.forEach((cell: Cell) => {
-        if (cell.isNode()) {
-          cell.attr('body', {
-            fill: '#f5f5f5',
-            stroke: '#d9d9d9',
-          })
-        } else {
-          cell.attr('line/stroke', '#d9d9d9')
-        }
-      })
-    })
+
+    graph.on(
+      'selection:changed',
+      (args: { added: Cell[]; removed: Cell[]; selected: Cell[] }) => {
+        args.added.forEach((cell: Cell) => {
+          if (cell.isNode()) {
+            cell.attr('body', {
+              fill: '#ffd591',
+              stroke: '#ffa940',
+            })
+          } else {
+            cell.attr('line/stroke', '#ffa940')
+          }
+        })
+        args.removed.forEach((cell: Cell) => {
+          if (cell.isNode()) {
+            cell.attr('body', {
+              fill: '#f5f5f5',
+              stroke: '#d9d9d9',
+            })
+          } else {
+            cell.attr('line/stroke', '#d9d9d9')
+          }
+        })
+      },
+    )
   }
 
   refContainer = (container: HTMLDivElement) => {

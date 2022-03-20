@@ -35,48 +35,48 @@ const Node = N.registry.register(
           position: 'top',
           attrs: {
             fo: {
-                width: 10,
-                height: 10,
-                x: -5,
-                y: -5,
-                magnet: 'true',
-              },
+              width: 10,
+              height: 10,
+              x: -5,
+              y: -5,
+              magnet: 'true',
+            },
           },
         },
         right: {
           position: 'right',
           attrs: {
             fo: {
-                width: 10,
-                height: 10,
-                x: -5,
-                y: -5,
-                magnet: 'true',
-              },
+              width: 10,
+              height: 10,
+              x: -5,
+              y: -5,
+              magnet: 'true',
+            },
           },
         },
         bottom: {
           position: 'bottom',
           attrs: {
             fo: {
-                width: 10,
-                height: 10,
-                x: -5,
-                y: -5,
-                magnet: 'true',
-              },
+              width: 10,
+              height: 10,
+              x: -5,
+              y: -5,
+              magnet: 'true',
+            },
           },
         },
         left: {
           position: 'left',
           attrs: {
             fo: {
-                width: 10,
-                height: 10,
-                x: -5,
-                y: -5,
-                magnet: 'true',
-              },
+              width: 10,
+              height: 10,
+              x: -5,
+              y: -5,
+              magnet: 'true',
+            },
           },
         },
       },
@@ -114,15 +114,15 @@ export default class Example extends React.Component {
         const container = selectors && selectors.foContent
         if (container) {
           ReactDOM.render(
-            (
-              <div style={{
+            <div
+              style={{
                 width: '100%',
                 height: '100%',
                 border: '1px solid #808080',
                 borderRadius: '100%',
                 background: '#eee',
-              }} />
-            ),
+              }}
+            />,
             container as HTMLElement,
           )
         }
@@ -176,7 +176,11 @@ export default class Example extends React.Component {
     function output() {
       const res = Object.keys(result).map((key: string) => ({
         num: parseInt(key, 10),
-        time: parseFloat((result[key].reduce((pre, cur) => pre + cur, 0) / ITERATIONS).toFixed(3)),
+        time: parseFloat(
+          (result[key].reduce((pre, cur) => pre + cur, 0) / ITERATIONS).toFixed(
+            3,
+          ),
+        ),
         type: ASYNC ? 'async' : 'sync',
       }))
       document.getElementById('result')!.innerText = JSON.stringify(res)
@@ -192,7 +196,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
-        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }}/>
+        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }} />
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )

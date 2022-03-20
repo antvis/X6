@@ -77,7 +77,7 @@ export default class Example extends React.Component<
           }),
         })
       })
-      .on('translate', ({origin: {x, y}}) => {
+      .on('translate', ({ origin: { x, y } }) => {
         this.effect.hideAll()
         this.setState({
           attrs: getAttrs({
