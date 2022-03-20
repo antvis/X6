@@ -33,6 +33,7 @@ export class BBoxCard extends React.Component<GridCard.Props> {
   }
 }
 
+// eslint-disable-next-line
 export namespace GridCard {
   export interface Props {
     x: number

@@ -1,15 +1,6 @@
 import React from 'react'
 import { Graph, Markup, ObjectExt, Dom } from '@antv/x6'
 import '../index.less'
-;`
-      <foreignObject width="160" height="60">
-        <body style="width: 100%; height: 100%; background: transparent;">
-          <div style="width: 100%; height: 100%;">
-            <div>#C969F1</div>
-          </div>
-        </body>
-      </foreignObject>
-`
 
 Graph.registerNode('xml-node', {}, true)
 
