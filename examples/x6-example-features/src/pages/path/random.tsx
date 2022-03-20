@@ -31,6 +31,7 @@ class Coords {
   }
 }
 
+// eslint-disable-next-line
 namespace RandomDir {
   let radian = 4
 

@@ -48,7 +48,7 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
       () => this.toggleTooltip(true),
       this.delay,
     )
-    if (this.options.follow != false) {
+    if (this.options.follow !== false) {
       document.addEventListener('mousemove', this.onMouseMove)
     }
   }
@@ -60,7 +60,7 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
       () => this.toggleTooltip(false),
       this.delay,
     )
-    if (this.options.follow != false) {
+    if (this.options.follow !== false) {
       document.removeEventListener('mousemove', this.onMouseMove)
     }
   }
@@ -89,6 +89,7 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
   }
 }
 
+// eslint-disable-next-line
 namespace TooltipTool {
   TooltipTool.config({
     markup: Markup.getForeignObjectMarkup(),
