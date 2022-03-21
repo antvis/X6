@@ -1,6 +1,6 @@
-import { Line } from './line'
-import { Point } from './point'
-import { Polyline } from './polyline'
+import { Line } from '../src'
+import { Point } from '../src'
+import { Polyline } from '../src'
 
 describe('Polyline', () => {
   describe('#constructor', () => {
@@ -206,17 +206,19 @@ describe('Polyline', () => {
   })
 
   describe('#clone()', () => {
-    const polyline1 = new Polyline([
-      [10, 10],
-      [10, 40],
-      [50, 40],
-      [50, 10],
-    ])
-    const polyline2 = polyline1.clone()
-    expect(polyline2).toBeInstanceOf(Polyline)
-    expect(polyline1 === polyline2).toEqual(false)
-    expect(polyline1.equals(polyline2)).toEqual(true)
-    expect(polyline1.toString()).toEqual(polyline2.toString())
+    it('should return the cloned ellipse', () => {
+      const polyline1 = new Polyline([
+        [10, 10],
+        [10, 40],
+        [50, 40],
+        [50, 10],
+      ])
+      const polyline2 = polyline1.clone()
+      expect(polyline2).toBeInstanceOf(Polyline)
+      expect(polyline1 === polyline2).toEqual(false)
+      expect(polyline1.equals(polyline2)).toEqual(true)
+      expect(polyline1.toString()).toEqual(polyline2.toString())
+    })
   })
 
   describe('#closestPoint()', () => {

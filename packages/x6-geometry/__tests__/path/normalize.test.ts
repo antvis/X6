@@ -1,5 +1,5 @@
-import { Path } from './path'
-import { normalizePathData } from './normalize'
+import { Path } from '../../src'
+import { normalizePathData } from '../../src/path/normalize'
 
 describe('Path', () => {
   describe('#normalizePathData', () => {
