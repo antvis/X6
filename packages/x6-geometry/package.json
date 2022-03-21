@@ -1,7 +1,7 @@
 {
-  "version": "1.0.11",
+  "version": "2.0.0",
   "name": "@antv/x6-geometry",
-  "description": "Some useful geometry operations.",
+  "description": "Geometry operations for x6.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/x6-geometry.js",
@@ -33,7 +33,7 @@
     "build:dev": "run-p build:cjs build:esm",
     "build": "run-p build:version build:dev build:umd",
     "prebuild": "run-s lint clean",
-    "test": "jest",
+    "test": "karma start",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
     "prepare": "run-s build:version test build",
@@ -46,7 +46,6 @@
   },
   "inherits": [
     "@antv/x6-package-json/cli.json",
-    "@antv/x6-package-json/jest.json",
     "@antv/x6-package-json/eslint.json",
     "@antv/x6-package-json/rollup.json"
   ],
@@ -55,7 +54,6 @@
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
-    "@types/jest": "^27.0.1",
     "@types/node": "^16.9.1",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
@@ -73,7 +71,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^36.0.0",
     "fs-extra": "^10.0.0",
-    "jest": "^27.1.1",
     "lint-staged": "^11.1.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.3.6",
@@ -86,7 +83,6 @@
     "rollup-plugin-postcss": "^4.0.1",
     "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-terser": "^7.0.2",
-    "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",
     "typescript": "^4.4.3"
@@ -109,7 +105,7 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/antvis/x6.git",
-    "directory": "packages/x6"
+    "directory": "packages/x6-geometry"
   },
   "publishConfig": {
     "access": "public",
