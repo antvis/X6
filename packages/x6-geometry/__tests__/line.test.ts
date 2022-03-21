@@ -1,6 +1,6 @@
-import { Line } from './line'
-import { Point } from './point'
-import { Rectangle } from './rectangle'
+import { Line } from '../src'
+import { Point } from '../src'
+import { Rectangle } from '../src'
 
 describe('Line', () => {
   describe('#constructor', () => {

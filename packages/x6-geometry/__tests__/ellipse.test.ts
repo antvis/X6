@@ -1,7 +1,7 @@
-import { Ellipse } from './ellipse'
-import { Line } from './line'
-import { Point } from './point'
-import { Rectangle } from './rectangle'
+import { Ellipse } from '../src'
+import { Line } from '../src'
+import { Point } from '../src'
+import { Rectangle } from '../src'
 
 describe('ellipse', () => {
   describe('#constructor', () => {
