@@ -49,7 +49,6 @@ export class CellEditor extends ToolsView.ToolItem<
       const parent = target.parentElement
       const isEdgeLabel =
         parent && Dom.hasClass(parent, this.prefixClassName('edge-label'))
-      const labelAddable = this.options.labelAddable
       if (isEdgeLabel) {
         const index = parent.getAttribute('data-index') || '0'
         this.labelIndex = parseInt(index, 10)
@@ -58,7 +57,7 @@ export class CellEditor extends ToolsView.ToolItem<
         pos = new Point(translation.tx, translation.ty)
         minWidth = Dom.getBBox(target).width
       } else {
-        if (!labelAddable) {
+        if (!this.options.labelAddable) {
           return this
         }
         pos = graph.clientToLocal(Point.create(e.clientX, e.clientY))
