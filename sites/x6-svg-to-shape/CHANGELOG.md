@@ -1,3 +1,13 @@
+## @antv/x6-svg-to-shape [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.5...@antv/x6-svg-to-shape@1.0.6) (2022-03-23)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.31.0
+
 ## @antv/x6-svg-to-shape [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.5...@antv/x6-svg-to-shape@1.0.6) (2022-03-10)
 
 
