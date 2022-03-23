@@ -1,3 +1,17 @@
+# @antv/x6 [1.31.0](https://github.com/antvis/x6/compare/@antv/x6@1.30.2...@antv/x6@1.31.0) (2022-03-23)
+
+
+### Bug Fixes
+
+* 🐛 change the order of statement ([#1910](https://github.com/antvis/x6/issues/1910)) ([eff14ba](https://github.com/antvis/x6/commit/eff14baca749753a10bde0a81adfd55898cf7215))
+* 🐛 fix cellEditorOptions typo ([#1895](https://github.com/antvis/x6/issues/1895)) ([4d174d7](https://github.com/antvis/x6/commit/4d174d7807463d64ff248fe4ee1e09010bad4bfc))
+
+
+### Features
+
+* ✨ delete the new Function mode to avoid the CSP policy ([#1921](https://github.com/antvis/x6/issues/1921)) ([157b207](https://github.com/antvis/x6/commit/157b2072f35cd7d883eab95b9a874444858758e3))
+* 🐛　support click on the non-text area without adding a new label ([#1894](https://github.com/antvis/x6/issues/1894)) ([4ae1b9e](https://github.com/antvis/x6/commit/4ae1b9ef4f43b9c9f96796c5c5fa31f968b82bdf))
+
 ## @antv/x6 [1.30.2](https://github.com/antvis/x6/compare/@antv/x6@1.30.1...@antv/x6@1.30.2) (2022-03-10)
 
 
