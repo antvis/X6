@@ -1,5 +1,5 @@
 import { debounce } from './util'
-import { Listener, Sensor } from '../../types'
+import type { Listener, Sensor } from './types'
 
 export function createSensor(element: Element): Sensor {
   let sensor: ResizeObserver | null = null
