@@ -40,9 +40,6 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "src/**/*.less": [
-      "stylelint --syntax less --fix"
-    ],
     "src/**/*.ts": [
       "eslint --fix"
     ]
@@ -103,12 +100,6 @@
     "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-terser": "^7.0.2",
     "sinon": "^11.1.2",
-    "stylelint": "^13.13.1",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-config-standard": "^22.0.0",
-    "stylelint-declaration-block-no-ignored-properties": "^2.4.0",
-    "stylelint-order": "^4.1.0",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",
     "typescript": "^4.4.3"
