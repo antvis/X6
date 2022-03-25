@@ -1,11 +1,11 @@
 {
   "name": "@antv/x6-common",
-  "version": "2.0.0",
+  "version": "1.0.1",
   "description": "Basic toolkit for x6.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6.js",
-  "jsdelivr": "dist/x6.js",
+  "unpkg": "dist/x6-common.js",
+  "jsdelivr": "dist/x6-common.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
