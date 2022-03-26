@@ -1,0 +1,177 @@
+@import './themes/index';
+
+.noScalingStroke() {
+  vector-effect: non-scaling-stroke;
+}
+
+.@{x6-prefix}-graph {
+  position: relative;
+  outline: none;
+
+  &-background,
+  &-grid,
+  &-svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    &-stage {
+      user-select: none;
+    }
+  }
+
+  &&-pannable {
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+  }
+
+  &&-panning {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+    user-select: none;
+  }
+}
+
+.@{x6-prefix}-node {
+  cursor: move;
+
+  &&-immovable {
+    cursor: default;
+  }
+
+  * {
+    -webkit-user-drag: none;
+  }
+
+  .scalable * {
+    .noScalingStroke();
+  }
+
+  [magnet='true'] {
+    cursor: crosshair;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  /* stylelint-disable-next-line */
+  foreignObject {
+    display: block;
+    overflow: visible;
+    background-color: transparent;
+
+    & > body {
+      position: static;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      background-color: transparent;
+    }
+  }
+}
+
+.@{x6-prefix}-edge {
+  .source-marker,
+  .target-marker {
+    .noScalingStroke();
+  }
+
+  .connection {
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  .connection-wrap {
+    cursor: move;
+    opacity: 0;
+    fill: none;
+    stroke: #000;
+    stroke-width: 15;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    &:hover {
+      opacity: 0.4;
+      stroke-opacity: 0.4;
+    }
+  }
+
+  .vertices {
+    cursor: move;
+    opacity: 0;
+
+    .vertex {
+      fill: #1abc9c;
+
+      :hover {
+        fill: #34495e;
+        stroke: none;
+      }
+    }
+
+    .vertex-remove {
+      cursor: pointer;
+      fill: #fff;
+    }
+
+    .vertex-remove-area {
+      cursor: pointer;
+      opacity: 0.1;
+    }
+
+    .vertex-group:hover .vertex-remove-area {
+      opacity: 1;
+    }
+  }
+
+  .arrowheads {
+    cursor: move;
+    opacity: 0;
+
+    .arrowhead {
+      fill: #1abc9c;
+
+      :hover {
+        fill: #f39c12;
+        stroke: none;
+      }
+    }
+  }
+
+  .tools {
+    cursor: pointer;
+    opacity: 0;
+
+    .tool-options {
+      display: none;
+    }
+
+    .tool-remove circle {
+      fill: #f00;
+    }
+
+    .tool-remove path {
+      fill: #fff;
+    }
+  }
+
+  &:hover {
+    .vertices,
+    .arrowheads,
+    .tools {
+      opacity: 1;
+    }
+  }
+}
+
+.@{x6-prefix}-highlight-opacity {
+  opacity: 0.3;
+}
