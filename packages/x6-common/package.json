@@ -10,8 +10,7 @@
   "files": [
     "dist",
     "es",
-    "lib",
-    "src"
+    "lib"
   ],
   "keywords": [
     "util",

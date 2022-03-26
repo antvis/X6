@@ -1,4 +1,4 @@
-import { RequiredKeys, OptionalKeys, PickByValue, OmitByValue } from '../types'
+import { UtilityTypes } from '../types'
 import { FunctionExt } from '../function'
 
 export class Events<EventArgs extends Events.EventArgs = any> {
@@ -197,22 +197,22 @@ export namespace Events {
   /**
    * Get union type of keys from `M` that value matching `any[]`.
    */
-  export type NamesWithArrayArgs<M extends EventArgs> = RequiredKeys<
-    PickByValue<M, any[]>
+  export type NamesWithArrayArgs<M extends EventArgs> =
+    UtilityTypes.RequiredKeys<UtilityTypes.PickByValue<M, any[]>>
+
+  export type NotArrayValueMap<M extends EventArgs> = UtilityTypes.OmitByValue<
+    M,
+    any[]
   >
 
-  export type NotArrayValueMap<M extends EventArgs> = OmitByValue<M, any[]>
+  export type OptionalNormalNames<M extends EventArgs> =
+    UtilityTypes.OptionalKeys<NotArrayValueMap<M>>
 
-  export type OptionalNormalNames<M extends EventArgs> = OptionalKeys<
-    NotArrayValueMap<M>
-  >
-
-  export type RequiredNormalNames<M extends EventArgs> = RequiredKeys<
-    NotArrayValueMap<M>
-  >
+  export type RequiredNormalNames<M extends EventArgs> =
+    UtilityTypes.RequiredKeys<NotArrayValueMap<M>>
 
   export type OtherNames<M extends EventArgs> = EventNames<
-    PickByValue<M, undefined>
+    UtilityTypes.PickByValue<M, undefined>
   >
 
   export type UnknownNames<M extends EventArgs> = Exclude<string, EventNames<M>>
