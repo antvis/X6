@@ -1,4 +1,4 @@
-import type { PointLike } from '../types'
+import type { GeometryTypes } from '../types'
 import { createSvgElement } from './elem'
 
 const svgDocument = createSvgElement('svg') as SVGSVGElement
@@ -255,7 +255,10 @@ export function parseTransformString(transform: string) {
   }
 }
 
-function deltaTransformPoint(matrix: DOMMatrix | MatrixLike, point: PointLike) {
+function deltaTransformPoint(
+  matrix: DOMMatrix | MatrixLike,
+  point: GeometryTypes.PointLike,
+) {
   const dx = point.x * matrix.a + point.y * matrix.c + 0
   const dy = point.x * matrix.b + point.y * matrix.d + 0
   return { x: dx, y: dy }

@@ -1,4 +1,4 @@
-import type { Translation, Rotation, Scale } from '../types'
+import type { GeometryTypes } from '../types'
 import * as Dom from '../dom/main'
 
 export class Vector {
@@ -78,7 +78,7 @@ export class Vector {
   /**
    * Returns the current translate metadata of the Vector element.
    */
-  translate(): Translation
+  translate(): GeometryTypes.Translation
   /**
    * Translates the element by `tx` pixels in x axis and `ty` pixels
    * in y axis. `ty` is optional in which case the translation in y axis
@@ -97,7 +97,7 @@ export class Vector {
   /**
    * Returns the current rotate metadata of the Vector element.
    */
-  rotate(): Rotation
+  rotate(): GeometryTypes.Rotation
   /**
    * Rotates the element by `angle` degrees. If the optional `cx` and `cy`
    * coordinates are passed, they will be used as an origin for the rotation.
@@ -125,7 +125,7 @@ export class Vector {
   /**
    * Returns the current scale metadata of the Vector element.
    */
-  scale(): Scale
+  scale(): GeometryTypes.Scale
   /**
    * Scale the element by `sx` and `sy` factors. If `sy` is not specified,
    * it will be considered the same as `sx`.
