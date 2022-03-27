@@ -1,4 +1,4 @@
-import { version } from '../src/version'
+import { version } from '../src/global'
 
 describe('version', () => {
   it('should match the `version` field of package.json', () => {
