@@ -1,6 +1,6 @@
 简体中文 | [English](/README.en-us.md)
 
-<p align="center"><img src="/flow.svg"></p>
+<p align="center"><img alt="flow" src="/flow.svg"></p>
 
 <p align="center"><strong>X6 是 AntV 旗下的图编辑引擎</strong></p>
 <p align="center"><strong>提供简单易用的节点定制能力和开箱即用的交互组件，方便我们快速搭建流程图、DAG 图、ER 图等图应用</strong></p>
