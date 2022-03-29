@@ -1,6 +1,6 @@
 /* eslint-disable no-control-regex */
 
-import type { GeometryTypes } from '../types'
+import type { Size } from '../types'
 import { NumberExt } from '../number'
 import { Text } from '../text'
 import { attr } from './attr'
@@ -451,7 +451,7 @@ function splitText(
 
 export function breakText(
   text: string,
-  size: GeometryTypes.Size,
+  size: Size,
   styles: any = {},
   options: {
     ellipsis?: string

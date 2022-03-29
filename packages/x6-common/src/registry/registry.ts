@@ -1,19 +1,19 @@
-import type { UtilityTypes } from '../types'
+import type { KeyValue } from '../types'
 import { StringExt } from '../string'
 import { FunctionExt } from '../function'
 import { Platform } from '../platform'
 
 export class Registry<
   Entity,
-  Presets = UtilityTypes.KeyValue<Entity>,
+  Presets = KeyValue<Entity>,
   OptionalType = never,
 > {
-  public readonly data: UtilityTypes.KeyValue<Entity>
+  public readonly data: KeyValue<Entity>
   public readonly options: Registry.Options<Entity | OptionalType>
 
   constructor(options: Registry.Options<Entity | OptionalType>) {
     this.options = { ...options }
-    this.data = (this.options.data as UtilityTypes.KeyValue<Entity>) || {}
+    this.data = (this.options.data as KeyValue<Entity>) || {}
     this.register = this.register.bind(this)
     this.unregister = this.unregister.bind(this)
   }
@@ -125,7 +125,7 @@ export class Registry<
 export namespace Registry {
   export interface Options<Entity> {
     type: string
-    data?: UtilityTypes.KeyValue<Entity>
+    data?: KeyValue<Entity>
     process?: <T, Context extends Registry<any>>(
       this: Context,
       name: string,
@@ -141,7 +141,7 @@ export namespace Registry {
 export namespace Registry {
   export function create<
     Entity,
-    Presets = UtilityTypes.KeyValue<Entity>,
+    Presets = KeyValue<Entity>,
     OptionalType = never,
   >(options: Options<Entity | OptionalType>) {
     return new Registry<Entity, Presets, OptionalType>(options)
