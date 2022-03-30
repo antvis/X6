@@ -50,6 +50,8 @@ export interface KeyValue<T extends any = any> {
   [key: string]: T
 }
 
+export type Nilable<T> = T | null | undefined
+
 export type ValuesType<
   T extends ReadonlyArray<any> | ArrayLike<any> | Record<any, any>,
 > = T extends ReadonlyArray<any>
@@ -88,3 +90,9 @@ export type BackgroundSize<TLength = (string & {}) | 0> =
   | BgSize<TLength>
   | (string & {})
 export type BackgroundRepeat = Globals | RepeatStyle | (string & {})
+export interface Padding {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
