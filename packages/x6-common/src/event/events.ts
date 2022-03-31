@@ -3,7 +3,7 @@ import type {
   OmitByValue,
   OptionalKeys,
   PickByValue,
-} from '../types'
+} from 'utility-types'
 import { FunctionExt } from '../function'
 
 export class Events<EventArgs extends Events.EventArgs = any> {

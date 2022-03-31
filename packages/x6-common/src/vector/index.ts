@@ -1,5 +1,5 @@
-import type { Translation, Rotation, Scale } from '../types'
 import * as Dom from '../dom/main'
+import type { Translation, Rotation, Scale } from '../types'
 
 export class Vector {
   public node: SVGElement
