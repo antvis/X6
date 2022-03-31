@@ -62,6 +62,12 @@ export type ValuesType<
   ? T[keyof T]
   : never
 
+export type NonUndefined<A> = A extends undefined ? never : A
+
+export type FunctionKeys<T extends object> = {
+  [K in keyof T]-?: NonUndefined<T[K]> extends Function ? K : never
+}[keyof T]
+
 // css
 type Globals = '-moz-initial' | 'inherit' | 'initial' | 'revert' | 'unset'
 type BgPosition<TLength> =

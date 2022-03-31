@@ -1,5 +1,4 @@
-import { EventObject } from './object'
-import {
+import type {
   EventRaw,
   UIEventRaw,
   DragEventRaw,
@@ -8,6 +7,7 @@ import {
   TouchEventRaw,
   KeyboardEventRaw,
 } from './alias'
+import type { EventObject } from './object'
 
 interface EventBase<
   TDelegateTarget = any,

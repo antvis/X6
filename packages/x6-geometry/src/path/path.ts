@@ -10,8 +10,8 @@ import { Close } from './close'
 import { LineTo } from './lineto'
 import { MoveTo } from './moveto'
 import { CurveTo } from './curveto'
-import { Segment } from './segment'
 import { normalizePathData } from './normalize'
+import type { Segment } from './segment'
 
 export class Path extends Geometry {
   protected readonly PRECISION: number = 3
