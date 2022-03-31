@@ -50,7 +50,8 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "lodash-es": "^4.17.15"
+    "lodash-es": "^4.17.15",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",

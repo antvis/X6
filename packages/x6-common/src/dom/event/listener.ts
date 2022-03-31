@@ -1,4 +1,4 @@
-import { TypeEventHandler } from './types'
+import type { TypeEventHandler } from './types'
 
 // export class EventListener<TElement extends Element> {}
 
