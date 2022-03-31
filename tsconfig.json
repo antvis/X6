@@ -13,6 +13,7 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
+    "importsNotUsedAsValues": "error",
     "jsx": "react",
     "target": "es5",
     "lib": ["DOM", "ES2020"]

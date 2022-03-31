@@ -1,6 +1,6 @@
-import { Store } from './store'
-import { EventObject } from './object'
-import { EventHandler } from './types'
+import type { Store } from './store'
+import type { EventObject } from './object'
+import type { EventHandler } from './types'
 
 export namespace EventHook {
   const cache: { [type: string]: EventHook } = {}
