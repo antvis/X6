@@ -1,9 +1,9 @@
-import { Path } from './path'
 import { Point } from './point'
-import { Ellipse } from './ellipse'
 import { Geometry } from './geometry'
-import { Polyline } from './polyline'
 import { Rectangle } from './rectangle'
+import type { Ellipse } from './ellipse'
+import type { Path } from './path'
+import type { Polyline } from './polyline'
 
 export class Line extends Geometry {
   public start: Point

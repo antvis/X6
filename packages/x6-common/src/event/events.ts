@@ -1,4 +1,9 @@
-import { RequiredKeys, OmitByValue, OptionalKeys, PickByValue } from '../types'
+import type {
+  RequiredKeys,
+  OmitByValue,
+  OptionalKeys,
+  PickByValue,
+} from 'utility-types'
 import { FunctionExt } from '../function'
 
 export class Events<EventArgs extends Events.EventArgs = any> {
