@@ -20,6 +20,8 @@ export interface Size {
   width: number
   height: number
 }
+
+export type Nilable<T> = T | null | undefined
 export interface KeyValue<T extends any = any> {
   [key: string]: T
 }
