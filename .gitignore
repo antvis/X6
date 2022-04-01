@@ -12,3 +12,4 @@ dist
 *.pem
 !mock-cert.pem
 tmp
+test
