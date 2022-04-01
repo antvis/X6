@@ -1,4 +1,4 @@
-import type { PointLike } from '../types'
+import { PointLike } from '../types'
 import { createSvgElement } from './elem'
 
 const svgDocument = createSvgElement('svg') as SVGSVGElement

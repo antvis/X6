@@ -1,6 +1,6 @@
 import { Util } from './util'
-import type { Store } from './store'
-import type { EventRaw } from './alias'
+import { Store } from './store'
+import { EventRaw } from './alias'
 
 export class EventObject<
   TDelegateTarget = any,

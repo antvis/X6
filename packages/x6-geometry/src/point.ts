@@ -1,4 +1,4 @@
-import type { Rectangle } from './rectangle'
+import { Rectangle } from './rectangle'
 import { Util } from './util'
 import { Angle } from './angle'
 import { Geometry } from './geometry'
