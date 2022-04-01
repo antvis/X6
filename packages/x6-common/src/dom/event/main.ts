@@ -2,8 +2,8 @@
 
 import { Core } from './core'
 import { Util } from './util'
-import type { EventObject } from './object'
-import type { TypeEventHandler, TypeEventHandlers } from './types'
+import { EventObject } from './object'
+import { TypeEventHandler, TypeEventHandlers } from './types'
 
 export namespace Event {
   export function on<TType extends string>(

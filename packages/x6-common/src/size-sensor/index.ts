@@ -1,5 +1,5 @@
 import { createSensor } from './sensors'
-import type { Sensor, Listener } from './sensors/types'
+import { Sensor, Listener } from './sensors/types'
 
 export namespace SizeSensor {
   const cache: WeakMap<Element, Sensor> = new WeakMap()

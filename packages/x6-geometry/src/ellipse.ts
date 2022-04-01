@@ -1,4 +1,4 @@
-import type { Line } from './line'
+import { Line } from './line'
 import { Point } from './point'
 import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
