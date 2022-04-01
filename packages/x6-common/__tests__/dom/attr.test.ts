@@ -131,6 +131,12 @@ describe('Dom', () => {
         const { id, ...attrs } = vel.attr()
         expect(attrs).toEqual({ foo: 'test', bar: '100' })
       })
+
+      it('should work on html element', () => {
+        const div = document.createElement('div')
+        Dom.attr(div, 'data-id', '12')
+        expect(Dom.attr(div, 'data-id')).toEqual('12')
+      })
     })
   })
 })

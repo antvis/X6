@@ -4,7 +4,7 @@ function camelize(str: string) {
 }
 
 const memoized: { [key: string]: string | null } = {}
-const prefixes = ['Webkit', 'ms', 'Moz', 'O']
+const prefixes = ['webkit', 'ms', 'moz', 'o']
 const testStyle = document ? document.createElement('div').style : {}
 
 function getWithPrefix(name: string) {

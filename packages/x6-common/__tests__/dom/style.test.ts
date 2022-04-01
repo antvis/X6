@@ -7,7 +7,7 @@ describe('Dom', () => {
       Dom.setPrefixedStyle(style, 'userDrag', 'true')
       expect(style).toEqual({
         userDrag: 'true',
-        WebkitUserDrag: 'true',
+        webkitUserDrag: 'true',
       })
     })
 
