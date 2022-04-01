@@ -1,4 +1,4 @@
-import type { EventHandler } from './types'
+import { EventHandler } from './types'
 
 export namespace Store {
   export type EventTarget = Element | Record<string, unknown>

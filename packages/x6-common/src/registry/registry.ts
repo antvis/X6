@@ -1,7 +1,7 @@
 import { StringExt } from '../string'
 import { FunctionExt } from '../function'
 import { Platform } from '../platform'
-import type { KeyValue } from '../types'
+import { KeyValue } from '../types'
 
 export class Registry<
   Entity,

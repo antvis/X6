@@ -1,7 +1,7 @@
 import { Geometry } from '../geometry'
-import type { Line } from '../line'
-import type { Point } from '../point'
-import type { Rectangle } from '../rectangle'
+import { Line } from '../line'
+import { Point } from '../point'
+import { Rectangle } from '../rectangle'
 
 export abstract class Segment extends Geometry {
   isVisible = true
