@@ -1,5 +1,5 @@
 import { Store } from './store'
-import type { EventObject } from './object'
+import { EventObject } from './object'
 
 export namespace Util {
   export const returnTrue = () => true

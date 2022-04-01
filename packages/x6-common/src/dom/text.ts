@@ -1,6 +1,6 @@
 /* eslint-disable no-control-regex */
 
-import type { Size } from '../types'
+import { Size } from '../types'
 import { NumberExt } from '../number'
 import { Text } from '../text'
 import { attr } from './attr'

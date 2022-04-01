@@ -3,7 +3,7 @@ import { Angle } from './angle'
 import { Line } from './line'
 import { Point } from './point'
 import { Geometry } from './geometry'
-import type { Ellipse } from './ellipse'
+import { Ellipse } from './ellipse'
 
 export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   public x: number

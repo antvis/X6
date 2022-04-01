@@ -1,4 +1,4 @@
-import type {
+import {
   EventRaw,
   UIEventRaw,
   DragEventRaw,
@@ -7,7 +7,7 @@ import type {
   TouchEventRaw,
   KeyboardEventRaw,
 } from './alias'
-import type { EventObject } from './object'
+import { EventObject } from './object'
 
 interface EventBase<
   TDelegateTarget = any,
@@ -173,7 +173,7 @@ interface MouseEventBase<
   shiftKey: boolean
 }
 
-interface ClickEvent<
+export interface ClickEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -183,7 +183,7 @@ interface ClickEvent<
   type: 'click'
 }
 
-interface ContextMenuEvent<
+export interface ContextMenuEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -193,7 +193,7 @@ interface ContextMenuEvent<
   type: 'contextmenu'
 }
 
-interface DoubleClickEvent<
+export interface DoubleClickEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -203,7 +203,7 @@ interface DoubleClickEvent<
   type: 'dblclick'
 }
 
-interface MouseDownEvent<
+export interface MouseDownEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -213,7 +213,7 @@ interface MouseDownEvent<
   type: 'mousedown'
 }
 
-interface MouseEnterEvent<
+export interface MouseEnterEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -222,7 +222,7 @@ interface MouseEnterEvent<
   type: 'mouseenter'
 }
 
-interface MouseLeaveEvent<
+export interface MouseLeaveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -231,7 +231,7 @@ interface MouseLeaveEvent<
   type: 'mouseleave'
 }
 
-interface MouseMoveEvent<
+export interface MouseMoveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -241,7 +241,7 @@ interface MouseMoveEvent<
   type: 'mousemove'
 }
 
-interface MouseOutEvent<
+export interface MouseOutEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -250,7 +250,7 @@ interface MouseOutEvent<
   type: 'mouseout'
 }
 
-interface MouseOverEvent<
+export interface MouseOverEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -259,7 +259,7 @@ interface MouseOverEvent<
   type: 'mouseover'
 }
 
-interface MouseUpEvent<
+export interface MouseUpEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -282,7 +282,7 @@ interface DragEventBase<
     DragEventRaw
   > {}
 
-interface DragEvent<
+export interface DragEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -291,7 +291,7 @@ interface DragEvent<
   type: 'drag'
 }
 
-interface DragEndEvent<
+export interface DragEndEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -300,7 +300,7 @@ interface DragEndEvent<
   type: 'dragend'
 }
 
-interface DragEnterEvent<
+export interface DragEnterEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -309,7 +309,7 @@ interface DragEnterEvent<
   type: 'dragenter'
 }
 
-interface DragExitEvent<
+export interface DragExitEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -318,7 +318,7 @@ interface DragExitEvent<
   type: 'dragexit'
 }
 
-interface DragLeaveEvent<
+export interface DragLeaveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -327,7 +327,7 @@ interface DragLeaveEvent<
   type: 'dragleave'
 }
 
-interface DragOverEvent<
+export interface DragOverEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -336,7 +336,7 @@ interface DragOverEvent<
   type: 'dragover'
 }
 
-interface DragStartEvent<
+export interface DragStartEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -345,7 +345,7 @@ interface DragStartEvent<
   type: 'dragstart'
 }
 
-interface DropEvent<
+export interface DropEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -406,7 +406,7 @@ interface KeyboardEventBase<
   shiftKey: boolean
 }
 
-interface KeyDownEvent<
+export interface KeyDownEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -415,7 +415,7 @@ interface KeyDownEvent<
   type: 'keydown'
 }
 
-interface KeyPressEvent<
+export interface KeyPressEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -424,7 +424,7 @@ interface KeyPressEvent<
   type: 'keypress'
 }
 
-interface KeyUpEvent<
+export interface KeyUpEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -484,7 +484,7 @@ interface TouchEventBase<
   shiftKey: boolean
 }
 
-interface TouchCancelEvent<
+export interface TouchCancelEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -493,7 +493,7 @@ interface TouchCancelEvent<
   type: 'touchcancel'
 }
 
-interface TouchEndEvent<
+export interface TouchEndEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -502,7 +502,7 @@ interface TouchEndEvent<
   type: 'touchend'
 }
 
-interface TouchMoveEvent<
+export interface TouchMoveEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -511,7 +511,7 @@ interface TouchMoveEvent<
   type: 'touchmove'
 }
 
-interface TouchStartEvent<
+export interface TouchStartEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -571,7 +571,7 @@ interface FocusEventBase<
   shiftKey: undefined
 }
 
-interface BlurEvent<
+export interface BlurEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -580,7 +580,7 @@ interface BlurEvent<
   type: 'blur'
 }
 
-interface FocusEvent<
+export interface FocusEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -589,7 +589,7 @@ interface FocusEvent<
   type: 'focus'
 }
 
-interface FocusInEvent<
+export interface FocusInEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,
@@ -598,7 +598,7 @@ interface FocusInEvent<
   type: 'focusin'
 }
 
-interface FocusOutEvent<
+export interface FocusOutEvent<
   TDelegateTarget = any,
   TData = any,
   TCurrentTarget = any,

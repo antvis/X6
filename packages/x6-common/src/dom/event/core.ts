@@ -2,7 +2,7 @@ import { Util } from './util'
 import { EventHook } from './hook'
 import { Store } from './store'
 import { EventObject } from './object'
-import type { EventHandler } from './types'
+import { EventHandler } from './types'
 
 export namespace Core {
   let triggered: string | undefined
