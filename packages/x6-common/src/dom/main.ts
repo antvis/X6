@@ -6,6 +6,7 @@ export * from './style'
 export * from './prefix'
 export * from './selection'
 export * from './css'
+export * from './data'
 
 // svg
 // ---
