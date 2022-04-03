@@ -1,1 +1,4 @@
-export const version = '1.0.0'
+export * from './common'
+export * from './global'
+export * from './model'
+export * from './view'
