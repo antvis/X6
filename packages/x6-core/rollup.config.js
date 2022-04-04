@@ -9,4 +9,5 @@ export default config({
       sourcemap: true,
     },
   ],
+  context: 'window',
 })
