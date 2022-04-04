@@ -73,12 +73,12 @@ export class VueShapeView extends NodeView<VueShape> {
 
   protected unmountVueComponent() {
     const root = this.getComponentContainer()
-    root.innerHTML = ''
     if (this.vm) {
       isVue2 && this.vm.$destroy()
       isVue3 && this.vm.unmount()
       this.vm = null
     }
+    root.innerHTML = ''
     return root
   }
 
