@@ -1,7 +1,7 @@
 {
   "name": "@antv/x6-core",
   "version": "1.0.1",
-  "description": "Model and rendering for x6.",
+  "description": "A lightweight graphic render library.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/x6-core.js",
@@ -49,6 +49,11 @@
     "@antv/x6-package-json/eslint.json",
     "@antv/x6-package-json/rollup.json"
   ],
+  "dependencies": {
+    "utility-types": "^3.10.0",
+    "@antv/x6-common": "^1.0.1",
+    "@antv/x6-geometry": "^1.0.1"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",

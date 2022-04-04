@@ -1,7 +1,9 @@
-import { version } from '../src'
+import { version } from '../src/global'
 
 describe('version', () => {
   it('should match the `version` field of package.json', () => {
-    expect(version).toBe('1.0.0')
+    // eslint-disable-next-line
+    const expected = require('../package.json').version
+    expect(version).toBe(expected)
   })
 })
