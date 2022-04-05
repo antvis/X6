@@ -1,3 +1,10 @@
+## @antv/x6-vector [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-vector@1.3.0...@antv/x6-vector@1.3.1) (2022-04-05)
+
+
+### Bug Fixes
+
+* 🐛 fix lgtm alert ([#1975](https://github.com/antvis/x6/issues/1975)) ([7440903](https://github.com/antvis/x6/commit/7440903281be9214d8cff7f69c4e44106d751422))
+
 # @antv/x6-vector [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-vector@1.2.3...@antv/x6-vector@1.3.0) (2021-12-18)
 
 
