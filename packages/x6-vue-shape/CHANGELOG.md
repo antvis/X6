@@ -1,3 +1,18 @@
+## @antv/x6-vue-shape [1.3.2](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.3.1...@antv/x6-vue-shape@1.3.2) (2022-04-05)
+
+
+### Bug Fixes
+
+* **x6-vue-shape:** 🐛 error on removing fragment node ([#1974](https://github.com/antvis/x6/issues/1974)) ([6614e4f](https://github.com/antvis/x6/commit/6614e4f83c5926d97a55db48232f58ba17f64a00))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.31.1
+
 ## @antv/x6-vue-shape [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.3.0...@antv/x6-vue-shape@1.3.1) (2022-01-12)
 
 
