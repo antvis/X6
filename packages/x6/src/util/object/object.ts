@@ -49,6 +49,10 @@ export function getBoolean(obj: any, key: string, defaultValue: boolean) {
   return !!value
 }
 
+export function isMaliciousProp(prop: string): boolean {
+  return prop === '__proto__'
+}
+
 export function getByPath(
   obj: any,
   path: string | string[],
@@ -79,13 +83,15 @@ export function setByPath(
 ) {
   const keys = Array.isArray(path) ? path : path.split(delimiter)
   const lastKey = keys.pop()
-  if (lastKey) {
+  if (lastKey && !isMaliciousProp(lastKey)) {
     let diver = obj
     keys.forEach((key) => {
-      if (diver[key] == null) {
-        diver[key] = {}
+      if (!isMaliciousProp(key)) {
+        if (diver[key] == null) {
+          diver[key] = {}
+        }
+        diver = diver[key]
       }
-      diver = diver[key]
     })
     diver[lastKey] = value
   }
