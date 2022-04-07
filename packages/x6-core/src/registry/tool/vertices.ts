@@ -1,6 +1,6 @@
 import { Point } from '@antv/x6-geometry'
 import { Dom } from '@antv/x6-common'
-import { Util } from '../../global/util'
+import { Config } from '../../global'
 import { View } from '../../view/view'
 import { ToolsView } from '../../view/tool'
 import { EdgeView } from '../../view/edge'
@@ -383,7 +383,7 @@ export namespace Vertices {
 }
 
 export namespace Vertices {
-  const pathClassName = Util.prefix('edge-tool-vertex-path')
+  const pathClassName = Config.prefix('edge-tool-vertex-path')
 
   Vertices.config<Vertices.Options>({
     name: 'vertices',

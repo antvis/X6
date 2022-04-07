@@ -1,6 +1,6 @@
 import { Dom, KeyValue } from '@antv/x6-common'
 import { Basecoat } from '../common'
-import { Util, Config } from '../global'
+import { Config } from '../global'
 import { Markup } from './markup'
 import { Attr } from '../registry'
 
@@ -168,7 +168,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   }
 
   prefixClassName(className: string) {
-    return Util.prefix(className)
+    return Config.prefix(className)
   }
 
   delegateEvents(events: View.Events, append?: boolean) {

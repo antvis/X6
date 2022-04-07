@@ -1,6 +1,6 @@
 import { ObjectExt, Dom, Vector } from '@antv/x6-common'
 import { Attr } from '../attr'
-import { Util } from '../../global'
+import { Config } from '../../global'
 import { EdgeView } from '../../view'
 import { Highlighter } from './index'
 import { transformRectangle, bbox } from '../../util'
@@ -95,7 +95,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
       Dom.transform(path, highlightMatrix)
     }
 
-    Dom.addClass(path, Util.prefix('highlight-stroke'))
+    Dom.addClass(path, Config.prefix('highlight-stroke'))
 
     const cell = cellView.cell
     const removeHandler = () => Private.removeHighlighter(id)
