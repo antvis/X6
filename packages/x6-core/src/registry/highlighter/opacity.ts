@@ -1,10 +1,10 @@
 import { Dom } from '@antv/x6-common'
-import { Util } from '../../global'
+import { Config } from '../../global'
 import { Highlighter } from './index'
 
 export interface OpacityHighlighterOptions {}
 
-const className = Util.prefix('highlight-opacity')
+const className = Config.prefix('highlight-opacity')
 
 export const opacity: Highlighter.Definition<OpacityHighlighterOptions> = {
   highlight(cellView, magnet) {

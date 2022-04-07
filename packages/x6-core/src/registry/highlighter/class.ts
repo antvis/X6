@@ -1,12 +1,12 @@
 import { Dom } from '@antv/x6-common'
-import { Util } from '../../global'
+import { Config } from '../../global'
 import { Highlighter } from './index'
 
 export interface ClassHighlighterOptions {
   className?: string
 }
 
-const defaultClassName = Util.prefix('highlighted')
+const defaultClassName = Config.prefix('highlighted')
 
 export const className: Highlighter.Definition<ClassHighlighterOptions> = {
   highlight(cellView, magnet, options) {

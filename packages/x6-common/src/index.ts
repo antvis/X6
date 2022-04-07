@@ -1,5 +1,6 @@
 import './polyfill'
 
+export * from './version'
 export * from './array'
 export * from './object'
 export * from './string'
