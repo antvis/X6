@@ -2,6 +2,7 @@ export * from './attr'
 export * from './highlighter'
 export * from './port-layout'
 export * from './port-label-layout'
+export * from './tool'
 
 // connection
 export * from './marker'
