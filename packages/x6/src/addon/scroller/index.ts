@@ -1021,8 +1021,8 @@ export class Scroller extends View {
   }
 
   resize(width?: number, height?: number) {
-    let w = width != null ? width : this.container.clientWidth
-    let h = height != null ? height : this.container.clientHeight
+    let w = width != null ? width : this.container.offsetWidth
+    let h = height != null ? height : this.container.offsetHeight
 
     if (typeof w === 'number') {
       w = Math.round(w)
