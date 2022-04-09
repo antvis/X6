@@ -109,8 +109,9 @@ export class FormatManager extends Base {
 
         Object.keys(computedStyle).forEach((property) => {
           if (
+            !NumberExt.isNumeric(property) &&
             computedStyle.getPropertyValue(property) !==
-            defaultComputedStyle[property]
+              defaultComputedStyle[property]
           ) {
             customStyle[property] = computedStyle.getPropertyValue(property)
           }
