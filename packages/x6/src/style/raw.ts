@@ -574,7 +574,7 @@ export const content = `.x6-graph {
   position: absolute;
   top: -10000px;
   left: -10000px;
-  z-index: 100;
+  z-index: 999999;
   display: none;
   cursor: move;
   opacity: 0.7;
