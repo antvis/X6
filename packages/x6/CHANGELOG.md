@@ -1,3 +1,11 @@
+## @antv/x6 [1.31.2](https://github.com/antvis/x6/compare/@antv/x6@1.31.1...@antv/x6@1.31.2) (2022-04-09)
+
+
+### Bug Fixes
+
+* 🐛 change copystyle not include number propery when toSvg ([#1985](https://github.com/antvis/x6/issues/1985)) ([214b927](https://github.com/antvis/x6/commit/214b92704d6c6099047597110477809a4e0d900c))
+* 🐛 fix scroller resize size miscalculation when graph resize ([#1977](https://github.com/antvis/x6/issues/1977)) ([e6de636](https://github.com/antvis/x6/commit/e6de6363aea991b1984010cb8f1d90f89a25388a))
+
 ## @antv/x6 [1.31.1](https://github.com/antvis/x6/compare/@antv/x6@1.31.0...@antv/x6@1.31.1) (2022-04-05)
 
 
