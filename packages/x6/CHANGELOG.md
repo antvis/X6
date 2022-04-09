@@ -1,3 +1,10 @@
+## @antv/x6 [1.31.3](https://github.com/antvis/x6/compare/@antv/x6@1.31.2...@antv/x6@1.31.3) (2022-04-09)
+
+
+### Bug Fixes
+
+* fix animationOptions type ([#1989](https://github.com/antvis/x6/issues/1989)) ([5020e92](https://github.com/antvis/x6/commit/5020e92ce8b758d1e7baeb7e3b5035142b3b6186))
+
 ## @antv/x6 [1.31.2](https://github.com/antvis/x6/compare/@antv/x6@1.31.1...@antv/x6@1.31.2) (2022-04-09)
 
 
