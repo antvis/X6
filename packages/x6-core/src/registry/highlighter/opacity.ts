@@ -1,5 +1,5 @@
 import { Dom } from '@antv/x6-common'
-import { Config } from '../../global'
+import { Config } from '../../common'
 import { Highlighter } from './index'
 
 export interface OpacityHighlighterOptions {}

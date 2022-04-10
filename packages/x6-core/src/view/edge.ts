@@ -29,7 +29,7 @@ import { Markup } from './markup'
 import { CellView } from './cell'
 import { NodeView } from './node'
 import { ToolsView } from './tool'
-import { getBBox, translateAndAutoOrient } from '../util'
+import { Util } from '../util'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -1039,7 +1039,7 @@ export class EdgeView<
     if (sourceMarkerElem) {
       this.updateMarkerAttr('source')
       // support marker connection point registry???
-      cache.sourceBBox = cache.sourceBBox || getBBox(sourceMarkerElem)
+      cache.sourceBBox = cache.sourceBBox || Util.getBBox(sourceMarkerElem)
       if (cache.sourceBBox.width > 0) {
         const scale = Dom.scale(sourceMarkerElem)
         sourceMarkerPoint = sourcePoint
@@ -1060,7 +1060,7 @@ export class EdgeView<
 
     if (targetMarkerElem) {
       this.updateMarkerAttr('target')
-      cache.targetBBox = cache.targetBBox || getBBox(targetMarkerElem)
+      cache.targetBBox = cache.targetBBox || Util.getBBox(targetMarkerElem)
       if (cache.targetBBox.width > 0) {
         const scale = Dom.scale(targetMarkerElem)
         targetMarkerPoint = targetPoint
@@ -1312,7 +1312,7 @@ export class EdgeView<
   ) {
     const route = this.routePoints
     if (sourceArrow) {
-      translateAndAutoOrient(
+      Util.translateAndAutoOrient(
         sourceArrow as SVGElement,
         this.sourcePoint,
         route[0] || this.targetPoint,
@@ -1321,7 +1321,7 @@ export class EdgeView<
     }
 
     if (targetArrow) {
-      translateAndAutoOrient(
+      Util.translateAndAutoOrient(
         targetArrow as SVGElement,
         this.targetPoint,
         route[route.length - 1] || this.sourcePoint,

@@ -16,7 +16,7 @@ import { Markup } from './markup'
 import { ToolsView } from './tool'
 import { AttrManager } from './attr'
 import { FlagManager } from './flag'
-import { transformRectangle } from '../util'
+import { Util } from '../util'
 import { Attr } from '../registry/attr'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
@@ -360,14 +360,14 @@ export class CellView<
     const matrix = this.getMatrixOfElement(elem)
     const rm = this.getRootRotatedMatrix()
     const tm = this.getRootTranslatedMatrix()
-    return transformRectangle(rect, tm.multiply(rm).multiply(matrix))
+    return Util.transformRectangle(rect, tm.multiply(rm).multiply(matrix))
   }
 
   getUnrotatedBBoxOfElement(elem: SVGElement) {
     const rect = this.getBoundingRectOfElement(elem)
     const matrix = this.getMatrixOfElement(elem)
     const tm = this.getRootTranslatedMatrix()
-    return transformRectangle(rect, tm.multiply(matrix))
+    return Util.transformRectangle(rect, tm.multiply(matrix))
   }
 
   getBBox(options: { useCellGeometry?: boolean } = {}) {

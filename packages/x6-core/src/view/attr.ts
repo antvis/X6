@@ -9,7 +9,7 @@ import {
 import { Rectangle, Point } from '@antv/x6-geometry'
 import { Attr } from '../registry/attr'
 import { View } from './view'
-import { transformRectangle, getBBox } from '../util'
+import { Util } from '../util'
 import { CellView } from './cell'
 import { Markup } from './markup'
 
@@ -338,10 +338,10 @@ export class AttrManager {
       // Check if the node is visible
       const nodeBoundingRect = this.view.getBoundingRectOfElement(elem)
       if (nodeBoundingRect.width > 0 && nodeBoundingRect.height > 0) {
-        const nodeBBox = transformRectangle(nodeBoundingRect, nodeMatrix).scale(
-          1 / sx,
-          1 / sy,
-        )
+        const nodeBBox = Util.transformRectangle(
+          nodeBoundingRect,
+          nodeMatrix,
+        ).scale(1 / sx, 1 / sy)
 
         Object.keys(offsetAttrs).forEach((name) => {
           const val = offsetAttrs[name]
@@ -513,7 +513,7 @@ export class AttrManager {
         ) as SVGElement
 
         unrotatedRefBBox = refNode
-          ? getBBox(refNode as SVGElement, { target })
+          ? Util.getBBox(refNode as SVGElement, { target })
           : options.rootBBox
 
         if (refNode) {
@@ -547,7 +547,7 @@ export class AttrManager {
             Dom.attr(options.rotatableNode, 'transform'),
           )
         }
-        refBBox = transformRectangle(unrotatedRefBBox!, rotatableMatrix)
+        refBBox = Util.transformRectangle(unrotatedRefBBox!, rotatableMatrix)
       }
 
       const caller = specialItems.find((item) => item.refNode === node)

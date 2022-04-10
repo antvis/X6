@@ -2,7 +2,7 @@ import { ObjectExt, Dom } from '@antv/x6-common'
 import { Path, Rectangle, Ellipse, Segment } from '@antv/x6-geometry'
 import { offset, getStrokeWidth, findShapeNode } from './util'
 import { ConnectionPoint } from './index'
-import { transformPoint, transformLine } from '../../util'
+import { Util } from '../../util'
 
 export interface BoundaryOptions extends ConnectionPoint.StrokedOptions {
   selector?: string | string[]
@@ -55,7 +55,7 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
     .multiply(rotateMatrix)
     .multiply(magnetMatrix)
   const localMatrix = targetMatrix.inverse()
-  const localLine = transformLine(line, localMatrix)
+  const localLine = Util.transformLine(line, localMatrix)
   const localRef = localLine.start.clone()
   const data = view.getDataOfElement(node) as BoundaryCache
 
@@ -107,7 +107,9 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
     }
   }
 
-  const cp = intersection ? transformPoint(intersection, targetMatrix) : anchor
+  const cp = intersection
+    ? Util.transformPoint(intersection, targetMatrix)
+    : anchor
   let cpOffset = options.offset || 0
   if (options.stroked !== false) {
     if (typeof cpOffset === 'object') {
