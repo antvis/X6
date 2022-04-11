@@ -30,13 +30,12 @@
     "build:watch": "yarn build:esm --w",
     "build:watch:esm": "yarn build:esm --w",
     "build:watch:cjs": "yarn build:cjs --w",
-    "build:version": "node ../../scripts/version.js",
-    "build": "run-p build:version build:dev build:umd",
+    "build": "run-p build:dev build:umd",
     "prebuild": "run-s lint clean",
     "test": "karma start",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
-    "prepare": "run-s build:version test build",
+    "prepare": "run-s test build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
