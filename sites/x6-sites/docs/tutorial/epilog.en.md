@@ -77,7 +77,7 @@ const graph = new Graph({
   }
 })
 ```
-更多配置见: [interacting](https://x6.antv.vision/zh/docs/api/graph#interacting)
+更多配置见: [interacting](/zh/docs/api/graph/interaction#interacting)
 
 ### 怎么支持特定节点的放大缩小
 
