@@ -7,7 +7,7 @@ import {
   Path,
   Segment,
 } from '@antv/x6-geometry'
-import { toGeometryShape, getBBox } from '../util'
+import { Util } from '../util'
 import { CellView } from './cell'
 
 export class Cache {
@@ -60,7 +60,7 @@ export class Cache {
   getShape(elem: Element) {
     const meta = this.get(elem)
     if (meta.shape == null) {
-      meta.shape = toGeometryShape(elem as SVGElement)
+      meta.shape = Util.toGeometryShape(elem as SVGElement)
     }
     return meta.shape.clone()
   }
@@ -68,7 +68,7 @@ export class Cache {
   getBoundingRect(elem: Element) {
     const meta = this.get(elem)
     if (meta.boundingRect == null) {
-      meta.boundingRect = getBBox(elem as SVGElement)
+      meta.boundingRect = Util.getBBox(elem as SVGElement)
     }
     return meta.boundingRect.clone()
   }

@@ -1,6 +1,6 @@
 import { Point } from '@antv/x6-geometry'
 import { Dom } from '@antv/x6-common'
-import { Config } from '../../global'
+import { Config } from '../../common'
 import { View } from '../../view/view'
 import { ToolsView } from '../../view/tool'
 import { EdgeView } from '../../view/edge'

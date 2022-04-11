@@ -1,6 +1,5 @@
 import { Dom, KeyValue } from '@antv/x6-common'
-import { Basecoat } from '../common'
-import { Config } from '../global'
+import { Basecoat, Config } from '../common'
 import { Markup } from './markup'
 import { Attr } from '../registry'
 

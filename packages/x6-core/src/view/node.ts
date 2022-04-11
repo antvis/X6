@@ -1,6 +1,6 @@
 import { ArrayExt, FunctionExt, Dom, Vector } from '@antv/x6-common'
 import { Rectangle, Point, Util as GeomUtil } from '@antv/x6-geometry'
-import { Config } from '../global'
+import { Config } from '../common'
 import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
@@ -8,7 +8,7 @@ import { PortManager } from '../model/port'
 import { CellView } from './cell'
 import { EdgeView } from './edge'
 import { Markup } from './markup'
-import { getBBox } from '../util'
+import { Util } from '../util'
 import { AttrManager } from './attr'
 
 export class NodeView<
@@ -283,7 +283,7 @@ export class NodeView<
       // calculation works and so we can use the (faster) native function.
       recursive = true
     }
-    const scalableBBox = getBBox(scalableNode as SVGElement, { recursive })
+    const scalableBBox = Util.getBBox(scalableNode as SVGElement, { recursive })
 
     // Make sure `scalableBbox.width` and `scalableBbox.height` are not zero
     // which can happen if the element does not have any content.
@@ -308,7 +308,7 @@ export class NodeView<
           'transform',
           `${transform} rotate(${-angle},${size.width / 2},${size.height / 2})`,
         )
-        const rotatableBBox = getBBox(scalableNode as SVGElement, {
+        const rotatableBBox = Util.getBBox(scalableNode as SVGElement, {
           target: this.graph.view.stage,
         })
 
