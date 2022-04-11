@@ -409,7 +409,7 @@ getRootNodes(): Node[]
 isRootNode(cell: Cell | string): boolean
 ```
 
-返回指定的节点是否是跟节点。
+返回指定的节点是否是根节点。
 
 <span class="tag-param">参数<span>
 
@@ -430,6 +430,8 @@ getLeafNodes(): Node[]
 ```sign
 isLeafNode(cell: Cell | string): boolean
 ```
+
+返回指定的节点是否是叶子节点
 
 <span class="tag-param">参数<span>
 
@@ -488,7 +490,6 @@ isPredecessor(cell1: Cell, cell2: Cell, options?: GetPredecessorsOptions): boole
 
 返回 `cell2` 是否是 `cell1` 的前序节点，其中 `options` 选项与 [`getPredecessors(...)`](#getpredecessors) 方法的选项一致。
 
-<span class="tag-param">参数<span>
 
 ### getSuccessors(...)
 

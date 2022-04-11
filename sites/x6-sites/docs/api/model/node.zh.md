@@ -504,7 +504,7 @@ node.translate(undefined, 30) // 只在 Y 轴移动
 
 我们可以通过 `options.restrict` 选项来将节点的移动限制在指定的矩形 `{x: number; y: number; width: number; height: number}` 范围内。
 
-例如，我可以将字节的移动限制在父节点的包围盒中：
+例如，我们可以将子节点的移动限制在父节点的包围盒中：
 
 ```ts
 child.translate(30, 30, { 
