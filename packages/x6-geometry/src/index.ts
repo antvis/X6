@@ -1,4 +1,3 @@
-export * from './version'
 export * from './angle'
 export * from './point'
 export * from './line'
