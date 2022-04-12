@@ -17,18 +17,20 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   }
 
   private toggleTooltip(visible: boolean) {
-    ReactDom.unmountComponentAtNode(this.knob)
-    if (visible) {
-      ReactDom.render(
-        <Tooltip
-          title={this.options.tooltip}
-          visible={true}
-          destroyTooltipOnHide
-        >
-          <div />
-        </Tooltip>,
-        this.knob,
-      )
+    if (this.knob) {
+      ReactDom.unmountComponentAtNode(this.knob)
+      if (visible) {
+        ReactDom.render(
+          <Tooltip
+            title={this.options.tooltip}
+            visible={true}
+            destroyTooltipOnHide
+          >
+            <div />
+          </Tooltip>,
+          this.knob,
+        )
+      }
     }
   }
 
@@ -69,6 +71,7 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   }
 
   protected onRemove() {
+    this.toggleTooltip(false)
     this.cellView.off('cell:mouseenter', this.onMosueEnter, this)
     this.cellView.off('cell:mouseleave', this.onMouseLeave, this)
     this.cellView.off('cell:mousemove', this.onMouseMove, this)
