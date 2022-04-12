@@ -400,7 +400,7 @@ export interface AnimateCallbacks {
 }
 
 export type AnimationOptions = AnimateCallbacks & {
-  [name: string]: string | number | undefined
+  [name: string]: any
 }
 
 export function animate(elem: SVGElement, options: AnimationOptions) {

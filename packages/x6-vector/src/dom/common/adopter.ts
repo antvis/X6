@@ -94,7 +94,7 @@ export namespace Adopter {
 
     // Make sure, that HTML elements are created with the correct namespace
     const wrapper = isHTML ? createHTMLNode('div') : createSVGNode('svg')
-    wrapper.innerHTML = node
+    wrapper.innerHTML = typeof node === 'string' ? unescape(node) : node
 
     // We can use firstChild here because we know,
     // that the first char is < and thus an element
