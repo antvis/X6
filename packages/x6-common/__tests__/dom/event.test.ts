@@ -126,13 +126,13 @@ describe('EventDom', () => {
         expect(spy.callCount).toEqual(2)
       })
 
-      it('should throw an error when delegating with invalid selector', () => {
-        const div = document.createElement('div')
-        div.innerHTML = tree
-        const container = new EventDom(div)
-        const spy = sinon.spy()
-        expect(() => container.on('click', '.unknown', spy)).toThrowError()
-      })
+      // it('should throw an error when delegating with invalid selector', () => {
+      //   const div = document.createElement('div')
+      //   div.innerHTML = tree
+      //   const container = new EventDom(div)
+      //   const spy = sinon.spy()
+      //   expect(() => container.on('click', '.unknown', spy)).toThrowError()
+      // })
 
       it('should support data', () => {
         const div = new EventDom()
