@@ -446,7 +446,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
+        <div ref={this.refContainer} className="dag" />
       </div>
     )
   }

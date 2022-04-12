@@ -1076,15 +1076,16 @@ export class NodeView<
     y: number,
     cell: Cell,
   ) {
-    let cells = [cell]
+    const cells = [cell]
 
-    const selection = this.graph.selection.widget
-    if (selection && selection.options.movable) {
-      const selectedCells = this.graph.getSelectedCells()
-      if (selectedCells.includes(cell)) {
-        cells = selectedCells.filter((c: Cell) => c.isNode())
-      }
-    }
+    // todo
+    // const selection = this.graph.selection.widget
+    // if (selection && selection.options.movable) {
+    //   const selectedCells = this.graph.getSelectedCells()
+    //   if (selectedCells.includes(cell)) {
+    //     cells = selectedCells.filter((c: Cell) => c.isNode())
+    //   }
+    // }
 
     cells.forEach((c: Cell) => {
       this.notify(name, {
@@ -1096,6 +1097,25 @@ export class NodeView<
         view: c.findView(this.graph),
       })
     })
+  }
+
+  // todo
+  protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+    const restrict = this.graph.options.translating.restrict
+    const area =
+      typeof restrict === 'function'
+        ? FunctionExt.call(restrict, this.graph, view!)
+        : restrict
+
+    if (typeof area === 'number') {
+      return this.graph.transform.getGraphArea().inflate(area)
+    }
+
+    if (area === true) {
+      return this.graph.transform.getGraphArea()
+    }
+
+    return area || null
   }
 
   protected startNodeDragging(e: Dom.MouseDownEvent, x: number, y: number) {
@@ -1113,7 +1133,7 @@ export class NodeView<
     targetView.setEventData<EventData.MovingTargetNode>(e, {
       moving: false,
       offset: position.diff(x, y),
-      restrict: this.graph.hook.getRestrictArea(targetView),
+      restrict: this.getRestrictArea(targetView),
     })
   }
 
@@ -1165,11 +1185,13 @@ export class NodeView<
     data.embedding = false
   }
 
+  // eslint-disable-next-line
   protected autoScrollGraph(x: number, y: number) {
-    const scroller = this.graph.scroller.widget
-    if (scroller) {
-      scroller.autoScroll(x, y)
-    }
+    // todo
+    // const scroller = this.graph.scroller.widget
+    // if (scroller) {
+    //   scroller.autoScroll(x, y)
+    // }
   }
 
   // #endregion

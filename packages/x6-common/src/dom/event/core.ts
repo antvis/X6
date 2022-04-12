@@ -33,9 +33,9 @@ export namespace Core {
     }
 
     // Ensure that invalid selectors throw exceptions at attach time
-    if (!Util.isValidSelector(elem, selector)) {
-      throw new Error('Delegate event with invalid selector.')
-    }
+    // if (!Util.isValidSelector(elem, selector)) {
+    //   throw new Error('Delegate event with invalid selector.')
+    // }
 
     const store = Store.ensure(elem)
 
