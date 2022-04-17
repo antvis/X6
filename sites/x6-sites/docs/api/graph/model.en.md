@@ -724,4 +724,4 @@ fromJSON(
 ): this
 ```
 
-当 `options.slient` 为 `true` 时，不触发 `cell:added`、`node:added` 和 `edge:added` 事件和画布重绘。
+当 `options.silent` 为 `true` 时，不触发 `cell:added`、`node:added` 和 `edge:added` 事件和画布重绘。
