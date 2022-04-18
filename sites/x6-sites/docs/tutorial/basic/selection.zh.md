@@ -158,7 +158,7 @@ if (graph.isRubberbandEnabled()) {
 const graph = new Graph({
   selecting: {
     enabled: true,
-    filter: ['rect'], // 'rect' 类型节点不能被选中
+    filter: ['rect'], // 只有 'rect' 类型节点才可以被选中
   },
 })
 
