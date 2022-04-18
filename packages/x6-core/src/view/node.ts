@@ -479,16 +479,17 @@ export class NodeView<
       portContentSelectors,
     }
 
-    this.graph.hook.onPortRendered({
-      port,
-      node: this.cell,
-      container: portElement,
-      selectors: portSelectors,
-      labelContainer: portLabelElement,
-      labelSelectors: portLabelSelectors,
-      contentContainer: portContentElement,
-      contentSelectors: portContentSelectors,
-    })
+    // todo
+    // this.graph.hook.onPortRendered({
+    //   port,
+    //   node: this.cell,
+    //   container: portElement,
+    //   selectors: portSelectors,
+    //   labelContainer: portLabelElement,
+    //   labelSelectors: portLabelSelectors,
+    //   contentContainer: portContentElement,
+    //   contentSelectors: portContentSelectors,
+    // })
 
     return portElement
   }
