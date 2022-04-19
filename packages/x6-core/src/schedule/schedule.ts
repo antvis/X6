@@ -1,24 +1,22 @@
 import { Dom, FunctionExt, KeyValue } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
-import { Cell, Edge, Model } from './model'
-import { View, CellView, NodeView, EdgeView } from './view'
-import { FlagManager } from './view/flag'
-import { Util } from './util'
+import { Cell, Edge, Model } from '../model'
+import { View, CellView, NodeView, EdgeView } from '../view'
+import { FlagManager } from '../view/flag'
+import { Util } from '../util'
 
-export class Renderer {
+export class Schedule {
+  protected model: Model
   protected views: KeyValue<CellView>
   protected zPivots: KeyValue<Comment>
-  protected updates: Renderer.Updates
+  protected updates: Schedule.Updates
   protected graph: any // todo
 
-  constructor(graph: any) {
+  constructor(graph: any, model: Model) {
+    this.model = model
     // todo
     this.graph = graph
     this.init()
-  }
-
-  get model() {
-    return this.graph.model
   }
 
   get options() {
@@ -82,7 +80,7 @@ export class Renderer {
   }
 
   protected onSortModel() {
-    if (this.model.hasActiveBatch(Renderer.SORT_DELAYING_BATCHES)) {
+    if (this.model.hasActiveBatch(Schedule.SORT_DELAYING_BATCHES)) {
       return
     }
 
@@ -101,7 +99,7 @@ export class Renderer {
 
     const model = this.model
     if (!this.isAsync()) {
-      const updateDelayingBatches = Renderer.UPDATE_DELAYING_BATCHES
+      const updateDelayingBatches = Schedule.UPDATE_DELAYING_BATCHES
       if (
         updateDelayingBatches.includes(name as Model.BatchName) &&
         !model.hasActiveBatch(updateDelayingBatches)
@@ -110,7 +108,7 @@ export class Renderer {
       }
     }
 
-    const sortDelayingBatches = Renderer.SORT_DELAYING_BATCHES
+    const sortDelayingBatches = Schedule.SORT_DELAYING_BATCHES
     if (
       sortDelayingBatches.includes(name as Model.BatchName) &&
       !model.hasActiveBatch(sortDelayingBatches)
@@ -137,7 +135,7 @@ export class Renderer {
   protected onCellRemoved({ cell, options }: Model.EventArgs['cell:removed']) {
     const view = this.findViewByCell(cell)
     if (view) {
-      this.requestViewUpdate(view, Renderer.FLAG_REMOVE, view.priority, options)
+      this.requestViewUpdate(view, Schedule.FLAG_REMOVE, view.priority, options)
     }
   }
 
@@ -150,7 +148,7 @@ export class Renderer {
       if (view) {
         this.requestViewUpdate(
           view,
-          Renderer.FLAG_INSERT,
+          Schedule.FLAG_INSERT,
           view.priority,
           options,
         )
@@ -217,7 +215,7 @@ export class Renderer {
 
   requestConnectedEdgesUpdate(
     view: CellView,
-    options: Renderer.RequestViewUpdateOptions = {},
+    options: Schedule.RequestViewUpdateOptions = {},
   ) {
     if (CellView.isCellView(view)) {
       const cell = view.cell
@@ -287,9 +285,9 @@ export class Renderer {
   onViewUpdated(
     view: CellView,
     flag: number,
-    options: Renderer.RequestViewUpdateOptions,
+    options: Schedule.RequestViewUpdateOptions,
   ) {
-    if (flag & Renderer.FLAG_INSERT || options.mounting) {
+    if (flag & Schedule.FLAG_INSERT || options.mounting) {
       return
     }
     this.requestConnectedEdgesUpdate(view, options)
@@ -298,7 +296,7 @@ export class Renderer {
   onViewPostponed(
     view: CellView,
     flag: number,
-    options: Renderer.UpdateViewOptions, // eslint-disable-line
+    options: Schedule.UpdateViewOptions, // eslint-disable-line
   ) {
     return this.forcePostponedViewUpdate(view, flag)
   }
@@ -307,7 +305,7 @@ export class Renderer {
     view: View,
     flag: number,
     priority: number,
-    options: Renderer.RequestViewUpdateOptions = {},
+    options: Schedule.RequestViewUpdateOptions = {},
   ) {
     const cid = view.cid
     const updates = this.updates
@@ -325,17 +323,17 @@ export class Renderer {
       updates.count += 1
     }
 
-    if (flag & Renderer.FLAG_REMOVE && currentFlag & Renderer.FLAG_INSERT) {
+    if (flag & Schedule.FLAG_REMOVE && currentFlag & Schedule.FLAG_INSERT) {
       // When a view is removed we need to remove the
       // insert flag as this is a reinsert.
-      cache[cid] ^= Renderer.FLAG_INSERT
+      cache[cid] ^= Schedule.FLAG_INSERT
     } else if (
-      flag & Renderer.FLAG_INSERT &&
-      currentFlag & Renderer.FLAG_REMOVE
+      flag & Schedule.FLAG_INSERT &&
+      currentFlag & Schedule.FLAG_REMOVE
     ) {
       // When a view is added we need to remove the remove
       // flag as this is view was previously removed.
-      cache[cid] ^= Renderer.FLAG_REMOVE
+      cache[cid] ^= Schedule.FLAG_REMOVE
     }
 
     cache[cid] |= flag
@@ -347,7 +345,7 @@ export class Renderer {
     view: CellView,
     flag: number,
     priority: number,
-    options: Renderer.RequestViewUpdateOptions = {},
+    options: Schedule.RequestViewUpdateOptions = {},
   ) {
     this.scheduleViewUpdate(view, flag, priority, options)
 
@@ -355,7 +353,7 @@ export class Renderer {
     if (
       this.isFrozen() ||
       (isAsync && options.async !== false) ||
-      this.model.hasActiveBatch(Renderer.UPDATE_DELAYING_BATCHES)
+      this.model.hasActiveBatch(Schedule.UPDATE_DELAYING_BATCHES)
     ) {
       return
     }
@@ -390,7 +388,7 @@ export class Renderer {
   /**
    * Adds all views into the DOM and update them.
    */
-  dumpViews(options: Renderer.UpdateViewOptions = {}) {
+  dumpViews(options: Schedule.UpdateViewOptions = {}) {
     this.checkView(options)
     this.updateViews(options)
   }
@@ -414,14 +412,14 @@ export class Renderer {
     }
 
     if (CellView.isCellView(view)) {
-      if (flag & Renderer.FLAG_REMOVE) {
+      if (flag & Schedule.FLAG_REMOVE) {
         this.removeView(view.cell as any)
         return 0
       }
 
-      if (flag & Renderer.FLAG_INSERT) {
+      if (flag & Schedule.FLAG_INSERT) {
         this.insertView(view)
-        flag ^= Renderer.FLAG_INSERT // eslint-disable-line
+        flag ^= Schedule.FLAG_INSERT // eslint-disable-line
       }
     }
 
@@ -432,11 +430,11 @@ export class Renderer {
     return view.confirmUpdate(flag, options)
   }
 
-  updateViews(options: Renderer.UpdateViewOptions = {}) {
-    let result: ReturnType<typeof Renderer.prototype.updateViewsBatch>
+  updateViews(options: Schedule.UpdateViewOptions = {}) {
+    let result: ReturnType<typeof Schedule.prototype.updateViewsBatch>
     let batchCount = 0
     let updatedCount = 0
-    let priority = Renderer.MIN_PRIORITY
+    let priority = Schedule.MIN_PRIORITY
 
     do {
       result = this.updateViewsBatch(options)
@@ -452,13 +450,13 @@ export class Renderer {
     }
   }
 
-  protected updateViewsBatch(options: Renderer.UpdateViewOptions = {}) {
+  protected updateViewsBatch(options: Schedule.UpdateViewOptions = {}) {
     const updates = this.updates
     const priorities = updates.priorities
-    const batchSize = options.batchSize || Renderer.UPDATE_BATCH_SIZE
+    const batchSize = options.batchSize || Schedule.UPDATE_BATCH_SIZE
 
     let empty = true
-    let priority = Renderer.MIN_PRIORITY
+    let priority = Schedule.MIN_PRIORITY
     let mountedCount = 0
     let unmountedCount = 0
     let updatedCount = 0
@@ -488,7 +486,7 @@ export class Renderer {
 
         let currentFlag = cache[cid]
         // Do not check a view for viewport if we are about to remove the view.
-        if ((currentFlag & Renderer.FLAG_REMOVE) === 0) {
+        if ((currentFlag & Schedule.FLAG_REMOVE) === 0) {
           const isUnmounted = cid in updates.unmounted
           if (
             checkView &&
@@ -511,7 +509,7 @@ export class Renderer {
 
           // Mount view
           if (isUnmounted) {
-            currentFlag |= Renderer.FLAG_INSERT
+            currentFlag |= Schedule.FLAG_INSERT
             mountedCount += 1
           }
           currentFlag |= this.registerMountedView(view)
@@ -528,7 +526,7 @@ export class Renderer {
               !this.isEdgeTerminalVisible(cell, 'source')
             ) {
               leftoverFlag = cellView.removeAction(leftoverFlag, 'source')
-              leftoverFlag |= Renderer.FLAG_REMOVE
+              leftoverFlag |= Schedule.FLAG_REMOVE
             }
 
             // remove edge view when target cell is invisible
@@ -537,7 +535,7 @@ export class Renderer {
               !this.isEdgeTerminalVisible(cell, 'target')
             ) {
               leftoverFlag = cellView.removeAction(leftoverFlag, 'target')
-              leftoverFlag |= Renderer.FLAG_REMOVE
+              leftoverFlag |= Schedule.FLAG_REMOVE
             }
           }
         }
@@ -575,13 +573,13 @@ export class Renderer {
   }
 
   protected updateViewsAsync(
-    options: Renderer.UpdateViewsAsyncOptions = {},
+    options: Schedule.UpdateViewsAsyncOptions = {},
     data: {
       processed: number
       priority: number
     } = {
       processed: 0,
-      priority: Renderer.MIN_PRIORITY,
+      priority: Schedule.MIN_PRIORITY,
     },
   ) {
     const updates = this.updates
@@ -598,8 +596,8 @@ export class Renderer {
       const stats = this.updateViewsBatch(options)
       const checkout = this.checkViewImpl({
         checkView: options.checkView,
-        mountedBatchSize: Renderer.MOUNT_BATCH_SIZE - stats.mountedCount,
-        unmountedBatchSize: Renderer.MOUNT_BATCH_SIZE - stats.unmountedCount,
+        mountedBatchSize: Schedule.MOUNT_BATCH_SIZE - stats.mountedCount,
+        unmountedBatchSize: Schedule.MOUNT_BATCH_SIZE - stats.unmountedCount,
       })
 
       let processed = data.processed
@@ -667,7 +665,7 @@ export class Renderer {
       return 0
     }
 
-    updates.unmounted[cid] |= Renderer.FLAG_INSERT
+    updates.unmounted[cid] |= Schedule.FLAG_INSERT
 
     const flag = updates.unmounted[cid]
     updates.unmountedCids.push(cid)
@@ -693,7 +691,7 @@ export class Renderer {
   }
 
   protected checkMountedViews(
-    viewportFn?: Renderer.CheckViewFn | null,
+    viewportFn?: Schedule.CheckViewFn | null,
     batchSize?: number,
   ) {
     let unmountCount = 0
@@ -744,7 +742,7 @@ export class Renderer {
   }
 
   protected checkUnmountedViews(
-    checkView?: Renderer.CheckViewFn | null,
+    checkView?: Schedule.CheckViewFn | null,
     batchSize?: number,
   ) {
     let mountCount = 0
@@ -795,7 +793,7 @@ export class Renderer {
   }
 
   protected checkViewImpl(
-    options: Renderer.CheckViewOptions & {
+    options: Schedule.CheckViewOptions & {
       mountedBatchSize?: number
       unmountedBatchSize?: number
     } = {
@@ -827,7 +825,7 @@ export class Renderer {
   /**
    * Determine every view in the graph should be attached/detached.
    */
-  protected checkView(options: Renderer.CheckViewOptions = {}) {
+  protected checkView(options: Schedule.CheckViewOptions = {}) {
     return this.checkViewImpl(options)
   }
 
@@ -839,7 +837,7 @@ export class Renderer {
    * Freeze the graph then the graph does not automatically re-render upon
    * changes in the graph. This is useful when adding large numbers of cells.
    */
-  freeze(options: Renderer.FreezeOptions = {}) {
+  freeze(options: Schedule.FreezeOptions = {}) {
     const key = options.key
     const updates = this.updates
     const frozen = this.options.frozen
@@ -864,7 +862,7 @@ export class Renderer {
     this.graph.trigger('freeze', { key })
   }
 
-  unfreeze(options: Renderer.UnfreezeOptions = {}) {
+  unfreeze(options: Schedule.UnfreezeOptions = {}) {
     const key = options.key
     const updates = this.updates
     const freezeKey = updates.freezeKey
@@ -1012,7 +1010,7 @@ export class Renderer {
     }
 
     if (view) {
-      flag = Renderer.FLAG_INSERT
+      flag = Schedule.FLAG_INSERT
     } else {
       const tmp = this.createCellView(cell)
       if (tmp) {
@@ -1192,8 +1190,6 @@ export class Renderer {
     }
   }
 
-  findViewByCell(cellId: string | number): CellView | null
-  findViewByCell(cell: Cell | null): CellView | null
   findViewByCell(
     cell: Cell | string | number | null | undefined,
   ): CellView | null {
@@ -1244,7 +1240,7 @@ export class Renderer {
 
   findEdgeViewsInArea(
     rect: Rectangle.RectangleLike,
-    options: Renderer.FindViewsInAreaOptions = {},
+    options: Schedule.FindViewsInAreaOptions = {},
   ) {
     const area = Rectangle.create(rect)
     return this.model
@@ -1271,7 +1267,7 @@ export class Renderer {
 
   findViewsInArea(
     rect: Rectangle.RectangleLike,
-    options: Renderer.FindViewsInAreaOptions = {},
+    options: Schedule.FindViewsInAreaOptions = {},
   ) {
     const area = Rectangle.create(rect)
     return this.model
@@ -1297,7 +1293,7 @@ export class Renderer {
   }
 }
 
-export namespace Renderer {
+export namespace Schedule {
   export interface Updates {
     priorities: KeyValue<number>[]
     mounted: KeyValue<boolean>
@@ -1374,7 +1370,7 @@ export namespace Renderer {
   }
 }
 
-export namespace Renderer {
+export namespace Schedule {
   export const FLAG_INSERT = 1 << 30
   export const FLAG_REMOVE = 1 << 29
   export const MOUNT_BATCH_SIZE = 1000

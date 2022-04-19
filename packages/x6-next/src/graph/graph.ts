@@ -5,7 +5,6 @@ import {
   Cell,
   Node,
   Edge,
-  CellView,
   Renderer as ViewRenderer,
 } from '@antv/x6-core'
 import { NumberExt, Dom, KeyValue } from '@antv/x6-common'
@@ -32,7 +31,6 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly grid: Grid
   public readonly background: Background
 
-  public readonly model: Model
   public readonly renderer: ViewRenderer
 
   protected get [Symbol.toStringTag]() {
@@ -51,9 +49,11 @@ export class Graph extends Basecoat<EventArgs> {
     this.grid = new Grid(this)
     this.background = new Background(this)
 
-    this.model = new Model()
-    this.model.graph = this // todo
-    this.renderer = new ViewRenderer(this)
+    this.renderer = new ViewRenderer(this, {})
+  }
+
+  get model() {
+    return this.renderer.model
   }
 
   // #region model
@@ -440,118 +440,6 @@ export class Graph extends Basecoat<EventArgs> {
 
   updateCellId(cell: Cell, newId: string) {
     return this.model.updateCellId(cell, newId)
-  }
-
-  // #endregion
-
-  // #region view
-
-  isFrozen() {
-    return this.renderer.isFrozen()
-  }
-
-  freeze(options: ViewRenderer.FreezeOptions = {}) {
-    this.renderer.freeze(options)
-    return this
-  }
-
-  unfreeze(options: ViewRenderer.UnfreezeOptions = {}) {
-    this.renderer.unfreeze(options)
-    return this
-  }
-
-  isAsync() {
-    return this.renderer.isAsync()
-  }
-
-  setAsync(async: boolean) {
-    this.renderer.setAsync(async)
-    return this
-  }
-
-  findView(ref: Cell | Element) {
-    if (Cell.isCell(ref)) {
-      return this.findViewByCell(ref)
-    }
-
-    return this.findViewByElem(ref)
-  }
-
-  findViews(ref: Point.PointLike | Rectangle.RectangleLike) {
-    if (Rectangle.isRectangleLike(ref)) {
-      return this.findViewsInArea(ref)
-    }
-
-    if (Point.isPointLike(ref)) {
-      return this.findViewsFromPoint(ref)
-    }
-
-    return []
-  }
-
-  findViewByCell(cellId: string | number): CellView | null
-  findViewByCell(cell: Cell | null): CellView | null
-  findViewByCell(
-    cell: Cell | string | number | null | undefined,
-  ): CellView | null {
-    return this.renderer.findViewByCell(cell as Cell)
-  }
-
-  findViewByElem(elem: string | Element | undefined | null) {
-    return this.renderer.findViewByElem(elem)
-  }
-
-  findViewsFromPoint(x: number, y: number): CellView[]
-  findViewsFromPoint(p: Point.PointLike): CellView[]
-  findViewsFromPoint(x: number | Point.PointLike, y?: number) {
-    const p = typeof x === 'number' ? { x, y: y as number } : x
-    return this.renderer.findViewsFromPoint(p)
-  }
-
-  findViewsInArea(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    options?: ViewRenderer.FindViewsInAreaOptions,
-  ): CellView[]
-  findViewsInArea(
-    rect: Rectangle.RectangleLike,
-    options?: ViewRenderer.FindViewsInAreaOptions,
-  ): CellView[]
-  findViewsInArea(
-    x: number | Rectangle.RectangleLike,
-    y?: number | ViewRenderer.FindViewsInAreaOptions,
-    width?: number,
-    height?: number,
-    options?: ViewRenderer.FindViewsInAreaOptions,
-  ) {
-    const rect =
-      typeof x === 'number'
-        ? {
-            x,
-            y: y as number,
-            width: width as number,
-            height: height as number,
-          }
-        : x
-    const localOptions =
-      typeof x === 'number'
-        ? options
-        : (y as ViewRenderer.FindViewsInAreaOptions)
-    return this.renderer.findViewsInArea(rect, localOptions)
-  }
-
-  isViewMounted(view: CellView) {
-    return this.renderer.isViewMounted(view)
-  }
-
-  getMountedViews() {
-    return this.renderer.getMountedViews()
-  }
-
-  getUnmountedViews() {
-    return this.renderer.getUnmountedViews()
   }
 
   // #endregion
