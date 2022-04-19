@@ -6,12 +6,16 @@ lerna run build --stream --scope @antv/stylelint-config
 wait
 
 lerna run build --stream --scope @antv/x6-common \
-                         --scope @antv/x6-vector \
                          --scope @antv/x6-geometry \
                          --scope @antv/x6-react-components
 
 wait
 
+lerna run build --stream --scope @antv/x6-core
+
+wait
+
+lerna run build --stream --scope @antv/x6-next
 lerna run build --stream --scope @antv/x6
 
 wait

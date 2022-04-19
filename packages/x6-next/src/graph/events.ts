@@ -1,4 +1,4 @@
-import { Model, CellView, Renderer } from '@antv/x6-core'
+import { Model, CellView } from '@antv/x6-core'
 import { Dom } from '@antv/x6-common'
 
 interface CommonEventArgs<E> {
@@ -36,13 +36,13 @@ export interface EventArgs
   'tools:hide'?: null
   'tools:show'?: null
 
-  'render:done': {
-    stats: {
-      priority: number
-      updatedCount: number
-    }
-    options: Renderer.UpdateViewsAsyncOptions
-  }
+  // 'render:done': {
+  //   stats: {
+  //     priority: number
+  //     updatedCount: number
+  //   }
+  //   options: Renderer.UpdateViewsAsyncOptions
+  // }
 
   scale: { sx: number; sy: number; ox: number; oy: number }
   resize: { width: number; height: number }
