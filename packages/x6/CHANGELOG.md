@@ -1,3 +1,10 @@
+## @antv/x6 [1.31.4](https://github.com/antvis/x6/compare/@antv/x6@1.31.3...@antv/x6@1.31.4) (2022-04-21)
+
+
+### Bug Fixes
+
+* 🐛 exclude case-sensitive-attr in kebablizeAttrs ([#2031](https://github.com/antvis/x6/issues/2031)) ([1e513ad](https://github.com/antvis/x6/commit/1e513adfdeee34c833c70eed037d26e28be33594))
+
 ## @antv/x6 [1.31.3](https://github.com/antvis/x6/compare/@antv/x6@1.31.2...@antv/x6@1.31.3) (2022-04-09)
 
 
