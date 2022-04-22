@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Rectangle } from '@antv/x6-geometry'
 import { Basecoat } from '../common'
 import { Model, Cell } from '../model'
 import { Options } from './options'
-import { Schedule } from '../schedule'
+import { Scheduler } from '../scheduler'
 import { CellView } from '../view'
 
 export class Renderer extends Basecoat<Renderer.EventArgs> {
   public readonly options: Options.Definition
   public readonly model: Model
-  private readonly schedule: Schedule
+  private readonly schedule: Scheduler
 
   constructor(graph: any, options: Partial<Options.Manual>) {
     super()
@@ -16,7 +17,7 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
     this.options = Options.get(options)
     this.model = new Model()
     this.model.graph = graph // todo
-    this.schedule = new Schedule(graph, this.model) // todo
+    this.schedule = new Scheduler(graph, this.model) // todo
   }
 
   findViewByElem(elem: string | Element | undefined | null) {
@@ -35,28 +36,26 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
     view: CellView,
     flag: number,
     priority: number,
-    options: Schedule.RequestViewUpdateOptions = {},
+    options: any = {},
   ) {
-    return this.schedule.requestViewUpdate(view, flag, priority, options)
+    // todo
   }
 
   isAsync() {
-    return this.schedule.isAsync()
+    return false
   }
 
   dumpView(view: CellView, options: any = {}) {
-    return this.schedule.dumpView(view, options)
+    // todo
   }
 
   isViewMounted(view: CellView) {
-    return this.schedule.isViewMounted(view)
+    // todo
+    return true
   }
 
-  findViewsInArea(
-    rect: Rectangle.RectangleLike,
-    options: Schedule.FindViewsInAreaOptions = {},
-  ) {
-    return this.schedule.findViewsInArea(rect, options)
+  findViewsInArea(rect: Rectangle.RectangleLike, options: any = {}) {
+    // todo
   }
 
   dispose() {
