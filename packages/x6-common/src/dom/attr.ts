@@ -1,6 +1,8 @@
 import { ns } from './elem'
 import { kebabCase } from '../string/format'
 
+const CASE_SENSITIVE_ATTR = ['viewBox']
+
 export type Attributes = { [key: string]: string | number | null | undefined }
 
 export function getAttribute(elem: Element, name: string) {
@@ -100,7 +102,7 @@ export function qualifyAttr(name: string) {
 export function kebablizeAttrs(attrs: Attributes) {
   const result: Attributes = {}
   Object.keys(attrs).forEach((key) => {
-    const name = kebabCase(key)
+    const name = CASE_SENSITIVE_ATTR.includes(key) ? key : kebabCase(key)
     result[name] = attrs[key]
   })
   return result
