@@ -5,6 +5,6 @@ module.exports = (config) =>
       files: [{ pattern: 'src/**/*.ts' }],
     },
     {
-      include: ['./src/**/*.ts'],
+      include: ['./src/**/*.ts', '../../node_modules/csstype/**/*'],
     },
   )
