@@ -112,9 +112,9 @@ HTML/React/Vue 节点内容都是渲染在 SVG 的 [foreignObject](https://devel
 在 `node:moved` 事件中参数中，`x`、`y` 参数经常引起歧义，这里说明一下：`x` 和 `y` 指定的是鼠标相对于画布的位置，而不是节点的位置，要获取节点的位置，可以：
 
 ```ts
-graph.on('node:moved', ({ node })) {
-  const { x, y } = node.position()
-}
+graph.on('node:moved', ({ node }) => {
+  const { x, y } = node.position();
+});
 ```
 
 ### 怎么区分 edge:removed 事件触发原因
