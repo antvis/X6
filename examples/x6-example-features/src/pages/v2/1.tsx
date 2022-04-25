@@ -1,9 +1,31 @@
 import React from 'react'
 import { Graph } from '@antv/x6-next'
-import { Node } from '@antv/x6-core'
+import { Node, Registry } from '@antv/x6-core'
+import { Path } from '@antv/x6-geometry'
 import { Button } from 'antd'
 import data from './data'
 import '../index.less'
+
+Registry.Connector.registry.register(
+  'algo-connector',
+  (s, e) => {
+    const offset = 4
+    const deltaY = Math.abs(e.y - s.y)
+    const control = Math.floor((deltaY / 3) * 2)
+
+    const v1 = { x: s.x, y: s.y + offset + control }
+    const v2 = { x: e.x, y: e.y - offset - control }
+
+    return Path.normalize(
+      `M ${s.x} ${s.y}
+       L ${s.x} ${s.y + offset}
+       C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
+       L ${e.x} ${e.y}
+      `,
+    )
+  },
+  true,
+)
 
 Node.registry.register(
   'perf-node',
@@ -60,6 +82,11 @@ export default class Example extends React.Component {
       width: 1600,
       height: 1000,
       grid: true,
+      connecting: {
+        connector: 'algo-connector',
+        connectionPoint: 'anchor',
+        anchor: 'center',
+      },
     })
     this.graph = graph
   }
@@ -137,18 +164,17 @@ export default class Example extends React.Component {
         ],
       }
     })
-    data.edges.forEach((edge: any) => {
-      edge.attrs = {
-        line: {
-          stroke: '#ccc',
-          strokeWidth: 1,
-        },
-      }
-    })
+    // data.edges.forEach((edge: any) => {
+    //   edge.attrs = {
+    //     line: {
+    //       stroke: '#ccc',
+    //       strokeWidth: 1,
+    //     },
+    //   }
+    // })
+    data.edges = []
 
-    const start = performance.now()
     this.graph.fromJSON(data)
-    console.log('time：', performance.now() - start)
   }
 
   refContainer = (container: HTMLDivElement) => {
