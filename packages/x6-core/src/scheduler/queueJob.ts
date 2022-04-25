@@ -1,13 +1,17 @@
 export interface Job {
   id: string
-  // priority: number
+  priority: JOB_PRIORITY
   cb: () => void
 }
 
-let batchSize = 1
+export enum JOB_PRIORITY {
+  Manual = 1,
+  Render = 2,
+}
+
 let isFlushing = false
 let isFlushPending = false
-let currentFlushId = 0
+let scheduleId = 0
 const queue: Job[] = []
 const frameInterval = 33
 
@@ -28,34 +32,37 @@ let scheduleJob: () => void
 let cancelScheduleJob: () => void
 if ('requestIdleCallback' in window) {
   scheduleJob = () => {
-    if (currentFlushId) {
+    if (scheduleId) {
       cancelScheduleJob()
     }
-    currentFlushId = window.requestIdleCallback(flushJobs)
+    scheduleId = window.requestIdleCallback(flushJobs)
   }
   cancelScheduleJob = () => {
-    if (currentFlushId) {
-      cancelIdleCallback(currentFlushId)
+    if (scheduleId) {
+      cancelIdleCallback(scheduleId)
     }
-    currentFlushId = 0
+    scheduleId = 0
   }
 } else {
   scheduleJob = () => {
-    if (currentFlushId) {
+    if (scheduleId) {
       cancelScheduleJob()
     }
-    currentFlushId = window.setTimeout(flushJobs)
+    scheduleId = window.setTimeout(flushJobs)
   }
   cancelScheduleJob = () => {
-    if (currentFlushId) {
-      clearTimeout(currentFlushId)
+    if (scheduleId) {
+      clearTimeout(scheduleId)
     }
-    currentFlushId = 0
+    scheduleId = 0
   }
 }
 
 export function queueJob(job: Job) {
-  queue.push(job)
+  const index = findInsertionIndex(job)
+  if (index >= 0) {
+    queue.splice(index, 0, job)
+  }
 }
 
 export function queueFlush() {
@@ -69,32 +76,48 @@ function flushJobs() {
   isFlushPending = false
   isFlushing = true
 
-  let jobCounts = 0
   const startTime = getCurrentTime()
 
-  for (let i = 0; i < batchSize; i += 1) {
-    const task = queue.shift()
-    if (task) {
-      try {
-        task.cb()
-      } catch (error) {
-        // pass
-      } finally {
-        jobCounts += 1
-      }
+  let job
+  while ((job = queue.shift())) {
+    try {
+      job.cb()
+    } catch (error) {
+      // pass
+    }
+    if (getCurrentTime() - startTime >= frameInterval) {
+      break
     }
   }
 
-  const spend = getCurrentTime() - startTime
-  if (jobCounts !== 0) {
-    const averageTime = spend / jobCounts
-    batchSize = Math.floor(frameInterval / averageTime)
-  }
-
   isFlushing = false
-  cancelScheduleJob()
 
   if (queue.length) {
     queueFlush()
   }
 }
+
+function findInsertionIndex(job: Job) {
+  let start = 0
+  while (queue[start] && queue[start].priority <= job.priority) {
+    start += 1
+  }
+  return start
+}
+
+// function findInsertionIndex(job: Job) {
+//   let start = 0
+//   for (let i = 0, len = queue.length; i < len; i += 1) {
+//     const j = queue[i]
+//     if (j.id === job.id) {
+//       console.log('xx', j.bit, job.bit)
+//     }
+//     if (j.id === job.id && (job.bit ^ (job.bit & j.bit)) === 0) {
+//       return -1
+//     }
+//     if (j.priority <= job.priority) {
+//       start += 1
+//     }
+//   }
+//   return start
+// }

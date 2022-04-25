@@ -1,5 +1,6 @@
 export namespace Options {
   export interface Manual {
+    container: SVGElement
     connecting?: Partial<Connecting>
     translating?: Partial<Translating>
     highlighting?: Partial<Highlighting>
@@ -7,6 +8,7 @@ export namespace Options {
   }
 
   export interface Definition {
+    container: SVGElement
     embedding: Embedding
     connecting: Connecting
     translating: Translating
