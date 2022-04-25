@@ -1,23 +1,19 @@
 import { KeyValue } from '@antv/x6-common'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
-import { queueJob, queueFlush } from './queueJob'
+import { queueJob, queueFlush, JOB_PRIORITY } from './queueJob'
 // import { FlagManager } from '../view/flag'
 
 export class Scheduler {
   protected model: Model
-  protected views: KeyValue<CellView>
   protected graph: any // todo
+  public views: KeyValue<CellView>
 
   constructor(graph: any, model: Model) {
     this.model = model
     // todo
     this.graph = graph
     this.init()
-  }
-
-  get options() {
-    return this.graph.options
   }
 
   get view() {
@@ -45,20 +41,13 @@ export class Scheduler {
     for (let i = 0, n = cells.length; i < n; i += 1) {
       queueJob({
         id: cells[i].id,
+        priority: JOB_PRIORITY.Render,
         cb: () => {
           this.renderView(cells[i], options)
         },
       })
     }
     queueFlush()
-  }
-
-  protected removeView(cell: Cell) {
-    const view = this.views[cell.id]
-    if (view) {
-      view.remove()
-    }
-    return view
   }
 
   protected removeViews() {
@@ -71,6 +60,14 @@ export class Scheduler {
       })
     }
     this.views = {}
+  }
+
+  protected removeView(cell: Cell) {
+    const view = this.views[cell.id]
+    if (view) {
+      view.remove()
+    }
+    return view
   }
 
   protected createCellView(cell: Cell) {
@@ -119,7 +116,7 @@ export class Scheduler {
     }
   }
 
-  updateView(view: View, flag: number, options: any = {}) {
+  protected updateView(view: View, flag: number, options: any = {}) {
     if (view == null) {
       return 0
     }
@@ -143,41 +140,25 @@ export class Scheduler {
     return view.confirmUpdate(flag, options)
   }
 
-  insertView(view: CellView) {
+  protected insertView(view: CellView) {
     const stage = this.view.stage
     stage.appendChild(view.container)
   }
 
-  findViewByCell(
-    cell: Cell | string | number | null | undefined,
-  ): CellView | null {
-    if (cell == null) {
-      return null
-    }
-    const id = Cell.isCell(cell) ? cell.id : cell
-    return this.views[id]
-  }
-
-  findViewByElem(elem: string | Element | undefined | null) {
-    if (elem == null) {
-      return null
-    }
-
-    const target =
-      typeof elem === 'string'
-        ? this.view.stage.querySelector(elem)
-        : elem instanceof Element
-        ? elem
-        : elem[0]
-
-    if (target) {
-      const id = this.view.findAttr('data-cell-id', target)
-      if (id) {
-        return this.views[id]
-      }
-    }
-
-    return null
+  requestViewUpdate(
+    view: CellView,
+    flag: number,
+    priority: number,
+    options: any = {},
+  ) {
+    queueJob({
+      id: view.cell.id,
+      priority: JOB_PRIORITY.Manual,
+      cb: () => {
+        this.updateView(view, flag, options)
+      },
+    })
+    queueFlush()
   }
 
   dispose() {
@@ -187,9 +168,7 @@ export class Scheduler {
 export namespace Scheduler {
   export const FLAG_INSERT = 1 << 30
   export const FLAG_REMOVE = 1 << 29
-  export const MOUNT_BATCH_SIZE = 1000
-  export const UPDATE_BATCH_SIZE = 1000
-  export const MIN_PRIORITY = 2
+  export const FLAG_RENDER = (1 << 26) - 1
   export const SORT_DELAYING_BATCHES: Model.BatchName[] = [
     'add',
     'to-front',

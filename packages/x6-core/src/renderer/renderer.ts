@@ -9,11 +9,12 @@ import { CellView } from '../view'
 export class Renderer extends Basecoat<Renderer.EventArgs> {
   public readonly options: Options.Definition
   public readonly model: Model
+  protected readonly graph: any
   private readonly schedule: Scheduler
 
   constructor(graph: any, options: Partial<Options.Manual>) {
     super()
-
+    this.graph = graph // todo
     this.options = Options.get(options)
     this.model = new Model()
     this.model.graph = graph // todo
@@ -21,7 +22,26 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
   }
 
   findViewByElem(elem: string | Element | undefined | null) {
-    return this.schedule.findViewByElem(elem)
+    if (elem == null) {
+      return null
+    }
+    const container = this.options.container
+    const target =
+      typeof elem === 'string'
+        ? container.querySelector(elem)
+        : elem instanceof Element
+        ? elem
+        : elem[0]
+
+    if (target) {
+      const id = this.graph.view.findAttr('data-cell-id', target)
+      if (id) {
+        const views = this.schedule.views
+        return views[id]
+      }
+    }
+
+    return null
   }
 
   findViewByCell(cellId: string | number): CellView | null
@@ -29,7 +49,12 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
   findViewByCell(
     cell: Cell | string | number | null | undefined,
   ): CellView | null {
-    return this.schedule.findViewByCell(cell)
+    if (cell == null) {
+      return null
+    }
+    const id = Cell.isCell(cell) ? cell.id : cell
+    const views = this.schedule.views
+    return views[id]
   }
 
   requestViewUpdate(
@@ -38,7 +63,7 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
     priority: number,
     options: any = {},
   ) {
-    // todo
+    this.schedule.requestViewUpdate(view, flag, priority, options)
   }
 
   isAsync() {
