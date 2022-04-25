@@ -49,7 +49,9 @@ export class Graph extends Basecoat<EventArgs> {
     this.grid = new Grid(this)
     this.background = new Background(this)
 
-    this.renderer = new ViewRenderer(this, {})
+    this.renderer = new ViewRenderer(this, {
+      container: this.view.stage,
+    })
   }
 
   get model() {
