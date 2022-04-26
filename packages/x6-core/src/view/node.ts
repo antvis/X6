@@ -1,28 +1,19 @@
-import { ArrayExt, FunctionExt, Dom, Vector } from '@antv/x6-common'
+import { ArrayExt, FunctionExt, Dom, Vector, KeyValue } from '@antv/x6-common'
 import { Rectangle, Point, Util as GeomUtil } from '@antv/x6-geometry'
 import { Config } from '../common'
-import { Attr, PortLayout } from '../registry'
+import { PortLayout } from '../registry'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { PortManager } from '../model/port'
 import { CellView } from './cell'
 import { EdgeView } from './edge'
 import { Markup } from './markup'
-import { Util } from '../util'
 import { AttrManager } from './attr'
 
 export class NodeView<
   Entity extends Node = Node,
   Options extends NodeView.Options = NodeView.Options,
 > extends CellView<Entity, Options> {
-  public scalableNode: Element | null = null
-  public rotatableNode: Element | null = null
-  protected readonly scalableSelector: string = 'scalable'
-  protected readonly rotatableSelector: string = 'rotatable'
-  protected readonly defaultPortMarkup = Markup.getPortMarkup()
-  protected readonly defaultPortLabelMarkup = Markup.getPortLabelMarkup()
-  protected readonly defaultPortContainerMarkup =
-    Markup.getPortContainerMarkup()
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   protected get [Symbol.toStringTag]() {
@@ -65,7 +56,7 @@ export class NodeView<
     return true
   }
 
-  confirmUpdate(flag: number, options: any = {}) {
+  confirmUpdate(flag: number) {
     let ret = flag
     if (this.hasAction(ret, 'ports')) {
       this.removePorts()
@@ -87,7 +78,7 @@ export class NodeView<
       ret = this.handleAction(
         ret,
         'resize',
-        () => this.resize(options),
+        () => this.resize(),
         'update', // Resize method is calling `update()` internally
       )
 
@@ -108,7 +99,7 @@ export class NodeView<
     return ret
   }
 
-  update(partialAttrs?: Attr.CellAttrs) {
+  update() {
     this.cleanCache()
 
     // When CSS selector strings are used, make sure no rule matches port nodes.
@@ -120,11 +111,8 @@ export class NodeView<
     const size = node.getSize()
     const attrs = node.getAttrs()
     this.updateAttrs(this.container, attrs, {
-      attrs: partialAttrs === attrs ? null : partialAttrs,
       rootBBox: new Rectangle(0, 0, size.width, size.height),
       selectors: this.selectors,
-      scalableNode: this.scalableNode,
-      rotatableNode: this.rotatableNode,
     })
 
     if (Config.useCSSSelector) {
@@ -147,21 +135,12 @@ export class NodeView<
 
   protected renderJSONMarkup(markup: Markup.JSONMarkup | Markup.JSONMarkup[]) {
     const ret = this.parseJSONMarkup(markup, this.container)
-    const one = (elems: Element | Element[] | null) =>
-      Array.isArray(elems) ? elems[0] : elems
     this.selectors = ret.selectors
-    this.rotatableNode = one(this.selectors[this.rotatableSelector])
-    this.scalableNode = one(this.selectors[this.scalableSelector])
     this.container.appendChild(ret.fragment)
   }
 
   protected renderStringMarkup(markup: string) {
     Dom.append(this.container, Vector.toNodes(Vector.createVectors(markup)))
-    this.rotatableNode = Dom.findOne(
-      this.container,
-      `.${this.rotatableSelector}`,
-    )
-    this.scalableNode = Dom.findOne(this.container, `.${this.scalableSelector}`)
     this.selectors = {}
     if (this.rootSelector) {
       this.selectors[this.rootSelector] = this.container
@@ -172,20 +151,8 @@ export class NodeView<
     this.empty()
     this.renderMarkup()
 
-    if (this.scalableNode) {
-      // Double update is necessary for elements with the scalable group only
-      // Note the `resize()` triggers the other `update`.
-      this.update()
-    }
-
     this.resize()
-
-    if (this.rotatableNode) {
-      this.rotate()
-      this.translate()
-    } else {
-      this.updateTransform()
-    }
+    this.updateTransform()
 
     if (!Config.useCSSSelector) {
       this.renderPorts()
@@ -196,11 +163,7 @@ export class NodeView<
     return this
   }
 
-  resize(opt: any = {}) {
-    if (this.scalableNode) {
-      return this.updateSize(opt)
-    }
-
+  resize() {
     if (this.cell.getAngle()) {
       this.rotate()
     }
@@ -209,22 +172,10 @@ export class NodeView<
   }
 
   translate() {
-    if (this.rotatableNode) {
-      return this.updateTranslation()
-    }
-
     this.updateTransform()
   }
 
   rotate() {
-    if (this.rotatableNode) {
-      this.updateRotation()
-      // It's necessary to call the update for the nodes outside
-      // the rotatable group referencing nodes inside the group
-      this.update()
-      return
-    }
-
     this.updateTransform()
   }
 
@@ -250,84 +201,6 @@ export class NodeView<
     this.container.setAttribute('transform', transform)
   }
 
-  protected updateRotation() {
-    if (this.rotatableNode != null) {
-      const transform = this.getRotationString()
-      if (transform != null) {
-        this.rotatableNode.setAttribute('transform', transform)
-      } else {
-        this.rotatableNode.removeAttribute('transform')
-      }
-    }
-  }
-
-  protected updateTranslation() {
-    this.container.setAttribute('transform', this.getTranslationString())
-  }
-
-  protected updateSize(opt: any = {}) {
-    const cell = this.cell
-    const size = cell.getSize()
-    const angle = cell.getAngle()
-    const scalableNode = this.scalableNode!
-
-    // Getting scalable group's bbox.
-    // Due to a bug in webkit's native SVG .getBBox implementation, the
-    // bbox of groups with path children includes the paths' control points.
-    // To work around the issue, we need to check whether there are any path
-    // elements inside the scalable group.
-    let recursive = false
-    if (scalableNode.getElementsByTagName('path').length > 0) {
-      // If scalable has at least one descendant that is a path, we need
-      // toswitch to recursive bbox calculation. Otherwise, group bbox
-      // calculation works and so we can use the (faster) native function.
-      recursive = true
-    }
-    const scalableBBox = Util.getBBox(scalableNode as SVGElement, { recursive })
-
-    // Make sure `scalableBbox.width` and `scalableBbox.height` are not zero
-    // which can happen if the element does not have any content.
-    const sx = size.width / (scalableBBox.width || 1)
-    const sy = size.height / (scalableBBox.height || 1)
-    scalableNode.setAttribute('transform', `scale(${sx},${sy})`)
-
-    // Now the interesting part. The goal is to be able to store the object geometry via just `x`, `y`, `angle`, `width` and `height`
-    // Order of transformations is significant but we want to reconstruct the object always in the order:
-    // resize(), rotate(), translate() no matter of how the object was transformed. For that to work,
-    // we must adjust the `x` and `y` coordinates of the object whenever we resize it (because the origin of the
-    // rotation changes). The new `x` and `y` coordinates are computed by canceling the previous rotation
-    // around the center of the resized object (which is a different origin then the origin of the previous rotation)
-    // and getting the top-left corner of the resulting object. Then we clean up the rotation back to what it originally was.
-
-    // Cancel the rotation but now around a different origin, which is the center of the scaled object.
-    const rotatableNode = this.rotatableNode
-    if (rotatableNode != null) {
-      const transform = rotatableNode.getAttribute('transform')
-      if (transform) {
-        rotatableNode.setAttribute(
-          'transform',
-          `${transform} rotate(${-angle},${size.width / 2},${size.height / 2})`,
-        )
-        const rotatableBBox = Util.getBBox(scalableNode as SVGElement, {
-          target: this.graph.view.stage,
-        })
-
-        // Store new x, y and perform rotate() again against the new rotation origin.
-        cell.prop(
-          'position',
-          { x: rotatableBBox.x, y: rotatableBBox.y },
-          { updated: true, ...opt },
-        )
-        this.translate()
-        this.rotate()
-      }
-    }
-
-    // Update must always be called on non-rotated element. Otherwise,
-    // relative positioning would work with wrong (rotated) bounding boxes.
-    this.update()
-  }
-
   // #region ports
 
   findPortElem(portId?: string, selector?: string) {
@@ -338,16 +211,6 @@ export class NodeView<
     const portRoot = cache.portContentElement
     const portSelectors = cache.portContentSelectors || {}
     return this.findOne(selector, portRoot, portSelectors)
-  }
-
-  protected initializePorts() {
-    this.cleanPortsCache()
-  }
-
-  protected refreshPorts() {
-    this.removePorts()
-    this.cleanPortsCache()
-    this.renderPorts()
   }
 
   protected cleanPortsCache() {
@@ -362,14 +225,14 @@ export class NodeView<
   }
 
   protected renderPorts() {
-    const container = this.getPortsContainer()
+    const container = this.container
     // References to rendered elements without z-index
     const references: Element[] = []
     container.childNodes.forEach((child) => {
       references.push(child as Element)
     })
-
-    const portsGropsByZ = ArrayExt.groupBy(this.cell.getParsedPorts(), 'zIndex')
+    const parsedPorts = this.cell.getParsedPorts()
+    const portsGropsByZ = ArrayExt.groupBy(parsedPorts, 'zIndex')
     const autoZIndexKey = 'auto'
 
     // render non-z first
@@ -391,10 +254,6 @@ export class NodeView<
     this.updatePorts()
   }
 
-  protected getPortsContainer() {
-    return this.rotatableNode || this.container
-  }
-
   protected appendPorts(
     ports: PortManager.Port[],
     zIndex: number,
@@ -404,7 +263,7 @@ export class NodeView<
     if (refs[zIndex] || zIndex < 0) {
       Dom.before(refs[Math.max(zIndex, 0)], elems)
     } else {
-      Dom.append(this.getPortsContainer(), elems)
+      Dom.append(this.container, elems)
     }
   }
 
@@ -413,11 +272,12 @@ export class NodeView<
     if (cached) {
       return cached.portElement
     }
+
     return this.createPortElement(port)
   }
 
   protected createPortElement(port: PortManager.Port) {
-    let renderResult = Markup.renderMarkup(this.getPortContainerMarkup())
+    let renderResult = Markup.renderMarkup(this.cell.getPortContainerMarkup())
     const portElement = renderResult.elem
     if (portElement == null) {
       throw new Error('Invalid port container markup.')
@@ -439,36 +299,36 @@ export class NodeView<
       portContentElement,
     )
 
-    renderResult = Markup.renderMarkup(this.getPortLabelMarkup(port.label))
-    const portLabelElement = renderResult.elem
-    const portLabelSelectors = renderResult.selectors
-
-    if (portLabelElement == null) {
-      throw new Error('Invalid port label markup.')
-    }
-
-    let portSelectors: Markup.Selectors | undefined
-    if (portContentSelectors && portLabelSelectors) {
-      // eslint-disable-next-line
-      for (const key in portLabelSelectors) {
-        if (portContentSelectors[key] && key !== this.rootSelector) {
-          throw new Error('Selectors within port must be unique.')
-        }
-      }
-      portSelectors = {
-        ...portContentSelectors,
-        ...portLabelSelectors,
-      }
-    } else {
-      portSelectors = portContentSelectors || portLabelSelectors
-    }
-
     Dom.addClass(portElement, 'x6-port')
     Dom.addClass(portContentElement, 'x6-port-body')
-    Dom.addClass(portLabelElement, 'x6-port-label')
-
     portElement.appendChild(portContentElement)
-    portElement.appendChild(portLabelElement)
+
+    let portSelectors: Markup.Selectors | undefined = portContentSelectors
+    let portLabelElement: Element | undefined
+    let portLabelSelectors: Markup.Selectors | null | undefined
+    const existLabel = this.existPortLabel(port)
+    if (existLabel) {
+      renderResult = Markup.renderMarkup(this.getPortLabelMarkup(port.label))
+      portLabelElement = renderResult.elem
+      portLabelSelectors = renderResult.selectors
+      if (portLabelElement == null) {
+        throw new Error('Invalid port label markup.')
+      }
+      if (portContentSelectors && portLabelSelectors) {
+        // eslint-disable-next-line
+        for (const key in portLabelSelectors) {
+          if (portContentSelectors[key] && key !== this.rootSelector) {
+            throw new Error('Selectors within port must be unique.')
+          }
+        }
+        portSelectors = {
+          ...portContentSelectors,
+          ...portLabelSelectors,
+        }
+      }
+      Dom.addClass(portLabelElement, 'x6-port-label')
+      portElement.appendChild(portLabelElement)
+    }
 
     this.portsCache[port.id] = {
       portElement,
@@ -495,10 +355,6 @@ export class NodeView<
   }
 
   protected updatePorts() {
-    // Layout ports without group
-    this.updatePortGroup()
-
-    // Layout ports with explicit group
     const groups = this.cell.getParsedGroups()
     Object.keys(groups).forEach((groupName) => this.updatePortGroup(groupName))
   }
@@ -526,7 +382,7 @@ export class NodeView<
       }
 
       const labelLayout = metric.labelLayout
-      if (labelLayout) {
+      if (labelLayout && cached.portLabelElement) {
         this.applyPortTransform(
           cached.portLabelElement,
           labelLayout,
@@ -563,18 +419,32 @@ export class NodeView<
     Dom.transform(element as SVGElement, matrix, { absolute: true })
   }
 
-  protected getPortContainerMarkup() {
-    return this.cell.getPortContainerMarkup() || this.defaultPortContainerMarkup
-  }
-
   protected getPortMarkup(port: PortManager.Port) {
-    return port.markup || this.cell.portMarkup || this.defaultPortMarkup
+    return port.markup || this.cell.portMarkup
   }
 
   protected getPortLabelMarkup(label: PortManager.Label) {
-    return (
-      label.markup || this.cell.portLabelMarkup || this.defaultPortLabelMarkup
-    )
+    return label.markup || this.cell.portLabelMarkup
+  }
+
+  protected existPortLabel(port: PortManager.Port) {
+    const traverse = (attrs: KeyValue | undefined): boolean => {
+      if (attrs) {
+        const keys = Object.keys(attrs)
+        for (let i = 0, len = keys.length; i < len; i += 1) {
+          const key = keys[i]
+          if (key === 'text') {
+            return true
+          }
+          const value = attrs[key]
+          if (typeof value === 'object') {
+            return traverse(value)
+          }
+        }
+      }
+      return false
+    }
+    return traverse(port.attrs)
   }
 
   // #endregion
@@ -1204,9 +1074,9 @@ export namespace NodeView {
   export interface PortCache {
     portElement: Element
     portSelectors?: Markup.Selectors | null
-    portLabelElement: Element
+    portLabelElement?: Element
     portLabelSelectors?: Markup.Selectors | null
-    portContentElement: Element
+    portContentElement?: Element
     portContentSelectors?: Markup.Selectors | null
   }
 }

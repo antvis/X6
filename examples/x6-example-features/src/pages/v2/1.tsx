@@ -174,7 +174,9 @@ export default class Example extends React.Component {
     // })
     data.edges = []
 
+    const start = performance.now()
     this.graph.fromJSON(data)
+    console.log('total', performance.now() - start)
   }
 
   refContainer = (container: HTMLDivElement) => {
