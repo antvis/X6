@@ -10,6 +10,8 @@ Graph.registerNode(
         stroke: '#5F95FF',
         strokeWidth: 1,
         fill: 'rgba(95,149,255,0.05)',
+        refWidth: 1,
+        refHeight: 1,
       },
       image: {
         'xlink:href':
@@ -59,7 +61,7 @@ Graph.registerNode(
 )
 
 const graph = new Graph({
-  container: document.getElementById('container'),
+  container: document.getElementById('container')!,
   grid: true,
 })
 
