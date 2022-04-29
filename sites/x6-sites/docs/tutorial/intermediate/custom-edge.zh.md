@@ -202,7 +202,7 @@ Graph.registerEdge(name: string, options: Object, overwrite?: boolean)
 通过 `options.inherit` 来指定继承的基类，默认值为 `Edge` 类，支持字符串或边类，当 `options.inherit` 为字符串时将自动从已注册的边中找到对应的边作为基类，`options` 的其他选项与 [define 方法](#便捷方法一)一致。当 `options.constructorName` 类名缺省时，第一个参数 `name` 的大驼峰形式（CamelCase）也将作为自定义边的类名。
 
 ```ts
-Graph.registerNode('red-edge', {
+Graph.registerEdge('red-edge', {
   inherit: Edge, // 或 'rect'
   attrs: {
     line: {
