@@ -1,3 +1,11 @@
+## @antv/x6-sites-demos [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.0...@antv/x6-sites-demos@1.2.1) (2022-05-01)
+
+
+### Bug Fixes
+
+* 🐛 not create label when text is empty ([#1783](https://github.com/antvis/x6/issues/1783)) ([ed1fcd1](https://github.com/antvis/x6/commit/ed1fcd1f26601150d1b7913b8eaaf329a958af53))
+* 🐛 update x6 version ([#1655](https://github.com/antvis/x6/issues/1655)) ([07037be](https://github.com/antvis/x6/commit/07037beb59537d0feaa47ac1ab629d8c9b8c3a8b))
+
 ## @antv/x6-sites-demos [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.0...@antv/x6-sites-demos@1.2.1) (2022-04-26)
 
 
