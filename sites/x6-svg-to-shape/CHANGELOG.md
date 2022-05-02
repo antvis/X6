@@ -1,3 +1,5 @@
+## @antv/x6-svg-to-shape [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.5...@antv/x6-svg-to-shape@1.0.6) (2022-05-01)
+
 ## @antv/x6-svg-to-shape [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.5...@antv/x6-svg-to-shape@1.0.6) (2022-04-26)
 
 ## @antv/x6-svg-to-shape [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-svg-to-shape@1.0.5...@antv/x6-svg-to-shape@1.0.6) (2022-04-21)
