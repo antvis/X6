@@ -393,6 +393,34 @@ export default {
 
 [详细 demo](https://codesandbox.io/s/vue-shape-8ciig)
 
+**提升 Vue 节点挂载性能**
+
+当要挂载的 Vue 组件节点数量非常多时，挂载时长会比较长，此时可以通过 `@antv/x6-vue-shape` 提供的 `useTeleport`来提升节点的挂载性能（由于使用了vue3内置的Teleport组件，只在vue3可用）。具体做法为：
+
+```tsx
+import { useTeleport } from '@antv/x6-react-shape'
+
+const UNIQ_GRAPH_ID = 'UNIQ_GRAPH_ID'
+
+const TeleportContainer = useTeleport(UNIQ_GRAPH_ID)
+
+graph.addNode({
+  id: "1",
+  shape: "my-count",
+  view: UNIQ_GRAPH_ID, // 需要指定 view 属性为定义的标识
+  x: 400,
+  y: 150,
+  width: 150,
+  height: 100,
+  data: {
+    num: 0,
+  },
+});
+
+{/* 在原有的 Vue 树中挂载 TeleportContainer */}
+<TeleportContainer />
+```
+
 [[warning]]
 | 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.JSON()`和`graph.fromJSON()` 方法正确导出和导入画布数据，因此我们提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
 
