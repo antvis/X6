@@ -59,6 +59,7 @@ interface SelectionOptions {
   strict?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   movable?: boolean
+  following?: boolean
   content?:
     | null
     | false
@@ -73,6 +74,10 @@ interface SelectionOptions {
     | string[]
     | ({ id: string })[]
     | ((this: Graph, cell: Cell) => boolean)
+  showEdgeSelectionBox?: boolean
+  showNodeSelectionBox?: boolean
+  useCellGeometry?: boolean
+  pointerEvents?: 'none' | 'auto'
 }
 ```
 
@@ -180,6 +185,12 @@ const graph = new Graph({
 ### showEdgeSelectionBox
 
 是否显示边的选择框，默认为 `false`，建议使用下面的样式定制方法去定制自己的选择框样式。
+
+### useCellGeometry
+是否使用几何计算的方式计算节点包围盒，默认为 `false`，如果设置为 `true`，`selectionBox` 只会包含节点本身(不会包含连接桩)。
+
+### pointerEvents
+如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto`。
 
 ## 样式定制
 
