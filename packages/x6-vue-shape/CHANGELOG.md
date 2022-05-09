@@ -1,3 +1,18 @@
+# @antv/x6-vue-shape [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.3.2...@antv/x6-vue-shape@1.4.0) (2022-05-09)
+
+
+### Features
+
+* vue3支持使用useTeleport ([#2078](https://github.com/antvis/x6/issues/2078)) ([b8c2175](https://github.com/antvis/x6/commit/b8c217572a696a11fc0fbad7050fffb34ab6c3af))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.31.5
+
 ## @antv/x6-vue-shape [1.3.2](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.3.1...@antv/x6-vue-shape@1.3.2) (2022-04-05)
 
 
