@@ -1,3 +1,26 @@
+# @antv/x6-sites [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.5.0) (2022-05-09)
+
+
+### Bug Fixes
+
+* 🐛 add updateCellId api ([#1739](https://github.com/antvis/x6/issues/1739)) ([78cdb3b](https://github.com/antvis/x6/commit/78cdb3bd56e7655ffcb2e5046d00f5d4f932cd3c))
+* 🐛 not create label when text is empty ([#1783](https://github.com/antvis/x6/issues/1783)) ([ed1fcd1](https://github.com/antvis/x6/commit/ed1fcd1f26601150d1b7913b8eaaf329a958af53))
+* 🐛 release x6 v1.28.2 ([#1654](https://github.com/antvis/x6/issues/1654)) ([745b90a](https://github.com/antvis/x6/commit/745b90ac94dbbd9443ecf1456e6a5aa9eb646594))
+
+
+### Features
+
+* ✨ add insertPort api ([#1763](https://github.com/antvis/x6/issues/1763)) ([6809dba](https://github.com/antvis/x6/commit/6809dba2d86308d0b315d0c6164f91d80e8a40ff))
+* vue3支持使用useTeleport ([#2078](https://github.com/antvis/x6/issues/2078)) ([b8c2175](https://github.com/antvis/x6/commit/b8c217572a696a11fc0fbad7050fffb34ab6c3af))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.31.5
+
 # @antv/x6-sites [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.5.0) (2022-05-01)
 
 
