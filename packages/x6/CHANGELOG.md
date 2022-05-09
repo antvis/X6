@@ -1,3 +1,12 @@
+## @antv/x6 [1.31.5](https://github.com/antvis/x6/compare/@antv/x6@1.31.4...@antv/x6@1.31.5) (2022-05-09)
+
+
+### Bug Fixes
+
+* :bug: fix the graph function zoomTo not return the graph instance. ([#2090](https://github.com/antvis/x6/issues/2090)) ([692a4ee](https://github.com/antvis/x6/commit/692a4ee1b0c3063580e0e3433922c073cadf1880))
+* 🐛 not rerender tools when edge update ([#2095](https://github.com/antvis/x6/issues/2095)) ([26ce96f](https://github.com/antvis/x6/commit/26ce96f7a20e272b06e5044840d2393815884d87))
+* remove the browserslist configuration in package.json ([#2084](https://github.com/antvis/x6/issues/2084)) ([de59617](https://github.com/antvis/x6/commit/de59617532cb20c0103ac701f44f2d0509b782e0))
+
 ## @antv/x6 [1.31.4](https://github.com/antvis/x6/compare/@antv/x6@1.31.3...@antv/x6@1.31.4) (2022-04-21)
 
 
