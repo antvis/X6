@@ -16,7 +16,6 @@ import {
   KeyValue,
 } from '@antv/x6-common'
 import {
-  Attr,
   Router,
   Connector,
   NodeAnchor,
@@ -46,14 +45,15 @@ export class EdgeView<
   public targetView: CellView | null
   public sourceMagnet: Element | null
   public targetMagnet: Element | null
-  protected toolCache: Element
-  protected tool2Cache: Element
   protected readonly markerCache: {
     sourcePoint?: Point
     targetPoint?: Point
     sourceBBox?: Rectangle
     targetBBox?: Rectangle
   } = {}
+  protected containers: EdgeView.ContainerCache
+  protected labelCache: { [index: number]: Element }
+  protected labelSelectors: { [index: number]: Markup.Selectors }
 
   protected get [Symbol.toStringTag]() {
     return EdgeView.toStringTag
@@ -115,6 +115,7 @@ export class EdgeView<
     const sourceView = this.sourceView
     const targetView = this.targetView
 
+    // todo
     if (
       graph &&
       ((sourceView && !graph.renderer.isViewMounted(sourceView)) ||
@@ -132,84 +133,26 @@ export class EdgeView<
         'vertices',
         'labels',
         'tools',
-        'widget',
       ])
       return ref
     }
 
     ref = this.handleAction(ref, 'vertices', () => this.renderVertexMarkers())
-    ref = this.handleAction(ref, 'update', () => this.update(null, options))
+    ref = this.handleAction(ref, 'update', () => this.update(options))
     ref = this.handleAction(ref, 'labels', () => this.onLabelsChange(options))
-    ref = this.handleAction(ref, 'tools', () => {
-      this.renderTools()
-      this.updateToolsPosition()
-    })
-    ref = this.handleAction(ref, 'widget', () => this.renderExternalTools())
+    ref = this.handleAction(ref, 'tools', () => this.renderTools())
 
     return ref
   }
 
-  onLabelsChange(options: any = {}) {
-    // Note: this optimization works in async=false mode only
-    if (this.shouldRerenderLabels(options)) {
-      this.renderLabels()
-    } else {
-      this.updateLabels()
-    }
-
-    this.updateLabelPositions()
-  }
-
-  protected shouldRerenderLabels(options: any = {}) {
-    const previousLabels = this.cell.previous('labels')
-    if (previousLabels == null) {
-      return true
-    }
-
-    // Here is an optimization for cases when we know, that change does
-    // not require re-rendering of all labels.
-    if ('propertyPathArray' in options && 'propertyValue' in options) {
-      // The label is setting by `prop()` method
-      const pathArray = options.propertyPathArray || []
-      const pathLength = pathArray.length
-      if (pathLength > 1) {
-        // We are changing a single label here e.g. 'labels/0/position'
-        const index = pathArray[1]
-        if (previousLabels[index]) {
-          if (pathLength === 2) {
-            // We are changing the entire label. Need to check if the
-            // markup is also being changed.
-            return (
-              typeof options.propertyValue === 'object' &&
-              ObjectExt.has(options.propertyValue, 'markup')
-            )
-          }
-
-          // We are changing a label property but not the markup
-          if (pathArray[2] !== 'markup') {
-            return false
-          }
-        }
-      }
-    }
-
-    return true
-  }
-
   // #region render
-
-  protected containers: EdgeView.ContainerCache
-
-  protected labelCache: { [index: number]: Element }
-
-  protected labelSelectors: { [index: number]: Markup.Selectors }
-
   render() {
     this.empty()
     this.containers = {}
     this.renderMarkup()
     this.renderLabels()
     this.update()
+    this.renderTools()
 
     return this
   }
@@ -315,9 +258,54 @@ export class EdgeView<
     }
 
     this.updateLabels()
-    this.customizeLabels()
 
     return this
+  }
+
+  onLabelsChange(options: any = {}) {
+    if (this.shouldRerenderLabels(options)) {
+      this.renderLabels()
+    } else {
+      this.updateLabels()
+    }
+
+    this.updateLabelPositions()
+  }
+
+  protected shouldRerenderLabels(options: any = {}) {
+    const previousLabels = this.cell.previous('labels')
+    if (previousLabels == null) {
+      return true
+    }
+
+    // Here is an optimization for cases when we know, that change does
+    // not require re-rendering of all labels.
+    if ('propertyPathArray' in options && 'propertyValue' in options) {
+      // The label is setting by `prop()` method
+      const pathArray = options.propertyPathArray || []
+      const pathLength = pathArray.length
+      if (pathLength > 1) {
+        // We are changing a single label here e.g. 'labels/0/position'
+        const index = pathArray[1]
+        if (previousLabels[index]) {
+          if (pathLength === 2) {
+            // We are changing the entire label. Need to check if the
+            // markup is also being changed.
+            return (
+              typeof options.propertyValue === 'object' &&
+              ObjectExt.has(options.propertyValue, 'markup')
+            )
+          }
+
+          // We are changing a label property but not the markup
+          if (pathArray[2] !== 'markup') {
+            return false
+          }
+        }
+      }
+    }
+
+    return true
   }
 
   protected parseLabelMarkup(markup?: Markup) {
@@ -360,8 +348,6 @@ export class EdgeView<
     let vel
     const childNodes = fragment.childNodes
     if (childNodes.length > 1 || childNodes[0].nodeName.toUpperCase() !== 'G') {
-      // default markup fragment is not wrapped in `<g/>`
-      // add a `<g/>` container
       vel = Vector.create('g').append(fragment)
     } else {
       vel = Vector.create(childNodes[0] as SVGElement)
@@ -398,91 +384,7 @@ export class EdgeView<
     }
   }
 
-  protected mergeLabelAttrs(
-    hasCustomMarkup: boolean,
-    labelAttrs?: Attr.CellAttrs | null,
-    defaultLabelAttrs?: Attr.CellAttrs | null,
-  ) {
-    if (labelAttrs === null) {
-      return null
-    }
-
-    if (labelAttrs === undefined) {
-      if (defaultLabelAttrs === null) {
-        return null
-      }
-      if (defaultLabelAttrs === undefined) {
-        return undefined
-      }
-
-      if (hasCustomMarkup) {
-        return defaultLabelAttrs
-      }
-
-      return ObjectExt.merge({}, defaultLabelAttrs)
-    }
-
-    if (hasCustomMarkup) {
-      return ObjectExt.merge({}, defaultLabelAttrs, labelAttrs)
-    }
-  }
-
-  protected customizeLabels() {
-    if (this.containers.labels) {
-      const edge = this.cell
-      const labels = edge.labels
-      for (let i = 0, n = labels.length; i < n; i += 1) {
-        const label = labels[i]
-        const container = this.labelCache[i]
-        const selectors = this.labelSelectors[i]
-        this.graph.hook.onEdgeLabelRendered({
-          edge,
-          label,
-          container,
-          selectors,
-        })
-      }
-    }
-  }
-
   protected renderTools() {
-    const container = this.containers.tools
-    if (container == null) {
-      return this
-    }
-
-    const markup = this.cell.toolMarkup
-    Dom.empty(container)
-
-    if (Markup.isStringMarkup(markup)) {
-      let template = StringExt.template(markup)
-      const tool = Vector.create(template())
-
-      Dom.append(container, tool.node)
-      this.toolCache = tool.node
-
-      // If `doubleTools` is enabled, we render copy of the tools on the
-      // other side of the edge as well but only if the edge is longer
-      // than `longLength`.
-      if (this.options.doubleTools) {
-        let tool2
-        const doubleToolMarkup = this.cell.doubleToolMarkup
-        if (Markup.isStringMarkup(doubleToolMarkup)) {
-          template = StringExt.template(doubleToolMarkup)
-          tool2 = Vector.create(template())
-        } else {
-          tool2 = tool.clone()
-        }
-
-        Dom.append(container, tool2.node)
-        this.tool2Cache = tool2.node
-      }
-    }
-
-    return this
-  }
-
-  protected renderExternalTools() {
     const tools = this.cell.getTools()
     this.addTools(tools as ToolsView.Options)
     return this
@@ -536,28 +438,21 @@ export class EdgeView<
 
   // #region updating
 
-  update(partialAttrs?: Attr.CellAttrs | null, options: any = {}) {
+  update(options: any = {}) {
     this.cleanCache()
     this.updateConnection(options)
 
     const attrs = this.cell.getAttrs()
     if (attrs != null) {
       this.updateAttrs(this.container, attrs, {
-        attrs: partialAttrs === attrs ? null : partialAttrs,
         selectors: this.selectors,
       })
     }
 
     this.updateConnectionPath()
     this.updateLabelPositions()
-    this.updateToolsPosition()
     this.updateArrowheadMarkers()
-
-    if (options.toolId == null) {
-      this.renderExternalTools()
-    } else {
-      this.updateTools(options)
-    }
+    this.updateTools(options)
 
     return this
   }
@@ -1177,63 +1072,6 @@ export class EdgeView<
         'transform',
         Dom.matrixToTransformString(matrix),
       )
-    }
-
-    return this
-  }
-
-  updateToolsPosition() {
-    if (this.containers.tools == null) {
-      return this
-    }
-
-    // Move the tools a bit to the target position but don't cover the
-    // `sourceArrowhead` marker. Note that the offset is hardcoded here.
-    // The offset should be always more than the
-    // `this.$('.marker-arrowhead[end="source"]')[0].bbox().width` but looking
-    // this up all the time would be slow.
-
-    let scale = ''
-    let offset = this.options.toolsOffset
-    const connectionLength = this.getConnectionLength()
-
-    // Firefox returns `connectionLength=NaN` in odd cases (for bezier curves).
-    // In that case we won't update tools position at all.
-    if (connectionLength != null) {
-      // If the edge is too short, make the tools half the
-      // size and the offset twice as low.
-      if (connectionLength < this.options.shortLength) {
-        scale = 'scale(.5)'
-        offset /= 2
-      }
-
-      let pos = this.getPointAtLength(offset)
-      if (pos != null) {
-        Dom.attr(
-          this.toolCache,
-          'transform',
-          `translate(${pos.x},${pos.y}) ${scale}`,
-        )
-      }
-
-      if (
-        this.options.doubleTools &&
-        connectionLength >= this.options.longLength
-      ) {
-        const doubleToolsOffset = this.options.doubleToolsOffset || offset
-
-        pos = this.getPointAtLength(connectionLength - doubleToolsOffset)
-        if (pos != null) {
-          Dom.attr(
-            this.tool2Cache,
-            'transform',
-            `translate(${pos.x},${pos.y}) ${scale}`,
-          )
-        }
-        Dom.attr(this.tool2Cache, 'visibility', 'visible')
-      } else if (this.options.doubleTools) {
-        Dom.attr(this.tool2Cache, 'visibility', 'hidden')
-      }
     }
 
     return this
@@ -2775,10 +2613,6 @@ export namespace EdgeView {
     perpendicular: boolean
     doubleTools: boolean
     shortLength: number
-    longLength: number
-    toolsOffset: number
-    doubleToolsOffset: number
-    sampleInterval: number
   }
 
   export interface ContainerCache {
@@ -2972,15 +2806,9 @@ EdgeView.config<EdgeView.Options>({
     defaultLabel: ['labels'],
     vertices: ['vertices', 'update'],
     vertexMarkup: ['vertices'],
-    toolMarkup: ['tools'],
-    tools: ['widget'],
+    tools: ['tools'],
   },
   shortLength: 105,
-  longLength: 155,
-  toolsOffset: 40,
-  doubleTools: false,
-  doubleToolsOffset: 65,
-  sampleInterval: 50,
 })
 
 EdgeView.registry.register('edge', EdgeView, true)

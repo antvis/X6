@@ -751,54 +751,6 @@ export class Edge<
 
   // #endregion
 
-  // #region toolMarkup
-
-  get toolMarkup() {
-    return this.getToolMarkup()
-  }
-
-  set toolMarkup(markup: Markup) {
-    this.setToolMarkup(markup)
-  }
-
-  getDefaultToolMarkup() {
-    return this.store.get('defaultToolMarkup') || Markup.getEdgeToolMarkup()
-  }
-
-  getToolMarkup() {
-    return this.store.get('toolMarkup') || this.getDefaultToolMarkup()
-  }
-
-  setToolMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('toolMarkup', markup, options)
-    return this
-  }
-
-  get doubleToolMarkup() {
-    return this.getDoubleToolMarkup()
-  }
-
-  set doubleToolMarkup(markup: Markup | undefined) {
-    this.setDoubleToolMarkup(markup)
-  }
-
-  getDefaultDoubleToolMarkup() {
-    return this.store.get('defaultDoubleToolMarkup')
-  }
-
-  getDoubleToolMarkup() {
-    return (
-      this.store.get('doubleToolMarkup') || this.getDefaultDoubleToolMarkup()
-    )
-  }
-
-  setDoubleToolMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('doubleToolMarkup', markup, options)
-    return this
-  }
-
-  // #endregion
-
   // #region arrowheadMarkup
 
   get arrowheadMarkup() {
@@ -1006,14 +958,10 @@ export namespace Edge {
     labels?: Label[] | string[]
     defaultLabel?: Label
     vertices?: (Point.PointLike | Point.PointData)[]
-    toolMarkup?: Markup
-    doubleToolMarkup?: Markup
     vertexMarkup?: Markup
     arrowheadMarkup?: Markup
 
     defaultMarkup?: Markup
-    defaultToolMarkup?: Markup
-    defaultDoubleToolMarkup?: Markup
     defaultVertexMarkup?: Markup
     defaultArrowheadMarkup?: Markup
   }

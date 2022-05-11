@@ -495,6 +495,8 @@ export class Graph extends Basecoat<EventArgs> {
     options: Omit<Transform.ZoomOptions, 'absolute'> = {},
   ) {
     this.transform.zoom(factor, { ...options, absolute: true })
+
+    return this
   }
 
   zoomToRect(
