@@ -1616,8 +1616,6 @@ export namespace Cell {
     'change:vertices': EdgeChangeArgs<Point.PointLike[]>
     'change:labels': EdgeChangeArgs<Edge.Label[]>
     'change:defaultLabel': EdgeChangeArgs<Edge.Label>
-    'change:toolMarkup': EdgeChangeArgs<Markup>
-    'change:doubleToolMarkup': EdgeChangeArgs<Markup>
     'change:vertexMarkup': EdgeChangeArgs<Markup>
     'change:arrowheadMarkup': EdgeChangeArgs<Markup>
     'vertexs:added': {

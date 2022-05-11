@@ -116,7 +116,6 @@ export namespace FlagManager {
     | 'target'
     | 'vertices'
     | 'labels'
-    | 'widget' // external edge tools
 
   export type Actions = Action | Action[]
 }

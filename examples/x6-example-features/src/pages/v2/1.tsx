@@ -164,15 +164,15 @@ export default class Example extends React.Component {
         ],
       }
     })
-    // data.edges.forEach((edge: any) => {
-    //   edge.attrs = {
-    //     line: {
-    //       stroke: '#ccc',
-    //       strokeWidth: 1,
-    //     },
-    //   }
-    // })
-    data.edges = []
+    data.edges.forEach((edge: any) => {
+      edge.attrs = {
+        line: {
+          stroke: '#ccc',
+          strokeWidth: 1,
+        },
+      }
+    })
+    // data.edges = []
 
     const start = performance.now()
     this.graph.fromJSON(data)

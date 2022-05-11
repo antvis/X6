@@ -326,7 +326,7 @@ export namespace ToolsView {
 
     protected cellView: TargetView
 
-    protected visible: boolean
+    protected visible = true
 
     protected childNodes: KeyValue<Element>
 
