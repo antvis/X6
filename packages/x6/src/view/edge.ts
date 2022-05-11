@@ -202,6 +202,7 @@ export class EdgeView<
     this.renderMarkup()
     this.renderLabels()
     this.update()
+    this.renderExternalTools()
 
     return this
   }
@@ -541,12 +542,7 @@ export class EdgeView<
     this.updateLabelPositions()
     this.updateToolsPosition()
     this.updateArrowheadMarkers()
-
-    if (options.toolId == null) {
-      this.renderExternalTools()
-    } else {
-      this.updateTools(options)
-    }
+    this.updateTools(options)
 
     return this
   }
