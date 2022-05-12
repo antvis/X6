@@ -91,7 +91,9 @@ export function getBBox(
 
   if (!recursive) {
     try {
-      outputBBox = elem.getBBox()
+      // getBBox on rect to exclude size of text
+      const rect = elem.children[0] as SVGGraphicsElement
+      outputBBox = rect.getBBox()
     } catch (e) {
       outputBBox = {
         x: elem.clientLeft,
