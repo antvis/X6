@@ -333,21 +333,6 @@ export class CellView<
     return this.cache.getShape(elem)
   }
 
-  getScaleOfElement(node: Element, scalableNode?: SVGElement) {
-    let sx
-    let sy
-    if (scalableNode && scalableNode.contains(node)) {
-      const scale = Dom.scale(scalableNode)
-      sx = 1 / scale.sx
-      sy = 1 / scale.sy
-    } else {
-      sx = 1
-      sy = 1
-    }
-
-    return { sx, sy }
-  }
-
   getBoundingRectOfElement(elem: Element) {
     return this.cache.getBoundingRect(elem)
   }
