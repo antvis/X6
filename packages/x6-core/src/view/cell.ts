@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Rectangle, Point } from '@antv/x6-geometry'
+import { Rectangle } from '@antv/x6-geometry'
 import {
   ArrayExt,
   ObjectExt,
@@ -9,7 +9,6 @@ import {
   Nilable,
   KeyValue,
 } from '@antv/x6-common'
-import { ConnectionStrategy } from '../registry/connection-strategy'
 import { View } from './view'
 import { Cache } from './cache'
 import { Markup } from './markup'
@@ -96,8 +95,6 @@ export class CellView<
   protected readonly flag: FlagManager
   protected readonly attr: AttrManager
   protected readonly cache: Cache
-  public scalableNode: Element | null
-  public rotatableNode: Element | null
 
   protected get [Symbol.toStringTag]() {
     return CellView.toStringTag
@@ -336,21 +333,6 @@ export class CellView<
     return this.cache.getShape(elem)
   }
 
-  getScaleOfElement(node: Element, scalableNode?: SVGElement) {
-    let sx
-    let sy
-    if (scalableNode && scalableNode.contains(node)) {
-      const scale = Dom.scale(scalableNode)
-      sx = 1 / scale.sx
-      sy = 1 / scale.sy
-    } else {
-      sx = 1
-      sy = 1
-    }
-
-    return { sx, sy }
-  }
-
   getBoundingRectOfElement(elem: Element) {
     return this.cache.getBoundingRect(elem)
   }
@@ -403,11 +385,6 @@ export class CellView<
   }
 
   findMagnet(elem: Element = this.container) {
-    // If the overall cell has set `magnet === false`, then returns
-    // `undefined` to announce there is no magnet found for this cell.
-    // This is especially useful to set on cells that have 'ports'.
-    // In this case, only the ports have set `magnet === true` and the
-    // overall element has `magnet === false`.
     return this.findByAttr('magnet', elem)
   }
 
@@ -529,47 +506,6 @@ export class CellView<
       }
     } else if (selector == null && this.container !== magnet) {
       terminal.selector = this.getSelector(magnet)
-    }
-
-    return this.customizeEdgeTerminal(terminal, magnet, x, y, edge, type)
-  }
-
-  protected customizeEdgeTerminal(
-    terminal: Edge.TerminalCellData,
-    magnet: Element,
-    x: number,
-    y: number,
-    edge: Edge,
-    type: Edge.TerminalType,
-  ): Edge.TerminalCellData {
-    const raw = edge.getStrategy() || this.graph.options.connecting.strategy
-    if (raw) {
-      const name = typeof raw === 'string' ? raw : raw.name
-      const args = typeof raw === 'string' ? {} : raw.args || {}
-      const registry = ConnectionStrategy.registry
-
-      if (name) {
-        const fn = registry.get(name)
-        if (fn == null) {
-          return registry.onNotFound(name)
-        }
-
-        const result = FunctionExt.call(
-          fn,
-          this.graph,
-          terminal,
-          this,
-          magnet,
-          new Point(x, y),
-          edge,
-          type,
-          args,
-        )
-
-        if (result) {
-          return result
-        }
-      }
     }
 
     return terminal

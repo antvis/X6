@@ -598,24 +598,6 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region coord
 
-  getClientMatrix() {
-    return this.coord.getClientMatrix()
-  }
-
-  /**
-   * Returns coordinates of the graph viewport, relative to the window.
-   */
-  getClientOffset() {
-    return this.coord.getClientOffset()
-  }
-
-  /**
-   * Returns coordinates of the graph viewport, relative to the document.
-   */
-  getPageOffset() {
-    return this.coord.getPageOffset()
-  }
-
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
   snapToGrid(x: number | Point.PointLike, y?: number) {

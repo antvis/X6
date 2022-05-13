@@ -7,7 +7,6 @@ import {
   EdgeAnchor,
   NodeAnchor,
   ConnectionPoint,
-  ConnectionStrategy,
 } from '../registry'
 import { Markup } from '../view/markup'
 import { ShareRegistry } from './registry'
@@ -424,45 +423,6 @@ export class Edge<
 
   removeConnector(options: Edge.SetOptions = {}) {
     return this.store.remove('connector', options)
-  }
-
-  // #endregion
-
-  // #region strategy
-
-  get strategy() {
-    return this.getStrategy()
-  }
-
-  set strategy(data: Edge.StrategyData | undefined) {
-    if (data == null) {
-      this.removeStrategy()
-    } else {
-      this.setStrategy(data)
-    }
-  }
-
-  getStrategy() {
-    return this.store.get('strategy')
-  }
-
-  setStrategy(name: string, args?: KeyValue, options?: Edge.SetOptions): this
-  setStrategy(strategy: Edge.StrategyData, options?: Edge.SetOptions): this
-  setStrategy(
-    name?: string | Edge.StrategyData,
-    args?: KeyValue | Edge.SetOptions,
-    options?: Edge.SetOptions,
-  ) {
-    if (typeof name === 'object') {
-      this.store.set('strategy', name, args)
-    } else {
-      this.store.set('strategy', { name, args }, options)
-    }
-    return this
-  }
-
-  removeStrategy(options: Edge.SetOptions = {}) {
-    return this.store.remove('strategy', options)
   }
 
   // #endregion
@@ -943,9 +903,6 @@ export class Edge<
 export namespace Edge {
   export type RouterData = Router.NativeItem | Router.ManaualItem
   export type ConnectorData = Connector.NativeItem | Connector.ManaualItem
-  export type StrategyData =
-    | ConnectionStrategy.NativeItem
-    | ConnectionStrategy.ManaualItem
 }
 
 export namespace Edge {
@@ -954,7 +911,6 @@ export namespace Edge {
     target?: TerminalData
     router?: RouterData
     connector?: ConnectorData
-    strategy?: StrategyData
     labels?: Label[] | string[]
     defaultLabel?: Label
     vertices?: (Point.PointLike | Point.PointData)[]
@@ -1023,7 +979,6 @@ export namespace Edge {
 
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string
-    priority?: boolean
     anchor?: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
   }
 
