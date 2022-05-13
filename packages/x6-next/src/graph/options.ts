@@ -168,7 +168,6 @@ export namespace Options {
       anchor: 'center',
       edgeAnchor: 'ratio',
       connectionPoint: 'boundary',
-      strategy: null,
       router: 'normal',
       connector: 'normal',
 

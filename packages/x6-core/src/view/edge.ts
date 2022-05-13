@@ -196,6 +196,24 @@ export class EdgeView<
     )
   }
 
+  // protected customizeLabels() {
+  //   if (this.containers.labels) {
+  //     const edge = this.cell
+  //     const labels = edge.labels
+  //     for (let i = 0, n = labels.length; i < n; i += 1) {
+  //       const label = labels[i]
+  //       const container = this.labelCache[i]
+  //       const selectors = this.labelSelectors[i]
+  //       this.graph.hook.onEdgeLabelRendered({
+  //         edge,
+  //         label,
+  //         container,
+  //         selectors,
+  //       })
+  //     }
+  //   }
+  // }
+
   protected renderLabels() {
     const edge = this.cell
     const labels = edge.getLabels()
@@ -258,6 +276,8 @@ export class EdgeView<
     }
 
     this.updateLabels()
+    // todo
+    // this.customizeLabels()
 
     return this
   }
@@ -566,6 +586,7 @@ export class EdgeView<
 
     // The edge is being translated by an ancestor that will shift
     // source, target and vertices by an equal distance.
+    // todo
     if (
       options.translateBy &&
       edge.isFragmentDescendantOf(options.translateBy)
@@ -614,23 +635,9 @@ export class EdgeView<
   }
 
   protected findAnchors(vertices: Point.PointLike[]) {
-    const edge = this.cell
-    const source = edge.source as Edge.TerminalCellData
-    const target = edge.target as Edge.TerminalCellData
     const firstVertex = vertices[0]
     const lastVertex = vertices[vertices.length - 1]
 
-    if (target.priority && !source.priority) {
-      // Reversed order
-      return this.findAnchorsOrdered(
-        'target',
-        lastVertex,
-        'source',
-        firstVertex,
-      )
-    }
-
-    // Usual order
     return this.findAnchorsOrdered('source', firstVertex, 'target', lastVertex)
   }
 
