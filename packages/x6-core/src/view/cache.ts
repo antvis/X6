@@ -50,7 +50,7 @@ export class Cache {
   getMatrix(elem: Element) {
     const meta = this.get(elem)
     if (meta.matrix == null) {
-      const target = this.view.rotatableNode || this.view.container
+      const target = this.view.container
       meta.matrix = Dom.getTransformToElement(elem as any, target as SVGElement)
     }
 
