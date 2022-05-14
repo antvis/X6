@@ -1,3 +1,14 @@
+## @antv/x6-example-features [1.2.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.2...@antv/x6-example-features@1.2.3) (2022-05-14)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.32.0
+* **@antv/x6-vector:** upgraded to 1.4.0
+
 ## @antv/x6-example-features [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.1...@antv/x6-example-features@1.2.2) (2022-05-09)
 
 
