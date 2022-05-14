@@ -136,7 +136,13 @@ export class TransformManager extends Base {
     return Dom.matrixToScale(this.getMatrix())
   }
 
-  scale(sx: number, sy: number = sx, ox = 0, oy = 0) {
+  scale(
+    sx: number,
+    sy: number = sx,
+    ox = 0,
+    oy = 0,
+    options: TransformManager.TransformOptions = {},
+  ) {
     sx = this.clampScale(sx) // eslint-disable-line
     sy = this.clampScale(sy) // eslint-disable-line
 
@@ -154,7 +160,7 @@ export class TransformManager extends Base {
     matrix.d = sy
 
     this.setMatrix(matrix)
-    this.graph.trigger('scale', { sx, sy, ox, oy })
+    this.graph.trigger('scale', { sx, sy, ox, oy, ...options })
     return this
   }
 
@@ -167,7 +173,10 @@ export class TransformManager extends Base {
     return this.getScale().sx
   }
 
-  zoom(factor: number, options?: TransformManager.ZoomOptions) {
+  zoom(
+    factor: number,
+    options?: TransformManager.ZoomOptions & TransformManager.TransformOptions,
+  ) {
     options = options || {} // eslint-disable-line
 
     let sx = factor
@@ -210,11 +219,11 @@ export class TransformManager extends Base {
       const tx = cx - (cx - ts.tx) * (sx / scale.sx)
       const ty = cy - (cy - ts.ty) * (sy / scale.sy)
       if (tx !== ts.tx || ty !== ts.ty) {
-        this.translate(tx, ty)
+        this.translate(tx, ty, { ui: options.ui })
       }
     }
 
-    this.scale(sx, sy)
+    this.scale(sx, sy, 0, 0, { ui: options.ui })
 
     return this
   }
@@ -242,7 +251,11 @@ export class TransformManager extends Base {
     return Dom.matrixToTranslation(this.getMatrix())
   }
 
-  translate(tx: number, ty: number) {
+  translate(
+    tx: number,
+    ty: number,
+    options: TransformManager.TransformOptions = {},
+  ) {
     const matrix = this.getMatrix()
     matrix.e = tx || 0
     matrix.f = ty || 0
@@ -250,7 +263,7 @@ export class TransformManager extends Base {
     const ts = this.getTranslation()
     this.options.x = ts.tx
     this.options.y = ts.ty
-    this.graph.trigger('translate', { ...ts })
+    this.graph.trigger('translate', { ...ts, ...options })
     return this
   }
 
@@ -594,6 +607,9 @@ export class TransformManager extends Base {
 }
 
 export namespace TransformManager {
+  export interface TransformOptions {
+    ui?: boolean
+  }
   export interface FitToContentOptions extends GetContentAreaOptions {
     minWidth?: number
     minHeight?: number
