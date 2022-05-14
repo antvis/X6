@@ -1,3 +1,13 @@
+## @antv/x6-sites [1.5.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.5.0...@antv/x6-sites@1.5.1) (2022-05-14)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.32.0
+
 # @antv/x6-sites [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.5.0) (2022-05-09)
 
 
