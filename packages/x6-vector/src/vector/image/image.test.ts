@@ -3,7 +3,8 @@ import { SVG } from '../svg/svg'
 import { Image } from './image'
 
 describe('Image', () => {
-  const url = 'http://via.placeholder.com/120x80'
+  const url =
+    'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*bSBhSbhNr2QAAAAAAAAAAAAAARQnAQ'
 
   describe('constructor()', () => {
     it('should create an instance of Image', () => {

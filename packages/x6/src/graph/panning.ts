@@ -102,7 +102,10 @@ export class PanningManager extends Base {
     const dy = e.clientY - this.clientY
     this.clientX = e.clientX
     this.clientY = e.clientY
-    this.graph.translateBy(dx, dy)
+    const ts = this.graph.transform.getTranslation()
+    const tx = ts.tx + dx
+    const ty = ts.ty + dy
+    this.graph.transform.translate(tx, ty, { ui: true })
   }
 
   // eslint-disable-next-line
