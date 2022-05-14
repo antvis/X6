@@ -158,14 +158,14 @@ export class MiniMap extends View {
     this.targetGraph.dispose()
   }
 
-  protected onSourceGraphTransform() {
-    if (!this.targetGraphTransforming) {
+  protected onSourceGraphTransform(options: { ui: boolean }) {
+    if (options.ui || this.targetGraphTransforming) {
+      this.updateViewport()
+    } else {
       this.updatePaper(
         this.sourceGraph.options.width,
         this.sourceGraph.options.height,
       )
-    } else {
-      this.updateViewport()
     }
   }
 
