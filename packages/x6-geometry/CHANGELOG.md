@@ -1,3 +1,10 @@
+## @antv/x6-geometry [1.0.12](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.11...@antv/x6-geometry@1.0.12) (2022-05-16)
+
+
+### Bug Fixes
+
+* remove the browserslist configuration in package.json ([#2084](https://github.com/antvis/x6/issues/2084)) ([de59617](https://github.com/antvis/x6/commit/de59617532cb20c0103ac701f44f2d0509b782e0))
+
 ## @antv/x6-geometry [1.0.12](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.11...@antv/x6-geometry@1.0.12) (2022-05-09)
 
 
