@@ -131,6 +131,9 @@ export class MiniMap extends View {
     } else {
       this.sourceGraph.on('translate', this.onSourceGraphTransform, this)
       this.sourceGraph.on('scale', this.onSourceGraphTransform, this)
+      this.sourceGraph.on('cell:added', this.zoomToFit, this)
+      this.sourceGraph.on('cell:removed', this.zoomToFit, this)
+      this.sourceGraph.on('reseted', this.zoomToFit, this)
     }
     this.sourceGraph.on('resize', this.updatePaper, this)
     this.delegateEvents({
@@ -147,6 +150,9 @@ export class MiniMap extends View {
     } else {
       this.sourceGraph.off('translate', this.onSourceGraphTransform, this)
       this.sourceGraph.off('scale', this.onSourceGraphTransform, this)
+      this.sourceGraph.off('cell:added', this.zoomToFit, this)
+      this.sourceGraph.off('cell:removed', this.zoomToFit, this)
+      this.sourceGraph.off('reseted', this.zoomToFit, this)
     }
     this.sourceGraph.off('resize', this.updatePaper, this)
     this.undelegateEvents()
@@ -167,6 +173,10 @@ export class MiniMap extends View {
         this.sourceGraph.options.height,
       )
     }
+  }
+
+  protected zoomToFit() {
+    this.targetGraph.zoomToFit()
   }
 
   protected updatePaper(width: number, height: number): this
