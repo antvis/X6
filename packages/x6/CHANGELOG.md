@@ -1,3 +1,10 @@
+## @antv/x6 [1.32.1](https://github.com/antvis/x6/compare/@antv/x6@1.32.0...@antv/x6@1.32.1) (2022-05-16)
+
+
+### Bug Fixes
+
+* 🐛 auto zoom minimap graph to fit content ([#2111](https://github.com/antvis/x6/issues/2111)) ([12e3e89](https://github.com/antvis/x6/commit/12e3e8969f35ed14acff16bf62da6ea9012137da))
+
 # @antv/x6 [1.32.0](https://github.com/antvis/x6/compare/@antv/x6@1.31.5...@antv/x6@1.32.0) (2022-05-14)
 
 
