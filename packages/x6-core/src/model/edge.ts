@@ -565,28 +565,6 @@ export class Edge<
   // #endregion
 
   // #region vertices
-
-  get vertexMarkup() {
-    return this.getVertexMarkup()
-  }
-
-  set vertexMarkup(markup: Markup) {
-    this.setVertexMarkup(markup)
-  }
-
-  getDefaultVertexMarkup() {
-    return this.store.get('defaultVertexMarkup') || Markup.getEdgeVertexMarkup()
-  }
-
-  getVertexMarkup() {
-    return this.store.get('vertexMarkup') || this.getDefaultVertexMarkup()
-  }
-
-  setVertexMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('vertexMarkup', Markup.clone(markup), options)
-    return this
-  }
-
   get vertices() {
     return this.getVertices()
   }
@@ -707,34 +685,6 @@ export class Edge<
 
   getMarkup() {
     return super.getMarkup() || this.getDefaultMarkup()
-  }
-
-  // #endregion
-
-  // #region arrowheadMarkup
-
-  get arrowheadMarkup() {
-    return this.getArrowheadMarkup()
-  }
-
-  set arrowheadMarkup(markup: Markup) {
-    this.setArrowheadMarkup(markup)
-  }
-
-  getDefaultArrowheadMarkup() {
-    return (
-      this.store.get('defaultArrowheadMarkup') ||
-      Markup.getEdgeArrowheadMarkup()
-    )
-  }
-
-  getArrowheadMarkup() {
-    return this.store.get('arrowheadMarkup') || this.getDefaultArrowheadMarkup()
-  }
-
-  setArrowheadMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('arrowheadMarkup', markup, options)
-    return this
   }
 
   // #endregion
@@ -914,12 +864,7 @@ export namespace Edge {
     labels?: Label[] | string[]
     defaultLabel?: Label
     vertices?: (Point.PointLike | Point.PointData)[]
-    vertexMarkup?: Markup
-    arrowheadMarkup?: Markup
-
     defaultMarkup?: Markup
-    defaultVertexMarkup?: Markup
-    defaultArrowheadMarkup?: Markup
   }
 
   interface TerminalOptions {

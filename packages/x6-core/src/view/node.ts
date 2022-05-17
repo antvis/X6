@@ -1,4 +1,4 @@
-import { ArrayExt, FunctionExt, Dom, Vector, KeyValue } from '@antv/x6-common'
+import { ArrayExt, FunctionExt, Dom, KeyValue } from '@antv/x6-common'
 import { Rectangle, Point, Util as GeomUtil } from '@antv/x6-geometry'
 import { Config } from '../common'
 import { PortLayout } from '../registry'
@@ -124,7 +124,7 @@ export class NodeView<
     const markup = this.cell.markup
     if (markup) {
       if (typeof markup === 'string') {
-        return this.renderStringMarkup(markup)
+        throw new TypeError('Not support string markup.')
       }
 
       return this.renderJSONMarkup(markup)
@@ -137,14 +137,6 @@ export class NodeView<
     const ret = this.parseJSONMarkup(markup, this.container)
     this.selectors = ret.selectors
     this.container.appendChild(ret.fragment)
-  }
-
-  protected renderStringMarkup(markup: string) {
-    Dom.append(this.container, Vector.toNodes(Vector.createVectors(markup)))
-    this.selectors = {}
-    if (this.rootSelector) {
-      this.selectors[this.rootSelector] = this.container
-    }
   }
 
   render() {
@@ -631,39 +623,6 @@ export class NodeView<
   }
 
   protected prepareEmbedding(e: Dom.MouseMoveEvent) {
-    // const cell = data.cell || this.cell
-    // const graph = data.graph || this.graph
-    // const model = graph.model
-
-    // model.startBatch('to-front')
-
-    // // Bring the model to the front with all his embeds.
-    // cell.toFront({ deep: true, ui: true })
-
-    // const maxZ = model
-    //   .getNodes()
-    //   .reduce((max, cell) => Math.max(max, cell.getZIndex() || 0), 0)
-
-    // const connectedEdges = model.getConnectedEdges(cell, {
-    //   deep: true,
-    //   enclosed: true,
-    // })
-
-    // connectedEdges.forEach((edge) => {
-    //   const zIndex = edge.getZIndex() || 0
-    //   if (zIndex <= maxZ) {
-    //     edge.setZIndex(maxZ + 1, { ui: true })
-    //   }
-    // })
-
-    // model.stopBatch('to-front')
-
-    // Before we start looking for suitable parent we remove the current one.
-    // const parent = cell.getParent()
-    // if (parent) {
-    //   parent.unembed(cell, { ui: true })
-    // }
-
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const node = data.cell || this.cell
     const view = this.graph.findViewByCell(node)
