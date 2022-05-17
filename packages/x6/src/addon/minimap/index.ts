@@ -2,7 +2,6 @@ import { FunctionExt } from '../../util'
 import { View } from '../../view/view'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
-import { Point } from '../../geometry'
 
 namespace ClassName {
   export const root = 'widget-minimap'
@@ -129,11 +128,9 @@ export class MiniMap extends View {
         this.updateViewport,
       )
     } else {
-      this.sourceGraph.on('translate', this.onSourceGraphTransform, this)
-      this.sourceGraph.on('scale', this.onSourceGraphTransform, this)
-      this.sourceGraph.on('cell:added', this.zoomToFit, this)
-      this.sourceGraph.on('cell:removed', this.zoomToFit, this)
-      this.sourceGraph.on('reseted', this.zoomToFit, this)
+      this.sourceGraph.on('translate', this.onTransform, this)
+      this.sourceGraph.on('scale', this.onTransform, this)
+      this.sourceGraph.on('model:updated', this.onModelUpdated, this)
     }
     this.sourceGraph.on('resize', this.updatePaper, this)
     this.delegateEvents({
@@ -148,11 +145,9 @@ export class MiniMap extends View {
     if (this.scroller) {
       this.$graphContainer.off(this.getEventNamespace())
     } else {
-      this.sourceGraph.off('translate', this.onSourceGraphTransform, this)
-      this.sourceGraph.off('scale', this.onSourceGraphTransform, this)
-      this.sourceGraph.off('cell:added', this.zoomToFit, this)
-      this.sourceGraph.off('cell:removed', this.zoomToFit, this)
-      this.sourceGraph.off('reseted', this.zoomToFit, this)
+      this.sourceGraph.off('translate', this.onTransform, this)
+      this.sourceGraph.off('scale', this.onTransform, this)
+      this.sourceGraph.off('model:updated', this.onModelUpdated, this)
     }
     this.sourceGraph.off('resize', this.updatePaper, this)
     this.undelegateEvents()
@@ -164,18 +159,13 @@ export class MiniMap extends View {
     this.targetGraph.dispose()
   }
 
-  protected onSourceGraphTransform(options: { ui: boolean }) {
+  protected onTransform(options: { ui: boolean }) {
     if (options.ui || this.targetGraphTransforming) {
       this.updateViewport()
-    } else {
-      this.updatePaper(
-        this.sourceGraph.options.width,
-        this.sourceGraph.options.height,
-      )
     }
   }
 
-  protected zoomToFit() {
+  protected onModelUpdated() {
     this.targetGraph.zoomToFit()
   }
 
@@ -210,21 +200,26 @@ export class MiniMap extends View {
     height *= ratio // eslint-disable-line
     this.targetGraph.resizeGraph(width, height)
     this.targetGraph.translate(x, y)
-    this.targetGraph.scale(ratio, ratio)
+
+    if (this.scroller) {
+      this.targetGraph.scale(ratio, ratio)
+    } else {
+      this.targetGraph.zoomToFit()
+    }
+
     this.updateViewport()
     return this
   }
 
   protected updateViewport() {
-    const ratio = this.ratio
-    const scale = this.sourceGraph.transform.getScale()
+    const sourceGraphScale = this.sourceGraph.transform.getScale()
+    const targetGraphScale = this.targetGraph.transform.getScale()
 
     let origin = null
     if (this.scroller) {
       origin = this.scroller.clientToLocalPoint(0, 0)
     } else {
-      const ctm = this.sourceGraph.matrix()
-      origin = new Point(-ctm.e / ctm.a, -ctm.f / ctm.d)
+      origin = this.graph.graphToLocal(0, 0)
     }
 
     const position = this.$(this.targetGraph.container).position()
@@ -232,10 +227,14 @@ export class MiniMap extends View {
     translation.ty = translation.ty || 0
 
     this.geometry = {
-      top: position.top + origin.y * ratio + translation.ty,
-      left: position.left + origin.x * ratio + translation.tx,
-      width: (this.$graphContainer.innerWidth()! * ratio) / scale.sx,
-      height: (this.$graphContainer.innerHeight()! * ratio) / scale.sy,
+      top: position.top + origin.y * targetGraphScale.sy + translation.ty,
+      left: position.left + origin.x * targetGraphScale.sx + translation.tx,
+      width:
+        (this.$graphContainer.innerWidth()! * targetGraphScale.sx) /
+        sourceGraphScale.sx,
+      height:
+        (this.$graphContainer.innerHeight()! * targetGraphScale.sy) /
+        sourceGraphScale.sy,
     }
     this.$viewport.css(this.geometry)
   }
