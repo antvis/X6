@@ -1,3 +1,10 @@
+## @antv/x6 [1.32.2](https://github.com/antvis/x6/compare/@antv/x6@1.32.1...@antv/x6@1.32.2) (2022-05-17)
+
+
+### Bug Fixes
+
+* 🐛 fix minimap error in after resize graph ([#2117](https://github.com/antvis/x6/issues/2117)) ([e1bb928](https://github.com/antvis/x6/commit/e1bb9289b0e5bd8106baaf88e16cbab125c5fc4e))
+
 ## @antv/x6 [1.32.1](https://github.com/antvis/x6/compare/@antv/x6@1.32.0...@antv/x6@1.32.1) (2022-05-16)
 
 
