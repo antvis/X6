@@ -65,9 +65,7 @@ export class AttrManager {
         if (normal == null) {
           normal = {}
         }
-        const normalName = AttrManager.CASE_SENSITIVE_ATTR.includes(name)
-          ? name
-          : StringExt.kebabCase(name)
+        const normalName = StringExt.kebabCase(name)
         normal[normalName] = val as Attr.SimpleAttrValue
       }
     })
@@ -485,7 +483,7 @@ export class AttrManager {
         refBBox = Util.transformRectangle(unrotatedRefBBox!, rotatableMatrix)
       }
 
-      this.updateRelativeAttrs(node, processedAttrs, refBBox, options)
+      this.updateRelativeAttrs(node, processedAttrs, refBBox)
     })
   }
 }
@@ -509,6 +507,4 @@ export namespace AttrManager {
     offset?: Attr.ComplexAttrs | undefined
     position?: Attr.ComplexAttrs | undefined
   }
-
-  export const CASE_SENSITIVE_ATTR = ['viewBox']
 }
