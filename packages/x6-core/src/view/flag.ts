@@ -107,14 +107,12 @@ export namespace FlagManager {
     | 'render'
     | 'update'
     | 'resize'
-    | 'scale'
     | 'rotate'
     | 'translate'
     | 'ports'
     | 'tools'
     | 'source'
     | 'target'
-    | 'vertices'
     | 'labels'
 
   export type Actions = Action | Action[]
