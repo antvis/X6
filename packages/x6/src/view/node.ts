@@ -838,6 +838,9 @@ export class NodeView<
       candidates = candidates.slice(-1)
     }
 
+    // Filter the nodes which is invisiable
+    candidates = candidates.filter((candidate) => candidate.visible);
+
     let newCandidateView = null
     const prevCandidateView = data.candidateEmbedView
     const validateEmbeding = options.validate
