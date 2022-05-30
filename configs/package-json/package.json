@@ -73,7 +73,7 @@
     "chalk": "^4.1.0",
     "detect-newline": "^3.1.0",
     "parse-package-name": "^0.1.0",
-    "workspace-tools": "^0.12.3",
+    "workspace-tools": "^0.18.4",
     "yargs-parser": "^20.2.7"
   }
 }
