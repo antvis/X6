@@ -10,6 +10,9 @@ on:
       - next-major
       - alpha
       - beta
+permissions:
+  contents: read
+
 jobs:
   cache:
     runs-on: ubuntu-latest
