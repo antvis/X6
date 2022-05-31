@@ -60,7 +60,7 @@ jobs:
 
       - name: 🔀　Repository Dispatch
         if: github.ref == 'refs/heads/master'
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ env.bot_token }}
           event-type: released
