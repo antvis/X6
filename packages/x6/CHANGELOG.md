@@ -1,3 +1,10 @@
+## @antv/x6 [1.32.3](https://github.com/antvis/x6/compare/@antv/x6@1.32.2...@antv/x6@1.32.3) (2022-05-31)
+
+
+### Bug Fixes
+
+* :bug: Fixed the error when a node meet an invisiable node in node:embedding event ([#2129](https://github.com/antvis/x6/issues/2129)) ([6ef7f55](https://github.com/antvis/x6/commit/6ef7f55334d9415bce217c9cc5885f1bc084de92))
+
 ## @antv/x6 [1.32.2](https://github.com/antvis/x6/compare/@antv/x6@1.32.1...@antv/x6@1.32.2) (2022-05-17)
 
 
