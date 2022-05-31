@@ -16,7 +16,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - uses: Naturalclar/issue-action@v2.0.1
+      - uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: title
           github-token: ${{ env.bot_token }}
