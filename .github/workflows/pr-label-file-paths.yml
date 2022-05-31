@@ -9,7 +9,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - uses: actions/labeler@v2
+      - uses: actions/labeler@v4
         with:
           repo-token: ${{ env.bot_token }}
           configuration-path: .github/workflows/config/pr-label-file-paths.yml
