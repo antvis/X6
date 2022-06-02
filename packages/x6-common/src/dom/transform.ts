@@ -139,6 +139,35 @@ export function getTransformToElement(elem: SVGElement, target: SVGElement) {
 }
 
 /**
+ * Returns an DOMMatrix that specifies the transformation necessary
+ * to convert `elem` coordinate system into `target` coordinate system.
+ * Unlike getTransformToElement, elem is child of target,Because of the reduction in DOM API calls,
+ * there is a significant performance improvement.
+ */
+export function getTransformToParentElement(
+  elem: SVGElement,
+  target: SVGElement,
+) {
+  let matrix = createSVGMatrix()
+
+  if (isSVGGraphicsElement(target) && isSVGGraphicsElement(elem)) {
+    let node = elem
+    const matrixList = []
+    while (node && node !== target) {
+      const transform = node.getAttribute('transform') || null
+      const nodeMatrix = transformStringToMatrix(transform)
+      matrixList.push(nodeMatrix)
+      node = node.parentNode as SVGGraphicsElement
+    }
+    matrixList.reverse().forEach((m) => {
+      matrix = matrix.multiply(m)
+    })
+  }
+
+  return matrix
+}
+
+/**
  * Converts a global point with coordinates `x` and `y` into the
  * coordinate space of the element.
  */
