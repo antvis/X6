@@ -51,7 +51,10 @@ export class Cache {
     const meta = this.get(elem)
     if (meta.matrix == null) {
       const target = this.view.container
-      meta.matrix = Dom.getTransformToElement(elem as any, target as SVGElement)
+      meta.matrix = Dom.getTransformToParentElement(
+        elem as any,
+        target as SVGElement,
+      )
     }
 
     return Dom.createSVGMatrix(meta.matrix)
@@ -68,7 +71,7 @@ export class Cache {
   getBoundingRect(elem: Element) {
     const meta = this.get(elem)
     if (meta.boundingRect == null) {
-      meta.boundingRect = Util.getBBox(elem as SVGElement)
+      meta.boundingRect = Util.getBBoxV2(elem as SVGElement)
     }
     return meta.boundingRect.clone()
   }
