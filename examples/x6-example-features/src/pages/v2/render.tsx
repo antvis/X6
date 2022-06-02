@@ -1,30 +1,73 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import '@antv/x6-react-shape'
-import { Button } from 'antd'
+import { Graph } from '@antv/x6-next'
+import { Node, Registry } from '@antv/x6-core'
+import { Path } from '@antv/x6-geometry'
 import data from './data'
 import '../index.less'
 
-Graph.registerReactComponent(
-  'custom',
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      border: '1px solid #5f95ff',
-      backgroundColor: '#fff',
-      borderRadius: '10px',
-    }}
-  >
-    <div>
-      <img
-        src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kUy8SrEDp6YAAAAAAAAAAAAAARQnAQ"
-        alt=""
-        style={{ width: 16, height: 16 }}
-      />
-    </div>
-    <div>SCQL 归一化</div>
-  </div>,
+Registry.Connector.registry.register(
+  'algo-connector',
+  (s, e) => {
+    const offset = 4
+    const deltaY = Math.abs(e.y - s.y)
+    const control = Math.floor((deltaY / 3) * 2)
+
+    const v1 = { x: s.x, y: s.y + offset + control }
+    const v2 = { x: e.x, y: e.y - offset - control }
+
+    return Path.normalize(
+      `M ${s.x} ${s.y}
+       L ${s.x} ${s.y + offset}
+       C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
+       L ${e.x} ${e.y}
+      `,
+    )
+  },
+  true,
+)
+
+Node.registry.register(
+  'perf-node',
+  {
+    width: 144,
+    height: 28,
+    markup: [
+      {
+        tagName: 'rect',
+      },
+      {
+        tagName: 'image',
+      },
+      {
+        tagName: 'text',
+      },
+    ],
+    attrs: {
+      rect: {
+        rx: 10,
+        ry: 10,
+        refWidth: '100%',
+        refHeight: '100%',
+        fill: '#FFF',
+        stroke: '#5f95ff',
+        strokeWidth: 1,
+        pointerEvents: 'visiblePainted',
+      },
+      image: {
+        x: 8,
+        y: 8,
+        width: 16,
+        height: 16,
+        xlinkHref:
+          'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kUy8SrEDp6YAAAAAAAAAAAAAARQnAQ',
+      },
+      text: {
+        x: 30,
+        y: 20,
+        text: 'SCQL 归一化',
+      },
+    },
+  },
   true,
 )
 
@@ -38,17 +81,20 @@ export default class Example extends React.Component {
       width: 1600,
       height: 1000,
       grid: true,
-      async: false,
+      connecting: {
+        connector: 'algo-connector',
+        connectionPoint: 'anchor',
+        anchor: 'center',
+      },
     })
     this.graph = graph
+    document.getElementById('add-btn')?.addEventListener('click', () => {
+      this.add()
+    })
   }
 
   add = () => {
     data.nodes.forEach((node: any, i) => {
-      node.shape = 'react-shape'
-      node.component = 'custom'
-      node.width = 144
-      node.height = 28
       node.ports = {
         groups: {
           top: {
@@ -128,10 +174,11 @@ export default class Example extends React.Component {
         },
       }
     })
+    // data.edges = []
 
     const start = performance.now()
     this.graph.fromJSON(data)
-    console.log('time：', performance.now() - start)
+    console.log('total', performance.now() - start)
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -142,7 +189,7 @@ export default class Example extends React.Component {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
-        <Button onClick={this.add}>addNodesWithPorts</Button>
+        <button id="add-btn">add</button>
       </div>
     )
   }

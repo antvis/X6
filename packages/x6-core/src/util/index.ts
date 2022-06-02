@@ -365,4 +365,41 @@ export namespace Util {
       Dom.matrixToTransformString(transform.matrix),
     )
   }
+
+  export function findShapeNode(magnet: Element) {
+    if (magnet == null) {
+      return null
+    }
+
+    let node = magnet
+    do {
+      let tagName = node.tagName
+      if (typeof tagName !== 'string') return null
+      tagName = tagName.toUpperCase()
+      if (tagName === 'G') {
+        node = node.firstElementChild as Element
+      } else if (tagName === 'TITLE') {
+        node = node.nextElementSibling as Element
+      } else break
+    } while (node)
+
+    return node
+  }
+
+  // BBox is calculated by the attribute and shape of the node.
+  // Because of the reduction in DOM API calls, there is a significant performance improvement.
+  export function getBBoxV2(elem: SVGElement) {
+    const node = findShapeNode(elem)
+
+    if (!Dom.isSVGGraphicsElement(node)) {
+      if (Dom.isHTMLElement(elem)) {
+        const { left, top, width, height } = getBoundingOffsetRect(elem as any)
+        return new Rectangle(left, top, width, height)
+      }
+      return new Rectangle(0, 0, 0, 0)
+    }
+
+    const shape = toGeometryShape(node)
+    return shape.bbox() || Rectangle.create()
+  }
 }
