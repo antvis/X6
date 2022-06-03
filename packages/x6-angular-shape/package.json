@@ -54,7 +54,7 @@
   "devDependencies": {
     "@angular/cdk": "^10.2.3",
     "@angular/common": "^10.2.3",
-    "@angular/core": "^10.2.3",
+    "@angular/core": "^11.0.5",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",
