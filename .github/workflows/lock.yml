@@ -11,7 +11,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - uses: dessant/lock-threads@v2
+      - uses: dessant/lock-threads@v3
         with:
           github-token: ${{ env.bot_token }}
           issue-lock-inactive-days: 365
