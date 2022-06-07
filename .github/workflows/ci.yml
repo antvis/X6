@@ -49,19 +49,19 @@ jobs:
           github-token: ${{ env.bot_token }}
           path-to-lcov: ./packages/x6/test/coverage/lcov.info
       - name: 💡　Codecov(x6)
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6/test/coverage/lcov.info
           flags: x6
       - name: 💡　Codecov(x6-vector)
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6-vector/test/coverage/lcov.info
           flags: x6-vector
       - name: 💡　Codecov(x6-geometry)
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6-geometry/test/coverage/lcov.info
