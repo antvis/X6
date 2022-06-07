@@ -20,7 +20,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: 🚸　Setup yarn cacha
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -29,7 +29,7 @@ jobs:
 
       ## cache webpack(babel-loader, eslint-loader)
       - name: 💩　Setup webpack cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             node_modules
@@ -40,7 +40,7 @@ jobs:
 
       ## cache sites
       - name: 💩　Setup sites cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: sites/x6-sites/static/demos
           key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './sites/x6-sites-demos/**/src') }}
