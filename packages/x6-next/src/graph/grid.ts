@@ -178,7 +178,6 @@ export class GridManager extends Base {
     return Registry.Grid.registry.onNotFound(type)
   }
 
-  @Base.dispose()
   dispose() {
     this.stopListening()
     this.clear()

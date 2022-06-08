@@ -270,7 +270,7 @@ export class CellView<
     }
 
     if (this.graph != null) {
-      this.graph.renderer.requestViewUpdate(this, flag, this.priority, options)
+      this.graph.renderer.requestViewUpdate(this, flag, options)
     }
   }
 

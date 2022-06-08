@@ -1,13 +1,15 @@
 import { KeyValue } from '@antv/x6-common'
+import { Rectangle } from '@antv/x6-geometry'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
-import { queueJob, queueFlush, JOB_PRIORITY } from './queueJob'
-// import { FlagManager } from '../view/flag'
+import { queueJob, queueFlush, JOB_PRIORITY, resetTimer } from './queueJob'
+import { FlagManager } from '../view/flag'
 
 export class Scheduler {
+  public views: KeyValue<Scheduler.View> = {}
   protected model: Model
   protected graph: any // todo
-  public views: KeyValue<CellView>
+  private renderArea?: Rectangle
 
   constructor(graph: any, model: Model) {
     this.model = model
@@ -26,93 +28,182 @@ export class Scheduler {
 
   protected startListening() {
     this.model.on('reseted', this.onModelReseted, this)
+    this.model.on('cell:added', this.onCellAdded, this)
+    this.model.on('cell:removed', this.onCellRemoved, this)
   }
 
   protected stopListening() {
     this.model.off('reseted', this.onModelReseted, this)
+    this.model.off('cell:added', this.onCellAdded, this)
+    this.model.off('cell:removed', this.onCellRemoved, this)
   }
 
   protected onModelReseted({ options }: Model.EventArgs['reseted']) {
     this.resetViews(this.model.getCells(), options)
   }
 
+  protected onCellAdded({ cell, options }: Model.EventArgs['cell:added']) {
+    this.renderViews([cell], options)
+  }
+
+  protected onCellRemoved({ cell, options }: Model.EventArgs['cell:removed']) {
+    const viewItem = this.views[cell.id]
+    if (viewItem) {
+      const view = viewItem.view
+      this.requestViewUpdate(view, Scheduler.FLAG_REMOVE, options)
+    }
+  }
+
   protected resetViews(cells: Cell[] = [], options: any = {}) {
     this.removeViews()
-    for (let i = 0, n = cells.length; i < n; i += 1) {
-      queueJob({
-        id: cells[i].id,
-        priority: JOB_PRIORITY.Render,
-        cb: () => {
-          this.renderView(cells[i], options)
-        },
-      })
-    }
+    this.renderViews(cells, options)
+  }
+
+  protected renderViews(cells: Cell[], options: any = {}) {
+    cells.sort((c1, c2) => {
+      if (c1.isNode() && c2.isEdge()) {
+        return -1
+      }
+      return 0
+    })
+
+    cells.forEach((cell) => {
+      const id = cell.id
+      const views = this.views
+      let flag = 0
+      let viewItem = views[id]
+
+      if (viewItem) {
+        flag = Scheduler.FLAG_INSERT
+      } else {
+        const cellView = this.createCellView(cell)
+        if (cellView) {
+          cellView.graph = this.graph
+          flag = Scheduler.FLAG_INSERT | cellView.getBootstrapFlag()
+          viewItem = {
+            view: cellView,
+            flag,
+            options,
+            state: Scheduler.ViewState.CREATED,
+          }
+          this.views[id] = viewItem
+        }
+      }
+
+      this.requestViewUpdate(
+        viewItem.view,
+        flag,
+        options,
+        JOB_PRIORITY.Render,
+        false,
+      )
+    })
+
+    resetTimer()
     queueFlush()
   }
 
-  protected removeViews() {
-    if (this.views) {
-      Object.keys(this.views).forEach((id) => {
-        const view = this.views[id]
-        if (view) {
-          this.removeView(view.cell)
-        }
+  requestViewUpdate(
+    view: CellView,
+    flag: number,
+    options: any = {},
+    priority: JOB_PRIORITY = JOB_PRIORITY.Manual,
+    flush = true,
+  ) {
+    const id = view.cell.id
+    const viewItem = this.views[id]
+
+    if (!viewItem) {
+      return
+    }
+
+    viewItem.flag = flag
+    viewItem.options = options
+
+    queueJob({
+      id,
+      priority,
+      cb: () => {
+        this.renderViewInArea(view, flag, options)
+      },
+    })
+
+    const effectedEdges = this.getEffectedEdges(view)
+    effectedEdges.forEach((edge) => {
+      queueJob({
+        id: edge.id,
+        priority,
+        cb: () => {
+          this.renderViewInArea(edge.view, edge.flag, options)
+        },
+      })
+    })
+
+    if (flush) {
+      queueFlush()
+    }
+  }
+
+  protected getEffectedEdges(view: CellView) {
+    const effectedEdges: { id: string; view: CellView; flag: number }[] = []
+    const cell = view.cell
+    const edges = this.model.getConnectedEdges(cell)
+
+    for (let i = 0, n = edges.length; i < n; i += 1) {
+      const edge = edges[i]
+      const viewItem = this.views[edge.id]
+      if (!viewItem) {
+        continue
+      }
+      const edgeView = viewItem.view
+      const flagLabels: FlagManager.Action[] = ['update']
+      if (edge.getTargetCell() === cell) {
+        flagLabels.push('target')
+      }
+      if (edge.getSourceCell() === cell) {
+        flagLabels.push('source')
+      }
+      effectedEdges.push({
+        id: edge.id,
+        view: edgeView,
+        flag: edgeView.getFlag(flagLabels),
       })
     }
-    this.views = {}
+
+    return effectedEdges
   }
 
-  protected removeView(cell: Cell) {
-    const view = this.views[cell.id]
-    if (view) {
-      view.remove()
-    }
-    return view
+  protected isInRenderArea(view: CellView) {
+    return (
+      !this.renderArea ||
+      this.renderArea.isIntersectWithRect(view.cell.getBBox())
+    )
   }
 
-  protected createCellView(cell: Cell) {
-    const options = { graph: this.graph }
-
-    const view = cell.view
-    if (view != null && typeof view === 'string') {
-      const def = CellView.registry.get(view)
-      if (def) {
-        return new def(cell, options) // eslint-disable-line new-cap
-      }
-
-      return CellView.registry.onNotFound(view)
-    }
-
-    if (cell.isNode()) {
-      return new NodeView(cell, options)
-    }
-
-    if (cell.isEdge()) {
-      return new EdgeView(cell, options)
-    }
-
-    return null
-  }
-
-  protected renderView(cell: Cell, options: any = {}) {
+  protected renderViewInArea(view: CellView, flag: number, options: any = {}) {
+    const cell = view.cell
     const id = cell.id
-    const views = this.views
-    let flag = 0
-    let view = views[id]
+    const viewItem = this.views[id]
 
-    if (view) {
-      flag = Scheduler.FLAG_INSERT
+    if (!viewItem) {
+      return
+    }
+
+    let result = 0
+    if (this.isInRenderArea(view)) {
+      result = this.updateView(view, flag, options)
+      viewItem.flag = result
     } else {
-      const tmp = this.createCellView(cell)
-      if (tmp) {
-        view = views[cell.id] = tmp
-        view.graph = this.graph
-        flag = Scheduler.FLAG_INSERT | view.getBootstrapFlag()
+      if (viewItem.state === Scheduler.ViewState.MOUNTED) {
+        result = this.updateView(view, flag, options)
+        viewItem.flag = result
+      } else {
+        viewItem.state = Scheduler.ViewState.WAITTING
       }
     }
 
-    if (view) {
-      this.updateView(view, flag, options)
+    if (result) {
+      console.log('left flag', result) // eslint-disable-line
     }
   }
 
@@ -140,24 +231,71 @@ export class Scheduler {
     return view.confirmUpdate(flag, options)
   }
 
-  protected insertView(view: CellView) {
-    const stage = this.view.stage
-    stage.appendChild(view.container)
+  protected removeViews() {
+    Object.keys(this.views).forEach((id) => {
+      const viewItem = this.views[id]
+      if (viewItem) {
+        this.removeView(viewItem.view.cell)
+      }
+    })
+    this.views = {}
   }
 
-  requestViewUpdate(
-    view: CellView,
-    flag: number,
-    priority: number,
-    options: any = {},
-  ) {
-    queueJob({
-      id: view.cell.id,
-      priority: JOB_PRIORITY.Manual,
-      cb: () => {
-        this.updateView(view, flag, options)
-      },
-    })
+  protected removeView(cell: Cell) {
+    const viewItem = this.views[cell.id]
+    if (viewItem) {
+      viewItem.view.remove()
+      delete this.views[cell.id]
+    }
+    return viewItem.view
+  }
+
+  protected insertView(view: CellView) {
+    const viewItem = this.views[view.cell.id]
+    if (viewItem) {
+      const stage = this.view.stage
+      stage.appendChild(view.container)
+      viewItem.state = Scheduler.ViewState.MOUNTED
+    }
+  }
+
+  protected createCellView(cell: Cell) {
+    const options = { graph: this.graph }
+
+    const view = cell.view
+    if (view != null && typeof view === 'string') {
+      const def = CellView.registry.get(view)
+      if (def) {
+        return new def(cell, options) // eslint-disable-line new-cap
+      }
+
+      return CellView.registry.onNotFound(view)
+    }
+
+    if (cell.isNode()) {
+      return new NodeView(cell, options)
+    }
+
+    if (cell.isEdge()) {
+      return new EdgeView(cell, options)
+    }
+
+    return null
+  }
+
+  setRenderArea(area?: Rectangle) {
+    this.renderArea = area
+
+    const ids = Object.keys(this.views)
+    for (let i = 0, len = ids.length; i < len; i += 1) {
+      const viewItem = this.views[ids[i]]
+      if (viewItem && viewItem.state === Scheduler.ViewState.WAITTING) {
+        const { view, flag, options } = viewItem
+        this.requestViewUpdate(view, flag, options, JOB_PRIORITY.Render, false)
+      }
+    }
+
+    resetTimer()
     queueFlush()
   }
 
@@ -175,4 +313,18 @@ export namespace Scheduler {
     'to-back',
   ]
   export const UPDATE_DELAYING_BATCHES: Model.BatchName[] = ['translate']
+}
+
+export namespace Scheduler {
+  export enum ViewState {
+    CREATED,
+    MOUNTED,
+    WAITTING,
+  }
+  export interface View {
+    view: CellView
+    flag: number
+    options: any
+    state: ViewState
+  }
 }

@@ -20,6 +20,7 @@ import { GridManager as Grid } from './grid'
 import { CoordManager as Coord } from './coord'
 import { TransformManager as Transform } from './transform'
 import { BackgroundManager as Background } from './background'
+import { VirtualRenderManager as VirtualRender } from './virtual-render'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
@@ -32,6 +33,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly background: Background
 
   public readonly renderer: ViewRenderer
+  public readonly virtualRender: VirtualRender
 
   protected get [Symbol.toStringTag]() {
     return Graph.toStringTag
@@ -52,6 +54,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.renderer = new ViewRenderer(this, {
       container: this.view.stage,
     })
+    this.virtualRender = new VirtualRender(this)
   }
 
   get model() {
