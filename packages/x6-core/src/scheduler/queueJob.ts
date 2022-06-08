@@ -14,6 +14,7 @@ let isFlushPending = false
 let scheduleId = 0
 const queue: Job[] = []
 const frameInterval = 33
+let time = 0
 
 let getCurrentTime: () => number
 const hasPerformanceNow =
@@ -72,6 +73,10 @@ export function queueFlush() {
   }
 }
 
+export function resetTimer() {
+  time = performance.now()
+}
+
 function flushJobs() {
   isFlushPending = false
   isFlushing = true
@@ -94,6 +99,8 @@ function flushJobs() {
 
   if (queue.length) {
     queueFlush()
+  } else {
+    console.log('spend', performance.now() - time) // eslint-disable-line
   }
 }
 

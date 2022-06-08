@@ -21,6 +21,10 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
     this.schedule = new Scheduler(graph, this.model) // todo
   }
 
+  setRenderArea(area?: Rectangle) {
+    this.schedule.setRenderArea(area)
+  }
+
   findViewByElem(elem: string | Element | undefined | null) {
     if (elem == null) {
       return null
@@ -37,7 +41,7 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
       const id = this.graph.view.findAttr('data-cell-id', target)
       if (id) {
         const views = this.schedule.views
-        return views[id]
+        return views[id].view
       }
     }
 
@@ -54,16 +58,11 @@ export class Renderer extends Basecoat<Renderer.EventArgs> {
     }
     const id = Cell.isCell(cell) ? cell.id : cell
     const views = this.schedule.views
-    return views[id]
+    return views[id].view
   }
 
-  requestViewUpdate(
-    view: CellView,
-    flag: number,
-    priority: number,
-    options: any = {},
-  ) {
-    this.schedule.requestViewUpdate(view, flag, priority, options)
+  requestViewUpdate(view: CellView, flag: number, options: any = {}) {
+    this.schedule.requestViewUpdate(view, flag, options)
   }
 
   isAsync() {
