@@ -125,7 +125,7 @@ export class Selection extends View<Selection.EventArgs> {
     options,
   }: Collection.EventArgs['node:change:position']) {
     const { showNodeSelectionBox, pointerEvents } = this.options
-    const { ui, selection } = options
+    const { ui, selection, translateBy } = options
     let allowTranslating = !this.translating
 
     /* Scenarios where this method is not called:
@@ -136,6 +136,9 @@ export class Selection extends View<Selection.EventArgs> {
       allowTranslating &&
       (showNodeSelectionBox !== true || pointerEvents === 'none')
     allowTranslating = allowTranslating && ui && !selection
+
+    // Avoid circular calls of child nodes
+    allowTranslating = allowTranslating && translateBy && node.id === translateBy
 
     if (allowTranslating) {
       this.translating = true
