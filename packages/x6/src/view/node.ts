@@ -839,7 +839,7 @@ export class NodeView<
     }
 
     // Filter the nodes which is invisiable
-    candidates = candidates.filter((candidate) => candidate.visible);
+    candidates = candidates.filter((candidate) => candidate.visible)
 
     let newCandidateView = null
     const prevCandidateView = data.candidateEmbedView
