@@ -78,8 +78,8 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      width: 1600,
-      height: 1000,
+      width: 800,
+      height: 600,
       grid: true,
       connecting: {
         connector: 'algo-connector',
@@ -174,8 +174,6 @@ export default class Example extends React.Component {
         },
       }
     })
-    // data.edges = []
-
     const start = performance.now()
     this.graph.fromJSON(data)
     console.log('total', performance.now() - start)
