@@ -280,7 +280,7 @@ getCellById(id: string)
 
 | 名称 | 类型   | 必选 | 默认值 | 描述          |
 |------|--------|:----:|--------|-------------|
-| cell | string |  ✓   |        | 节点/边的 ID。 |
+| id | string |  ✓   |        | 节点/边的 ID。 |
 
 ### updateCellId(...)
 
