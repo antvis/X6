@@ -28,7 +28,7 @@
     "lodash.identity": "^3.0.0",
     "promise-events": "^0.2.0",
     "read-pkg": "^5.2.0",
-    "semantic-release": "^17.2.2",
+    "semantic-release": "^19.0.3",
     "signale": "^1.4.0",
     "stream-buffers": "^3.0.2"
   },
