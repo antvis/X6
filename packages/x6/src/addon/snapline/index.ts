@@ -5,7 +5,7 @@ import { EventArgs } from '../../graph/events'
 import { Model } from '../../model/model'
 import { Node } from '../../model/node'
 import { ArrayExt, FunctionExt } from '../../util'
-import { Dom } from '../../util/dom'
+import { Vector } from '../../util/vector'
 import { CellView } from '../../view/cell'
 import { NodeView } from '../../view/node'
 import { View } from '../../view/view'
@@ -19,9 +19,10 @@ export class Snapline extends View implements IDisablable {
   protected offset: Point.PointLike
   protected timer: number | null
 
-  public container: SVGSVGElement
-  protected horizontal: SVGPathElement
-  protected vertical: SVGPathElement
+  public container: SVGElement
+  protected containerWrapper: Vector
+  protected horizontal: Vector
+  protected vertical: Vector
 
   protected get model() {
     return this.graph.model
@@ -81,25 +82,27 @@ export class Snapline extends View implements IDisablable {
   }
 
   protected render() {
-    const container = (this.container = Dom.createSvgDocument())
-    const horizontal = (this.horizontal = Dom.createSvgElement('path'))
-    const vertical = (this.vertical = Dom.createSvgElement('path'))
+    const container = (this.containerWrapper = new Vector('svg'))
+    const horizontal = (this.horizontal = new Vector('path'))
+    const vertical = (this.vertical = new Vector('path'))
 
-    container.classList.add(this.containerClassName)
-    horizontal.classList.add(this.horizontalClassName)
-    vertical.classList.add(this.verticalClassName)
+    container.addClass(this.containerClassName)
+    horizontal.addClass(this.horizontalClassName)
+    vertical.addClass(this.verticalClassName)
 
-    container.setAttributeNS(null, 'width', '100%')
-    container.setAttributeNS(null, 'height', '100%')
+    container.setAttribute('width', '100%')
+    container.setAttribute('height', '100%')
 
-    horizontal.setAttributeNS(null, 'display', 'none')
-    vertical.setAttributeNS(null, 'display', 'none')
+    horizontal.setAttribute('display', 'none')
+    vertical.setAttribute('display', 'none')
 
-    container.append(horizontal, vertical)
+    container.append([horizontal, vertical])
 
     if (this.options.className) {
-      container.classList.add(this.options.className)
+      container.addClass(this.options.className)
     }
+
+    this.container = this.containerWrapper.node
   }
 
   protected startListening() {
@@ -571,44 +574,40 @@ export class Snapline extends View implements IDisablable {
     horizontalWidth?: number
   }) {
     // https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
-    const transform = this.graph.matrix()
-
     if (metadata.horizontalTop) {
-      const start = new DOMPoint(
-        metadata.horizontalLeft,
-        metadata.horizontalTop,
-      ).matrixTransform(transform)
-      const end = new DOMPoint(
-        metadata.horizontalLeft! + metadata.horizontalWidth!,
-        metadata.horizontalTop,
-      ).matrixTransform(transform)
-      this.horizontal.setAttributeNS(
-        null,
-        'd',
-        `M ${start.x},${start.y} L ${end.x},${end.y}`,
+      const start = this.graph.localToGraph(
+        new Point(metadata.horizontalLeft, metadata.horizontalTop),
       )
-      this.horizontal.setAttributeNS(null, 'display', 'inherit')
+      const end = this.graph.localToGraph(
+        new Point(
+          metadata.horizontalLeft! + metadata.horizontalWidth!,
+          metadata.horizontalTop,
+        ),
+      )
+      this.horizontal.setAttributes({
+        d: `M ${start.x},${start.y} L ${end.x},${end.y}`,
+        display: 'inherit',
+      })
     } else {
-      this.horizontal.setAttributeNS(null, 'display', 'none')
+      this.horizontal.setAttribute('display', 'none')
     }
 
     if (metadata.verticalLeft) {
-      const start = new DOMPoint(
-        metadata.verticalLeft,
-        metadata.verticalTop,
-      ).matrixTransform(transform)
-      const end = new DOMPoint(
-        metadata.verticalLeft,
-        metadata.verticalTop! + metadata.verticalHeight!,
-      ).matrixTransform(transform)
-      this.vertical.setAttributeNS(
-        null,
-        'd',
-        `M ${start.x},${start.y} L ${end.x},${end.y}`,
+      const start = this.graph.localToGraph(
+        new Point(metadata.verticalLeft, metadata.verticalTop),
       )
-      this.vertical.setAttributeNS(null, 'display', 'inherit')
+      const end = this.graph.localToGraph(
+        new Point(
+          metadata.verticalLeft,
+          metadata.verticalTop! + metadata.verticalHeight!,
+        ),
+      )
+      this.vertical.setAttributes({
+        d: `M ${start.x},${start.y} L ${end.x},${end.y}`,
+        display: 'inherit',
+      })
     } else {
-      this.vertical.setAttributeNS(null, 'display', 'none')
+      this.vertical.setAttribute('display', 'none')
     }
 
     this.show()
@@ -631,13 +630,15 @@ export class Snapline extends View implements IDisablable {
 
   hide() {
     this.resetTimer()
-    this.vertical.setAttributeNS(null, 'display', 'none')
-    this.horizontal.setAttributeNS(null, 'display', 'none')
+    this.vertical.setAttribute('display', 'none')
+    this.horizontal.setAttribute('display', 'none')
     const clean = this.options.clean
     const delay = typeof clean === 'number' ? clean : clean !== false ? 3000 : 0
     if (delay > 0) {
       this.timer = window.setTimeout(() => {
-        this.graph.container.removeChild(this.container)
+        if (this.container.parentNode !== null) {
+          this.unmount()
+        }
       }, delay)
     }
     return this
