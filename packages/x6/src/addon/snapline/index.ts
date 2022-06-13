@@ -1,13 +1,14 @@
-import { ArrayExt, FunctionExt } from '../../util'
 import { IDisablable } from '../../common'
-import { Point, Rectangle, Angle } from '../../geometry'
-import { Node } from '../../model/node'
-import { Model } from '../../model/model'
-import { View } from '../../view/view'
-import { CellView } from '../../view/cell'
-import { NodeView } from '../../view/node'
+import { Angle, Point, Rectangle } from '../../geometry'
 import { Graph } from '../../graph'
 import { EventArgs } from '../../graph/events'
+import { Model } from '../../model/model'
+import { Node } from '../../model/node'
+import { ArrayExt, FunctionExt } from '../../util'
+import { Vector } from '../../util/vector'
+import { CellView } from '../../view/cell'
+import { NodeView } from '../../view/node'
+import { View } from '../../view/view'
 
 export class Snapline extends View implements IDisablable {
   public readonly options: Snapline.Options
@@ -17,9 +18,11 @@ export class Snapline extends View implements IDisablable {
   protected filterFunction: Snapline.FilterFunction | null
   protected offset: Point.PointLike
   protected timer: number | null
-  protected $container: JQuery<HTMLElement>
-  protected $horizontal: JQuery<HTMLElement>
-  protected $vertical: JQuery<HTMLElement>
+
+  public container: SVGElement
+  protected containerWrapper: Vector
+  protected horizontal: Vector
+  protected vertical: Vector
 
   protected get model() {
     return this.graph.model
@@ -79,23 +82,27 @@ export class Snapline extends View implements IDisablable {
   }
 
   protected render() {
-    this.container = document.createElement('div')
-    this.$container = this.$(this.container)
-    this.$horizontal = this.$(document.createElement('div')).addClass(
-      this.horizontalClassName,
-    )
-    this.$vertical = this.$(document.createElement('div')).addClass(
-      this.verticalClassName,
-    )
+    const container = (this.containerWrapper = new Vector('svg'))
+    const horizontal = (this.horizontal = new Vector('path'))
+    const vertical = (this.vertical = new Vector('path'))
 
-    this.$container
-      .hide()
-      .addClass(this.containerClassName)
-      .append([this.$horizontal, this.$vertical])
+    container.addClass(this.containerClassName)
+    horizontal.addClass(this.horizontalClassName)
+    vertical.addClass(this.verticalClassName)
+
+    container.setAttribute('width', '100%')
+    container.setAttribute('height', '100%')
+
+    horizontal.setAttribute('display', 'none')
+    vertical.setAttribute('display', 'none')
+
+    container.append([horizontal, vertical])
 
     if (this.options.className) {
-      this.$container.addClass(this.options.className)
+      container.addClass(this.options.className)
     }
+
+    this.container = this.containerWrapper.node
   }
 
   protected startListening() {
@@ -566,53 +573,41 @@ export class Snapline extends View implements IDisablable {
     horizontalLeft?: number
     horizontalWidth?: number
   }) {
-    const ctm = this.graph.matrix()
-    const sx = ctm.a
-    const sy = ctm.d
-    const tx = ctm.e
-    const ty = ctm.f
-
-    const sharp = this.options.sharp
-    const hasScroller = this.graph.scroller.widget != null
-
+    // https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
     if (metadata.horizontalTop) {
-      this.$horizontal
-        .css({
-          top: metadata.horizontalTop * sy + ty,
-          left: sharp
-            ? metadata.horizontalLeft! * sx + tx
-            : hasScroller
-            ? '-300%'
-            : 0,
-          width: sharp
-            ? metadata.horizontalWidth! * sx
-            : hasScroller
-            ? '700%'
-            : '100%',
-        })
-        .show()
+      const start = this.graph.localToGraph(
+        new Point(metadata.horizontalLeft, metadata.horizontalTop),
+      )
+      const end = this.graph.localToGraph(
+        new Point(
+          metadata.horizontalLeft! + metadata.horizontalWidth!,
+          metadata.horizontalTop,
+        ),
+      )
+      this.horizontal.setAttributes({
+        d: `M ${start.x},${start.y} L ${end.x},${end.y}`,
+        display: 'inherit',
+      })
     } else {
-      this.$horizontal.hide()
+      this.horizontal.setAttribute('display', 'none')
     }
 
     if (metadata.verticalLeft) {
-      this.$vertical
-        .css({
-          left: metadata.verticalLeft * sx + tx,
-          top: sharp
-            ? metadata.verticalTop! * sy + ty
-            : hasScroller
-            ? '-300%'
-            : 0,
-          height: sharp
-            ? metadata.verticalHeight! * sy
-            : hasScroller
-            ? '700%'
-            : '100%',
-        })
-        .show()
+      const start = this.graph.localToGraph(
+        new Point(metadata.verticalLeft, metadata.verticalTop),
+      )
+      const end = this.graph.localToGraph(
+        new Point(
+          metadata.verticalLeft,
+          metadata.verticalTop! + metadata.verticalHeight!,
+        ),
+      )
+      this.vertical.setAttributes({
+        d: `M ${start.x},${start.y} L ${end.x},${end.y}`,
+        display: 'inherit',
+      })
     } else {
-      this.$vertical.hide()
+      this.vertical.setAttribute('display', 'none')
     }
 
     this.show()
@@ -626,7 +621,6 @@ export class Snapline extends View implements IDisablable {
   }
 
   show() {
-    this.$container.show()
     this.resetTimer()
     if (this.container.parentNode == null) {
       this.graph.container.appendChild(this.container)
@@ -635,16 +629,18 @@ export class Snapline extends View implements IDisablable {
   }
 
   hide() {
-    this.$container.hide()
     this.resetTimer()
+    this.vertical.setAttribute('display', 'none')
+    this.horizontal.setAttribute('display', 'none')
     const clean = this.options.clean
     const delay = typeof clean === 'number' ? clean : clean !== false ? 3000 : 0
     if (delay > 0) {
       this.timer = window.setTimeout(() => {
-        this.unmount()
+        if (this.container.parentNode !== null) {
+          this.unmount()
+        }
       }, delay)
     }
-
     return this
   }
 
@@ -664,6 +660,14 @@ export namespace Snapline {
     enabled?: boolean
     className?: string
     tolerance?: number
+    /**
+     * @deprecated The default behavior is now to clamp snaplines to the elements
+     * that are being aligned (instead of them spanning the entire graph),
+     * equivalent to `sharp: true`. The `sharp` option will be removed in a future release.
+     *
+     * @deprecated 对齐线将默认在对齐的元素边界截断，而不是跨越整个图的横轴/纵轴；相当于 `sharp: true`.
+     * `sharp` 选项将在之后的版本中去除。
+     */
     sharp?: boolean
     /**
      * Specify if snap on node resizing or not.

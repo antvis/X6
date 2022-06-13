@@ -811,24 +811,13 @@ export const content = `.x6-graph {
   background-color: #6a6b8a;
 }
 .x6-widget-snapline {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  position: relative;
   pointer-events: none;
 }
 .x6-widget-snapline-vertical,
 .x6-widget-snapline-horizontal {
-  position: absolute;
-  opacity: 1;
-  pointer-events: none;
-}
-.x6-widget-snapline-horizontal {
-  border-bottom: 1px solid #2ecc71;
-}
-.x6-widget-snapline-vertical {
-  border-right: 1px solid #2ecc71;
+  stroke: #2ecc71;
+  stroke-width: 1px;
 }
 .x6-widget-stencil {
   position: absolute;
