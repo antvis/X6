@@ -1,12 +1,12 @@
 /* eslint-disable no-control-regex */
 
 import { Size } from '../types'
-import { NumberExt } from '../number'
 import { Text } from '../text'
 import { attr } from './attr'
 import { Vector } from '../vector'
-import { createSvgElement, empty, remove } from './elem'
-import { Platform } from '../platform'
+import { createSvgElement, empty } from './elem'
+
+const canvasContext = document.createElement('canvas').getContext('2d')!
 
 function createTextPathNode(
   attrs: { d?: string; 'xlink:href'?: string },
@@ -361,92 +361,62 @@ export function text(
   elem.appendChild(containerNode)
 }
 
-function splitText(
+export function measureText(text: string, styles: any = {}) {
+  if (!text) {
+    return { width: 0 }
+  }
+  const font = []
+  const fontSize = styles['font-size']
+    ? `${parseFloat(styles['font-size'])}px`
+    : '14px'
+  font.push(styles['font-style'] || 'normal')
+  font.push(styles['font-variant'] || 'normal')
+  font.push(styles['font-weight'] || 400)
+  font.push(fontSize)
+  font.push(styles['font-family'] || 'sans-serif')
+
+  canvasContext.font = font.join(' ')
+
+  return canvasContext.measureText(text)
+}
+
+export function splitTextByLength(
   text: string,
-  separator: string | RegExp | undefined | null,
-  eol: string,
-  hyphen: RegExp,
+  splitWidth: number,
+  totalWidth: number,
+  style: any = {},
 ) {
-  const words: string[] = []
-  const separators: string[] = []
+  if (splitWidth >= totalWidth) {
+    return [text, '']
+  }
+  const length = text.length
+  const caches: Record<string, number> = {}
+  let index = Math.round((splitWidth / totalWidth) * length - 1)
+  if (index < 0) {
+    index = 0
+  }
 
-  if (separator != null) {
-    const parts = text.split(separator)
-    words.push(...parts)
-    if (typeof separator === 'string') {
-      for (let i = 0, l = parts.length - 1; i < l; i += 1) {
-        separators.push(separator)
-      }
+  // eslint-disable-next-line
+  while (index >= 0 && index < length) {
+    const frontText = text.slice(0, index)
+    const frontWidth = caches[frontText] || measureText(frontText, style).width
+    const behindText = text.slice(0, index + 1)
+    const behindWidth =
+      caches[behindText] || measureText(behindText, style).width
+
+    caches[frontText] = frontWidth
+    caches[behindText] = behindWidth
+
+    if (frontWidth > splitWidth) {
+      index -= 1
+    } else if (behindWidth <= splitWidth) {
+      index += 1
     } else {
-      const seps = text.match(new RegExp(separator, 'g'))
-      for (let i = 0, l = parts.length - 1; i < l; i += 1) {
-        separators.push(seps ? seps[i] : '')
-      }
-    }
-  } else {
-    let word = ''
-    for (let i = 0, l = text.length; i < l; i += 1) {
-      const char = text[i]
-
-      if (char === ' ') {
-        words.push(word)
-        separators.push(' ')
-        word = ''
-      } else if (char.match(/[^\x00-\xff]/)) {
-        // split double byte character
-        if (word.length) {
-          words.push(word)
-          separators.push('')
-        }
-
-        words.push(char)
-        separators.push('')
-
-        word = ''
-      } else {
-        word += char
-      }
-    }
-
-    if (word.length) {
-      words.push(word)
+      break
     }
   }
 
-  // end-of-line
-  for (let i = 0; i < words.length; i += 1) {
-    const word = words[i]
-    if (word.indexOf(eol) >= 0 && word.length > 1) {
-      const parts = word.split(eol)
-      for (let j = 0, k = parts.length - 1; j < k; j += 1) {
-        parts.splice(2 * j + 1, 0, eol)
-      }
-
-      const valids = parts.filter((part) => part !== '')
-      words.splice(i, 1, ...valids)
-
-      const seps = valids.map(() => '')
-      seps.pop()
-      separators.splice(i, 0, ...seps)
-    }
-  }
-
-  // hyphen
-  for (let i = 0; i < words.length; i += 1) {
-    const word = words[i]
-    const index = word.search(hyphen)
-    if (index > 0 && index < word.length - 1) {
-      words.splice(
-        i,
-        1,
-        word.substring(0, index + 1),
-        word.substring(index + 1),
-      )
-      separators.splice(i, 0, '')
-    }
-  }
-
-  return { words, separators }
+  return [text.slice(0, index), text.slice(index)]
 }
 
 export function breakText(
@@ -455,249 +425,63 @@ export function breakText(
   styles: any = {},
   options: {
     ellipsis?: string
-    separator?: string
     eol?: string
-    hyphen?: string
-    breakWord?: boolean
-    svgDocument?: SVGSVGElement
   } = {},
 ) {
   const width = size.width
   const height = size.height
-
-  const svgDocument = options.svgDocument || createSvgElement('svg')
-  const telem = createSvgElement('text') as SVGTextElement
-  const tspan = createSvgElement('tspan') as SVGTSpanElement
-  const tnode = document.createTextNode('')
-
-  attr(telem, styles)
-  telem.appendChild(tspan)
-
-  // Prevent flickering
-  telem.style.opacity = '0'
-  // Prevent FF from throwing an uncaught exception when `getBBox()`
-  // called on element that is not in the render tree (is not measurable).
-  // <tspan>.getComputedTextLength() returns always 0 in this case.
-  // Note that the `textElement` resp. `textSpan` can become hidden
-  // when it's appended to the DOM and a `display: none` CSS stylesheet
-  // rule gets applied.
-  telem.style.display = 'block'
-  tspan.style.display = 'block'
-
-  tspan.appendChild(tnode)
-  svgDocument.appendChild(telem)
-
-  const shouldAppend = svgDocument.parentNode == null
-  if (shouldAppend) {
-    document.body.appendChild(svgDocument)
-  }
-
   const eol = options.eol || '\n'
-  const separator = options.separator || ' '
-  const hyphen = options.hyphen ? new RegExp(options.hyphen) : /[^\w\d]/
-  const breakWord = options.breakWord !== false
+  const { width: textWidth } = measureText(text, styles)
 
-  const full = []
-  const lineSeprators: { [index: number]: string } = {}
-  let lines = []
-  let partIndex
-  // let hyphenIndex
-  let lineHeight
-  let currentSeparator
-
-  const { words, separators } = splitText(text, options.separator, eol, hyphen)
-  for (
-    let wordIndex = 0, lineIndex = 0, wordCount = words.length;
-    wordIndex < wordCount;
-    wordIndex += 1
-  ) {
-    const word = words[wordIndex]
-
-    // empty word
-    if (!word) {
-      continue
-    }
-
-    // end of line
-    if (word === eol) {
-      full[lineIndex] = true
-      // start a new line
-      lineIndex += 1
-      lines[lineIndex] = ''
-      continue
-    }
-
-    if (lines[lineIndex] != null) {
-      currentSeparator = separators[wordIndex - 1] || ''
-      tnode.data = `${lines[lineIndex]}${currentSeparator}${word}`
-    } else {
-      tnode.data = word
-    }
-
-    if (tspan.getComputedTextLength() <= width) {
-      // update line
-      lines[lineIndex] = tnode.data
-      lineSeprators[lineIndex] = separators[wordIndex]
-
-      // when is partitioning, put rest of the word onto next line
-      if (partIndex) {
-        full[lineIndex] = true
-        lineIndex += 1
-        partIndex = 0
-      }
-    } else {
-      if (breakWord) {
-        // word is too long to put in one line or is partitioning
-        if (!lines[lineIndex] || partIndex) {
-          const isPartition = !!partIndex
-          const isCharacter = word.length === 1
-
-          partIndex = word.length - 1
-
-          if (isPartition || isCharacter) {
-            // word has only one character.
-            if (isCharacter) {
-              if (!lines[lineIndex]) {
-                // can't fit this text within our rect
-                lines = []
-                break
-              }
-
-              // partitioning didn't help on the non-empty line
-              // try again, but this time start with a new line
-
-              // cancel partitions created
-              words.splice(wordIndex, 2, word + words[wordIndex + 1])
-              separators.splice(wordIndex + 1, 1)
-              full[lineIndex] = true
-
-              lineIndex += 1
-              wordCount -= 1
-              wordIndex -= 1
-
-              continue
-            }
-
-            // update the partitioning words
-            words[wordIndex] = word.substring(0, partIndex)
-            words[wordIndex + 1] =
-              word.substring(partIndex) + words[wordIndex + 1]
-          } else {
-            // partitioning the long word into two words
-            words.splice(
-              wordIndex,
-              1,
-              word.substring(0, partIndex),
-              word.substring(partIndex),
-            )
-            separators.splice(wordIndex, 0, '')
-            wordCount += 1
-
-            // if the previous line is not full
-            if (lineIndex && !full[lineIndex - 1]) {
-              lineIndex -= 1
-            }
-          }
-
-          wordIndex -= 1
-          continue
-        }
-      } else if (!lines[lineIndex]) {
-        lines[lineIndex] = word
-        full[lineIndex] = true
-        lineIndex += 1
-        continue
-      }
-
-      lineIndex += 1
-      wordIndex -= 1
-    }
-
-    // check whether the height of the entire text exceeds the rect height
-    if (height != null) {
-      // ensure line height
-      if (lineHeight == null) {
-        let heightValue
-
-        // use the same defaults as in V.prototype.text
-        if (styles.lineHeight === 'auto') {
-          heightValue = { value: 1.5, unit: 'em' }
-        } else {
-          heightValue = NumberExt.parseCssNumeric(styles.lineHeight, [
-            'em',
-          ]) || {
-            value: 1,
-            unit: 'em',
-          }
-        }
-
-        lineHeight = heightValue.value
-        if (heightValue.unit === 'em') {
-          if (Platform.IS_FIREFOX) {
-            lineHeight *= tspan.getBBox().height
-          } else {
-            lineHeight *= telem.getBBox().height
-          }
-        }
-      }
-
-      if (lineHeight * lines.length > height) {
-        // remove overflowing lines
-        const lastLineIndex = Math.floor(height / lineHeight) - 1
-        const lastLine = lines[lastLineIndex]
-        const overflowLine = lines[lastLineIndex + 1]
-
-        lines.splice(lastLineIndex + 1)
-
-        if (lastLine == null) {
-          break
-        }
-
-        // add ellipsis
-        let ellipsis = options.ellipsis
-        if (!ellipsis) {
-          break
-        }
-
-        if (typeof ellipsis !== 'string') {
-          ellipsis = '\u2026'
-        }
-
-        let fullLastLine = lastLine
-        if (overflowLine && breakWord) {
-          fullLastLine += currentSeparator + overflowLine
-        }
-
-        let lastCharIndex = fullLastLine.length
-        let fixedLastLine
-        let lastChar
-
-        do {
-          lastChar = fullLastLine[lastCharIndex]
-          fixedLastLine = fullLastLine.substring(0, lastCharIndex)
-          if (!lastChar) {
-            fixedLastLine += lineSeprators[lastLineIndex]
-          } else if (lastChar.match(separator)) {
-            fixedLastLine += lastChar
-          }
-          fixedLastLine += ellipsis
-          tnode.data = fixedLastLine
-          if (tspan.getComputedTextLength() <= width) {
-            lines[lastLineIndex] = fixedLastLine
-            break
-          }
-          lastCharIndex -= 1
-        } while (lastCharIndex >= 0)
-
-        break
-      }
-    }
+  if (textWidth < width) {
+    return text
   }
 
-  if (shouldAppend) {
-    remove(svgDocument)
-  } else {
-    remove(telem)
+  const lines = []
+  const fontSize = styles.fontSize || 14
+  const lineHeight = styles.lineHeight
+    ? parseFloat(styles.lineHeight)
+    : Math.ceil(fontSize * 1.4)
+  const maxLines = Math.floor(height / lineHeight)
+
+  let remainText = text
+  let remainWidth = textWidth
+  let ellipsis = options.ellipsis
+  let ellipsisWidth = 0
+
+  if (ellipsis) {
+    if (typeof ellipsis !== 'string') {
+      ellipsis = '\u2026'
+    }
+    ellipsisWidth = measureText(ellipsis, styles).width
+  }
+
+  for (let i = 0; i < maxLines; i += 1) {
+    if (remainWidth > width) {
+      const isLast = i === maxLines - 1
+      if (isLast) {
+        const [front] = splitTextByLength(
+          remainText,
+          width - ellipsisWidth,
+          remainWidth,
+          styles,
+        )
+        lines.push(ellipsis ? `${front}${ellipsis}` : front)
+      } else {
+        const [front, behind] = splitTextByLength(
+          remainText,
+          width,
+          remainWidth,
+          styles,
+        )
+        lines.push(front)
+        remainText = behind
+        remainWidth = measureText(remainText, styles).width
+      }
+    } else {
+      lines.push(remainText)
+      break
+    }
   }
 
   return lines.join(eol)

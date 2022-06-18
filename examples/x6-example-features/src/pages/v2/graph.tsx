@@ -61,6 +61,15 @@ Node.registry.register(
         xlinkHref:
           'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kUy8SrEDp6YAAAAAAAAAAAAAARQnAQ',
       },
+      // text: {
+      //   textWrap: {
+      //     text: 'abcdefghijklmnopqrstnvwxyzhadfsadfsda23333333333dasdasda',
+      //     width: 30,      // 宽度减少 10px
+      //     height: 60,
+      //     ellipsis: true,  // 文本超出显示范围时，自动添加省略号
+      //     breakWord: false
+      //   }
+      // }
       text: {
         x: 30,
         y: 20,
@@ -71,7 +80,7 @@ Node.registry.register(
   true,
 )
 
-export default class Example extends React.Component {
+export default class Canvas extends React.Component {
   private container: HTMLDivElement
   private graph: Graph
 
@@ -174,9 +183,7 @@ export default class Example extends React.Component {
         },
       }
     })
-    const start = performance.now()
     this.graph.fromJSON(data)
-    console.log('total', performance.now() - start)
   }
 
   refContainer = (container: HTMLDivElement) => {
