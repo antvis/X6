@@ -110,10 +110,10 @@ export const textWrap: Attr.Definition = {
           lineHeight: attrs.lineHeight,
         },
         {
-          svgDocument: view.graph.view.svg,
+          // svgDocument: view.graph.view.svg,
           ellipsis: info.ellipsis as string,
-          hyphen: info.hyphen as string,
-          breakWord: info.breakWord as boolean,
+          // hyphen: info.hyphen as string,
+          // breakWord: info.breakWord as boolean,
         },
       )
     } else {
