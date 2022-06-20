@@ -120,6 +120,8 @@ export class Scheduler {
       })
     })
 
+    viewItem.state = Scheduler.ViewState.REQUESTED
+
     if (flush) {
       queueFlush()
     }
@@ -417,6 +419,7 @@ export namespace Scheduler {
   export enum ViewState {
     CREATED,
     MOUNTED,
+    REQUESTED,
     WAITTING,
   }
   export interface View {
