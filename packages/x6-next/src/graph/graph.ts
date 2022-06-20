@@ -20,6 +20,8 @@ import { GridManager as Grid } from './grid'
 import { CoordManager as Coord } from './coord'
 import { TransformManager as Transform } from './transform'
 import { BackgroundManager as Background } from './background'
+import { PanningManager as Panning } from './panning'
+import { MouseWheel as Wheel } from './mousewheel'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
 
 export class Graph extends Basecoat<EventArgs> {
@@ -31,9 +33,14 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly transform: Transform
   public readonly grid: Grid
   public readonly background: Background
-
+  public readonly panning: Panning
+  public readonly mousewheel: Wheel
   public readonly renderer: ViewRenderer
   public readonly virtualRender: VirtualRender
+
+  public get container() {
+    return this.view.container
+  }
 
   protected get [Symbol.toStringTag]() {
     return Graph.toStringTag
@@ -50,6 +57,8 @@ export class Graph extends Basecoat<EventArgs> {
     this.transform = new Transform(this)
     this.grid = new Grid(this)
     this.background = new Background(this)
+    this.panning = new Panning(this)
+    this.mousewheel = new Wheel(this)
 
     this.renderer = new ViewRenderer(this, {
       container: this.view.stage,
@@ -885,6 +894,8 @@ export class Graph extends Basecoat<EventArgs> {
     this.coord.dispose()
     this.transform.dispose()
     this.background.dispose()
+    this.panning.dispose()
+    this.mousewheel.dispose()
     this.view.dispose()
     this.renderer.dispose()
   }
@@ -903,6 +914,8 @@ export namespace Graph {
   export import CoordManager = Coord
   export import TransformManager = Transform
   export import BackgroundManager = Background
+  export import PanningManager = Panning
+  export import MouseWheel = Wheel
 }
 
 export namespace Graph {

@@ -1,9 +1,13 @@
+import { FunctionExt } from '@antv/x6-common'
 import { Base } from './base'
 
 export class VirtualRenderManager extends Base {
   protected init() {
-    this.resetRenderArea()
-    this.startListening()
+    if (this.options.virtualRender) {
+      this.resetRenderArea = FunctionExt.debounce(this.resetRenderArea, 200)
+      this.resetRenderArea()
+      this.startListening()
+    }
   }
 
   protected startListening() {
@@ -24,6 +28,8 @@ export class VirtualRenderManager extends Base {
   }
 
   dispose() {
-    this.stopListening()
+    if (this.options.virtualRender) {
+      this.stopListening()
+    }
   }
 }
