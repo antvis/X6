@@ -17,3 +17,4 @@ export * from './transform'
 
 // event
 export * from './event'
+export * from './mousewheel'

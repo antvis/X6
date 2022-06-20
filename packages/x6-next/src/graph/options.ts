@@ -2,6 +2,8 @@ import { ObjectExt, Dom } from '@antv/x6-common'
 import { Model, CellView } from '@antv/x6-core'
 import { GridManager } from './grid'
 import { BackgroundManager } from './background'
+import { PanningManager } from './panning'
+import { MouseWheel } from './mousewheel'
 import { Edge } from '../shape'
 
 export namespace Options {
@@ -69,6 +71,8 @@ export namespace Options {
      */
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
 
+    virtualRender?: boolean
+
     // todo
     connecting: any
     interacting: any
@@ -81,16 +85,20 @@ export namespace Options {
       | boolean
       | number
       | (Partial<GridManager.CommonOptions> & GridManager.DrawGridOptions)
+    panning: boolean | Partial<PanningManager.Options>
+    mousewheel: boolean | Partial<MouseWheel.Options>
   }
 
   export interface Definition extends Common {
     grid: GridManager.Options
+    panning: PanningManager.Options
+    mousewheel: MouseWheel.Options
   }
 }
 
 export namespace Options {
   export function get(options: Partial<Manual>) {
-    const { grid, ...others } = options
+    const { grid, panning, mousewheel, ...others } = options
 
     // size
     // ----
@@ -122,6 +130,22 @@ export namespace Options {
       result.grid = { ...defaultGrid, ...grid }
     }
 
+    // booleas
+    // -------
+    const booleas: (keyof Manual)[] = ['panning', 'mousewheel']
+
+    booleas.forEach((key) => {
+      const val = options[key]
+      if (typeof val === 'boolean') {
+        result[key].enabled = val
+      } else {
+        result[key] = {
+          ...result[key],
+          ...(val as any),
+        } as never
+      }
+    })
+
     return result
   }
 }
@@ -150,6 +174,16 @@ export namespace Options {
     preventDefaultBlankAction: true,
 
     guard: () => false,
+
+    panning: {
+      enabled: false,
+      eventTypes: ['leftMouseDown'],
+    },
+    mousewheel: {
+      enabled: false,
+      factor: 1.2,
+      zoomAtMousePosition: true,
+    },
 
     connecting: {
       snap: false,

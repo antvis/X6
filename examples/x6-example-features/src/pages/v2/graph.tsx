@@ -95,6 +95,9 @@ export default class Canvas extends React.Component {
         connectionPoint: 'anchor',
         anchor: 'center',
       },
+      mousewheel: true,
+      panning: true,
+      virtualRender: true,
     })
     this.graph = graph
     document.getElementById('add-btn')?.addEventListener('click', () => {
