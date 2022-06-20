@@ -133,16 +133,18 @@ export class MiniMap extends View {
       this.sourceGraph.on('scale', this.onTransform, this)
       this.sourceGraph.on('model:updated', this.onModelUpdated, this)
 
-      this.sourceGraph.once(
-        'translate',
-        () => {
-          this.targetGraph.centerPoint(
-            this.sourceGraph.getGraphArea().center.x,
-            this.sourceGraph.getGraphArea().center.y,
-          )
-        },
-        this,
-      )
+      setTimeout(() => {
+        this.sourceGraph.once(
+          'translate',
+          () => {
+            this.targetGraph.centerPoint(
+              this.sourceGraph.getGraphArea().center.x,
+              this.sourceGraph.getGraphArea().center.y,
+            )
+          },
+          this,
+        )
+      });
     }
     this.sourceGraph.on('resize', this.updatePaper, this)
     this.delegateEvents({
@@ -233,7 +235,12 @@ export class MiniMap extends View {
   }
 
   public zoomTargetGraph() {
-    this.targetGraph.zoomToRect(this.getCellsAndViewportBBox())
+    const bbox = this.getCellsAndViewportBBox()
+    this.targetGraph.zoomToRect(bbox)
+
+    const srcBbox = this.sourceGraph.getGraphArea()
+    const tgtBbox = this.targetGraph.getGraphArea()
+    this.ratio = Math.min(srcBbox.width / tgtBbox.width, srcBbox.width / bbox.width)
   }
 
   private getCellsAndViewportBBox() {
@@ -380,9 +387,14 @@ export class MiniMap extends View {
       y = e.offsetY
     }
 
-    const cx = (x - ts.tx) / this.ratio
-    const cy = (y - ts.ty) / this.ratio
-    this.sourceGraph.centerPoint(cx, cy)
+    if (this.scroller) {
+      const cx = (x - ts.tx) / this.ratio
+      const cy = (y - ts.ty) / this.ratio
+      this.sourceGraph.centerPoint(cx, cy)
+    } else {
+      const pt = this.targetGraph.graphToLocal({ x, y })
+      this.sourceGraph.centerPoint(pt.x, pt.y)
+    }
   }
 
   @View.dispose()
