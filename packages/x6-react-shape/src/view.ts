@@ -1,63 +1,52 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { NodeView, Scheduler } from '@antv/x6'
+import React, { ReactPortal } from 'react'
+import { createPortal } from 'react-dom'
+import { createRoot, Root } from 'react-dom/client'
+import { NodeView } from '@antv/x6-core'
+import { Dom } from '@antv/x6-common'
 import { ReactShape } from './node'
 import { Portal } from './portal'
 import { Wrap } from './wrap'
 
 export class ReactShapeView extends NodeView<ReactShape> {
-  protected init() {
-    super.init()
-    this.cell.on('removed', () => {
-      Portal.disconnect(this.cell.id)
-    })
-  }
+  root?: Root
 
   getComponentContainer() {
-    return this.cell.prop('useForeignObject') === false
-      ? (this.selectors.content as SVGElement)
-      : (this.selectors.foContent as HTMLDivElement)
+    return this.selectors.foContent as HTMLDivElement
   }
 
   confirmUpdate(flag: number) {
     const ret = super.confirmUpdate(flag)
     return this.handleAction(ret, ReactShapeView.action, () => {
-      if (Scheduler) {
-        Scheduler.scheduleTask(() => {
-          this.renderReactComponent()
-        })
-      } else {
-        this.renderReactComponent()
-      }
+      this.renderReactComponent()
     })
   }
 
   protected renderReactComponent() {
     this.unmountReactComponent()
-    const root = this.getComponentContainer()
+    const container = this.getComponentContainer()
     const node = this.cell
     const graph = this.graph
 
-    if (root) {
-      const component = this.graph.hook.getReactComponent(node)
-      const elem = React.createElement(Wrap, { graph, node, component })
+    if (container) {
+      const elem = React.createElement(Wrap, { graph, node })
       if (Portal.isActive()) {
-        Portal.connect(this.cell.id, ReactDOM.createPortal(elem, root))
+        const portal = createPortal(elem, container) as ReactPortal
+        Portal.connect(this.cell.id, portal)
       } else {
-        ReactDOM.render(elem, root)
+        const root = createRoot(container)
+        root.render(elem)
       }
     }
   }
 
   protected unmountReactComponent() {
-    const root = this.getComponentContainer()
-    if (root) {
-      ReactDOM.unmountComponentAtNode(root)
+    if (this.root) {
+      this.root.unmount()
+      this.root = undefined
     }
-    return root
   }
 
-  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+  onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     const target = e.target as Element
     const tagName = target.tagName.toLowerCase()
     if (tagName === 'input') {
@@ -82,7 +71,9 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   unmount() {
-    Portal.disconnect(this.cell.id)
+    if (Portal.isActive()) {
+      Portal.disconnect(this.cell.id)
+    }
     this.unmountReactComponent()
     super.unmount()
     return this
