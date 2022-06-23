@@ -967,7 +967,8 @@ export class NodeView<
     this.setEventData<Partial<EventData.Magnet>>(e, {
       targetMagnet: magnet,
     })
-
+    // onMouseDown 需要阻止冒泡，解决 #2216
+    this.stopPropagation(e);
     if (graph.hook.validateMagnet(this, magnet, e)) {
       if (graph.options.magnetThreshold <= 0) {
         this.startConnectting(e, magnet, x, y)
@@ -976,7 +977,7 @@ export class NodeView<
       this.setEventData<Partial<EventData.Magnet>>(e, {
         action: 'magnet',
       })
-      this.stopPropagation(e)
+     
     } else {
       this.onMouseDown(e, x, y)
     }
