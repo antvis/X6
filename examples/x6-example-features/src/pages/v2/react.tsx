@@ -2,6 +2,8 @@ import React from 'react'
 import { Graph } from '@antv/x6-next'
 import { Path } from '@antv/x6-geometry'
 import data from './data'
+import './index.less'
+import { register } from '@antv/x6-react-shape'
 
 Graph.registerConnector(
   'algo-connector',
@@ -24,60 +26,24 @@ Graph.registerConnector(
   true,
 )
 
-Graph.registerNode(
-  'perf-node',
-  {
-    width: 144,
-    height: 28,
-    markup: [
-      {
-        tagName: 'rect',
-      },
-      {
-        tagName: 'image',
-      },
-      {
-        tagName: 'text',
-      },
-    ],
-    attrs: {
-      rect: {
-        rx: 14,
-        ry: 14,
-        refWidth: '100%',
-        refHeight: '100%',
-        fill: '#FFF',
-        stroke: '#5f95ff',
-        strokeWidth: 1,
-      },
-      image: {
-        x: 2,
-        y: 2,
-        width: 24,
-        height: 24,
-        xlinkHref:
-          'https://gw.alipayobjects.com/zos/bmw-prod/d9f3b597-3a2e-49c3-8469-64a1168ed779.svg',
-      },
-      // text: {
-      //   textWrap: {
-      //     text: 'abcdefghijklmnopqrstnvwxyzhadfsadfsda23333333333dasdasda',
-      //     width: 30,      // 宽度减少 10px
-      //     height: 60,
-      //     ellipsis: true,  // 文本超出显示范围时，自动添加省略号
-      //     breakWord: false
-      //   }
-      // }
-      text: {
-        x: 28,
-        y: 18,
-        text: '深度学习',
-        fontSize: 12,
-        fill: '#000000a6',
-      },
-    },
-  },
-  true,
-)
+const NodeComponent = () => {
+  return (
+    <div className="react-node">
+      <img
+        src="https://gw.alipayobjects.com/zos/bmw-prod/d9f3b597-3a2e-49c3-8469-64a1168ed779.svg"
+        alt=""
+      />
+      <span>深度学习</span>
+    </div>
+  )
+}
+
+register(NodeComponent, {
+  shape: 'perf-node',
+  width: 144,
+  height: 28,
+  effect: ['width'],
+})
 
 export default class Canvas extends React.Component {
   private container: HTMLDivElement
