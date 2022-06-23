@@ -10,9 +10,17 @@ export default config({
       globals: {
         react: 'React',
         'react-dom': 'ReactDom',
-        '@antv/x6': 'X6',
+        '@antv/x6-next': 'X6',
+        '@antv/x6-core': 'X6Core',
+        '@antv/x6-common': 'X6Common',
       },
     },
   ],
-  external: ['@antv/x6', 'react', 'react-dom'],
+  external: [
+    '@antv/x6-next',
+    '@antv/x6-core',
+    '@antv/x6-common',
+    'react',
+    'react-dom',
+  ],
 })

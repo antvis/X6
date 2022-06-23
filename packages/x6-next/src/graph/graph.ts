@@ -5,6 +5,7 @@ import {
   Cell,
   Node,
   Edge,
+  Registry as CoreRegistry,
   Renderer as ViewRenderer,
 } from '@antv/x6-core'
 import { NumberExt, Dom, KeyValue } from '@antv/x6-common'
@@ -976,13 +977,19 @@ export namespace Graph {
 }
 
 export namespace Graph {
+  export const registerNode = Node.registry.register
+  export const registerEdge = Edge.registry.register
   export const registerGrid = Registry.Grid.registry.register
   export const registerFilter = Registry.Filter.registry.register
   export const registerBackground = Registry.Background.registry.register
+  export const registerConnector = CoreRegistry.Connector.registry.register
 }
 
 export namespace Graph {
+  export const unregisterNode = Node.registry.unregister
+  export const unregisterEdge = Edge.registry.unregister
   export const unregisterGrid = Registry.Grid.registry.unregister
   export const unregisterFilter = Registry.Filter.registry.unregister
   export const unregisterBackground = Registry.Background.registry.unregister
+  export const unregisterConnector = CoreRegistry.Connector.registry.unregister
 }

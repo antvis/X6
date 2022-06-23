@@ -1,11 +1,9 @@
 import React from 'react'
 import { Graph } from '@antv/x6-next'
-import { Node, Registry } from '@antv/x6-core'
 import { Path } from '@antv/x6-geometry'
 import data from './data'
-import '../index.less'
 
-Registry.Connector.registry.register(
+Graph.registerConnector(
   'algo-connector',
   (s, e) => {
     const offset = 4
@@ -26,7 +24,7 @@ Registry.Connector.registry.register(
   true,
 )
 
-Node.registry.register(
+Graph.registerNode(
   'perf-node',
   {
     width: 144,
@@ -44,22 +42,21 @@ Node.registry.register(
     ],
     attrs: {
       rect: {
-        rx: 10,
-        ry: 10,
+        rx: 14,
+        ry: 14,
         refWidth: '100%',
         refHeight: '100%',
         fill: '#FFF',
         stroke: '#5f95ff',
         strokeWidth: 1,
-        pointerEvents: 'visiblePainted',
       },
       image: {
-        x: 8,
-        y: 8,
-        width: 16,
-        height: 16,
+        x: 2,
+        y: 2,
+        width: 24,
+        height: 24,
         xlinkHref:
-          'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kUy8SrEDp6YAAAAAAAAAAAAAARQnAQ',
+          'https://gw.alipayobjects.com/zos/bmw-prod/d9f3b597-3a2e-49c3-8469-64a1168ed779.svg',
       },
       // text: {
       //   textWrap: {
@@ -71,9 +68,11 @@ Node.registry.register(
       //   }
       // }
       text: {
-        x: 30,
-        y: 20,
-        text: 'SCQL 归一化',
+        x: 28,
+        y: 18,
+        text: '深度学习',
+        fontSize: 12,
+        fill: '#000000a6',
       },
     },
   },
@@ -89,15 +88,12 @@ export default class Canvas extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      grid: true,
+      grid: false,
       connecting: {
         connector: 'algo-connector',
         connectionPoint: 'anchor',
         anchor: 'center',
       },
-      mousewheel: true,
-      panning: true,
-      virtualRender: true,
     })
     this.graph = graph
     document.getElementById('add-btn')?.addEventListener('click', () => {
@@ -113,10 +109,10 @@ export default class Canvas extends React.Component {
             position: 'top',
             attrs: {
               circle: {
-                r: 6,
+                r: 4,
                 magnet: true,
-                stroke: '#31d0c6',
-                strokeWidth: 2,
+                stroke: 'gray',
+                strokeWidth: 1,
                 fill: '#fff',
               },
             },
@@ -125,10 +121,10 @@ export default class Canvas extends React.Component {
             position: 'right',
             attrs: {
               circle: {
-                r: 6,
+                r: 4,
                 magnet: true,
-                stroke: '#31d0c6',
-                strokeWidth: 2,
+                stroke: 'gray',
+                strokeWidth: 1,
                 fill: '#fff',
               },
             },
@@ -137,10 +133,10 @@ export default class Canvas extends React.Component {
             position: 'bottom',
             attrs: {
               circle: {
-                r: 6,
+                r: 4,
                 magnet: true,
-                stroke: '#31d0c6',
-                strokeWidth: 2,
+                stroke: 'gray',
+                strokeWidth: 1,
                 fill: '#fff',
               },
             },
@@ -149,10 +145,10 @@ export default class Canvas extends React.Component {
             position: 'left',
             attrs: {
               circle: {
-                r: 6,
+                r: 4,
                 magnet: true,
-                stroke: '#31d0c6',
-                strokeWidth: 2,
+                stroke: 'gray',
+                strokeWidth: 1,
                 fill: '#fff',
               },
             },
@@ -181,7 +177,7 @@ export default class Canvas extends React.Component {
     data.edges.forEach((edge: any) => {
       edge.attrs = {
         line: {
-          stroke: '#ccc',
+          stroke: '#c5c5c5',
           strokeWidth: 1,
         },
       }
