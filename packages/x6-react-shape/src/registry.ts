@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6-next'
-import { Node } from '@antv/x6-core'
+import { Graph, Node } from '@antv/x6-next'
 
 export type ReactShapeConfig = Node.Properties & {
   shape: string
