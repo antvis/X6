@@ -1,7 +1,7 @@
 import React, { ReactPortal } from 'react'
 import { createPortal } from 'react-dom'
 import { createRoot, Root } from 'react-dom/client'
-import { NodeView } from '@antv/x6-core'
+import { NodeView } from '@antv/x6-next'
 import { Dom } from '@antv/x6-common'
 import { ReactShape } from './node'
 import { Portal } from './portal'

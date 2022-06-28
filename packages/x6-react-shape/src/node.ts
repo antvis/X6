@@ -1,5 +1,5 @@
 import { ObjectExt } from '@antv/x6-common'
-import { Markup, Node } from '@antv/x6-core'
+import { Markup, Node } from '@antv/x6-next'
 
 export class ReactShape<
   Properties extends ReactShape.Properties = ReactShape.Properties,
