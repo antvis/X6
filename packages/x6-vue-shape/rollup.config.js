@@ -10,9 +10,10 @@ export default config({
       globals: {
         vue: 'Vue',
         '@vue/composition-api': 'VueCompositionAPI',
-        '@antv/x6': 'X6',
+        '@antv/x6-next': 'X6',
+        '@antv/x6-common': 'X6Common',
       },
     },
   ],
-  external: ['@antv/x6', '@vue/composition-api', 'vue'],
+  external: ['@antv/x6-next', '@antv/x6-common', '@vue/composition-api', 'vue'],
 })

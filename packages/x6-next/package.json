@@ -65,11 +65,11 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "utility-types": "^3.10.0",
     "@antv/x6-common": "^1.0.1",
     "@antv/x6-geometry": "^1.0.1"
   },
   "devDependencies": {
+    "utility-types": "^3.10.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",

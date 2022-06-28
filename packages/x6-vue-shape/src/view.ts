@@ -1,14 +1,11 @@
-import { NodeView, Scheduler } from '@antv/x6'
+import { NodeView } from '@antv/x6-next'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 import { VueShape } from './node'
-import { VueComponent } from './registry'
+import { shapeMaps } from './registry'
+import { isActive, connect, disconnect } from './teleport'
 
 export class VueShapeView extends NodeView<VueShape> {
   private vm: any
-
-  protected init() {
-    super.init()
-  }
 
   getComponentContainer() {
     return this.selectors.foContent as HTMLDivElement
@@ -17,9 +14,7 @@ export class VueShapeView extends NodeView<VueShape> {
   confirmUpdate(flag: number) {
     const ret = super.confirmUpdate(flag)
     return this.handleAction(ret, VueShapeView.action, () => {
-      Scheduler.scheduleTask(() => {
-        this.renderVueComponent()
-      })
+      this.renderVueComponent()
     })
   }
 
@@ -30,43 +25,40 @@ export class VueShapeView extends NodeView<VueShape> {
     const graph = this.graph
 
     if (root) {
-      const component = this.graph.hook.getVueComponent(node)
-      if (isVue2) {
-        const Vue = Vue2 as any
-        const div = document.createElement('div')
-        div.style.width = '100%'
-        div.style.height = '100%'
-        if (typeof component === 'string') {
-          div.innerHTML = component
-          this.vm = new Vue({ el: div })
-        } else {
-          const { template, ...other } = component as VueComponent
-          div.innerHTML = template
+      const { component } = shapeMaps[node.shape]
+      if (component) {
+        if (isVue2) {
+          const Vue = Vue2 as any
           this.vm = new Vue({
-            el: div,
+            el: root,
+            render(h: any) {
+              return h(component)
+            },
             provide() {
               return {
                 getGraph: () => graph,
                 getNode: () => node,
               }
             },
-            ...other,
           })
+        } else if (isVue3) {
+          if (isActive()) {
+            connect(node.id, component, root, node, graph)
+          } else {
+            this.vm = createApp({
+              render() {
+                return h(component)
+              },
+              provide() {
+                return {
+                  getGraph: () => graph,
+                  getNode: () => node,
+                }
+              },
+            })
+            this.vm.mount(root)
+          }
         }
-        root.appendChild(this.vm.$el)
-      } else if (isVue3) {
-        this.vm = createApp({
-          render() {
-            return h(component as any)
-          },
-          provide() {
-            return {
-              getGraph: () => graph,
-              getNode: () => node,
-            }
-          },
-        })
-        this.vm.mount(root)
       }
     }
   }
@@ -83,6 +75,9 @@ export class VueShapeView extends NodeView<VueShape> {
   }
 
   unmount() {
+    if (isActive()) {
+      disconnect(this.cell.id)
+    }
     this.unmountVueComponent()
     super.unmount()
     return this
