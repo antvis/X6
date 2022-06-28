@@ -46,7 +46,6 @@
   ],
   "peerDependencies": {
     "@antv/x6-next": ">=1.0.0",
-    "@antv/x6-core": ">=1.0.0",
     "@antv/x6-common": ">=1.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
