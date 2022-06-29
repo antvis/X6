@@ -553,12 +553,12 @@ export class Hook extends Base implements Hook.IHook {
       }
     }
 
-    if (valid && allowNode != null) {
+    // When judging nodes, the influence of the ports should be excluded,
+    // because the ports and nodes have the same terminalView
+    if (valid && allowNode != null && terminalMagnet == null) {
       if (typeof allowNode === 'boolean') {
-        if (!allowNode && terminalView != null) {
-          if (NodeView.isNodeView(terminalView) && terminalMagnet == null) {
-            valid = false
-          }
+        if (!allowNode && NodeView.isNodeView(terminalView)) {
+          valid = false
         }
       } else {
         valid = doValidate(allowNode)
