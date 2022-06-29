@@ -138,7 +138,8 @@ export class Selection extends View<Selection.EventArgs> {
     allowTranslating = allowTranslating && ui && !selection
 
     // Avoid circular calls of child nodes
-    allowTranslating = allowTranslating && translateBy && node.id === translateBy
+    allowTranslating =
+      allowTranslating && translateBy && node.id === translateBy
 
     if (allowTranslating) {
       this.translating = true
