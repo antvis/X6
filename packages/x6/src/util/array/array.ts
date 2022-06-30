@@ -8,6 +8,7 @@ export {
   sortBy,
   groupBy,
   difference,
+  max,
 } from 'lodash-es'
 
 export * from './diff'
