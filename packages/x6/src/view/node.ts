@@ -835,7 +835,13 @@ export class NodeView<
 
     // Picks the node with the highest `z` index
     if (options.frontOnly) {
-      candidates = candidates.slice(-1)
+      if (candidates.length > 0) {
+        const zIndexMap = ArrayExt.groupBy(candidates, 'zIndex')
+        const maxZIndex = ArrayExt.max(Object.keys(zIndexMap))
+        if (maxZIndex) {
+          candidates = zIndexMap[maxZIndex]
+        }
+      }
     }
 
     // Filter the nodes which is invisiable
