@@ -1,15 +1,44 @@
 import { Dom } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
-import { Util } from '@antv/x6-core'
-import { Base } from './base'
+import { Util } from '../util'
+import { Renderer } from './renderer'
 
 // client: window
 // page: document
 // local: stage
 // graph: svg
-export class CoordManager extends Base {
+export class CoordManager {
+  private renderer: Renderer
+  protected viewportMatrix: DOMMatrix | null
+  protected viewportTransformString: string | null
+
+  constructor(renderer: Renderer) {
+    this.renderer = renderer
+  }
+
+  get svg() {
+    return this.renderer.graphView.svg
+  }
+
+  protected get viewport() {
+    return this.renderer.graphView.viewport
+  }
+
+  get stage() {
+    return this.renderer.graphView.stage
+  }
+
+  getGraphMatrix() {
+    const transform = this.viewport.getAttribute('transform')
+    if (transform !== this.viewportTransformString) {
+      this.viewportMatrix = this.viewport.getCTM()
+      this.viewportTransformString = transform
+    }
+    return Dom.createSVGMatrix(this.viewportMatrix)
+  }
+
   getLocalMatrix() {
-    return Dom.createSVGMatrix(this.view.stage.getScreenCTM())
+    return Dom.createSVGMatrix(this.stage.getScreenCTM())
   }
 
   /**
@@ -17,7 +46,7 @@ export class CoordManager extends Base {
    */
   getGraphOffset() {
     // see: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-    const rect = this.view.svg.getBoundingClientRect()
+    const rect = this.svg.getBoundingClientRect()
     return new Point(rect.left, rect.top)
   }
 
@@ -34,12 +63,12 @@ export class CoordManager extends Base {
       typeof x === 'number'
         ? this.clientToLocalPoint(x, y as number)
         : this.clientToLocalPoint(x.x, x.y)
-    return p.snapToGrid(this.graph.getGridSize())
+    return p.snapToGrid(this.renderer.options.getGridSize())
   }
 
   localToGraphPoint(x: number | Point | Point.PointLike, y?: number) {
     const localPoint = Point.create(x, y)
-    return Util.transformPoint(localPoint, this.graph.matrix())
+    return Util.transformPoint(localPoint, this.getGraphMatrix())
   }
 
   localToClientPoint(x: number | Point | Point.PointLike, y?: number) {
@@ -62,7 +91,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const localRect = Rectangle.create(x, y, width, height)
-    return Util.transformRectangle(localRect, this.graph.matrix())
+    return Util.transformRectangle(localRect, this.getGraphMatrix())
   }
 
   localToClientRect(
@@ -90,7 +119,7 @@ export class CoordManager extends Base {
 
   graphToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const graphPoint = Point.create(x, y)
-    return Util.transformPoint(graphPoint, this.graph.matrix().inverse())
+    return Util.transformPoint(graphPoint, this.getGraphMatrix().inverse())
   }
 
   clientToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
@@ -102,7 +131,7 @@ export class CoordManager extends Base {
     const clientPoint = Point.create(x, y)
     return Util.transformPoint(
       clientPoint,
-      this.graph.matrix().multiply(this.getLocalMatrix().inverse()),
+      this.getGraphMatrix().multiply(this.getLocalMatrix().inverse()),
     )
   }
 
@@ -119,7 +148,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const graphRect = Rectangle.create(x, y, width, height)
-    return Util.transformRectangle(graphRect, this.graph.matrix().inverse())
+    return Util.transformRectangle(graphRect, this.getGraphMatrix().inverse())
   }
 
   clientToLocalRect(
@@ -141,7 +170,7 @@ export class CoordManager extends Base {
     const clientRect = Rectangle.create(x, y, width, height)
     return Util.transformRectangle(
       clientRect,
-      this.graph.matrix().multiply(this.getLocalMatrix().inverse()),
+      this.getGraphMatrix().multiply(this.getLocalMatrix().inverse()),
     )
   }
 

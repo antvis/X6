@@ -16,7 +16,7 @@ export function resolve<S extends Function, T>(fn: S): T {
     options: ResolveOptions,
   ) {
     if (ref instanceof Element) {
-      const refView = this.graph.renderer.findViewByElem(ref)
+      const refView = this.renderer.findViewByElem(ref)
       let refPoint
       if (refView) {
         if (refView.isEdgeElement(ref)) {

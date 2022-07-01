@@ -15,8 +15,8 @@ export class ToolsView extends View {
     return this.options.name
   }
 
-  public get graph() {
-    return this.cellView.graph
+  public get renderer() {
+    return this.cellView.renderer
   }
 
   public get cell() {
@@ -212,12 +212,12 @@ export class ToolsView extends View {
       if (hasSVG) {
         const parent = this.options.local
           ? cellView.container
-          : cellView.graph.view.decorator
+          : cellView.renderer.graphView.decorator
         parent.appendChild(this.svgContainer)
       }
 
       if (hasHTML) {
-        this.graph.container.appendChild(this.htmlContainer)
+        this.renderer.container.appendChild(this.htmlContainer)
       }
     }
     return this
@@ -269,7 +269,7 @@ export namespace ToolsView {
 
     if (
       (tag == null || tag === toStringTag) &&
-      view.graph != null &&
+      view.renderer != null &&
       view.cell != null &&
       typeof view.config === 'function' &&
       typeof view.update === 'function' &&
@@ -330,8 +330,8 @@ export namespace ToolsView {
 
     protected childNodes: KeyValue<Element>
 
-    public get graph() {
-      return this.cellView.graph
+    public get renderer() {
+      return this.cellView.renderer
     }
 
     public get cell() {
@@ -456,11 +456,11 @@ export namespace ToolsView {
     }
 
     protected guard(evt: Dom.EventObject) {
-      if (this.graph == null || this.cellView == null) {
+      if (this.renderer == null || this.cellView == null) {
         return true
       }
 
-      return this.graph.view.guard(evt, this.cellView)
+      return this.renderer.graphView.guard(evt, this.cellView)
     }
   }
 
@@ -519,7 +519,7 @@ export namespace ToolsView {
 
       if (
         (tag == null || tag === toStringTag) &&
-        view.graph != null &&
+        view.renderer != null &&
         view.cell != null &&
         typeof view.config === 'function' &&
         typeof view.update === 'function' &&

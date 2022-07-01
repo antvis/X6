@@ -6,6 +6,7 @@ import { ToolsView } from '../../view/tool'
 import { EdgeView } from '../../view/edge'
 import { Edge } from '../../model/edge'
 import { Attr } from '../attr'
+import { Renderer } from '../../renderer'
 
 export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   protected handles: Vertices.Handle[] = []
@@ -59,7 +60,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
       const processHandle = this.options.processHandle
       const handle = createHandle({
         index: i,
-        graph: this.graph,
+        renderer: this.renderer,
         guard: (evt: Dom.EventObject) => this.guard(evt), // eslint-disable-line no-loop-func
         attrs: this.options.attrs || {},
       })
@@ -68,7 +69,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
         processHandle(handle)
       }
 
-      this.graph.hook.onToolItemCreated({
+      this.renderer.options.onToolItemCreated({
         name: 'vertices',
         cell: this.cell,
         view: this.cellView,
@@ -141,7 +142,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 
   protected getMouseEventArgs<T extends Dom.EventObject>(evt: T) {
     const e = this.normalizeEvent(evt)
-    const { x, y } = this.graph.snapToGrid(e.clientX!, e.clientY!)
+    const { x, y } = this.renderer.snapToGrid(e.clientX!, e.clientY!)
     return { e, x, y }
   }
 
@@ -258,7 +259,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     evt.preventDefault()
 
     const e = this.normalizeEvent(evt)
-    const vertex = this.graph.snapToGrid(e.clientX, e.clientY).toJSON()
+    const vertex = this.renderer.snapToGrid(e.clientX, e.clientY).toJSON()
     edgeView.cell.startBatch('add-vertex', { ui: true, toolId: this.cid })
     const index = edgeView.getVertexIndex(vertex.x, vertex.y)
     this.snapVertex(vertex, index)
@@ -293,8 +294,8 @@ export namespace Vertices {
 
 export namespace Vertices {
   export class Handle extends View<Handle.EventArgs> {
-    protected get graph() {
-      return this.options.graph
+    protected get renderer() {
+      return this.options.renderer
     }
 
     constructor(public readonly options: Handle.Options) {
@@ -334,7 +335,7 @@ export namespace Vertices {
 
       evt.stopPropagation()
       evt.preventDefault()
-      this.graph.view.undelegateEvents()
+      this.renderer.graphView.undelegateEvents()
 
       this.delegateDocumentEvents(
         {
@@ -357,7 +358,7 @@ export namespace Vertices {
     protected onMouseUp(evt: Dom.MouseUpEvent) {
       this.emit('changed', { e: evt, handle: this })
       this.undelegateDocumentEvents()
-      this.graph.view.delegateEvents()
+      this.renderer.graphView.delegateEvents()
     }
 
     protected onDoubleClick(evt: Dom.DoubleClickEvent) {
@@ -367,7 +368,7 @@ export namespace Vertices {
 
   export namespace Handle {
     export interface Options {
-      graph: any // todo
+      renderer: Renderer
       index: number
       guard: (evt: Dom.EventObject) => boolean
       attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)

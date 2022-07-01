@@ -27,6 +27,8 @@ import { Markup } from './markup'
 import { CellView } from './cell'
 import { NodeView } from './node'
 import { ToolsView } from './tool'
+import { Renderer } from '../renderer'
+import { Options as RendererOptions } from '../renderer/options'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -106,15 +108,15 @@ export class EdgeView<
       ref = this.removeAction(ref, 'target')
     }
 
-    const graph = this.graph
+    const renderer = this.renderer
     const sourceView = this.sourceView
     const targetView = this.targetView
 
     // todo
     if (
-      graph &&
-      ((sourceView && !graph.renderer.isViewMounted(sourceView)) ||
-        (targetView && !graph.renderer.isViewMounted(targetView)))
+      renderer &&
+      ((sourceView && !renderer.isViewMounted(sourceView)) ||
+        (targetView && !renderer.isViewMounted(targetView)))
     ) {
       // Wait for the sourceView and targetView to be rendered.
       return ref
@@ -610,7 +612,7 @@ export class EdgeView<
     terminalType: Edge.TerminalType,
   ): Point {
     const isEdge = cellView.isEdgeElement(magnet)
-    const connecting = this.graph.options.connecting
+    const connecting = this.renderer.options.connecting
     let config = typeof def === 'string' ? { name: def } : def
     if (!config) {
       const defaults = isEdge
@@ -667,7 +669,7 @@ export class EdgeView<
 
   protected findRoutePoints(vertices: Point.PointLike[] = []): Point[] {
     const defaultRouter =
-      this.graph.options.connecting.router || Router.presets.normal
+      this.renderer.options.connecting.router || Router.presets.normal
     const router = this.cell.getRouter() || defaultRouter
     let routePoints
 
@@ -701,7 +703,7 @@ export class EdgeView<
     targetAnchor: Point,
   ) {
     const edge = this.cell
-    const connecting = this.graph.options.connecting
+    const connecting = this.renderer.options.connecting
     const sourceTerminal = edge.getSource()
     const targetTerminal = edge.getTarget()
     const sourceView = this.sourceView
@@ -845,7 +847,7 @@ export class EdgeView<
     targetPoint: Point,
   ): Path {
     const def =
-      this.cell.getConnector() || this.graph.options.connecting.connector
+      this.cell.getConnector() || this.renderer.options.connecting.connector
 
     let name: string | undefined
     let args: Connector.BaseOptions | undefined
@@ -929,7 +931,7 @@ export class EdgeView<
 
   updateTerminalProperties(type: Edge.TerminalType) {
     const edge = this.cell
-    const graph = this.graph
+    const renderer = this.renderer
     const terminal = edge[type]
     const nodeId = terminal && (terminal as Edge.TerminalCellData).cell
     const viewKey = `${type}View` as 'sourceView' | 'targetView'
@@ -941,12 +943,12 @@ export class EdgeView<
       return true
     }
 
-    const terminalCell = graph.getCellById(nodeId)
+    const terminalCell = renderer.getCellById(nodeId)
     if (!terminalCell) {
       throw new Error(`Edge's ${type} node with id "${nodeId}" not exists`)
     }
 
-    const endView = terminalCell.findView(graph)
+    const endView = terminalCell.findView(renderer)
     if (!endView) {
       return false
     }
@@ -1609,7 +1611,7 @@ export class EdgeView<
     const cellId = (terminal as Edge.TerminalCellData).cell
     if (cellId) {
       let magnet
-      const view = (args[i] = this.graph.renderer.findViewByCell(cellId))
+      const view = (args[i] = this.renderer.findViewByCell(cellId))
       if (view) {
         magnet = view.getMagnetFromEdgeTerminal(terminal)
         if (magnet === view.container) {
@@ -1634,7 +1636,7 @@ export class EdgeView<
     data.pointerEvents = style.pointerEvents
     style.pointerEvents = 'none'
 
-    if (this.graph.options.connecting.highlight) {
+    if (this.renderer.options.connecting.highlight) {
       this.highlightAvailableMagnets(data)
     }
   }
@@ -1648,9 +1650,233 @@ export class EdgeView<
     const container = this.container as HTMLElement
     container.style.pointerEvents = data.pointerEvents || ''
 
-    if (this.graph.options.connecting.highlight) {
+    if (this.renderer.options.connecting.highlight) {
       this.unhighlightAvailableMagnets(data)
     }
+  }
+
+  protected validateConnection(
+    sourceView: CellView | null | undefined,
+    sourceMagnet: Element | null | undefined,
+    targetView: CellView | null | undefined,
+    targetMagnet: Element | null | undefined,
+    terminalType: Edge.TerminalType,
+    edgeView?: EdgeView | null | undefined,
+    candidateTerminal?: Edge.TerminalCellData | null | undefined,
+  ) {
+    const options = this.renderer.options.connecting
+    const allowLoop = options.allowLoop
+    const allowNode = options.allowNode
+    const allowEdge = options.allowEdge
+    const allowPort = options.allowPort
+    const allowMulti = options.allowMulti
+    const validate = options.validateConnection
+
+    const edge = edgeView ? edgeView.cell : null
+    const terminalView = terminalType === 'target' ? targetView : sourceView
+    const terminalMagnet =
+      terminalType === 'target' ? targetMagnet : sourceMagnet
+
+    let valid = true
+    const doValidate = (
+      validate: (
+        this: Renderer,
+        args: RendererOptions.ValidateConnectionArgs,
+      ) => boolean,
+    ) => {
+      const sourcePort =
+        terminalType === 'source'
+          ? candidateTerminal
+            ? candidateTerminal.port
+            : null
+          : edge
+          ? edge.getSourcePortId()
+          : null
+      const targetPort =
+        terminalType === 'target'
+          ? candidateTerminal
+            ? candidateTerminal.port
+            : null
+          : edge
+          ? edge.getTargetPortId()
+          : null
+      return FunctionExt.call(validate, this.renderer, {
+        edge,
+        edgeView,
+        sourceView,
+        targetView,
+        sourcePort,
+        targetPort,
+        sourceMagnet,
+        targetMagnet,
+        sourceCell: sourceView ? sourceView.cell : null,
+        targetCell: targetView ? targetView.cell : null,
+        type: terminalType,
+      })
+    }
+
+    if (allowLoop != null) {
+      if (typeof allowLoop === 'boolean') {
+        if (!allowLoop && sourceView === targetView) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowLoop)
+      }
+    }
+
+    if (valid && allowPort != null) {
+      if (typeof allowPort === 'boolean') {
+        if (!allowPort && terminalMagnet) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowPort)
+      }
+    }
+
+    if (valid && allowEdge != null) {
+      if (typeof allowEdge === 'boolean') {
+        if (!allowEdge && EdgeView.isEdgeView(terminalView)) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowEdge)
+      }
+    }
+
+    // When judging nodes, the influence of the ports should be excluded,
+    // because the ports and nodes have the same terminalView
+    if (valid && allowNode != null && terminalMagnet == null) {
+      if (typeof allowNode === 'boolean') {
+        if (!allowNode && NodeView.isNodeView(terminalView)) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowNode)
+      }
+    }
+
+    if (valid && allowMulti != null && edgeView) {
+      const edge = edgeView.cell
+      const source =
+        terminalType === 'source'
+          ? candidateTerminal
+          : (edge.getSource() as Edge.TerminalCellData)
+      const target =
+        terminalType === 'target'
+          ? candidateTerminal
+          : (edge.getTarget() as Edge.TerminalCellData)
+      const terminalCell = candidateTerminal
+        ? this.renderer.getCellById(candidateTerminal.cell)
+        : null
+
+      if (source && target && source.cell && target.cell && terminalCell) {
+        if (typeof allowMulti === 'function') {
+          valid = doValidate(allowMulti)
+        } else {
+          const connectedEdges = this.renderer.model.getConnectedEdges(
+            terminalCell,
+            {
+              outgoing: terminalType === 'source',
+              incoming: terminalType === 'target',
+            },
+          )
+          if (connectedEdges.length) {
+            if (allowMulti === 'withPort') {
+              const exist = connectedEdges.some((link) => {
+                const s = link.getSource() as Edge.TerminalCellData
+                const t = link.getTarget() as Edge.TerminalCellData
+                return (
+                  s &&
+                  t &&
+                  s.cell === source.cell &&
+                  t.cell === target.cell &&
+                  s.port != null &&
+                  s.port === source.port &&
+                  t.port != null &&
+                  t.port === target.port
+                )
+              })
+              if (exist) {
+                valid = false
+              }
+            } else if (!allowMulti) {
+              const exist = connectedEdges.some((link) => {
+                const s = link.getSource() as Edge.TerminalCellData
+                const t = link.getTarget() as Edge.TerminalCellData
+                return (
+                  s && t && s.cell === source.cell && t.cell === target.cell
+                )
+              })
+              if (exist) {
+                valid = false
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (valid && validate != null) {
+      valid = doValidate(validate)
+    }
+
+    return valid
+  }
+
+  protected allowConnectToBlank(edge: Edge) {
+    const renderer = this.renderer
+    const options = renderer.options.connecting
+    const allowBlank = options.allowBlank
+
+    if (typeof allowBlank !== 'function') {
+      return !!allowBlank
+    }
+
+    const edgeView = renderer.findViewByCell(edge) as EdgeView
+    const sourceCell = edge.getSourceCell()
+    const targetCell = edge.getTargetCell()
+    const sourceView = renderer.findViewByCell(sourceCell)
+    const targetView = renderer.findViewByCell(targetCell)
+    return FunctionExt.call(allowBlank, renderer, {
+      edge,
+      edgeView,
+      sourceCell,
+      targetCell,
+      sourceView,
+      targetView,
+      sourcePort: edge.getSourcePortId(),
+      targetPort: edge.getTargetPortId(),
+      sourceMagnet: edgeView.sourceMagnet,
+      targetMagnet: edgeView.targetMagnet,
+    })
+  }
+
+  protected validateEdge(
+    edge: Edge,
+    type: Edge.TerminalType,
+    initialTerminal: Edge.TerminalData,
+  ) {
+    const renderer = this.renderer
+    if (!this.allowConnectToBlank(edge)) {
+      const sourceId = edge.getSourceCellId()
+      const targetId = edge.getTargetCellId()
+      if (!(sourceId && targetId)) {
+        return false
+      }
+    }
+
+    const validate = renderer.options.connecting.validateEdge
+    if (validate) {
+      return FunctionExt.call(validate, renderer, {
+        edge,
+        type,
+        previous: initialTerminal,
+      })
+    }
+
+    return true
   }
 
   protected arrowheadDragging(
@@ -1671,7 +1897,7 @@ export class EdgeView<
         })
       }
 
-      data.currentView = this.graph.renderer.findViewByElem(target)
+      data.currentView = this.renderer.findViewByElem(target)
       if (data.currentView) {
         // If we found a view that is under the pointer, we need to find
         // the closest magnet based on the real target element of the event.
@@ -1679,7 +1905,7 @@ export class EdgeView<
 
         if (
           data.currentMagnet &&
-          this.graph.hook.validateConnection(
+          this.validateConnection(
             ...data.getValidateConnectionArgs(
               data.currentView,
               data.currentMagnet,
@@ -1733,10 +1959,10 @@ export class EdgeView<
     y: number,
     data: EventData.ArrowheadDragging,
   ) {
-    const graph = this.graph
-    const snap = graph.options.connecting.snap
+    const renderer = this.renderer
+    const snap = renderer.options.connecting.snap
     const radius = (typeof snap === 'object' && snap.radius) || 50
-    const views = graph.renderer.findViewsInArea({
+    const views = renderer.findViewsInArea({
       x: x - radius,
       y: y - radius,
       width: 2 * radius,
@@ -1762,7 +1988,7 @@ export class EdgeView<
         if (distance < radius && distance < minDistance) {
           if (
             prevMagnet === view.container ||
-            graph.hook.validateConnection(
+            this.validateConnection(
               ...data.getValidateConnectionArgs(view, null),
               view.getEdgeTerminal(
                 view.container,
@@ -1788,7 +2014,7 @@ export class EdgeView<
           if (distance < radius && distance < minDistance) {
             if (
               prevMagnet === magnet ||
-              graph.hook.validateConnection(
+              this.validateConnection(
                 ...data.getValidateConnectionArgs(view, magnet),
                 view.getEdgeTerminal(
                   magnet,
@@ -1859,7 +2085,7 @@ export class EdgeView<
 
   protected finishEmbedding(data: EventData.ArrowheadDragging) {
     // Resets parent of the edge if embedding is enabled
-    if (this.graph.options.embedding.enabled && this.cell.updateParent()) {
+    if (this.renderer.options.embedding.enabled && this.cell.updateParent()) {
       // Make sure we don't reverse to the original 'z' index
       data.zIndex = null
     }
@@ -1890,14 +2116,14 @@ export class EdgeView<
       currentTerminal && !Edge.equalTerminals(initialTerminal, currentTerminal)
 
     if (changed) {
-      const graph = this.graph
+      const renderer = this.renderer
       const previous = initialTerminal as Edge.TerminalCellData
       const previousCell = previous.cell
-        ? graph.getCellById(previous.cell)
+        ? renderer.getCellById(previous.cell)
         : null
       const previousPort = previous.port
       const previousView = previousCell
-        ? graph.findViewByCell(previousCell)
+        ? renderer.findViewByCell(previousCell)
         : null
       const previousPoint =
         previousCell || data.isNewEdge
@@ -1905,9 +2131,13 @@ export class EdgeView<
           : Point.create(initialTerminal as Edge.TerminalPointData).toJSON()
 
       const current = currentTerminal as Edge.TerminalCellData
-      const currentCell = current.cell ? graph.getCellById(current.cell) : null
+      const currentCell = current.cell
+        ? renderer.getCellById(current.cell)
+        : null
       const currentPort = current.port
-      const currentView = currentCell ? graph.findViewByCell(currentCell) : null
+      const currentView = currentCell
+        ? renderer.findViewByCell(currentCell)
+        : null
       const currentPoint = currentCell
         ? null
         : Point.create(currentTerminal as Edge.TerminalPointData).toJSON()
@@ -1933,12 +2163,12 @@ export class EdgeView<
   }
 
   protected highlightAvailableMagnets(data: EventData.ArrowheadDragging) {
-    const graph = this.graph
-    const cells = graph.model.getCells()
+    const renderer = this.renderer
+    const cells = renderer.model.getCells()
     data.marked = {}
 
     for (let i = 0, ii = cells.length; i < ii; i += 1) {
-      const view = graph.renderer.findViewByCell(cells[i])
+      const view = renderer.findViewByCell(cells[i])
 
       if (!view) {
         continue
@@ -1953,7 +2183,7 @@ export class EdgeView<
       }
 
       const availableMagnets = magnets.filter((magnet) =>
-        graph.hook.validateConnection(
+        this.validateConnection(
           ...data.getValidateConnectionArgs(view, magnet),
           view.getEdgeTerminal(
             magnet,
@@ -1981,7 +2211,7 @@ export class EdgeView<
   protected unhighlightAvailableMagnets(data: EventData.ArrowheadDragging) {
     const marked = data.marked || {}
     Object.keys(marked).forEach((id) => {
-      const view = this.graph.renderer.findViewByCell(id)
+      const view = this.renderer.findViewByCell(id)
 
       if (view) {
         const magnets = marked[id]
@@ -2013,7 +2243,7 @@ export class EdgeView<
 
   protected dragArrowhead(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.ArrowheadDragging>(e)
-    if (this.graph.options.connecting.snap) {
+    if (this.renderer.options.connecting.snap) {
       this.snapArrowhead(x, y, data)
     } else {
       this.arrowheadDragging(this.getEventTarget(e), x, y, data)
@@ -2021,15 +2251,15 @@ export class EdgeView<
   }
 
   protected stopArrowheadDragging(e: Dom.MouseUpEvent, x: number, y: number) {
-    const graph = this.graph
+    const renderer = this.renderer
     const data = this.getEventData<EventData.ArrowheadDragging>(e)
-    if (graph.options.connecting.snap) {
+    if (renderer.options.connecting.snap) {
       this.snapArrowheadEnd(data)
     } else {
       this.arrowheadDragged(data, x, y)
     }
 
-    const valid = graph.hook.validateEdge(
+    const valid = this.validateEdge(
       this.cell,
       data.terminalType,
       data.initialTerminal,
@@ -2074,7 +2304,7 @@ export class EdgeView<
       this.setEventData(e, { stopPropagation: true })
     }
 
-    this.graph.view.delegateDragEvents(e, this)
+    this.renderer.graphView.delegateDragEvents(e, this)
   }
 
   dragLabel(e: Dom.MouseMoveEvent, x: number, y: number) {
