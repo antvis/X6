@@ -16,9 +16,7 @@ import { GraphView } from './view'
 import { EventArgs } from './events'
 import { CSSManager as Css } from './css'
 import { Options as GraphOptions } from './options'
-import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
-import { CoordManager as Coord } from './coord'
 import { TransformManager as Transform } from './transform'
 import { BackgroundManager as Background } from './background'
 import { PanningManager as Panning } from './panning'
@@ -28,9 +26,6 @@ import { VirtualRenderManager as VirtualRender } from './virtual-render'
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
   public readonly css: Css
-  public readonly view: GraphView
-  public readonly defs: Defs
-  public readonly coord: Coord
   public readonly transform: Transform
   public readonly grid: Grid
   public readonly background: Background
@@ -40,7 +35,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly virtualRender: VirtualRender
 
   public get container() {
-    return this.view.container
+    return this.options.container
   }
 
   protected get [Symbol.toStringTag]() {
@@ -49,26 +44,32 @@ export class Graph extends Basecoat<EventArgs> {
 
   constructor(options: Partial<GraphOptions.Manual>) {
     super()
-
     this.options = GraphOptions.get(options)
+    this.renderer = new ViewRenderer({
+      ...this.options,
+      getGraphArea: () => this.getGraphArea(),
+      getGridSize: () => this.getGridSize(),
+    })
+
     this.css = new Css(this)
-    this.view = new GraphView(this)
-    this.defs = new Defs(this)
-    this.coord = new Coord(this)
     this.transform = new Transform(this)
     this.grid = new Grid(this)
     this.background = new Background(this)
     this.panning = new Panning(this)
     this.mousewheel = new Wheel(this)
-
-    this.renderer = new ViewRenderer(this, {
-      container: this.view.stage,
-    })
     this.virtualRender = new VirtualRender(this)
+
+    this.setup()
   }
 
   get model() {
     return this.renderer.model
+  }
+
+  protected setup() {
+    this.renderer.on('*', (name, args) => {
+      this.trigger(name, args)
+    })
   }
 
   // #region model
@@ -614,7 +615,7 @@ export class Graph extends Basecoat<EventArgs> {
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
   snapToGrid(x: number | Point.PointLike, y?: number) {
-    return this.coord.snapToGrid(x, y)
+    return this.renderer.coord.snapToGrid(x, y)
   }
 
   pageToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -628,7 +629,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.pageToLocalRect(x)
+      return this.renderer.coord.pageToLocalRect(x)
     }
 
     if (
@@ -637,10 +638,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.pageToLocalRect(x, y, width, height)
+      return this.renderer.coord.pageToLocalRect(x, y, width, height)
     }
 
-    return this.coord.pageToLocalPoint(x, y)
+    return this.renderer.coord.pageToLocalPoint(x, y)
   }
 
   localToPage(rect: Rectangle.RectangleLike): Rectangle
@@ -654,7 +655,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.localToPageRect(x)
+      return this.renderer.coord.localToPageRect(x)
     }
 
     if (
@@ -663,10 +664,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.localToPageRect(x, y, width, height)
+      return this.renderer.coord.localToPageRect(x, y, width, height)
     }
 
-    return this.coord.localToPagePoint(x, y)
+    return this.renderer.coord.localToPagePoint(x, y)
   }
 
   clientToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -680,7 +681,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.clientToLocalRect(x)
+      return this.renderer.coord.clientToLocalRect(x)
     }
 
     if (
@@ -689,10 +690,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.clientToLocalRect(x, y, width, height)
+      return this.renderer.coord.clientToLocalRect(x, y, width, height)
     }
 
-    return this.coord.clientToLocalPoint(x, y)
+    return this.renderer.coord.clientToLocalPoint(x, y)
   }
 
   localToClient(rect: Rectangle.RectangleLike): Rectangle
@@ -706,7 +707,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.localToClientRect(x)
+      return this.renderer.coord.localToClientRect(x)
     }
 
     if (
@@ -715,10 +716,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.localToClientRect(x, y, width, height)
+      return this.renderer.coord.localToClientRect(x, y, width, height)
     }
 
-    return this.coord.localToClientPoint(x, y)
+    return this.renderer.coord.localToClientPoint(x, y)
   }
 
   /**
@@ -748,7 +749,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.localToGraphRect(x)
+      return this.renderer.coord.localToGraphRect(x)
     }
 
     if (
@@ -757,10 +758,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.localToGraphRect(x, y, width, height)
+      return this.renderer.coord.localToGraphRect(x, y, width, height)
     }
 
-    return this.coord.localToGraphPoint(x, y)
+    return this.renderer.coord.localToGraphPoint(x, y)
   }
 
   graphToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -774,7 +775,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.graphToLocalRect(x)
+      return this.renderer.coord.graphToLocalRect(x)
     }
 
     if (
@@ -783,9 +784,9 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.graphToLocalRect(x, y, width, height)
+      return this.renderer.coord.graphToLocalRect(x, y, width, height)
     }
-    return this.coord.graphToLocalPoint(x, y)
+    return this.renderer.coord.graphToLocalPoint(x, y)
   }
 
   clientToGraph(rect: Rectangle.RectangleLike): Rectangle
@@ -799,7 +800,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.coord.clientToGraphRect(x)
+      return this.renderer.coord.clientToGraphRect(x)
     }
     if (
       typeof x === 'number' &&
@@ -807,25 +808,9 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.coord.clientToGraphRect(x, y, width, height)
+      return this.renderer.coord.clientToGraphRect(x, y, width, height)
     }
-    return this.coord.clientToGraphPoint(x, y)
-  }
-
-  // #endregion
-
-  // #region defs
-
-  defineFilter(options: Defs.FilterOptions) {
-    return this.defs.filter(options)
-  }
-
-  defineGradient(options: Defs.GradientOptions) {
-    return this.defs.gradient(options)
-  }
-
-  defineMarker(options: Defs.MarkerOptions) {
-    return this.defs.marker(options)
+    return this.renderer.coord.clientToGraphPoint(x, y)
   }
 
   // #endregion
@@ -890,14 +875,11 @@ export class Graph extends Basecoat<EventArgs> {
     this.off()
 
     this.css.dispose()
-    this.defs.dispose()
     this.grid.dispose()
-    this.coord.dispose()
     this.transform.dispose()
     this.background.dispose()
     this.panning.dispose()
     this.mousewheel.dispose()
-    this.view.dispose()
     this.renderer.dispose()
   }
 
@@ -910,9 +892,7 @@ export namespace Graph {
   export import Renderer = ViewRenderer
   export import CssManager = Css
   export import BaseManager = Base
-  export import DefsManager = Defs
   export import GridManager = Grid
-  export import CoordManager = Coord
   export import TransformManager = Transform
   export import BackgroundManager = Background
   export import PanningManager = Panning
@@ -936,13 +916,8 @@ export namespace Graph {
     }
 
     const tag = instance[Symbol.toStringTag]
-    const graph = instance as Graph
 
-    if (
-      (tag == null || tag === toStringTag) &&
-      graph.view != null &&
-      graph.model != null
-    ) {
+    if (tag == null || tag === toStringTag) {
       return true
     }
 

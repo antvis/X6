@@ -23,9 +23,9 @@ export const stroke: Attr.Definition = {
         gradientUnits: 'userSpaceOnUse',
       }
 
-      view.graph.defs.remove(options.id)
+      view.renderer.defs.remove(options.id)
     }
 
-    return `url(#${view.graph.defineGradient(options)})`
+    return `url(#${view.renderer.defineGradient(options)})`
   },
 }

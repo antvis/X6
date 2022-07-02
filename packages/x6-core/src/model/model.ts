@@ -5,12 +5,13 @@ import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
 import { Collection } from './collection'
+import { Renderer } from '../renderer'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
   protected readonly batches: KeyValue<number> = {}
   protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
-  public graph: any // todo
+  public renderer: Renderer
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
   protected outgoings: KeyValue<string[]> = {}
@@ -36,12 +37,12 @@ export class Model extends Basecoat<Model.EventArgs> {
     args: Model.EventArgs[Key],
   ) {
     this.trigger(name, args)
-    const graph = this.graph
-    if (graph) {
+    const renderer = this.renderer
+    if (renderer) {
       if (name === 'sorted' || name === 'reseted' || name === 'updated') {
-        graph.trigger(`model:${name}`, args)
+        renderer.trigger(`model:${name}`, args)
       } else {
-        graph.trigger(name, args)
+        renderer.trigger(name, args)
       }
     }
     return this

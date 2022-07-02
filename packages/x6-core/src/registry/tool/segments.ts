@@ -7,6 +7,7 @@ import { Attr } from '../attr'
 import { CellView } from '../../view/cell'
 import { EdgeView } from '../../view/edge'
 import { Edge } from '../../model/edge'
+import { Renderer } from '../../renderer'
 
 export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
   protected handles: Segments.Handle[] = []
@@ -45,7 +46,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
   ) {
     const handle = this.options.createHandle!({
       index,
-      graph: this.graph,
+      renderer: this.renderer,
       guard: (evt) => this.guard(evt),
       attrs: this.options.attrs || {},
     })
@@ -54,7 +55,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
       this.options.processHandle(handle)
     }
 
-    this.graph.hook.onToolItemCreated({
+    this.renderer.options.onToolItemCreated({
       name: 'segments',
       cell: this.cell,
       view: this.cellView,
@@ -139,7 +140,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     handle,
     e,
   }: Segments.Handle.EventArgs['changing']) {
-    const graph = this.graph
+    const renderer = this.renderer
     const options = this.options
     const edgeView = this.cellView
     const anchorFn = options.anchor
@@ -149,7 +150,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
 
     const data = this.getEventData<Segments.EventData>(e)
     const evt = this.normalizeEvent(e)
-    const coords = graph.snapToGrid(evt.clientX, evt.clientY)
+    const coords = renderer.snapToGrid(evt.clientX, evt.clientY)
     const position = this.snapHandle(handle, coords.clone(), data)
     const vertices = ObjectExt.cloneDeep(this.vertices)
     let vertex = vertices[index]
@@ -295,7 +296,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
 
     if (!options.stopPropagation) {
       const normalizedEvent = this.normalizeEvent(e)
-      const coords = this.graph.snapToGrid(
+      const coords = this.renderer.snapToGrid(
         normalizedEvent.clientX,
         normalizedEvent.clientY,
       )
@@ -311,7 +312,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     }
 
     const normalizedEvent = this.normalizeEvent(e)
-    const coords = this.graph.snapToGrid(
+    const coords = this.renderer.snapToGrid(
       normalizedEvent.clientX,
       normalizedEvent.clientY,
     )
@@ -448,7 +449,7 @@ export namespace Segments {
 
       evt.stopPropagation()
       evt.preventDefault()
-      this.options.graph.view.undelegateEvents()
+      this.options.renderer.graphView.undelegateEvents()
       this.delegateDocumentEvents(
         {
           mousemove: 'onMouseMove',
@@ -468,7 +469,7 @@ export namespace Segments {
     protected onMouseUp(evt: Dom.MouseUpEvent) {
       this.emit('changed', { e: evt, handle: this })
       this.undelegateDocumentEvents()
-      this.options.graph.view.delegateEvents()
+      this.options.renderer.graphView.delegateEvents()
     }
 
     show() {
@@ -482,7 +483,7 @@ export namespace Segments {
 
   export namespace Handle {
     export interface Options {
-      graph: any // todo
+      renderer: Renderer
       guard: (evt: Dom.EventObject) => boolean
       attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
       index?: number

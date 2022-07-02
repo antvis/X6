@@ -22,6 +22,7 @@ import { Edge } from '../model/edge'
 import { Model } from '../model/model'
 import { EdgeView } from './edge'
 import { NodeView } from './node'
+import { Renderer } from '../renderer'
 
 export class CellView<
   Entity extends Cell = Cell,
@@ -88,7 +89,7 @@ export class CellView<
     return ObjectExt.merge(ret, others) as T
   }
 
-  public graph: any // todo
+  public renderer: Renderer
   public cell: Entity
   protected selectors: Markup.Selectors
   protected readonly options: Options
@@ -105,7 +106,7 @@ export class CellView<
 
     this.cell = cell
     this.options = this.ensureOptions(options)
-    this.graph = this.options.graph
+    this.renderer = this.options.renderer
     this.attr = new AttrManager(this)
     this.flag = new FlagManager(
       this,
@@ -269,8 +270,8 @@ export class CellView<
       options.async = false
     }
 
-    if (this.graph != null) {
-      this.graph.renderer.requestViewUpdate(this, flag, options)
+    if (this.renderer != null) {
+      this.renderer.requestViewUpdate(this, flag, options)
     }
   }
 
@@ -291,16 +292,16 @@ export class CellView<
   }
 
   can(feature: CellView.InteractionNames): boolean {
-    let interacting = this.graph.options.interacting
+    let interacting = this.renderer.options.interacting
 
     if (typeof interacting === 'function') {
-      interacting = FunctionExt.call(interacting, this.graph, this)
+      interacting = FunctionExt.call(interacting, this, this)
     }
 
     if (typeof interacting === 'object') {
       let val = interacting[feature]
       if (typeof val === 'function') {
-        val = FunctionExt.call(val, this.graph, this)
+        val = FunctionExt.call(val, this, this)
       }
       return val !== false
     }
@@ -362,7 +363,7 @@ export class CellView<
       bbox = this.getBBoxOfElement(this.container)
     }
 
-    return this.graph.localToGraph(bbox)
+    return this.renderer.coord.localToGraphRect(bbox)
   }
 
   getRootTranslatedMatrix() {
@@ -625,9 +626,6 @@ export class CellView<
         ? config
         : new ToolsView(config)
       this.tools = tools
-      this.graph.on('tools:hide', this.hideTools, this)
-      this.graph.on('tools:show', this.showTools, this)
-      this.graph.on('tools:remove', this.removeTools, this)
       tools.config({ view: this })
       tools.mount()
     }
@@ -644,9 +642,6 @@ export class CellView<
   removeTools() {
     if (this.tools) {
       this.tools.remove()
-      this.graph.off('tools:hide', this.hideTools, this)
-      this.graph.off('tools:show', this.showTools, this)
-      this.graph.off('tools:remove', this.removeTools, this)
       this.tools = null
     }
     return this
@@ -686,7 +681,8 @@ export class CellView<
     args: CellView.EventArgs[Key],
   ) {
     this.trigger(name, args)
-    this.graph.trigger(name, args)
+    // todo
+    this.renderer.trigger(name, args)
     return this
   }
 
@@ -793,13 +789,13 @@ export class CellView<
   onLabelMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {}
 
   checkMouseleave(e: Dom.EventObject) {
-    const graph = this.graph
-    if (graph.renderer.isAsync()) {
+    const renderer = this.renderer
+    if (renderer.isAsync()) {
       // Do the updates of the current view synchronously now
-      graph.renderer.dumpView(this)
+      renderer.dumpView(this)
     }
     const target = this.getEventTarget(e, { fromPoint: true })
-    const view = graph.renderer.findViewByElem(target)
+    const view = renderer.findViewByElem(target)
     if (view === this) {
       return
     }
@@ -819,7 +815,7 @@ export class CellView<
 
 export namespace CellView {
   export interface Options {
-    graph: any // todo
+    renderer: Renderer
     priority: number
     isSvgElement: boolean
     rootSelector: string

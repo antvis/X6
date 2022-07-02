@@ -11,25 +11,25 @@ const F13 = 1 / 3
 const F23 = 2 / 3
 
 function setupUpdating(view: EdgeView) {
-  let updateList = (view.graph as any)._jumpOverUpdateList
+  let updateList = (view.renderer as any)._jumpOverUpdateList
 
   // first time setup for this paper
   if (updateList == null) {
-    updateList = (view.graph as any)._jumpOverUpdateList = []
+    updateList = (view.renderer as any)._jumpOverUpdateList = []
 
     /**
      * Handler for a batch:stop event to force
      * update of all registered links with jump over connector
      */
-    view.graph.on('cell:mouseup', () => {
-      const list = (view.graph as any)._jumpOverUpdateList
+    view.renderer.on('cell:mouseup', () => {
+      const list = (view.renderer as any)._jumpOverUpdateList
       for (let i = 0; i < list.length; i += 1) {
         list[i].update()
       }
     })
 
-    view.graph.on('model:reseted', () => {
-      updateList = (view.graph as any)._jumpOverUpdateList = []
+    view.renderer.on('model:reseted', () => {
+      updateList = (view.renderer as any)._jumpOverUpdateList = []
     })
   }
 
@@ -294,8 +294,8 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> =
     // list of connector types not to jump over.
     const ignoreConnectors = options.ignoreConnectors || ['smooth']
 
-    const graph = this.graph
-    const model = graph.model
+    const renderer = this.renderer
+    const model = renderer.model
     const allLinks = model.getEdges() as Edge[]
 
     // there is just one link, draw it directly
@@ -310,7 +310,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> =
 
     const edge = this.cell
     const thisIndex = allLinks.indexOf(edge)
-    const defaultConnector = graph.options.connecting.connector || {}
+    const defaultConnector = renderer.options.connecting.connector || {}
 
     // not all links are meant to be jumped over.
     const edges = allLinks.filter((link, idx) => {
@@ -330,7 +330,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> =
 
     // find views for all links
     const linkViews = edges.map((edge) => {
-      return graph.renderer.findViewByCell(edge) as EdgeView
+      return renderer.findViewByCell(edge) as EdgeView
     })
 
     // create lines for this link

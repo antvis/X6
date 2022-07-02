@@ -13,7 +13,7 @@ export class Base extends Disposable {
   }
 
   public get view() {
-    return this.graph.view
+    return this.graph.renderer.graphView
   }
 
   constructor(graph: Graph) {

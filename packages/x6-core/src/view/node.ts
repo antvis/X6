@@ -4,11 +4,13 @@ import { Config } from '../common'
 import { PortLayout } from '../registry'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
+import { Edge } from '../model/edge'
 import { PortManager } from '../model/port'
 import { CellView } from './cell'
 import { EdgeView } from './edge'
 import { Markup } from './markup'
 import { AttrManager } from './attr'
+import { Renderer } from '../renderer'
 
 export class NodeView<
   Entity extends Node = Node,
@@ -574,8 +576,9 @@ export class NodeView<
   }
 
   onMagnetClick(e: Dom.MouseUpEvent, magnet: Element, x: number, y: number) {
-    const count = this.graph.view.getMouseMovedCount(e)
-    if (count > this.graph.options.clickThreshold) {
+    const renderer = this.renderer
+    const count = renderer.graphView.getMouseMovedCount(e)
+    if (count > renderer.options.clickThreshold) {
       return
     }
     this.notify('node:magnet:click', {
@@ -623,10 +626,11 @@ export class NodeView<
   }
 
   protected prepareEmbedding(e: Dom.MouseMoveEvent) {
+    const renderer = this.renderer
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const node = data.cell || this.cell
-    const view = this.graph.findViewByCell(node)
-    const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
+    const view = renderer.findViewByCell(node)
+    const localPoint = renderer.snapToGrid(e.clientX, e.clientY)
 
     this.notify('node:embed', {
       e,
@@ -641,14 +645,14 @@ export class NodeView<
 
   processEmbedding(e: Dom.MouseMoveEvent, data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
-    const graph = data.graph || this.graph
-    const options = graph.options.embedding
+    const renderer = data.renderer || this.renderer
+    const options = renderer.options.embedding
     const findParent = options.findParent
 
     let candidates =
       typeof findParent === 'function'
         ? (
-            FunctionExt.call(findParent, graph, {
+            FunctionExt.call(findParent, renderer, {
               view: this,
               node: this.cell,
             }) as Cell[]
@@ -659,7 +663,7 @@ export class NodeView<
               !c.isDescendantOf(this.cell)
             )
           })
-        : graph.model.getNodesUnderNode(cell, {
+        : renderer.model.getNodesUnderNode(cell, {
             by: findParent as Rectangle.KeyPoint,
           })
 
@@ -679,9 +683,9 @@ export class NodeView<
         newCandidateView = prevCandidateView
         break
       } else {
-        const view = candidate.findView(graph) as NodeView
+        const view = candidate.findView(renderer) as NodeView
         if (
-          FunctionExt.call(validateEmbeding, graph, {
+          FunctionExt.call(validateEmbeding, renderer, {
             child: this.cell,
             parent: view.cell,
             childView: this,
@@ -701,12 +705,12 @@ export class NodeView<
     }
     data.candidateEmbedView = newCandidateView
 
-    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
+    const localPoint = renderer.snapToGrid(e.clientX, e.clientY)
     this.notify('node:embedding', {
       e,
       cell,
       node: cell,
-      view: graph.findViewByCell(cell),
+      view: renderer.findViewByCell(cell),
       x: localPoint.x,
       y: localPoint.y,
       currentParent: cell.getParent(),
@@ -724,8 +728,8 @@ export class NodeView<
 
   finalizeEmbedding(e: Dom.MouseUpEvent, data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
-    const graph = data.graph || this.graph
-    const view = graph.findViewByCell(cell)
+    const renderer = data.renderer || this.renderer
+    const view = renderer.findViewByCell(cell)
     const parent = cell.getParent()
     const candidateView = data.candidateEmbedView
     if (candidateView) {
@@ -739,12 +743,14 @@ export class NodeView<
       parent.unembed(cell, { ui: true })
     }
 
-    graph.model.getConnectedEdges(cell, { deep: true }).forEach((edge: any) => {
-      // todo
-      edge.updateParent({ ui: true })
-    })
+    renderer.model
+      .getConnectedEdges(cell, { deep: true })
+      .forEach((edge: any) => {
+        // todo
+        edge.updateParent({ ui: true })
+      })
 
-    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
+    const localPoint = renderer.snapToGrid(e.clientX, e.clientY)
 
     if (view) {
       view.notify('node:embedded', {
@@ -753,7 +759,7 @@ export class NodeView<
         x: localPoint.x,
         y: localPoint.y,
         node: cell,
-        view: graph.findViewByCell(cell),
+        view: renderer.findViewByCell(cell),
         previousParent: parent,
         currentParent: cell.getParent(),
       })
@@ -772,10 +778,30 @@ export class NodeView<
         return view
       }
       cell = cell.getParent() as Entity
-      view = this.graph.renderer.findViewByCell(cell) as NodeView
+      view = this.renderer.findViewByCell(cell) as NodeView
     }
 
     return null
+  }
+
+  protected validateMagnet(
+    cellView: CellView,
+    magnet: Element,
+    e: Dom.MouseDownEvent | Dom.MouseEnterEvent,
+  ) {
+    if (magnet.getAttribute('magnet') !== 'passive') {
+      const validate = this.renderer.options.connecting.validateMagnet
+      if (validate) {
+        return FunctionExt.call(validate, this.renderer, {
+          e,
+          magnet,
+          view: cellView,
+          cell: cellView.cell,
+        })
+      }
+      return true
+    }
+    return false
   }
 
   protected startMagnetDragging(e: Dom.MouseDownEvent, x: number, y: number) {
@@ -786,14 +812,14 @@ export class NodeView<
     e.stopPropagation()
 
     const magnet = e.currentTarget
-    const graph = this.graph
+    const renderer = this.renderer
 
     this.setEventData<Partial<EventData.Magnet>>(e, {
       targetMagnet: magnet,
     })
 
-    if (graph.hook.validateMagnet(this, magnet, e)) {
-      if (graph.options.magnetThreshold <= 0) {
+    if (this.validateMagnet(this, magnet, e)) {
+      if (renderer.options.magnetThreshold <= 0) {
         this.startConnectting(e, magnet, x, y)
       }
 
@@ -805,7 +831,7 @@ export class NodeView<
       this.onMouseDown(e, x, y)
     }
 
-    graph.view.delegateDragEvents(e, this)
+    renderer.graphView.delegateDragEvents(e, this)
   }
 
   protected startConnectting(
@@ -814,7 +840,7 @@ export class NodeView<
     x: number,
     y: number,
   ) {
-    this.graph.model.startBatch('add-edge')
+    this.renderer.model.startBatch('add-edge')
     const edgeView = this.createEdgeFromMagnet(magnet, x, y)
     edgeView.notifyMouseDown(e, x, y) // backwards compatibility events
     edgeView.setEventData(
@@ -829,10 +855,25 @@ export class NodeView<
     this.setEventData<Partial<EventData.Magnet>>(e, { edgeView })
   }
 
+  protected getDefaultEdge(sourceView: CellView, sourceMagnet: Element) {
+    let edge: Edge | undefined | null | void
+
+    const create = this.renderer.options.connecting.createEdge
+    if (create) {
+      edge = FunctionExt.call(create, this.renderer, {
+        sourceMagnet,
+        sourceView,
+        sourceCell: sourceView.cell,
+      })
+    }
+
+    return edge as Edge
+  }
+
   protected createEdgeFromMagnet(magnet: Element, x: number, y: number) {
-    const graph = this.graph
-    const model = graph.model
-    const edge = graph.hook.getDefaultEdge(this, magnet)
+    const renderer = this.renderer
+    const model = renderer.model
+    const edge = this.getDefaultEdge(this, magnet)
 
     edge.setSource({
       ...edge.getSource(),
@@ -841,7 +882,7 @@ export class NodeView<
     edge.setTarget({ ...edge.getTarget(), x, y })
     edge.addTo(model, { async: false, ui: true })
 
-    return edge.findView(graph) as EdgeView
+    return edge.findView(renderer) as EdgeView
   }
 
   protected dragMagnet(e: Dom.MouseMoveEvent, x: number, y: number) {
@@ -851,8 +892,8 @@ export class NodeView<
       edgeView.onMouseMove(e, x, y)
       this.autoScrollGraph(e.clientX, e.clientY)
     } else {
-      const graph = this.graph
-      const magnetThreshold = graph.options.magnetThreshold as any
+      const renderer = this.renderer
+      const magnetThreshold = renderer.options.magnetThreshold as any
       const currentTarget = this.getEventTarget(e)
       const targetMagnet = data.targetMagnet
 
@@ -867,7 +908,7 @@ export class NodeView<
         // eslint-disable-next-line no-lonely-if
       } else {
         // magnetThreshold defined as a number of movements
-        if (graph.view.getMouseMovedCount(e) <= magnetThreshold) {
+        if (renderer.graphView.getMouseMovedCount(e) <= magnetThreshold) {
           return
         }
       }
@@ -880,7 +921,7 @@ export class NodeView<
     const edgeView = data.edgeView
     if (edgeView) {
       edgeView.onMouseUp(e, x, y)
-      this.graph.model.stopBatch('add-edge')
+      this.renderer.model.stopBatch('add-edge')
     }
   }
 
@@ -924,25 +965,25 @@ export class NodeView<
         y,
         cell: c,
         node: c,
-        view: c.findView(this.graph),
+        view: c.findView(this.renderer),
       })
     })
   }
 
   // todo
   protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
-    const restrict = this.graph.options.translating.restrict
+    const restrict = this.renderer.options.translating.restrict
     const area =
       typeof restrict === 'function'
-        ? FunctionExt.call(restrict, this.graph, view!)
+        ? FunctionExt.call(restrict, this.renderer, view!)
         : restrict
 
     if (typeof area === 'number') {
-      return this.graph.transform.getGraphArea().inflate(area)
+      return this.renderer.options.getGraphArea().inflate(area)
     }
 
     if (area === true) {
-      return this.graph.transform.getGraphArea()
+      return this.renderer.options.getGraphArea()
     }
 
     return area || null
@@ -969,8 +1010,8 @@ export class NodeView<
 
   protected dragNode(e: Dom.MouseMoveEvent, x: number, y: number) {
     const node = this.cell
-    const graph = this.graph
-    const gridSize = graph.getGridSize()
+    const renderer = this.renderer
+    const gridSize = renderer.options.getGridSize()
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const offset = data.offset
     const restrict = data.restrict
@@ -991,7 +1032,7 @@ export class NodeView<
       ui: true,
     })
 
-    if (graph.options.embedding.enabled) {
+    if (renderer.options.embedding.enabled) {
       if (!data.embedding) {
         this.prepareEmbedding(e)
         data.embedding = true
@@ -1177,7 +1218,7 @@ namespace EventData {
     embedding?: boolean
     candidateEmbedView?: NodeView | null
     cell?: Node
-    graph?: any // todo
+    renderer?: Renderer
   }
 }
 

@@ -134,7 +134,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     }
     evt.stopPropagation()
     evt.preventDefault()
-    this.graph.view.undelegateEvents()
+    this.renderer.graphView.undelegateEvents()
     if (this.options.documentEvents) {
       this.delegateDocumentEvents(this.options.documentEvents)
     }
@@ -174,7 +174,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     const e = this.normalizeEvent(evt)
     const terminalCell = terminalView.cell
     const terminalMagnet = edgeView.getTerminalMagnet(terminalType)!
-    let coords = this.graph.clientToLocal(e.clientX, e.clientY)
+    let coords = this.renderer.coord.clientToLocalPoint(e.clientX, e.clientY)
 
     const snapFn = this.options.snap
     if (typeof snapFn === 'function') {
@@ -235,7 +235,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onMouseUp(evt: Dom.MouseUpEvent) {
-    this.graph.view.delegateEvents()
+    this.renderer.graphView.delegateEvents()
     this.undelegateDocumentEvents()
     this.blur()
     this.toggleArea(false)
