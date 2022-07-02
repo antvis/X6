@@ -867,6 +867,20 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
+  // #region virtual-render
+
+  enableVirtualRender() {
+    this.virtualRender.enableVirtualRender()
+    return this
+  }
+
+  disableVirtualRender() {
+    this.virtualRender.disableVirtualRender()
+    return this
+  }
+
+  // #endregion
+
   // #region dispose
 
   @Basecoat.dispose()
