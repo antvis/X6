@@ -79,7 +79,13 @@ Graph.registerNode(
   true,
 )
 
-export default class Canvas extends React.Component {
+interface Props {
+  enableTextWrap: boolean
+  enableVirtualRender: boolean
+  length: number
+}
+
+export default class Canvas extends React.Component<Props> {
   private container: HTMLDivElement
   private graph: Graph
 
@@ -94,95 +100,51 @@ export default class Canvas extends React.Component {
         connectionPoint: 'anchor',
         anchor: 'center',
       },
+      mousewheel: true,
+      panning: true,
     })
     this.graph = graph
-    document.getElementById('add-btn')?.addEventListener('click', () => {
-      this.add()
-    })
   }
 
-  add = () => {
-    data.nodes.forEach((node: any, i) => {
-      node.ports = {
-        groups: {
-          top: {
-            position: 'top',
-            attrs: {
-              circle: {
-                r: 4,
-                magnet: true,
-                stroke: 'gray',
-                strokeWidth: 1,
-                fill: '#fff',
-              },
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.enableVirtualRender) {
+      this.graph.enableVirtualRender()
+    } else {
+      this.graph.disableVirtualRender()
+    }
+
+    if (prevProps.length !== this.props.length) {
+      this.draw(this.props.length)
+    }
+  }
+
+  draw(length: number) {
+    const cells: any[] = []
+    if (this.props.enableTextWrap) {
+      data.nodes.forEach((node: any) => {
+        node.attrs = {
+          text: {
+            x: 28,
+            y: 18,
+            fontSize: 12,
+            fill: '#000000a6',
+            textWrap: {
+              text: '深度学习',
+              width: 40,
+              height: 20,
+              ellipsis: true,
             },
           },
-          right: {
-            position: 'right',
-            attrs: {
-              circle: {
-                r: 4,
-                magnet: true,
-                stroke: 'gray',
-                strokeWidth: 1,
-                fill: '#fff',
-              },
-            },
-          },
-          bottom: {
-            position: 'bottom',
-            attrs: {
-              circle: {
-                r: 4,
-                magnet: true,
-                stroke: 'gray',
-                strokeWidth: 1,
-                fill: '#fff',
-              },
-            },
-          },
-          left: {
-            position: 'left',
-            attrs: {
-              circle: {
-                r: 4,
-                magnet: true,
-                stroke: 'gray',
-                strokeWidth: 1,
-                fill: '#fff',
-              },
-            },
-          },
-        },
-        items: [
-          {
-            group: 'top',
-            id: i + `_port_top`,
-          },
-          {
-            group: 'right',
-            id: i + `_port_right`,
-          },
-          {
-            group: 'bottom',
-            id: i + `_port_bottom`,
-          },
-          {
-            group: 'left',
-            id: i + `_port_left`,
-          },
-        ],
-      }
-    })
-    data.edges.forEach((edge: any) => {
-      edge.attrs = {
-        line: {
-          stroke: '#c5c5c5',
-          strokeWidth: 1,
-        },
-      }
-    })
-    this.graph.fromJSON(data)
+        }
+      })
+    }
+    if (length > 10) {
+      cells.push(...data.nodes)
+      cells.push(...data.edges.slice(0, 100 * (length - 10)))
+    } else {
+      cells.push(...data.nodes.slice(0, 100 * length))
+    }
+    this.graph.fromJSON(cells)
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -193,7 +155,6 @@ export default class Canvas extends React.Component {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
-        <button id="add-btn">add</button>
       </div>
     )
   }

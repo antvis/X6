@@ -3,11 +3,9 @@ import { Base } from './base'
 
 export class VirtualRenderManager extends Base {
   protected init() {
-    if (this.options.virtualRender) {
-      this.resetRenderArea = FunctionExt.debounce(this.resetRenderArea, 200)
-      this.resetRenderArea()
-      this.startListening()
-    }
+    this.resetRenderArea = FunctionExt.debounce(this.resetRenderArea, 200)
+    this.resetRenderArea()
+    this.startListening()
   }
 
   protected startListening() {
@@ -22,14 +20,24 @@ export class VirtualRenderManager extends Base {
     this.graph.off('resize', this.resetRenderArea, this)
   }
 
+  enableVirtualRender() {
+    this.options.virtualRender = true
+    this.resetRenderArea()
+  }
+
+  disableVirtualRender() {
+    this.options.virtualRender = false
+    this.graph.renderer.setRenderArea(undefined)
+  }
+
   resetRenderArea() {
-    const renderArea = this.graph.getGraphArea()
-    this.graph.renderer.setRenderArea(renderArea)
+    if (this.options.virtualRender) {
+      const renderArea = this.graph.getGraphArea()
+      this.graph.renderer.setRenderArea(renderArea)
+    }
   }
 
   dispose() {
-    if (this.options.virtualRender) {
-      this.stopListening()
-    }
+    this.stopListening()
   }
 }
