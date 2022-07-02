@@ -4,23 +4,25 @@ import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
 import { queueJob, queueFlush, JOB_PRIORITY, resetTimer } from './queueJob'
 import { FlagManager } from '../view/flag'
+import { Renderer } from '../renderer'
 
 export class Scheduler {
   public views: KeyValue<Scheduler.View> = {}
   protected zPivots: KeyValue<Comment>
-  protected model: Model
-  protected graph: any // todo
+  private renderer: Renderer
   private renderArea?: Rectangle
 
-  constructor(graph: any, model: Model) {
-    this.model = model
-    // todo
-    this.graph = graph
-    this.init()
+  get model() {
+    return this.renderer.model
   }
 
-  get view() {
-    return this.graph.view
+  get container() {
+    return this.renderer.graphView.stage
+  }
+
+  constructor(renderer: Renderer) {
+    this.renderer = renderer
+    this.init()
   }
 
   protected init() {
@@ -151,7 +153,7 @@ export class Scheduler {
       } else {
         const cellView = this.createCellView(cell)
         if (cellView) {
-          cellView.graph = this.graph
+          cellView.renderer = this.renderer
           flag = Scheduler.FLAG_INSERT | cellView.getBootstrapFlag()
           viewItem = {
             view: cellView,
@@ -244,10 +246,9 @@ export class Scheduler {
   protected insertView(view: CellView) {
     const viewItem = this.views[view.cell.id]
     if (viewItem) {
-      const stage = this.view.stage
       const zIndex = view.cell.getZIndex()
       const pivot = this.addZPivot(zIndex)
-      stage.insertBefore(view.container, pivot)
+      this.container.insertBefore(view.container, pivot)
       viewItem.state = Scheduler.ViewState.MOUNTED
     }
   }
@@ -323,7 +324,7 @@ export class Scheduler {
       }
     }
 
-    const layer = this.view.stage
+    const layer = this.container
     if (neighborZ !== -Infinity) {
       const neighborPivot = pivots[neighborZ]
       layer.insertBefore(pivot, neighborPivot.nextSibling)
@@ -346,7 +347,7 @@ export class Scheduler {
   }
 
   protected createCellView(cell: Cell) {
-    const options = { graph: this.graph }
+    const options = { renderer: this.renderer }
 
     const view = cell.view
     if (view != null && typeof view === 'string') {

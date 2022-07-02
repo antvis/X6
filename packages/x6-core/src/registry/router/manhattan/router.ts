@@ -277,7 +277,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
 
   // pathfinding
   const map = new ObstacleMap(options).build(
-    edgeView.graph.model,
+    edgeView.renderer.model,
     edgeView.cell,
   )
 

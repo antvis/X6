@@ -57,7 +57,7 @@ function createMarker(
   }
 
   return {
-    [type]: `url(#${view.graph.defineMarker(options)})`,
+    [type]: `url(#${view.renderer.defineMarker(options)})`,
   }
 }
 

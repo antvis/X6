@@ -69,7 +69,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
         toolId: this.cid,
       })
 
-      const coords = this.graph.snapToGrid(evt.clientX, evt.clientY)
+      const coords = this.renderer.snapToGrid(evt.clientX, evt.clientY)
       const data = edgeView.prepareArrowheadDragging(this.type, {
         x: coords.x,
         y: coords.y,
@@ -79,7 +79,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
       })
       this.cellView.setEventData(evt, data)
       this.delegateDocumentEvents(this.options.documentEvents!, evt.data)
-      edgeView.graph.view.undelegateEvents()
+      edgeView.renderer.graphView.undelegateEvents()
 
       this.container.style.pointerEvents = 'none'
     }
@@ -89,7 +89,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
 
   protected onMouseMove(evt: Dom.MouseMoveEvent) {
     const e = this.normalizeEvent(evt)
-    const coords = this.graph.snapToGrid(e.clientX, e.clientY)
+    const coords = this.renderer.snapToGrid(e.clientX, e.clientY)
     this.cellView.onMouseMove(e, coords.x, coords.y)
     this.update()
   }
@@ -98,9 +98,9 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
     this.undelegateDocumentEvents()
     const e = this.normalizeEvent(evt)
     const edgeView = this.cellView
-    const coords = this.graph.snapToGrid(e.clientX, e.clientY)
+    const coords = this.renderer.snapToGrid(e.clientX, e.clientY)
     edgeView.onMouseUp(e, coords.x, coords.y)
-    this.graph.view.delegateEvents()
+    this.renderer.graphView.delegateEvents()
     this.blur()
     this.container.style.pointerEvents = ''
     edgeView.cell.stopBatch('move-arrowhead', {

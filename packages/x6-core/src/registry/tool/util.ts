@@ -14,7 +14,7 @@ export function getAnchor(
 ) {
   const end = FunctionExt.call(
     ConnectionStrategy.presets.pinRelative,
-    this.graph,
+    this.renderer,
     {} as Edge.TerminalCellData,
     terminalView,
     terminalMagnet,
