@@ -36,7 +36,7 @@ if ('requestIdleCallback' in window) {
     if (scheduleId) {
       cancelScheduleJob()
     }
-    scheduleId = window.requestIdleCallback(flushJobs)
+    scheduleId = window.requestIdleCallback(flushJobs, { timeout: 100 })
   }
   cancelScheduleJob = () => {
     if (scheduleId) {
@@ -71,6 +71,13 @@ export function queueFlush() {
     isFlushPending = true
     scheduleJob()
   }
+}
+
+export function clearJobs() {
+  queue.length = 0
+  isFlushing = false
+  isFlushPending = false
+  cancelScheduleJob()
 }
 
 export function resetTimer() {
