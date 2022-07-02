@@ -1,19 +1,25 @@
 import { StringExt, Dom, Vector } from '@antv/x6-common'
-import { Markup } from '@antv/x6-core'
-import { Filter } from '../registry'
-import { Base } from './base'
+import { Attr, Filter, Marker } from '../registry'
+import { Markup } from '../view'
+import { Renderer } from './renderer'
 
-export class DefsManager extends Base {
+export class DefsManager {
+  private renderer: Renderer
+
   protected get cid() {
-    return this.graph.view.cid
+    return 'v0'
   }
 
   protected get svg() {
-    return this.view.svg
+    return this.renderer.graphView.svg
   }
 
   protected get defs() {
-    return this.view.defs
+    return this.renderer.graphView.defs
+  }
+
+  constructor(renderer: Renderer) {
+    this.renderer = renderer
   }
 
   protected isDefined(id: string) {
@@ -144,21 +150,7 @@ export class DefsManager extends Base {
 }
 
 export namespace DefsManager {
-  export type Attrs = Record<string, null | undefined | string | number>
-
-  export interface BaseResult extends Attrs {
-    tagName?: string
-  }
-
-  export type MarkerOptions = BaseResult & {
-    id?: string
-    refX?: number
-    refY?: number
-    // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker
-    markerUnits?: string
-    markerOrient?: 'auto' | 'auto-start-reverse' | number
-    children?: BaseResult[]
-  }
+  export type MarkerOptions = Marker.Result
 
   export interface GradientOptions {
     id?: string
@@ -168,11 +160,11 @@ export namespace DefsManager {
       color: string
       opacity?: number
     }[]
-    attrs?: Attrs
+    attrs?: Attr.SimpleAttrs
   }
 
   export type FilterOptions = (Filter.NativeItem | Filter.ManaualItem) & {
     id?: string
-    attrs?: Attrs
+    attrs?: Attr.SimpleAttrs
   }
 }

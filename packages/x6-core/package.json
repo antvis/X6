@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-core",
-  "version": "1.0.1",
+  "version": "2.0.1-beta.2",
   "description": "A lightweight graphic render library.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -50,9 +50,9 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "utility-types": "^3.10.0",
     "@antv/x6-common": "^1.0.1",
-    "@antv/x6-geometry": "^1.0.1"
+    "@antv/x6-geometry": "^1.0.1",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",

@@ -9,11 +9,18 @@ export class TransformManager extends Base {
   protected viewportTransformString: string | null
 
   protected get container() {
-    return this.graph.view.container
+    const renderer = this.graph.renderer
+    return renderer.graphView.container
   }
 
   protected get viewport() {
-    return this.graph.view.viewport
+    const renderer = this.graph.renderer
+    return renderer.graphView.viewport
+  }
+
+  protected get stage() {
+    const renderer = this.graph.renderer
+    return renderer.graphView.stage
   }
 
   protected init() {
@@ -175,7 +182,7 @@ export class TransformManager extends Base {
 
   rotate(angle: number, cx?: number, cy?: number) {
     if (cx == null || cy == null) {
-      const bbox = Util.getBBox(this.graph.view.stage)
+      const bbox = Util.getBBox(this.stage)
       cx = bbox.width / 2 // eslint-disable-line
       cy = bbox.height / 2 // eslint-disable-line
     }
@@ -396,7 +403,7 @@ export class TransformManager extends Base {
       return this.model.getAllCellsBBox() || new Rectangle()
     }
 
-    return Util.getBBox(this.graph.view.stage)
+    return Util.getBBox(this.stage)
   }
 
   getContentBBox(options: TransformManager.GetContentAreaOptions = {}) {

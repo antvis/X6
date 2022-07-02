@@ -3,6 +3,7 @@ export * from './highlighter'
 export * from './port-layout'
 export * from './port-label-layout'
 export * from './tool'
+export * from './filter'
 
 // connection
 export * from './marker'

@@ -19,6 +19,7 @@ import { Edge } from './edge'
 import { Animation } from './animation'
 import { CellView, Markup } from '../view'
 import { Node } from './node'
+import { Renderer } from '../renderer'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties,
@@ -1394,9 +1395,8 @@ export class Cell<
     return map[this.id] as any
   }
 
-  findView(graph: any): CellView | null {
-    // todo
-    return graph.renderer.findViewByCell(this)
+  findView(renderer: Renderer): CellView | null {
+    return renderer.findViewByCell(this)
   }
 
   // #endregion

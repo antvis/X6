@@ -1,5 +1,5 @@
-import { ObjectExt, Dom } from '@antv/x6-common'
-import { Model, CellView } from '@antv/x6-core'
+import { ObjectExt } from '@antv/x6-common'
+import { Options as RendererOptions, Config, Renderer } from '@antv/x6-core'
 import { GridManager } from './grid'
 import { BackgroundManager } from './background'
 import { PanningManager } from './panning'
@@ -8,10 +8,6 @@ import { Edge } from '../shape'
 
 export namespace Options {
   interface Common {
-    model?: Model
-
-    container: HTMLElement
-
     x: number
     y: number
     width: number
@@ -25,71 +21,25 @@ export namespace Options {
       max?: number
     }
 
-    /**
-     * When defined as a number, it denotes the required mousemove events
-     * before a new edge is created from a magnet. When defined as keyword
-     * 'onleave', the edge is created when the pointer leaves the magnet
-     * DOM element.
-     */
-    magnetThreshold: number | 'onleave'
-
-    /**
-     * Number of required mousemove events before the first mousemove
-     * event will be triggered.
-     */
-    moveThreshold: number
-
-    /**
-     * Allowed number of mousemove events after which the click event
-     * will be still triggered.
-     */
-    clickThreshold: number
-
-    /**
-     * Prevent the default context menu from being displayed.
-     */
-    preventDefaultContextMenu: boolean
-
-    preventDefaultDblClick: boolean
-
-    preventDefaultMouseDown: boolean
-
-    /**
-     * Prevents default action when an empty graph area is clicked.
-     * Setting the option to `false` will make the graph pannable
-     * inside a container on touch devices.
-     *
-     * It defaults to `true`.
-     */
-    preventDefaultBlankAction: boolean
-
-    /**
-     * Guard the graph from handling a UI event. Returns `true` if you want
-     * to prevent the graph from handling the event evt, `false` otherwise.
-     * This is an advanced option that can be useful if you have your own
-     * logic for handling events.
-     */
-    guard: (e: Dom.EventObject, view?: CellView | null) => boolean
-
     virtualRender?: boolean
-
-    // todo
-    connecting: any
-    interacting: any
-    translating: any
-    embedding: any
   }
 
-  export interface Manual extends Partial<Common> {
-    grid?:
-      | boolean
-      | number
-      | (Partial<GridManager.CommonOptions> & GridManager.DrawGridOptions)
+  export interface ManualBooleans extends RendererOptions.ManualBooleans {
     panning: boolean | Partial<PanningManager.Options>
     mousewheel: boolean | Partial<MouseWheel.Options>
   }
 
-  export interface Definition extends Common {
+  export interface Manual
+    extends Partial<Common>,
+      Partial<ManualBooleans>,
+      RendererOptions.Manual {
+    grid?:
+      | boolean
+      | number
+      | (Partial<GridManager.CommonOptions> & GridManager.DrawGridOptions)
+  }
+
+  export interface Definition extends Common, RendererOptions.Definition {
     grid: GridManager.Options
     panning: PanningManager.Options
     mousewheel: MouseWheel.Options
@@ -98,7 +48,7 @@ export namespace Options {
 
 export namespace Options {
   export function get(options: Partial<Manual>) {
-    const { grid, panning, mousewheel, ...others } = options
+    const { grid, panning, mousewheel, embedding, ...others } = options
 
     // size
     // ----
@@ -132,7 +82,11 @@ export namespace Options {
 
     // booleas
     // -------
-    const booleas: (keyof Manual)[] = ['panning', 'mousewheel']
+    const booleas: (keyof Options.ManualBooleans)[] = [
+      'panning',
+      'mousewheel',
+      'embedding',
+    ]
 
     booleas.forEach((key) => {
       const val = options[key]
@@ -142,7 +96,7 @@ export namespace Options {
         result[key] = {
           ...result[key],
           ...(val as any),
-        } as never
+        }
       }
     })
 
@@ -158,22 +112,11 @@ export namespace Options {
       min: 0.01,
       max: 16,
     },
-
     grid: {
       size: 10,
       visible: false,
     },
     background: false,
-
-    moveThreshold: 0,
-    clickThreshold: 0,
-    magnetThreshold: 0,
-    preventDefaultDblClick: true,
-    preventDefaultMouseDown: false,
-    preventDefaultContextMenu: true,
-    preventDefaultBlankAction: true,
-
-    guard: () => false,
 
     panning: {
       enabled: false,
@@ -184,15 +127,28 @@ export namespace Options {
       factor: 1.2,
       zoomAtMousePosition: true,
     },
-
+    highlighting: {
+      default: {
+        name: 'stroke',
+        args: {
+          padding: 3,
+        },
+      },
+      nodeAvailable: {
+        name: 'className',
+        args: {
+          className: Config.prefix('available-node'),
+        },
+      },
+      magnetAvailable: {
+        name: 'className',
+        args: {
+          className: Config.prefix('available-magnet'),
+        },
+      },
+    },
     connecting: {
       snap: false,
-      multi: true,
-      // TODO: Unannotation the next line when the `multi` option was removed in the next major version.
-      // allowMulti: true,
-      dangling: true,
-      // TODO: Unannotation the next line when the `dangling` option was removed in the next major version.
-      // allowBlank: true,
       allowLoop: true,
       allowNode: true,
       allowEdge: false,
@@ -205,7 +161,7 @@ export namespace Options {
       router: 'normal',
       connector: 'normal',
 
-      validateConnection(this: any, { type, sourceView, targetView }: any) {
+      validateConnection(this: Renderer, { type, sourceView, targetView }) {
         const view = type === 'target' ? targetView : sourceView
         return view != null
       },
@@ -213,9 +169,6 @@ export namespace Options {
       createEdge() {
         return new Edge()
       },
-    },
-    interacting: {
-      edgeLabelMovable: false,
     },
     translating: {
       restrict: false,
@@ -226,5 +179,17 @@ export namespace Options {
       frontOnly: true,
       validate: () => true,
     },
+
+    moveThreshold: 0,
+    clickThreshold: 0,
+    magnetThreshold: 0,
+    preventDefaultDblClick: true,
+    preventDefaultMouseDown: false,
+    preventDefaultContextMenu: true,
+    preventDefaultBlankAction: true,
+    interacting: {
+      edgeLabelMovable: false,
+    },
+    guard: () => false,
   }
 }
