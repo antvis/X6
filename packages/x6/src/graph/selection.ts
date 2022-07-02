@@ -96,7 +96,10 @@ export class SelectionManager extends Base {
     }
 
     if (!disabled) {
-      if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
+      if (
+        options.multiple === false ||
+        (!e.ctrlKey && !e.metaKey && !e.shiftKey)
+      ) {
         this.reset(cell)
       } else if (this.unselectMap.has(cell)) {
         this.unselectMap.delete(cell)
@@ -112,7 +115,10 @@ export class SelectionManager extends Base {
 
   protected onBoxMouseDown({ e, cell }: Selection.EventArgs['box:mousedown']) {
     if (!this.disabled) {
-      if (this.widgetOptions.multiple !== false && (e.ctrlKey || e.metaKey)) {
+      if (
+        this.widgetOptions.multiple !== false &&
+        (e.ctrlKey || e.metaKey || e.shiftKey)
+      ) {
         this.unselect(cell)
         this.unselectMap.set(cell, true)
       }
