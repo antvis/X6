@@ -979,10 +979,10 @@ export class NodeView<
       if (graph.options.magnetThreshold <= 0) {
         this.startConnectting(e, magnet, x, y)
       }
-
       this.setEventData<Partial<EventData.Magnet>>(e, {
         action: 'magnet',
       })
+      this.stopPropagation(e)
     } else {
       // 只需要阻止port的冒泡 #2258
       if (Dom.hasClass(magnet, 'x6-port-body') || JQuery(magnet).closest('.x6-port-body').length > 0) {
