@@ -106,8 +106,13 @@ export class Keyboard extends Disposable implements IDisablable {
 
   protected isGraphEvent(e: KeyboardEvent) {
     const target = (e.srcElement || e.target) as Element
+    const currentTarget = e.currentTarget as Element
     if (target) {
-      if (target === this.target || target === document.body) {
+      if (
+        target === this.target ||
+        currentTarget === this.target ||
+        target === document.body
+      ) {
         return true
       }
 
