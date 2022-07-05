@@ -985,7 +985,7 @@ export class NodeView<
       })
     } else {
       // 只需要阻止port的冒泡 #2258
-      if (JQuery(magnet).closest('.x6-port-body')) {
+      if (Dom.hasClass(magnet, 'x6-port-body') || JQuery(magnet).closest('.x6-port-body').length > 0) {
         this.stopPropagation(e)
       }
       this.onMouseDown(e, x, y)
