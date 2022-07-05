@@ -15,7 +15,7 @@ import { AttrManager } from './attr'
 export class NodeView<
   Entity extends Node = Node,
   Options extends NodeView.Options = NodeView.Options,
-  > extends CellView<Entity, Options> {
+> extends CellView<Entity, Options> {
   public scalableNode: Element | null = null
   public rotatableNode: Element | null = null
   protected readonly scalableSelector: string = 'scalable'
@@ -819,20 +819,20 @@ export class NodeView<
     let candidates =
       typeof findParent === 'function'
         ? (
-          FunctionExt.call(findParent, graph, {
-            view: this,
-            node: this.cell,
-          }) as Cell[]
-        ).filter((c) => {
-          return (
-            Cell.isCell(c) &&
-            this.cell.id !== c.id &&
-            !c.isDescendantOf(this.cell)
-          )
-        })
+            FunctionExt.call(findParent, graph, {
+              view: this,
+              node: this.cell,
+            }) as Cell[]
+          ).filter((c) => {
+            return (
+              Cell.isCell(c) &&
+              this.cell.id !== c.id &&
+              !c.isDescendantOf(this.cell)
+            )
+          })
         : graph.model.getNodesUnderNode(cell, {
-          by: findParent as Rectangle.KeyPoint,
-        })
+            by: findParent as Rectangle.KeyPoint,
+          })
 
     // Picks the node with the highest `z` index
     if (options.frontOnly) {
@@ -985,7 +985,10 @@ export class NodeView<
       this.stopPropagation(e)
     } else {
       // 只需要阻止port的冒泡 #2258
-      if (Dom.hasClass(magnet, 'x6-port-body') || JQuery(magnet).closest('.x6-port-body').length > 0) {
+      if (
+        Dom.hasClass(magnet, 'x6-port-body') ||
+        JQuery(magnet).closest('.x6-port-body').length > 0
+      ) {
         this.stopPropagation(e)
       }
       this.onMouseDown(e, x, y)
@@ -1218,7 +1221,7 @@ export namespace NodeView {
 
   export interface PositionEventArgs<E>
     extends MouseEventArgs<E>,
-    CellView.PositionEventArgs {}
+      CellView.PositionEventArgs {}
 
   export interface TranslateEventArgs<E> extends PositionEventArgs<E> {}
 
@@ -1238,7 +1241,7 @@ export namespace NodeView {
     'node:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
     'node:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
     'node:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> &
-    CellView.MouseDeltaEventArgs
+      CellView.MouseDeltaEventArgs
 
     'node:customevent': PositionEventArgs<JQuery.MouseDownEvent> & {
       name: string
@@ -1256,11 +1259,11 @@ export namespace NodeView {
     'node:unhighlight': EventArgs['node:highlight']
 
     'node:magnet:click': PositionEventArgs<JQuery.MouseUpEvent> &
-    MagnetEventArgs
+      MagnetEventArgs
     'node:magnet:dblclick': PositionEventArgs<JQuery.DoubleClickEvent> &
-    MagnetEventArgs
+      MagnetEventArgs
     'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
-    MagnetEventArgs
+      MagnetEventArgs
 
     'node:move': TranslateEventArgs<JQuery.MouseMoveEvent>
     'node:moving': TranslateEventArgs<JQuery.MouseMoveEvent>
