@@ -1,6 +1,7 @@
 import { Model } from '../model'
 import { CellView } from '../view'
 import { Selection } from '../addon/selection'
+import { ClipboardManager } from './clipboard'
 import { Renderer } from './renderer'
 
 interface CommonEventArgs<E> {
@@ -15,7 +16,8 @@ interface PositionEventArgs<E> extends CommonEventArgs<E> {
 export interface EventArgs
   extends Omit<Model.EventArgs, 'sorted' | 'updated' | 'reseted'>,
     CellView.EventArgs,
-    Selection.SelectionEventArgs {
+    Selection.SelectionEventArgs,
+    ClipboardManager.ClipboardEventArgs {
   'model:sorted'?: Model.EventArgs['sorted']
   'model:updated': Model.EventArgs['updated']
   'model:reseted': Model.EventArgs['reseted']
