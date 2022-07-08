@@ -47,6 +47,7 @@ export class ClipboardManager extends Base implements IDisablable {
         ...this.commonOptions,
         ...options,
       })
+      this.graph.trigger('clipboard:changed', { cells })
     }
   }
 
@@ -56,6 +57,7 @@ export class ClipboardManager extends Base implements IDisablable {
         ...this.commonOptions,
         ...options,
       })
+      this.graph.trigger('clipboard:changed', { cells })
     }
   }
 
@@ -72,6 +74,7 @@ export class ClipboardManager extends Base implements IDisablable {
   clean(force?: boolean) {
     if (!this.disabled || force) {
       this.widget.clean()
+      this.graph.trigger('clipboard:changed', { cells: [] })
     }
   }
 
@@ -86,6 +89,12 @@ export class ClipboardManager extends Base implements IDisablable {
 }
 
 export namespace ClipboardManager {
+  export interface ClipboardEventArgs {
+    'clipboard:changed': {
+      cells: Cell[]
+    }
+  }
+
   export interface Options extends Clipboard.Options {
     enabled?: boolean
   }
