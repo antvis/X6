@@ -464,7 +464,11 @@ export class NodeView<
       portSelectors = portContentSelectors || portLabelSelectors
     }
 
-    Dom.addClass(portElement, 'x6-port')
+    let portClass = 'x6-port'
+    if (port.group) {
+      portClass += ` x6-port-${port.group}`
+    }
+    Dom.addClass(portElement, portClass)
     Dom.addClass(portContentElement, 'x6-port-body')
     Dom.addClass(portLabelElement, 'x6-port-label')
 
