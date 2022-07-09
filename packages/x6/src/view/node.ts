@@ -927,9 +927,8 @@ export class NodeView<
       edge.updateParent({ ui: true })
     })
 
-    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
-
-    if (view) {
+    if (view && candidateView) {
+      const localPoint = graph.snapToGrid(e.clientX, e.clientY)
       view.notify('node:embedded', {
         e,
         cell,
