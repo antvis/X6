@@ -436,6 +436,7 @@ export class Transform extends Widget<Transform.Options> {
         if (options.rotateGrid) {
           target = Util.snapToGrid(target, options.rotateGrid)
         }
+        target = Angle.normalize(target)
 
         if (currentAngle !== target) {
           node.rotate(target, { absolute: true })
