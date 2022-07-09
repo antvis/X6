@@ -227,7 +227,7 @@ export function resolveOptions(options: ManhattanRouterOptions) {
 
   if (result.padding) {
     const sides = NumberExt.normalizeSides(result.padding)
-    options.paddingBox = {
+    result.paddingBox = {
       x: -sides.left,
       y: -sides.top,
       width: sides.left + sides.right,
