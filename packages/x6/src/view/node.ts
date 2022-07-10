@@ -1155,13 +1155,18 @@ export class NodeView<
 
     this.autoScrollGraph(e.clientX, e.clientY)
 
-    const posX = Util.snapToGrid(x + offset.x, gridSize)
-    const posY = Util.snapToGrid(y + offset.y, gridSize)
-    node.setPosition(posX, posY, {
-      restrict,
-      deep: true,
-      ui: true,
-    })
+    const isSelectionBoxTarget = Array.from(e.target.classList).includes(
+      this.prefixClassName('widget-selection-box'),
+    )
+    if (!isSelectionBoxTarget) {
+      const posX = Util.snapToGrid(x + offset.x, gridSize)
+      const posY = Util.snapToGrid(y + offset.y, gridSize)
+      node.setPosition(posX, posY, {
+        restrict,
+        deep: true,
+        ui: true,
+      })
+    }
 
     if (graph.options.embedding.enabled) {
       if (!data.embedding) {
