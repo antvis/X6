@@ -76,6 +76,13 @@ export class SelectionManager extends Base {
     )
   }
 
+  allowMultipleSelection(e: JQuery.MouseDownEvent | JQuery.MouseUpEvent) {
+    return (
+      this.isMultiple() &&
+      ModifierKey.isMatch(e, this.widgetOptions.multipleSelectionModifiers)
+    )
+  }
+
   protected onCellMouseMove({ cell }: EventArgs['cell:mousemove']) {
     this.movedMap.set(cell, true)
   }
@@ -96,7 +103,7 @@ export class SelectionManager extends Base {
     }
 
     if (!disabled) {
-      if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
+      if (!this.allowMultipleSelection(e)) {
         this.reset(cell)
       } else if (this.unselectMap.has(cell)) {
         this.unselectMap.delete(cell)
@@ -112,7 +119,7 @@ export class SelectionManager extends Base {
 
   protected onBoxMouseDown({ e, cell }: Selection.EventArgs['box:mousedown']) {
     if (!this.disabled) {
-      if (this.widgetOptions.multiple !== false && (e.ctrlKey || e.metaKey)) {
+      if (this.allowMultipleSelection(e)) {
         this.unselect(cell)
         this.unselectMap.set(cell, true)
       }
@@ -256,6 +263,7 @@ export namespace SelectionManager {
     rubberband?: boolean
     modifiers?: string | ModifierKey[] | null
     multiple?: boolean
+    multipleSelectionModifiers?: string | ModifierKey[] | null
     selectCellOnMoved?: boolean
     selectNodeOnMoved?: boolean
     selectEdgeOnMoved?: boolean
