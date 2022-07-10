@@ -731,6 +731,7 @@ export namespace Options {
       rubberEdge: false, // next version will set to true
       pointerEvents: 'auto',
       multiple: true,
+      multipleSelectionModifiers: ['ctrl', 'meta'],
       movable: true,
       strict: false,
       useCellGeometry: false,
