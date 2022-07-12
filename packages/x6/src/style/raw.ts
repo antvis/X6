@@ -811,7 +811,11 @@ export const content = `.x6-graph {
   background-color: #6a6b8a;
 }
 .x6-widget-snapline {
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   pointer-events: none;
 }
 .x6-widget-snapline-vertical,
