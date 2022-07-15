@@ -1,3 +1,5 @@
+# Auto-publish new versions to NPM.
+#
 # @see: https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
 
 name: 🚀　Release

@@ -1,3 +1,5 @@
+# Automatically rebase PRs via the /rebase command
+
 name: 🎉　Rebase
 on:
   issue_comment:

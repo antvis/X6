@@ -1,3 +1,8 @@
+# Perform certain actions when labels are added to
+# or removed from issues.
+#
+# See .github/workflows/config/label-commands.yml
+
 name: 👾　Label Commands
 on:
   pull_request_target:

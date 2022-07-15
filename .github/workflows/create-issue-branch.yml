@@ -1,3 +1,6 @@
+# Create a new branch dedicated to a specific issue
+# (may be superseded by GitHub functionalities)
+
 name: 🚧　Create Issue Branch
 on:
   issue_comment:

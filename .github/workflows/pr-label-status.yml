@@ -1,3 +1,5 @@
+# Automatically label a PR depending on the PR's status
+
 name: 🏷️　Label(Status)
 on:
   pull_request_target:

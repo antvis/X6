@@ -1,3 +1,5 @@
+# Comment a welcome message on an issue if it's the reporter's first issue.
+
 name: 👋　Welcome
 on:
   pull_request_target:

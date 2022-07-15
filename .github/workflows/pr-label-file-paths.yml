@@ -1,3 +1,6 @@
+# Label a PR according to the packages it involves, based on changed files
+# and the rules defined in .github/workflows/config/pr-label-file-paths.yml
+
 name: 🏷️　Label(File Paths)
 on: pull_request_target
 jobs:

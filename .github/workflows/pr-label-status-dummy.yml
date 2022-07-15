@@ -1,3 +1,5 @@
+# Automatically label a PR depending on the PR's status (springboard)
+
 name: 🏷️　Label(Status) Dummy
 on:
   pull_request_review:

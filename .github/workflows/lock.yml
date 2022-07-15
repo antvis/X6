@@ -1,3 +1,6 @@
+# Locks closed issues and pull requests after a period of inactivity.
+# https://github.com/dessant/lock-threads
+
 name: ⛔️　Lock Threads
 on:
   schedule:
