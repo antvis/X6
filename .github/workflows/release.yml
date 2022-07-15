@@ -1,6 +1,8 @@
-# Auto-publish new versions to NPM.
+# Create new GitHub releases using scripts/monorepo-semantic-release
+# and the semantic-release package.
 #
-# @see: https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
+# See https://www.npmjs.com/package/semantic-release
+# See https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
 
 name: 🚀　Release
 on:
