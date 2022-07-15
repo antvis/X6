@@ -9,24 +9,44 @@ export const connection: Attr.Definition = {
   qualify: isEdgeView,
   set(val, args) {
     const view = args.view as EdgeView
+    const reverse = ((val as any).reverse || false) as boolean
     const stubs = ((val as any).stubs || 0) as number
     let d
     if (Number.isFinite(stubs) && stubs !== 0) {
-      let offset
-      if (stubs < 0) {
-        const len = view.getConnectionLength() || 0
-        offset = (len + stubs) / 2
-      } else {
-        offset = stubs
-      }
-
-      const path = view.getConnection()
-      if (path) {
-        const sourceParts = path.divideAtLength(offset)
-        const targetParts = path.divideAtLength(-offset)
-        if (sourceParts && targetParts) {
-          d = `${sourceParts[0].serialize()} ${targetParts[1].serialize()}`
+      if (!reverse) {
+        let offset
+        if (stubs < 0) {
+          const len = view.getConnectionLength() || 0
+          offset = (len + stubs) / 2
+        } else {
+          offset = stubs
         }
+
+        const path = view.getConnection()
+        if (path) {
+          const sourceParts = path.divideAtLength(offset)
+          const targetParts = path.divideAtLength(-offset)
+          if (sourceParts && targetParts) {
+            d = `${sourceParts[0].serialize()} ${targetParts[1].serialize()}`
+          }
+        }
+      } else {
+        let offset
+        let length
+        const len = view.getConnectionLength() || 0
+        if (stubs < 0) {
+          offset = (len + stubs) / 2
+          length = -stubs
+        } else {
+          offset = stubs
+          length = len - stubs * 2
+        }
+
+        const path = view.getConnection()
+        d = path
+          ?.divideAtLength(offset)?.[1]
+          ?.divideAtLength(length)?.[0]
+          ?.serialize()
       }
     }
 
