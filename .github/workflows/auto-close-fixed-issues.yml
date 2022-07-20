@@ -1,5 +1,5 @@
-# This action will automatically close issues fixed in
-# pull requests that doesn't target the default branch.
+# Automatically close issues fixed in pull requests that doesn't target the default branch.
+
 name: 🚫　Auto Close Fixed Issues
 on:
   pull_request_target:

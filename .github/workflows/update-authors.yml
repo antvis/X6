@@ -1,3 +1,5 @@
+# Automatically generate and update AUTHORS.txt.
+
 name: 🎗　Update Authors
 on:
   push:

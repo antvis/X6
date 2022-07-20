@@ -1,3 +1,5 @@
+# https://github.com/gitleaks/gitleaks-action
+
 name: 🥤　GitLeaks
 on:
   pull_request_target:

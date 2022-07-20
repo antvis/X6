@@ -1,3 +1,5 @@
+# Update /CONTRIBUTORS.svg to include new contributors' avatars.
+
 name: 🤝　Update Contributors
 on:
   schedule:

@@ -1,3 +1,5 @@
+# Comment on issues/PRs on certain events (currently not used at all.)
+
 name: 💬　Auto Comment
 on: [issues, pull_request_target]
 jobs:
