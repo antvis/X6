@@ -1,3 +1,5 @@
+# Delete all but the last x GitHub releases for certain packages.
+
 name: 🚫　Delete Stale Releases
 on:
   repository_dispatch:

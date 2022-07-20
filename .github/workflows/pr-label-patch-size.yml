@@ -1,3 +1,5 @@
+# Assign labels based on pull request change sizes.
+
 name: 🏷️　Label(Patch Size)
 on: pull_request_target
 jobs:

@@ -1,3 +1,5 @@
+# Update issue labels in repo as defined in /.github/workflows/config/labels.yml
+
 name: 🔄　Sync Labels
 on:
   push:

@@ -1,3 +1,6 @@
+# Request more info from newly opened issues/PRs that contain either default title/body or whose body is left blank
+# https://github.com/wow-actions/needs-more-info
+
 name: 🚨　Needs More Info
 on:
   pull_request_target:

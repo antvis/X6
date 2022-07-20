@@ -1,3 +1,5 @@
+# Renew the copyright notice in LICENSE at the beginning of every year.
+
 name: 🔑　Update License
 on:
   schedule:

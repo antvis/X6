@@ -1,3 +1,5 @@
+# Warn and then close issues and PRs that have had no activity for a specified amount of time.
+
 name: 👻　Stale
 on:
   schedule:
