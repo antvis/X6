@@ -463,14 +463,19 @@ edge.attr('pathSelector', {
 })
 ```
 
-也支持包含 `stubs` 选项的对象。
+也支持包含 `stubs` 和 `reserve` 选项的对象。
 
-- 当 `stubs` 为正数时，表示渲染的起始和终止部分长度。例如 `nnection: { stubs: 20 }` 表示连线只渲染起始的 `20px` 和终止的 `20px`，其余部分不渲染。
-- 当 `stubs` 为负数时，表示中间缺失（不渲染）部分的长度。例如 `nnection: { stubs: -20 }` 表示连线中间有 `20px` 不渲染。
+- 当 `reverse` 为 `false` 时：
+  - 当 `stubs` 为正数时，表示渲染的起始和终止部分长度。例如 `connection: { stubs: 20 }` 表示连线只渲染起始的 `20px` 和终止的 `20px`，其余部分不渲染。
+  - 当 `stubs` 为负数时，表示中间缺失（不渲染）部分的长度。例如 `connection: { stubs: -20 }` 表示连线中间有 `20px` 不渲染。
+
+- 当 `reverse` 为 `true` 时：
+  - 当 `stubs` 为正数时，起始和终止部分不渲染的长度。例如 `connection: { stubs: 20 }` 表示起始的 `20px` 和终止的 `20px` 不渲染。
+  - 当 `stubs` 为负数时，表示中间部分的长度。例如 `connection: { stubs: -20 }` 表示只渲染中间 `20px`。
 
 ```ts
 edge.attr('pathSelector', { 
-  connection: { stubs: -20 },
+  connection: { stubs: -20, reverse: true },
 })
 ```
 
