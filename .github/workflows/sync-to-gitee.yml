@@ -1,3 +1,5 @@
+# Sync repo to https://gitee.com/
+#
 # https://github.com/marketplace/actions/gitee-pages-action
 # 配置步骤如下
 # 1. 在命令行终端或 Git Bash 使用命令 ssh-keygen -t rsa -C "youremail@example.com" 生成 SSH Key，注意替换为自己的邮箱。生成的 id_rsa 是私钥，id_rsa.pub 是公钥。(⚠️注意此处不要设置密码)

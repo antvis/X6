@@ -1,3 +1,6 @@
+# Search for potential issue duplicates using Damerau–Levenshtein algorithm
+# https://github.com/wow-actions/potential-duplicates
+
 name: 🆖　Potential Duplicates
 on:
   issues:

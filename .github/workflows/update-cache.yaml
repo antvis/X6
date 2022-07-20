@@ -1,4 +1,5 @@
-# Auto update cahe
+# Cache dependencies and build outputs to improve workflow execution time.
+# https://github.com/actions/cache
 
 name: 🌈　Update Cache
 on:

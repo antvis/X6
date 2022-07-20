@@ -1,3 +1,6 @@
+# Automatically apply labels to your PRs based on branch name patterns like feature/* or fix/*
+# https://github.com/TimonVS/pr-labeler-action
+
 name: 🏷️　Label(Branch Name)
 on:
   pull_request_target:

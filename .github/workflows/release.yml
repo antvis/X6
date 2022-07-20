@@ -1,4 +1,8 @@
-# @see: https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
+# Create new GitHub releases using scripts/monorepo-semantic-release
+# and the semantic-release package.
+#
+# See https://www.npmjs.com/package/semantic-release
+# See https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
 
 name: 🚀　Release
 on:
