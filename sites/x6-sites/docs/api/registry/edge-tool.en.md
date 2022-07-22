@@ -406,6 +406,7 @@ graph.on('edge:mouseleave', ({ cell }) => {
 | 参数名  | 类型                      | 默认值      | 说明                                                    |
 |---------|---------------------------|-------------|-------------------------------------------------------|
 | event       | JQuery.MouseEventBase     | -           | 触发文本编辑的事件参数 |
+| labelAddable  | boolean | true   |  点击非文本位置是否新建label  |
 | attrs/fontSize   | string       | `14`         | 编辑文本字体大小 |
 | attrs/color  | string | `#000`         | 编辑文本字体颜色 |
 | attrs/fontFamily  | string   | `Arial, helvetica, sans-serif`| 编辑文本的字体 |
