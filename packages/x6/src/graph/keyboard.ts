@@ -125,7 +125,7 @@ export class Keyboard extends Disposable implements IDisablable {
   isInputEvent(e: KeyboardEvent | JQuery.MouseUpEvent) {
     const target = e.target as Element
     const tagName = target && target.tagName.toLowerCase()
-    return tagName === 'input'
+    return ['input', 'textarea'].includes(tagName)
   }
 
   isEnabledForEvent(e: KeyboardEvent) {
