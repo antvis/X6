@@ -284,6 +284,18 @@
   dependencies:
     tslib "^2.0.3"
 
+"@antv/x6@latest":
+  version "1.32.9"
+  resolved "https://registry.npmjs.org/@antv/x6/-/x6-1.32.9.tgz#0e29527289001e29795087cbb536afdbbead2c56"
+  integrity sha512-zpAd8RBCeBw5/POpMp3v0A4d4hUF5SXRZAqTvwxFzRsQ7q3/byTpwAqUtqq/AWNJAzFJm6oc5TqbWaRrBltJVQ==
+  dependencies:
+    csstype "^3.0.3"
+    jquery "^3.5.1"
+    jquery-mousewheel "^3.1.13"
+    lodash-es "^4.17.15"
+    mousetrap "^1.6.5"
+    utility-types "^3.10.0"
+
 "@ardatan/aggregate-error@0.0.6":
   version "0.0.6"
   resolved "https://registry.npmjs.org/@ardatan/aggregate-error/-/aggregate-error-0.0.6.tgz#fe6924771ea40fc98dc7a7045c2e872dc8527609"
