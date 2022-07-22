@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "1.32.9",
+  "version": "1.32.10",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -61,7 +61,7 @@
   },
   "release-it": {
     "git": {
-      "commitMessage": ":sparkles: Release ${version}"
+      "commitMessage": "chore: release ${version}"
     },
     "github": {
       "release": true
