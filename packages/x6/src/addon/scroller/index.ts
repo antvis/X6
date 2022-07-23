@@ -396,10 +396,71 @@ export class Scroller extends View {
       gridWidth: this.options.pageWidth,
       gridHeight: this.options.pageHeight,
       allowNewOrigin: 'negative',
+      contentArea: this.calcContextArea(),
       ...resizeOptions,
     }
 
     this.graph.fitToContent(this.getFitToContentOptions(options))
+  }
+
+  protected calcContextArea() {
+    let resizeOptions =
+      this.options.autoResizeOptions || this.options.fitTocontentOptions
+    if (typeof resizeOptions === 'function') {
+      resizeOptions = FunctionExt.call(resizeOptions, this, this)
+    }
+    const direction = resizeOptions?.direction
+
+    if (!direction) {
+      return this.graph.transform.getContentArea()
+    }
+
+    function getCellBBox(cell: Cell) {
+      let rect = cell.getBBox()
+      if (rect) {
+        if (cell.isNode()) {
+          const angle = cell.getAngle()
+          if (angle != null && angle !== 0) {
+            rect = rect.bbox(angle)
+          }
+        }
+      }
+      return rect
+    }
+
+    const gridWidth = this.options.pageWidth || 1
+    const gridHeight = this.options.pageHeight || 1
+    let calculativeCells = this.graph.getCells()
+
+    if (!direction.includes('top')) {
+      calculativeCells = calculativeCells.filter((cell) => {
+        const bbox = getCellBBox(cell)
+        return bbox.y >= 0
+      })
+    }
+
+    if (!direction.includes('left')) {
+      calculativeCells = calculativeCells.filter((cell) => {
+        const bbox = getCellBBox(cell)
+        return bbox.x >= 0
+      })
+    }
+
+    if (!direction.includes('right')) {
+      calculativeCells = calculativeCells.filter((cell) => {
+        const bbox = getCellBBox(cell)
+        return bbox.x + bbox.width <= gridWidth
+      })
+    }
+
+    if (!direction.includes('bottom')) {
+      calculativeCells = calculativeCells.filter((cell) => {
+        const bbox = getCellBBox(cell)
+        return bbox.y + bbox.height <= gridHeight
+      })
+    }
+
+    return this.model.getCellsBBox(calculativeCells) || new Rectangle()
   }
 
   protected getFitToContentOptions(
@@ -1201,17 +1262,25 @@ export namespace Scroller {
      * @deprecated
      */
     fitTocontentOptions?:
-      | TransformManager.FitToContentFullOptions
+      | (TransformManager.FitToContentFullOptions & {
+          direction: AutoResizeDirection | AutoResizeDirection[]
+        })
       | ((
           this: Scroller,
           scroller: Scroller,
-        ) => TransformManager.FitToContentFullOptions)
+        ) => TransformManager.FitToContentFullOptions & {
+          direction: AutoResizeDirection | AutoResizeDirection[]
+        })
     autoResizeOptions?:
-      | TransformManager.FitToContentFullOptions
+      | (TransformManager.FitToContentFullOptions & {
+          direction: AutoResizeDirection | AutoResizeDirection[]
+        })
       | ((
           this: Scroller,
           scroller: Scroller,
-        ) => TransformManager.FitToContentFullOptions)
+        ) => TransformManager.FitToContentFullOptions & {
+          direction: AutoResizeDirection | AutoResizeDirection[]
+        })
   }
 
   export interface Options extends CommonOptions {
@@ -1258,6 +1327,8 @@ export namespace Scroller {
     visibility?: number
     center?: Point.PointLike
   }
+
+  export type AutoResizeDirection = 'top' | 'right' | 'bottom' | 'left'
 }
 
 export namespace Scroller {
