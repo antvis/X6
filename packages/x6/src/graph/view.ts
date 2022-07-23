@@ -139,8 +139,24 @@ export class GraphView extends View {
     }
   }
 
+  protected isPreventDefaultContextMenu(evt: JQuery.ContextMenuEvent) {
+    const e = this.normalizeEvent(evt)
+    const view = this.findView(e.target)
+
+    let preventDefaultContextMenu = this.options.preventDefaultContextMenu
+    if (typeof preventDefaultContextMenu === 'function') {
+      preventDefaultContextMenu = FunctionExt.call(
+        preventDefaultContextMenu,
+        this,
+        { graph: this.graph, cell: view?.cell },
+      )
+    }
+
+    return preventDefaultContextMenu
+  }
+
   protected onContextMenu(evt: JQuery.ContextMenuEvent) {
-    if (this.options.preventDefaultContextMenu) {
+    if (this.isPreventDefaultContextMenu(evt)) {
       evt.preventDefault()
     }
 
@@ -471,7 +487,7 @@ export class GraphView extends View {
   }
 
   protected onMagnetContextMenu(e: JQuery.ContextMenuEvent) {
-    if (this.options.preventDefaultContextMenu) {
+    if (this.isPreventDefaultContextMenu(e)) {
       e.preventDefault()
     }
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
