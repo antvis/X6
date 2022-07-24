@@ -1,6 +1,8 @@
 import { Dom, FunctionExt } from '@antv/x6-common'
-import { Cell, Config, View, Markup, CellView } from '@antv/x6-core'
-import { Graph } from './graph'
+import { Cell } from '../model'
+import { Config } from '../config'
+import { View, Markup, CellView } from '../view'
+import { Graph } from '../graph'
 
 export class GraphView extends View {
   public readonly container: HTMLElement
@@ -15,10 +17,6 @@ export class GraphView extends View {
   public readonly overlay: SVGGElement
 
   private restore: () => void
-
-  protected get model() {
-    return this.graph.model
-  }
 
   protected get options() {
     return this.graph.options
@@ -86,7 +84,7 @@ export class GraphView extends View {
   }
 
   protected findView(elem: Element) {
-    return this.graph.renderer.findViewByElem(elem)
+    return this.graph.findViewByElem(elem)
   }
 
   protected onDblClick(evt: Dom.DoubleClickEvent) {
@@ -325,9 +323,7 @@ export class GraphView extends View {
       return
     }
 
-    const relatedView = this.graph.renderer.findViewByElem(
-      e.relatedTarget as Element,
-    )
+    const relatedView = this.graph.findViewByElem(e.relatedTarget as Element)
     if (view) {
       if (relatedView === view) {
         // mouse moved from tool to view
@@ -349,9 +345,7 @@ export class GraphView extends View {
       return
     }
 
-    const relatedView = this.graph.renderer.findViewByElem(
-      e.relatedTarget as Element,
-    )
+    const relatedView = this.graph.findViewByElem(e.relatedTarget as Element)
 
     if (view) {
       if (relatedView === view) {

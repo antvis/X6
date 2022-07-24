@@ -1,5 +1,5 @@
-import { Node } from '@antv/x6-core'
 import { ObjectExt } from '@antv/x6-common'
+import { Node } from '../model'
 
 export class Base<
   Properties extends Node.Properties = Node.Properties,

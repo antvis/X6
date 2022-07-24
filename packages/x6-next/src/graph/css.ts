@@ -1,5 +1,5 @@
-import { Config } from '@antv/x6-core'
 import { Platform } from '@antv/x6-common'
+import { Config } from '../config'
 import { content } from '../style/raw'
 import { Base } from './base'
 
@@ -10,6 +10,7 @@ export class CSSManager extends Base {
     }
   }
 
+  @CSSManager.dispose()
   dispose() {
     CSSManager.clean()
   }

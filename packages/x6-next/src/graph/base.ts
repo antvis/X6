@@ -1,4 +1,4 @@
-import { Disposable } from '@antv/x6-core'
+import { Disposable } from '@antv/x6-common'
 import { Graph } from './graph'
 
 export class Base extends Disposable {
@@ -13,7 +13,7 @@ export class Base extends Disposable {
   }
 
   public get view() {
-    return this.graph.renderer.graphView
+    return this.graph.view
   }
 
   constructor(graph: Graph) {

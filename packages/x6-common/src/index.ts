@@ -1,5 +1,6 @@
 import './polyfill'
 
+export * from './common'
 export * from './array'
 export * from './object'
 export * from './string'
@@ -19,4 +20,5 @@ export * from './event'
 export * from './dictionary'
 export * from './registry'
 export * from './modifier'
+export * from './animation'
 export * from './types'
