@@ -1,7 +1,8 @@
 import { Dom, NumberExt } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
-import { Util, Cell } from '@antv/x6-core'
 import { Base } from './base'
+import { Util } from '../util'
+import { Cell } from '../model'
 
 export class TransformManager extends Base {
   protected viewportMatrix: DOMMatrix | null
@@ -9,18 +10,15 @@ export class TransformManager extends Base {
   protected viewportTransformString: string | null
 
   protected get container() {
-    const renderer = this.graph.renderer
-    return renderer.graphView.container
+    return this.graph.view.container
   }
 
   protected get viewport() {
-    const renderer = this.graph.renderer
-    return renderer.graphView.viewport
+    return this.graph.view.viewport
   }
 
   protected get stage() {
-    const renderer = this.graph.renderer
-    return renderer.graphView.stage
+    return this.graph.view.stage
   }
 
   protected init() {

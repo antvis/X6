@@ -8,6 +8,7 @@
     "pretty-quick": "^3.1.1",
     "rimraf": "^3.0.2",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "release-it": "^14.0.1"
   }
 }

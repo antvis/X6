@@ -1,5 +1,6 @@
 import { ObjectExt } from '@antv/x6-common'
-import { Markup, Node } from '@antv/x6-core'
+import { Node } from '../model'
+import { Markup } from '../view'
 import { Base } from './base'
 
 export function getMarkup(tagName: string, selector = 'body'): Markup {
