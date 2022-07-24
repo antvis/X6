@@ -71,7 +71,7 @@ export class PanningManager extends Base {
     }
   }
 
-  allowPanning(e: JQuery.MouseDownEvent, strict?: boolean) {
+  allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
       this.pannable &&
       ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict)
@@ -102,7 +102,7 @@ export class PanningManager extends Base {
   }
 
   // eslint-disable-next-line
-  protected stopPanning(e: JQuery.MouseUpEvent) {
+  protected stopPanning(e: Dom.MouseUpEvent) {
     this.panning = false
     this.updateClassName()
     Dom.Event.off(document.body, '.panning')
@@ -184,6 +184,7 @@ export class PanningManager extends Base {
     }
   }
 
+  @Base.dispose()
   dispose() {
     this.stopListening()
   }

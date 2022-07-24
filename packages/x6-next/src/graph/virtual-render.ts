@@ -37,6 +37,7 @@ export class VirtualRenderManager extends Base {
     }
   }
 
+  @Base.dispose()
   dispose() {
     this.stopListening()
   }
