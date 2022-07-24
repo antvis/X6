@@ -170,6 +170,7 @@ export class BackgroundManager extends Base {
     this.draw()
   }
 
+  @Base.dispose()
   dispose() {
     this.clear()
     this.stopListening()

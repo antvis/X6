@@ -1,4 +1,4 @@
-import { ModifierKey, Dom, NumberExt } from '@antv/x6-common'
+import { ModifierKey, Dom, NumberExt, Disposable } from '@antv/x6-common'
 import { Base } from './base'
 
 export class MouseWheel extends Base {
@@ -114,9 +114,7 @@ export class MouseWheel extends Base {
 
       if (targetScale !== currentScale) {
         if (this.widgetOptions.zoomAtMousePosition) {
-          const origin = this.graph.renderer.coord.clientToGraphPoint(
-            this.startPos,
-          )
+          const origin = this.graph.coord.clientToGraphPoint(this.startPos)
           this.graph.zoom(targetScale, {
             absolute: true,
             center: origin.clone(),
@@ -130,6 +128,7 @@ export class MouseWheel extends Base {
     }
   }
 
+  @Disposable.dispose()
   dispose() {
     this.disable()
   }

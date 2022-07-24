@@ -1,8 +1,10 @@
 import * as Shape from './shape'
+import * as Registry from './registry'
 
+export * from './model'
+export * from './view'
 export * from './graph'
 export * from './version'
+export * from './config'
 
-export { Shape }
-
-export * from '@antv/x6-core'
+export { Shape, Registry }

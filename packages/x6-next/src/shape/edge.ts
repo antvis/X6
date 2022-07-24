@@ -1,4 +1,4 @@
-import { Edge as EdgeBase } from '@antv/x6-core'
+import { Edge as EdgeBase } from '../model/edge'
 
 export const Edge = EdgeBase.define({
   shape: 'edge',

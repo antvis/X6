@@ -1,15 +1,6 @@
-import {
-  Basecoat,
-  Model,
-  Collection,
-  Cell,
-  Node,
-  Edge,
-  Registry as CoreRegistry,
-  Renderer as ViewRenderer,
-} from '@antv/x6-core'
-import { NumberExt, Dom, KeyValue } from '@antv/x6-common'
+import { Basecoat, NumberExt, Dom, KeyValue } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
+import { Model, Collection, Cell, Node, Edge } from '../model'
 import * as Registry from '../registry'
 import { Base } from './base'
 import { GraphView } from './view'
@@ -22,16 +13,26 @@ import { BackgroundManager as Background } from './background'
 import { PanningManager as Panning } from './panning'
 import { MouseWheel as Wheel } from './mousewheel'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
+import { Renderer as ViewRenderer } from '../renderer'
+import { DefsManager as Defs } from './defs'
+import { CoordManager as Coord } from './coord'
+import { HighlightManager as Highlight } from './highlight'
+import { CellView } from '../view'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
   public readonly css: Css
-  public readonly transform: Transform
+  public readonly model: Model
+  public readonly view: GraphView
   public readonly grid: Grid
+  public readonly defs: Defs
+  public readonly coord: Coord
+  public readonly renderer: ViewRenderer
+  public readonly highlight: Highlight
+  public readonly transform: Transform
   public readonly background: Background
   public readonly panning: Panning
   public readonly mousewheel: Wheel
-  public readonly renderer: ViewRenderer
   public readonly virtualRender: VirtualRender
 
   public get container() {
@@ -45,31 +46,22 @@ export class Graph extends Basecoat<EventArgs> {
   constructor(options: Partial<GraphOptions.Manual>) {
     super()
     this.options = GraphOptions.get(options)
-    this.renderer = new ViewRenderer({
-      ...this.options,
-      getGraphArea: () => this.getGraphArea(),
-      getGridSize: () => this.getGridSize(),
-    })
-
     this.css = new Css(this)
+    this.view = new GraphView(this)
+    this.defs = new Defs(this)
+    this.coord = new Coord(this)
     this.transform = new Transform(this)
+    this.highlight = new Highlight(this)
     this.grid = new Grid(this)
     this.background = new Background(this)
+
+    this.model = this.options.model ? this.options.model : new Model()
+    this.model.graph = this
+
+    this.renderer = new ViewRenderer(this)
     this.panning = new Panning(this)
     this.mousewheel = new Wheel(this)
     this.virtualRender = new VirtualRender(this)
-
-    this.setup()
-  }
-
-  get model() {
-    return this.renderer.model
-  }
-
-  protected setup() {
-    this.renderer.on('*', (name, args) => {
-      this.trigger(name, args)
-    })
   }
 
   // #region model
@@ -460,6 +452,83 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
+  // #region view
+
+  findView(ref: Cell | Element) {
+    if (Cell.isCell(ref)) {
+      return this.findViewByCell(ref)
+    }
+
+    return this.findViewByElem(ref)
+  }
+
+  findViews(ref: Point.PointLike | Rectangle.RectangleLike) {
+    if (Rectangle.isRectangleLike(ref)) {
+      return this.findViewsInArea(ref)
+    }
+
+    if (Point.isPointLike(ref)) {
+      return this.findViewsFromPoint(ref)
+    }
+
+    return []
+  }
+
+  findViewByCell(cellId: string | number): CellView | null
+  findViewByCell(cell: Cell | null): CellView | null
+  findViewByCell(
+    cell: Cell | string | number | null | undefined,
+  ): CellView | null {
+    return this.renderer.findViewByCell(cell as Cell)
+  }
+
+  findViewByElem(elem: string | Element | undefined | null) {
+    return this.renderer.findViewByElem(elem)
+  }
+
+  findViewsFromPoint(x: number, y: number): CellView[]
+  findViewsFromPoint(p: Point.PointLike): CellView[]
+  findViewsFromPoint(x: number | Point.PointLike, y?: number) {
+    const p = typeof x === 'number' ? { x, y: y as number } : x
+    return this.renderer.findViewsFromPoint(p)
+  }
+
+  findViewsInArea(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    options?: ViewRenderer.FindViewsInAreaOptions,
+  ): CellView[]
+  findViewsInArea(
+    rect: Rectangle.RectangleLike,
+    options?: ViewRenderer.FindViewsInAreaOptions,
+  ): CellView[]
+  findViewsInArea(
+    x: number | Rectangle.RectangleLike,
+    y?: number | ViewRenderer.FindViewsInAreaOptions,
+    width?: number,
+    height?: number,
+    options?: ViewRenderer.FindViewsInAreaOptions,
+  ) {
+    const rect =
+      typeof x === 'number'
+        ? {
+            x,
+            y: y as number,
+            width: width as number,
+            height: height as number,
+          }
+        : x
+    const localOptions =
+      typeof x === 'number'
+        ? options
+        : (y as ViewRenderer.FindViewsInAreaOptions)
+    return this.renderer.findViewsInArea(rect, localOptions)
+  }
+
+  // #endregion
+
   // #region transform
 
   /**
@@ -615,7 +684,7 @@ export class Graph extends Basecoat<EventArgs> {
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
   snapToGrid(x: number | Point.PointLike, y?: number) {
-    return this.renderer.coord.snapToGrid(x, y)
+    return this.coord.snapToGrid(x, y)
   }
 
   pageToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -629,7 +698,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.pageToLocalRect(x)
+      return this.coord.pageToLocalRect(x)
     }
 
     if (
@@ -638,10 +707,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.pageToLocalRect(x, y, width, height)
+      return this.coord.pageToLocalRect(x, y, width, height)
     }
 
-    return this.renderer.coord.pageToLocalPoint(x, y)
+    return this.coord.pageToLocalPoint(x, y)
   }
 
   localToPage(rect: Rectangle.RectangleLike): Rectangle
@@ -655,7 +724,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.localToPageRect(x)
+      return this.coord.localToPageRect(x)
     }
 
     if (
@@ -664,10 +733,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.localToPageRect(x, y, width, height)
+      return this.coord.localToPageRect(x, y, width, height)
     }
 
-    return this.renderer.coord.localToPagePoint(x, y)
+    return this.coord.localToPagePoint(x, y)
   }
 
   clientToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -681,7 +750,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.clientToLocalRect(x)
+      return this.coord.clientToLocalRect(x)
     }
 
     if (
@@ -690,10 +759,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.clientToLocalRect(x, y, width, height)
+      return this.coord.clientToLocalRect(x, y, width, height)
     }
 
-    return this.renderer.coord.clientToLocalPoint(x, y)
+    return this.coord.clientToLocalPoint(x, y)
   }
 
   localToClient(rect: Rectangle.RectangleLike): Rectangle
@@ -707,7 +776,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.localToClientRect(x)
+      return this.coord.localToClientRect(x)
     }
 
     if (
@@ -716,10 +785,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.localToClientRect(x, y, width, height)
+      return this.coord.localToClientRect(x, y, width, height)
     }
 
-    return this.renderer.coord.localToClientPoint(x, y)
+    return this.coord.localToClientPoint(x, y)
   }
 
   /**
@@ -749,7 +818,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.localToGraphRect(x)
+      return this.coord.localToGraphRect(x)
     }
 
     if (
@@ -758,10 +827,10 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.localToGraphRect(x, y, width, height)
+      return this.coord.localToGraphRect(x, y, width, height)
     }
 
-    return this.renderer.coord.localToGraphPoint(x, y)
+    return this.coord.localToGraphPoint(x, y)
   }
 
   graphToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -775,7 +844,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.graphToLocalRect(x)
+      return this.coord.graphToLocalRect(x)
     }
 
     if (
@@ -784,9 +853,9 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.graphToLocalRect(x, y, width, height)
+      return this.coord.graphToLocalRect(x, y, width, height)
     }
-    return this.renderer.coord.graphToLocalPoint(x, y)
+    return this.coord.graphToLocalPoint(x, y)
   }
 
   clientToGraph(rect: Rectangle.RectangleLike): Rectangle
@@ -800,7 +869,7 @@ export class Graph extends Basecoat<EventArgs> {
     height?: number,
   ) {
     if (Rectangle.isRectangleLike(x)) {
-      return this.renderer.coord.clientToGraphRect(x)
+      return this.coord.clientToGraphRect(x)
     }
     if (
       typeof x === 'number' &&
@@ -808,9 +877,25 @@ export class Graph extends Basecoat<EventArgs> {
       typeof width === 'number' &&
       typeof height === 'number'
     ) {
-      return this.renderer.coord.clientToGraphRect(x, y, width, height)
+      return this.coord.clientToGraphRect(x, y, width, height)
     }
-    return this.renderer.coord.clientToGraphPoint(x, y)
+    return this.coord.clientToGraphPoint(x, y)
+  }
+
+  // #endregion
+
+  // #region defs
+
+  defineFilter(options: Defs.FilterOptions) {
+    return this.defs.filter(options)
+  }
+
+  defineGradient(options: Defs.GradientOptions) {
+    return this.defs.gradient(options)
+  }
+
+  defineMarker(options: Defs.MarkerOptions) {
+    return this.defs.marker(options)
   }
 
   // #endregion
@@ -881,6 +966,75 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
+  // #region mousewheel
+
+  isMouseWheelEnabled() {
+    return !this.mousewheel.disabled
+  }
+
+  enableMouseWheel() {
+    this.mousewheel.enable()
+    return this
+  }
+
+  disableMouseWheel() {
+    this.mousewheel.disable()
+    return this
+  }
+
+  toggleMouseWheel(enabled?: boolean) {
+    if (enabled == null) {
+      if (this.isMouseWheelEnabled()) {
+        this.disableMouseWheel()
+      } else {
+        this.enableMouseWheel()
+      }
+    } else if (enabled) {
+      this.enableMouseWheel()
+    } else {
+      this.disableMouseWheel()
+    }
+    return this
+  }
+
+  // #endregion
+
+  // #region panning
+
+  isPannable() {
+    return this.panning.pannable
+  }
+
+  enablePanning() {
+    this.panning.enablePanning()
+    return this
+  }
+
+  disablePanning() {
+    this.panning.disablePanning()
+    return this
+  }
+
+  togglePanning(pannable?: boolean) {
+    if (pannable == null) {
+      if (this.isPannable()) {
+        this.disablePanning()
+      } else {
+        this.enablePanning()
+      }
+    } else if (pannable !== this.isPannable()) {
+      if (pannable) {
+        this.enablePanning()
+      } else {
+        this.disablePanning()
+      }
+    }
+
+    return this
+  }
+
+  // #endregion
+
   // #region dispose
 
   @Basecoat.dispose()
@@ -889,11 +1043,15 @@ export class Graph extends Basecoat<EventArgs> {
     this.off()
 
     this.css.dispose()
+    this.defs.dispose()
     this.grid.dispose()
+    this.coord.dispose()
     this.transform.dispose()
+    this.highlight.dispose()
     this.background.dispose()
-    this.panning.dispose()
     this.mousewheel.dispose()
+    this.panning.dispose()
+    this.view.dispose()
     this.renderer.dispose()
   }
 
@@ -904,13 +1062,14 @@ export namespace Graph {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   export import View = GraphView
   export import Renderer = ViewRenderer
-  export import CssManager = Css
-  export import BaseManager = Base
-  export import GridManager = Grid
-  export import TransformManager = Transform
-  export import BackgroundManager = Background
-  export import PanningManager = Panning
   export import MouseWheel = Wheel
+  export import BaseManager = Base
+  export import DefsManager = Defs
+  export import GridManager = Grid
+  export import CoordManager = Coord
+  export import TransformManager = Transform
+  export import HighlightManager = Highlight
+  export import BackgroundManager = Background
 }
 
 export namespace Graph {
@@ -968,17 +1127,45 @@ export namespace Graph {
 export namespace Graph {
   export const registerNode = Node.registry.register
   export const registerEdge = Edge.registry.register
+  export const registerView = CellView.registry.register
+  export const registerAttr = Registry.Attr.registry.register
   export const registerGrid = Registry.Grid.registry.register
   export const registerFilter = Registry.Filter.registry.register
+  export const registerNodeTool = Registry.NodeTool.registry.register
+  export const registerEdgeTool = Registry.EdgeTool.registry.register
   export const registerBackground = Registry.Background.registry.register
-  export const registerConnector = CoreRegistry.Connector.registry.register
+  export const registerHighlighter = Registry.Highlighter.registry.register
+  export const registerPortLayout = Registry.PortLayout.registry.register
+  export const registerPortLabelLayout =
+    Registry.PortLabelLayout.registry.register
+  export const registerMarker = Registry.Marker.registry.register
+  export const registerRouter = Registry.Router.registry.register
+  export const registerConnector = Registry.Connector.registry.register
+  export const registerAnchor = Registry.NodeAnchor.registry.register
+  export const registerEdgeAnchor = Registry.EdgeAnchor.registry.register
+  export const registerConnectionPoint =
+    Registry.ConnectionPoint.registry.register
 }
 
 export namespace Graph {
   export const unregisterNode = Node.registry.unregister
   export const unregisterEdge = Edge.registry.unregister
+  export const unregisterView = CellView.registry.unregister
+  export const unregisterAttr = Registry.Attr.registry.unregister
   export const unregisterGrid = Registry.Grid.registry.unregister
   export const unregisterFilter = Registry.Filter.registry.unregister
+  export const unregisterNodeTool = Registry.NodeTool.registry.unregister
+  export const unregisterEdgeTool = Registry.EdgeTool.registry.unregister
   export const unregisterBackground = Registry.Background.registry.unregister
-  export const unregisterConnector = CoreRegistry.Connector.registry.unregister
+  export const unregisterHighlighter = Registry.Highlighter.registry.unregister
+  export const unregisterPortLayout = Registry.PortLayout.registry.unregister
+  export const unregisterPortLabelLayout =
+    Registry.PortLabelLayout.registry.unregister
+  export const unregisterMarker = Registry.Marker.registry.unregister
+  export const unregisterRouter = Registry.Router.registry.unregister
+  export const unregisterConnector = Registry.Connector.registry.unregister
+  export const unregisterAnchor = Registry.NodeAnchor.registry.unregister
+  export const unregisterEdgeAnchor = Registry.EdgeAnchor.registry.unregister
+  export const unregisterConnectionPoint =
+    Registry.ConnectionPoint.registry.unregister
 }
