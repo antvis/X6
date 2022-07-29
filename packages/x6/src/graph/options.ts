@@ -132,10 +132,7 @@ export namespace Options {
      */
     preventDefaultContextMenu:
       | boolean
-      | ((
-          this: GraphView,
-          { graph, cell }: { graph: Graph; cell: Cell | undefined },
-        ) => boolean)
+      | ((this: Graph, { view }: { view: CellView | null }) => boolean)
 
     preventDefaultDblClick: boolean
 
