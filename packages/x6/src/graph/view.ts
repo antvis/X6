@@ -201,7 +201,10 @@ export class GraphView extends View {
     if (view) {
       view.onMouseDown(e, localPoint.x, localPoint.y)
     } else {
-      if (this.options.preventDefaultBlankAction) {
+      if (
+        this.options.preventDefaultBlankAction &&
+        ['touchstart'].includes(e.type)
+      ) {
         e.preventDefault()
       }
 
