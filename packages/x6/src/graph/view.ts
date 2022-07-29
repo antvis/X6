@@ -201,10 +201,12 @@ export class GraphView extends View {
     if (view) {
       view.onMouseDown(e, localPoint.x, localPoint.y)
     } else {
-      if (this.options.preventDefaultBlankAction) {
+      if (
+        this.options.preventDefaultBlankAction &&
+        ['touchstart'].includes(e.type)
+      ) {
         e.preventDefault()
       }
-
       this.graph.trigger('blank:mousedown', {
         e,
         x: localPoint.x,
@@ -217,7 +219,6 @@ export class GraphView extends View {
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
     const data = this.getEventData<EventData.Moving>(evt)
-
     const startPosition = data.startPosition
     if (
       startPosition &&
