@@ -130,7 +130,9 @@ export namespace Options {
     /**
      * Prevent the default context menu from being displayed.
      */
-    preventDefaultContextMenu: boolean
+    preventDefaultContextMenu:
+      | boolean
+      | ((this: Graph, { view }: { view: CellView | null }) => boolean)
 
     preventDefaultDblClick: boolean
 
