@@ -45,7 +45,7 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "vue-demi": "^0.7.4"
+    "vue-demi": "latest"
   },
   "peerDependencies": {
     "@antv/x6": ">=1.0.0",
