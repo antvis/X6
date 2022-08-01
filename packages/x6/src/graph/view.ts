@@ -139,13 +139,30 @@ export class GraphView extends View {
     }
   }
 
+  protected isPreventDefaultContextMenu(
+    evt: JQuery.ContextMenuEvent,
+    view: CellView | null,
+  ) {
+    let preventDefaultContextMenu = this.options.preventDefaultContextMenu
+    if (typeof preventDefaultContextMenu === 'function') {
+      preventDefaultContextMenu = FunctionExt.call(
+        preventDefaultContextMenu,
+        this.graph,
+        { view },
+      )
+    }
+
+    return preventDefaultContextMenu
+  }
+
   protected onContextMenu(evt: JQuery.ContextMenuEvent) {
-    if (this.options.preventDefaultContextMenu) {
+    const e = this.normalizeEvent(evt)
+    const view = this.findView(e.target)
+
+    if (this.isPreventDefaultContextMenu(e, view)) {
       evt.preventDefault()
     }
 
-    const e = this.normalizeEvent(evt)
-    const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
     }
@@ -470,8 +487,11 @@ export class GraphView extends View {
     })
   }
 
-  protected onMagnetContextMenu(e: JQuery.ContextMenuEvent) {
-    if (this.options.preventDefaultContextMenu) {
+  protected onMagnetContextMenu(evt: JQuery.ContextMenuEvent) {
+    const e = this.normalizeEvent(evt)
+    const view = this.findView(e.target)
+
+    if (this.isPreventDefaultContextMenu(e, view)) {
       e.preventDefault()
     }
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
