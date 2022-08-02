@@ -74,6 +74,23 @@ addNode(node: Node, options?: AddOptions): Node
 | options.sort     | boolean               |      | `true`  | 是否按照  `zIndex` 排序。                                            |
 | options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                              |
 
+### addNodes(...)
+
+```sign
+addNodes(nodes: (Node.Metadata | Node)[], options?: AddOptions): Graph
+```
+
+添加多个节点到画布，返回该画布。批量添加节点的时候，推荐使用这个方法，相比多次 addNode，它具备更好的性能。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                  | 必选 | 默认值  | 描述                                                                |
+|------------------|-----------------------|:----:|---------|-------------------------------------------------------------------|
+| nodes             | (Node.Metadata \| Node)[] |  ✓   |         | [节点元数据](/en/docs/api/model/node#constructor)或[节点实例](/en/docs/api/model/node)数组。   |
+| options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `'node:added'` 和 `'cell:added'` 事件和画布重绘。 |
+| options.sort     | boolean               |      | `true`  | 是否按照  `zIndex` 排序。                                            |
+| options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                              |
+
 ### removeNode(...)
 
 ```sign
@@ -123,6 +140,23 @@ addEdge(edge:Edge, options?: AddOptions): Edge
 | options.sort     | boolean               |      | `true`  | 是否按照  `zIndex` 排序。                                            |
 | options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                              |
 
+### addEdges(...)
+
+```sign
+addEdges(edges: (Edge.Metadata | Edge)[], options?: AddOptions): Graph
+```
+
+添加多条边到画布，返回该画布。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                  | 必选 | 默认值  | 描述                                                                |
+|------------------|-----------------------|:----:|---------|-------------------------------------------------------------------|
+| edges             | (Edge.Metadata \| Edge)[] |  ✓   |         | [边元数据](/en/docs/api/model/edge#constructor)或[边实例](/en/docs/api/model/edge)数组。       |
+| options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `'edge:added'` 和 `'cell:added'` 事件和画布重绘。 |
+| options.sort     | boolean               |      | `true`  | 是否按照  `zIndex` 排序。                                            |
+| options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                              |
+
 ### removeEdge(...)
 
 ```sign
@@ -153,6 +187,23 @@ addCell(cell: Cell | Cell[], options?: AddOptions): this
 | 名称             | 类型           | 必选 | 默认值  | 描述                                                                               |
 |------------------|----------------|:----:|---------|----------------------------------------------------------------------------------|
 | cell             | Cell \| Cell[] |  ✓   |         | [节点实例](/en/docs/api/model/node)或[边实例](/en/docs/api/model/edge)，支持传入数组同时添加多个节点或边。 |
+| options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'cell:added'`、`'node:added'` 和 `'edge:added'` 事件和画布重绘。 |
+| options.sort     | boolean        |      | `true`  | 是否按照  `zIndex` 排序。                                                           |
+| options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                             |
+
+### addCells(...)
+
+```sign
+addCells(cells: Cell[], options?: AddOptions): this
+```
+
+添加多个节点或边到画布。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型           | 必选 | 默认值  | 描述                                                                               |
+|------------------|----------------|:----:|---------|----------------------------------------------------------------------------------|
+| cells             | Cell[] |  ✓   |         | [节点实例](/en/docs/api/model/node)或[边实例](/en/docs/api/model/edge)的数组。 |
 | options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'cell:added'`、`'node:added'` 和 `'edge:added'` 事件和画布重绘。 |
 | options.sort     | boolean        |      | `true`  | 是否按照  `zIndex` 排序。                                                           |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                             |
