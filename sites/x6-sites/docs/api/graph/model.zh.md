@@ -80,7 +80,7 @@ addNode(node: Node, options?: AddOptions): Node
 addNodes(nodes: (Node.Metadata | Node)[], options?: AddOptions): Graph
 ```
 
-添加多个节点到画布，返回该画布。
+添加多个节点到画布，返回该画布。批量添加节点的时候，推荐使用这个方法，相比多次 addNode，它具备更好的性能。
 
 <span class="tag-param">参数<span>
 
