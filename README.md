@@ -76,7 +76,7 @@ $ yarn add @antv/x6
 ```ts
 // 从 node_modules 引入
 import { Graph } from '@antv/x6'
-// 从 CND 引入时，我们暴露了 X6 这个全局变量
+// 从 CDN 引入时，我们暴露了 X6 这个全局变量
 // const { Graph } = X6
 
 // 创建 Graph 的实例
