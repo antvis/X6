@@ -277,7 +277,20 @@ const graph = new Graph({
 
 #### createEdge
 
-连接的过程中创建新的边
+从 `magnet=true` 的元素拖拽出新的边的时候，可以自定义边的样式：
+
+```ts
+createEdge() {
+  return this.createEdge({
+    shape: 'edge',
+    attrs: {
+      line: {
+        stroke: 'red'
+      }
+    }
+  })
+}
+```
 
 #### validateMagnet
 
