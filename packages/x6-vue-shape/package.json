@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-vue-shape",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "X6 shape for rendering vue components.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,8 +36,9 @@
   },
   "release-it": {
     "git": {
-      "tagName": "${name}@${version}",
-      "commitMessage": "chore: release ${name}@${version}"
+      "tagName": "@antv/x6-vue-shape@${version}",
+      "commitMessage": "chore: release ${name}@${version}",
+      "requireCleanWorkingDir": false
     },
     "github": {
       "release": true
