@@ -61,7 +61,8 @@
   },
   "release-it": {
     "git": {
-      "commitMessage": "chore: release ${version}"
+      "tagName": "@antv/x6@${version}",
+      "commitMessage": "chore: release ${name}@${version}"
     },
     "github": {
       "release": true
