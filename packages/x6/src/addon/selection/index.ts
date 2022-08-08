@@ -897,7 +897,7 @@ export class Selection extends View<Selection.EventArgs> {
       added,
       removed,
       options,
-      selected: this.cells,
+      selected: this.cells.filter((cell) => !!this.graph.getCellById(cell.id)),
     }
     this.trigger('selection:changed', args)
     this.graph.trigger('selection:changed', args)
