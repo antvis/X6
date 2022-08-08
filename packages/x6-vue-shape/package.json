@@ -31,7 +31,21 @@
     "build": "run-p build:cjs build:esm build:umd",
     "prebuild": "run-s lint clean",
     "prepare": "yarn build",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "release": "release-it"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "hooks": {
+      "before:init": [
+        "yarn run build"
+      ]
+    }
   },
   "lint-staged": {
     "src/**/*.ts": [
