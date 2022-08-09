@@ -57,8 +57,6 @@ export class Animation {
       }
 
       if (progress === 1) {
-        // TODO: remove in the next major version
-        this.cell.notify('transition:end', this.getArgs<T>(key))
         this.cell.notify('transition:complete', this.getArgs<T>(key))
         options.complete && options.complete(this.getArgs<T>(key))
 
@@ -73,8 +71,6 @@ export class Animation {
       this.cache[key] = { startValue, targetValue, options: localOptions }
       this.ids[key] = Dom.requestAnimationFrame(iterate)
 
-      // TODO: remove in the next major version
-      this.cell.notify('transition:begin', this.getArgs<T>(key))
       this.cell.notify('transition:start', this.getArgs<T>(key))
       options.start && options.start(this.getArgs<T>(key))
     }, options.delay)
