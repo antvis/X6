@@ -5,8 +5,8 @@ import './index.less'
 const dataSource = [
   {
     key: '1',
-    example: 'animation/transition',
-    description: 'transition 动画',
+    example: 'animation',
+    description: '动画',
   },
 ]
 
@@ -15,11 +15,7 @@ const columns = [
     title: 'example',
     dataIndex: 'example',
     render(text: string) {
-      return (
-        <a href={`./${text}`} target="_blank">
-          {text}
-        </a>
-      )
+      return <a href={`./${text}`}>{text}</a>
     },
   },
   {
