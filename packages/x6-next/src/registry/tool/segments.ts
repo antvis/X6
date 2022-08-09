@@ -55,13 +55,6 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
       this.options.processHandle(handle)
     }
 
-    this.graph.options.onToolItemCreated({
-      name: 'segments',
-      cell: this.cell,
-      view: this.cellView,
-      tool: handle,
-    })
-
     this.updateHandle(handle, vertex, nextVertex)
     this.container.appendChild(handle.container)
     this.startHandleListening(handle)
