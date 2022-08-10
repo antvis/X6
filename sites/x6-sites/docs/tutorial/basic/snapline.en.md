@@ -43,7 +43,7 @@ if (graph.isSnaplineEnabled()) {
 interface SnaplineOptions {
   className?: string
   tolerance?: number
-  sharp?: boolean
+  // sharp?: boolean （废弃）
   resizing?: boolean
   clean?: boolean
   filter?: (string | { id: string })[] | ((this: Graph, node: Node) => boolean)
@@ -76,9 +76,14 @@ const graph = new Graph({
 })
 ```
 
-### sharp
+### ~~sharp~~
 
-是否显示截断的对齐线，默认为 `false`。
+~~是否显示截断的对齐线，默认为 `false`。~~
+
+[[error]]
+| 在 1.32.7 及以上版本，`sharp` 选项将被废弃，不再生效。
+|
+| 在新版本中，默认行为将是显示截断的对齐线，等同于 1.32.7 以前的 `sharp: true`. [参见演示](#演示)。
 
 ### resizing
 
@@ -218,7 +223,10 @@ toggleSnaplineOnResizing(enabled?: boolean): this
 |---------|---------|:----:|--------|------------------------------------------|
 | enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
 
-### graph.isSharpSnapline()
+### ~~graph.isSharpSnapline()~~
+
+[[error]]
+| 在 1.32.7 及以上版本，`sharp` 选项将被废弃，不再生效，短款对齐线将成为默认效果。
 
 ```sign
 isSharpSnapline(): boolean
@@ -226,7 +234,7 @@ isSharpSnapline(): boolean
 
 是否使用短款对齐线。
 
-### graph.enableSharpSnapline()
+### ~~graph.enableSharpSnapline()~~
 
 ```sign
 enableSharpSnapline(): this
@@ -234,7 +242,7 @@ enableSharpSnapline(): this
 
 启用短款对齐线，启用后对齐线只显示到相关节点位置处，否则显示贯穿画布的对齐线。
 
-### graph.disableSharpSnapline()
+### ~~graph.disableSharpSnapline()~~
 
 ```sign
 disableSharpSnapline(): this
@@ -242,7 +250,7 @@ disableSharpSnapline(): this
 
 禁用短款对齐线，对齐线将贯穿整个画布。
 
-### graph.toggleSharpSnapline(...)
+### ~~graph.toggleSharpSnapline()~~
 
 ```sign
 toggleSharpSnapline(enabled?: boolean): this
