@@ -1,7 +1,7 @@
-import React, { memo, useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef } from 'react'
 import { Graph, Node, Color } from '@antv/x6'
 import { Portal, ReactShape } from '@antv/x6-react-shape'
-import '../index.less'
+import './app.css'
 
 // You should do this outside your components
 // (or make sure its not recreated on every render).
@@ -85,15 +85,10 @@ export default () => {
     return () => graph.dispose()
   }, [])
 
-  const [counter, setCounter] = useState(0)
-
   return (
-    <div className="x6-graph-wrap">
-      <button onClick={() => setCounter((i) => i + 1)}>
-        Counter: {counter}
-      </button>
+    <div className="app">
       <X6ReactPortalProvider />
-      <div ref={container} className="x6-graph" />
+      <div ref={container} className="app-content" />
     </div>
   )
 }
