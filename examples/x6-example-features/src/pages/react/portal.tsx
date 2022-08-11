@@ -1,21 +1,16 @@
-import React from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import { Graph, Node, Color } from '@antv/x6'
-import { Portal } from '@antv/x6-react-shape'
+import { Portal, ReactShape } from '@antv/x6-react-shape'
 import '../index.less'
 
-class MyComponent extends React.Component<{ node?: Node; text: string }> {
-  shouldComponentUpdate() {
-    const node = this.props.node
-    if (node) {
-      if (node.hasChanged('data')) {
-        return true
-      }
-    }
+// You should do this outside your components
+// (or make sure its not recreated on every render).
+//
+// 这个调用需要在组件外进行。
+const X6ReactPortalProvider = Portal.getProvider()
 
-    return false
-  }
-
-  render() {
+const MyComponent = memo(
+  ({ node, text }: { node?: ReactShape; text: string }) => {
     const color = Color.randomHex()
     return (
       <div
@@ -28,18 +23,25 @@ class MyComponent extends React.Component<{ node?: Node; text: string }> {
           background: color,
         }}
       >
-        {this.props.text}
+        {text}
       </div>
     )
-  }
-}
+  },
+  (prev, next) => {
+    return Boolean(next.node?.hasChanged('data'))
+  },
+)
 
-export default class Example extends React.Component {
-  private container: HTMLDivElement
+export default () => {
+  const container = useRef<HTMLDivElement>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!container.current) {
+      return
+    }
+
     const graph = new Graph({
-      container: this.container,
+      container: container.current,
       width: 800,
       height: 600,
     })
@@ -61,7 +63,7 @@ export default class Example extends React.Component {
       y: 320,
       width: 160,
       height: 60,
-      component: (node) => {
+      component: (node: Node) => {
         return <div>{node.attr('body/fill')}</div>
       },
       // component: () => <Test text="target" />,
@@ -80,19 +82,18 @@ export default class Example extends React.Component {
     update()
 
     console.log(graph.toJSON())
-  }
+    return () => graph.dispose()
+  }, [])
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+  const [counter, setCounter] = useState(0)
 
-  render() {
-    const X6ReactPortalProvider = Portal.getProvider()
-    return (
-      <div className="x6-graph-wrap">
-        <X6ReactPortalProvider />
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <button onClick={() => setCounter((i) => i + 1)}>
+        Counter: {counter}
+      </button>
+      <X6ReactPortalProvider />
+      <div ref={container} className="x6-graph" />
+    </div>
+  )
 }
