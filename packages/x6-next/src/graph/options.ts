@@ -45,7 +45,7 @@ export namespace Options {
     preventDefaultBlankAction: boolean
     interacting: CellView.Interacting
 
-    virtualRender?: boolean
+    virtual?: boolean
 
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
   }

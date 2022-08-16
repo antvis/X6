@@ -21,17 +21,17 @@ export class VirtualRenderManager extends Base {
   }
 
   enableVirtualRender() {
-    this.options.virtualRender = true
+    this.options.virtual = true
     this.resetRenderArea()
   }
 
   disableVirtualRender() {
-    this.options.virtualRender = false
+    this.options.virtual = false
     this.graph.renderer.setRenderArea(undefined)
   }
 
   resetRenderArea() {
-    if (this.options.virtualRender) {
+    if (this.options.virtual) {
       const renderArea = this.graph.getGraphArea()
       this.graph.renderer.setRenderArea(renderArea)
     }

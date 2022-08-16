@@ -13,6 +13,9 @@ export default class Example extends React.Component {
       width: 650,
       height: 400,
       grid: 1,
+      background: {
+        color: '#F2F7FA',
+      },
     })
 
     const ball = graph.addNode({
@@ -25,9 +28,12 @@ export default class Example extends React.Component {
         label: {
           text: 'ball',
           fontSize: 20,
+          stroke: '#8f8f8f',
         },
         body: {
           fill: '#FFFFFF',
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
         },
       },
     })
@@ -61,7 +67,6 @@ export default class Example extends React.Component {
       {
         delay: 5000,
         duration: 2000,
-        easing: 'easeInBounce',
         interp: (
           start: { text: String; fontSize: number },
           end: { text: String; fontSize: number },
@@ -86,9 +91,12 @@ export default class Example extends React.Component {
         label: {
           text: 'u.f.o.',
           fontSize: 10,
+          stroke: '8f8f8f',
         },
         body: {
           fill: '#FFFFFF',
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
         },
       },
     })
