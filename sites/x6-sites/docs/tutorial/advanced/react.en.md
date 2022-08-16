@@ -23,7 +23,7 @@ redirect_from:
 
 ### 渲染 HTML 节点
 
-我们可以将节点的 `'shape'` 属性指定为 `’html‘`，就可以通过 `'html'` 属性来指定需要渲染的 HTML 元素或一个返回 HTML 元素的方法。
+我们可以将节点的 `'shape'` 属性指定为 `’html‘`，就可以通过 `'html'` 属性来指定需要渲染的 HTML 元素或一个返回 HTML 元素的方法。`'html'`也支持配置成包含`'mount'`和`'unmount'`两个生命周期钩子，供`'NodeView'`在适当时机调用。
 
 ```ts
 const source = graph.addNode({

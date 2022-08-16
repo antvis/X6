@@ -4,6 +4,7 @@ import { Node } from '../../model/node'
 import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
 import { Base } from '../base'
+import { FunctionExt, ObjectExt, Dom } from '../../util'
 
 export class HTML<
   Properties extends HTML.Properties = HTML.Properties,
@@ -12,18 +13,34 @@ export class HTML<
     return this.getHTML()
   }
 
-  set html(val: HTML.Component | HTML.UpdatableComponent | null | undefined) {
+  set html(
+    val:
+      | HTML.Component
+      | HTML.UpdatableComponent
+      | HTML.SingleSPAComponent
+      | null
+      | undefined,
+  ) {
     this.setHTML(val)
   }
 
   getHTML() {
     return this.store.get<
-      HTML.Component | HTML.UpdatableComponent | null | undefined
+      | HTML.Component
+      | HTML.UpdatableComponent
+      | HTML.SingleSPAComponent
+      | null
+      | undefined
     >('html')
   }
 
   setHTML(
-    html: HTML.Component | HTML.UpdatableComponent | null | undefined,
+    html:
+      | HTML.Component
+      | HTML.UpdatableComponent
+      | HTML.SingleSPAComponent
+      | null
+      | undefined,
     options: Node.SetOptions = {},
   ) {
     if (html == null) {
@@ -67,6 +84,8 @@ export namespace HTML {
           this.renderHTMLComponent()
         }
       })
+      // init的时候markup还未创建成功
+      Dom.requestAnimationFrame(() => this.mount())
     }
 
     confirmUpdate(flag: number) {
@@ -89,6 +108,55 @@ export namespace HTML {
           }
         }
       }
+    }
+
+    mount() {
+      const container = this.selectors.foContent
+      if (container) {
+        this.getSingleSPAComponentHook('mount').then((mount) => {
+          FunctionExt.call(mount, this, {
+            graph: this.graph,
+            node: this.cell,
+            container: container as Element,
+          }).then((component: any) => {
+            if (component) {
+              const $wrap = this.$(container).empty()
+              if (typeof component === 'string') {
+                $wrap.html(component)
+              } else {
+                $wrap.append(component)
+              }
+            }
+          })
+        })
+      }
+    }
+
+    unmount(elem: Element) {
+      this.getSingleSPAComponentHook('unmount').then((unmount) => {
+        const container = this.selectors.foContent
+        FunctionExt.call(unmount, this, {
+          graph: this.graph,
+          node: this.cell,
+          container: container as Element,
+        })
+      })
+      super.unmount(elem)
+      return this
+    }
+
+    protected getSingleSPAComponentHook(name: 'mount' | 'unmount') {
+      return Promise.resolve().then(() => {
+        const html = this.cell.getHTML()
+        if (ObjectExt.isPlainObject(html)) {
+          const hook = (html as HTML.SingleSPAComponent)[name]
+          if (typeof hook === 'function') {
+            return hook
+          }
+        }
+        // eslint-disable-next-line
+        return Promise.reject('can not get hook')
+      })
     }
   }
 
@@ -150,8 +218,19 @@ export namespace HTML {
     shouldComponentUpdate: boolean | ((this: Graph, node: HTML) => boolean)
   }
 
+  export type SingleSPAComponentProps = {
+    graph: Graph
+    node: HTML
+    container: Element
+  }
+
+  export type SingleSPAComponent = {
+    mount: (props: SingleSPAComponentProps) => Promise<any>
+    unmount: (props: SingleSPAComponentProps) => Promise<any>
+  }
+
   export const componentRegistry = Registry.create<
-    Component | UpdatableComponent
+    Component | UpdatableComponent | SingleSPAComponent
   >({
     type: 'html componnet',
   })
