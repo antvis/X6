@@ -88,7 +88,7 @@ Group.config({
       stroke: '#808080',
     },
     label: {
-      fontSzie: 12,
+      fontSize: 12,
       fill: '#fff',
       refX: 32,
       refY: 10,
