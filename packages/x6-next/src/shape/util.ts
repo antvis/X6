@@ -1,5 +1,5 @@
 import { ObjectExt } from '@antv/x6-common'
-import { Node } from '../model'
+import { Cell, Node } from '../model'
 import { Markup } from '../view'
 import { Base } from './base'
 
@@ -14,6 +14,45 @@ export function getMarkup(tagName: string, selector = 'body'): Markup {
       selector: 'label',
     },
   ]
+}
+
+export function getImageUrlHook(attrName = 'xlink:href') {
+  const hook: Cell.PropHook = (metadata) => {
+    const { imageUrl, imageWidth, imageHeight, ...others } = metadata
+    if (imageUrl != null || imageWidth != null || imageHeight != null) {
+      const apply = () => {
+        if (others.attrs) {
+          const image = others.attrs.image
+          if (imageUrl != null) {
+            image[attrName] = imageUrl
+          }
+          if (imageWidth != null) {
+            image.width = imageWidth
+          }
+          if (imageHeight != null) {
+            image.height = imageHeight
+          }
+          others.attrs.image = image
+        }
+      }
+
+      if (others.attrs) {
+        if (others.attrs.image == null) {
+          others.attrs.image = {}
+        }
+        apply()
+      } else {
+        others.attrs = {
+          image: {},
+        }
+        apply()
+      }
+    }
+
+    return others
+  }
+
+  return hook
 }
 
 export function createShape(

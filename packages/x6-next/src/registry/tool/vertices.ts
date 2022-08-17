@@ -69,13 +69,6 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
         processHandle(handle)
       }
 
-      this.graph.options.onToolItemCreated({
-        name: 'vertices',
-        cell: this.cell,
-        view: this.cellView,
-        tool: handle,
-      })
-
       handle.updatePosition(vertex.x, vertex.y)
       this.stamp(handle.container)
       this.container.appendChild(handle.container)

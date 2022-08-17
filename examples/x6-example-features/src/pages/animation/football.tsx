@@ -5,12 +5,11 @@ import '../index.less'
 class BallView extends NodeView {
   protected speed: number = 0
   protected angle: number = 0
-  protected timerId: number = 0
   protected edge: Edge | null
 
   protected init() {
-    this.timerId = this.cell.transition('attrs/label/opacity', 1, {
-      delay: (1 + Math.random()) * 3000,
+    this.cell.transition('attrs/label/opacity', 1, {
+      delay: 0,
       duration: 3000,
       timing: 'inout',
       interp: function (a: number, b: number) {
@@ -97,15 +96,11 @@ class BallView extends NodeView {
   }
 
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    console.log('mousedown1')
     // Do not allow drag element while it's still in a transition.
     if (this.cell.getTransitions().indexOf('position') > -1) {
+      console.log('mousedown2')
       return
-    }
-
-    // Cancel displaying 'drag me!' if dragging already starts.
-    if (this.timerId) {
-      clearTimeout(this.timerId)
-      delete this.timerId
     }
 
     this.edge = this.graph.addEdge({
