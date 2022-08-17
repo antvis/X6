@@ -8,7 +8,7 @@ import { PanningManager } from './panning'
 import { MouseWheel } from './mousewheel'
 import { Edge as StandardEdge } from '../shape'
 import { Model, Cell, Node, Edge } from '../model'
-import { View, CellView, NodeView, EdgeView } from '../view'
+import { CellView, NodeView, EdgeView } from '../view'
 import {
   Router,
   Connector,
@@ -45,15 +45,9 @@ export namespace Options {
     preventDefaultBlankAction: boolean
     interacting: CellView.Interacting
 
-    virtualRender?: boolean
+    virtual?: boolean
 
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
-    onToolItemCreated: (args: {
-      name: string
-      cell: Cell
-      view: CellView
-      tool: View
-    }) => void
   }
 
   export interface ManualBooleans {

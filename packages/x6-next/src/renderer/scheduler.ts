@@ -2,13 +2,7 @@ import { KeyValue, Dom } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
-import {
-  queueJob,
-  queueFlush,
-  clearJobs,
-  JOB_PRIORITY,
-  resetTimer,
-} from './queueJob'
+import { queueJob, queueFlush, clearJobs, JOB_PRIORITY } from './queueJob'
 import { FlagManager } from '../view/flag'
 import { Graph } from '../graph'
 
@@ -181,7 +175,6 @@ export class Scheduler {
       )
     })
 
-    resetTimer()
     queueFlush()
   }
 
@@ -222,7 +215,6 @@ export class Scheduler {
       }
     }
 
-    resetTimer()
     queueFlush()
   }
 
