@@ -612,6 +612,13 @@ export class NodeView<
   }
 
   notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+    // Problem: super will call stopBatch before event listeners
+    // attached to this **node** run. Those events will not count
+    // towards this batch, despite being triggered by the same UI event.
+    //
+    // This complicates a lot of stuff e.g. history recording.
+    //
+    // See https://github.com/antvis/X6/issues/2421 for background.
     super.onMouseUp(e, x, y)
     this.notify('node:mouseup', this.getEventArgs(e, x, y))
   }
@@ -907,6 +914,7 @@ export class NodeView<
   }
 
   finalizeEmbedding(e: JQuery.MouseUpEvent, data: EventData.MovingTargetNode) {
+    this.graph.startBatch('embedding')
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const view = graph.findViewByCell(cell)
@@ -940,6 +948,7 @@ export class NodeView<
         currentParent: cell.getParent(),
       })
     }
+    this.graph.stopBatch('embedding')
   }
 
   getDelegatedView() {

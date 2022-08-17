@@ -1,6 +1,8 @@
-import React from 'react'
 import { Button } from 'antd'
+import React from 'react'
+
 import { Graph } from '@antv/x6'
+
 import '../index.less'
 
 export default class Example extends React.Component<
@@ -22,10 +24,13 @@ export default class Example extends React.Component<
       height: 600,
       grid: true,
       history: true,
+      embedding: {
+        enabled: true,
+      },
     })
 
     this.history = graph.history
-    this.history.on('change', () => {
+    this.history.on('change', (info) => {
       this.setState({
         canRedo: this.history.canRedo(),
         canUndo: this.history.canUndo(),
@@ -55,6 +60,21 @@ export default class Example extends React.Component<
       attrs: {
         label: {
           text: 'World',
+        },
+        body: {
+          strokeWidth: 1,
+        },
+      },
+    })
+
+    graph.addNode({
+      x: 400,
+      y: 100,
+      width: 150,
+      height: 150,
+      attrs: {
+        label: {
+          text: '🌎',
         },
         body: {
           strokeWidth: 1,

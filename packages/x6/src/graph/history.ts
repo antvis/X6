@@ -398,6 +398,7 @@ export class HistoryManager
       if (cmds.length > 0) {
         this.redoStack = []
         this.undoStack.push(cmds)
+        this.consolidateCommands()
         this.notify('add', cmds, options)
       }
       this.batchCommands = null
@@ -469,8 +470,65 @@ export class HistoryManager
       this.emit('batch', { cmd, options })
     } else {
       this.undoStack.push(cmd)
+      this.consolidateCommands()
       this.notify('add', cmd, options)
     }
+  }
+
+  /**
+   * Conditionally combine multiple undo items into one.
+   *
+   * Currently this is only used combine a `cell:changed:position` event
+   * followed by multiple `cell:change:parent` and `cell:change:children`
+   * events, such that a "move + embed" action can be undone in one step.
+   *
+   * See https://github.com/antvis/X6/issues/2421
+   *
+   * This is an ugly WORKAROUND. It does not solve deficiencies in the batch
+   * system itself.
+   */
+  private consolidateCommands() {
+    const lastCommandGroup = this.undoStack[this.undoStack.length - 1]
+    const penultimateCommandGroup = this.undoStack[this.undoStack.length - 2]
+
+    // We are looking for at least one cell:change:parent
+    // and one cell:change:children
+    if (!Array.isArray(lastCommandGroup)) {
+      return
+    }
+    const eventTypes = new Set(lastCommandGroup.map((cmd) => cmd.event))
+    if (
+      eventTypes.size !== 2 ||
+      !eventTypes.has('cell:change:parent') ||
+      !eventTypes.has('cell:change:children')
+    ) {
+      return
+    }
+
+    // We are looking for events from user interactions
+    if (!lastCommandGroup.every((cmd) => cmd.batch && cmd.options?.ui)) {
+      return
+    }
+
+    // We are looking for a command group with exactly one event, whose event
+    // type is cell:change:position, and is from user interactions
+    if (
+      !Array.isArray(penultimateCommandGroup) ||
+      penultimateCommandGroup.length !== 1
+    ) {
+      return
+    }
+    const maybePositionChange = penultimateCommandGroup[0]
+    if (
+      maybePositionChange.event !== 'cell:change:position' ||
+      !maybePositionChange.options?.ui
+    ) {
+      return
+    }
+
+    // Actually consolidating the commands we get
+    penultimateCommandGroup.push(...lastCommandGroup)
+    this.undoStack.pop()
   }
 }
 
