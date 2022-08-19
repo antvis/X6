@@ -396,19 +396,22 @@ export class Scroller extends View {
       gridWidth: this.options.pageWidth,
       gridHeight: this.options.pageHeight,
       allowNewOrigin: 'negative',
-      contentArea: this.calcContextArea(),
+      contentArea: this.calcContextArea(resizeOptions),
       ...resizeOptions,
     }
 
     this.graph.fitToContent(this.getFitToContentOptions(options))
   }
 
-  protected calcContextArea() {
-    let resizeOptions =
-      this.options.autoResizeOptions || this.options.fitTocontentOptions
-    if (typeof resizeOptions === 'function') {
-      resizeOptions = FunctionExt.call(resizeOptions, this, this)
-    }
+  protected calcContextArea(
+    resizeOptions:
+      | (TransformManager.FitToContentFullOptions & {
+          direction:
+            | Scroller.AutoResizeDirection
+            | Scroller.AutoResizeDirection[]
+        })
+      | undefined,
+  ) {
     const direction = resizeOptions?.direction
 
     if (!direction) {
