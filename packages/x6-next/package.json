@@ -79,8 +79,8 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "@antv/x6-common": "beta",
-    "@antv/x6-geometry": "beta"
+    "@antv/x6-common": "2.0.1-beta.5",
+    "@antv/x6-geometry": "2.0.1-beta.5"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
