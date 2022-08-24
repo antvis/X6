@@ -1,7 +1,6 @@
 import { NodeView, Scheduler } from '@antv/x6'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 import { VueShape } from './node'
-import { VueComponent } from './registry'
 
 export class VueShapeView extends NodeView<VueShape> {
   private vm: any
@@ -33,31 +32,28 @@ export class VueShapeView extends NodeView<VueShape> {
       const component = this.graph.hook.getVueComponent(node)
       if (isVue2) {
         const Vue = Vue2 as any
-        const div = document.createElement('div')
-        div.style.width = '100%'
-        div.style.height = '100%'
         if (typeof component === 'string') {
-          div.innerHTML = component
-          this.vm = new Vue({ el: div })
+          this.vm = new Vue({ template: component })
         } else {
-          const { template, ...other } = component as VueComponent
-          div.innerHTML = template
           this.vm = new Vue({
-            el: div,
+            render() {
+              // 保留之前的provide，增加传递graph和node
+              return h(component as any, { graph, node } as any)
+            },
             provide() {
               return {
                 getGraph: () => graph,
                 getNode: () => node,
               }
             },
-            ...other,
           })
         }
-        root.appendChild(this.vm.$el)
+        this.vm.$mount(root)
       } else if (isVue3) {
         this.vm = createApp({
           render() {
-            return h(component as any)
+            // 保留之前的provide，增加传递graph和node
+            return h(component as any, { graph, node } as any)
           },
           provide() {
             return {
