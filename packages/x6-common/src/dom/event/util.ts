@@ -173,3 +173,23 @@ export namespace Util {
     return obj != null && obj === obj.window
   }
 }
+
+export namespace Util {
+  export function contains(a: any, b: any) {
+    const adown = a.nodeType === 9 ? a.documentElement : a
+    const bup = b && b.parentNode
+
+    return (
+      a === bup ||
+      !!(
+        bup &&
+        bup.nodeType === 1 &&
+        // Support: IE 9 - 11+
+        // IE doesn't have `contains` on SVG.
+        (adown.contains
+          ? adown.contains(bup)
+          : a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16)
+      )
+    )
+  }
+}
