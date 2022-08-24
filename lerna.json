@@ -1,5 +1,5 @@
 {
-  "version": "independent",
+  "version": "2.0.2-beta.0",
   "npmClient": "yarn",
   "useWorkspaces": true,
   "command": {
@@ -24,5 +24,12 @@
       "pr(refactor)": ":100: Refactoring",
       "pr(test)": ":white_check_mark: Test Case"
     }
-  }
+  },
+  "packages": [
+    "packages/x6-common",
+    "packages/x6-geometry",
+    "packages/x6-next",
+    "packages/x6-react-shape",
+    "packages/x6-vue-shape"
+  ]
 }

@@ -3,6 +3,7 @@ import { EventHook } from './hook'
 import { Store } from './store'
 import { EventObject } from './object'
 import { EventHandler } from './types'
+import './special'
 
 export namespace Core {
   let triggered: string | undefined
