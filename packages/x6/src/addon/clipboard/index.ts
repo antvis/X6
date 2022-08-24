@@ -95,7 +95,9 @@ export class Clipboard {
     }
   }
 
-  isEmpty() {
+  isEmpty(options: Clipboard.PasteOptions = {}) {
+    const localOptions = { ...this.options, ...options }
+    this.deserialize(localOptions)
     return this.cells.length <= 0
   }
 
