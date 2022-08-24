@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell } from '@antv/x6'
+import { Graph, Cell } from '@antv/x6-next'
 import { Bus, Connector, Component, Fader, Aux } from './shapes'
 import '../index.less'
 import './index.less'
@@ -12,9 +12,6 @@ export default class Example extends React.Component {
       container: this.container,
       width: 1000,
       height: 800,
-      async: true,
-      frozen: true,
-      sorting: 'approx',
       translating: {
         restrict: true,
       },
@@ -206,8 +203,6 @@ export default class Example extends React.Component {
       connector24,
       connector25,
     ] as any)
-
-    graph.unfreeze()
   }
 
   refContainer = (container: HTMLDivElement) => {

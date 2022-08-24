@@ -1,4 +1,4 @@
-import { Node, Shape } from '@antv/x6'
+import { Node, Shape } from '@antv/x6-next'
 
 export class Bus extends Shape.Edge {
   static create(x: number, label: string, color: string) {
