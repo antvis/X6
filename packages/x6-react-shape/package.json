@@ -24,7 +24,7 @@
     "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
     "watch": "watch 'yarn build' ./src",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
-    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:watch": "yarn build:esm --w",
     "build:watch:esm": "yarn build:esm --w",

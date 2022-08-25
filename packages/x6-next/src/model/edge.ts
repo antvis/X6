@@ -924,6 +924,7 @@ export namespace Edge {
 
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string
+    priority?: boolean
     anchor?: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
   }
 

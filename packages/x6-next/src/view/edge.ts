@@ -538,9 +538,23 @@ export class EdgeView<
   }
 
   protected findAnchors(vertices: Point.PointLike[]) {
+    const edge = this.cell
+    const source = edge.source as Edge.TerminalCellData
+    const target = edge.target as Edge.TerminalCellData
     const firstVertex = vertices[0]
     const lastVertex = vertices[vertices.length - 1]
 
+    if (target.priority && !source.priority) {
+      // Reversed order
+      return this.findAnchorsOrdered(
+        'target',
+        lastVertex,
+        'source',
+        firstVertex,
+      )
+    }
+
+    // Usual order
     return this.findAnchorsOrdered('source', firstVertex, 'target', lastVertex)
   }
 

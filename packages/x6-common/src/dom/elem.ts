@@ -201,6 +201,21 @@ export function before(
   }
 }
 
+export function after(
+  elem: Element,
+  elems: Element | DocumentFragment | (Element | DocumentFragment)[],
+) {
+  const parent = elem.parentNode
+  if (parent) {
+    const arr = Array.isArray(elems) ? elems : [elems]
+    arr.forEach((child) => {
+      if (child != null) {
+        parent.insertBefore(child, elem.nextSibling)
+      }
+    })
+  }
+}
+
 export function appendTo(elem: Element, target: Element) {
   if (target != null) {
     target.appendChild(elem)
