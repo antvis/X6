@@ -1,11 +1,11 @@
 {
-  "name": "@antv/x6-react-shape",
+  "name": "@antv/x6-plugin-scroller",
   "version": "2.0.2-beta.0",
-  "description": "X6 shape for rendering react components.",
+  "description": "scroller plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6-react-shape.js",
-  "jsdelivr": "dist/x6-react-shape.js",
+  "unpkg": "dist/x6-plugin-scroller.js",
+  "jsdelivr": "dist/x6-plugin-scroller.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
@@ -13,40 +13,30 @@
     "lib"
   ],
   "keywords": [
-    "shape",
-    "react",
-    "render",
+    "plugin",
+    "scroller",
     "x6",
     "antv"
   ],
   "scripts": {
-    "clean": "rimraf dist es lib",
+    "clean:build": "rimraf dist es lib",
+    "clean:coverage": "rimraf ./test/coverage",
+    "clean": "run-p clean:build clean:coverage",
     "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
-    "watch": "watch 'yarn build' ./src",
+    "build:less": "node ./scripts/style",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
+    "build:dev": "run-p build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
     "build:watch:esm": "yarn build:esm --w",
     "build:watch:cjs": "yarn build:cjs --w",
-    "build": "run-p build:cjs build:esm build:umd",
+    "build": "run-p build:dev build:umd",
     "prebuild": "run-s lint clean",
-    "prepare": "yarn build",
-    "precommit": "lint-staged",
-    "release": "release-it"
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${name}@${version}"
-    },
-    "github": {
-      "release": true
-    },
-    "hooks": {
-      "before:init": [
-        "yarn run build"
-      ]
-    }
+    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
+    "pretest": "run-p clean:coverage",
+    "prepare": "run-s test build",
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -59,22 +49,18 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "peerDependencies": {
-    "@antv/x6-common": "2.0.2-beta.0",
-    "@antv/x6-next": "2.0.2-beta.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "@antv/x6-next": "2.0.2-beta.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
-    "@types/node": "^16.9.1",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
+    "coveralls": "^3.1.1",
     "eslint": "^7.32.0",
+    "less": "^4.1.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
@@ -86,14 +72,11 @@
     "eslint-plugin-react": "^7.25.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^36.0.0",
-    "fs-extra": "^10.0.0",
     "lint-staged": "^11.1.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.3.6",
     "prettier": "^2.4.0",
     "pretty-quick": "^3.1.1",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.56.3",
     "rollup-plugin-auto-external": "^2.0.0",
@@ -118,11 +101,10 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/antvis/x6.git",
-    "directory": "packages/x6-react-shape"
+    "directory": "packages/x6-common"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "gitHead": "576fa342fa65a6867ead29f6801a30dcb31bcdb5"
+  }
 }
