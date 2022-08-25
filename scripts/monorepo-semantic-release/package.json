@@ -8,7 +8,7 @@
     "build": "yarn clean && ./node_modules/.bin/tsc"
   },
   "dependencies": {
-    "@actions/core": "^1.2.5",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^4.0.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
