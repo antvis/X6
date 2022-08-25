@@ -20,6 +20,8 @@ import { HighlightManager as Highlight } from './highlight'
 import { CellView } from '../view'
 
 export class Graph extends Basecoat<EventArgs> {
+  private installedPlugins: Set<Graph.Plugin> = new Set()
+
   public readonly options: GraphOptions.Definition
   public readonly css: Css
   public readonly model: Model
@@ -552,6 +554,11 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  resizeGraph(width?: number, height?: number) {
+    this.transform.resize(width, height)
+    return this
+  }
+
   scale(): Dom.Scale
   scale(sx: number, sy?: number, cx?: number, cy?: number): this
   scale(sx?: number, sy: number = sx as number, cx = 0, cy = 0) {
@@ -1035,6 +1042,18 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
+  // #region plugin
+
+  use(plugin: Graph.Plugin, ...options: any[]) {
+    if (!this.installedPlugins.has(plugin)) {
+      this.installedPlugins.add(plugin)
+      plugin.init(this, ...options)
+    }
+    return this
+  }
+
+  // #endregion
+
   // #region dispose
 
   @Basecoat.dispose()
@@ -1053,6 +1072,10 @@ export class Graph extends Basecoat<EventArgs> {
     this.panning.dispose()
     this.view.dispose()
     this.renderer.dispose()
+
+    this.installedPlugins.forEach((plugin) => {
+      plugin.dispose()
+    })
   }
 
   // #endregion
@@ -1168,4 +1191,11 @@ export namespace Graph {
   export const unregisterEdgeAnchor = Registry.EdgeAnchor.registry.unregister
   export const unregisterConnectionPoint =
     Registry.ConnectionPoint.registry.unregister
+}
+
+export namespace Graph {
+  export type Plugin = {
+    init: (graph: Graph, ...options: any[]) => any
+    dispose: () => void
+  }
 }
