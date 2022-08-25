@@ -376,7 +376,9 @@ export namespace Util {
       let tagName = node.tagName
       if (typeof tagName !== 'string') return null
       tagName = tagName.toUpperCase()
-      if (tagName === 'G') {
+      if (Dom.hasClass(node, 'x6-port')) {
+        node = node.nextElementSibling as Element
+      } else if (tagName === 'G') {
         node = node.firstElementChild as Element
       } else if (tagName === 'TITLE') {
         node = node.nextElementSibling as Element

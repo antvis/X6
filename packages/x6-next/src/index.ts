@@ -6,5 +6,6 @@ export * from './view'
 export * from './graph'
 export * from './version'
 export * from './config'
+export * from './util'
 
 export { Shape, Registry }
