@@ -335,12 +335,7 @@ Graph.registerNode("my-count", {
   y: 150,
   width: 150,
   height: 100,
-  component: {
-    template: `<Count />`,
-    components: {
-      Count,
-    },
-  },
+  component: Count,
 });
 
 graph.addNode({
@@ -439,12 +434,7 @@ Graph.registerNode("my-count", {
   y: 150,
   width: 150,
   height: 100,
-  component: {
-    template: `<Count />`,
-    components: {
-      Count,
-    },
-  },
+  component: Count,
 });
 ```
 
@@ -465,16 +455,7 @@ graph.addNode({
 使用 `Graph.registerVueComponent(...)` 方法将 Vue 组件注册到系统中。
 
 ```ts
-Graph.registerVueComponent(
-  "count",
-  {
-    template: `<Count />`,
-    components: {
-      Count,
-    },
-  },
-  true
-);
+Graph.registerVueComponent("count", Count, true);
 ```
 
 然后将节点的 `component` 属性指定为注册的组件名。
