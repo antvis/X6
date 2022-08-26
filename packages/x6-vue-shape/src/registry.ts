@@ -1,14 +1,9 @@
 import { Graph, Node, Registry } from '@antv/x6'
+import { ComponentInstance } from 'vue-demi'
 
-export type VueComponent = {
-  template: string
-  data?: { [key: string]: any }
-  components?: { [key: string]: any }
-  computed?: { [key: string]: any }
-  methods?: { [key: string]: any }
-}
+export declare type VueComponent = ComponentInstance
 
-export type Definition =
+export declare type Definition =
   | VueComponent
   | ((this: Graph, node: Node) => VueComponent)
 

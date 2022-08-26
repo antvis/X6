@@ -37,7 +37,7 @@ export function useTeleport(uniqViewId: string) {
           render: () =>
             (getContainer()
               ? h(Teleport, { to: getContainer() } as typeof VNodeData, [
-                  h(component),
+                  h(component, { graph, node } as any),
                 ])
               : null) as typeof VNode,
           provide: () => ({
