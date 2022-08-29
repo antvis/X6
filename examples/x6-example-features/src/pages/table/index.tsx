@@ -6,7 +6,7 @@ import { generateData, parsePorts } from './data'
 import { getPortsDefinition } from './port'
 import { Component } from './component'
 import './view'
-import '../../index.less'
+import '../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
