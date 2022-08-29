@@ -1,41 +1,40 @@
-import React from 'react'
-import { Graph, Node, Color } from '@antv/x6'
-import { Portal } from '@antv/x6-react-shape'
+import React, { useContext } from 'react'
+import { Graph } from '@antv/x6-next'
+import { register, Portal } from '@antv/x6-react-shape'
+import { Button } from 'antd'
 import '../index.less'
+import './index.less'
 
-class MyComponent extends React.Component<{ node?: Node; text: string }> {
-  shouldComponentUpdate() {
-    const node = this.props.node
-    if (node) {
-      if (node.hasChanged('data')) {
-        return true
-      }
-    }
+const X6ReactPortalProvider = Portal.getProvider() // 注意，一个 graph 只能申明一个 portal provider
+const ThemeContext = React.createContext('light')
 
-    return false
-  }
+const NodeComponent = () => {
+  const theme = useContext(ThemeContext)
 
-  render() {
-    const color = Color.randomHex()
-    return (
-      <div
-        style={{
-          color: Color.invert(color, true),
-          width: '100%',
-          height: '100%',
-          textAlign: 'center',
-          lineHeight: '60px',
-          background: color,
-        }}
-      >
-        {this.props.text}
-      </div>
-    )
-  }
+  return (
+    <div className={`react-algo-node ${theme === 'light' ? 'light' : 'dark'}`}>
+      <img
+        src="https://gw.alipayobjects.com/zos/bmw-prod/d9f3b597-3a2e-49c3-8469-64a1168ed779.svg"
+        alt=""
+      />
+      <span>逻辑回归</span>
+    </div>
+  )
 }
+
+register(NodeComponent, {
+  shape: 'custom-node',
+  width: 144,
+  height: 28,
+  effect: [],
+})
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
+
+  state = {
+    theme: 'light',
+  }
 
   componentDidMount() {
     const graph = new Graph({
@@ -44,42 +43,20 @@ export default class Example extends React.Component {
       height: 600,
     })
 
-    const source = graph.addNode({
-      shape: 'react-shape',
+    graph.addNode({
+      shape: 'custom-node',
       x: 80,
       y: 80,
-      width: 160,
-      height: 60,
-      data: {},
-      xxx: {},
-      component: <MyComponent text="Source" />,
-    })
-
-    const target = graph.addNode({
-      shape: 'react-shape',
-      x: 320,
-      y: 320,
-      width: 160,
-      height: 60,
-      component: (node) => {
-        return <div>{node.attr('body/fill')}</div>
+      data: {
+        name: '逻辑回归',
       },
-      // component: () => <Test text="target" />,
     })
+  }
 
-    graph.addEdge({
-      source,
-      target,
+  changeTheme = () => {
+    this.setState({
+      theme: this.state.theme === 'light' ? 'dark' : 'light',
     })
-
-    const update = () => {
-      target.prop('attrs/body/fill', Color.randomHex())
-      setTimeout(update, 1000)
-    }
-
-    update()
-
-    console.log(graph.toJSON())
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -87,10 +64,16 @@ export default class Example extends React.Component {
   }
 
   render() {
-    const X6ReactPortalProvider = Portal.getProvider()
     return (
       <div className="x6-graph-wrap">
-        <X6ReactPortalProvider />
+        <ThemeContext.Provider value={this.state.theme}>
+          <X6ReactPortalProvider />
+        </ThemeContext.Provider>
+        <div className="x6-graph-tools">
+          <Button onClick={this.changeTheme}>
+            {this.state.theme === 'light' ? 'Light' : 'Dark'}
+          </Button>
+        </div>
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
