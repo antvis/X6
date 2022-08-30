@@ -584,7 +584,13 @@ export namespace AttrManager {
     delay?: Attr.ComplexAttrs | undefined
   }
 
-  export const CASE_SENSITIVE_ATTR = ['viewBox']
+  export const CASE_SENSITIVE_ATTR = [
+    'viewBox',
+    'attributeName',
+    'attributeType',
+    'repeatCount',
+  ]
+  
   export const DELAY_ATTRS = [
     'text',
     'textWrap',
