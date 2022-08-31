@@ -4,6 +4,7 @@ import { Graph, Node } from '@antv/x6-next'
 export type ReactShapeConfig = Node.Properties & {
   shape: string
   effect?: (keyof Node.Properties)[]
+  inherit?: string
 }
 
 export const shapeMaps: Record<
@@ -18,7 +19,7 @@ export function register(
   componentOrFC: React.ComponentType,
   config: ReactShapeConfig,
 ) {
-  const { shape, effect, ...others } = config
+  const { shape, effect, inherit, ...others } = config
   if (!shape) {
     throw new Error('should specify shape in config')
   }
@@ -30,7 +31,7 @@ export function register(
   Graph.registerNode(
     shape,
     {
-      inherit: 'react-shape',
+      inherit: inherit || 'react-shape',
       ...others,
     },
     true,

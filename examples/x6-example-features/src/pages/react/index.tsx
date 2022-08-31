@@ -19,7 +19,7 @@ const NodeComponent = ({ node }: { node: Node }) => {
 }
 
 register(NodeComponent, {
-  shape: 'custom-node',
+  shape: 'algo-node-1',
   width: 144,
   height: 28,
   effect: ['data'],
@@ -37,7 +37,7 @@ export default class Example extends React.Component {
     })
 
     const node = graph.addNode({
-      shape: 'custom-node',
+      shape: 'algo-node-1',
       x: 80,
       y: 80,
       data: {
