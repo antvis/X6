@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-scroller",
-  "version": "2.0.2-beta.0",
+  "version": "2.0.3-beta.0",
   "description": "scroller plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -60,7 +60,6 @@
     "@typescript-eslint/parser": "^4.31.0",
     "coveralls": "^3.1.1",
     "eslint": "^7.32.0",
-    "less": "^4.1.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
@@ -72,6 +71,7 @@
     "eslint-plugin-react": "^7.25.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^36.0.0",
+    "less": "^4.1.1",
     "lint-staged": "^11.1.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.3.6",
