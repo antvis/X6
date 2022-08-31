@@ -1,8 +1,15 @@
 import React from 'react'
 import { Graph, Node } from '@antv/x6-next'
-import { register } from '@antv/x6-react-shape'
+import { ReactShape, register } from '@antv/x6-react-shape'
 import '../index.less'
 import './index.less'
+
+class GroupNode extends ReactShape {
+  isGroup() {
+    return true
+  }
+}
+Graph.registerNode('group-node', GroupNode, true)
 
 const NodeComponent = ({ node }: { node: Node }) => {
   const data = node.getData()
@@ -19,10 +26,11 @@ const NodeComponent = ({ node }: { node: Node }) => {
 }
 
 register(NodeComponent, {
-  shape: 'algo-node-1',
+  shape: 'algo-node-3',
   width: 144,
   height: 28,
   effect: ['data'],
+  inherit: 'group-node',
 })
 
 export default class Example extends React.Component {
@@ -36,14 +44,16 @@ export default class Example extends React.Component {
       height: 600,
     })
 
-    const node = graph.addNode({
-      shape: 'algo-node-1',
+    const node = graph.createNode({
+      shape: 'algo-node-3',
       x: 80,
       y: 80,
       data: {
         name: '逻辑回归',
       },
     })
+
+    console.log(node.isGroup())
 
     const update = () => {
       node.setData({ name: `逻辑回归 ${(this.count += 1)}` })
