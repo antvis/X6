@@ -390,14 +390,6 @@ disableAutoResize(): this
 
 关闭自动扩充/缩小画布
 
-### update()
-
-```sign
-update(): this
-```
-
-更新画布
-
 ### lockScroller()
 
 ```sign
