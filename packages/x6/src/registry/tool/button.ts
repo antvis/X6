@@ -80,10 +80,12 @@ export class Button extends ToolsView.ToolItem<
     let tangent
     let position
     let angle
-    if (NumberExt.isPercentage(distance)) {
-      tangent = view.getTangentAtRatio(parseFloat(distance) / 100)
+
+    const d = NumberExt.normalizePercentage(distance, 1)
+    if (d >= 0 && d <= 1) {
+      tangent = view.getTangentAtRatio(d)
     } else {
-      tangent = view.getTangentAtLength(distance)
+      tangent = view.getTangentAtLength(d)
     }
 
     if (tangent) {
