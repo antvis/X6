@@ -293,6 +293,7 @@ export class Selection extends View<Selection.EventArgs> {
       offsetY: y,
       scrollerX: 0,
       scrollerY: 0,
+      moving: false,
     })
 
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
