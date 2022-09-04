@@ -14,7 +14,7 @@ export class CellEditor extends ToolsView.ToolItem<
 
   render() {
     this.createElement()
-    this.update()
+    this.updateEditor()
     this.autoFocus()
     this.delegateDocumentEvents(this.options.documentEvents!)
 
@@ -33,7 +33,7 @@ export class CellEditor extends ToolsView.ToolItem<
     this.container.appendChild(this.editor)
   }
 
-  update() {
+  updateEditor() {
     const { graph, cell, editor } = this
     const style = editor.style
 
