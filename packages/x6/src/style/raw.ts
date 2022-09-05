@@ -7,6 +7,7 @@
 export const content = `.x6-graph {
   position: relative;
   outline: none;
+  touch-action: none;
 }
 .x6-graph-background,
 .x6-graph-grid,
