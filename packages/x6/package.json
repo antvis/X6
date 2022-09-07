@@ -48,8 +48,7 @@
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
     "prepare": "run-s build:version test build",
-    "precommit": "lint-staged",
-    "release": "release-it"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.less": [
@@ -58,20 +57,6 @@
     "src/**/*.ts": [
       "eslint --fix"
     ]
-  },
-  "release-it": {
-    "git": {
-      "tagName": "@antv/x6@${version}",
-      "commitMessage": "chore: release ${name}@${version}"
-    },
-    "github": {
-      "release": true
-    },
-    "hooks": {
-      "before:init": [
-        "yarn run build"
-      ]
-    }
   },
   "inherits": [
     "@antv/x6-package-json/cli.json",
