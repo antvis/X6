@@ -333,17 +333,18 @@ export class NodeView<
       portContentSelectors,
     }
 
-    // todo
-    // this.graph.hook.onPortRendered({
-    //   port,
-    //   node: this.cell,
-    //   container: portElement,
-    //   selectors: portSelectors,
-    //   labelContainer: portLabelElement,
-    //   labelSelectors: portLabelSelectors,
-    //   contentContainer: portContentElement,
-    //   contentSelectors: portContentSelectors,
-    // })
+    if (this.graph.options.onPortRendered) {
+      this.graph.options.onPortRendered({
+        port,
+        node: this.cell,
+        container: portElement,
+        selectors: portSelectors,
+        labelContainer: portLabelElement,
+        labelSelectors: portLabelSelectors,
+        contentContainer: portContentElement,
+        contentSelectors: portContentSelectors,
+      })
+    }
 
     return portElement
   }

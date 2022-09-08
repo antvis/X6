@@ -8,7 +8,7 @@ import { PanningManager } from './panning'
 import { MouseWheel } from './mousewheel'
 import { Edge as StandardEdge } from '../shape'
 import { Model, Cell, Node, Edge } from '../model'
-import { CellView, NodeView, EdgeView } from '../view'
+import { CellView, NodeView, EdgeView, Markup } from '../view'
 import {
   Router,
   Connector,
@@ -17,6 +17,7 @@ import {
   ConnectionPoint,
 } from '../registry'
 import { HighlightManager } from './highlight'
+import { PortManager } from '../model/port'
 
 export namespace Options {
   interface Common {
@@ -48,6 +49,8 @@ export namespace Options {
     virtual?: boolean
 
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
+
+    onPortRendered?: (args: OnPortRenderedArgs) => void
   }
 
   export interface ManualBooleans {
@@ -358,6 +361,19 @@ export namespace Options {
     })
 
     return result
+  }
+}
+
+export namespace Options {
+  export interface OnPortRenderedArgs {
+    node: Node
+    port: PortManager.Port
+    container: Element
+    selectors?: Markup.Selectors
+    labelContainer?: Element
+    labelSelectors?: Markup.Selectors | null
+    contentContainer: Element
+    contentSelectors?: Markup.Selectors
   }
 }
 
