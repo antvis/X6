@@ -49,7 +49,7 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "peerDependencies": {
-    "@antv/x6-next": "2.0.2-beta.0"
+    "@antv/x6-next": "beta"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
