@@ -15,6 +15,4 @@ redirect_from:
 
 欢迎各界 X6 使用者、图可视化爱好者加入 X6 图可视化交流群（钉钉群，使用钉钉扫一扫加入）讨论与交流。
 
-<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Up-4S4v8H-0AAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群1" width="375" />
-<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*5FhnSb3ewfQAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群2" width="375" />
-<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*KHB4QJAsW4QAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群3" width="375" />
+<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*nFa5TaWsSOoAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群4" width="375" />
