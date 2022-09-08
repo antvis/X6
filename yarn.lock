@@ -296,6 +296,19 @@
   resolved "https://registry.npmjs.org/@antv/x6-geometry/-/x6-geometry-2.0.1-beta.5.tgz#66852e1d1b30e88fd654dd0e62925da2d23e1628"
   integrity sha512-E5ba3j3pKMdRgzCc8pjApc9mmW9JBoVcwNdyqOghIfhHjBd40IhciNvkzwbCclvbmC4nh8qj4mVzLf+1GXVJaA==
 
+"@antv/x6-react-components@^1.1.16":
+  version "1.1.16"
+  resolved "https://registry.npmjs.org/@antv/x6-react-components/-/x6-react-components-1.1.16.tgz#51db627d542364d1b0986b2e3f178c166ec114dd"
+  integrity sha512-T4RLhQo+uAhi3ZFQ5QbevLDQJVgNhN1OsquXwa6UlIDlyqtsCpC/+Y0LiErg0GbBcMCYQe1sGS1lUStpj+tG2w==
+  dependencies:
+    clamp "^1.0.1"
+    classnames "^2.2.6"
+    rc-dropdown "^3.0.0-alpha.0"
+    rc-util "^4.15.7"
+    react-color "2.17.1"
+    react-resize-detector "^6.6.4"
+    ua-parser-js "^0.7.20"
+
 "@antv/x6-react-shape@^1.6.0":
   version "1.6.0"
   resolved "https://registry.npmjs.org/@antv/x6-react-shape/-/x6-react-shape-1.6.0.tgz#62f63a8480bf0f9f3f2abf847625b181f401f926"
