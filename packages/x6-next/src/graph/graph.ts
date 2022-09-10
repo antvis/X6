@@ -1052,6 +1052,18 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  getPlugin(pluginName: string) {
+    let result: Graph.Plugin | undefined
+
+    this.installedPlugins.forEach((plugin) => {
+      if (plugin.name === pluginName) {
+        result = plugin
+      }
+    })
+
+    return result
+  }
+
   // #endregion
 
   // #region dispose
@@ -1195,6 +1207,7 @@ export namespace Graph {
 
 export namespace Graph {
   export type Plugin = {
+    name: string
     init: (graph: Graph, ...options: any[]) => any
     dispose: () => void
   }

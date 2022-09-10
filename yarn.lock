@@ -284,26 +284,6 @@
   dependencies:
     tslib "^2.0.3"
 
-"@antv/x6-common@beta":
-  version "2.0.1-beta.5"
-  resolved "https://registry.npmjs.org/@antv/x6-common/-/x6-common-2.0.1-beta.5.tgz#82d637e1d7494f6830760873c7366a3d5164cbd0"
-  integrity sha512-EmsWptUEW234ZrG4RaOzA+eJAY6wf3S+xgEWw/bqyXN0fOn9LhYJVIWWj+CPOrlLULoZMhnCTvF/pTwcVQOMTQ==
-  dependencies:
-    lodash-es "^4.17.15"
-
-"@antv/x6-geometry@beta":
-  version "2.0.1-beta.5"
-  resolved "https://registry.npmjs.org/@antv/x6-geometry/-/x6-geometry-2.0.1-beta.5.tgz#66852e1d1b30e88fd654dd0e62925da2d23e1628"
-  integrity sha512-E5ba3j3pKMdRgzCc8pjApc9mmW9JBoVcwNdyqOghIfhHjBd40IhciNvkzwbCclvbmC4nh8qj4mVzLf+1GXVJaA==
-
-"@antv/x6-next@^2.0.3-beta.0":
-  version "2.0.3-beta.0"
-  resolved "https://registry.npmjs.org/@antv/x6-next/-/x6-next-2.0.3-beta.0.tgz#7b0166df17218dbf0a68f1a11a367962eb39c92d"
-  integrity sha512-FTTyAE6pFL3e/+9qAaHyvwn5rfwooNnNmz//6umDmiitGJl8xBfhAXmw9JLncixcMzvVZQtpCuiS95rENcjSDA==
-  dependencies:
-    "@antv/x6-common" "^2.0.3-beta.0"
-    "@antv/x6-geometry" "^2.0.3-beta.0"
-
 "@antv/x6-react-components@^1.1.16":
   version "1.1.16"
   resolved "https://registry.npmjs.org/@antv/x6-react-components/-/x6-react-components-1.1.16.tgz#51db627d542364d1b0986b2e3f178c166ec114dd"
@@ -321,11 +301,6 @@
   version "1.6.0"
   resolved "https://registry.npmjs.org/@antv/x6-react-shape/-/x6-react-shape-1.6.0.tgz#62f63a8480bf0f9f3f2abf847625b181f401f926"
   integrity sha512-sz5sEYUZq9Cm0DpajbPL21N21gowAeMDHfemGuzaVI5Ud07/JS6393spaopcqljVQAY8r7qL+jxxQnWP8hDIBg==
-
-"@antv/x6-react-shape@^2.0.3-beta.0":
-  version "2.0.3-beta.0"
-  resolved "https://registry.npmjs.org/@antv/x6-react-shape/-/x6-react-shape-2.0.3-beta.0.tgz#9fdfd399bd20896bfbd2f69dda06faef348465e0"
-  integrity sha512-8s2sIUDEEWE73Sr37jdoU+9mQe/f3p+wrwBe97TvOImWiqZSMsj9sULMAnsdO8e++ctjXPu/1fa/P4eJmNhXxg==
 
 "@ardatan/aggregate-error@0.0.6":
   version "0.0.6"
