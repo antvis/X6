@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph } from '@antv/x6-next'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -11,17 +12,28 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: true,
-      selecting: {
+      // selecting: {
+      //   enabled: true,
+      //   showNodeSelectionBox: true,
+      // },
+      // clipboard: {
+      //   enabled: true,
+      // },
+      // keyboard: {
+      //   enabled: true,
+      //   global: false,
+      // },
+    })
+
+    graph.use(
+      new Keyboard({
         enabled: true,
-        showNodeSelectionBox: true,
-      },
-      clipboard: {
-        enabled: true,
-      },
-      keyboard: {
-        enabled: true,
-        global: false,
-      },
+      }),
+    )
+
+    const keyboard = graph.getPlugin('keyboard') as Keyboard
+    keyboard.bindKey('backspace', () => {
+      console.log('backspace')
     })
 
     graph.addNode({
@@ -48,30 +60,30 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'C' } },
     })
 
-    graph.bindKey('meta+c', () => {
-      const cells = graph.getSelectedCells()
-      if (cells.length) {
-        graph.copy(cells)
-      }
-      return false
-    })
+    // graph.bindKey('meta+c', () => {
+    //   const cells = graph.getSelectedCells()
+    //   if (cells.length) {
+    //     graph.copy(cells)
+    //   }
+    //   return false
+    // })
 
-    graph.bindKey('meta+v', () => {
-      if (!graph.isClipboardEmpty()) {
-        const cells = graph.paste({ offset: 32 })
-        graph.resetSelection(cells)
-      }
-      console.log(graph.toJSON())
-      return false
-    })
+    // graph.bindKey('meta+v', () => {
+    //   if (!graph.isClipboardEmpty()) {
+    //     const cells = graph.paste({ offset: 32 })
+    //     graph.resetSelection(cells)
+    //   }
+    //   console.log(graph.toJSON())
+    //   return false
+    // })
 
-    graph.bindKey('backspace', () => {
-      graph.removeCells(graph.getSelectedCells())
-    })
+    // graph.bindKey('backspace', () => {
+    //   graph.removeCells(graph.getSelectedCells())
+    // })
 
-    graph.on('selection:changed', ({ selected }) => {
-      console.log(selected)
-    })
+    // graph.on('selection:changed', ({ selected }) => {
+    //   console.log(selected)
+    // })
   }
 
   refContainer = (container: HTMLDivElement) => {
