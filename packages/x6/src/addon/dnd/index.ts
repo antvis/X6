@@ -338,8 +338,14 @@ export class Dnd extends View {
 
   protected isInsideValidArea(p: Point.PointLike) {
     let targetRect: Rectangle
+    let dndRect: Rectangle | null = null
     const targetGraph = this.targetGraph
     const targetScroller = this.targetScroller
+
+    if (this.options.dndContainer) {
+      dndRect = this.getDropArea(this.options.dndContainer)
+    }
+    const isInsideDndRect = dndRect && dndRect.containsPoint(p)
 
     if (targetScroller) {
       if (targetScroller.options.autoResize) {
@@ -354,7 +360,7 @@ export class Dnd extends View {
       targetRect = this.getDropArea(targetGraph.container)
     }
 
-    return targetRect && targetRect.containsPoint(p)
+    return !isInsideDndRect && targetRect && targetRect.containsPoint(p)
   }
 
   protected getDropArea(elem: Element) {
@@ -457,6 +463,10 @@ export namespace Dnd {
           easing?: string
         }
     containerParent?: HTMLElement
+    /**
+     * dnd tool box container.
+     */
+    dndContainer?: HTMLElement
     getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
     getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
     validateNode?: (
