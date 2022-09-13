@@ -11,7 +11,10 @@ export class Keyboard extends Disposable {
   }
 
   public init(graph: Graph) {
-    this.keyboard = new KeyboardImpl(this.options, graph)
+    this.keyboard = new KeyboardImpl({
+      ...this.options,
+      graph,
+    })
   }
 
   isKeyboardEnabled() {
