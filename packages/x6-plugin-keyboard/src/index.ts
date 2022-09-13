@@ -10,7 +10,7 @@ export class Keyboard extends Disposable {
     super()
   }
 
-  protected init(graph: Graph) {
+  public init(graph: Graph) {
     this.keyboard = new KeyboardImpl(this.options, graph)
   }
 

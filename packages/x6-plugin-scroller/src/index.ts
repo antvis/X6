@@ -23,7 +23,7 @@ export class Scroller extends Disposable {
     return false
   }
 
-  protected init(graph: Graph) {
+  public init(graph: Graph) {
     this.graph = graph
     CssLoader.ensure('scroller', content)
     this.scrollerImpl = new ScrollerImpl({
