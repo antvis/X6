@@ -17,5 +17,7 @@ wait
 
 lerna run build --stream --scope @antv/x6-vue-shape \
                          --scope @antv/x6-react-shape \
+                         --scope @antv/x6-plugin-keyboard \
+                         --scope @antv/x6-plugin-scroller
 
 wait
