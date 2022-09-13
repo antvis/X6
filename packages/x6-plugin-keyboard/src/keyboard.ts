@@ -7,9 +7,12 @@ export class KeyboardImpl extends Disposable implements IDisablable {
   private readonly container: HTMLElement
   private readonly mousetrap: Mousetrap.MousetrapInstance
 
+  private get graph() {
+    return this.options.graph
+  }
+
   constructor(
-    private readonly options: KeyboardImpl.Options,
-    private readonly graph: Graph,
+    private readonly options: KeyboardImpl.Options & { graph: Graph },
   ) {
     super()
 
@@ -149,7 +152,6 @@ export namespace KeyboardImpl {
   export type Handler = (e: KeyboardEvent) => void
 
   export interface Options {
-    graph: Graph
     enabled?: boolean
 
     /**
