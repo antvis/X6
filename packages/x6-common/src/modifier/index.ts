@@ -1,3 +1,5 @@
+import { Dom } from '../dom'
+
 export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift'
 
 // eslint-disable-next-line
@@ -51,7 +53,7 @@ export namespace ModifierKey {
   }
 
   export function isMatch(
-    e: JQuery.TriggeredEvent | WheelEvent,
+    e: Dom.EventObject | WheelEvent,
     modifiers?: string | ModifierKey[] | null,
     strict?: boolean,
   ) {
