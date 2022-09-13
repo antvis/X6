@@ -918,139 +918,136 @@ export class ScrollerImpl extends View {
     return this.zoomToRect(this.graph.getContentArea(options), options)
   }
 
-  // todo
-  // transitionToPoint(
-  //   p: Point.PointLike,
-  //   options?: ScrollerImpl.TransitionOptions,
-  // ): this
-  // transitionToPoint(
-  //   x: number,
-  //   y: number,
-  //   options?: ScrollerImpl.TransitionOptions,
-  // ): this
-  // transitionToPoint(
-  //   x: number | Point.PointLike,
-  //   y?: number | ScrollerImpl.TransitionOptions,
-  //   options?: ScrollerImpl.TransitionOptions,
-  // ) {
-  //   if (typeof x === 'object') {
-  //     options = y as ScrollerImpl.TransitionOptions // eslint-disable-line
-  //     y = x.y // eslint-disable-line
-  //     x = x.x // eslint-disable-line
-  //   } else {
-  //     y = y as number // eslint-disable-line
-  //   }
+  transitionToPoint(
+    p: Point.PointLike,
+    options?: ScrollerImpl.TransitionOptions,
+  ): this
+  transitionToPoint(
+    x: number,
+    y: number,
+    options?: ScrollerImpl.TransitionOptions,
+  ): this
+  transitionToPoint(
+    x: number | Point.PointLike,
+    y?: number | ScrollerImpl.TransitionOptions,
+    options?: ScrollerImpl.TransitionOptions,
+  ) {
+    if (typeof x === 'object') {
+      options = y as ScrollerImpl.TransitionOptions // eslint-disable-line
+      y = x.y // eslint-disable-line
+      x = x.x // eslint-disable-line
+    } else {
+      y = y as number // eslint-disable-line
+    }
 
-  //   if (options == null) {
-  //     options = {} // eslint-disable-line
-  //   }
+    if (options == null) {
+      options = {} // eslint-disable-line
+    }
 
-  //   let transform
-  //   let transformOrigin
-  //   const scale = this.sx
-  //   const targetScale = Math.max(options.scale || scale, 0.000001)
-  //   const clientSize = this.getClientSize()
-  //   const targetPoint = new Point(x, y)
-  //   const localPoint = this.clientToLocalPoint(
-  //     clientSize.width / 2,
-  //     clientSize.height / 2,
-  //   )
+    let transform
+    let transformOrigin
+    const scale = this.sx
+    const targetScale = Math.max(options.scale || scale, 0.000001)
+    const clientSize = this.getClientSize()
+    const targetPoint = new Point(x, y)
+    const localPoint = this.clientToLocalPoint(
+      clientSize.width / 2,
+      clientSize.height / 2,
+    )
 
-  //   if (scale === targetScale) {
-  //     const translate = localPoint.diff(targetPoint).scale(scale, scale).round()
-  //     transform = `translate(${translate.x}px,${translate.y}px)`
-  //   } else {
-  //     const delta =
-  //       (targetScale / (scale - targetScale)) * targetPoint.distance(localPoint)
-  //     const range = localPoint.clone().move(targetPoint, delta)
-  //     const origin = this.localToBackgroundPoint(range).round()
-  //     transform = `scale(${targetScale / scale})`
-  //     transformOrigin = `${origin.x}px ${origin.y}px`
-  //   }
+    if (scale === targetScale) {
+      const translate = localPoint.diff(targetPoint).scale(scale, scale).round()
+      transform = `translate(${translate.x}px,${translate.y}px)`
+    } else {
+      const delta =
+        (targetScale / (scale - targetScale)) * targetPoint.distance(localPoint)
+      const range = localPoint.clone().move(targetPoint, delta)
+      const origin = this.localToBackgroundPoint(range).round()
+      transform = `scale(${targetScale / scale})`
+      transformOrigin = `${origin.x}px ${origin.y}px`
+    }
 
-  //   const onTransitionEnd = options.onTransitionEnd
-  //   this.$container.addClass(Util.transitionClassName)
-  //   this.$content
-  //     .off(Util.transitionEventName)
-  //     .on(Util.transitionEventName, (e) => {
-  //       this.syncTransition(targetScale, { x: x as number, y: y as number })
-  //       if (typeof onTransitionEnd === 'function') {
-  //         FunctionExt.call(
-  //           onTransitionEnd,
-  //           this,
-  //           e.originalEvent as TransitionEvent,
-  //         )
-  //       }
-  //     })
-  //     .css({
-  //       transform,
-  //       transformOrigin,
-  //       transition: 'transform',
-  //       transitionDuration: options.duration || '1s',
-  //       transitionDelay: options.delay,
-  //       transitionTimingFunction: options.timing,
-  //     } as JQuery.PlainObject<string>)
+    const onTransitionEnd = options.onTransitionEnd
+    Dom.addClass(this.container, ScrollerImpl.transitionClassName)
+    Dom.Event.off(this.content, ScrollerImpl.transitionEventName)
+    Dom.Event.on(this.content, ScrollerImpl.transitionEventName, (e) => {
+      this.syncTransition(targetScale, { x: x as number, y: y as number })
+      if (typeof onTransitionEnd === 'function') {
+        FunctionExt.call(
+          onTransitionEnd,
+          this,
+          e.originalEvent as TransitionEvent,
+        )
+      }
+    })
+    Dom.css(this.content, {
+      transform,
+      transformOrigin,
+      transition: 'transform',
+      transitionDuration: options.duration || '1s',
+      transitionDelay: options.delay,
+      transitionTimingFunction: options.timing,
+    } as Record<string, string>)
 
-  //   return this
-  // }
+    return this
+  }
 
-  // todo
-  // protected syncTransition(scale: number, p: Point.PointLike) {
-  //   this.beforeManipulation()
-  //   this.graph.scale(scale)
-  //   this.removeTransition()
-  //   this.centerPoint(p.x, p.y)
-  //   this.afterManipulation()
-  //   return this
-  // }
+  protected syncTransition(scale: number, p: Point.PointLike) {
+    this.beforeManipulation()
+    this.graph.scale(scale)
+    this.removeTransition()
+    this.centerPoint(p.x, p.y)
+    this.afterManipulation()
+    return this
+  }
 
-  // todo
-  // protected removeTransition() {
-  //   this.$container.removeClass(Util.transitionClassName)
-  //   this.$content.off(Util.transitionEventName).css({
-  //     transform: '',
-  //     transformOrigin: '',
-  //     transition: '',
-  //     transitionDuration: '',
-  //     transitionDelay: '',
-  //     transitionTimingFunction: '',
-  //   })
-  //   return this
-  // }
+  protected removeTransition() {
+    Dom.removeClass(this.container, ScrollerImpl.transitionClassName)
+    Dom.Event.off(this.container, ScrollerImpl.transitionEventName)
+    Dom.css(this.container, {
+      transform: '',
+      transformOrigin: '',
+      transition: '',
+      transitionDuration: '',
+      transitionDelay: '',
+      transitionTimingFunction: '',
+    })
+    return this
+  }
 
-  // transitionToRect(
-  //   rectangle: Rectangle.RectangleLike,
-  //   options: Scroller.TransitionToRectOptions = {},
-  // ) {
-  //   const rect = Rectangle.create(rectangle)
-  //   const maxScale = options.maxScale || Infinity
-  //   const minScale = options.minScale || Number.MIN_VALUE
-  //   const scaleGrid = options.scaleGrid || null
-  //   const PIXEL_SIZE = options.visibility || 1
-  //   const center = options.center
-  //     ? Point.create(options.center)
-  //     : rect.getCenter()
-  //   const clientSize = this.getClientSize()
-  //   const w = clientSize.width * PIXEL_SIZE
-  //   const h = clientSize.height * PIXEL_SIZE
-  //   let scale = new Rectangle(
-  //     center.x - w / 2,
-  //     center.y - h / 2,
-  //     w,
-  //     h,
-  //   ).getMaxUniformScaleToFit(rect, center)
+  transitionToRect(
+    rectangle: Rectangle.RectangleLike,
+    options: ScrollerImpl.TransitionToRectOptions = {},
+  ) {
+    const rect = Rectangle.create(rectangle)
+    const maxScale = options.maxScale || Infinity
+    const minScale = options.minScale || Number.MIN_VALUE
+    const scaleGrid = options.scaleGrid || null
+    const PIXEL_SIZE = options.visibility || 1
+    const center = options.center
+      ? Point.create(options.center)
+      : rect.getCenter()
+    const clientSize = this.getClientSize()
+    const w = clientSize.width * PIXEL_SIZE
+    const h = clientSize.height * PIXEL_SIZE
+    let scale = new Rectangle(
+      center.x - w / 2,
+      center.y - h / 2,
+      w,
+      h,
+    ).getMaxUniformScaleToFit(rect, center)
 
-  //   scale = Math.min(scale, maxScale)
-  //   if (scaleGrid) {
-  //     scale = Math.floor(scale / scaleGrid) * scaleGrid
-  //   }
-  //   scale = Math.max(minScale, scale)
+    scale = Math.min(scale, maxScale)
+    if (scaleGrid) {
+      scale = Math.floor(scale / scaleGrid) * scaleGrid
+    }
+    scale = Math.max(minScale, scale)
 
-  //   return this.transitionToPoint(center, {
-  //     scale,
-  //     ...options,
-  //   })
-  // }
+    return this.transitionToPoint(center, {
+      scale,
+      ...options,
+    })
+  }
 
   startPanning(evt: Dom.MouseDownEvent) {
     const e = this.normalizeEvent(evt)
