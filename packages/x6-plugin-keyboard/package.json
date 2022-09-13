@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-keyboard",
-  "version": "2.0.6-beta.0",
+  "version": "2.0.6-beta.3",
   "description": "keyboard plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -54,11 +54,11 @@
     "@antv/x6-next": "2.0.6-beta.0"
   },
   "devDependencies": {
-    "@types/mousetrap": "^1.6.5",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
+    "@types/mousetrap": "^1.6.5",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
     "coveralls": "^3.1.1",
