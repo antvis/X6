@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-next",
-  "version": "2.0.6-beta.2",
+  "version": "2.0.6-beta.3",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -65,7 +65,7 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "@antv/x6-common": "^2.0.6-beta.2",
+    "@antv/x6-common": "^2.0.6-beta.3",
     "@antv/x6-geometry": "^2.0.6-beta.2"
   },
   "devDependencies": {
