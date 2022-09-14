@@ -121,7 +121,7 @@ graph.addEdge({
 - [基础教程](https://x6.antv.vision/zh/docs/tutorial/basic/graph)
 - [进阶实践](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
 - [高级指引](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
-- [更新日志](https://x6.antv.vision/zh/docs/tutorial/log)
+- [更新日志](https://www.yuque.com/antv/x6/xgb04i)
 
 ## 应用案例
 
