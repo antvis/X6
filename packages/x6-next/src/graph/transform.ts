@@ -594,4 +594,10 @@ export namespace TransformManager {
     | 'bottom'
     | 'bottom-left'
     | 'left'
+
+  export interface CenterOptions {
+    padding?: NumberExt.SideOptions
+  }
+
+  export type PositionContentOptions = GetContentAreaOptions & CenterOptions
 }

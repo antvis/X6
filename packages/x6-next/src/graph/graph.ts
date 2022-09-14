@@ -554,11 +554,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  resizeGraph(width?: number, height?: number) {
-    this.transform.resize(width, height)
-    return this
-  }
-
   scale(): Dom.Scale
   scale(sx: number, sy?: number, cx?: number, cy?: number): this
   scale(sx?: number, sy: number = sx as number, cx = 0, cy = 0) {
@@ -670,6 +665,32 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  /**
+   * Position the center of graph to the center of the viewport.
+   */
+  center() {
+    return this.centerPoint()
+  }
+
+  /**
+   * Position the point (x,y) on the graph (in local coordinates) to the
+   * center of the viewport. If only one of the coordinates is specified,
+   * only center along the specified dimension and keep the other coordinate
+   * unchanged.
+   */
+  centerPoint(x: number, y: null | number): this
+  centerPoint(x: null | number, y: number): this
+  centerPoint(): this
+  centerPoint(x?: number | null, y?: number | null) {
+    this.transform.centerPoint(x as number, y as number)
+    return this
+  }
+
+  centerContent(options?: Transform.PositionContentOptions) {
+    this.transform.centerContent(options)
+    return this
+  }
+
   centerCell(cell: Cell) {
     this.transform.centerCell(cell)
     return this
@@ -681,6 +702,24 @@ export class Graph extends Basecoat<EventArgs> {
     y: number | string,
   ) {
     this.transform.positionPoint(point, x, y)
+    return this
+  }
+
+  positionRect(rect: Rectangle.RectangleLike, direction: Transform.Direction) {
+    this.transform.positionRect(rect, direction)
+    return this
+  }
+
+  positionCell(cell: Cell, direction: Transform.Direction) {
+    this.transform.positionCell(cell, direction)
+    return this
+  }
+
+  positionContent(
+    pos: Transform.Direction,
+    options?: Transform.PositionContentOptions,
+  ) {
+    this.transform.positionContent(pos, options)
     return this
   }
 

@@ -1,18 +1,21 @@
 import { Dom, ModifierKey, Disposable, CssLoader } from '@antv/x6-common'
-import { Graph, Config } from '@antv/x6-next'
+import {
+  Graph,
+  Config,
+  TransformManager,
+  Cell,
+  BackgroundManager,
+} from '@antv/x6-next'
+import { Rectangle, Point } from '@antv/x6-geometry'
 import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 
 export class Scroller extends Disposable {
-  private graph: Graph
   public name = 'scroller'
-  public scrollerImpl: ScrollerImpl
+  private graph: Graph
+  private scrollerImpl: ScrollerImpl
 
-  constructor(public readonly options: Scroller.Options) {
-    super()
-  }
-
-  get pannable() {
+  private get pannable() {
     if (this.options) {
       if (typeof this.options.pannable === 'object') {
         return this.options.pannable.enabled
@@ -21,6 +24,10 @@ export class Scroller extends Disposable {
     }
 
     return false
+  }
+
+  constructor(public readonly options: Scroller.Options) {
+    super()
   }
 
   public init(graph: Graph) {
@@ -35,7 +42,7 @@ export class Scroller extends Disposable {
     this.scrollerImpl.center()
   }
 
-  protected startListening() {
+  private startListening() {
     let eventTypes = []
     const pannable = this.options.pannable
     if (typeof pannable === 'object') {
@@ -58,7 +65,7 @@ export class Scroller extends Disposable {
     }
   }
 
-  protected stopListening() {
+  private stopListening() {
     let eventTypes = []
     const pannable = this.options.pannable
     if (typeof pannable === 'object') {
@@ -80,7 +87,7 @@ export class Scroller extends Disposable {
     }
   }
 
-  protected onRightMouseDown(e: Dom.MouseDownEvent) {
+  private onRightMouseDown(e: Dom.MouseDownEvent) {
     if (e.button === 2 && this.allowPanning(e, true)) {
       this.updateClassName(true)
       this.scrollerImpl.startPanning(e)
@@ -88,7 +95,7 @@ export class Scroller extends Disposable {
     }
   }
 
-  protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
+  private preparePanning({ e }: { e: Dom.MouseDownEvent }) {
     const allowPanning = this.allowPanning(e, true)
     const selection = this.graph.getPlugin('selection') as any
     const allowRubberband =
@@ -100,13 +107,13 @@ export class Scroller extends Disposable {
     }
   }
 
-  allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
+  private allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
       this.pannable && ModifierKey.isMatch(e, this.options.modifiers, strict)
     )
   }
 
-  protected updateClassName(isPanning?: boolean) {
+  private updateClassName(isPanning?: boolean) {
     const container = this.scrollerImpl.container!
     const pannable = Config.prefix('graph-scroller-pannable')
     if (this.pannable) {
@@ -117,19 +124,138 @@ export class Scroller extends Disposable {
     }
   }
 
+  resize(width?: number, height?: number) {
+    this.scrollerImpl.resize(width, height)
+  }
+
+  zoom(): number
+  zoom(factor: number, options?: TransformManager.ZoomOptions): this
+  zoom(factor?: number, options?: TransformManager.ZoomOptions) {
+    if (typeof factor === 'undefined') {
+      return this.scrollerImpl.zoom()
+    }
+    this.scrollerImpl.zoom(factor, options)
+    return this
+  }
+
+  zoomTo(
+    factor: number,
+    options: Omit<TransformManager.ZoomOptions, 'absolute'> = {},
+  ) {
+    this.scrollerImpl.zoom(factor, { ...options, absolute: true })
+    return this
+  }
+
+  zoomToRect(
+    rect: Rectangle.RectangleLike,
+    options: TransformManager.ScaleContentToFitOptions &
+      TransformManager.ScaleContentToFitOptions = {},
+  ) {
+    this.scrollerImpl.zoomToRect(rect, options)
+    return this
+  }
+
+  zoomToFit(
+    options: TransformManager.GetContentAreaOptions &
+      TransformManager.ScaleContentToFitOptions = {},
+  ) {
+    this.scrollerImpl.zoomToFit(options)
+    return this
+  }
+
+  center(optons?: ScrollerImpl.CenterOptions) {
+    return this.centerPoint(optons)
+  }
+
+  centerPoint(
+    x: number,
+    y: null | number,
+    options?: ScrollerImpl.CenterOptions,
+  ): this
+  centerPoint(
+    x: null | number,
+    y: number,
+    options?: ScrollerImpl.CenterOptions,
+  ): this
+  centerPoint(optons?: ScrollerImpl.CenterOptions): this
+  centerPoint(
+    x?: number | null | ScrollerImpl.CenterOptions,
+    y?: number | null,
+    options?: ScrollerImpl.CenterOptions,
+  ) {
+    this.scrollerImpl.centerPoint(x as number, y as number, options)
+    return this
+  }
+
+  centerContent(options?: ScrollerImpl.PositionContentOptions) {
+    this.scrollerImpl.centerContent(options)
+    return this
+  }
+
+  centerCell(cell: Cell, options?: ScrollerImpl.CenterOptions) {
+    this.scrollerImpl.centerCell(cell, options)
+    return this
+  }
+
+  positionPoint(
+    point: Point.PointLike,
+    x: number | string,
+    y: number | string,
+    options: ScrollerImpl.CenterOptions = {},
+  ) {
+    this.scrollerImpl.positionPoint(point, x, y, options)
+
+    return this
+  }
+
+  positionRect(
+    rect: Rectangle.RectangleLike,
+    direction: ScrollerImpl.Direction,
+    options?: ScrollerImpl.CenterOptions,
+  ) {
+    this.scrollerImpl.positionRect(rect, direction, options)
+    return this
+  }
+
+  positionCell(
+    cell: Cell,
+    direction: ScrollerImpl.Direction,
+    options?: ScrollerImpl.CenterOptions,
+  ) {
+    this.scrollerImpl.positionCell(cell, direction, options)
+    return this
+  }
+
+  positionContent(
+    pos: ScrollerImpl.Direction,
+    options?: ScrollerImpl.PositionContentOptions,
+  ) {
+    this.scrollerImpl.positionContent(pos, options)
+    return this
+  }
+
+  drawBackground(options?: BackgroundManager.Options, onGraph?: boolean) {
+    if (this.graph.options.background == null || !onGraph) {
+      this.scrollerImpl.backgroundManager.draw(options)
+    }
+    return this
+  }
+
+  clearBackground(onGraph?: boolean) {
+    if (this.graph.options.background == null || !onGraph) {
+      this.scrollerImpl.backgroundManager.clear()
+    }
+    return this
+  }
+
+  isPannable() {
+    return this.pannable
+  }
+
   enablePanning() {
     if (!this.pannable) {
       this.options.pannable = true
       this.updateClassName()
-
-      // if (
-      //   ModifierKey.equals(
-      //     this.graph.options.scroller.modifiers,
-      //     this.graph.options.selecting.modifiers,
-      //   )
-      // ) {
-      //   this.graph.selection.disableRubberband()
-      // }
     }
   }
 
@@ -140,16 +266,84 @@ export class Scroller extends Disposable {
     }
   }
 
-  lock() {
+  togglePanning(pannable?: boolean) {
+    if (pannable == null) {
+      if (this.isPannable()) {
+        this.disablePanning()
+      } else {
+        this.enablePanning()
+      }
+    } else if (pannable !== this.isPannable()) {
+      if (pannable) {
+        this.enablePanning()
+      } else {
+        this.disablePanning()
+      }
+    }
+
+    return this
+  }
+
+  lockScroller() {
     this.scrollerImpl.lock()
   }
 
-  unlock() {
+  unlockScroller() {
     this.scrollerImpl.unlock()
   }
 
-  update() {
+  updateScroller() {
     this.scrollerImpl.update()
+  }
+
+  getScrollbarPosition() {
+    return this.scrollerImpl.scrollbarPosition()
+  }
+
+  setScrollbarPosition(left?: number, top?: number) {
+    this.scrollerImpl.scrollbarPosition(left, top)
+    return this
+  }
+
+  scrollToPoint(x: number | null | undefined, y: number | null | undefined) {
+    this.scrollerImpl.scrollToPoint(x, y)
+    return this
+  }
+
+  scrollToContent() {
+    this.scrollerImpl.scrollToContent()
+    return this
+  }
+
+  scrollToCell(cell: Cell) {
+    this.scrollerImpl.scrollToCell(cell)
+    return this
+  }
+
+  transitionToPoint(
+    p: Point.PointLike,
+    options?: ScrollerImpl.TransitionOptions,
+  ): this
+  transitionToPoint(
+    x: number,
+    y: number,
+    options?: ScrollerImpl.TransitionOptions,
+  ): this
+  transitionToPoint(
+    x: number | Point.PointLike,
+    y?: number | ScrollerImpl.TransitionOptions,
+    options?: ScrollerImpl.TransitionOptions,
+  ) {
+    this.scrollerImpl.transitionToPoint(x as number, y as number, options)
+    return this
+  }
+
+  transitionToRect(
+    rect: Rectangle.RectangleLike,
+    options: ScrollerImpl.TransitionToRectOptions = {},
+  ) {
+    this.scrollerImpl.transitionToRect(rect, options)
+    return this
   }
 
   enableAutoResize() {
@@ -158,10 +352,6 @@ export class Scroller extends Disposable {
 
   disableAutoResize() {
     this.scrollerImpl.disableAutoResize()
-  }
-
-  resize(width?: number, height?: number) {
-    this.scrollerImpl.resize(width, height)
   }
 
   @Disposable.dispose()
