@@ -397,7 +397,7 @@ export default {
 当要挂载的 Vue 组件节点数量非常多时，挂载时长会比较长，此时可以通过 `@antv/x6-vue-shape` 提供的 `useTeleport`来提升节点的挂载性能（由于使用了vue3内置的Teleport组件，只在vue3可用）。具体做法为：
 
 ```tsx
-import { useTeleport } from '@antv/x6-react-shape'
+import { useTeleport } from '@antv/x6-vue-shape'
 
 const UNIQ_GRAPH_ID = 'UNIQ_GRAPH_ID'
 
