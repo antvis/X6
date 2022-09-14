@@ -225,7 +225,7 @@ export function isHTMLElement(elem: any): elem is HTMLElement {
   }
 }
 
-export function clickable(elem: Element) {
+export function clickable(elem: Element): boolean {
   if (!elem || !isHTMLElement(elem)) {
     return false
   }
@@ -236,12 +236,12 @@ export function clickable(elem: Element) {
     elem.getAttribute('role') === 'button' ||
     elem.getAttribute('type') === 'button'
   ) {
-    return
+    return true
   }
-  return clickable(elem.parentNode)
+  return clickable(elem.parentNode as Element)
 }
 
-export function isInputElement(elem: any) {
+export function isInputElement(elem: any): boolean {
   const elemTagName = tagName(elem)
   if (elemTagName === 'input') {
     const type = elem.getAttribute('type')
