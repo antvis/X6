@@ -7,7 +7,6 @@ import {
 } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
 import {
-  Model,
   Cell,
   View,
   Graph,
@@ -80,30 +79,30 @@ export class ScrollerImpl extends View {
       Dom.before(graphContainer, this.container)
     }
 
-    // copy style
-    const style = graphContainer.getAttribute('style')
-    if (style) {
-      const obj: { [name: string]: string } = {}
-      const styles = style.split(';')
-      styles.forEach((item) => {
-        const section = item.trim()
-        if (section) {
-          const pair = section.split(':')
-          if (pair.length) {
-            obj[pair[0].trim()] = pair[1] ? pair[1].trim() : ''
-          }
-        }
-      })
+    // todo copy style
+    // const style = graphContainer.getAttribute('style')
+    // if (style) {
+    //   const obj: { [name: string]: string } = {}
+    //   const styles = style.split(';')
+    //   styles.forEach((item) => {
+    //     const section = item.trim()
+    //     if (section) {
+    //       const pair = section.split(':')
+    //       if (pair.length) {
+    //         obj[pair[0].trim()] = pair[1] ? pair[1].trim() : ''
+    //       }
+    //     }
+    //   })
 
-      Object.keys(obj).forEach((key: any) => {
-        if (key === 'width' || key === 'height') {
-          return
-        }
+    //   Object.keys(obj).forEach((key: any) => {
+    //     if (key === 'width' || key === 'height') {
+    //       return
+    //     }
 
-        graphContainer.style[key] = ''
-        this.container.style[key] = obj[key]
-      })
-    }
+    //     graphContainer.style[key] = ''
+    //     this.container.style[key] = obj[key]
+    //   })
+    // }
 
     this.content = document.createElement('div')
     Dom.addClass(this.content, this.prefixClassName(ScrollerImpl.contentClass))
@@ -150,14 +149,10 @@ export class ScrollerImpl extends View {
     graph.on('after:print', this.restoreScrollPosition, this)
     graph.on('after:export', this.restoreScrollPosition, this)
 
-    // todo
-    // graph.on('render:done', this.onRenderDone, this)
-    graph.on('unfreeze', this.onUpdate, this)
     model.on('reseted', this.onUpdate, this)
     model.on('cell:added', this.onUpdate, this)
     model.on('cell:removed', this.onUpdate, this)
     model.on('cell:changed', this.onUpdate, this)
-    model.on('batch:stop', this.onBatchStop, this)
 
     this.delegateBackgroundEvents()
   }
@@ -173,14 +168,10 @@ export class ScrollerImpl extends View {
     graph.off('afterprint', this.restoreScrollPosition, this)
     graph.off('afterexport', this.restoreScrollPosition, this)
 
-    // todo
-    // graph.off('render:done', this.onRenderDone, this)
-    graph.off('unfreeze', this.onUpdate, this)
     model.off('reseted', this.onUpdate, this)
     model.off('cell:added', this.onUpdate, this)
     model.off('cell:removed', this.onUpdate, this)
     model.off('cell:changed', this.onUpdate, this)
-    model.off('batch:stop', this.onBatchStop, this)
 
     this.undelegateBackgroundEvents()
   }
@@ -199,17 +190,6 @@ export class ScrollerImpl extends View {
     }
 
     this.update()
-  }
-
-  // eslint-disable-next-line
-  onBatchStop(args: { name: Model.BatchName }) {
-    // todo
-    // if (!this.options.autoResize) {
-    //   return
-    // }
-    // if (Renderer.UPDATE_DELAYING_BATCHES.includes(args.name)) {
-    //   this.update()
-    // }
   }
 
   protected delegateBackgroundEvents(events?: View.Events) {
@@ -271,12 +251,6 @@ export class ScrollerImpl extends View {
     }
   }
 
-  // protected onRenderDone({ stats }: EventArgs['render:done']) {
-  //   if (this.options.autoResize && stats.priority < 2) {
-  //     this.update()
-  //   }
-  // }
-
   protected onResize() {
     if (this.cachedCenterPoint) {
       this.centerPoint(this.cachedCenterPoint.x, this.cachedCenterPoint.y)
@@ -292,8 +266,7 @@ export class ScrollerImpl extends View {
       this.updatePageBreak()
     }
 
-    const autoResizeOptions =
-      this.options.autoResizeOptions || this.options.fitTocontentOptions
+    const autoResizeOptions = this.options.autoResizeOptions
 
     if (typeof autoResizeOptions === 'function') {
       this.update()
@@ -399,8 +372,7 @@ export class ScrollerImpl extends View {
       size.height / 2,
     )
 
-    let resizeOptions =
-      this.options.autoResizeOptions || this.options.fitTocontentOptions
+    let resizeOptions = this.options.autoResizeOptions
     if (typeof resizeOptions === 'function') {
       resizeOptions = FunctionExt.call(resizeOptions, this, this)
     }
@@ -428,7 +400,7 @@ export class ScrollerImpl extends View {
     const direction = resizeOptions?.direction
 
     if (!direction) {
-      return this.graph.transform.getContentArea()
+      return this.graph.transform.getContentArea({ useCellGeometry: true })
     }
 
     function getCellBBox(cell: Cell) {
@@ -518,20 +490,12 @@ export class ScrollerImpl extends View {
     this.sy = sy
 
     this.graph.translate(options.x * dx, options.y * dy)
-    this.graph.resizeGraph(options.width * dx, options.height * dy)
+    this.graph.resize(options.width * dx, options.height * dy)
   }
 
   scrollbarPosition(): { left: number; top: number }
-  scrollbarPosition(
-    left?: number,
-    top?: number,
-    options?: ScrollerImpl.ScrollOptions,
-  ): this
-  scrollbarPosition(
-    left?: number,
-    top?: number,
-    options?: ScrollerImpl.ScrollOptions, // eslint-disable-line
-  ) {
+  scrollbarPosition(left?: number, top?: number): this
+  scrollbarPosition(left?: number, top?: number) {
     if (left == null && top == null) {
       return {
         left: this.container.scrollLeft,
@@ -548,12 +512,6 @@ export class ScrollerImpl extends View {
       prop.scrollTop = top
     }
 
-    // todo
-    // if (options && options.animation) {
-    //   this.$container.animate(prop, options.animation)
-    // } else {
-    //   this.$container.prop(prop)
-    // }
     Dom.prop(this.container, prop)
 
     return this
@@ -565,11 +523,7 @@ export class ScrollerImpl extends View {
    * coordinates is specified, only scroll in the specified dimension and
    * keep the other coordinate unchanged.
    */
-  scrollToPoint(
-    x: number | null | undefined,
-    y: number | null | undefined,
-    options?: ScrollerImpl.ScrollOptions, // eslint-disable-line
-  ) {
+  scrollToPoint(x: number | null | undefined, y: number | null | undefined) {
     const size = this.getClientSize()
     const ctm = this.graph.matrix()
     const prop: { [key: string]: number } = {}
@@ -582,12 +536,6 @@ export class ScrollerImpl extends View {
       prop.scrollTop = y - size.height / 2 + ctm.f + (this.padding.top || 0)
     }
 
-    // todo
-    // if (options && options.animation) {
-    //   this.$container.animate(prop, options.animation)
-    // } else {
-    //   this.$container.prop(prop)
-    // }
     Dom.prop(this.container, prop)
 
     return this
@@ -597,22 +545,22 @@ export class ScrollerImpl extends View {
    * Try to scroll to ensure that the center of graph content is at the
    * center of the viewport.
    */
-  scrollToContent(options?: ScrollerImpl.ScrollOptions) {
+  scrollToContent() {
     const sx = this.sx
     const sy = this.sy
     const center = this.graph.getContentArea().getCenter()
-    return this.scrollToPoint(center.x * sx, center.y * sy, options)
+    return this.scrollToPoint(center.x * sx, center.y * sy)
   }
 
   /**
    * Try to scroll to ensure that the center of cell is at the center of
    * the viewport.
    */
-  scrollToCell(cell: Cell, options?: ScrollerImpl.ScrollOptions) {
+  scrollToCell(cell: Cell) {
     const sx = this.sx
     const sy = this.sy
     const center = cell.getBBox().getCenter()
-    return this.scrollToPoint(center.x * sx, center.y * sy, options)
+    return this.scrollToPoint(center.x * sx, center.y * sy)
   }
 
   /**
@@ -706,7 +654,7 @@ export class ScrollerImpl extends View {
       Math.max(bottom, 0),
     )
 
-    const result = this.scrollToPoint(x, y, localOptions || undefined)
+    const result = this.scrollToPoint(x, y)
 
     this.restoreClientSize()
 
@@ -1277,22 +1225,6 @@ export namespace ScrollerImpl {
     padding?:
       | NumberExt.SideOptions
       | ((this: ScrollerImpl, scroller: ScrollerImpl) => NumberExt.SideOptions)
-    /**
-     * **Deprecation Notice:** Scroller option `fitTocontentOptions` is deprecated and will be
-     * moved in next major release. Use `autoResizeOptions` instead.
-     *
-     * @deprecated
-     */
-    fitTocontentOptions?:
-      | (TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
-        })
-      | ((
-          this: ScrollerImpl,
-          scroller: ScrollerImpl,
-        ) => TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
-        })
     autoResizeOptions?:
       | (TransformManager.FitToContentFullOptions & {
           direction: AutoResizeDirection | AutoResizeDirection[]
@@ -1308,13 +1240,7 @@ export namespace ScrollerImpl {
   export interface Options extends CommonOptions {
     graph: Graph
   }
-
-  export interface ScrollOptions {
-    // animation?: JQuery.EffectsOptions<HTMLElement>
-    animation?: any
-  }
-
-  export interface CenterOptions extends ScrollOptions {
+  export interface CenterOptions {
     padding?: NumberExt.SideOptions
   }
 
