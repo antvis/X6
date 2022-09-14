@@ -346,6 +346,11 @@ export class Scroller extends View {
       const graphHeight = this.graph.options.height
       const pageWidth = this.options.pageWidth! * this.sx
       const pageHeight = this.options.pageHeight! * this.sy
+
+      if (pageWidth === 0 || pageHeight === 0) {
+        return
+      }
+
       if (graphWidth > pageWidth || graphHeight > pageHeight) {
         let hasPageBreak = false
         const container = document.createElement('div')
