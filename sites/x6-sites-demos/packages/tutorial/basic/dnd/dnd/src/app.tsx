@@ -7,6 +7,7 @@ const { Dnd } = Addon
 export default class Example extends React.Component {
   private graph: Graph
   private container: HTMLDivElement
+  private dndContainer: HTMLDivElement
   private dnd: any
 
   componentDidMount() {
@@ -70,6 +71,7 @@ export default class Example extends React.Component {
       target: graph,
       scaled: false,
       animation: true,
+      dndContainer: this.dndContainer,
       validateNode(droppingNode, options) {
         return droppingNode.shape === 'html'
           ? new Promise<boolean>((resolve) => {
@@ -133,10 +135,14 @@ export default class Example extends React.Component {
     this.container = container
   }
 
+  dndContainerRef = (container: HTMLDivElement) => {
+    this.dndContainer = container
+  }
+
   render() {
     return (
       <div className="app">
-        <div className="dnd-wrap">
+        <div className="dnd-wrap" ref={this.dndContainerRef}>
           <div
             data-type="rect"
             className="dnd-rect"

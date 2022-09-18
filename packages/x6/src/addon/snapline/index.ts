@@ -662,7 +662,7 @@ export namespace Snapline {
     className?: string
     tolerance?: number
     /**
-     * @deprecated The default behavior is now to clamp snaplines to the elements
+     * @deprecated The behavior is now to clamp snaplines to the elements
      * that are being aligned (instead of them spanning the entire graph),
      * equivalent to `sharp: true`. The `sharp` option will be removed in a future release.
      *

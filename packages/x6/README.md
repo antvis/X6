@@ -76,7 +76,7 @@ $ yarn add @antv/x6
 ```ts
 // 从 node_modules 引入
 import { Graph } from '@antv/x6'
-// 从 CND 引入时，我们暴露了 X6 这个全局变量
+// 从 CDN 引入时，我们暴露了 X6 这个全局变量
 // const { Graph } = X6
 
 // 创建 Graph 的实例
@@ -121,7 +121,7 @@ graph.addEdge({
 - [基础教程](https://x6.antv.vision/zh/docs/tutorial/basic/graph)
 - [进阶实践](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
 - [高级指引](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
-- [更新日志](https://x6.antv.vision/zh/docs/tutorial/log)
+- [更新日志](https://www.yuque.com/antv/x6/xgb04i)
 
 ## 应用案例
 

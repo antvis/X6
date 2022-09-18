@@ -162,6 +162,8 @@ export class Renderer extends Base {
     if (visible) {
       this.processEdgeOnTerminalVisibleChanged(cell, true)
     }
+
+    // this.sortViews()
   }
 
   protected processEdgeOnTerminalVisibleChanged(node: Cell, visible: boolean) {

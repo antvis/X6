@@ -17,7 +17,7 @@ export namespace Scheduler {
   const schedule = (cb: FlushTaskFn) => unit.push(cb) === 1 && postMessage()
 
   const postMessage = (() => {
-    const cb = () => unit.splice(0, unit.length).forEach((c) => c())
+    const cb = () => unit.splice(0, unit.length)[0]?.()
     if (typeof MessageChannel !== 'undefined') {
       const { port1, port2 } = new MessageChannel()
       port1.onmessage = cb

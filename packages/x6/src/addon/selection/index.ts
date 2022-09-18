@@ -293,6 +293,7 @@ export class Selection extends View<Selection.EventArgs> {
       offsetY: y,
       scrollerX: 0,
       scrollerY: 0,
+      moving: false,
     })
 
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
@@ -897,7 +898,7 @@ export class Selection extends View<Selection.EventArgs> {
       added,
       removed,
       options,
-      selected: this.cells,
+      selected: this.cells.filter((cell) => !!this.graph.getCellById(cell.id)),
     }
     this.trigger('selection:changed', args)
     this.graph.trigger('selection:changed', args)

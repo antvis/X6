@@ -284,6 +284,24 @@
   dependencies:
     tslib "^2.0.3"
 
+"@antv/x6-react-components@latest":
+  version "1.1.15"
+  resolved "https://registry.npmjs.org/@antv/x6-react-components/-/x6-react-components-1.1.15.tgz#9d35b06ffe261272d11caee63b463f3ac744b392"
+  integrity sha512-tXUak5CPuZLIA0fVBSM2vZ+TxxoEGBcokr0J69e7H0G3WIutDf6J6RkNeRGuKvcW8O1Lef1jiBGSLLjlrRXf0g==
+  dependencies:
+    clamp "^1.0.1"
+    classnames "^2.2.6"
+    rc-dropdown "^3.0.0-alpha.0"
+    rc-util "^4.15.7"
+    react-color "^2.17.3"
+    react-resize-detector "^6.6.4"
+    ua-parser-js "^0.7.20"
+
+"@antv/x6-react-shape@latest":
+  version "1.6.1"
+  resolved "https://registry.npmjs.org/@antv/x6-react-shape/-/x6-react-shape-1.6.1.tgz#cf029ac6580300eaffa7539555cffa6723e8f199"
+  integrity sha512-EkcDoIlfbQC69DGgwznFRsi78fW+apTO0OW5J6tnKpMW3r6zB5zr5QM06hzq5UEUgGheMUxNh3wrTd0jnCwR3A==
+
 "@antv/x6@latest":
   version "1.32.9"
   resolved "https://registry.npmjs.org/@antv/x6/-/x6-1.32.9.tgz#0e29527289001e29795087cbb536afdbbead2c56"
@@ -25987,6 +26005,19 @@ react-color@2.17.1:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
+react-color@^2.17.3:
+  version "2.19.3"
+  resolved "https://registry.npmjs.org/react-color/-/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
+  integrity sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA==
+  dependencies:
+    "@icons/material" "^0.2.4"
+    lodash "^4.17.15"
+    lodash-es "^4.17.15"
+    material-colors "^1.2.1"
+    prop-types "^15.5.10"
+    reactcss "^1.2.0"
+    tinycolor2 "^1.4.1"
+
 react-copy-to-clipboard@^5.0.1:
   version "5.0.3"
   resolved "https://registry.npmjs.org/react-copy-to-clipboard/-/react-copy-to-clipboard-5.0.3.tgz#2a0623b1115a1d8c84144e9434d3342b5af41ab4"
@@ -26291,6 +26322,13 @@ react-resize-detector@^6.6.4:
     lodash.debounce "^4.0.8"
     lodash.throttle "^4.1.1"
     resize-observer-polyfill "^1.5.1"
+
+react-resize-detector@^7.0.0:
+  version "7.1.2"
+  resolved "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-7.1.2.tgz#8ef975dd8c3d56f9a5160ac382ef7136dcd2d86c"
+  integrity sha512-zXnPJ2m8+6oq9Nn8zsep/orts9vQv3elrpA+R8XTcW7DVVUJ9vwDwMXaBtykAYjMnkCIaOoK9vObyR7ZgFNlOw==
+  dependencies:
+    lodash "^4.17.21"
 
 react-responsive@^8.0.1:
   version "8.2.0"
@@ -32323,10 +32361,10 @@ void-elements@^2.0.0:
   resolved "https://registry.npmjs.org/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
   integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
 
-vue-demi@^0.7.4:
-  version "0.7.5"
-  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.7.5.tgz#88dee7492fc99a0f911ff03fc02c658fa2a79af8"
-  integrity sha512-eFSQSvbQdY7C9ujOzvM6tn7XxwLjn0VQDXQsiYBLBwf28Na+2nTQR4BBBcomhmdP6mmHlBKAwarq6a0BPG87hQ==
+vue-demi@latest:
+  version "0.13.6"
+  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.13.6.tgz#f9433cbd75e68a970dec066647f4ba6c08ced48f"
+  integrity sha512-02NYpxgyGE2kKGegRPYlNQSL1UWfA/+JqvzhGCOYjhfbLWXU5QQX0+9pAm/R2sCOPKr5NBxVIab7fvFU0B1RxQ==
 
 vue@^2.6.12:
   version "2.6.14"

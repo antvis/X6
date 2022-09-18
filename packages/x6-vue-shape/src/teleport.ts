@@ -1,5 +1,5 @@
 import { defineComponent, h, reactive, isVue3, Vue } from 'vue-demi'
-import { Graph, NodeView } from '@antv/x6'
+import { Graph, NodeView, Scheduler } from '@antv/x6'
 import { VueShape } from './node'
 import { VueShapeView } from './view'
 
@@ -28,12 +28,16 @@ export function useTeleport(uniqViewId: string) {
       component: any,
       getContainer: () => HTMLDivElement,
     ) => {
+      if (items[id]) {
+        // confirmUpdate可能导致多次调用，所以判断一下
+        return
+      }
       items[id] = markRaw(
         defineComponent({
           render: () =>
             (getContainer()
               ? h(Teleport, { to: getContainer() } as typeof VNodeData, [
-                  h(component),
+                  h(component, { graph, node } as any),
                 ])
               : null) as typeof VNode,
           provide: () => ({
@@ -48,12 +52,19 @@ export function useTeleport(uniqViewId: string) {
     }
 
     class VuePortalShapeView extends NodeView<VueShape> {
+      getTargetId() {
+        return `${this.graph.view.cid}:${this.cell.id}`
+      }
       init() {
         super.init()
-        const targetId = `${this.graph.view.cid}:${this.cell.id}`
+        const targetId = this.getTargetId()
         this.cell.on('removed', () => {
           disconnect(targetId)
         })
+        this.renderVueComponent()
+      }
+      renderVueComponent() {
+        const targetId = this.getTargetId()
         const component = this.graph.hook.getVueComponent(this.cell)
         // 这里需要将当前View的cell以及graph还有component等对象存储起来给TeleportContainer使用
         connect(
@@ -72,8 +83,18 @@ export function useTeleport(uniqViewId: string) {
       confirmUpdate(flag: any) {
         const ret = super.confirmUpdate(flag)
         return this.handleAction(ret, action, () => {
-          // 这里无需做任何处理，但是，没有这个函数的时候，会卡死...
+          // 参照VueShapeView进行渲染，修复 #2505
+          Scheduler.scheduleTask(() => {
+            this.renderVueComponent()
+          })
         })
+      }
+      unmount(elem: Element) {
+        // 基类调用removeView的时候，会自动调用unmount
+        const targetId = this.getTargetId()
+        disconnect(targetId)
+        super.unmount(elem)
+        return this
       }
     }
     VuePortalShapeView.config({
