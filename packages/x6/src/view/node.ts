@@ -642,6 +642,12 @@ export class NodeView<
     if (this.isPropagationStopped(e)) {
       return
     }
+    // 避免处于foreignObject内部元素触发onMouseDown导致节点被拖拽
+    // 拖拽的时候是以onMouseDown启动的
+    const target = e.target as Element
+    if (Dom.clickable(target) || Dom.isInputElement(target)) {
+      return
+    }
     this.notifyMouseDown(e, x, y)
     this.startNodeDragging(e, x, y)
   }
@@ -677,6 +683,12 @@ export class NodeView<
     if (action === 'magnet') {
       this.stopMagnetDragging(e, x, y)
     } else {
+      // 避免处于foreignObject内部元素触发onMouseUp导致节点被选中
+      // 选中的时候是以onMouseUp启动的
+      const target = e.target as Element
+      if (Dom.clickable(target) || Dom.isInputElement(target)) {
+        return
+      }
       this.notifyMouseUp(e, x, y)
       if (action === 'move') {
         const meta = data as EventData.Moving
