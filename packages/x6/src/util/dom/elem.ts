@@ -224,3 +224,35 @@ export function isHTMLElement(elem: any): elem is HTMLElement {
     )
   }
 }
+
+export function clickable(elem: Element): boolean {
+  if (!elem || !isHTMLElement(elem)) {
+    return false
+  }
+  if (['a', 'button'].includes(tagName(elem))) {
+    return true
+  }
+  if (
+    elem.getAttribute('role') === 'button' ||
+    elem.getAttribute('type') === 'button'
+  ) {
+    return true
+  }
+  return clickable(elem.parentNode as Element)
+}
+
+export function isInputElement(elem: any): boolean {
+  const elemTagName = tagName(elem)
+  if (elemTagName === 'input') {
+    const type = elem.getAttribute('type')
+    if (
+      type == null ||
+      ['text', 'password', 'number', 'email', 'search', 'tel', 'url'].includes(
+        type,
+      )
+    ) {
+      return true
+    }
+  }
+  return false
+}
