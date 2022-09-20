@@ -411,7 +411,7 @@ export class Scroller extends View {
   protected calcContextArea(
     resizeOptions:
       | (TransformManager.FitToContentFullOptions & {
-          direction:
+          direction?:
             | Scroller.AutoResizeDirection
             | Scroller.AutoResizeDirection[]
         })
@@ -1271,23 +1271,23 @@ export namespace Scroller {
      */
     fitTocontentOptions?:
       | (TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
+          direction?: AutoResizeDirection | AutoResizeDirection[]
         })
       | ((
           this: Scroller,
           scroller: Scroller,
         ) => TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
+          direction?: AutoResizeDirection | AutoResizeDirection[]
         })
     autoResizeOptions?:
       | (TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
+          direction?: AutoResizeDirection | AutoResizeDirection[]
         })
       | ((
           this: Scroller,
           scroller: Scroller,
         ) => TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
+          direction?: AutoResizeDirection | AutoResizeDirection[]
         })
   }
 
