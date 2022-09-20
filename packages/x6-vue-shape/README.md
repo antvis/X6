@@ -26,17 +26,7 @@ graph.addNode({
   y: 48,
   width: 180,
   height: 40,
-  component: {
-    template: `<hello-world :name="name"></hello-world>`,
-    data() {
-      return {
-        name: 'x6',
-      }
-    },
-    components: {
-      HelloWorld,
-    }
-  },
+  component: HelloWorld,
 })
 ```
 
