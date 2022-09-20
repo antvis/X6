@@ -66,7 +66,7 @@ export class AttrManager {
         if (normal == null) {
           normal = {}
         }
-        const normalName = AttrManager.CASE_SENSITIVE_ATTR.includes(name)
+        const normalName = Dom.CASE_SENSITIVE_ATTR.includes(name)
           ? name
           : StringExt.kebabCase(name)
         normal[normalName] = val as Attr.SimpleAttrValue
@@ -584,7 +584,6 @@ export namespace AttrManager {
     delay?: Attr.ComplexAttrs | undefined
   }
 
-  export const CASE_SENSITIVE_ATTR = ['viewBox']
   export const DELAY_ATTRS = [
     'text',
     'textWrap',
