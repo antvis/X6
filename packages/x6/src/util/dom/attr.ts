@@ -1,7 +1,7 @@
 import { ns } from './elem'
 import { kebabCase } from '../string/format'
 
-const CASE_SENSITIVE_ATTR = [
+export const CASE_SENSITIVE_ATTR = [
   'viewBox',
   'attributeName',
   'attributeType',
