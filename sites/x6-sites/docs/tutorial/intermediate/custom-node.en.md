@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/intermediate
 ---
 
-We have some basic graphics built into X6, such as `Rect`, `Circle` and `Ellipse`, but these are far from enough to meet our practical needs, and we need to be able to define nodes that have business implications, such as the table node in the ER diagram. Customizing nodes is not that hard, it's just a combination of `<rect>`, `<circle>`, `<ellipse>`, `<image>`, `<text>`, `<path>` and other basic elements in SVG, if you are not familiar with these basic elements, you can refer to the [tutorial] provided by MDN (https://) developer.mozilla.org/en-US/docs/Web/SVG/Element), and use these base elements to define any graphics we want.
+We have some basic graphics built into X6, such as `Rect`, `Circle` and `Ellipse`, but these are far from enough to meet our practical needs, and we need to be able to define nodes that have business implications, such as the table node in the ER diagram. Customizing nodes is not that hard, it's just a combination of `<rect>`, `<circle>`, `<ellipse>`, `<image>`, `<text>`, `<path>` and other basic elements in SVG, if you are not familiar with these basic elements, you can refer to the [tutorial](https://developer.mozilla.org/en-US/docs/Web/SVG/Element) provided by MDN , and use these base elements to define any graphics we want.
 
 ## Principle
 
