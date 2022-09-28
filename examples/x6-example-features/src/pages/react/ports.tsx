@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Color } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Color } from '@antv/x6-common'
 import '@antv/x6-react-shape'
 import '../index.less'
 import './ports.less'

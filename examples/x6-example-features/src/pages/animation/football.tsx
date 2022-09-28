@@ -1,5 +1,7 @@
 import React from 'react'
-import { Graph, Node, Edge, NodeView, Point, Angle, Interp } from '@antv/x6'
+import { Graph, Node, Edge, NodeView } from '@antv/x6'
+import { Point, Angle } from '@antv/x6-geometry'
+import { Interp } from '@antv/x6-common'
 import '../index.less'
 
 class BallView extends NodeView {

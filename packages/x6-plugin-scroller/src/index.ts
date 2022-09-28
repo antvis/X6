@@ -128,6 +128,10 @@ export class Scroller extends Disposable {
     this.scrollerImpl.resize(width, height)
   }
 
+  resizePage(width?: number, height?: number) {
+    this.scrollerImpl.updatePageSize(width, height)
+  }
+
   zoom(): number
   zoom(factor: number, options?: TransformManager.ZoomOptions): this
   zoom(factor?: number, options?: TransformManager.ZoomOptions) {
