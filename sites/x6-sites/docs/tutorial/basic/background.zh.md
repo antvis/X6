@@ -64,7 +64,6 @@ interface BackgroundOptions {
   - `'#f5f5f5'`
   - `'rgba(255, 255, 128, 0.5)'`
   - `'hsla(50, 33%, 25%, 0.75)'`
-  - `'radial-gradient(ellipse at center, red, green)'`
 
 ### image 
 
