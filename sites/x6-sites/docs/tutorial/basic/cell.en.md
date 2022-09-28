@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-在[快速上手](/en/docs/tutorial/getting-started)案例中，我们通过 JSON 数据添加了两个矩形节点和一条边到画布中，除此之外，我们在 X6 的 `Shape` 命名空间中内置了一些基础图形，如 `Rect`、`Edge`、`Circle` 等，这些图形最终都有共同的基类 `Cell`，定义了节点和边共同属性和方法，如属性样式、可见性、业务数据等，并且在实例化、定制样式、配置默认选项等方面具有相同的行为。看下面的继承关系。
+In the [Quick Start](/en/docs/tutorial/getting-started) case, we added two rectangle nodes and an edge to the canvas via JSON data, in addition to that, we built some basic shapes in X6's `Shape` namespace, such as `Rect`, `Edge`, `Circle` etc. These shapes end up with a common base class `Cell` that defines node and edge common properties and methods such as property styles, visibility, business data, etc. and have the same behavior in terms of instantiation, customizing styles, configuring default options, etc. See the inheritance relationship below.
 
 ```
                                      ┌──────────────────┐
@@ -34,7 +34,7 @@ redirect_from:
                                      └──────────────────┘
 ```
 
-我们可以使用这些图形的构造函数来创建节点/边，然后调用 [graph.addNode]() 或 [graph.addEdge]() 方法将其添加到画布。
+We can use the constructors of these graphs to create nodes/edges and then call the [graph.addNode]() or [graph.addEdge]() methods to add them to the canvas.
 
 ```ts
 import { Shape } from '@antv/x6'
@@ -71,30 +71,31 @@ graph.addNode(circle)
 graph.addEdge(edge)
 ```
 
-这些构造函数都有一些来自 `Cell` 的基础选项，如 `id`，`attrs`，`zIndex` 等，下面我们就逐个看看这些基础选项的含义。
+These constructors all have some base options from `Cell`, such as `id`, `attrs`, `zIndex`, etc. Let's look at the meaning of each of these base options.
 
-## 基础选项
+## Basic Options
 
-| 选项名   | 类型     | 默认值    | 描述                                                   |
+| Option Name | Type | Default | Description                                                  |
 |----------|----------|-----------|------------------------------------------------------|
-| id       | String   | undefined | 节点/边的唯一标识，默认使用自动生成的 UUID。             |
-| markup   | Markup   | undefined | 节点/边的 SVG/HTML 片段。                               |
-| attrs    | Object   | { }       | 节点/边属性样式。                                       |
-| shape    | String   | undefined | 渲染节点/边的图形。                                     |
-| view     | String   | undefined | 渲染节点/边的视图。                                     |
-| zIndex   | Number   | undefined | 节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。 |
-| visible  | Boolean  | true      | 节点/边是否可见。                                       |
-| parent   | String   | undefined | 父节点。                                                |
-| children | String[] | undefined | 子节点/边。                                             |
-| data     | any      | undefined | 节点/边关联的业务数据。                                 |
+| id | String | undefined | The unique identifier of the node/edge, the default is the automatically generated UUID. | markup | Markup | undefined | The SVG/HTML fragment of the node/edge.
+| markup | markup | undefined | The SVG/HTML fragment of the node/edge.                               |markup
+| attrs | Object | { } | The node/edge property style.                                       | attrs
+| shape | String | undefined | Render the node/edge's graphics.                                     | view
+| view | String | undefined | Renders the view of the node/edge.                                     | view
+| zIndex | Number | undefined | The level of the node/edge in the canvas, determined automatically by default based on the node/edge addition order. |zIndex
+| visible | Boolean | true | If or not the node/edge is visible.                                       | parent
+| parent | String | undefined | The parent of the node.                                                | children
+| children | String[] | undefined | The children's nodes/edges.                                             | children
+| data | any | undefined | The business data associated with the node/edge.                                 | data
+
 
 ### id
 
-`id` 是节点/边的唯一标识，推荐使用具备业务意义的 ID，默认使用自动生成的 UUID。
+`id` is the unique identifier of the node/edge, it is recommended to use an ID with business meaning, the default is the automatically generated UUID.
 
 ### markup
 
-`markup` 指定了渲染节点/边时使用的 SVG/HTML 片段，使用 `JSON` 格式描述。例如 `Shape.Rect` 节点的 `markup` 定义如下。
+`markup` specifies the SVG/HTML fragment to be used when rendering the node/edge, described in `JSON` format. For example, the `markup` definition for the `Shape.
 
 ```ts
 {
@@ -111,7 +112,7 @@ graph.addEdge(edge)
 }
 ```
 
-表示该节点内部包含 `<rect>` 和 `<text>` 两个 SVG 元素，渲染到页面之后，节点对应的 SVG 元素看起来像下面这样。
+means that the node contains `<rect>` and `<text>` SVG elements inside the node. After rendering to the page, the node's corresponding SVG element looks like the following.
 
 ```html
 <g data-cell-id="c2e1dd06-15c6-43a4-987a-712a664b8f85" class="x6-cell x6-node" transform="translate(40,40)">
@@ -122,7 +123,7 @@ graph.addEdge(edge)
 </g>
 ```
 
-通过上面的介绍，我们大致了解了 `Markup` 的结构，下面我们将详细介绍 `Markup` 定义。
+Through the above introduction, we have a general understanding of the structure of `Markup`, and in the following we will introduce the `Markup` definition in detail.
 
 ```ts
 interface Markup {
@@ -140,15 +141,15 @@ interface Markup {
 
 #### tagName
 
-SVG/HTML 元素标签名。
+SVG/HTML element tag name.
 
 #### ns
  
-与 `tagName` 对应的元素命名空间，默认使用 SVG 元素命名空间 `"http://www.w3.org/2000/svg"`，当 `tagName` 指定的标签是 HTML 元素时，需要使用 HTML 元素的命名空间 `"http://www.w3.org/1999/xhtml"`。
+The element namespace corresponding to `tagName` uses the SVG element namespace `"http://www.w3.org/2000/svg"` by default, and when the tag specified by `tagName` is an HTML element, you need to use the HTML element namespace `"http://www.w3.org/1999/xhtml"`.
 
 #### selector
 
-SVG/HTML 元素的唯一标识，通过该唯一标识为该元素指定[属性样式](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)。例如，为 `Shape.Rect` 节点指定 `<rect>` 和 `<text>` 元素的属性样式。
+A unique identifier for an SVG/HTML element by which to specify [attribute style](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes) for that element. For example, specifying the attribute style for the `<rect>` and `<text>` elements for the `Shape.
 
 ```ts
 const rect = new Shape.Rect({
@@ -157,15 +158,15 @@ const rect = new Shape.Rect({
   width: 100,
   height: 40,
   attrs: {
-    // 指定 rect 元素的样式
+    // Specify the style of the rect element
     body: { 
-      stroke: '#000', // 边框颜色
-      fill: '#fff',   // 填充颜色
+      stroke: '#000', // border color
+      fill: '#fff', // fill color
     },
-    // 指定 text 元素的样式
+    // Specify the style of the text element
     label: { 
-      text: 'rect', // 文字
-      fill: '#333', // 文字颜色
+      text: 'rect', // text
+      fill: '#333', // text color
     },
   },
 })
@@ -173,7 +174,7 @@ const rect = new Shape.Rect({
 
 #### groupSelector
 
-群组选择器，通过群组选择器可以为该群组对应的多个元素指定样式。例如，下面定义中两个 `<rect>` 具备相同的 `groupSelector` 值 `'group1'`。
+A group selector allows you to specify styles for multiple elements corresponding to the group. For example, the two `<rect>`s in the definition below have the same `groupSelector` value `'group1'`.
 
 ```ts
 {
@@ -196,7 +197,7 @@ const rect = new Shape.Rect({
 }
 ```
 
-创建节点时，我们可以像下面这样来指定群组样式
+When creating a node, we can specify the group style like this
 
 ```ts
 new SomeNode({
@@ -210,9 +211,9 @@ new SomeNode({
 
 #### attrs
 
-该 SVG/HTML 元素的默认属性键值对，通常用于定义那些不变的通用属性，这些默认样式也可以在实例化节点时被覆盖。需要注意的是，`markup` 的 `attrs` 属性只支持原生的 SVG 属性，也就是说 X6 的[自定义属性]()在这里不可用。 
+The default attribute key-value pairs for this SVG/HTML element are typically used to define those invariant generic attributes, and these default styles can also be overridden when the node is instantiated. Note that the `attrs` attribute of `markup` only supports native SVG attributes, which means that X6's [custom attributes]() are not available here. 
 
-例如，我们为 `Shape.Rect` 节点的 `<rect>` 和 `<text>` 元素指定了如下默认样式。
+For example, we specify the following default style for the `<rect>` and `<text>` elements of the `Shape.
 
 ```js
 {
@@ -241,25 +242,25 @@ new SomeNode({
 
 #### style
 
-该 SVG/HTML 元素的行内样式键值对。
+The in-line style key-value pair for this SVG/HTML element.
 
 #### className
 
-该 SVG/HTML 元素的 CSS 样式名。
+The CSS style name of the SVG/HTML element.
 
 #### textContent
 
-该 SVG/HTML 元素的文本内容。
+The text content of the SVG/HTML element.
 
 #### children
 
-嵌套的子元素。
+Nested child elements.
 
 ### attrs
 
-在[快速上手](/en/docs/tutorial/getting-started)中，我们简单介绍了如何使用 `attrs` 选项定制节点样式，`attrs` 选项是一个复杂对象，该对象的 Key 是节点中 SVG 元素的选择器(Selector)，对应的值是应用到该 SVG 元素的 [SVG 属性值](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)(如 [fill](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill) 和 [stroke](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke))，如果你对 SVG 属性还不熟悉，可以参考 MDN 提供的[填充和边框](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)入门教程。
+In [Quick Start](/en/docs/tutorial/getting-started), we briefly described how to customize node styles using the `attrs` option, which is a complex object whose Key is the Selector of the SVG element in the node, and whose corresponding value is the [SVG attribute value]() applied to that SVG attribute value](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute) applied to that SVG element (e.g. [fill](https://developer.mozilla.org/zh-CN/docs/Web/) SVG/Attribute/fill) and [stroke](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke)). If you are not familiar with SVG attributes, you can refer to the [fill and border]( https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes) for a tutorial to get started.
 
-选择器(Selector)通过节点的 `markup` 确定，如 `Shape.Rect` 节点定义了 `'body'`(代表 `<rect>` 元素) 和 `'label'`(代表 `<text>` 元素) 两个选择器。
+Selector is determined by the node's `markup`, e.g. the `Shape.Rect` node defines the `'body'` (representing the `<rect>` element) and `'label'` (representing the `<text>` element) selectors.
 
 ```ts
 const rect = new Shape.Rect({
@@ -281,7 +282,7 @@ const rect = new Shape.Rect({
 })
 ```
 
-节点渲染到画布后的 DOM 结构看起来像下面这样。
+The DOM structure of the node after it is rendered to the canvas looks like the following.
 
 ```html
 <g data-cell-id="3ee1452c-6d75-478d-af22-88e03c6d513b" class="x6-cell x6-node" transform="translate(40,40)">
@@ -294,7 +295,7 @@ const rect = new Shape.Rect({
 </g>
 ```
 
-另外，我们还可以使用 CSS 选择器来指定节点样式，这样我们就不用记住预定的选择器名称，只需要根据渲染后的 DOM 结构来定义样式即可。使用 CSS 选择器时需要注意，指定的 CSS 选择器可能选中多个元素，这时对应的属性样式将同时应用到多个元素上。
+Alternatively, we can use CSS selectors to specify node styles so that we don't have to remember the intended selector name and can simply define the style based on the rendered DOM structure. When using CSS selectors, it is important to note that multiple elements may be selected by the specified CSS selector, and the corresponding property styles will be applied to multiple elements at the same time.
 
 ```ts
 const rect = new Shape.Rect({
@@ -303,11 +304,11 @@ const rect = new Shape.Rect({
   width: 100,
   height: 40,
   attrs: { 
-    rect: { // 使用 rect css 选择器替代预定义的 body 选择器
+    rect: { // Use the rect css selector instead of the predefined body selector
       fill: '#2ECC71',
       stroke: '#000',
     },
-    text: { // 使用 text css 选择器替代预定义的 label 选择器
+    text: { // Use the text css selector instead of the predefined label selector
       text: 'rect',
       fill: '#333',
       fontSize: 13,
@@ -316,9 +317,9 @@ const rect = new Shape.Rect({
 })
 ```
 
-值得一提的是，支持使用小驼峰(camelCase)格式的属性名，如 `'fontSize'`，这就避免了 `'font-size'` 这种属性名作为对象 Key 时需要加引号的书写麻烦。
+It is worth mentioning that property names in camelCase format, such as `'fontSize'`, are supported, which avoids the trouble of writing property names like `'font-size'` in quotes when they are used as object keys.
 
-除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[如何使用特殊属性](/en/docs/tutorial/intermediate/attrs)和[如何自定义属性](/en/docs/api/registry/attr#definition)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `'x6-node'` 和 `'x6-edge'` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/index.less#L26-L156)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
+In addition to the standard [SVG attributes](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute), we have defined a series of special attributes in X6, please refer to [How to use special attributes](/en/docs/tutorial/ intermediate/attrs) and [How to customize attributes](/en/docs/api/registry/attr#definition). Also, we can use [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) to customize the styles. Nodes and edges are rendered to the canvas with `'x6-node'` and `'x6-edge'` style names, respectively, and the default style definitions [refer here]( https://github.com/antvis/X6/blob/master/packages/x6/src/index.less#L26-L156). For example, we can specify the style of the `<rect>` element in a node like this.
 
 ```css
 .x6-node rect {
@@ -327,17 +328,17 @@ const rect = new Shape.Rect({
 }
 ```
 
-创建节点/边后，我们可以调用实例上的 `attr()` 方法来修改节点属性样式。看下面代码，通过 `/` 分割的路径修改样式，`label` 选择器对应到 `<text>` 元素，`text` 则是该元素的属性名，`'hello'` 是新的属性值。
+After creating the node/edge, we can call the `attr()` method on the instance to modify the node attribute style. Look at the following code, the style is modified by the `/` split path, the `label` selector corresponds to the `<text>` element, `text` is the attribute name of the element, and `'hello'` is the new attribute value.
 
 ```ts
 rect.attr('label/text', 'hello')
 
-// 等同于
+// Equivalent to
 rect.attr('label', {
   text: 'hello'
 })
 
-// 等同于
+// Equivalent to
 rect.attr({
   label: {
     text: 'hello'
@@ -345,7 +346,7 @@ rect.attr({
 })
 ```
 
-当传入的属性值为 `null` 时可以移除该属性。
+The property can be removed when the value passed in is `null`.
 
 ```ts
 rect.attr('label/text', null)
@@ -353,7 +354,7 @@ rect.attr('label/text', null)
 
 ### shape
 
-节点/边的图形，类似 MVC 模式中的 Model，决定了节点/边的数据逻辑，通常配合 `graph.addNode` 和 `graph.addEdge` 两个方法使用。之前的介绍中都是使用节点/边的构造函数来创建节点/边，其实 `graph` 上也提供了 `graph.addNode` 和 `graph.addEdge` 两个便捷的方法来创建节点/边并将其添加到画布。
+The graph of a node/edge, similar to a Model in the MVC pattern, determines the data logic of the node/edge and is usually used in conjunction with the `graph.addNode` and `graph.addEdge` methods. In fact, `graph` also provides two convenient methods `graph.addNode` and `graph.addEdge` to create nodes/edges and add them to the canvas.
 
 ```ts
 const rect = graph.addNode({
@@ -382,63 +383,64 @@ const edge = graph.addEdge({
 })
 ```
 
-这里的关键是使用 `shape` 来指定了节点/边的图形，`graph.addNode` 方法中 `shape` 的默认值为 `'rect'`，`graph.addEdge` 方法中 `shape` 的默认值为 `'edge'`，其他选项与使用构造函数创建节点/边一致。在 X6 内部实现中，我们通过 `shape` 指定的图形找到对应的构造函数来初始化节点/边，并将其添加到画布。
+The key here is the use of `shape` to specify the graph of the node/edge. The default value of `shape` in the `graph.addNode` method is `'rect'`, the default value of `shape` in the `graph.addEdge` method is `'edge'`, and the other options are the same as using the constructor to create the node/edge. In the X6 internal implementation, we initialize nodes/edges and add them to the canvas by finding the corresponding constructor for the graph specified by `shape`.
 
-#### 内置节点
+#### Built-in Nodes
 
-内置节点构造函数与 `shape` 名称对应关系如下表。
+The built-in node constructors correspond to the `shape` names in the following table.
 
-| 构造函数             | shape 名称      | 描述                                            |
+| constructor          | shape name      | description                                  |
 |----------------------|-----------------|-----------------------------------------------|
-| Shape.Rect           | rect            | 矩形。                                           |
-| Shape.Circle         | circle          | 圆形。                                           |
-| Shape.Ellipse        | ellipse         | 椭圆。                                           |
-| Shape.Polygon        | polygon         | 多边形。                                         |
-| Shape.Polyline       | polyline        | 折线。                                         |
-| Shape.Path           | path            | 路径。                                           |
-| Shape.Image          | image           | 图片。                                           |
-| Shape.HTML           | html            | HTML 节点，使用 `foreignObject`  渲染 HTML 片段。 |
-| Shape.TextBlock      | text-block      | 文本节点，使用 `foreignObject` 渲染文本。         |
-| Shape.BorderedImage  | image-bordered  | 带边框的图片。                                   |
-| Shape.EmbeddedImage  | image-embedded  | 内嵌入矩形的图片。                               |
-| Shape.InscribedImage | image-inscribed | 内嵌入椭圆的图片。                               |
-| Shape.Cylinder       | cylinder        | 圆柱。                                           |
+| Shape.Rect           | rect            | Rectangle.                                      |
+| Shape.Circle         | circle          | Circle.                                           |
+| Shape.Ellipse        | ellipse         | Ellipse.                                           |
+| Shape.Polygon        | polygon         | polygon.                                         |
+| Shape.Polyline       | polyline        | Polyline.                                         |
+| Shape.Path           | path            | path.                                           |
+| Shape.Image          | image           | Image.                                           |
+| Shape.HTML           | html            | HTML node that uses `foreignObject` to render HTML fragments.   |
+| Shape.TextBlock      | text-block      | Text node, use `foreignObject` to render the text.       |
+| Shape.BorderedImage  | image-bordered  | Pictures with borders.                              |
+| Shape.EmbeddedImage  | image-embedded  | Image with the embedded rectangle.           |
+| Shape.InscribedImage | image-inscribed | Embedded ellipse image.                               |
+| Shape.Cylinder       | cylinder        | Cylinders.                                           |
 
-#### 内置边
 
-内置边构造函数与 `shape` 名称对应关系如下表。
+#### Built-in side
 
-| 构造函数         | shape 名称  | 描述    |
+The built-in edge constructors correspond to the `shape` names in the following table.
+
+| constructor | shape name | description |
 |------------------|-------------|--------|
-| Shape.Edge       | edge        | 边。     |
-| Shape.DoubleEdge | double-edge | 双线边。 |
-| Shape.ShadowEdge | shadow-edge | 阴影边。 |
+| Shape.Edge       | edge        | Side.     |
+| Shape.DoubleEdge | double-edge | Double line edge. |
+| Shape.ShadowEdge | shadow-edge | Shaded edges. |
 
-除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](/en/docs/tutorial/intermediate/custom-node)和[自定义边](/en/docs/tutorial/intermediate/custom-edge)教程。
+Besides using X6's built-in nodes/edges, we can also register custom nodes/edges and use them. To learn more, please refer to the [custom-node](/en/docs/tutorial/intermediate/custom-node) and [custom-edge](/en/docs/tutorial/intermediate/custom-edge) tutorials.
 
 ### view
 
-指定渲染节点/边所使用的视图，视图的概念与 MVC 模式中的 View 一致，我们将在[自定义节点](/en/docs/tutorial/intermediate/custom-node)和[自定义边](/en/docs/tutorial/intermediate/custom-edge)教程中做详细介绍。
+Specify the view used to render the node/edge. The concept of view is the same as View in MVC pattern, which we will introduce in detail in [custom-node](/en/docs/tutorial/intermediate/custom-node) and [custom-edge](/en/docs/tutorial/intermediate/custom-edge) tutorials.
 
 ### zIndex
 
-节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。节点/边渲染到画布后可以通过 `cell.getZIndex()` 和 `cell.setZIndex(z: number)` 来获取或设置 `zIndex` 的值，也可以调用 `cell.toFront()` 和 `cell.toBack()` 来将其移到最顶层或对底层。
+The node/edge hierarchy in the canvas is automatically determined by default based on the order in which the nodes/edges are added. The value of `zIndex` can be obtained or set by `cell.getZIndex()` and `cell.setZIndex(z: number)` after the node/edge is rendered to the canvas, and it can also be moved to the top or bottom layer by calling `cell.toFront()` and `cell.toBack()`.
 
 ### visible
 
-节点/边是否可见。
+If or not the node/edge is visible.
 
 ### parent
 
-父节点 ID。
+The parent node ID.
 
 ### children
 
-子节点/边的 ID 数组。
+ID array of children/edges.
 
 ### data
 
-与节点/边关联的业务数据。例如，我们在实际使用时通常会将某些业务数据存在节点/边的 `data` 上。
+The business data associated with a node/edge. For example, we usually store some business data on the `data` of the node/edge when we use it in practice.
 
 ```ts
 const rect = new Shape.Rect({
@@ -454,9 +456,9 @@ const rect = new Shape.Rect({
 })
 ```
 
-## 选项默认值
+## Option default value
 
-Cell 类提供了一个静态方法 `Cell.config(options)` 来配置选项的默认值，选项默认值对自定义节点/边非常友好，可以为我们的自定义节点/边指定预设的默认值。例如，我们在定义矩形节点时，为其指定了默认 Markup、默认大小和默认样式。
+The Cell class provides a static method `Cell.config(options)` to configure the option defaults. The option defaults are very friendly to custom nodes/edges and can specify pre-defined defaults for our custom nodes/edges. For example, when we define a rectangular node, we specify the default Markup, default size and default style for it.
 
 ```ts
 Shape.Rect.config({
@@ -489,7 +491,7 @@ Shape.Rect.config({
 })
 ```
 
-默认选项可以简化我们添加节点的代码，例如，只需要指定矩形节点的位置和文本就可以添加一个矩形到画布。
+The default option simplifies our code for adding nodes, for example, by simply specifying the location and text of the rectangle node to add a rectangle to the canvas.
 
 ```ts
 const rect = graph.addNode({
@@ -503,10 +505,10 @@ const rect = graph.addNode({
 })
 ```
 
-每次调用 `config(options)` 都是与当前预设值进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，例如下面代码分别将矩形的边框默认颜色修改为红色和将默认文本颜色修改为蓝色，最终效果是两者的叠加。
+Each call to `config(options)` is a [depth merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the current preset, for example, the following code changes the default color of the border of the rectangle to red and the default text The final effect is a superposition of the two.
 
 ```ts
-// 只修改边框的默认颜色
+// Change only the default color of the border
 Shape.Rect.config({
   attrs: {
     body: {
@@ -515,21 +517,21 @@ Shape.Rect.config({
   },
 })
 
-// 只修改默认文本颜色
+// Change only the default text color
 Shape.Rect.config({
   attrs: {
     label: {
       fill: 'blue',
-      // 覆盖上面定义的 red
+      // Override the red defined above
       stroke: '#000',
     },
   },
 })
 ```
 
-## 自定义选项
+## Customization Options
 
-也许你已经注意到，在之前创建矩形的代码中，我们使用了 `label` 选项来设置矩形的标签文本。
+You may have noticed that in the previous code that created the rectangle, we used the `label` option to set the label text of the rectangle.
 
 ```ts
 const rect = graph.addNode({
@@ -539,11 +541,11 @@ const rect = graph.addNode({
 })
 ```
 
-这并不是什么新魔法，我们只是在定义矩形时通过定义 `propHooks` 钩子来消费自定义选项，看下面 `label` 选项钩子的实现细节。
+This is not new magic, we just consume custom options by defining `propHooks` hooks when defining rectangles, see the implementation details of `label` option hooks below.
 
 ```ts
 Shape.Rect.config({
-  // 通过钩子将 label 应用到 'attrs/text/text' 属性上
+  // Apply the label to the 'attrs/text/text' attribute via a hook
   propHooks(metadata) {
     const { label, ...others } = metadata
     if (label) {
@@ -554,9 +556,9 @@ Shape.Rect.config({
 })
 ```
 
-通过 `propHooks` 钩子，我们很容易就扩展出一些自定义的选项。例如，我们可以将某些样式定义为节点的选项，这样不仅可以减少嵌套，而且使创建节点的代码语义性更强。
+With the `propHooks` hook, we can easily extend some custom options. For example, we can define certain styles as options for nodes, which not only reduces nesting, but also makes the code for creating nodes more semantic.
 
-看下面的代码，为矩形定义 `rx` 和 `ry` 自定义选项。
+Look at the following code to define `rx` and `ry` customization options for rectangles.
 
 ```ts
 Shape.Rect.config({
@@ -579,7 +581,7 @@ Shape.Rect.config({
 })
 ```
 
-这样，我们就可以很方便添加圆角矩形。
+This way, we can easily add rounded rectangles.
 
 ```ts
 const rect = graph.addNode({
