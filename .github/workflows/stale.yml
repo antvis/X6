@@ -13,7 +13,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - uses: actions/stale@v5
+      - uses: actions/stale@v6
         with:
           repo-token: ${{ env.bot_token }}
           stale-issue-message: |
