@@ -1,5 +1,5 @@
-import { ObjectExt } from '../util'
-import { Rectangle } from '../geometry'
+import { ObjectExt } from '@antv/x6-common'
+import { Rectangle } from '@antv/x6-geometry'
 import { Background } from '../registry'
 import { Base } from './base'
 

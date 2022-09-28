@@ -1,4 +1,4 @@
-import { Registry } from '../registry'
+import { Registry } from '@antv/x6-common'
 
 export namespace ShareRegistry {
   let edgeRegistry: Registry<any>

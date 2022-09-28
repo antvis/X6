@@ -1,4 +1,4 @@
-import { Point } from '../../geometry'
+import { Point } from '@antv/x6-geometry'
 import { Node, Edge } from '../../model'
 import { EdgeView, NodeView } from '../../view'
 import { ConnectionStrategy } from './index'

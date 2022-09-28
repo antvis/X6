@@ -1,6 +1,6 @@
 import Mousetrap from 'mousetrap'
 import { Dom, FunctionExt, Disposable, IDisablable } from '@antv/x6-common'
-import { Graph, EventArgs } from '@antv/x6-next'
+import { Graph, EventArgs } from '@antv/x6'
 
 export class KeyboardImpl extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
@@ -120,7 +120,7 @@ export class KeyboardImpl extends Disposable implements IDisablable {
     return false
   }
 
-  isInputEvent(e: KeyboardEvent | JQuery.MouseUpEvent) {
+  isInputEvent(e: KeyboardEvent | Dom.MouseUpEvent) {
     const target = e.target as Element
     const tagName = target?.tagName?.toLowerCase()
     return ['input', 'textarea'].includes(tagName)

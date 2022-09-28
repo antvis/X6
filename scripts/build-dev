@@ -11,7 +11,7 @@ lerna run build --stream --scope @antv/x6-common \
 
 wait
 
-lerna run build --stream --scope @antv/x6-next
+lerna run build --stream --scope @antv/x6
 
 wait
 

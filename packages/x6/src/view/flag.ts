@@ -1,6 +1,6 @@
 /* eslint-disable no-bitwise */
 
-import { KeyValue } from '../types'
+import { KeyValue } from '@antv/x6-common'
 import { CellView } from './cell'
 
 export class FlagManager {
@@ -107,16 +107,13 @@ export namespace FlagManager {
     | 'render'
     | 'update'
     | 'resize'
-    | 'scale'
     | 'rotate'
     | 'translate'
     | 'ports'
     | 'tools'
     | 'source'
     | 'target'
-    | 'vertices'
     | 'labels'
-    | 'widget' // external edge tools
 
   export type Actions = Action | Action[]
 }

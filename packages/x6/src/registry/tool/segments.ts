@@ -1,13 +1,13 @@
-import { Dom, ObjectExt, FunctionExt } from '../../util'
-import { Point, Line } from '../../geometry'
-import { Graph } from '../../graph'
-import { Edge } from '../../model/edge'
+import { Dom, ObjectExt, FunctionExt } from '@antv/x6-common'
+import { Point, Line } from '@antv/x6-geometry'
 import { View } from '../../view/view'
-import { CellView } from '../../view/cell'
-import { EdgeView } from '../../view/edge'
 import { ToolsView } from '../../view/tool'
 import * as Util from './util'
 import { Attr } from '../attr'
+import { CellView } from '../../view/cell'
+import { EdgeView } from '../../view/edge'
+import { Edge } from '../../model/edge'
+import { Graph } from '../../graph'
 
 export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
   protected handles: Segments.Handle[] = []
@@ -54,13 +54,6 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     if (this.options.processHandle) {
       this.options.processHandle(handle)
     }
-
-    this.graph.hook.onToolItemCreated({
-      name: 'segments',
-      cell: this.cell,
-      view: this.cellView,
-      tool: handle,
-    })
 
     this.updateHandle(handle, vertex, nextVertex)
     this.container.appendChild(handle.container)
@@ -440,7 +433,7 @@ export namespace Segments {
       })
     }
 
-    protected onMouseDown(evt: JQuery.MouseDownEvent) {
+    protected onMouseDown(evt: Dom.MouseDownEvent) {
       if (this.options.guard(evt)) {
         return
       }
@@ -462,11 +455,11 @@ export namespace Segments {
       )
     }
 
-    protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+    protected onMouseMove(evt: Dom.MouseMoveEvent) {
       this.emit('changing', { e: evt, handle: this })
     }
 
-    protected onMouseUp(evt: JQuery.MouseUpEvent) {
+    protected onMouseUp(evt: Dom.MouseUpEvent) {
       this.emit('changed', { e: evt, handle: this })
       this.undelegateDocumentEvents()
       this.options.graph.view.delegateEvents()
@@ -484,16 +477,16 @@ export namespace Segments {
   export namespace Handle {
     export interface Options {
       graph: Graph
-      guard: (evt: JQuery.TriggeredEvent) => boolean
+      guard: (evt: Dom.EventObject) => boolean
       attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
       index?: number
       axis?: 'x' | 'y'
     }
 
     export interface EventArgs {
-      change: { e: JQuery.MouseDownEvent; handle: Handle }
-      changing: { e: JQuery.MouseMoveEvent; handle: Handle }
-      changed: { e: JQuery.MouseUpEvent; handle: Handle }
+      change: { e: Dom.MouseDownEvent; handle: Handle }
+      changing: { e: Dom.MouseMoveEvent; handle: Handle }
+      changed: { e: Dom.MouseUpEvent; handle: Handle }
     }
   }
 }
