@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "1.30.2",
+  "version": "2.0.6-beta.6",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -32,22 +32,21 @@
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
     "lint": "run-s lint:ts lint:style",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
-    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:less": "node ./scripts/style",
     "build:readme": "node ./scripts/readme.js",
     "build:version": "node ../../scripts/version.js",
-    "build:csstype": "node ./scripts/csstype.js",
-    "build:dev": "run-p build:csstype build:less build:cjs build:esm",
+    "build:dev": "run-p build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
     "build:watch:esm": "yarn build:esm --w",
     "build:watch:cjs": "yarn build:cjs --w",
-    "build": "run-p build:readme build:version build:dev build:umd",
+    "build": "run-p build:readme build:dev build:umd",
     "prebuild": "run-s lint clean",
     "test": "karma start",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
-    "prepare": "run-s build:version test build",
+    "prepare": "run-s test build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -66,12 +65,8 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "dependencies": {
-    "csstype": "^3.0.3",
-    "jquery": "^3.5.1",
-    "jquery-mousewheel": "^3.1.13",
-    "lodash-es": "^4.17.15",
-    "mousetrap": "^1.6.5",
-    "utility-types": "^3.10.0"
+    "@antv/x6-common": "^2.0.6-beta.3",
+    "@antv/x6-geometry": "^2.0.6-beta.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
@@ -79,10 +74,6 @@
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
     "@types/jasmine": "^3.9.0",
-    "@types/jquery": "^3.5.5",
-    "@types/jquery-mousewheel": "^3.1.8",
-    "@types/lodash-es": "^4.17.4",
-    "@types/mousetrap": "^1.6.5",
     "@types/node": "^16.9.1",
     "@types/resize-observer-browser": "^0.1.5",
     "@types/sinon": "^10.0.2",
@@ -132,13 +123,9 @@
     "stylelint-order": "^4.1.0",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "utility-types": "^3.10.0"
   },
-  "browserslist": [
-    "last 2 versions",
-    "Firefox ESR",
-    "> 1%"
-  ],
   "author": {
     "name": "bubkoo",
     "email": "bubkoo.wy@gmail.com"
@@ -157,5 +144,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "gitHead": "576fa342fa65a6867ead29f6801a30dcb31bcdb5"
 }

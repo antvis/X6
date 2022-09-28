@@ -28,7 +28,7 @@
   "packages": [
     "packages/x6-common",
     "packages/x6-geometry",
-    "packages/x6-next",
+    "packages/x6",
     "packages/x6-react-shape",
     "packages/x6-vue-shape"
   ]

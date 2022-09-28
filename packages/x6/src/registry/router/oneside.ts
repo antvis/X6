@@ -1,4 +1,4 @@
-import { NumberExt } from '../../util'
+import { NumberExt } from '@antv/x6-common'
 import { PaddingOptions } from './util'
 import { Router } from './index'
 

@@ -1,5 +1,5 @@
-import { NumberExt } from '../../../util'
-import { Point, Rectangle, Angle } from '../../../geometry'
+import { NumberExt } from '@antv/x6-common'
+import { Point, Rectangle, Angle } from '@antv/x6-geometry'
 import { Edge } from '../../../model'
 import { EdgeView } from '../../../view'
 import { orth } from '../orth'

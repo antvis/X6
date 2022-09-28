@@ -1,4 +1,4 @@
-import { ArrayExt } from '../../../util'
+import { ArrayExt } from '@antv/x6-common'
 
 const OPEN = 1
 const CLOSE = 2

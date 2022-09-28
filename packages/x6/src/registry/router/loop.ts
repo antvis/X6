@@ -1,4 +1,4 @@
-import { Angle, Point, Line } from '../../geometry'
+import { Angle, Point, Line } from '@antv/x6-geometry'
 import { Router } from './index'
 
 export interface LoopRouterOptions {

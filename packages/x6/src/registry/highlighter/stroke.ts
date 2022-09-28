@@ -1,8 +1,9 @@
+import { ObjectExt, Dom, Vector } from '@antv/x6-common'
 import { Attr } from '../attr'
-import { ObjectExt, Dom, Vector } from '../../util'
-import { Util } from '../../global'
+import { Config } from '../../config'
 import { EdgeView } from '../../view'
 import { Highlighter } from './index'
+import { Util } from '../../util'
 
 export interface StrokeHighlighterOptions {
   padding?: number
@@ -40,7 +41,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
     } catch (error) {
       // Failed to get path data from magnet element.
       // Draw a rectangle around the entire cell view instead.
-      magnetBBox = magnetVel.bbox(true /* without transforms */)
+      magnetBBox = Util.bbox(magnetVel.node, true)
       pathData = Dom.rectToPathData({ ...options, ...magnetBBox })
     }
 
@@ -66,13 +67,13 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
       const padding = options.padding
       if (padding) {
         if (magnetBBox == null) {
-          magnetBBox = magnetVel.bbox(true)
+          magnetBBox = Util.bbox(magnetVel.node, true)
         }
 
         const cx = magnetBBox.x + magnetBBox.width / 2
         const cy = magnetBBox.y + magnetBBox.height / 2
 
-        magnetBBox = Dom.transformRectangle(magnetBBox, highlightMatrix)
+        magnetBBox = Util.transformRectangle(magnetBBox, highlightMatrix)
 
         const width = Math.max(magnetBBox.width, 1)
         const height = Math.max(magnetBBox.height, 1)
@@ -94,7 +95,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
       Dom.transform(path, highlightMatrix)
     }
 
-    Dom.addClass(path, Util.prefix('highlight-stroke'))
+    Dom.addClass(path, Config.prefix('highlight-stroke'))
 
     const cell = cellView.cell
     const removeHandler = () => Private.removeHighlighter(id)

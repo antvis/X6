@@ -1,6 +1,5 @@
-import { KeyValue } from '../../../types'
-import { Util } from '../../../global/util'
-import { Point, Line, Angle, Rectangle } from '../../../geometry'
+import { Point, Line, Angle, Rectangle, Util } from '@antv/x6-geometry'
+import { KeyValue } from '@antv/x6-common'
 import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'
 

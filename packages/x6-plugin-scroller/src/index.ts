@@ -5,7 +5,7 @@ import {
   TransformManager,
   Cell,
   BackgroundManager,
-} from '@antv/x6-next'
+} from '@antv/x6'
 import { Rectangle, Point } from '@antv/x6-geometry'
 import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'

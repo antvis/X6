@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-import { Point, Line, Path } from '../../geometry'
+import { Point, Line, Path } from '@antv/x6-geometry'
 import { Edge } from '../../model'
 import { EdgeView } from '../../view'
 import { Connector } from './index'
@@ -330,7 +330,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> =
 
     // find views for all links
     const linkViews = edges.map((edge) => {
-      return graph.renderer.findViewByCell(edge) as EdgeView
+      return graph.findViewByCell(edge) as EdgeView
     })
 
     // create lines for this link

@@ -1,8 +1,7 @@
-import { KeyValue } from '../../types'
-import { Point, Line } from '../../geometry'
+import { Point, Line } from '@antv/x6-geometry'
+import { Registry, KeyValue } from '@antv/x6-common'
 import { Edge } from '../../model/edge'
 import { CellView } from '../../view/cell'
-import { Registry } from '../registry'
 import * as connectionPoints from './main'
 
 export namespace ConnectionPoint {

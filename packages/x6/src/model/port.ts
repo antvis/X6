@@ -1,8 +1,7 @@
-import { Attr, PortLayout, PortLabelLayout } from '../registry'
-import { JSONObject, ObjectExt } from '../util'
-import { Point, Rectangle } from '../geometry'
-import { Size, KeyValue } from '../types'
+import { JSONObject, ObjectExt, Size, KeyValue } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
 import { Markup } from '../view'
+import { Attr, PortLayout, PortLabelLayout } from '../registry'
 
 export class PortManager {
   ports: PortManager.Port[]
