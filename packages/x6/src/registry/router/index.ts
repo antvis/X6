@@ -1,7 +1,6 @@
-import { KeyValue } from '../../types'
-import { Point } from '../../geometry'
+import { Point } from '@antv/x6-geometry'
+import { Registry, KeyValue } from '@antv/x6-common'
 import { EdgeView } from '../../view'
-import { Registry } from '../registry'
 import * as routers from './main'
 
 export namespace Router {

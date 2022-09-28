@@ -1,5 +1,5 @@
+import { Dom, Vector } from '@antv/x6-common'
 import * as Registry from '../registry'
-import { Dom, Vector } from '../util'
 import { Base } from './base'
 
 export class GridManager extends Base {

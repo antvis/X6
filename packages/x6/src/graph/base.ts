@@ -1,5 +1,5 @@
+import { Disposable } from '@antv/x6-common'
 import { Graph } from './graph'
-import { Disposable } from '../common'
 
 export class Base extends Disposable {
   public readonly graph: Graph

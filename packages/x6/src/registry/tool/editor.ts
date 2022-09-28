@@ -1,12 +1,13 @@
+import { Point } from '@antv/x6-geometry'
+import { Dom, FunctionExt } from '@antv/x6-common'
 import { ToolsView } from '../../view/tool'
 import { Cell, Edge } from '../../model'
 import { CellView, NodeView, EdgeView } from '../../view'
-import { Point } from '../../geometry'
-import { Dom, FunctionExt } from '../../util'
+import { Util } from '../../util'
 
 export class CellEditor extends ToolsView.ToolItem<
   NodeView | EdgeView,
-  CellEditor.CellEditorOptions & { event: JQuery.MouseEventBase }
+  CellEditor.CellEditorOptions & { event: Dom.EventObject }
 > {
   private editor: HTMLDivElement
   private labelIndex = -1
@@ -55,7 +56,7 @@ export class CellEditor extends ToolsView.ToolItem<
         const matrix = parent.getAttribute('transform')
         const { translation } = Dom.parseTransformString(matrix)
         pos = new Point(translation.tx, translation.ty)
-        minWidth = Dom.getBBox(target).width
+        minWidth = Util.getBBox(target).width
       } else {
         if (!this.options.labelAddable) {
           return this
@@ -96,7 +97,7 @@ export class CellEditor extends ToolsView.ToolItem<
     return this
   }
 
-  onDocumentMouseDown(e: JQuery.MouseDownEvent) {
+  onDocumentMouseDown(e: Dom.MouseDownEvent) {
     if (e.target !== this.editor) {
       const cell = this.cell
       const value = this.editor.innerText.replace(/\n$/, '') || ''
@@ -116,11 +117,11 @@ export class CellEditor extends ToolsView.ToolItem<
     }
   }
 
-  onDblClick(e: JQuery.DoubleClickEvent) {
+  onDblClick(e: Dom.DoubleClickEvent) {
     e.stopPropagation()
   }
 
-  onMouseDown(e: JQuery.MouseDownEvent) {
+  onMouseDown(e: Dom.MouseDownEvent) {
     e.stopPropagation()
   }
 

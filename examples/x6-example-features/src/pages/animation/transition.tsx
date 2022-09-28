@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell } from '@antv/x6-next'
+import { Graph, Cell } from '@antv/x6'
 import { Point } from '@antv/x6-geometry'
 import { Timing, Interp } from '@antv/x6-common'
 import '../index.less'

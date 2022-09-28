@@ -1,6 +1,4 @@
-import { Dom, Vector } from '../../util'
-import { KeyValue } from '../../types'
-import { Registry } from '../registry'
+import { Dom, Vector, Registry, KeyValue } from '@antv/x6-common'
 import * as patterns from './main'
 
 export class Grid {

@@ -1,11 +1,12 @@
-import { Util } from '../../global/util'
-import { Point } from '../../geometry'
-import { Graph } from '../../graph'
+import { Point } from '@antv/x6-geometry'
+import { Dom } from '@antv/x6-common'
+import { Config } from '../../config'
 import { View } from '../../view/view'
+import { ToolsView } from '../../view/tool'
 import { EdgeView } from '../../view/edge'
 import { Edge } from '../../model/edge'
-import { ToolsView } from '../../view/tool'
 import { Attr } from '../attr'
+import { Graph } from '../../graph'
 
 export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   protected handles: Vertices.Handle[] = []
@@ -60,20 +61,13 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
       const handle = createHandle({
         index: i,
         graph: this.graph,
-        guard: (evt: JQuery.TriggeredEvent) => this.guard(evt), // eslint-disable-line no-loop-func
+        guard: (evt: Dom.EventObject) => this.guard(evt), // eslint-disable-line no-loop-func
         attrs: this.options.attrs || {},
       })
 
       if (processHandle) {
         processHandle(handle)
       }
-
-      this.graph.hook.onToolItemCreated({
-        name: 'vertices',
-        cell: this.cell,
-        view: this.cellView,
-        tool: handle,
-      })
 
       handle.updatePosition(vertex.x, vertex.y)
       this.stamp(handle.container)
@@ -139,7 +133,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     }
   }
 
-  protected getMouseEventArgs<T extends JQuery.TriggeredEvent>(evt: T) {
+  protected getMouseEventArgs<T extends Dom.EventObject>(evt: T) {
     const e = this.normalizeEvent(evt)
     const { x, y } = this.graph.snapToGrid(e.clientX!, e.clientY!)
     return { e, x, y }
@@ -243,7 +237,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     }
   }
 
-  protected onPathMouseDown(evt: JQuery.MouseDownEvent) {
+  protected onPathMouseDown(evt: Dom.MouseDownEvent) {
     const edgeView = this.cellView
 
     if (
@@ -327,7 +321,7 @@ export namespace Vertices {
       this.setAttrs({ cx: x, cy: y })
     }
 
-    onMouseDown(evt: JQuery.MouseDownEvent) {
+    onMouseDown(evt: Dom.MouseDownEvent) {
       if (this.options.guard(evt)) {
         return
       }
@@ -350,17 +344,17 @@ export namespace Vertices {
       this.emit('change', { e: evt, handle: this })
     }
 
-    protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+    protected onMouseMove(evt: Dom.MouseMoveEvent) {
       this.emit('changing', { e: evt, handle: this })
     }
 
-    protected onMouseUp(evt: JQuery.MouseUpEvent) {
+    protected onMouseUp(evt: Dom.MouseUpEvent) {
       this.emit('changed', { e: evt, handle: this })
       this.undelegateDocumentEvents()
       this.graph.view.delegateEvents()
     }
 
-    protected onDoubleClick(evt: JQuery.DoubleClickEvent) {
+    protected onDoubleClick(evt: Dom.DoubleClickEvent) {
       this.emit('remove', { e: evt, handle: this })
     }
   }
@@ -369,21 +363,21 @@ export namespace Vertices {
     export interface Options {
       graph: Graph
       index: number
-      guard: (evt: JQuery.TriggeredEvent) => boolean
+      guard: (evt: Dom.EventObject) => boolean
       attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
     }
 
     export interface EventArgs {
-      change: { e: JQuery.MouseDownEvent; handle: Handle }
-      changing: { e: JQuery.MouseMoveEvent; handle: Handle }
-      changed: { e: JQuery.MouseUpEvent; handle: Handle }
-      remove: { e: JQuery.DoubleClickEvent; handle: Handle }
+      change: { e: Dom.MouseDownEvent; handle: Handle }
+      changing: { e: Dom.MouseMoveEvent; handle: Handle }
+      changed: { e: Dom.MouseUpEvent; handle: Handle }
+      remove: { e: Dom.DoubleClickEvent; handle: Handle }
     }
   }
 }
 
 export namespace Vertices {
-  const pathClassName = Util.prefix('edge-tool-vertex-path')
+  const pathClassName = Config.prefix('edge-tool-vertex-path')
 
   Vertices.config<Vertices.Options>({
     name: 'vertices',

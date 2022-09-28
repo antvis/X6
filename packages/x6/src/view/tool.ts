@@ -1,5 +1,4 @@
-import { KeyValue } from '../types'
-import { Dom, ObjectExt, StringExt } from '../util'
+import { Dom, ObjectExt, StringExt, KeyValue } from '@antv/x6-common'
 import { NodeTool, EdgeTool } from '../registry/tool'
 import { View } from './view'
 import { CellView } from './cell'
@@ -327,7 +326,7 @@ export namespace ToolsView {
 
     protected cellView: TargetView
 
-    protected visible: boolean
+    protected visible = true
 
     protected childNodes: KeyValue<Element>
 
@@ -404,9 +403,7 @@ export namespace ToolsView {
 
       const markup = this.options.markup
       if (markup) {
-        const meta = Markup.isStringMarkup(markup)
-          ? Markup.parseStringMarkup(markup)
-          : Markup.parseJSONMarkup(markup)
+        const meta = Markup.parseJSONMarkup(markup)
         this.container.appendChild(meta.fragment)
         this.childNodes = meta.selectors as KeyValue<Element>
       }
@@ -458,7 +455,7 @@ export namespace ToolsView {
       return this
     }
 
-    protected guard(evt: JQuery.TriggeredEvent) {
+    protected guard(evt: Dom.EventObject) {
       if (this.graph == null || this.cellView == null) {
         return true
       }
@@ -473,7 +470,7 @@ export namespace ToolsView {
       tagName?: string
       isSVGElement?: boolean
       className?: string
-      markup?: Markup
+      markup?: Exclude<Markup, string>
       events?: View.Events | null
       documentEvents?: View.Events | null
       focusOpacity?: number

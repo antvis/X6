@@ -1,4 +1,4 @@
-import { StringExt, Dom, Vector } from '../util'
+import { StringExt, Dom, Vector } from '@antv/x6-common'
 import { Attr, Filter, Marker } from '../registry'
 import { Markup } from '../view'
 import { Base } from './base'

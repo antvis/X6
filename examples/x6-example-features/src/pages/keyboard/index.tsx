@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6-next'
+import { Graph } from '@antv/x6'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import '../index.less'
 

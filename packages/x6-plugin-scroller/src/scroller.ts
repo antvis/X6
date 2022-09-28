@@ -15,7 +15,7 @@ import {
   TransformManager,
   BackgroundManager,
   Util,
-} from '@antv/x6-next'
+} from '@antv/x6'
 
 export class ScrollerImpl extends View {
   private readonly content: HTMLDivElement

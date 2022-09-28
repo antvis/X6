@@ -1,5 +1,5 @@
-import { NumberExt } from '../../util'
-import { Point, Rectangle } from '../../geometry'
+import { NumberExt } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
 import { EdgeView } from '../../view/edge'
 
 export interface PaddingOptions {

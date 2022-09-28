@@ -1,6 +1,5 @@
-import { KeyValue } from '../../../types'
-import { FunctionExt } from '../../../util'
-import { Point, Rectangle } from '../../../geometry'
+import { FunctionExt, KeyValue } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
 import { EdgeView } from '../../../view'
 import { Router } from '../index'
 import { SortedSet } from './sorted-set'

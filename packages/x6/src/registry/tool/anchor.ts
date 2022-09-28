@@ -1,6 +1,6 @@
-import { Dom, FunctionExt } from '../../util'
+import { Dom, FunctionExt } from '@antv/x6-common'
+import { Point } from '@antv/x6-geometry'
 import { Attr } from '../attr'
-import { Point } from '../../geometry'
 import { Edge } from '../../model/edge'
 import { Node } from '../../model/node'
 import { EdgeView } from '../../view/edge'
@@ -128,7 +128,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     }
   }
 
-  protected onMouseDown(evt: JQuery.MouseDownEvent) {
+  protected onMouseDown(evt: Dom.MouseDownEvent) {
     if (this.guard(evt)) {
       return
     }
@@ -163,7 +163,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     }
   }
 
-  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+  protected onMouseMove(evt: Dom.MouseMoveEvent) {
     const terminalType = this.type
     const edgeView = this.cellView
     const terminalView = edgeView.getTerminalView(terminalType)
@@ -174,7 +174,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     const e = this.normalizeEvent(evt)
     const terminalCell = terminalView.cell
     const terminalMagnet = edgeView.getTerminalMagnet(terminalType)!
-    let coords = this.graph.clientToLocal(e.clientX, e.clientY)
+    let coords = this.graph.coord.clientToLocalPoint(e.clientX, e.clientY)
 
     const snapFn = this.options.snap
     if (typeof snapFn === 'function') {
@@ -234,7 +234,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected onMouseUp(evt: JQuery.MouseUpEvent) {
+  protected onMouseUp(evt: Dom.MouseUpEvent) {
     this.graph.view.delegateEvents()
     this.undelegateDocumentEvents()
     this.blur()

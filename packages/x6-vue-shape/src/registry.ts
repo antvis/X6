@@ -1,4 +1,4 @@
-import { Graph, Node } from '@antv/x6-next'
+import { Graph, Node } from '@antv/x6'
 
 export type VueShapeConfig = Node.Properties & {
   shape: string
