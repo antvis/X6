@@ -1,4 +1,4 @@
-import { Point, Path } from '../../geometry'
+import { Point, Path } from '@antv/x6-geometry'
 import { Connector } from './index'
 
 export interface RoundedConnectorOptions extends Connector.BaseOptions {

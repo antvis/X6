@@ -51,7 +51,7 @@
     "mousetrap": "^1.6.5"
   },
   "peerDependencies": {
-    "@antv/x6-next": "2.0.6-beta.0"
+    "@antv/x6": ">=2.0.6-beta.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",

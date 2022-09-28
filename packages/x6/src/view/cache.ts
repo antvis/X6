@@ -1,6 +1,13 @@
-import { Dictionary } from '../common'
-import { JSONObject, Dom } from '../util'
-import { Line, Rectangle, Ellipse, Polyline, Path, Segment } from '../geometry'
+import { Dictionary, JSONObject, Dom } from '@antv/x6-common'
+import {
+  Line,
+  Rectangle,
+  Ellipse,
+  Polyline,
+  Path,
+  Segment,
+} from '@antv/x6-geometry'
+import { Util } from '../util'
 import { CellView } from './cell'
 
 export class Cache {
@@ -43,8 +50,11 @@ export class Cache {
   getMatrix(elem: Element) {
     const meta = this.get(elem)
     if (meta.matrix == null) {
-      const target = this.view.rotatableNode || this.view.container
-      meta.matrix = Dom.getTransformToElement(elem as any, target as SVGElement)
+      const target = this.view.container
+      meta.matrix = Dom.getTransformToParentElement(
+        elem as any,
+        target as SVGElement,
+      )
     }
 
     return Dom.createSVGMatrix(meta.matrix)
@@ -53,7 +63,7 @@ export class Cache {
   getShape(elem: Element) {
     const meta = this.get(elem)
     if (meta.shape == null) {
-      meta.shape = Dom.toGeometryShape(elem as SVGElement)
+      meta.shape = Util.toGeometryShape(elem as SVGElement)
     }
     return meta.shape.clone()
   }
@@ -61,7 +71,7 @@ export class Cache {
   getBoundingRect(elem: Element) {
     const meta = this.get(elem)
     if (meta.boundingRect == null) {
-      meta.boundingRect = Dom.getBBox(elem as SVGElement)
+      meta.boundingRect = Util.getBBoxV2(elem as SVGElement)
     }
     return meta.boundingRect.clone()
   }

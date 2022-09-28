@@ -1,4 +1,4 @@
-import { Markup, Node } from '@antv/x6-next'
+import { Markup, Node } from '@antv/x6'
 import { ObjectExt } from '@antv/x6-common'
 
 export class VueShape<

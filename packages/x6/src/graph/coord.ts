@@ -1,6 +1,7 @@
+import { Dom } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
 import { Base } from './base'
-import { Dom } from '../util'
-import { Point, Rectangle } from '../geometry'
+import { Util } from '../util'
 
 export class CoordManager extends Base {
   getClientMatrix() {
@@ -34,12 +35,12 @@ export class CoordManager extends Base {
 
   localToGraphPoint(x: number | Point | Point.PointLike, y?: number) {
     const localPoint = Point.create(x, y)
-    return Dom.transformPoint(localPoint, this.graph.matrix())
+    return Util.transformPoint(localPoint, this.graph.matrix())
   }
 
   localToClientPoint(x: number | Point | Point.PointLike, y?: number) {
     const localPoint = Point.create(x, y)
-    return Dom.transformPoint(localPoint, this.getClientMatrix())
+    return Util.transformPoint(localPoint, this.getClientMatrix())
   }
 
   localToPagePoint(x: number | Point | Point.PointLike, y?: number) {
@@ -57,7 +58,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const localRect = Rectangle.create(x, y, width, height)
-    return Dom.transformRectangle(localRect, this.graph.matrix())
+    return Util.transformRectangle(localRect, this.graph.matrix())
   }
 
   localToClientRect(
@@ -67,7 +68,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const localRect = Rectangle.create(x, y, width, height)
-    return Dom.transformRectangle(localRect, this.getClientMatrix())
+    return Util.transformRectangle(localRect, this.getClientMatrix())
   }
 
   localToPageRect(
@@ -85,17 +86,17 @@ export class CoordManager extends Base {
 
   graphToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const graphPoint = Point.create(x, y)
-    return Dom.transformPoint(graphPoint, this.graph.matrix().inverse())
+    return Util.transformPoint(graphPoint, this.graph.matrix().inverse())
   }
 
   clientToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const clientPoint = Point.create(x, y)
-    return Dom.transformPoint(clientPoint, this.getClientMatrix().inverse())
+    return Util.transformPoint(clientPoint, this.getClientMatrix().inverse())
   }
 
   clientToGraphPoint(x: number | Point | Point.PointLike, y?: number) {
     const clientPoint = Point.create(x, y)
-    return Dom.transformPoint(
+    return Util.transformPoint(
       clientPoint,
       this.graph.matrix().multiply(this.getClientMatrix().inverse()),
     )
@@ -114,7 +115,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const graphRect = Rectangle.create(x, y, width, height)
-    return Dom.transformRectangle(graphRect, this.graph.matrix().inverse())
+    return Util.transformRectangle(graphRect, this.graph.matrix().inverse())
   }
 
   clientToLocalRect(
@@ -124,7 +125,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const clientRect = Rectangle.create(x, y, width, height)
-    return Dom.transformRectangle(clientRect, this.getClientMatrix().inverse())
+    return Util.transformRectangle(clientRect, this.getClientMatrix().inverse())
   }
 
   clientToGraphRect(
@@ -134,7 +135,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const clientRect = Rectangle.create(x, y, width, height)
-    return Dom.transformRectangle(
+    return Util.transformRectangle(
       clientRect,
       this.graph.matrix().multiply(this.getClientMatrix().inverse()),
     )

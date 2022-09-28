@@ -1,6 +1,5 @@
-import { KeyValue } from '../../types'
+import { Registry, KeyValue } from '@antv/x6-common'
 import { CellView } from '../../view'
-import { Registry } from '../registry'
 import * as highlighters from './main'
 
 export namespace Highlighter {

@@ -1,5 +1,5 @@
-import { NumberExt } from '../../util'
-import { Point } from '../../geometry'
+import { NumberExt } from '@antv/x6-common'
+import { Point } from '@antv/x6-geometry'
 import { EdgeView } from '../../view'
 
 export interface ResolveOptions {
@@ -16,7 +16,7 @@ export function resolve<S extends Function, T>(fn: S): T {
     options: ResolveOptions,
   ) {
     if (ref instanceof Element) {
-      const refView = this.graph.renderer.findViewByElem(ref)
+      const refView = this.graph.findViewByElem(ref)
       let refPoint
       if (refView) {
         if (refView.isEdgeElement(ref)) {

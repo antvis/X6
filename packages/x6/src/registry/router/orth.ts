@@ -1,6 +1,6 @@
+import { ArrayExt } from '@antv/x6-common'
+import { Point, Rectangle, Line, Angle } from '@antv/x6-geometry'
 import { Router } from './index'
-import { ArrayExt } from '../../util'
-import { Point, Rectangle, Line, Angle } from '../../geometry'
 import * as Util from './util'
 
 export interface OrthRouterOptions extends Util.PaddingOptions {}

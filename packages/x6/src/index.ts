@@ -1,19 +1,10 @@
-import { Shape } from './shape'
-import * as Addon from './addon'
+import * as Shape from './shape'
 import * as Registry from './registry'
-
-// start track
-// -----------
-import './global/track'
-
-export * from './util'
-export * from './common'
-export * from './geometry'
 
 export * from './model'
 export * from './view'
 export * from './graph'
+export * from './config'
+export * from './util'
 
-export { Shape, Addon, Registry }
-
-export * from './global'
+export { Shape, Registry }

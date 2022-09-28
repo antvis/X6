@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node } from '@antv/x6-next'
+import { Graph, Node } from '@antv/x6'
 import { Path } from '@antv/x6-geometry'
 import '../index.less'
 

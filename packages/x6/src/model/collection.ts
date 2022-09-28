@@ -1,5 +1,4 @@
-import { ArrayExt } from '../util'
-import { Basecoat } from '../common'
+import { ArrayExt, Basecoat } from '@antv/x6-common'
 import { Cell } from './cell'
 import { Node } from './node'
 import { Edge } from './edge'
@@ -419,8 +418,6 @@ export namespace Collection {
     'cell:change:vertices': Cell.EventArgs['change:vertices']
     'cell:change:labels': Cell.EventArgs['change:labels']
     'cell:change:defaultLabel': Cell.EventArgs['change:defaultLabel']
-    'cell:change:toolMarkup': Cell.EventArgs['change:toolMarkup']
-    'cell:change:doubleToolMarkup': Cell.EventArgs['change:doubleToolMarkup']
     'cell:change:vertexMarkup': Cell.EventArgs['change:vertexMarkup']
     'cell:change:arrowheadMarkup': Cell.EventArgs['change:arrowheadMarkup']
     'cell:vertexs:added': Cell.EventArgs['vertexs:added']
@@ -527,10 +524,6 @@ export namespace Collection {
     'edge:change:labels': EdgeEventCommonArgs & Cell.EventArgs['change:labels']
     'edge:change:defaultLabel': EdgeEventCommonArgs &
       Cell.EventArgs['change:defaultLabel']
-    'edge:change:toolMarkup': EdgeEventCommonArgs &
-      Cell.EventArgs['change:toolMarkup']
-    'edge:change:doubleToolMarkup': EdgeEventCommonArgs &
-      Cell.EventArgs['change:doubleToolMarkup']
     'edge:change:vertexMarkup': EdgeEventCommonArgs &
       Cell.EventArgs['change:vertexMarkup']
     'edge:change:arrowheadMarkup': EdgeEventCommonArgs &

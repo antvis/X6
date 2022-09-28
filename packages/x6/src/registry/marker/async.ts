@@ -1,5 +1,5 @@
-import { KeyValue } from '../../types'
-import { Path } from '../../geometry'
+import { Path } from '@antv/x6-geometry'
+import { KeyValue } from '@antv/x6-common'
 import { normalize } from './util'
 import { Marker } from './index'
 

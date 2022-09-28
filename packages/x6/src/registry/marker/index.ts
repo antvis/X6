@@ -1,5 +1,4 @@
-import { KeyValue } from '../../types'
-import { Registry } from '../registry'
+import { Registry, KeyValue } from '@antv/x6-common'
 import { Attr } from '../attr'
 import * as markers from './main'
 import { normalize as normalizeMarker } from './util'

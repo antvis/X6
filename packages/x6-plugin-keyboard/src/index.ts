@@ -1,5 +1,5 @@
 import { Disposable } from '@antv/x6-common'
-import { Graph } from '@antv/x6-next'
+import { Graph } from '@antv/x6'
 import { KeyboardImpl } from './keyboard'
 
 export class Keyboard extends Disposable {

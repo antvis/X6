@@ -54,12 +54,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6/test/coverage/lcov.info
           flags: x6
-      - name: 💡　Codecov(x6-vector)
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/x6-vector/test/coverage/lcov.info
-          flags: x6-vector
       - name: 💡　Codecov(x6-geometry)
         uses: codecov/codecov-action@v1
         with:

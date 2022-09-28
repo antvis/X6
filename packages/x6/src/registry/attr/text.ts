@@ -5,7 +5,7 @@ import {
   Dom,
   FunctionExt,
   Text,
-} from '../../util'
+} from '@antv/x6-common'
 import { Attr } from './index'
 
 export const text: Attr.Definition = {
@@ -14,8 +14,7 @@ export const text: Attr.Definition = {
   },
   set(text, { view, elem, attrs }) {
     const cacheName = 'x6-text'
-    const $elem = view.$(elem)
-    const cache = $elem.data(cacheName)
+    const cache = Dom.data(elem, cacheName)
     const json = <T>(str: any) => {
       try {
         return JSON.parse(str) as T
@@ -63,7 +62,7 @@ export const text: Attr.Definition = {
       }
 
       Dom.text(elem as SVGElement, `${text}`, options)
-      $elem.data(cacheName, textHash)
+      Dom.data(elem, cacheName, textHash)
     }
   },
 }
@@ -111,10 +110,10 @@ export const textWrap: Attr.Definition = {
           lineHeight: attrs.lineHeight,
         },
         {
-          svgDocument: view.graph.view.svg,
+          // svgDocument: view.graph.view.svg,
           ellipsis: info.ellipsis as string,
-          hyphen: info.hyphen as string,
-          breakWord: info.breakWord as boolean,
+          // hyphen: info.hyphen as string,
+          // breakWord: info.breakWord as boolean,
         },
       )
     } else {

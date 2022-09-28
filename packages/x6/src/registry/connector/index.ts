@@ -1,7 +1,6 @@
-import { KeyValue } from '../../types'
-import { Point, Path } from '../../geometry'
+import { Point, Path } from '@antv/x6-geometry'
+import { Registry, KeyValue } from '@antv/x6-common'
 import { EdgeView } from '../../view'
-import { Registry } from '../registry'
 import * as connectors from './main'
 
 export namespace Connector {

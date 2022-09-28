@@ -1,10 +1,9 @@
-import { Point } from '../../geometry'
-import { KeyValue } from '../../types'
+import { Point } from '@antv/x6-geometry'
+import { Registry, KeyValue } from '@antv/x6-common'
 import { Edge } from '../../model'
-import { Graph } from '../../graph'
 import { CellView } from '../../view'
-import { Registry } from '../registry'
 import * as strategies from './main'
+import { Graph } from '../../graph'
 
 export namespace ConnectionStrategy {
   export type Definition = (
