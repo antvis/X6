@@ -1,5 +1,7 @@
 import React from 'react'
-import { Graph, Node, NodeView, Point, Angle, Dom, Vector } from '@antv/x6'
+import { Graph, Node, NodeView } from '@antv/x6'
+import { Dom, Vector } from '@antv/x6-common'
+import { Point, Angle } from '@antv/x6-geometry'
 import '../index.less'
 
 class ConveyorNode extends Node {

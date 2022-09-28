@@ -1,8 +1,8 @@
 import { Basecoat, NumberExt, Dom, KeyValue } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
 import { Model, Collection, Cell, Node, Edge } from '../model'
+import { CellView } from '../view'
 import * as Registry from '../registry'
-import { Base } from './base'
 import { GraphView } from './view'
 import { EventArgs } from './events'
 import { CSSManager as Css } from './css'
@@ -17,7 +17,7 @@ import { Renderer as ViewRenderer } from '../renderer'
 import { DefsManager as Defs } from './defs'
 import { CoordManager as Coord } from './coord'
 import { HighlightManager as Highlight } from './highlight'
-import { CellView } from '../view'
+import { SizeManager as Size } from './size'
 
 export class Graph extends Basecoat<EventArgs> {
   private installedPlugins: Set<Graph.Plugin> = new Set()
@@ -36,6 +36,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly panning: Panning
   public readonly mousewheel: Wheel
   public readonly virtualRender: VirtualRender
+  public readonly size: Size
 
   public get container() {
     return this.options.container
@@ -64,6 +65,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.panning = new Panning(this)
     this.mousewheel = new Wheel(this)
     this.virtualRender = new VirtualRender(this)
+    this.size = new Size(this)
   }
 
   // #region model
@@ -1130,20 +1132,6 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
-}
-
-export namespace Graph {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  export import View = GraphView
-  export import Renderer = ViewRenderer
-  export import MouseWheel = Wheel
-  export import BaseManager = Base
-  export import DefsManager = Defs
-  export import GridManager = Grid
-  export import CoordManager = Coord
-  export import TransformManager = Transform
-  export import HighlightManager = Highlight
-  export import BackgroundManager = Background
 }
 
 export namespace Graph {
