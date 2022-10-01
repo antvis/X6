@@ -1,11 +1,5 @@
 import { Rectangle, Point } from '@antv/x6-geometry'
-import {
-  ObjectExt,
-  StringExt,
-  FunctionExt,
-  Dom,
-  KeyValue,
-} from '@antv/x6-common'
+import { ModifierKey, FunctionExt, Dom, KeyValue } from '@antv/x6-common'
 import {
   Cell,
   Node,
@@ -34,7 +28,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected get $boxes() {
-    return Dom.children(this.container, `.${this.boxClassName}`)
+    return Dom.children(this.container, this.boxClassName)
   }
 
   protected get handleOptions() {
@@ -43,7 +37,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
   constructor(options: SelectionImpl.Options) {
     super()
-    this.options = ObjectExt.merge({}, Private.defaultOptions, options)
+    this.options = options
 
     if (this.options.model) {
       this.options.collection = this.options.model.collection
@@ -111,7 +105,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected onGraphTransformed() {
-    this.updateSelectionBoxes({ async: false })
+    this.updateSelectionBoxes()
   }
 
   protected onCellChanged() {
@@ -849,10 +843,11 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     }
   }
 
-  protected updateSelectionBoxes(options: any = {}) {
+  protected updateSelectionBoxes() {
     if (this.collection.length > 0) {
       this.boxesUpdated = true
-      this.graph.renderer.requestViewUpdate(this as any, 1, options)
+      this.confirmUpdate()
+      // this.graph.renderer.requestViewUpdate(this as any, 1, options)
     }
   }
 
@@ -968,6 +963,13 @@ export namespace SelectionImpl {
     className?: string
     strict?: boolean
     filter?: Filter
+    modifiers?: string | ModifierKey[] | null
+    multiple?: boolean
+    multipleSelectionModifiers?: string | ModifierKey[] | null
+
+    selectCellOnMoved?: boolean
+    selectNodeOnMoved?: boolean
+    selectEdgeOnMoved?: boolean
 
     showEdgeSelectionBox?: boolean
     showNodeSelectionBox?: boolean
@@ -977,6 +979,7 @@ export namespace SelectionImpl {
     content?: Content
 
     // Can select node or edge when rubberband
+    rubberband?: boolean
     rubberNode?: boolean
     rubberEdge?: boolean
 
@@ -1065,18 +1068,6 @@ namespace Private {
     mouseup: 'onMouseUp',
     touchend: 'onMouseUp',
     touchcancel: 'onMouseUp',
-  }
-
-  export const defaultOptions: Partial<SelectionImpl.Options> = {
-    movable: true,
-    following: true,
-    strict: false,
-    useCellGeometry: false,
-    content(selection) {
-      return StringExt.template(
-        '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
-      )({ length: selection.length })
-    },
   }
 
   export function depthComparator(cell: Cell) {

@@ -1,4 +1,10 @@
-import { Disposable, ModifierKey, CssLoader, Dom } from '@antv/x6-common'
+import {
+  Disposable,
+  ModifierKey,
+  CssLoader,
+  Dom,
+  ObjectExt,
+} from '@antv/x6-common'
 import { Cell, EventArgs, Graph } from '@antv/x6'
 import { SelectionImpl } from './selection'
 import { content } from './style/raw'
@@ -7,6 +13,7 @@ export class Selection extends Disposable {
   public name = 'selection'
   private graph: Graph
   public selectionImpl: SelectionImpl
+  public readonly options: Selection.Options
   private movedMap = new WeakMap<Cell, boolean>()
   private unselectMap = new WeakMap<Cell, boolean>()
 
@@ -26,8 +33,9 @@ export class Selection extends Disposable {
     return this.selectionImpl.cells
   }
 
-  constructor(public readonly options: Selection.Options) {
+  constructor(options: Selection.Options) {
     super()
+    this.options = ObjectExt.merge({}, Selection.defaultOptions, options)
   }
 
   public init(graph: Graph) {
@@ -266,13 +274,6 @@ export class Selection extends Disposable {
 export namespace Selection {
   export interface Options extends SelectionImpl.CommonOptions {
     enabled?: boolean
-    rubberband?: boolean
-    modifiers?: string | ModifierKey[] | null
-    multiple?: boolean
-    multipleSelectionModifiers?: string | ModifierKey[] | null
-    selectCellOnMoved?: boolean
-    selectNodeOnMoved?: boolean
-    selectEdgeOnMoved?: boolean
   }
 
   export type Filter = SelectionImpl.Filter
@@ -281,4 +282,21 @@ export namespace Selection {
   export type SetOptions = SelectionImpl.SetOptions
   export type AddOptions = SelectionImpl.AddOptions
   export type RemoveOptions = SelectionImpl.RemoveOptions
+
+  export const defaultOptions: Partial<SelectionImpl.Options> = {
+    rubberband: false,
+    rubberNode: true,
+    rubberEdge: false, // next version will set to true
+    pointerEvents: 'auto',
+    multiple: true,
+    multipleSelectionModifiers: ['ctrl', 'meta'],
+    movable: true,
+    strict: false,
+    useCellGeometry: false,
+    selectCellOnMoved: false,
+    selectNodeOnMoved: false,
+    selectEdgeOnMoved: false,
+    following: true,
+    content: null,
+  }
 }
