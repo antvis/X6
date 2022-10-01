@@ -358,6 +358,10 @@ export class Scroller extends Disposable {
     this.scrollerImpl.disableAutoResize()
   }
 
+  autoScroll(clientX: number, clientY: number) {
+    this.scrollerImpl.autoScroll(clientX, clientY)
+  }
+
   @Disposable.dispose()
   dispose() {
     this.scrollerImpl.dispose()
