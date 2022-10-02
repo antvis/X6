@@ -236,7 +236,7 @@ export namespace Options {
      */
     restrict:
       | boolean
-      | OptionItem<CellView, Rectangle.RectangleLike | number | null>
+      | OptionItem<CellView | null, Rectangle.RectangleLike | number | null>
   }
 
   export interface Embedding {
