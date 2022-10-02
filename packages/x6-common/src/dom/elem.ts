@@ -154,9 +154,14 @@ export function contains(parent: Element, child: Element) {
   )
 }
 
-export function remove(elem: Element) {
-  if (elem.parentNode) {
-    elem.parentNode.removeChild(elem)
+export function remove(elem: Element | Element[] | null) {
+  if (elem) {
+    const elems = Array.isArray(elem) ? elem : [elem]
+    elems.forEach((item) => {
+      if (item.parentNode) {
+        item.parentNode.removeChild(item)
+      }
+    })
   }
 }
 
@@ -238,4 +243,19 @@ export function isHTMLElement(elem: any): elem is HTMLElement {
       typeof elem.ownerDocument === 'object'
     )
   }
+}
+
+export function children(parent: Element, className?: string) {
+  const matched: Element[] = []
+  let elem = parent.firstChild
+
+  for (; elem; elem = elem.nextSibling) {
+    if (elem.nodeType === 1) {
+      if (!className || hasClass(elem as Element, className)) {
+        matched.push(elem as Element)
+      }
+    }
+  }
+
+  return matched
 }
