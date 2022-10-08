@@ -1,43 +1,43 @@
+import { Scroller as ScrollerWidget } from '../addon/scroller'
 import { Basecoat } from '../common'
-import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
-import { KeyValue, ModifierKey } from '../types'
 import { Cell } from '../model/cell'
-import { Node } from '../model/node'
+import { Collection } from '../model/collection'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
-import { Collection } from '../model/collection'
-import { CellView } from '../view/cell'
+import { Node } from '../model/node'
 import * as Registry from '../registry'
 import { HTML } from '../shape/standard/html'
-import { Scroller as ScrollerWidget } from '../addon/scroller'
+import { KeyValue, ModifierKey } from '../types'
+import { Dom, NumberExt } from '../util'
+import { CellView } from '../view/cell'
+import { BackgroundManager as Background } from './background'
 import { Base } from './base'
-import { GraphView } from './view'
-import { EventArgs } from './events'
-import { Decorator } from './decorator'
-import { CSSManager } from './css'
-import { SizeManager } from './size'
-import { Hook as HookManager } from './hook'
-import { Options as GraphOptions } from './options'
-import { DefsManager as Defs } from './defs'
-import { GridManager as Grid } from './grid'
+import { ClipboardManager as Clipboard } from './clipboard'
 import { CoordManager as Coord } from './coord'
+import { CSSManager } from './css'
+import { Decorator } from './decorator'
+import { DefsManager as Defs } from './defs'
+import { EventArgs } from './events'
+import { FormatManager as Format } from './format'
+import { GridManager as Grid } from './grid'
+import { HighlightManager as Highlight } from './highlight'
+import { HistoryManager as History } from './history'
+import { Hook as HookManager } from './hook'
 import { Keyboard as Shortcut } from './keyboard'
 import { KnobManager as Knob } from './knob'
-import { PrintManager as Print } from './print'
-import { MouseWheel as Wheel } from './mousewheel'
-import { FormatManager as Format } from './format'
-import { Renderer as ViewRenderer } from './renderer'
-import { HistoryManager as History } from './history'
-import { PanningManager as Panning } from './panning'
 import { MiniMapManager as MiniMap } from './minimap'
-import { SnaplineManager as Snapline } from './snapline'
+import { MouseWheel as Wheel } from './mousewheel'
+import { Options as GraphOptions } from './options'
+import { PanningManager as Panning } from './panning'
+import { PrintManager as Print } from './print'
+import { Renderer as ViewRenderer } from './renderer'
 import { ScrollerManager as Scroller } from './scroller'
 import { SelectionManager as Selection } from './selection'
-import { HighlightManager as Highlight } from './highlight'
+import { SizeManager } from './size'
+import { SnaplineManager as Snapline } from './snapline'
 import { TransformManager as Transform } from './transform'
-import { ClipboardManager as Clipboard } from './clipboard'
-import { BackgroundManager as Background } from './background'
+import { GraphView } from './view'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
@@ -1882,36 +1882,20 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   isSharpSnapline() {
     return this.snapline.widget.options.sharp === true
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   enableSharpSnapline() {
     this.snapline.widget.options.sharp = true
     return this
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   disableSharpSnapline() {
     this.snapline.widget.options.sharp = false
     return this
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   toggleSharpSnapline(sharp?: boolean) {
     if (sharp != null) {
       if (sharp !== this.isSharpSnapline()) {
