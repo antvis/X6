@@ -61,12 +61,12 @@ export default class Example extends React.Component {
     graph.addEdge({ source: a, target: b })
     graph.addEdge({ source: b, target: c })
 
-    // keyboard.bindKey('backspace', () => {
-    //   graph.removeCells(selection.getSelectedCells())
-    // })
+    keyboard.bindKey('backspace', () => {
+      graph.removeCells(selection.getSelectedCells())
+    })
 
-    // graph.select(a)
-    // graph.select([b, c])
+    selection.select(a)
+    selection.select([b, c])
   }
 
   refContainer = (container: HTMLDivElement) => {

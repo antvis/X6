@@ -11,9 +11,9 @@ import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 
 export class Scroller extends Disposable {
-  public name = 'scroller'
   private graph: Graph
   private scrollerImpl: ScrollerImpl
+  public name = 'scroller'
 
   private get pannable() {
     if (this.options) {
@@ -33,6 +33,7 @@ export class Scroller extends Disposable {
   public init(graph: Graph) {
     this.graph = graph
     CssLoader.ensure('scroller', content)
+
     this.scrollerImpl = new ScrollerImpl({
       ...this.options,
       graph,
@@ -42,87 +43,7 @@ export class Scroller extends Disposable {
     this.scrollerImpl.center()
   }
 
-  private startListening() {
-    let eventTypes = []
-    const pannable = this.options.pannable
-    if (typeof pannable === 'object') {
-      eventTypes = pannable.eventTypes || []
-    } else {
-      eventTypes = ['leftMouseDown']
-    }
-    if (eventTypes.includes('leftMouseDown')) {
-      this.graph.on('blank:mousedown', this.preparePanning, this)
-      this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
-      this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
-    }
-    if (eventTypes.includes('rightMouseDown')) {
-      this.onRightMouseDown = this.onRightMouseDown.bind(this)
-      Dom.Event.on(
-        this.scrollerImpl.container,
-        'mousedown',
-        this.onRightMouseDown,
-      )
-    }
-  }
-
-  private stopListening() {
-    let eventTypes = []
-    const pannable = this.options.pannable
-    if (typeof pannable === 'object') {
-      eventTypes = pannable.eventTypes || []
-    } else {
-      eventTypes = ['leftMouseDown']
-    }
-    if (eventTypes.includes('leftMouseDown')) {
-      this.graph.off('blank:mousedown', this.preparePanning, this)
-      this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
-      this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
-    }
-    if (eventTypes.includes('rightMouseDown')) {
-      Dom.Event.off(
-        this.scrollerImpl.container,
-        'mousedown',
-        this.onRightMouseDown,
-      )
-    }
-  }
-
-  private onRightMouseDown(e: Dom.MouseDownEvent) {
-    if (e.button === 2 && this.allowPanning(e, true)) {
-      this.updateClassName(true)
-      this.scrollerImpl.startPanning(e)
-      this.scrollerImpl.once('pan:stop', () => this.updateClassName(false))
-    }
-  }
-
-  private preparePanning({ e }: { e: Dom.MouseDownEvent }) {
-    const allowPanning = this.allowPanning(e, true)
-    const selection = this.graph.getPlugin('selection') as any
-    const allowRubberband =
-      this.allowPanning(e) && selection && selection.allowRubberband(e, true)
-    if (allowPanning || !allowRubberband) {
-      this.updateClassName(true)
-      this.scrollerImpl.startPanning(e)
-      this.scrollerImpl.once('pan:stop', () => this.updateClassName(false))
-    }
-  }
-
-  private allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
-    return (
-      this.pannable && ModifierKey.isMatch(e, this.options.modifiers, strict)
-    )
-  }
-
-  private updateClassName(isPanning?: boolean) {
-    const container = this.scrollerImpl.container!
-    const pannable = Config.prefix('graph-scroller-pannable')
-    if (this.pannable) {
-      Dom.addClass(container, pannable)
-      container.dataset.panning = (!!isPanning).toString() // Use dataset to control scroller panning style to avoid reflow caused by changing classList
-    } else {
-      Dom.removeClass(container, pannable)
-    }
-  }
+  // #region api
 
   resize(width?: number, height?: number) {
     this.scrollerImpl.resize(width, height)
@@ -360,6 +281,90 @@ export class Scroller extends Disposable {
 
   autoScroll(clientX: number, clientY: number) {
     this.scrollerImpl.autoScroll(clientX, clientY)
+  }
+
+  // #endregion
+
+  protected startListening() {
+    let eventTypes = []
+    const pannable = this.options.pannable
+    if (typeof pannable === 'object') {
+      eventTypes = pannable.eventTypes || []
+    } else {
+      eventTypes = ['leftMouseDown']
+    }
+    if (eventTypes.includes('leftMouseDown')) {
+      this.graph.on('blank:mousedown', this.preparePanning, this)
+      this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
+      this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
+    }
+    if (eventTypes.includes('rightMouseDown')) {
+      this.onRightMouseDown = this.onRightMouseDown.bind(this)
+      Dom.Event.on(
+        this.scrollerImpl.container,
+        'mousedown',
+        this.onRightMouseDown,
+      )
+    }
+  }
+
+  protected stopListening() {
+    let eventTypes = []
+    const pannable = this.options.pannable
+    if (typeof pannable === 'object') {
+      eventTypes = pannable.eventTypes || []
+    } else {
+      eventTypes = ['leftMouseDown']
+    }
+    if (eventTypes.includes('leftMouseDown')) {
+      this.graph.off('blank:mousedown', this.preparePanning, this)
+      this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
+      this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
+    }
+    if (eventTypes.includes('rightMouseDown')) {
+      Dom.Event.off(
+        this.scrollerImpl.container,
+        'mousedown',
+        this.onRightMouseDown,
+      )
+    }
+  }
+
+  protected onRightMouseDown(e: Dom.MouseDownEvent) {
+    if (e.button === 2 && this.allowPanning(e, true)) {
+      this.updateClassName(true)
+      this.scrollerImpl.startPanning(e)
+      this.scrollerImpl.once('pan:stop', () => this.updateClassName(false))
+    }
+  }
+
+  protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
+    const allowPanning = this.allowPanning(e, true)
+    const selection = this.graph.getPlugin('selection') as any
+    const allowRubberband =
+      this.allowPanning(e) && selection && selection.allowRubberband(e, true)
+    if (allowPanning || !allowRubberband) {
+      this.updateClassName(true)
+      this.scrollerImpl.startPanning(e)
+      this.scrollerImpl.once('pan:stop', () => this.updateClassName(false))
+    }
+  }
+
+  protected allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
+    return (
+      this.pannable && ModifierKey.isMatch(e, this.options.modifiers, strict)
+    )
+  }
+
+  protected updateClassName(isPanning?: boolean) {
+    const container = this.scrollerImpl.container!
+    const pannable = Config.prefix('graph-scroller-pannable')
+    if (this.pannable) {
+      Dom.addClass(container, pannable)
+      container.dataset.panning = (!!isPanning).toString() // Use dataset to control scroller panning style to avoid reflow caused by changing classList
+    } else {
+      Dom.removeClass(container, pannable)
+    }
   }
 
   @Disposable.dispose()
