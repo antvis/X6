@@ -3,31 +3,33 @@ import { Graph } from '@antv/x6'
 import { KeyboardImpl } from './keyboard'
 
 export class Keyboard extends Disposable {
+  private keyboardImpl: KeyboardImpl
   public name = 'keyboard'
-  private keyboard: KeyboardImpl
 
   constructor(public readonly options: KeyboardImpl.Options) {
     super()
   }
 
-  public init(graph: Graph) {
-    this.keyboard = new KeyboardImpl({
+  init(graph: Graph) {
+    this.keyboardImpl = new KeyboardImpl({
       ...this.options,
       graph,
     })
   }
 
+  // #region api
+
   isKeyboardEnabled() {
-    return !this.keyboard.disabled
+    return !this.keyboardImpl.disabled
   }
 
   enableKeyboard() {
-    this.keyboard.enable()
+    this.keyboardImpl.enable()
     return this
   }
 
   disableKeyboard() {
-    this.keyboard.disable()
+    this.keyboardImpl.disable()
     return this
   }
 
@@ -53,17 +55,19 @@ export class Keyboard extends Disposable {
     callback: KeyboardImpl.Handler,
     action?: KeyboardImpl.Action,
   ) {
-    this.keyboard.on(keys, callback, action)
+    this.keyboardImpl.on(keys, callback, action)
     return this
   }
 
   unbindKey(keys: string | string[], action?: KeyboardImpl.Action) {
-    this.keyboard.off(keys, action)
+    this.keyboardImpl.off(keys, action)
     return this
   }
 
+  // #endregion
+
   @Disposable.dispose()
   dispose() {
-    this.keyboard.dispose()
+    this.keyboardImpl.dispose()
   }
 }

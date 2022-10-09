@@ -10,14 +10,14 @@ import { SelectionImpl } from './selection'
 import { content } from './style/raw'
 
 export class Selection extends Disposable {
-  public name = 'selection'
   private graph: Graph
-  public selectionImpl: SelectionImpl
-  public readonly options: Selection.Options
+  private selectionImpl: SelectionImpl
+  private readonly options: Selection.Options
   private movedMap = new WeakMap<Cell, boolean>()
   private unselectMap = new WeakMap<Cell, boolean>()
+  public name = 'selection'
 
-  get rubberbandDisabled() {
+  private get rubberbandDisabled() {
     return this.options.enabled !== true || this.options.rubberband !== true
   }
 
@@ -47,6 +47,240 @@ export class Selection extends Disposable {
     })
     this.startListening()
   }
+
+  // #region api
+
+  isSelectionEnabled() {
+    return !this.disabled
+  }
+
+  enableSelection() {
+    this.enable()
+    return this
+  }
+
+  disableSelection() {
+    this.disable()
+    return this
+  }
+
+  toggleSelection(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isSelectionEnabled()) {
+        if (enabled) {
+          this.enableSelection()
+        } else {
+          this.disableSelection()
+        }
+      }
+    } else if (this.isSelectionEnabled()) {
+      this.disableSelection()
+    } else {
+      this.enableSelection()
+    }
+
+    return this
+  }
+
+  isMultipleSelection() {
+    return this.isMultiple()
+  }
+
+  enableMultipleSelection() {
+    this.enableMultiple()
+    return this
+  }
+
+  disableMultipleSelection() {
+    this.disableMultiple()
+    return this
+  }
+
+  toggleMultipleSelection(multiple?: boolean) {
+    if (multiple != null) {
+      if (multiple !== this.isMultipleSelection()) {
+        if (multiple) {
+          this.enableMultipleSelection()
+        } else {
+          this.disableMultipleSelection()
+        }
+      }
+    } else if (this.isMultipleSelection()) {
+      this.disableMultipleSelection()
+    } else {
+      this.enableMultipleSelection()
+    }
+
+    return this
+  }
+
+  isSelectionMovable() {
+    return this.options.movable !== false
+  }
+
+  enableSelectionMovable() {
+    this.selectionImpl.options.movable = true
+    return this
+  }
+
+  disableSelectionMovable() {
+    this.selectionImpl.options.movable = false
+    return this
+  }
+
+  toggleSelectionMovable(movable?: boolean) {
+    if (movable != null) {
+      if (movable !== this.isSelectionMovable()) {
+        if (movable) {
+          this.enableSelectionMovable()
+        } else {
+          this.disableSelectionMovable()
+        }
+      }
+    } else if (this.isSelectionMovable()) {
+      this.disableSelectionMovable()
+    } else {
+      this.enableSelectionMovable()
+    }
+
+    return this
+  }
+
+  isRubberbandEnabled() {
+    return !this.rubberbandDisabled
+  }
+
+  enableRubberband() {
+    if (this.rubberbandDisabled) {
+      this.options.rubberband = true
+    }
+    return this
+  }
+
+  disableRubberband() {
+    if (!this.rubberbandDisabled) {
+      this.options.rubberband = false
+    }
+    return this
+  }
+
+  toggleRubberband(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isRubberbandEnabled()) {
+        if (enabled) {
+          this.enableRubberband()
+        } else {
+          this.disableRubberband()
+        }
+      }
+    } else if (this.isRubberbandEnabled()) {
+      this.disableRubberband()
+    } else {
+      this.enableRubberband()
+    }
+
+    return this
+  }
+
+  isStrictRubberband() {
+    return this.selectionImpl.options.strict === true
+  }
+
+  enableStrictRubberband() {
+    this.selectionImpl.options.strict = true
+    return this
+  }
+
+  disableStrictRubberband() {
+    this.selectionImpl.options.strict = false
+    return this
+  }
+
+  toggleStrictRubberband(strict?: boolean) {
+    if (strict != null) {
+      if (strict !== this.isStrictRubberband()) {
+        if (strict) {
+          this.enableStrictRubberband()
+        } else {
+          this.disableStrictRubberband()
+        }
+      }
+    } else if (this.isStrictRubberband()) {
+      this.disableStrictRubberband()
+    } else {
+      this.enableStrictRubberband()
+    }
+
+    return this
+  }
+
+  setRubberbandModifiers(modifiers?: string | ModifierKey[] | null) {
+    this.setModifiers(modifiers)
+  }
+
+  setSelectionFilter(filter?: Selection.Filter) {
+    this.setFilter(filter)
+    return this
+  }
+
+  setSelectionDisplayContent(content?: Selection.Content) {
+    this.setContent(content)
+    return this
+  }
+
+  isSelectionEmpty() {
+    return this.isEmpty()
+  }
+
+  cleanSelection(options?: Selection.SetOptions) {
+    this.clean(options)
+    return this
+  }
+
+  resetSelection(
+    cells?: Cell | string | (Cell | string)[],
+    options?: Selection.SetOptions,
+  ) {
+    this.reset(cells, options)
+    return this
+  }
+
+  getSelectedCells() {
+    return this.cells
+  }
+
+  getSelectedCellCount() {
+    return this.length
+  }
+
+  isSelected(cell: Cell | string) {
+    return this.selectionImpl.isSelected(cell)
+  }
+
+  select(
+    cells: Cell | string | (Cell | string)[],
+    options: Selection.AddOptions = {},
+  ) {
+    const selected = this.getCells(cells)
+    if (selected.length) {
+      if (this.isMultiple()) {
+        this.selectionImpl.select(selected, options)
+      } else {
+        this.reset(selected.slice(0, 1), options)
+      }
+    }
+    return this
+  }
+
+  unselect(
+    cells: Cell | string | (Cell | string)[],
+    options: Selection.RemoveOptions = {},
+  ) {
+    this.selectionImpl.unselect(this.getCells(cells), options)
+    return this
+  }
+
+  // #endregion
 
   protected startListening() {
     this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
@@ -80,14 +314,14 @@ export class Selection extends Disposable {
     this.clean()
   }
 
-  allowRubberband(e: Dom.MouseDownEvent, strict?: boolean) {
+  protected allowRubberband(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
       !this.rubberbandDisabled &&
       ModifierKey.isMatch(e, this.options.modifiers, strict)
     )
   }
 
-  allowMultipleSelection(e: Dom.MouseDownEvent | Dom.MouseUpEvent) {
+  protected allowMultipleSelection(e: Dom.MouseDownEvent | Dom.MouseUpEvent) {
     return (
       this.isMultiple() &&
       ModifierKey.isMatch(e, this.options.multipleSelectionModifiers)
@@ -140,12 +374,8 @@ export class Selection extends Disposable {
     }
   }
 
-  isEmpty() {
+  protected isEmpty() {
     return this.length <= 0
-  }
-
-  isSelected(cell: Cell | string) {
-    return this.selectionImpl.isSelected(cell)
   }
 
   protected getCells(cells: Cell | string | (Cell | string)[]) {
@@ -156,30 +386,7 @@ export class Selection extends Disposable {
       .filter((cell) => cell != null)
   }
 
-  select(
-    cells: Cell | string | (Cell | string)[],
-    options: Selection.AddOptions = {},
-  ) {
-    const selected = this.getCells(cells)
-    if (selected.length) {
-      if (this.isMultiple()) {
-        this.selectionImpl.select(selected, options)
-      } else {
-        this.reset(selected.slice(0, 1), options)
-      }
-    }
-    return this
-  }
-
-  unselect(
-    cells: Cell | string | (Cell | string)[],
-    options: Selection.RemoveOptions = {},
-  ) {
-    this.selectionImpl.unselect(this.getCells(cells), options)
-    return this
-  }
-
-  reset(
+  protected reset(
     cells?: Cell | string | (Cell | string)[],
     options: Selection.SetOptions = {},
   ) {
@@ -187,79 +394,57 @@ export class Selection extends Disposable {
     return this
   }
 
-  clean(options: Selection.SetOptions = {}) {
+  protected clean(options: Selection.SetOptions = {}) {
     this.selectionImpl.clean(options)
     return this
   }
 
-  enable() {
+  protected enable() {
     if (this.disabled) {
       this.options.enabled = true
     }
     return this
   }
 
-  disable() {
+  protected disable() {
     if (!this.disabled) {
       this.options.enabled = false
     }
     return this
   }
 
-  startRubberband(e: Dom.MouseDownEvent) {
+  protected startRubberband(e: Dom.MouseDownEvent) {
     if (!this.rubberbandDisabled) {
       this.selectionImpl.startSelecting(e)
     }
     return this
   }
 
-  enableRubberband() {
-    if (this.rubberbandDisabled) {
-      this.options.rubberband = true
-      // if (
-      //   ModifierKey.equals(
-      //     this.graph.options.scroller.modifiers,
-      //     this.graph.options.selecting.modifiers,
-      //   )
-      // ) {
-      //   this.graph.scroller.disablePanning()
-      // }
-    }
-    return this
-  }
-
-  disableRubberband() {
-    if (!this.rubberbandDisabled) {
-      this.options.rubberband = false
-    }
-    return this
-  }
-
-  isMultiple() {
+  protected isMultiple() {
     return this.options.multiple !== false
   }
 
-  enableMultiple() {
+  protected enableMultiple() {
     this.options.multiple = true
     return this
   }
 
-  disableMultiple() {
+  protected disableMultiple() {
     this.options.multiple = false
     return this
   }
 
-  setModifiers(modifiers?: string | ModifierKey[] | null) {
+  protected setModifiers(modifiers?: string | ModifierKey[] | null) {
     this.options.modifiers = modifiers
     return this
   }
 
-  setContent(content?: Selection.Content) {
+  protected setContent(content?: Selection.Content) {
     this.selectionImpl.setContent(content)
     return this
   }
 
-  setFilter(filter?: Selection.Filter) {
+  protected setFilter(filter?: Selection.Filter) {
     this.selectionImpl.setFilter(filter)
     return this
   }
