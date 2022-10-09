@@ -84,8 +84,8 @@ export class Snapline extends View implements IDisablable {
 
   protected render() {
     const container = (this.containerWrapper = new Vector('svg'))
-    const horizontal = (this.horizontal = new Vector('path'))
-    const vertical = (this.vertical = new Vector('path'))
+    const horizontal = (this.horizontal = new Vector('line'))
+    const vertical = (this.vertical = new Vector('line'))
 
     container.addClass(this.containerClassName)
     horizontal.addClass(this.horizontalClassName)
@@ -586,7 +586,10 @@ export class Snapline extends View implements IDisablable {
         ),
       )
       this.horizontal.setAttributes({
-        d: `M ${start.x},${start.y} L ${end.x},${end.y}`,
+        x1: this.options.sharp ? `${start.x}` : '0',
+        y1: `${start.y}`,
+        x2: this.options.sharp ? `${end.x}` : '100%',
+        y2: `${end.y}`,
         display: 'inherit',
       })
     } else {
@@ -604,7 +607,10 @@ export class Snapline extends View implements IDisablable {
         ),
       )
       this.vertical.setAttributes({
-        d: `M ${start.x},${start.y} L ${end.x},${end.y}`,
+        x1: `${start.x}`,
+        y1: this.options.sharp ? `${start.y}` : '0',
+        x2: `${end.x}`,
+        y2: this.options.sharp ? `${end.y}` : '100%',
         display: 'inherit',
       })
     } else {
@@ -661,14 +667,6 @@ export namespace Snapline {
     enabled?: boolean
     className?: string
     tolerance?: number
-    /**
-     * @deprecated The behavior is now to clamp snaplines to the elements
-     * that are being aligned (instead of them spanning the entire graph),
-     * equivalent to `sharp: true`. The `sharp` option will be removed in a future release.
-     *
-     * @deprecated 对齐线将默认在对齐的元素边界截断，而不是跨越整个图的横轴/纵轴；相当于 `sharp: true`.
-     * `sharp` 选项将在之后的版本中去除。
-     */
     sharp?: boolean
     /**
      * Specify if snap on node resizing or not.
