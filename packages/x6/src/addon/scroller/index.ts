@@ -420,7 +420,7 @@ export class Scroller extends View {
     const direction = resizeOptions?.direction
 
     if (!direction) {
-      return this.graph.transform.getContentArea()
+      return this.graph.transform.getContentArea(resizeOptions)
     }
 
     function getCellBBox(cell: Cell) {
