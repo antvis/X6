@@ -26,9 +26,8 @@
     "package:inherit": "yarn package-inherit update",
     "prepare": "is-ci || husky install configs/husky-config",
     "precommit": "yarn lint-staged && lerna run --concurrency 1 --stream precommit",
-    "version": "lerna version --no-private",
-    "publish:latest": "lerna publish from-package --no-private --ignore-scripts",
-    "publish:beta": "lerna publish from-package --no-private --ignore-scripts --canary --preid beta --dist-tag=beta"
+    "publish:latest": "yarn build:dev && lerna publish from-package --no-private --ignore-scripts",
+    "publish:beta": "yarn build:dev && lerna publish from-package --no-private --ignore-scripts --dist-tag=beta"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
