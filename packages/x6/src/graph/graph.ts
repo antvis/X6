@@ -1882,36 +1882,20 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   isSharpSnapline() {
     return this.snapline.widget.options.sharp === true
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   enableSharpSnapline() {
     this.snapline.widget.options.sharp = true
     return this
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   disableSharpSnapline() {
     this.snapline.widget.options.sharp = false
     return this
   }
 
-  /**
-   * @deprecated
-   * @see Snapline.Options.sharp
-   */
   toggleSharpSnapline(sharp?: boolean) {
     if (sharp != null) {
       if (sharp !== this.isSharpSnapline()) {
