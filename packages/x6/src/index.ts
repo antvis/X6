@@ -2,10 +2,6 @@ import { Shape } from './shape'
 import * as Addon from './addon'
 import * as Registry from './registry'
 
-// start track
-// -----------
-import './global/track'
-
 export * from './util'
 export * from './common'
 export * from './geometry'
