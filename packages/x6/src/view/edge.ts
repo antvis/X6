@@ -165,23 +165,26 @@ export class EdgeView<
     this.container.append(ret.fragment)
   }
 
-  // protected customizeLabels() {
-  //   if (this.containers.labels) {
-  //     const edge = this.cell
-  //     const labels = edge.labels
-  //     for (let i = 0, n = labels.length; i < n; i += 1) {
-  //       const label = labels[i]
-  //       const container = this.labelCache[i]
-  //       const selectors = this.labelSelectors[i]
-  //       this.graph.hook.onEdgeLabelRendered({
-  //         edge,
-  //         label,
-  //         container,
-  //         selectors,
-  //       })
-  //     }
-  //   }
-  // }
+  protected customizeLabels() {
+    if (this.labelContainer) {
+      const edge = this.cell
+      const labels = edge.labels
+      for (let i = 0, n = labels.length; i < n; i += 1) {
+        const label = labels[i]
+        const container = this.labelCache[i]
+        const selectors = this.labelSelectors[i]
+        const onEdgeLabelRendered = this.graph.options.onEdgeLabelRendered
+        if (onEdgeLabelRendered) {
+          onEdgeLabelRendered({
+            edge,
+            label,
+            container,
+            selectors,
+          })
+        }
+      }
+    }
+  }
 
   protected renderLabels() {
     const edge = this.cell
@@ -245,8 +248,7 @@ export class EdgeView<
     }
 
     this.updateLabels()
-    // todo
-    // this.customizeLabels()
+    this.customizeLabels()
 
     return this
   }
