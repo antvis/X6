@@ -8,6 +8,11 @@ const dataSource = [
     example: 'animation/transition',
     description: 'transition 动画',
   },
+  {
+    key: '2',
+    example: 'auto-resize',
+    description: '画布大小自适应',
+  },
 ]
 
 const columns = [

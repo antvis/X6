@@ -51,6 +51,7 @@ export namespace Options {
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
 
     onPortRendered?: (args: OnPortRenderedArgs) => void
+    onEdgeLabelRendered?: (args: OnEdgeLabelRenderedArgs) => void
   }
 
   export interface ManualBooleans {
@@ -374,6 +375,13 @@ export namespace Options {
     labelSelectors?: Markup.Selectors | null
     contentContainer: Element
     contentSelectors?: Markup.Selectors
+  }
+
+  export interface OnEdgeLabelRenderedArgs {
+    edge: Edge
+    label: Edge.Label
+    container: Element
+    selectors: Markup.Selectors
   }
 }
 
