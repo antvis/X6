@@ -65,8 +65,12 @@ export class PanningManager extends Base {
   }
 
   protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
-    // todo 暂时删除 selection 的判断
-    if (this.allowPanning(e, true)) {
+    const selection = this.graph.getPlugin('selection') as any
+    const allowRubberband = selection && selection.allowRubberband(e, true)
+    if (
+      this.allowPanning(e, true) ||
+      (this.allowPanning(e) && !allowRubberband)
+    ) {
       this.startPanning(e)
     }
   }

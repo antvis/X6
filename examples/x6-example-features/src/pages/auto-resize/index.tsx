@@ -14,7 +14,7 @@ export default class Example extends React.Component {
     new Graph({
       container: this.graphContainer1,
       background: {
-        color: '#F2F7FA',
+        color: '#D94111',
       },
       autoResize: true,
     })
@@ -22,7 +22,7 @@ export default class Example extends React.Component {
     new Graph({
       container: this.graphContainer2,
       background: {
-        color: '#F2F7FA',
+        color: '#90C54C',
       },
       autoResize: true,
     })
@@ -30,7 +30,7 @@ export default class Example extends React.Component {
     new Graph({
       container: this.graphContainer3,
       background: {
-        color: '#F2F7FA',
+        color: '#0491E4',
       },
       autoResize: true,
     })
