@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, ObjectExt, Cell } from '@antv/x6'
+import { Graph, Cell } from '@antv/x6'
+import { ObjectExt } from '@antv/x6-common'
 import '../index.less'
 
 Graph.registerNode(

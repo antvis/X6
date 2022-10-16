@@ -69,6 +69,7 @@ export namespace Boundary {
     name: 'boundary',
     tagName: 'rect',
     padding: 10,
+    useCellGeometry: true,
     attrs: {
       fill: 'none',
       stroke: '#333',

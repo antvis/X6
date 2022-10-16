@@ -154,6 +154,7 @@ export namespace Button {
 export namespace Button {
   Button.config<Button.Options>({
     name: 'button',
+    useCellGeometry: true,
     events: {
       mousedown: 'onMouseDown',
       touchstart: 'onMouseDown',
@@ -188,6 +189,7 @@ export namespace Button {
     ],
     distance: 60,
     offset: 0,
+    useCellGeometry: true,
     onClick({ view, btn }) {
       btn.parent.remove()
       view.cell.remove({ ui: true, toolId: btn.cid })
