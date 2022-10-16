@@ -1,4 +1,4 @@
-import { KeyValue, Dom } from '@antv/x6-common'
+import { KeyValue, Dom, Disposable } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
@@ -6,7 +6,7 @@ import { queueJob, queueFlush, clearJobs, JOB_PRIORITY } from './queueJob'
 import { FlagManager } from '../view/flag'
 import { Graph } from '../graph'
 
-export class Scheduler {
+export class Scheduler extends Disposable {
   public views: KeyValue<Scheduler.View> = {}
   protected zPivots: KeyValue<Comment>
   private graph: Graph
@@ -21,6 +21,7 @@ export class Scheduler {
   }
 
   constructor(graph: Graph) {
+    super()
     this.graph = graph
     this.init()
   }
@@ -123,8 +124,6 @@ export class Scheduler {
       })
     })
 
-    viewItem.state = Scheduler.ViewState.REQUESTED
-
     if (flush) {
       queueFlush()
     }
@@ -133,6 +132,20 @@ export class Scheduler {
   setRenderArea(area?: Rectangle) {
     this.renderArea = area
     this.flushWaittingViews()
+  }
+
+  isViewMounted(view: CellView) {
+    if (view == null) {
+      return false
+    }
+
+    const viewItem = this.views[view.cell.id]
+
+    if (!viewItem) {
+      return false
+    }
+
+    return viewItem.state === Scheduler.ViewState.MOUNTED
   }
 
   protected renderViews(cells: Cell[], options: any = {}) {
@@ -405,6 +418,7 @@ export class Scheduler {
     )
   }
 
+  @Disposable.dispose()
   dispose() {
     this.stopListening()
   }
@@ -419,7 +433,6 @@ export namespace Scheduler {
   export enum ViewState {
     CREATED,
     MOUNTED,
-    REQUESTED,
     WAITTING,
   }
   export interface View {

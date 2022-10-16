@@ -15,7 +15,7 @@ export class Scroller extends Disposable {
   private scrollerImpl: ScrollerImpl
   public name = 'scroller'
 
-  private get pannable() {
+  public get pannable() {
     if (this.options) {
       if (typeof this.options.pannable === 'object') {
         return this.options.pannable.enabled
@@ -24,6 +24,10 @@ export class Scroller extends Disposable {
     }
 
     return false
+  }
+
+  public get container() {
+    return this.scrollerImpl.container
   }
 
   constructor(public readonly options: Scroller.Options) {
