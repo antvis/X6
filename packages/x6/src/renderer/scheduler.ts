@@ -115,13 +115,7 @@ export class Scheduler extends Disposable {
 
     const effectedEdges = this.getEffectedEdges(view)
     effectedEdges.forEach((edge) => {
-      queueJob({
-        id: edge.id,
-        priority,
-        cb: () => {
-          this.renderViewInArea(edge.view, edge.flag, options)
-        },
-      })
+      this.requestViewUpdate(edge.view, edge.flag, options, priority, false)
     })
 
     if (flush) {
