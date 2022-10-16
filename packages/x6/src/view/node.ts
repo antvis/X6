@@ -945,16 +945,15 @@ export class NodeView<
     y: number,
     cell: Cell,
   ) {
-    const cells = [cell]
+    let cells = [cell]
 
-    // todo
-    // const selection = this.graph.selection.widget
-    // if (selection && selection.options.movable) {
-    //   const selectedCells = this.graph.getSelectedCells()
-    //   if (selectedCells.includes(cell)) {
-    //     cells = selectedCells.filter((c: Cell) => c.isNode())
-    //   }
-    // }
+    const selection = this.graph.getPlugin('selection') as any
+    if (selection && selection.isSelectionMovable()) {
+      const selectedCells = selection.getSelectedCells()
+      if (selectedCells.includes(cell)) {
+        cells = selectedCells.filter((c: Cell) => c.isNode())
+      }
+    }
 
     cells.forEach((c: Cell) => {
       this.notify(name, {
@@ -1055,11 +1054,10 @@ export class NodeView<
 
   // eslint-disable-next-line
   protected autoScrollGraph(x: number, y: number) {
-    // todo
-    // const scroller = this.graph.scroller.widget
-    // if (scroller) {
-    //   scroller.autoScroll(x, y)
-    // }
+    const scroller = this.graph.getPlugin('scroller') as any
+    if (scroller) {
+      scroller.autoScroll(x, y)
+    }
   }
 
   // #endregion

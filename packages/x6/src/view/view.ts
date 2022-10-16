@@ -391,10 +391,15 @@ export namespace View {
     }
 
     if (Config.useCSSSelector) {
+      const validSelector = selector.includes('>')
+        ? `:scope ${selector}`
+        : selector
       return {
         isCSSSelector: true,
-        // $(rootElem).find(selector).toArray() as Element[] todo
-        elems: Array.prototype.slice.call(rootElem.querySelectorAll(selector)),
+        // $(rootElem).find(selector).toArray() as Element[]
+        elems: Array.prototype.slice.call(
+          rootElem.querySelectorAll(validSelector),
+        ),
       }
     }
 

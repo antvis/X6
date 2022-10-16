@@ -14,11 +14,7 @@ export class Renderer extends Base {
   }
 
   isViewMounted(view: CellView) {
-    if (view == null) {
-      return false
-    }
-
-    return true // todo
+    return this.schedule.isViewMounted(view)
   }
 
   setRenderArea(area?: Rectangle) {

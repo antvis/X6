@@ -2,11 +2,27 @@ import { SizeSensor } from '@antv/x6-common'
 import { Base } from './base'
 
 export class SizeManager extends Base {
+  private getScroller() {
+    const scroller = this.graph.getPlugin('scroller') as any
+    if (scroller && scroller.options.enabled) {
+      return scroller
+    }
+    return null
+  }
+
+  private getContainer() {
+    const scroller = this.getScroller()
+    if (scroller) {
+      return scroller.container.parentElement
+    }
+    return this.graph.container.parentElement
+  }
+
   private getSensorTarget() {
     const autoResize = this.options.autoResize
     if (autoResize) {
       if (typeof autoResize === 'boolean') {
-        return this.graph.container.parentElement
+        return this.getContainer()
       }
       return autoResize as HTMLElement
     }
@@ -27,7 +43,12 @@ export class SizeManager extends Base {
   }
 
   resize(width?: number, height?: number) {
-    this.graph.transform.resize(width, height)
+    const scroller = this.getScroller()
+    if (scroller) {
+      scroller.resize(width, height)
+    } else {
+      this.graph.transform.resize(width, height)
+    }
   }
 
   @Base.dispose()

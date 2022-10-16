@@ -610,7 +610,6 @@ describe('EventDom', () => {
         expect(spy2.callCount).toEqual(0)
       })
 
-      // Todo Error: Expected 2 to equal 1.
       // it('should apply hook to prevent window to unload', () => {
       //   const win = new EventDom(window as any)
       //   const spy1 = sinon.spy(() => {
