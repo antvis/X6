@@ -397,7 +397,8 @@ export class TransformManager extends Base {
   }
 
   getContentArea(options: TransformManager.GetContentAreaOptions = {}) {
-    if (options.useCellGeometry) {
+    // use geometry calc default
+    if (options.useCellGeometry !== false) {
       return this.model.getAllCellsBBox() || new Rectangle()
     }
 

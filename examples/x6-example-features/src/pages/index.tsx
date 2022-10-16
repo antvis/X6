@@ -13,6 +13,31 @@ const dataSource = [
     example: 'auto-resize',
     description: '画布大小自适应',
   },
+  {
+    key: '3',
+    example: 'case/bpmn',
+    description: 'BPMN 图',
+  },
+  {
+    key: '4',
+    example: 'case/class',
+    description: '类图',
+  },
+  {
+    key: '5',
+    example: 'case/dag',
+    description: 'DAG 图',
+  },
+  {
+    key: '6',
+    example: 'case/elk',
+    description: 'ELK 图',
+  },
+  {
+    key: '7',
+    example: 'case/er',
+    description: 'ER 图',
+  },
 ]
 
 const columns = [
