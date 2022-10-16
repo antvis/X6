@@ -1,5 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Scroller } from '@antv/x6-plugin-scroller'
 import { SplitBox } from '@antv/x6-react-components'
 import '@antv/x6-react-components/es/split-box/style/index.css'
 import '../index.less'
@@ -27,13 +28,18 @@ export default class Example extends React.Component {
       autoResize: true,
     })
 
-    new Graph({
+    const graph = new Graph({
       container: this.graphContainer3,
       background: {
         color: '#0491E4',
       },
       autoResize: true,
     })
+    graph.use(
+      new Scroller({
+        enabled: true,
+      }),
+    )
   }
 
   refContainer1 = (container: HTMLDivElement) => {
