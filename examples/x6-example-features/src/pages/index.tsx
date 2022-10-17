@@ -38,6 +38,16 @@ const dataSource = [
     example: 'case/er',
     description: 'ER 图',
   },
+  {
+    key: '8',
+    example: 'case/mind',
+    description: '脑图',
+  },
+  {
+    key: '9',
+    example: 'case/swimlane',
+    description: '泳道图',
+  },
 ]
 
 const columns = [

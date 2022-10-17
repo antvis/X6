@@ -284,7 +284,7 @@ export class Scroller extends Disposable {
   }
 
   autoScroll(clientX: number, clientY: number) {
-    this.scrollerImpl.autoScroll(clientX, clientY)
+    return this.scrollerImpl.autoScroll(clientX, clientY)
   }
 
   // #endregion
