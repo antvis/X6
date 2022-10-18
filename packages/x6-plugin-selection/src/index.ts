@@ -40,7 +40,7 @@ export class Selection extends Disposable {
 
   public init(graph: Graph) {
     this.graph = graph
-    CssLoader.ensure('scroller', content)
+    CssLoader.ensure(this.name, content)
     this.selectionImpl = new SelectionImpl({
       ...this.options,
       graph,
@@ -453,6 +453,7 @@ export class Selection extends Disposable {
   dispose() {
     this.stopListening()
     this.selectionImpl.dispose()
+    CssLoader.clean(this.name)
   }
 }
 
