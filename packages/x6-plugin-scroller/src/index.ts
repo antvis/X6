@@ -36,7 +36,7 @@ export class Scroller extends Disposable {
 
   public init(graph: Graph) {
     this.graph = graph
-    CssLoader.ensure('scroller', content)
+    CssLoader.ensure(this.name, content)
 
     this.scrollerImpl = new ScrollerImpl({
       ...this.options,
@@ -374,7 +374,7 @@ export class Scroller extends Disposable {
   dispose() {
     this.scrollerImpl.dispose()
     this.stopListening()
-    CssLoader.clean('scroller')
+    CssLoader.clean(this.name)
   }
 }
 
