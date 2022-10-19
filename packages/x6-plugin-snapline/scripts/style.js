@@ -22,7 +22,7 @@ function compile(source, target) {
 
 compile(path.join(src, 'index.less'), path.join(es, 'index.css'))
 compile(path.join(src, 'index.less'), path.join(lib, 'index.css'))
-compile(path.join(src, 'index.less'), path.join(dist, 'selection.css'))
+compile(path.join(src, 'index.less'), path.join(dist, 'snapline.css'))
 
 function toCSSPath(source) {
   const dir = path.dirname(source)
@@ -61,7 +61,7 @@ function processLessInDir(dir) {
 }
 
 function makeStyleModule() {
-  const source = path.join(dist, 'selection.css')
+  const source = path.join(dist, 'snapline.css')
   const target = path.join(src, 'style/raw.ts')
   const content = fs.readFileSync(source, { encoding: 'utf8' })
   const prev = fs.existsSync(target)

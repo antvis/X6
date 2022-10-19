@@ -1,11 +1,11 @@
 {
-  "name": "@antv/x6-vue-shape",
-  "version": "2.0.6-beta.16",
-  "description": "X6 shape for rendering vue components.",
+  "name": "@antv/x6-plugin-snapline",
+  "version": "2.0.6-beta.18",
+  "description": "snapline plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6-vue-shape.js",
-  "jsdelivr": "dist/x6-vue-shape.js",
+  "unpkg": "dist/x6-plugin-snapline.js",
+  "jsdelivr": "dist/x6-plugin-snapline.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
@@ -13,24 +13,30 @@
     "lib"
   ],
   "keywords": [
-    "shape",
-    "vue",
-    "render",
+    "plugin",
+    "snapline",
     "x6",
     "antv"
   ],
   "scripts": {
-    "clean": "rimraf dist es lib",
+    "clean:build": "rimraf dist es lib",
+    "clean:coverage": "rimraf ./test/coverage",
+    "clean": "run-p clean:build clean:coverage",
     "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
+    "build:less": "node ./scripts/style",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
+    "build:dev": "run-p build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
     "build:watch:esm": "yarn build:esm --w",
     "build:watch:cjs": "yarn build:cjs --w",
-    "build": "run-p build:cjs build:esm build:umd",
+    "build": "run-p build:dev build:umd",
     "prebuild": "run-s lint clean",
-    "prepare": "yarn build",
+    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
+    "test": "echo \"no test case\"",
+    "pretest": "run-p clean:coverage",
+    "prepare": "run-s test build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -40,33 +46,21 @@
   },
   "inherits": [
     "@antv/x6-package-json/cli.json",
-    "@antv/x6-package-json/vue.json",
     "@antv/x6-package-json/eslint.json",
     "@antv/x6-package-json/rollup.json"
   ],
-  "dependencies": {
-    "vue-demi": "^0.7.4"
-  },
   "peerDependencies": {
-    "@antv/x6": ">=2.0.6-beta.0",
-    "@antv/x6-common": ">=2.0.6-beta.0",
-    "@vue/composition-api": "^1.0.0-rc.6",
-    "vue": "^2.6.12 || ^3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@vue/composition-api": {
-      "optional": true
-    }
+    "@antv/x6": ">=2.0.6-beta.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
-    "@types/node": "^16.9.1",
+    "@types/mousetrap": "^1.6.5",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
-    "@vue/composition-api": "^1.0.0-rc.6",
+    "coveralls": "^3.1.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -79,7 +73,7 @@
     "eslint-plugin-react": "^7.25.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^36.0.0",
-    "fs-extra": "^10.0.0",
+    "less": "^4.1.1",
     "lint-staged": "^11.1.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.3.6",
@@ -94,8 +88,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.3",
-    "vue": "^2.6.12"
+    "typescript": "^4.4.3"
   },
   "author": {
     "name": "bubkoo",
@@ -110,11 +103,10 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/antvis/x6.git",
-    "directory": "packages/x6-vue-shape"
+    "directory": "packages/x6-plugin-snapline"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "gitHead": "576fa342fa65a6867ead29f6801a30dcb31bcdb5"
+  }
 }

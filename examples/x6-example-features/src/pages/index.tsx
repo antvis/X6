@@ -48,6 +48,11 @@ const dataSource = [
     example: 'case/swimlane',
     description: '泳道图',
   },
+  {
+    key: '10',
+    example: 'snapline',
+    description: '对齐线',
+  },
 ]
 
 const columns = [
