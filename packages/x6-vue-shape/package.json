@@ -110,7 +110,7 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/antvis/x6.git",
-    "directory": "packages/x6-react-shape"
+    "directory": "packages/x6-vue-shape"
   },
   "publishConfig": {
     "access": "public",

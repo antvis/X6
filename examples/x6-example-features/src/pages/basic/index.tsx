@@ -34,7 +34,6 @@ export default class Example extends React.Component {
     graph.addEdge({
       source,
       target,
-      tools: ['button-remove'],
     })
   }
 
