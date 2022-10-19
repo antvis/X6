@@ -1,5 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Snapline } from '@antv/x6-plugin-snapline'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -11,8 +12,13 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: true,
-      snapline: true,
     })
+
+    const snapline = new Snapline({
+      enabled: true,
+      sharp: true,
+    })
+    graph.use(snapline)
 
     graph.addNode({
       shape: 'rect',
