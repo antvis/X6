@@ -48,6 +48,7 @@ export class ScrollerImpl extends View {
     super()
 
     this.options = ScrollerImpl.getOptions(options)
+    this.onUpdate = FunctionExt.debounce(this.onUpdate, 200)
 
     const scale = this.graph.transform.getScale()
     this.sx = scale.sx
@@ -78,31 +79,6 @@ export class ScrollerImpl extends View {
     if (graphContainer.parentNode) {
       Dom.before(graphContainer, this.container)
     }
-
-    // todo copy style
-    // const style = graphContainer.getAttribute('style')
-    // if (style) {
-    //   const obj: { [name: string]: string } = {}
-    //   const styles = style.split(';')
-    //   styles.forEach((item) => {
-    //     const section = item.trim()
-    //     if (section) {
-    //       const pair = section.split(':')
-    //       if (pair.length) {
-    //         obj[pair[0].trim()] = pair[1] ? pair[1].trim() : ''
-    //       }
-    //     }
-    //   })
-
-    //   Object.keys(obj).forEach((key: any) => {
-    //     if (key === 'width' || key === 'height') {
-    //       return
-    //     }
-
-    //     graphContainer.style[key] = ''
-    //     this.container.style[key] = obj[key]
-    //   })
-    // }
 
     this.content = document.createElement('div')
     Dom.addClass(this.content, this.prefixClassName(ScrollerImpl.contentClass))
@@ -185,11 +161,9 @@ export class ScrollerImpl extends View {
   }
 
   protected onUpdate() {
-    if (!this.options.autoResize) {
-      return
+    if (this.options.autoResize) {
+      this.update()
     }
-
-    this.update()
   }
 
   protected delegateBackgroundEvents(events?: View.Events) {
@@ -381,74 +355,10 @@ export class ScrollerImpl extends View {
       gridWidth: this.options.pageWidth,
       gridHeight: this.options.pageHeight,
       allowNewOrigin: 'negative',
-      contentArea: this.calcContextArea(resizeOptions),
       ...resizeOptions,
     }
 
     this.graph.fitToContent(this.getFitToContentOptions(options))
-  }
-
-  protected calcContextArea(
-    resizeOptions:
-      | (TransformManager.FitToContentFullOptions & {
-          direction:
-            | ScrollerImpl.AutoResizeDirection
-            | ScrollerImpl.AutoResizeDirection[]
-        })
-      | undefined,
-  ) {
-    const direction = resizeOptions?.direction
-
-    if (!direction) {
-      return this.graph.transform.getContentArea({ useCellGeometry: true })
-    }
-
-    function getCellBBox(cell: Cell) {
-      let rect = cell.getBBox()
-      if (rect) {
-        if (cell.isNode()) {
-          const angle = cell.getAngle()
-          if (angle != null && angle !== 0) {
-            rect = rect.bbox(angle)
-          }
-        }
-      }
-      return rect
-    }
-
-    const gridWidth = this.options.pageWidth || 1
-    const gridHeight = this.options.pageHeight || 1
-    let calculativeCells = this.graph.getCells()
-
-    if (!direction.includes('top')) {
-      calculativeCells = calculativeCells.filter((cell) => {
-        const bbox = getCellBBox(cell)
-        return bbox.y >= 0
-      })
-    }
-
-    if (!direction.includes('left')) {
-      calculativeCells = calculativeCells.filter((cell) => {
-        const bbox = getCellBBox(cell)
-        return bbox.x >= 0
-      })
-    }
-
-    if (!direction.includes('right')) {
-      calculativeCells = calculativeCells.filter((cell) => {
-        const bbox = getCellBBox(cell)
-        return bbox.x + bbox.width <= gridWidth
-      })
-    }
-
-    if (!direction.includes('bottom')) {
-      calculativeCells = calculativeCells.filter((cell) => {
-        const bbox = getCellBBox(cell)
-        return bbox.y + bbox.height <= gridHeight
-      })
-    }
-
-    return this.model.getCellsBBox(calculativeCells) || new Rectangle()
   }
 
   protected getFitToContentOptions(
