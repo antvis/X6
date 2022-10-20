@@ -5,8 +5,9 @@ export interface Job {
 }
 
 export enum JOB_PRIORITY {
-  Manual = 1,
-  Render = 2,
+  RenderEdge = 1,
+  RenderNode = 2,
+  Update = 3,
 }
 
 let isFlushing = false
@@ -106,7 +107,7 @@ function flushJobs() {
 
 function findInsertionIndex(job: Job) {
   let start = 0
-  while (queue[start] && queue[start].priority <= job.priority) {
+  while (queue[start] && queue[start].priority >= job.priority) {
     start += 1
   }
   return start
