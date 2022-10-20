@@ -75,7 +75,7 @@ export class Scheduler extends Disposable {
         viewItem.view,
         Scheduler.FLAG_INSERT,
         options,
-        JOB_PRIORITY.Render,
+        JOB_PRIORITY.Update,
         true,
       )
     }
@@ -92,7 +92,7 @@ export class Scheduler extends Disposable {
     view: CellView,
     flag: number,
     options: any = {},
-    priority: JOB_PRIORITY = JOB_PRIORITY.Manual,
+    priority: JOB_PRIORITY = JOB_PRIORITY.Update,
     flush = true,
   ) {
     const id = view.cell.id
@@ -177,7 +177,7 @@ export class Scheduler extends Disposable {
         viewItem.view,
         flag,
         options,
-        JOB_PRIORITY.Render,
+        cell.isNode() ? JOB_PRIORITY.RenderNode : JOB_PRIORITY.RenderEdge,
         false,
       )
     })
@@ -218,7 +218,10 @@ export class Scheduler extends Disposable {
       const viewItem = this.views[ids[i]]
       if (viewItem && viewItem.state === Scheduler.ViewState.WAITTING) {
         const { view, flag, options } = viewItem
-        this.requestViewUpdate(view, flag, options, JOB_PRIORITY.Render, false)
+        const priority = view.cell.isNode()
+          ? JOB_PRIORITY.RenderNode
+          : JOB_PRIORITY.RenderEdge
+        this.requestViewUpdate(view, flag, options, priority, false)
       }
     }
 
