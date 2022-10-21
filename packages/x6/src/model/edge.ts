@@ -1104,8 +1104,8 @@ export namespace Edge {
   export function equalTerminals(a: TerminalData, b: TerminalData) {
     const a1 = a as TerminalCellData
     const b1 = b as TerminalCellData
-    if (a1.cell === b1.cell) {
-      return a1.port === b1.port || (a1.port == null && b1.port == null)
+    if (a1.cell === b1.cell && a1.port && b1.port) {
+      return a1.port === b1.port
     }
     return false
   }
