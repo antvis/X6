@@ -327,6 +327,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
+      snapline: true,
       panning: {
         enabled: true,
         eventTypes: ['leftMouseDown', 'mouseWheel'],
