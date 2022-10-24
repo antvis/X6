@@ -3,6 +3,7 @@ import { Graph, Node, Cell } from '@antv/x6'
 import { Path } from '@antv/x6-geometry'
 import { register } from '@antv/x6-react-shape'
 import { Selection } from '@antv/x6-plugin-selection'
+import { Snapline } from '@antv/x6-plugin-snapline'
 import '../index.less'
 import './index.less'
 interface NodeStatus {
@@ -381,6 +382,7 @@ export default class Example extends React.Component {
       rubberband: true,
     })
     graph.use(selection)
+    graph.use(new Snapline({ enabled: true }))
 
     graph.on('edge:connected', ({ edge }) => {
       edge.attr({
