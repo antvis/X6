@@ -125,7 +125,7 @@ export class Selection extends View<Selection.EventArgs> {
     options,
   }: Collection.EventArgs['node:change:position']) {
     const { showNodeSelectionBox, pointerEvents } = this.options
-    const { ui, selection, translateBy } = options
+    const { ui, selection, translateBy, snapped } = options
     let allowTranslating = !this.translating
 
     /* Scenarios where this method is not called:
@@ -140,6 +140,9 @@ export class Selection extends View<Selection.EventArgs> {
     // Avoid circular calls of child nodes
     allowTranslating =
       allowTranslating && translateBy && node.id === translateBy
+
+    // enabled when snapline snapped
+    allowTranslating = allowTranslating || snapped
 
     if (allowTranslating) {
       this.translating = true
