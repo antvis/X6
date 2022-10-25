@@ -657,7 +657,7 @@ addPorts(ports: PortMetadata[], options?: Node.SetOptions)
 insertPort(index: number, port: PortMetadata, options?: Node.SetOptions): this
 ```
 
-在指定位置添加连接桩。
+在指定位置添加连接桩。注意 `port` 参数需要带上 `id` 属性。
 
 <span class="tag-param">参数<span>
 
