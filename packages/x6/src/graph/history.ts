@@ -204,7 +204,7 @@ export class HistoryManager
       (Util.isAddEvent(event) && revert) ||
       (Util.isRemoveEvent(event) && !revert)
     ) {
-      cell.remove(options)
+      cell && cell.remove(options)
     } else if (
       (Util.isAddEvent(event) && !revert) ||
       (Util.isRemoveEvent(event) && revert)
@@ -218,7 +218,7 @@ export class HistoryManager
     } else if (Util.isChangeEvent(event)) {
       const data = cmd.data as HistoryManager.ChangingData
       const key = data.key
-      if (key) {
+      if (key && cell) {
         const value = revert ? data.prev[key] : data.next[key]
         cell.prop(key, value, options)
       }
