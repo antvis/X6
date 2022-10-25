@@ -126,25 +126,15 @@ export class Selection extends View<Selection.EventArgs> {
   }: Collection.EventArgs['node:change:position']) {
     const { showNodeSelectionBox, pointerEvents } = this.options
     const { ui, selection, translateBy, snapped } = options
-    let allowTranslating = !this.translating
 
-    /* Scenarios where this method is not called:
-     * 1. ShowNodeSelection is true or ponterEvents is none
-     * 2. Avoid circular calls with the selection tag
-     */
-    allowTranslating =
-      allowTranslating &&
-      (showNodeSelectionBox !== true || pointerEvents === 'none')
-    allowTranslating = allowTranslating && ui && !selection
+    const allowTranslating =
+      (showNodeSelectionBox !== true || pointerEvents === 'none') &&
+      !this.translating &&
+      !selection
 
-    // Avoid circular calls of child nodes
-    allowTranslating =
-      allowTranslating && translateBy && node.id === translateBy
+    const translateByUi = ui && translateBy && node.id === translateBy
 
-    // enabled when snapline snapped
-    allowTranslating = allowTranslating || snapped
-
-    if (allowTranslating) {
+    if (allowTranslating && (translateByUi || snapped)) {
       this.translating = true
       const current = node.position()
       const previous = node.previous('position')!
