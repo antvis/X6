@@ -113,7 +113,7 @@ export class MouseWheel extends Base {
       targetScale = NumberExt.clamp(targetScale, minScale, maxScale)
 
       if (targetScale !== currentScale) {
-        const scroller = this.graph.getPlugin('scroller') as any
+        const scroller = this.graph.getPlugin<any>('scroller')
         if (scroller) {
           if (this.widgetOptions.zoomAtMousePosition) {
             const origin = this.graph.coord.clientToLocalPoint(this.startPos)

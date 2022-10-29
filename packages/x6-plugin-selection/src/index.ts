@@ -300,7 +300,7 @@ export class Selection extends Disposable {
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
     const allowGraphPanning = this.graph.panning.allowPanning(e, true)
-    const scroller = this.graph.getPlugin('scroller') as any
+    const scroller = this.graph.getPlugin<any>('scroller')
     const allowScrollerPanning = scroller && scroller.allowPanning(e, true)
     if (
       this.allowRubberband(e, true) ||

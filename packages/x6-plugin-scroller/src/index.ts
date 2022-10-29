@@ -344,7 +344,7 @@ export class Scroller extends Disposable {
 
   protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
     const allowPanning = this.allowPanning(e, true)
-    const selection = this.graph.getPlugin('selection') as any
+    const selection = this.graph.getPlugin<any>('selection')
     const allowRubberband = selection && selection.allowRubberband(e, true)
     if (allowPanning || (this.allowPanning(e) && !allowRubberband)) {
       this.updateClassName(true)
