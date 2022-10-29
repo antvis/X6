@@ -476,7 +476,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected autoScrollGraph(x: number, y: number) {
-    const scroller = this.graph.getPlugin('scroller') as any
+    const scroller = this.graph.getPlugin<any>('scroller')
     if (scroller) {
       return scroller.autoScroll(x, y)
     }

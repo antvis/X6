@@ -3,7 +3,7 @@ import { Base } from './base'
 
 export class SizeManager extends Base {
   private getScroller() {
-    const scroller = this.graph.getPlugin('scroller') as any
+    const scroller = this.graph.getPlugin<any>('scroller')
     if (scroller && scroller.options.enabled) {
       return scroller
     }

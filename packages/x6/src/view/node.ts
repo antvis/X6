@@ -947,7 +947,7 @@ export class NodeView<
   ) {
     let cells = [cell]
 
-    const selection = this.graph.getPlugin('selection') as any
+    const selection = this.graph.getPlugin<any>('selection')
     if (selection && selection.isSelectionMovable()) {
       const selectedCells = selection.getSelectedCells()
       if (selectedCells.includes(cell)) {
@@ -1054,7 +1054,7 @@ export class NodeView<
 
   // eslint-disable-next-line
   protected autoScrollGraph(x: number, y: number) {
-    const scroller = this.graph.getPlugin('scroller') as any
+    const scroller = this.graph.getPlugin<any>('scroller')
     if (scroller) {
       scroller.autoScroll(x, y)
     }
