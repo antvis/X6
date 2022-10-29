@@ -1093,7 +1093,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  getPlugin(pluginName: string) {
+  getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
     let result: Graph.Plugin | undefined
 
     this.installedPlugins.forEach((plugin) => {
@@ -1102,7 +1102,7 @@ export class Graph extends Basecoat<EventArgs> {
       }
     })
 
-    return result
+    return result as T
   }
 
   // #endregion

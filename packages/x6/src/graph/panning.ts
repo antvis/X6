@@ -65,7 +65,7 @@ export class PanningManager extends Base {
   }
 
   protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
-    const selection = this.graph.getPlugin('selection') as any
+    const selection = this.graph.getPlugin<any>('selection')
     const allowRubberband = selection && selection.allowRubberband(e, true)
     if (
       this.allowPanning(e, true) ||
