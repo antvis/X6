@@ -1,3 +1,128 @@
+export class JobQueue {
+  private isFlushing = false
+  private isFlushPending = false
+  private scheduleId = 0
+  private queue: Job[] = []
+  private frameInterval = 33
+  private initialTime = Date.now()
+
+  queueJob(job: Job) {
+    const index = this.findInsertionIndex(job)
+    if (index >= 0) {
+      this.queue.splice(index, 0, job)
+    }
+  }
+
+  queueFlush() {
+    if (!this.isFlushing && !this.isFlushPending) {
+      this.isFlushPending = true
+      this.scheduleJob()
+    }
+  }
+
+  queueFlushSync() {
+    if (!this.isFlushing && !this.isFlushPending) {
+      this.isFlushPending = true
+      this.flushJobsSync()
+    }
+  }
+
+  clearJobs() {
+    this.queue.length = 0
+    this.isFlushing = false
+    this.isFlushPending = false
+    this.cancelScheduleJob()
+  }
+
+  flushJobs() {
+    this.isFlushPending = false
+    this.isFlushing = true
+
+    const startTime = this.getCurrentTime()
+
+    let job
+    while ((job = this.queue.shift())) {
+      try {
+        job.cb()
+      } catch (error) {
+        // pass
+      }
+      if (this.getCurrentTime() - startTime >= this.frameInterval) {
+        break
+      }
+    }
+
+    this.isFlushing = false
+
+    if (this.queue.length) {
+      this.queueFlush()
+    }
+  }
+
+  flushJobsSync() {
+    this.isFlushPending = false
+    this.isFlushing = true
+
+    let job
+    while ((job = this.queue.shift())) {
+      try {
+        job.cb()
+      } catch (error) {
+        // pass
+      }
+    }
+
+    this.isFlushing = false
+  }
+
+  private findInsertionIndex(job: Job) {
+    let start = 0
+    while (this.queue[start] && this.queue[start].priority >= job.priority) {
+      start += 1
+    }
+    return start
+  }
+
+  private scheduleJob() {
+    if ('requestIdleCallback' in window) {
+      if (this.scheduleId) {
+        this.cancelScheduleJob()
+      }
+      this.scheduleId = window.requestIdleCallback(this.flushJobs.bind(this), {
+        timeout: 100,
+      })
+    } else {
+      if (this.scheduleId) {
+        this.cancelScheduleJob()
+      }
+      this.scheduleId = window.setTimeout(this.flushJobs.bind(this))
+    }
+  }
+
+  private cancelScheduleJob() {
+    if ('cancelIdleCallback' in window) {
+      if (this.scheduleId) {
+        window.cancelIdleCallback(this.scheduleId)
+      }
+      this.scheduleId = 0
+    } else {
+      if (this.scheduleId) {
+        clearTimeout(this.scheduleId)
+      }
+      this.scheduleId = 0
+    }
+  }
+
+  private getCurrentTime() {
+    const hasPerformanceNow =
+      typeof performance === 'object' && typeof performance.now === 'function'
+    if (hasPerformanceNow) {
+      return performance.now()
+    }
+    return Date.now() - this.initialTime
+  }
+}
+
 export interface Job {
   id: string
   priority: JOB_PRIORITY
@@ -8,132 +133,6 @@ export enum JOB_PRIORITY {
   RenderEdge = 1,
   RenderNode = 2,
   Update = 3,
-}
-
-let isFlushing = false
-let isFlushPending = false
-let scheduleId = 0
-const queue: Job[] = []
-const frameInterval = 33
-
-let getCurrentTime: () => number
-const hasPerformanceNow =
-  typeof performance === 'object' && typeof performance.now === 'function'
-
-if (hasPerformanceNow) {
-  const localPerformance = performance
-  getCurrentTime = () => localPerformance.now()
-} else {
-  const localDate = Date
-  const initialTime = localDate.now()
-  getCurrentTime = () => localDate.now() - initialTime
-}
-
-let scheduleJob: () => void
-let cancelScheduleJob: () => void
-if ('requestIdleCallback' in window) {
-  scheduleJob = () => {
-    if (scheduleId) {
-      cancelScheduleJob()
-    }
-    scheduleId = window.requestIdleCallback(flushJobs, { timeout: 100 })
-  }
-  cancelScheduleJob = () => {
-    if (scheduleId) {
-      cancelIdleCallback(scheduleId)
-    }
-    scheduleId = 0
-  }
-} else {
-  scheduleJob = () => {
-    if (scheduleId) {
-      cancelScheduleJob()
-    }
-    scheduleId = window.setTimeout(flushJobs)
-  }
-  cancelScheduleJob = () => {
-    if (scheduleId) {
-      clearTimeout(scheduleId)
-    }
-    scheduleId = 0
-  }
-}
-
-export function queueJob(job: Job) {
-  const index = findInsertionIndex(job)
-  if (index >= 0) {
-    queue.splice(index, 0, job)
-  }
-}
-
-export function queueFlush() {
-  if (!isFlushing && !isFlushPending) {
-    isFlushPending = true
-    scheduleJob()
-  }
-}
-
-export function queueFlushSync() {
-  if (!isFlushing && !isFlushPending) {
-    isFlushPending = true
-    flushJobsSync()
-  }
-}
-
-export function clearJobs() {
-  queue.length = 0
-  isFlushing = false
-  isFlushPending = false
-  cancelScheduleJob()
-}
-
-function flushJobs() {
-  isFlushPending = false
-  isFlushing = true
-
-  const startTime = getCurrentTime()
-
-  let job
-  while ((job = queue.shift())) {
-    try {
-      job.cb()
-    } catch (error) {
-      // pass
-    }
-    if (getCurrentTime() - startTime >= frameInterval) {
-      break
-    }
-  }
-
-  isFlushing = false
-
-  if (queue.length) {
-    queueFlush()
-  }
-}
-
-function flushJobsSync() {
-  isFlushPending = false
-  isFlushing = true
-
-  let job
-  while ((job = queue.shift())) {
-    try {
-      job.cb()
-    } catch (error) {
-      // pass
-    }
-  }
-
-  isFlushing = false
-}
-
-function findInsertionIndex(job: Job) {
-  let start = 0
-  while (queue[start] && queue[start].priority >= job.priority) {
-    start += 1
-  }
-  return start
 }
 
 // function findInsertionIndex(job: Job) {

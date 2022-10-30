@@ -2,13 +2,7 @@ import { KeyValue, Dom, Disposable } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
-import {
-  queueJob,
-  queueFlush,
-  clearJobs,
-  JOB_PRIORITY,
-  queueFlushSync,
-} from './queueJob'
+import { JobQueue, JOB_PRIORITY } from './queueJob'
 import { FlagManager } from '../view/flag'
 import { Graph } from '../graph'
 
@@ -17,6 +11,7 @@ export class Scheduler extends Disposable {
   protected zPivots: KeyValue<Comment>
   private graph: Graph
   private renderArea?: Rectangle
+  private queue: JobQueue
 
   get model() {
     return this.graph.model
@@ -28,6 +23,7 @@ export class Scheduler extends Disposable {
 
   constructor(graph: Graph) {
     super()
+    this.queue = new JobQueue()
     this.graph = graph
     this.init()
   }
@@ -53,7 +49,7 @@ export class Scheduler extends Disposable {
   }
 
   protected onModelReseted({ options }: Model.EventArgs['reseted']) {
-    clearJobs()
+    this.queue.clearJobs()
     this.removeZPivots()
     this.removeViews()
     this.renderViews(this.model.getCells(), options)
@@ -111,7 +107,7 @@ export class Scheduler extends Disposable {
     viewItem.flag = flag
     viewItem.options = options
 
-    queueJob({
+    this.queue.queueJob({
       id,
       priority,
       cb: () => {
@@ -219,7 +215,9 @@ export class Scheduler extends Disposable {
   }
 
   protected flush() {
-    this.graph.options.async ? queueFlush() : queueFlushSync()
+    this.graph.options.async
+      ? this.queue.queueFlush()
+      : this.queue.queueFlushSync()
   }
 
   protected flushWaittingViews() {

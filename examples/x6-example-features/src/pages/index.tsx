@@ -8,6 +8,10 @@ const dataSource = [
     description: '画布',
   },
   {
+    example: 'position',
+    description: '画布位置',
+  },
+  {
     example: 'edge',
     description: '连线',
   },
