@@ -124,7 +124,6 @@ export default class Example extends React.Component {
     ]
 
     this.graph1.fromJSON(data)
-    debugger
     this.graph2.fromJSON(data)
   }
 
