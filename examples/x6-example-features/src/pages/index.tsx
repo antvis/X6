@@ -53,6 +53,26 @@ const dataSource = [
     example: 'snapline',
     description: '对齐线',
   },
+  {
+    key: '11',
+    example: 'clipboard',
+    description: '剪切板',
+  },
+  {
+    key: '12',
+    example: 'connector/offset-rounded',
+    description: '带偏移的圆角连接器',
+  },
+  {
+    key: '13',
+    example: 'connector/xmind-curve',
+    description: '脑图连接器',
+  },
+  {
+    key: '14',
+    example: 'dnd',
+    description: 'Dnd',
+  },
 ]
 
 const columns = [

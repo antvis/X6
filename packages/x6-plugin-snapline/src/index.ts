@@ -1,5 +1,5 @@
 import { Disposable, CssLoader } from '@antv/x6-common'
-import { Graph } from '@antv/x6'
+import { Graph, EventArgs } from '@antv/x6'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
 
@@ -133,6 +133,10 @@ export class Snapline extends Disposable {
   setSnaplineTolerance(tolerance: number) {
     this.snaplineImpl.options.tolerance = tolerance
     return this
+  }
+
+  captureCursorOffset(e: EventArgs['node:mousedown']) {
+    this.snaplineImpl.captureCursorOffset(e)
   }
 
   // #endregion

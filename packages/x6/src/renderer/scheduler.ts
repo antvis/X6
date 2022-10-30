@@ -2,7 +2,13 @@ import { KeyValue, Dom, Disposable } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
-import { queueJob, queueFlush, clearJobs, JOB_PRIORITY } from './queueJob'
+import {
+  queueJob,
+  queueFlush,
+  clearJobs,
+  JOB_PRIORITY,
+  queueFlushSync,
+} from './queueJob'
 import { FlagManager } from '../view/flag'
 import { Graph } from '../graph'
 
@@ -119,7 +125,7 @@ export class Scheduler extends Disposable {
     })
 
     if (flush) {
-      queueFlush()
+      this.flush()
     }
   }
 
@@ -182,7 +188,7 @@ export class Scheduler extends Disposable {
       )
     })
 
-    queueFlush()
+    this.flush()
   }
 
   protected renderViewInArea(view: CellView, flag: number, options: any = {}) {
@@ -212,6 +218,10 @@ export class Scheduler extends Disposable {
     }
   }
 
+  protected flush() {
+    this.graph.options.async ? queueFlush() : queueFlushSync()
+  }
+
   protected flushWaittingViews() {
     const ids = Object.keys(this.views)
     for (let i = 0, len = ids.length; i < len; i += 1) {
@@ -225,7 +235,7 @@ export class Scheduler extends Disposable {
       }
     }
 
-    queueFlush()
+    this.flush()
   }
 
   protected updateView(view: View, flag: number, options: any = {}) {
