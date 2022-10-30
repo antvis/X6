@@ -20,6 +20,8 @@ lerna run build --stream --scope @antv/x6-vue-shape \
                          --scope @antv/x6-plugin-keyboard \
                          --scope @antv/x6-plugin-scroller \
                          --scope @antv/x6-plugin-selection \
-                         --scope @antv/x6-plugin-snapline
+                         --scope @antv/x6-plugin-snapline \
+                         --scope @antv/x6-plugin-clipboard \
+                         --scope @antv/x6-plugin-dnd
 
 wait

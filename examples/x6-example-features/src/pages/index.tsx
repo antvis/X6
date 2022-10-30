@@ -12,6 +12,10 @@ const dataSource = [
     description: '画布位置',
   },
   {
+    example: 'html',
+    description: 'HTML 节点',
+  },
+  {
     example: 'edge',
     description: '连线',
   },
