@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Rectangle } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Rectangle } from '@antv/x6-geometry'
 import '../index.less'
 import './index.less'
 import { render } from './render'
@@ -77,12 +78,12 @@ export default class Example extends React.Component<
           }),
         })
       })
-      .on('translate', ({ origin: { x, y } }) => {
+      .on('translate', ({ tx, ty }) => {
         this.effect.hideAll()
         this.setState({
           attrs: getAttrs({
-            originX: x,
-            originY: y,
+            originX: tx,
+            originY: ty,
           }),
         })
       })
@@ -107,13 +108,11 @@ export default class Example extends React.Component<
     this.container = container
   }
 
-  onBackgroundChanged = (
-    options: Graph.BackgroundManager.BackgroundOptions,
-  ) => {
+  onBackgroundChanged = (options: Graph.BackgroundManager.Options) => {
     this.graph.drawBackground(options)
   }
 
-  onGridChanged = (options: Graph.GridManager.NativeItem) => {
+  onGridChanged = (options: Graph.GridManager.Options) => {
     this.graph.drawGrid(options)
   }
 
@@ -126,7 +125,7 @@ export default class Example extends React.Component<
   }
 
   onGraphOriginChanged = (ox: number, oy: number) => {
-    this.graph.setOrigin(ox, oy)
+    this.graph.translate(ox, oy)
     this.setState((prevState) => ({
       attrs: {
         ...prevState.attrs,

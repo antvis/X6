@@ -4,76 +4,106 @@ import './index.less'
 
 const dataSource = [
   {
-    key: '1',
-    example: 'animation/transition',
-    description: 'transition 动画',
+    example: 'graph',
+    description: '画布',
   },
   {
-    key: '2',
+    example: 'edge',
+    description: '连线',
+  },
+  {
+    example: 'edge/tool/arrowhead',
+    description: '箭头工具',
+  },
+  {
+    example: 'edge/tool/button',
+    description: '按钮工具',
+  },
+  {
+    example: 'edge/custom-connector',
+    description: '自定义连接器',
+  },
+  {
+    example: 'edge/custom-router',
+    description: '自定义路由',
+  },
+  {
+    example: 'edge/native-marker',
+    description: '内置箭头',
+  },
+  {
+    example: 'edge/custom-marker',
+    description: '自定义箭头',
+  },
+  {
+    example: 'edge/edge-editor',
+    description: '路径编辑器',
+  },
+  {
+    example: 'group',
+    description: '群组',
+  },
+  {
+    example: 'embed/dnd',
+    description: '嵌入',
+  },
+  {
+    example: 'animation/transition',
+    description: '动画',
+  },
+  {
     example: 'auto-resize',
     description: '画布大小自适应',
   },
   {
-    key: '3',
     example: 'case/bpmn',
     description: 'BPMN 图',
   },
   {
-    key: '4',
     example: 'case/class',
     description: '类图',
   },
   {
-    key: '5',
     example: 'case/dag',
     description: 'DAG 图',
   },
   {
-    key: '6',
     example: 'case/elk',
     description: 'ELK 图',
   },
   {
-    key: '7',
     example: 'case/er',
     description: 'ER 图',
   },
   {
-    key: '8',
     example: 'case/mind',
     description: '脑图',
   },
   {
-    key: '9',
     example: 'case/swimlane',
     description: '泳道图',
   },
   {
-    key: '10',
     example: 'snapline',
     description: '对齐线',
   },
   {
-    key: '11',
     example: 'clipboard',
     description: '剪切板',
   },
   {
-    key: '12',
     example: 'connector/offset-rounded',
     description: '带偏移的圆角连接器',
   },
   {
-    key: '13',
     example: 'connector/xmind-curve',
     description: '脑图连接器',
   },
   {
-    key: '14',
     example: 'dnd',
     description: 'Dnd',
   },
-]
+].map((item, index) => ({ key: index, ...item }))
 
 const columns = [
   {
