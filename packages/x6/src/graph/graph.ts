@@ -1135,6 +1135,19 @@ export class Graph extends Basecoat<EventArgs> {
 }
 
 export namespace Graph {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  export import View = GraphView
+  export import Renderer = ViewRenderer
+  export import MouseWheel = Wheel
+  export import DefsManager = Defs
+  export import GridManager = Grid
+  export import CoordManager = Coord
+  export import TransformManager = Transform
+  export import HighlightManager = Highlight
+  export import BackgroundManager = Background
+}
+
+export namespace Graph {
   export interface Options extends GraphOptions.Manual {}
 }
 

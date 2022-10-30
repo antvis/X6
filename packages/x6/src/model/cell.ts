@@ -944,8 +944,9 @@ export class Cell<
   }
 
   addTo(model: Model, options?: Cell.SetOptions): this
+  addTo(graph: Graph, options?: Cell.SetOptions): this
   addTo(parent: Cell, options?: Cell.SetOptions): this
-  addTo(target: Model | Cell, options: Cell.SetOptions = {}) {
+  addTo(target: Model | Graph | Cell, options: Cell.SetOptions = {}) {
     if (Cell.isCell(target)) {
       target.addChild(this, options)
     } else {

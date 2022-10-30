@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Node, Color } from '@antv/x6'
+import { Graph, Node } from '@antv/x6'
+import { Color } from '@antv/x6-common'
 import '../index.less'
 import './dnd.less'
 
@@ -12,10 +13,6 @@ export default class Example extends React.Component {
       width: 880,
       height: 600,
       grid: true,
-      selecting: {
-        enabled: true,
-        // showNodeSelectionBox: true,
-      },
       embedding: {
         enabled: true,
         findParent({ node }) {

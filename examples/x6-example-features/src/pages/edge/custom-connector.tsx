@@ -1,10 +1,11 @@
 import React from 'react'
-import { Graph, Path, Point } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Path, Point } from '@antv/x6-geometry'
 import '../index.less'
 
 Graph.registerConnector(
   'wobble',
-  (sourcePoint, targetPoint, vertices, args) => {
+  (sourcePoint, targetPoint, vertices, args: any) => {
     const spread = args.spread || 20
     const points = [...vertices, targetPoint].map((p) => Point.create(p))
     let prev = Point.create(sourcePoint)

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Scroller } from '@antv/x6-plugin-scroller'
 import { Button } from 'antd'
 import '../index.less'
 
@@ -9,6 +10,7 @@ export default class Example extends React.Component {
 
   private graph1: Graph
   private graph2: Graph
+  private scroller: Scroller
   componentDidMount() {
     this.graph1 = new Graph({
       container: this.container1,
@@ -22,10 +24,10 @@ export default class Example extends React.Component {
       width: 600,
       height: 400,
       grid: true,
-      scroller: {
-        enabled: true,
-      },
     })
+
+    this.scroller = new Scroller({ enabled: true })
+    this.graph2.use(this.scroller)
 
     const data = [
       {
@@ -122,6 +124,7 @@ export default class Example extends React.Component {
     ]
 
     this.graph1.fromJSON(data)
+    debugger
     this.graph2.fromJSON(data)
   }
 
@@ -134,12 +137,12 @@ export default class Example extends React.Component {
 
   onZoom = (factor: number, options?: any) => {
     this.graph1.zoom(factor, options)
-    this.graph2.zoom(factor, options)
+    this.scroller.zoom(factor, options)
   }
 
   onZoomTo = (factor: number, options?: any) => {
     this.graph1.zoomTo(factor, options)
-    this.graph2.zoomTo(factor, options)
+    this.scroller.zoomTo(factor, options)
   }
 
   onZoomToRect = () => {
@@ -149,7 +152,7 @@ export default class Example extends React.Component {
       width: 300,
       height: 150,
     })
-    this.graph2.zoomToRect({
+    this.scroller.zoomToRect({
       x: 120,
       y: 60,
       width: 300,
@@ -159,34 +162,34 @@ export default class Example extends React.Component {
 
   onZoomToFit = () => {
     this.graph1.zoomToFit()
-    this.graph2.zoomToFit()
+    this.scroller.zoomToFit()
   }
 
   onCenterPoint = () => {
     this.graph1.centerPoint(100, 50)
-    this.graph2.centerPoint(100, 50)
+    this.scroller.centerPoint(100, 50)
   }
 
   onCenter = () => {
     this.graph1.center()
-    this.graph2.center()
+    this.scroller.center()
   }
 
   onCenterContent = () => {
     this.graph1.centerContent()
-    this.graph2.centerContent()
+    this.scroller.centerContent()
   }
 
   onCenterCell = () => {
     const cell1 = this.graph1.getCellById('1')
     const cell2 = this.graph2.getCellById('1')
     this.graph1.centerCell(cell1)
-    this.graph2.centerCell(cell2)
+    this.scroller.centerCell(cell2)
   }
 
   onPositionPoint = () => {
     this.graph1.positionPoint({ x: 50, y: 60 }, 100, 100)
-    this.graph2.positionPoint({ x: 50, y: 60 }, 100, 100)
+    this.scroller.positionPoint({ x: 50, y: 60 }, 100, 100)
   }
 
   onPositionRect = () => {
@@ -197,19 +200,19 @@ export default class Example extends React.Component {
       height: 60,
     }
     this.graph1.positionRect(r, 'top')
-    this.graph2.positionRect(r, 'top')
+    this.scroller.positionRect(r, 'top')
   }
 
   onPositionContent = () => {
     this.graph1.positionContent('center')
-    this.graph2.positionContent('center')
+    this.scroller.positionContent('center')
   }
 
   onPositionCell = () => {
     const cell1 = this.graph1.getCellById('1')
     const cell2 = this.graph2.getCellById('1')
     this.graph1.positionCell(cell1, 'center')
-    this.graph2.positionCell(cell2, 'center')
+    this.scroller.positionCell(cell2, 'center')
   }
 
   render() {

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Shape, Edge, Timing } from '@antv/x6'
+import { Graph, Edge } from '@antv/x6'
+import { Timing } from '@antv/x6-common'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -170,31 +171,6 @@ export default class Example extends React.Component {
           connection: true,
           strokeWidth: 10,
           strokeLinecap: 'round',
-        },
-      },
-    })
-
-    graph.addEdge({
-      shape: 'shadow-edge',
-      source: { x: 100, y: 200 },
-      target: { x: 500, y: 200 },
-      vertices: [{ x: 300, y: 300 }],
-      connector: { name: 'smooth' },
-      markup: Shape.ShadowEdge.getMarkup().slice().reverse().concat({
-        tagName: 'text',
-        selector: 'label',
-      }),
-      attrs: {
-        line: {
-          stroke: '#5654a0',
-          strokeWith: 3,
-        },
-        label: {
-          textPath: { selector: 'line', startOffset: '50%' },
-          textAnchor: 'middle',
-          textVerticalAnchor: 'middle',
-          text: 'Label Along Path',
-          fill: 'yellow',
         },
       },
     })
