@@ -56,7 +56,11 @@ export class Renderer extends Base {
     }
     const id = Cell.isCell(cell) ? cell.id : cell
     const views = this.schedule.views
-    return views[id].view
+    if (views[id]) {
+      return views[id].view
+    }
+
+    return null
   }
 
   findViewsFromPoint(p: Point.PointLike) {

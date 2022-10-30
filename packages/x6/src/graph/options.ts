@@ -46,6 +46,7 @@ export namespace Options {
     preventDefaultBlankAction: boolean
     interacting: CellView.Interacting
 
+    async?: boolean
     virtual?: boolean
 
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
@@ -472,6 +473,9 @@ export namespace Options {
     interacting: {
       edgeLabelMovable: false,
     },
+
+    async: true,
+    virtual: false,
     guard: () => false,
   }
 }
