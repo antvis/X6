@@ -73,6 +73,13 @@ export function queueFlush() {
   }
 }
 
+export function queueFlushSync() {
+  if (!isFlushing && !isFlushPending) {
+    isFlushPending = true
+    flushJobsSync()
+  }
+}
+
 export function clearJobs() {
   queue.length = 0
   isFlushing = false
@@ -103,6 +110,22 @@ function flushJobs() {
   if (queue.length) {
     queueFlush()
   }
+}
+
+function flushJobsSync() {
+  isFlushPending = false
+  isFlushing = true
+
+  let job
+  while ((job = queue.shift())) {
+    try {
+      job.cb()
+    } catch (error) {
+      // pass
+    }
+  }
+
+  isFlushing = false
 }
 
 function findInsertionIndex(job: Job) {

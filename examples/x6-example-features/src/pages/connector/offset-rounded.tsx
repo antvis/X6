@@ -1,18 +1,19 @@
 import React from 'react'
-import { Graph, Point, Path } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Point, Path } from '@antv/x6-geometry'
 import '../index.less'
 
-export interface ErRoundedArgs {
+export interface OffsetRoundedArgs {
   raw?: boolean
   radius?: number
   offset?: number
 }
 
-function erRounded(
+function offsetRounded(
   sourcePoint: Point.PointLike,
   targetPoint: Point.PointLike,
   routePoints: Point.PointLike[],
-  args: ErRoundedArgs,
+  args: OffsetRoundedArgs,
 ) {
   const path = new Path()
 
@@ -75,7 +76,7 @@ function erRounded(
 
   return args.raw ? path : path.serialize()
 }
-Graph.registerConnector('erRounded', erRounded, true)
+Graph.registerConnector('offsetRounded', offsetRounded, true)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -113,7 +114,7 @@ export default class Example extends React.Component {
       source,
       target,
       connector: {
-        name: 'erRounded',
+        name: 'offsetRounded',
         args: {
           radius: 20,
           offset: -20,
@@ -125,7 +126,7 @@ export default class Example extends React.Component {
       source,
       target,
       connector: {
-        name: 'erRounded',
+        name: 'offsetRounded',
         args: {
           radius: 20,
           offset: 0,
@@ -137,7 +138,7 @@ export default class Example extends React.Component {
       source,
       target,
       connector: {
-        name: 'erRounded',
+        name: 'offsetRounded',
         args: {
           radius: 20,
           offset: 20,
