@@ -2,6 +2,8 @@ import { Graph, Node } from '@antv/x6'
 
 export type VueShapeConfig = Node.Properties & {
   shape: string
+  component: any
+  inherit?: string
 }
 
 export const shapeMaps: Record<
@@ -11,8 +13,8 @@ export const shapeMaps: Record<
   }
 > = {}
 
-export function register(component: any, config: VueShapeConfig) {
-  const { shape, ...others } = config
+export function register(config: VueShapeConfig) {
+  const { shape, component, inherit, ...others } = config
   if (!shape) {
     throw new Error('should specify shape in config')
   }
@@ -23,7 +25,7 @@ export function register(component: any, config: VueShapeConfig) {
   Graph.registerNode(
     shape,
     {
-      inherit: 'vue-shape',
+      inherit: inherit || 'vue-shape',
       ...others,
     },
     true,
