@@ -1,5 +1,4 @@
 import React from 'react'
-import { Grid } from '@antv/x6/es/definition/grid'
 import { Input, Select, Slider, Card, Row, Col } from 'antd'
 
 export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
@@ -232,11 +231,11 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
 export namespace GridCard {
   export interface Props {
     onGridSizeChange: (size: number) => void
-    onChange: (res: Grid.NativeItem) => void
+    onChange: (res: any) => void
   }
 
   export interface State {
-    type: Grid.NativeNames
+    type: any
     size: number
     color: string
     thickness: number
