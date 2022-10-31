@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, NodeView, DataUri } from '@antv/x6'
+import { Graph, NodeView } from '@antv/x6'
+import { Scroller } from '@antv/x6-plugin-scroller'
+import { Selection } from '@antv/x6-plugin-selection'
 import '../index.less'
 import './index.less'
 
@@ -29,36 +31,19 @@ export default class Example extends React.Component {
   private graph: Graph
   private graphContainer: HTMLDivElement
   private minimapContainer: HTMLDivElement
-  private scroller: any
+  private scroller: Scroller
+  private selection: Selection
 
   componentDidMount() {
-    const graph = new Graph({
+    this.graph = new Graph({
       container: this.graphContainer,
       width: 800,
       height: 500,
-      resizing: true,
       background: {
         color: '#f5f5f5',
       },
       grid: {
         visible: true,
-      },
-      selecting: {
-        enabled: true,
-        rubberband: true,
-        modifiers: 'shift',
-      },
-      scroller: {
-        enabled: true,
-        // width: 600,
-        // height: 400,
-        pageVisible: true,
-        pageBreak: true,
-        pannable: {
-          enabled: true,
-          eventTypes: ['leftMouseDown', 'rightMouseDown'],
-        },
-        // modifiers: 'shift',
       },
       minimap: {
         enabled: true,
@@ -89,9 +74,24 @@ export default class Example extends React.Component {
       },
     })
 
-    this.scroller = graph.scroller.widget
+    this.scroller = new Scroller({
+      enabled: true,
+      pageVisible: true,
+      pageBreak: true,
+      pannable: {
+        enabled: true,
+        eventTypes: ['leftMouseDown', 'rightMouseDown'],
+      },
+    })
+    this.selection = new Selection({
+      enabled: true,
+      rubberband: true,
+      modifiers: 'shift',
+    })
+    this.graph.use(this.scroller)
+    this.graph.use(this.selection)
 
-    const rect = graph.addNode({
+    const rect = this.graph.addNode({
       shape: 'rect',
       x: 300,
       y: 300,
@@ -104,11 +104,7 @@ export default class Example extends React.Component {
       ports: [{}],
     })
 
-    rect.on('removed', () => {
-      console.log('rect was removed')
-    })
-
-    const circle = graph.addNode({
+    const circle = this.graph.addNode({
       shape: 'circle',
       x: 400,
       y: 400,
@@ -120,18 +116,10 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.addEdge({
+    this.graph.addEdge({
       source: rect,
       target: circle,
     })
-
-    // graph.removeCell(rect)
-
-    // graph.centerContent()
-    // graph.resize(300, 200)
-    // graph.zoomToFit()
-    this.graph = graph
-    graph.positionCell(rect, 'left', { padding: { left: 100 } })
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -143,14 +131,11 @@ export default class Example extends React.Component {
   }
 
   onCenterClick = () => {
-    this.graph.center()
-    // this.graph.center({ padding: { left: 300 } })
-    // this.graph.centerPoint(0, 0)
-    // this.graph.positionPoint({ x: 0, y: 0 }, 100, 100)
+    this.scroller.center()
   }
 
   onCenterContentClick = () => {
-    this.graph.centerContent()
+    this.scroller.centerContent()
   }
 
   onZoomOutClick = () => {
@@ -166,9 +151,9 @@ export default class Example extends React.Component {
   }
 
   onDownload = () => {
-    this.graph.toPNG((datauri: string) => {
-      DataUri.downloadDataUri(datauri, 'chart.png')
-    })
+    // this.graph.toPNG((datauri: string) => {
+    //   DataUri.downloadDataUri(datauri, 'chart.png')
+    // })
   }
 
   render() {

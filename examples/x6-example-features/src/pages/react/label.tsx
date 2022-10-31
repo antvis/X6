@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Graph, Dom } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Dom } from '@antv/x6-common'
 import { Button } from 'antd'
 import '../index.less'
 

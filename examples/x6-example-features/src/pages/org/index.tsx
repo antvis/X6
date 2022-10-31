@@ -1,6 +1,7 @@
 import React from 'react'
 import { Select } from 'antd'
-import { Graph, Cell, Node, Color, Dom } from '@antv/x6'
+import { Graph, Cell, Node } from '@antv/x6'
+import { Color, Dom } from '@antv/x6-common'
 import dagre from 'dagre'
 import './shape'
 import '../index.less'
@@ -27,8 +28,6 @@ export default class Example extends React.Component<
       container: this.container,
       width: 1000,
       height: 600,
-      scroller: true,
-      snapline: true,
       interacting: false,
     })
 
@@ -84,27 +83,31 @@ export default class Example extends React.Component<
   }
 
   setup() {
-    this.graph.on('node:add', ({ e, node }) => {
-      e.stopPropagation()
-      const bg = Color.randomHex()
-      const member = this.createNode(
-        'Employee',
-        'New Employee',
-        Math.random() < 0.5 ? male : female,
-        bg,
-        Color.invert(bg, true),
-      )
-      this.graph.freeze()
-      this.graph.addCell([member, this.createEdge(node, member)])
-      this.layout()
-    })
+    this.graph.on(
+      'node:add',
+      ({ e, node }: { e: Dom.ClickEvent; node: Node }) => {
+        e.stopPropagation()
+        const bg = Color.randomHex()
+        const member = this.createNode(
+          'Employee',
+          'New Employee',
+          Math.random() < 0.5 ? male : female,
+          bg,
+          Color.invert(bg, true),
+        )
+        this.graph.addCell([member, this.createEdge(node, member)])
+        this.layout()
+      },
+    )
 
-    this.graph.on('node:delete', ({ e, node }) => {
-      e.stopPropagation()
-      this.graph.freeze()
-      this.graph.removeCell(node)
-      this.layout()
-    })
+    this.graph.on(
+      'node:delete',
+      ({ e, node }: { e: Dom.ClickEvent; node: Node }) => {
+        e.stopPropagation()
+        this.graph.removeCell(node)
+        this.layout()
+      },
+    )
   }
 
   layout() {
@@ -122,17 +125,15 @@ export default class Example extends React.Component<
     })
 
     edges.forEach((edge) => {
-      const source = edge.getSource()
-      const target = edge.getTarget()
-      g.setEdge(source.cell, target.cell)
+      const source = edge.getSourceCellId()
+      const target = edge.getTargetCellId()
+      g.setEdge(source, target)
     })
 
     dagre.layout(g)
 
-    this.graph.freeze()
-
-    g.nodes().forEach((id) => {
-      const node = this.graph.getCell(id) as Node
+    g.nodes().forEach((id: string) => {
+      const node = this.graph.getCellById(id) as Node
       if (node) {
         const pos = g.node(id)
         node.position(pos.x, pos.y)
@@ -144,8 +145,6 @@ export default class Example extends React.Component<
       const target = edge.getTargetNode()!
       const sourceBBox = source.getBBox()
       const targetBBox = target.getBBox()
-
-      console.log(sourceBBox, targetBBox)
 
       if (
         (rankdir === 'LR' || rankdir === 'RL') &&
@@ -178,11 +177,7 @@ export default class Example extends React.Component<
       } else {
         edge.setVertices([])
       }
-
-      console.log(sourceBBox, targetBBox, edge.getVertices())
     })
-
-    this.graph.unfreeze()
   }
 
   createNode(

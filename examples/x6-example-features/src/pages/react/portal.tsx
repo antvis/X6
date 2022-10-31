@@ -22,11 +22,12 @@ const NodeComponent = () => {
   )
 }
 
-register(NodeComponent, {
+register({
   shape: 'algo-node-2',
   width: 144,
   height: 28,
   effect: [],
+  component: NodeComponent,
 })
 
 export default class Example extends React.Component {
@@ -71,7 +72,7 @@ export default class Example extends React.Component {
         </ThemeContext.Provider>
         <div className="x6-graph-tools">
           <Button onClick={this.changeTheme}>
-            {this.state.theme === 'light' ? 'Light' : 'Dark'}
+            {this.state.theme === 'light' ? 'Dark' : 'Light'}
           </Button>
         </div>
         <div ref={this.refContainer} className="x6-graph" />

@@ -4,7 +4,7 @@ import { Path } from '@antv/x6-geometry'
 import '../index.less'
 
 Graph.registerConnector(
-  'ports-connected-connector',
+  'algo-connector',
   (s, e) => {
     const offset = 4
     const deltaY = Math.abs(e.y - s.y)
@@ -25,7 +25,7 @@ Graph.registerConnector(
 )
 
 Graph.registerNode(
-  'ports-connected-node',
+  'algo-node',
   {
     width: 144,
     height: 28,
@@ -107,7 +107,7 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       connecting: {
-        connector: 'ports-connected-connector',
+        connector: 'algo-connector',
         createEdge() {
           return this.createEdge({
             attrs: {
@@ -124,7 +124,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      shape: 'ports-connected-node',
+      shape: 'algo-node',
       width: 144,
       height: 28,
       x: 200,
@@ -144,7 +144,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      shape: 'ports-connected-node',
+      shape: 'algo-node',
       x: 200,
       y: 400,
       width: 144,

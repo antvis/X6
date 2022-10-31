@@ -1,7 +1,7 @@
-import { ArrayExt, FunctionExt, Dom, KeyValue } from '@antv/x6-common'
+import { ArrayExt, FunctionExt, Dom } from '@antv/x6-common'
 import { Rectangle, Point, Util as GeomUtil } from '@antv/x6-geometry'
 import { Config } from '../config'
-import { PortLayout } from '../registry'
+import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
@@ -101,7 +101,7 @@ export class NodeView<
     return ret
   }
 
-  update() {
+  update(partialAttrs?: Attr.CellAttrs) {
     this.cleanCache()
 
     // When CSS selector strings are used, make sure no rule matches port nodes.
@@ -113,6 +113,7 @@ export class NodeView<
     const size = node.getSize()
     const attrs = node.getAttrs()
     this.updateAttrs(this.container, attrs, {
+      attrs: partialAttrs === attrs ? null : partialAttrs,
       rootBBox: new Rectangle(0, 0, size.width, size.height),
       selectors: this.selectors,
     })
@@ -423,23 +424,7 @@ export class NodeView<
   }
 
   protected existPortLabel(port: PortManager.Port) {
-    const traverse = (attrs: KeyValue | undefined): boolean => {
-      if (attrs) {
-        const keys = Object.keys(attrs)
-        for (let i = 0, len = keys.length; i < len; i += 1) {
-          const key = keys[i]
-          if (key === 'text') {
-            return true
-          }
-          const value = attrs[key]
-          if (typeof value === 'object') {
-            return traverse(value)
-          }
-        }
-      }
-      return false
-    }
-    return traverse(port.attrs)
+    return port.attrs && port.attrs.text
   }
 
   // #endregion
