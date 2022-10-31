@@ -18,11 +18,12 @@ const NodeComponent = ({ node }: { node: Node }) => {
   )
 }
 
-register(NodeComponent, {
+register({
   shape: 'algo-node-1',
   width: 144,
   height: 28,
   effect: ['data'],
+  component: NodeComponent,
 })
 
 export default class Example extends React.Component {

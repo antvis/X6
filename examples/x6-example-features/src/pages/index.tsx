@@ -3,21 +3,57 @@ import { Table } from 'antd'
 import './index.less'
 
 const dataSource = [
+  // graph
   {
     example: 'graph',
     description: '画布',
   },
   {
     example: 'position',
-    description: '画布位置',
+    description: '画布定位',
   },
+  {
+    example: 'auto-resize',
+    description: '画布大小自适应',
+  },
+  // node
   {
     example: 'html',
     description: 'HTML 节点',
   },
   {
+    example: 'group',
+    description: '群组',
+  },
+  {
+    example: 'embed/dnd',
+    description: '嵌入',
+  },
+  {
+    example: 'react',
+    description: 'React 节点',
+  },
+  {
+    example: 'react/portal',
+    description: 'Portal 使用方式',
+  },
+  // port
+  {
+    example: 'ports/defaults',
+    description: '连接桩增删',
+  },
+  {
+    example: 'ports/connected',
+    description: '定义连接桩形状',
+  },
+  // edge
+  {
     example: 'edge',
     description: '连线',
+  },
+  {
+    example: 'router',
+    description: 'Manhattan 路由',
   },
   {
     example: 'edge/tool/arrowhead',
@@ -48,21 +84,14 @@ const dataSource = [
     description: '路径编辑器',
   },
   {
-    example: 'group',
-    description: '群组',
+    example: 'connector/offset-rounded',
+    description: '带偏移的圆角连接器',
   },
   {
-    example: 'embed/dnd',
-    description: '嵌入',
+    example: 'connector/xmind-curve',
+    description: '脑图连接器',
   },
-  {
-    example: 'animation/transition',
-    description: '动画',
-  },
-  {
-    example: 'auto-resize',
-    description: '画布大小自适应',
-  },
+  // case
   {
     example: 'case/bpmn',
     description: 'BPMN 图',
@@ -92,6 +121,11 @@ const dataSource = [
     description: '泳道图',
   },
   {
+    example: 'org',
+    description: '组织架构图',
+  },
+  // plugin
+  {
     example: 'snapline',
     description: '对齐线',
   },
@@ -100,16 +134,17 @@ const dataSource = [
     description: '剪切板',
   },
   {
-    example: 'connector/offset-rounded',
-    description: '带偏移的圆角连接器',
-  },
-  {
-    example: 'connector/xmind-curve',
-    description: '脑图连接器',
+    example: 'keyboard',
+    description: '快捷键',
   },
   {
     example: 'dnd',
     description: 'Dnd',
+  },
+  // animation
+  {
+    example: 'animation/transition',
+    description: '动画',
   },
 ].map((item, index) => ({ key: index, ...item }))
 
