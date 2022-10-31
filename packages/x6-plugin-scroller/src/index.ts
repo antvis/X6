@@ -287,6 +287,10 @@ export class Scroller extends Disposable {
     return this.scrollerImpl.autoScroll(clientX, clientY)
   }
 
+  clientToLocalPoint(x: number, y: number): Point {
+    return this.scrollerImpl.clientToLocalPoint(x, y)
+  }
+
   // #endregion
 
   protected startListening() {
