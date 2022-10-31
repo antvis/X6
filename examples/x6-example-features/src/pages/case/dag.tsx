@@ -51,10 +51,11 @@ export class AlgoNode extends React.Component<{ node?: Node }> {
   }
 }
 
-register(AlgoNode, {
+register({
   shape: 'dag-node',
   width: 180,
   height: 36,
+  component: AlgoNode,
   ports: {
     groups: {
       top: {

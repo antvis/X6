@@ -59,6 +59,7 @@ MyShape.config({
     },
     body: {
       fill: '#f5f5f5',
+      stroke: '#ccc',
     },
   },
   ports: {

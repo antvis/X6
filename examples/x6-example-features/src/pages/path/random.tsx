@@ -1,4 +1,5 @@
-import { Point, Vector } from '@antv/x6'
+import { Point } from '@antv/x6-geometry'
+import { Vector } from '@antv/x6-common'
 import React from 'react'
 import '../index.less'
 
