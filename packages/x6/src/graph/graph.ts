@@ -552,7 +552,12 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   resize(width?: number, height?: number) {
-    this.transform.resize(width, height)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.resize()
+    } else {
+      this.transform.resize(width, height)
+    }
     return this
   }
 
@@ -569,10 +574,18 @@ export class Graph extends Basecoat<EventArgs> {
   zoom(): number
   zoom(factor: number, options?: Transform.ZoomOptions): this
   zoom(factor?: number, options?: Transform.ZoomOptions) {
-    if (typeof factor === 'undefined') {
-      return this.transform.getZoom()
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      if (typeof factor === 'undefined') {
+        return scroller.zoom()
+      }
+      scroller.zoom(factor, options)
+    } else {
+      if (typeof factor === 'undefined') {
+        return this.transform.getZoom()
+      }
+      this.transform.zoom(factor, options)
     }
-    this.transform.zoom(factor, options)
 
     return this
   }
@@ -581,7 +594,12 @@ export class Graph extends Basecoat<EventArgs> {
     factor: number,
     options: Omit<Transform.ZoomOptions, 'absolute'> = {},
   ) {
-    this.transform.zoom(factor, { ...options, absolute: true })
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.zoom(factor, { ...options, absolute: true })
+    } else {
+      this.transform.zoom(factor, { ...options, absolute: true })
+    }
 
     return this
   }
@@ -591,7 +609,12 @@ export class Graph extends Basecoat<EventArgs> {
     options: Transform.ScaleContentToFitOptions &
       Transform.ScaleContentToFitOptions = {},
   ) {
-    this.transform.zoomToRect(rect, options)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.zoomToRect(rect, options)
+    } else {
+      this.transform.zoomToRect(rect, options)
+    }
 
     return this
   }
@@ -600,7 +623,12 @@ export class Graph extends Basecoat<EventArgs> {
     options: Transform.GetContentAreaOptions &
       Transform.ScaleContentToFitOptions = {},
   ) {
-    this.transform.zoomToFit(options)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.zoomToFit(options)
+    } else {
+      this.transform.zoomToFit(options)
+    }
 
     return this
   }
@@ -684,17 +712,35 @@ export class Graph extends Basecoat<EventArgs> {
   centerPoint(x: null | number, y: number): this
   centerPoint(): this
   centerPoint(x?: number | null, y?: number | null) {
-    this.transform.centerPoint(x as number, y as number)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.centerPoint(x as number, y as number)
+    } else {
+      this.transform.centerPoint(x as number, y as number)
+    }
+
     return this
   }
 
   centerContent(options?: Transform.PositionContentOptions) {
-    this.transform.centerContent(options)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.centerContent(options)
+    } else {
+      this.transform.centerContent(options)
+    }
+
     return this
   }
 
   centerCell(cell: Cell) {
-    this.transform.centerCell(cell)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.centerCell(cell)
+    } else {
+      this.transform.centerCell(cell)
+    }
+
     return this
   }
 
@@ -703,17 +749,35 @@ export class Graph extends Basecoat<EventArgs> {
     x: number | string,
     y: number | string,
   ) {
-    this.transform.positionPoint(point, x, y)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.positionPoint(point, x, y)
+    } else {
+      this.transform.positionPoint(point, x, y)
+    }
+
     return this
   }
 
   positionRect(rect: Rectangle.RectangleLike, direction: Transform.Direction) {
-    this.transform.positionRect(rect, direction)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.positionRect(rect, direction)
+    } else {
+      this.transform.positionRect(rect, direction)
+    }
+
     return this
   }
 
   positionCell(cell: Cell, direction: Transform.Direction) {
-    this.transform.positionCell(cell, direction)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.positionCell(cell, direction)
+    } else {
+      this.transform.positionCell(cell, direction)
+    }
+
     return this
   }
 
@@ -721,7 +785,13 @@ export class Graph extends Basecoat<EventArgs> {
     pos: Transform.Direction,
     options?: Transform.PositionContentOptions,
   ) {
-    this.transform.positionContent(pos, options)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.positionContent(pos, options)
+    } else {
+      this.transform.positionContent(pos, options)
+    }
+
     return this
   }
 

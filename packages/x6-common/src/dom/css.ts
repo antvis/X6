@@ -36,6 +36,10 @@ export function computeStyle(
     : style[prop] || (elem as any).style[prop]
 }
 
+export function computeStyleInt(elem: Element, prop: string) {
+  return parseInt(computeStyle(elem, prop), 10) || 0
+}
+
 function getSuffixedValue(prop: string, value: number | string) {
   return !numericProps[prop] && typeof value === 'number' ? `${value}px` : value
 }
