@@ -3,6 +3,7 @@ import { Button } from 'antd'
 import { Graph, NodeView } from '@antv/x6'
 import { Scroller } from '@antv/x6-plugin-scroller'
 import { Selection } from '@antv/x6-plugin-selection'
+import { MiniMap } from '@antv/x6-plugin-minimap'
 import '../index.less'
 import './index.less'
 
@@ -45,26 +46,6 @@ export default class Example extends React.Component {
       grid: {
         visible: true,
       },
-      minimap: {
-        enabled: true,
-        container: this.minimapContainer,
-        width: 300,
-        height: 200,
-        padding: 10,
-        graphOptions: {
-          async: true,
-          getCellView(cell) {
-            if (cell.isNode()) {
-              return SimpleNodeView
-            }
-          },
-          createCellView(cell) {
-            if (cell.isEdge()) {
-              return null
-            }
-          },
-        },
-      },
       mousewheel: {
         enabled: true,
         // fixed: false,
@@ -88,8 +69,16 @@ export default class Example extends React.Component {
       rubberband: true,
       modifiers: 'shift',
     })
+    const minimap = new MiniMap({
+      container: this.minimapContainer,
+      width: 300,
+      height: 200,
+      padding: 10,
+    })
+
     this.graph.use(this.scroller)
     this.graph.use(this.selection)
+    this.graph.use(minimap)
 
     const rect = this.graph.addNode({
       shape: 'rect',

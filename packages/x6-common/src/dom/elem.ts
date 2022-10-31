@@ -227,6 +227,10 @@ export function appendTo(elem: Element, target: Element) {
   }
 }
 
+export function isElement(x: any): x is HTMLElement {
+  return !!x && x.nodeType === 1
+}
+
 // Determines whether a node is an HTML node
 export function isHTMLElement(elem: any): elem is HTMLElement {
   try {
