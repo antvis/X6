@@ -4,7 +4,7 @@ import { Path } from '@antv/x6-geometry'
 import data from './data'
 
 Graph.registerConnector(
-  'algo-connector',
+  'algo-connector-v2',
   (s, e) => {
     const offset = 4
     const deltaY = Math.abs(e.y - s.y)
@@ -25,7 +25,7 @@ Graph.registerConnector(
 )
 
 Graph.registerNode(
-  'perf-node',
+  'perf-node-v2',
   {
     width: 144,
     height: 28,
@@ -58,15 +58,6 @@ Graph.registerNode(
         xlinkHref:
           'https://gw.alipayobjects.com/zos/bmw-prod/d9f3b597-3a2e-49c3-8469-64a1168ed779.svg',
       },
-      // text: {
-      //   textWrap: {
-      //     text: 'abcdefghijklmnopqrstnvwxyzhadfsadfsda23333333333dasdasda',
-      //     width: 30,      // 宽度减少 10px
-      //     height: 60,
-      //     ellipsis: true,  // 文本超出显示范围时，自动添加省略号
-      //     breakWord: false
-      //   }
-      // }
       text: {
         x: 28,
         y: 18,
@@ -96,7 +87,7 @@ export default class Canvas extends React.Component<Props> {
       height: 600,
       grid: false,
       connecting: {
-        connector: 'algo-connector',
+        connector: 'algo-connector-v2',
         connectionPoint: 'anchor',
         anchor: 'center',
       },
