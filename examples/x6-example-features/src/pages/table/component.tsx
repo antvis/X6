@@ -1,5 +1,6 @@
 import React from 'react'
 import { Node } from '@antv/x6'
+import { register } from '@antv/x6-react-shape'
 import { generateData, parsePorts } from './data'
 import './component.less'
 
@@ -142,3 +143,9 @@ export namespace Component {
     text: string
   }
 }
+
+register({
+  shape: 'react-table-shape',
+  component: Component,
+  view: 'table-node-view',
+})
