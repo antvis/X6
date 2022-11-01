@@ -33,7 +33,7 @@ export default class Example extends React.Component {
       tools: ['button-remove'],
     })
 
-    const edge = graph.addEdge({
+    graph.addEdge({
       source,
       target,
       vertices: [
@@ -42,10 +42,6 @@ export default class Example extends React.Component {
       ],
       tools: ['vertices', 'segments'],
     })
-
-    console.log(edge)
-    // graph.clearCells()
-    // edge.removeTools()
   }
 
   refContainer = (container: HTMLDivElement) => {

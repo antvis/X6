@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, Color } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Color } from '@antv/x6-common'
 import ReactDOM from 'react-dom'
-import '@antv/x6-react-shape'
 import { generateData, parsePorts } from './data'
 import { getPortsDefinition } from './port'
 import { Component } from './component'
@@ -43,10 +43,8 @@ export default class Example extends React.Component {
       y: 60,
       width: 320,
       height: 480,
-      shape: 'react-shape',
-      view: 'table-node-view',
+      shape: 'react-table-shape',
       data: data,
-      component: <Component text="Source" />,
       ports: {
         ...getPortsDefinition(),
       },
