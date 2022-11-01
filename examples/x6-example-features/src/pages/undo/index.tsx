@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
+import { History } from '@antv/x6-plugin-history'
 import '../index.less'
 
 export default class Example extends React.Component<
@@ -8,7 +9,7 @@ export default class Example extends React.Component<
   Example.State
 > {
   private container: HTMLDivElement
-  private history: Graph.HistoryManager
+  private history: History
 
   state: Example.State = {
     canRedo: false,
@@ -21,16 +22,18 @@ export default class Example extends React.Component<
       width: 800,
       height: 600,
       grid: true,
-      history: true,
     })
 
-    this.history = graph.history
+    this.history = new History({
+      enabled: true,
+    })
     this.history.on('change', () => {
       this.setState({
         canRedo: this.history.canRedo(),
         canUndo: this.history.canUndo(),
       })
     })
+    graph.use(this.history)
 
     const source = graph.addNode({
       x: 120,

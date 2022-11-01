@@ -23,7 +23,9 @@ lerna run build --stream --scope @antv/x6-vue-shape \
                          --scope @antv/x6-plugin-snapline \
                          --scope @antv/x6-plugin-clipboard \
                          --scope @antv/x6-plugin-dnd \
+                         --scope @antv/x6-plugin-stencil \
                          --scope @antv/x6-plugin-minimap \
-                         --scope @antv/x6-plugin-stencil
+                         --scope @antv/x6-plugin-transform \
+                         --scope @antv/x6-plugin-history
 
 wait
