@@ -100,7 +100,6 @@ export default class Example extends React.Component {
       height: 600,
       grid: true,
       panning: true,
-      scroller: true,
     })
 
     const source = graph.addNode({

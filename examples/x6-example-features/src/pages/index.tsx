@@ -99,6 +99,11 @@ const dataSource = [
     example: 'connector/xmind-curve',
     description: '脑图连接器',
   },
+  // tools
+  {
+    example: 'tools/clean',
+    description: '常用工具',
+  },
   // case
   {
     example: 'case/bpmn',
@@ -160,6 +165,10 @@ const dataSource = [
   {
     example: 'stencil',
     description: 'Stencil',
+  },
+  {
+    example: 'transform',
+    description: '调整节点形状',
   },
   // animation
   {
