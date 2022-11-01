@@ -13,6 +13,10 @@ const dataSource = [
     description: '画布定位',
   },
   {
+    example: 'position/coord',
+    description: '坐标系',
+  },
+  {
     example: 'auto-resize',
     description: '画布大小自适应',
   },
@@ -20,6 +24,10 @@ const dataSource = [
   {
     example: 'html',
     description: 'HTML 节点',
+  },
+  {
+    example: 'shape/custom-node',
+    description: '自定义节点',
   },
   {
     example: 'group',
@@ -140,6 +148,14 @@ const dataSource = [
   {
     example: 'dnd',
     description: 'Dnd',
+  },
+  {
+    example: 'scroller',
+    description: '滚动画布',
+  },
+  {
+    example: 'selection',
+    description: '框选',
   },
   // animation
   {
