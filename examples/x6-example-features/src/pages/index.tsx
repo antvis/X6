@@ -157,6 +157,10 @@ const dataSource = [
     example: 'selection',
     description: '框选',
   },
+  {
+    example: 'stencil',
+    description: 'Stencil',
+  },
   // animation
   {
     example: 'animation/transition',
