@@ -2,7 +2,6 @@ import React from 'react'
 import { Graph, Node } from '@antv/x6'
 import { Color } from '@antv/x6-common'
 import '../index.less'
-import './dnd.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement

@@ -13,9 +13,6 @@ export default class Example extends React.Component {
       height: 1600,
       grid: true,
       panning: true,
-      resizing: true,
-      rotating: true,
-      knob: true,
     })
 
     graph.addNode({

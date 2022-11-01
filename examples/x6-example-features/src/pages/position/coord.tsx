@@ -41,7 +41,7 @@ export default class Example extends React.Component {
 
     graph.scale(0.5)
     graph.translate(20, 20)
-    console.log(graph.getArea())
+    console.log(graph.getGraphArea())
     console.log(graph.getContentArea())
     console.log(graph.getContentBBox())
 
@@ -80,18 +80,14 @@ export default class Example extends React.Component {
       c.style.left = `${pageX + 10}px`
       c.style.top = `${pageY + 10}px`
 
-      const p1 = graph.pageToLocalPoint(pageX, pageY)
-      const p2 = graph.localToPagePoint(p1)
-      const p3 = graph.localToClientPoint(p1)
-      const p4 = graph.localToGraphPoint(p1)
+      const p1 = graph.pageToLocal(pageX, pageY)
+      const p2 = graph.localToGraph(p1)
 
       c.innerHTML = `
       <div>Page(pageX, pageY): ${pageX} x ${pageY}</div>
       <div>Client(clientX, clientY): ${clientX} x ${clientY}</div>
       <div>Local Point: ${p1.x} x ${p1.y}</div>
-      <div>Local to Page: ${p2.x} x ${p2.y}</div>
-      <div>Local to Client: ${p3.x} x ${p3.y}</div>
-      <div>Local to Graph: ${p4.x} x ${p4.y}</div>
+      <div>Graph Point: ${p2.x} x ${p2.y}</div>
       `
     })
   }
