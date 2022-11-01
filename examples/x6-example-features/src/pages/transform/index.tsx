@@ -1,5 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Transform } from '@antv/x6-plugin-transform'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -11,14 +12,16 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: 1,
-      resizing: {
-        enabled: true,
-        restricted: true,
-      },
-      rotating: {
-        enabled: true,
-      },
     })
+
+    graph.use(
+      new Transform({
+        resizing: {
+          enabled: true,
+        },
+        rotating: true,
+      }),
+    )
 
     graph.addNode({
       x: 50,

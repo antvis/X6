@@ -117,7 +117,6 @@ export default class Example extends React.Component {
       },
       panning: true,
       mousewheel: true,
-      resizing: true,
     })
 
     const source = graph.addNode({
