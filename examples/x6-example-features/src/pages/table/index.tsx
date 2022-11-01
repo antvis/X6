@@ -4,7 +4,6 @@ import { Color } from '@antv/x6-common'
 import ReactDOM from 'react-dom'
 import { generateData, parsePorts } from './data'
 import { getPortsDefinition } from './port'
-import { Component } from './component'
 import './view'
 import '../index.less'
 
