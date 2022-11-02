@@ -34,8 +34,7 @@
     "prebuild": "run-s clean",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "test": "echo \"no test case\"",
-    "pretest": "run-p clean:coverage",
-    "prepare": "run-s build:dev"
+    "pretest": "run-p clean:coverage"
   },
   "peerDependencies": {
     "@antv/x6": ">=2.x",
