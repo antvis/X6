@@ -25,12 +25,11 @@
     "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:dev": "run-p build:cjs build:esm",
-    "build:watch": "yarn build:esm --w",
-    "build:watch:esm": "yarn build:esm --w",
-    "build:watch:cjs": "yarn build:cjs --w",
+    "build:watch": "run-s 'build:esm --w'",
+    "build:watch:esm": "run-s 'build:esm --w'",
+    "build:watch:cjs": "run-s 'build:cjs --w'",
     "build": "run-p build:cjs build:esm build:umd",
-    "prebuild": "run-s clean",
-    "prepare": "run-s build:dev"
+    "prebuild": "run-s clean"
   },
   "dependencies": {
     "vue-demi": "^0.7.4"

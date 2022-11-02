@@ -1,4 +1,4 @@
-import { Util, Rectangle, Point } from '@antv/x6-geometry'
+import { GeometryUtil, Rectangle, Point } from '@antv/x6-geometry'
 import { FunctionExt, Dom, CssLoader } from '@antv/x6-common'
 import { Cell, Node, View, NodeView, Graph, EventArgs } from '@antv/x6'
 import { content } from './style/raw'
@@ -403,8 +403,8 @@ export class Dnd extends View {
       const gridSize = this.snapOffset ? 1 : targetGraph.getGridSize()
 
       droppingNode.position(
-        Util.snapToGrid(local.x, gridSize),
-        Util.snapToGrid(local.y, gridSize),
+        GeometryUtil.snapToGrid(local.x, gridSize),
+        GeometryUtil.snapToGrid(local.y, gridSize),
       )
 
       droppingNode.removeZIndex()
