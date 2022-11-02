@@ -13,16 +13,16 @@ const src = path.join(cwd, 'src')
 const dist = path.join(cwd, 'dist')
 
 function compile(source, target) {
-  let cmd = './node_modules/.bin/lessc'
+  let cmd = '../../node_modules/.bin/lessc'
   if (os.type() === 'Windows_NT') {
-    cmd = path.join(cwd, './node_modules/.bin/lessc.cmd')
+    cmd = path.join(cwd, `${cmd}.cmd`)
   }
   cp.execFileSync(cmd, [source, target])
 }
 
 compile(path.join(src, 'index.less'), path.join(es, 'index.css'))
 compile(path.join(src, 'index.less'), path.join(lib, 'index.css'))
-compile(path.join(src, 'index.less'), path.join(dist, 'dnd.css'))
+compile(path.join(src, 'index.less'), path.join(dist, 'index.css'))
 
 function toCSSPath(source) {
   const dir = path.dirname(source)
@@ -61,7 +61,7 @@ function processLessInDir(dir) {
 }
 
 function makeStyleModule() {
-  const source = path.join(dist, 'dnd.css')
+  const source = path.join(dist, 'index.css')
   const target = path.join(src, 'style/raw.ts')
   const content = fs.readFileSync(source, { encoding: 'utf8' })
   const prev = fs.existsSync(target)

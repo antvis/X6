@@ -33,7 +33,7 @@ export function isActive() {
   return active
 }
 
-export function getTeleport() {
+export function getTeleport(): any {
   if (!isVue3) {
     throw new Error('teleport is only available in Vue3')
   }

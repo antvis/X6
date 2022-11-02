@@ -23,7 +23,13 @@ export function height(elem: Element) {
 
 export function position(elem: Element) {
   const isFixed = computeStyle(elem, 'position') === 'fixed'
-  const offsetValue = isFixed ? elem.getBoundingClientRect() : offset(elem)
+  let offsetValue: ReturnType<typeof offset>
+  if (isFixed) {
+    const rect = elem.getBoundingClientRect()
+    offsetValue = { left: rect.left, top: rect.top }
+  } else {
+    offsetValue = offset(elem)
+  }
 
   if (!isFixed) {
     const doc = elem.ownerDocument

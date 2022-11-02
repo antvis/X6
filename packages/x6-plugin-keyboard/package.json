@@ -26,15 +26,14 @@
     "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:dev": "run-p build:cjs build:esm",
-    "build:watch": "yarn build:esm --w",
-    "build:watch:esm": "yarn build:esm --w",
-    "build:watch:cjs": "yarn build:cjs --w",
+    "build:watch": "run-s 'build:esm --w'",
+    "build:watch:esm": "run-s 'build:esm --w'",
+    "build:watch:cjs": "run-s 'build:cjs --w'",
     "build": "run-p build:dev build:umd",
     "prebuild": "run-s clean",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "test": "echo \"no test case\"",
-    "pretest": "run-p clean:coverage",
-    "prepare": "run-s build:dev"
+    "pretest": "run-p clean:coverage"
   },
   "dependencies": {
     "mousetrap": "^1.6.5"
