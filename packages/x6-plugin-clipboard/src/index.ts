@@ -1,8 +1,10 @@
-import { IDisablable, Disposable } from '@antv/x6-common'
-import { Cell, Graph } from '@antv/x6'
+import { Cell, Graph, IDisablable, Basecoat } from '@antv/x6'
 import { ClipboardImpl } from './clipboard'
 
-export class Clipboard extends Disposable implements IDisablable {
+export class Clipboard
+  extends Basecoat<Clipboard.ClipboardEventArgs>
+  implements IDisablable
+{
   private clipboardImpl: ClipboardImpl
   private graph: Graph
   public name = 'clipboard'
@@ -19,48 +21,55 @@ export class Clipboard extends Disposable implements IDisablable {
 
   // #region api
 
-  isClipboardEnabled() {
+  isEnabled() {
     return !this.disabled
   }
 
-  enableClipboard() {
-    this.enable()
+  enable() {
+    if (this.disabled) {
+      this.options.enabled = true
+    }
     return this
   }
 
-  disableClipboard() {
-    this.disable()
+  disable() {
+    if (!this.disabled) {
+      this.options.enabled = false
+    }
     return this
   }
 
-  toggleClipboard(enabled?: boolean) {
+  toggleEnabled(enabled?: boolean) {
     if (enabled != null) {
-      if (enabled !== this.isClipboardEnabled()) {
+      if (enabled !== this.isEnabled()) {
         if (enabled) {
-          this.enableClipboard()
+          this.enable()
         } else {
-          this.disableClipboard()
+          this.disable()
         }
       }
-    } else if (this.isClipboardEnabled()) {
-      this.disableClipboard()
+    } else if (this.isEnabled()) {
+      this.disable()
     } else {
-      this.enableClipboard()
+      this.enable()
     }
 
     return this
   }
 
-  isClipboardEmpty() {
-    return this.isEmpty()
+  isEmpty() {
+    return this.clipboardImpl.isEmpty()
   }
 
   getCellsInClipboard() {
     return this.cells
   }
 
-  cleanClipboard() {
-    this.clean()
+  private clean(force?: boolean) {
+    if (!this.disabled || force) {
+      this.clipboardImpl.clean()
+      this.notify('clipboard:changed', [])
+    }
     return this
   }
 
@@ -70,8 +79,9 @@ export class Clipboard extends Disposable implements IDisablable {
         ...this.commonOptions,
         ...options,
       })
-      this.graph.trigger('clipboard:changed', { cells })
+      this.notify('clipboard:changed', cells)
     }
+    return this
   }
 
   cut(cells: Cell[], options: Clipboard.CopyOptions = {}) {
@@ -80,8 +90,9 @@ export class Clipboard extends Disposable implements IDisablable {
         ...this.commonOptions,
         ...options,
       })
-      this.graph.trigger('clipboard:changed', { cells })
+      this.notify('clipboard:changed', cells)
     }
+    return this
   }
 
   paste(options: Clipboard.PasteOptions = {}, graph: Graph = this.graph) {
@@ -109,30 +120,12 @@ export class Clipboard extends Disposable implements IDisablable {
     return this.options.enabled !== true
   }
 
-  enable() {
-    if (this.disabled) {
-      this.options.enabled = true
-    }
+  protected notify(name: keyof Clipboard.ClipboardEventArgs, cells: Cell[]) {
+    this.trigger(name, { cells })
+    this.graph.trigger(name, { cells })
   }
 
-  disable() {
-    if (!this.disabled) {
-      this.options.enabled = false
-    }
-  }
-
-  private clean(force?: boolean) {
-    if (!this.disabled || force) {
-      this.clipboardImpl.clean()
-      this.graph.trigger('clipboard:changed', { cells: [] })
-    }
-  }
-
-  private isEmpty() {
-    return this.clipboardImpl.isEmpty()
-  }
-
-  @Disposable.dispose()
+  @Basecoat.dispose()
   dispose() {
     this.clean(true)
   }

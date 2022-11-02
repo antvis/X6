@@ -1,5 +1,6 @@
 import { Point, Rectangle } from '@antv/x6-geometry'
-import { Registry, KeyValue } from '@antv/x6-common'
+import { KeyValue } from '@antv/x6-common'
+import { Registry } from '../registry'
 import { Attr } from '../attr'
 import * as layouts from './main'
 

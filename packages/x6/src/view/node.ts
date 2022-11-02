@@ -1,5 +1,5 @@
 import { ArrayExt, FunctionExt, Dom } from '@antv/x6-common'
-import { Rectangle, Point, Util as GeomUtil } from '@antv/x6-geometry'
+import { Rectangle, Point, GeometryUtil } from '@antv/x6-geometry'
 import { Config } from '../config'
 import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
@@ -1005,8 +1005,8 @@ export class NodeView<
 
     this.autoScrollGraph(e.clientX, e.clientY)
 
-    const posX = GeomUtil.snapToGrid(x + offset.x, gridSize)
-    const posY = GeomUtil.snapToGrid(y + offset.y, gridSize)
+    const posX = GeometryUtil.snapToGrid(x + offset.x, gridSize)
+    const posY = GeometryUtil.snapToGrid(y + offset.y, gridSize)
     node.setPosition(posX, posY, {
       restrict,
       deep: true,

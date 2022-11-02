@@ -1,5 +1,6 @@
 import { Point } from '@antv/x6-geometry'
-import { Registry, KeyValue } from '@antv/x6-common'
+import { KeyValue } from '@antv/x6-common'
+import { Registry } from '../registry'
 import { Edge } from '../../model'
 import { EdgeView, NodeView } from '../../view'
 import * as anchors from './main'
