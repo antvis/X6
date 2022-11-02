@@ -1,8 +1,9 @@
-import { ObjectExt } from '../object'
 import { Events } from '../event'
+import { EventArgs } from '../event/types'
+import { ObjectExt } from '../object'
 import { Disposable } from './disposable'
 
-export class Basecoat<EventArgs = any> extends Events<EventArgs> {}
+export class Basecoat<A extends EventArgs = any> extends Events<A> {}
 
 export interface Basecoat extends Disposable {}
 
