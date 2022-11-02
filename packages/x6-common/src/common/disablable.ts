@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
+import { EventArgs } from '../event/types'
 import { Basecoat } from './basecoat'
 
 export interface IDisablable {
@@ -8,8 +9,8 @@ export interface IDisablable {
   disable(): void
 }
 
-export abstract class Disablable<EventArgs = any>
-  extends Basecoat<EventArgs>
+export abstract class Disablable<A extends EventArgs = any>
+  extends Basecoat<A>
   implements IDisablable
 {
   private _disabled?: boolean
