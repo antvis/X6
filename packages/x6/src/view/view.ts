@@ -1,9 +1,10 @@
 import { Dom, KeyValue, Basecoat } from '@antv/x6-common'
+import { EventArgs } from '@antv/x6-common/lib/event/types'
 import { Config } from '../config'
 import { Markup } from './markup'
 import { Attr } from '../registry'
 
-export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
+export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   public readonly cid: string
   public container: Element
   protected selectors: Markup.Selectors

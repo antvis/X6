@@ -376,7 +376,7 @@ export namespace Core {
 
       // Native handler
       const handle = (ontype && currElement[ontype]) || null
-      if (handle && handle.apply && Util.isValidTarget(currElement)) {
+      if (handle && Util.isValidTarget(currElement)) {
         eventObj.result = handle.call(currElement, ...args)
         if (eventObj.result === false) {
           eventObj.preventDefault()
