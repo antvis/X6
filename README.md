@@ -33,8 +33,8 @@
 - 支持服务端渲染。
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
-| --- | --- | --- | --- |
-| IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| IE11, Edge                                                                                                                                                                                                     | last 2 versions                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                              |
 
 ## 安装
 
@@ -94,20 +94,16 @@ graph.addEdge({
 ## 本地开发
 
 ```shell
-# 全局安装 yarn 和 lerna 工具
-$ npm install yarn -g
-$ npm install lerna -g
-
 # 安装项目依赖和初始化构建
-$ yarn bootstrap
+$ pnpm install
 
 # 进入到指定项目开发和调试
 cd packages/x6
-yarn build:watch
+pnpm run build:watch
 
 # 启动 example 查看效果
 cd examples/x6-example-features
-yarn start
+pnpm run start
 ```
 
 ## 参与共建
