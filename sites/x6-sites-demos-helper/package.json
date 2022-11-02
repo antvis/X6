@@ -22,9 +22,10 @@
     "build:watch": "yarn build:esm --w",
     "build:watch:esm": "yarn build:esm --w",
     "build:watch:cjs": "yarn build:cjs --w",
+    "build:dev": "run-p build:cjs build:esm build:less",
     "build": "run-p build:cjs build:esm build:less",
     "prebuild": "run-s lint clean",
-    "prepare": "yarn build"
+    "prepare": "run-s build:dev"
   },
   "lint-staged": {
     "src/**/*.ts": [

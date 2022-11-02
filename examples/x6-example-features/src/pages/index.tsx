@@ -183,7 +183,7 @@ const columns = [
     dataIndex: 'example',
     render(text: string) {
       return (
-        <a href={`./${text}`} target="_blank">
+        <a href={`./${text}`} target="_blank" rel="noreferrer">
           {text}
         </a>
       )
