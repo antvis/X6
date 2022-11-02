@@ -33,8 +33,8 @@
 - Server-side Rendering
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
-| --- | --- | --- | --- |
-| IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| IE11, Edge                                                                                                                                                                                                     | last 2 versions                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                              |
 
 ## Installation
 
@@ -94,20 +94,16 @@ graph.addEdge({
 ## Development
 
 ```shell
-# install yarn and lerna
-$ npm install yarn -g
-$ npm install lerna -g
-
 # install deps and build
-$ yarn bootstrap
+$ pnpm install
 
 # enter the specified project development and debugging
 cd packages/x6
-yarn build:watch
+pnpm run build:watch
 
 # start example to see the effect
 cd examples/x6-example-features
-yarn start
+pnpm run start
 ```
 
 ## Contributing
