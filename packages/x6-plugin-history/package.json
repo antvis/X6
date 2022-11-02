@@ -4,8 +4,8 @@
   "description": "history plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6-plugin-history.js",
-  "jsdelivr": "dist/x6-plugin-history.js",
+  "unpkg": "dist/index.js",
+  "jsdelivr": "dist/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
@@ -22,75 +22,26 @@
     "clean:build": "rimraf dist es lib",
     "clean:coverage": "rimraf ./test/coverage",
     "clean": "run-p clean:build clean:coverage",
-    "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:dev": "run-p build:cjs build:esm",
-    "build:watch": "yarn build:esm --w",
-    "build:watch:esm": "yarn build:esm --w",
-    "build:watch:cjs": "yarn build:cjs --w",
+    "build:watch": "run-s 'build:esm --w'",
+    "build:watch:esm": "run-s 'build:esm --w'",
+    "build:watch:cjs": "run-s 'build:cjs --w'",
     "build": "run-p build:dev build:umd",
     "prebuild": "run-s lint clean",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "test": "echo \"no test case\"",
-    "pretest": "run-p clean:coverage",
-    "prepare": "run-s test build",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "eslint --fix"
-    ]
-  },
-  "inherits": [
-    "@antv/x6-package-json/cli.json",
-    "@antv/x6-package-json/eslint.json",
-    "@antv/x6-package-json/rollup.json"
-  ],
-  "dependencies": {
-    "mousetrap": "^1.6.5"
+    "pretest": "run-p clean:coverage"
   },
   "peerDependencies": {
-    "@antv/x6": ">=2.0.6-beta.0"
+    "@antv/x6": ">=2.x",
+    "@antv/x6-common": ">=2.x"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "@rollup/plugin-replace": "^3.0.0",
-    "@rollup/plugin-typescript": "^8.2.5",
-    "@types/mousetrap": "^1.6.5",
-    "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
-    "coveralls": "^3.1.1",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jest": "^24.4.0",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-react": "^7.25.1",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-unicorn": "^36.0.0",
-    "less": "^4.1.1",
-    "lint-staged": "^11.1.2",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.3.6",
-    "prettier": "^2.4.0",
-    "pretty-quick": "^3.1.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.56.3",
-    "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-filesize": "^9.1.1",
-    "rollup-plugin-postcss": "^4.0.1",
-    "rollup-plugin-progress": "^1.1.2",
-    "rollup-plugin-terser": "^7.0.2",
-    "ts-node": "^10.2.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.3"
+    "@antv/x6": "^2.0.6-beta.0",
+    "@antv/x6-common": "^2.0.6-beta.18"
   },
   "author": {
     "name": "bubkoo",

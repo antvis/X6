@@ -1,4 +1,4 @@
-import { Util, Angle, Point } from '@antv/x6-geometry'
+import { GeometryUtil, Angle, Point } from '@antv/x6-geometry'
 import { Dom, KeyValue, NumberExt } from '@antv/x6-common'
 import { Node, Graph, View, NodeView } from '@antv/x6'
 import { notify } from './util'
@@ -327,8 +327,8 @@ export class TransformImpl extends View {
         const rawWidth = width
         const rawHeight = height
 
-        width = Util.snapToGrid(width, gridSize)
-        height = Util.snapToGrid(height, gridSize)
+        width = GeometryUtil.snapToGrid(width, gridSize)
+        height = GeometryUtil.snapToGrid(height, gridSize)
         width = Math.max(width, options.minWidth || gridSize)
         height = Math.max(height, options.minHeight || gridSize)
         width = Math.min(width, options.maxWidth || Infinity)
@@ -444,7 +444,7 @@ export class TransformImpl extends View {
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
-          target = Util.snapToGrid(target, options.rotateGrid)
+          target = GeometryUtil.snapToGrid(target, options.rotateGrid)
         }
         target = Angle.normalize(target)
 
