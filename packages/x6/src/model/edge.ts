@@ -1,5 +1,6 @@
-import { ObjectExt, StringExt, Registry, Size, KeyValue } from '@antv/x6-common'
+import { ObjectExt, StringExt, Size, KeyValue } from '@antv/x6-common'
 import { Point, Polyline } from '@antv/x6-geometry'
+import { Registry } from '../registry/registry'
 import {
   Attr,
   Router,

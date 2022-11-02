@@ -5,10 +5,10 @@ import {
   ObjectExt,
   Dom,
   FunctionExt,
-  Registry,
   Nilable,
   KeyValue,
 } from '@antv/x6-common'
+import { Registry } from '../registry/registry'
 import { View } from './view'
 import { Cache } from './cache'
 import { Markup } from './markup'

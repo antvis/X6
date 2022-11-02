@@ -1,5 +1,6 @@
 import { Rectangle, Point } from '@antv/x6-geometry'
-import { Registry, KeyValue } from '@antv/x6-common'
+import { KeyValue } from '@antv/x6-common'
+import { Registry } from '../registry'
 import * as layouts from './main'
 
 export namespace PortLayout {

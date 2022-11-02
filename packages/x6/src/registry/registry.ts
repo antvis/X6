@@ -1,7 +1,4 @@
-import { StringExt } from '../string'
-import { FunctionExt } from '../function'
-import { Platform } from '../platform'
-import { KeyValue } from '../types'
+import { StringExt, FunctionExt, Platform, KeyValue } from '@antv/x6-common'
 
 export class Registry<
   Entity,

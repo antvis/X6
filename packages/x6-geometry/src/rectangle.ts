@@ -1,4 +1,4 @@
-import { Util } from './util'
+import { GeometryUtil } from './util'
 import { Angle } from './angle'
 import { Line } from './line'
 import { Point } from './point'
@@ -188,10 +188,10 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   round(precision = 0) {
-    this.x = Util.round(this.x, precision)
-    this.y = Util.round(this.y, precision)
-    this.width = Util.round(this.width, precision)
-    this.height = Util.round(this.height, precision)
+    this.x = GeometryUtil.round(this.x, precision)
+    this.y = GeometryUtil.round(this.y, precision)
+    this.width = GeometryUtil.round(this.width, precision)
+    this.height = GeometryUtil.round(this.height, precision)
     return this
   }
 
@@ -432,7 +432,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     x: number | Point.PointLike | Point.PointData,
     y?: number,
   ): boolean {
-    return Util.containsPoint(this, Point.create(x, y))
+    return GeometryUtil.containsPoint(this, Point.create(x, y))
   }
 
   /**

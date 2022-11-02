@@ -3,12 +3,12 @@ import {
   StringExt,
   ObjectExt,
   NumberExt,
-  Registry,
   Size,
   KeyValue,
   Interp,
 } from '@antv/x6-common'
 import { DeepPartial, Omit } from 'utility-types'
+import { Registry } from '../registry/registry'
 import { Markup } from '../view/markup'
 import { Cell } from './cell'
 import { Edge } from './edge'

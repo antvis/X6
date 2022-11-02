@@ -1,5 +1,6 @@
 import { NonUndefined } from 'utility-types'
-import { KeyValue, Registry } from '@antv/x6-common'
+import { KeyValue } from '@antv/x6-common'
+import { Registry } from '../registry'
 import * as filters from './main'
 
 export namespace Filter {
