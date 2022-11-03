@@ -61,8 +61,7 @@ jobs:
           env_name: bot_token
 
       - name: 📦　Semantic Release
-        run: |
-          npx @semantic-release-monorepo/cli --debug
+        run: pnpm srm --debug
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
