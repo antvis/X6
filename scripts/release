@@ -1,4 +1,0 @@
-#!/bin/sh
-
-(cd scripts/monorepo-semantic-release && yarn && yarn build)
-node ./scripts/monorepo-semantic-release/lib/index.js
