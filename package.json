@@ -8,13 +8,14 @@
     "lint": "run-s lint:ts lint:style",
     "prettier": "prettier --write '**/*.{js,mjs,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
-    "test": "pnpm -r --if-present --filter=./packages/* run test",
+    "test": "pnpm -r --if-present --parallel --filter=./packages/* run test",
     "build": "pnpm -r --if-present --filter=./packages/* run build",
     "build:dev": "pnpm -r --if-present --filter=./packages/* run build:dev",
     "build:demos": "sh ./scripts/build-demos",
     "build:sites": "sh ./scripts/build-sites",
-    "clean:build": "pnpm -r --if-present --filter=./packages/* run clean",
-    "clean:modules": "rimraf node_modules packages/**/node_modules",
+    "clean:build": "pnpm -r --if-present --parallel --filter=./packages/* run clean",
+    "clean:modules": "pnpm -r --parallel exec rimraf node_modules && rimraf node_modules",
+    "clean": "run-s clean:build clean:modules",
     "setup:husky": "husky install .husky",
     "prepare": "is-ci || run-p setup:husky build:dev"
   },
@@ -39,6 +40,7 @@
     ]
   },
   "dependencies": {
+    "@antv/x6-build-tools": "^1.0.0",
     "@babel/core": "^7.19.6",
     "@babel/plugin-syntax-flow": "^7.18.6",
     "@babel/plugin-transform-react-jsx": "^7.19.0",

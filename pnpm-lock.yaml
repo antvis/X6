@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 importers:
   .:
     specifiers:
+      '@antv/x6-build-tools': ^1.0.0
       '@babel/core': ^7.19.6
       '@babel/plugin-syntax-flow': ^7.18.6
       '@babel/plugin-transform-react-jsx': ^7.19.0
@@ -70,6 +71,7 @@ importers:
       tslib: ^2.4.1
       typescript: ^4.4.3
     dependencies:
+      '@antv/x6-build-tools': link:scripts/x6-build-tools
       '@babel/core': 7.19.6
       '@babel/plugin-syntax-flow': 7.18.6_@babel+core@7.19.6
       '@babel/plugin-transform-react-jsx': 7.19.0_@babel+core@7.19.6
@@ -321,6 +323,20 @@ importers:
       '@antv/x6-common': link:../x6-common
       '@vue/composition-api': 1.7.1_vue@2.7.13
       vue: 2.7.13
+
+  scripts/x6-build-tools:
+    specifiers:
+      colors: ^1.4.0
+      cross-spawn: ^7.0.3
+      fastest-levenshtein: ^1.0.16
+      fs-extra: ^10.0.0
+      lodash: ^4.17.21
+    dependencies:
+      colors: 1.4.0
+      cross-spawn: 7.0.3
+      fastest-levenshtein: 1.0.16
+      fs-extra: 10.1.0
+      lodash: 4.17.21
 
 packages:
   /@ampproject/remapping/2.2.0:
