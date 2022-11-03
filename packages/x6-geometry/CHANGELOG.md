@@ -1,3 +1,25 @@
+# @antv/x6-geometry [2.0.0-beta.1](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.11...@antv/x6-geometry@2.0.0-beta.1) (2022-11-03)
+
+
+### chore
+
+* release beta ([b5f3cfa](https://github.com/antvis/x6/commit/b5f3cfa2042f5196a995a38a8f41f140cabdce57))
+
+
+### Features
+
+* ✨ export common and geometry in x6 package ([#2820](https://github.com/antvis/x6/issues/2820)) ([df28200](https://github.com/antvis/x6/commit/df282000cc5e17521147c77c210e172c444c9938))
+* ✨ put animation in x6-common ([#2411](https://github.com/antvis/x6/issues/2411)) ([f1c80a8](https://github.com/antvis/x6/commit/f1c80a8cd75efe1def32168b6acff90ece5723ba))
+* add scroller plugin ([#2580](https://github.com/antvis/x6/issues/2580)) ([5e0e2ac](https://github.com/antvis/x6/commit/5e0e2acde7d7e259ea27d001983e950878d0ecc8))
+* support mouseenter and mouseleave event ([#2559](https://github.com/antvis/x6/issues/2559)) ([ecfd426](https://github.com/antvis/x6/commit/ecfd4263b1266a128bf8651c4dd745ff8ab038b3))
+* support turbo ([1da55bf](https://github.com/antvis/x6/commit/1da55bfda73edaa96515998b5766e9ed5f241ee9))
+
+
+### BREAKING CHANGES
+
+* force release 2.0-beta
+* 2.0-beta
+
 ## @antv/x6-geometry [1.0.11](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.10...@antv/x6-geometry@1.0.11) (2021-11-14)
 
 # @antv/x6-geometry 1.0.0 (2021-11-11)
