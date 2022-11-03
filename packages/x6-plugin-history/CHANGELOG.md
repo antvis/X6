@@ -1,3 +1,19 @@
+## @antv/x6-plugin-history [2.0.6-beta.3](https://github.com/antvis/x6/compare/@antv/x6-plugin-history@2.0.6-beta.2...@antv/x6-plugin-history@2.0.6-beta.3) (2022-11-03)
+
+
+### Bug Fixes
+
+* commit message E2BIG ([a2c5f9e](https://github.com/antvis/x6/commit/a2c5f9e943ccf1d7ae478af30cb5022dd72e2e99))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 2.0.6-beta.4
+* **@antv/x6-common:** upgraded to 1.0.0-beta.1
+
 ## @antv/x6-plugin-history [2.0.6-beta.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-history@2.0.6-beta.1...@antv/x6-plugin-history@2.0.6-beta.2) (2022-11-03)
 
 
