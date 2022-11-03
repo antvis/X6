@@ -4,6 +4,7 @@ import _ from 'lodash'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import crypto from 'crypto'
 import colors from 'colors/safe.js'
 import spawn from 'cross-spawn'
 import { closest } from 'fastest-levenshtein'
@@ -22,7 +23,7 @@ if (script) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
   }
-  const hash = new Date().getTime()
+  const hash = crypto.randomBytes(16).toString('hex')
   const name = event.toLowerCase().replace(/[^0-9a-z]/g, '-')
   const ext = isWin32 ? '.cmd' : ''
   const file = path.join(dir, `${name}-${hash}`, ext)

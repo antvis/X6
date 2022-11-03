@@ -1,4 +1,5 @@
 {
+  "clean:turbo": "rimraf .turbo",
   "clean:build": "rimraf dist es lib",
   "clean:coverage": "rimraf ./test/coverage",
   "clean": "run-p clean:**",
