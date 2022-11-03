@@ -43,10 +43,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: 🚧　Install dependencies
+      - name: 🚧　Install
         run: pnpm install --no-frozen-lockfile --ignore-scripts
 
-      - name: 📦　build
+      - name: 🚀　Build
         run: pnpm run build
 
       - name: ✅　Test

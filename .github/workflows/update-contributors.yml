@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+      - next
+      - next-major
       - alpha
       - beta
 jobs:
