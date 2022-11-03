@@ -151,8 +151,8 @@ importers:
 
   packages/x6:
     specifiers:
-      '@antv/x6-common': ^1.100.0-beta.18
-      '@antv/x6-geometry': ^1.100.0-beta.18
+      '@antv/x6-common': 1.100.0-beta.18
+      '@antv/x6-geometry': 1.100.0-beta.18
       utility-types: ^3.10.0
     dependencies:
       '@antv/x6-common': link:../x6-common
@@ -175,7 +175,7 @@ importers:
 
   packages/x6-plugin-clipboard:
     specifiers:
-      '@antv/x6': ^1.100.0-beta.0
+      '@antv/x6': ^1.100.0-beta.18
     devDependencies:
       '@antv/x6': link:../x6
 
