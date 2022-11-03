@@ -18,13 +18,14 @@ const script = scripts[event]
 
 if (script) {
   const tmpdir = os.tmpdir()
-  const dir = path.join(tmpdir, 'scripty')
+  const dir = path.join(tmpdir, 'rss')
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
   }
+  const hash = new Date().getTime()
   const name = event.toLowerCase().replace(/[^0-9a-z]/g, '-')
   const ext = isWin32 ? '.cmd' : ''
-  const file = path.join(dir, name, ext)
+  const file = path.join(dir, `${name}-${hash}`, ext)
   const define = isWin32 ? '@ECHO OFF' : '#!/usr/bin/env sh'
   const args = process.argv.slice(2)
   const main = args.length ? `${script} ${args.join(' ')}` : script
@@ -42,7 +43,11 @@ if (script) {
   ])
   const eventTitle = colors[eventColor](`[${event}]`)
   console.log(`> ${eventTitle} ${main}`)
-  spawn(file, { stdio: 'inherit' })
+  const child = spawn(file, { stdio: 'inherit' })
+
+  child.on('exit', () => {
+    fs.rmSync(file)
+  })
 } else {
   console.error(`unknown script: [${event}]`)
 }
