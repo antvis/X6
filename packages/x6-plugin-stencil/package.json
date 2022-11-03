@@ -43,7 +43,7 @@
     "@antv/x6-plugin-dnd": ">=2.x"
   },
   "devDependencies": {
-    "@antv/x6": "^1.100.0-beta.0",
+    "@antv/x6": "^2.0.6-beta.1",
     "@antv/x6-common": "^1.100.0-beta.18",
     "@antv/x6-plugin-dnd": "^1.100.0-beta.18",
     "@antv/x6-geometry": "^1.100.0-beta.18"
