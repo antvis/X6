@@ -2,8 +2,13 @@
 
 name: 🚀　Release
 on:
-  repository_dispatch:
-    types: [ci_master_passed]
+  push:
+    branches:
+      - master
+      - next
+      - next-major
+      - alpha
+      - beta
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -45,8 +50,8 @@ jobs:
       - name: 📦　build
         run: pnpm run build
 
-      # - name: ✅　Test
-      #   run: pnpm run test
+      - name: ✅　Test
+        run: pnpm run test
 
       - name: 🔑　Generate Token
         uses: wow-actions/use-app-token@v1
@@ -56,7 +61,7 @@ jobs:
           env_name: bot_token
 
       - name: 📦　Semantic Release
-        run: pnpm srm --debug
+        run: pnpm srm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
