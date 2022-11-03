@@ -44,10 +44,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: 🚧　Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      - name: 📦　build
+        run: pnpm run build
 
       - name: ✅　Test
-        run: yarn test
+        run: pnpm run test
 
       - name: 🔑　Generate Token
         uses: wow-actions/use-app-token@v1
@@ -67,6 +70,12 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6/test/coverage/lcov.info
           flags: x6
+      - name: 💡　Codecov(x6-common)
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/x6-common/test/coverage/lcov.info
+          flags: x6-common
       - name: 💡　Codecov(x6-geometry)
         uses: codecov/codecov-action@v1
         with:
