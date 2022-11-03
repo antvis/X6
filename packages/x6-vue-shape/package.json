@@ -20,16 +20,21 @@
     "antv"
   ],
   "scripts": {
-    "clean": "rimraf dist es lib",
-    "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
-    "build:cjs": "tsc --module commonjs --target es2015 --outDir ./lib",
-    "build:umd": "rollup -c",
-    "build:dev": "run-p build:cjs build:esm",
-    "build:watch": "run-s 'build:esm --w'",
-    "build:watch:esm": "run-s 'build:esm --w'",
-    "build:watch:cjs": "run-s 'build:cjs --w'",
-    "build": "run-p build:cjs build:esm build:umd",
-    "prebuild": "run-s clean"
+    "clean:build": "rss",
+    "clean:coverage": "rss",
+    "clean": "rss",
+    "build:esm": "rss",
+    "build:cjs": "rss",
+    "build:umd": "rss",
+    "build:dev": "rss",
+    "build:watch": "rss",
+    "build:watch:esm": "rss",
+    "build:watch:cjs": "rss",
+    "build": "rss",
+    "prebuild": "rss",
+    "test": "rss",
+    "coveralls": "rss",
+    "pretest": "rss"
   },
   "dependencies": {
     "vue-demi": "^0.7.4"
