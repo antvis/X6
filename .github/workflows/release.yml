@@ -2,19 +2,14 @@
 
 name: 🚀　Release
 on:
-  push:
-    branches:
-      - master
-      - next
-      - next-major
-      - alpha
-      - beta
+  repository_dispatch:
+    types: [ci_master_passed]
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: ⤵️　Checkout
         uses: actions/checkout@v3
@@ -50,8 +45,8 @@ jobs:
       - name: 📦　build
         run: pnpm run build
 
-      - name: ✅　Test
-        run: pnpm run test
+      # - name: ✅　Test
+      #   run: pnpm run test
 
       - name: 🔑　Generate Token
         uses: wow-actions/use-app-token@v1
@@ -61,6 +56,7 @@ jobs:
           env_name: bot_token
 
       - name: 📦　Semantic Release
+        if: github.event_name == 'push'
         run: pnpm srm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
