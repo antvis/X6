@@ -1122,14 +1122,6 @@ export namespace NodeView {
     'node:moving': TranslateEventArgs<Dom.MouseMoveEvent>
     'node:moved': TranslateEventArgs<Dom.MouseUpEvent>
 
-    'node:resize': ResizeEventArgs<Dom.MouseDownEvent>
-    'node:resizing': ResizeEventArgs<Dom.MouseMoveEvent>
-    'node:resized': ResizeEventArgs<Dom.MouseUpEvent>
-
-    'node:rotate': RotateEventArgs<Dom.MouseDownEvent>
-    'node:rotating': RotateEventArgs<Dom.MouseMoveEvent>
-    'node:rotated': RotateEventArgs<Dom.MouseUpEvent>
-
     'node:embed': PositionEventArgs<Dom.MouseMoveEvent> & {
       currentParent: Node | null
     }

@@ -1,12 +1,5 @@
-import { FunctionExt, CssLoader, Dom } from '@antv/x6-common'
-import { View, Graph, EventArgs } from '@antv/x6'
+import { FunctionExt, CssLoader, Dom, View, Graph, EventArgs } from '@antv/x6'
 import { content } from './style/raw'
-
-namespace ClassName {
-  export const root = 'widget-minimap'
-  export const viewport = `${root}-viewport`
-  export const zoom = `${viewport}-zoom`
-}
 
 export class MiniMap extends View {
   private graph: Graph
@@ -41,11 +34,12 @@ export class MiniMap extends View {
       ...Util.defaultOptions,
       ...options,
     } as MiniMap.Options
+
+    CssLoader.ensure(this.name, content)
   }
 
   public init(graph: Graph) {
     this.graph = graph
-    CssLoader.ensure(this.name, content)
 
     this.updateViewport = FunctionExt.debounce(
       this.updateViewport.bind(this),
@@ -322,9 +316,13 @@ export class MiniMap extends View {
   }
 }
 
+namespace ClassName {
+  export const root = 'widget-minimap'
+  export const viewport = `${root}-viewport`
+  export const zoom = `${viewport}-zoom`
+}
 export namespace MiniMap {
   export interface Options {
-    graph: Graph
     container: HTMLElement
     width: number
     height: number
