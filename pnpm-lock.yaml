@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 importers:
   .:
     specifiers:
-      '@antv/x6-build-tools': ^1.0.0
+      '@antv/x6-build-tools': workspace:*
       '@babel/core': ^7.19.6
       '@babel/plugin-syntax-flow': ^7.18.6
       '@babel/plugin-transform-react-jsx': ^7.19.0
@@ -151,8 +151,8 @@ importers:
 
   packages/x6:
     specifiers:
-      '@antv/x6-common': 1.100.0-beta.18
-      '@antv/x6-geometry': 1.100.0-beta.18
+      '@antv/x6-common': ^1.100.0-beta.18
+      '@antv/x6-geometry': ^1.100.0-beta.18
       utility-types: ^3.10.0
     dependencies:
       '@antv/x6-common': link:../x6-common
