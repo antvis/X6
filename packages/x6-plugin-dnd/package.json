@@ -1,7 +1,7 @@
 {
   "name": "@antv/x6-plugin-dnd",
   "version": "1.0.0-beta.1",
-  "description": "dnd plugin for X6.",
+  "description": "dnd plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/index.js",
