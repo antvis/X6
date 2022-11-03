@@ -191,10 +191,10 @@ importers:
 
   packages/x6-plugin-history:
     specifiers:
-      '@antv/x6': 2.0.6-beta.1
-      '@antv/x6-common': 1.100.0-beta.18
+      '@antv/x6': ^2.0.6-beta.2
+      '@antv/x6-common': ^1.100.0-beta.18
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.0.6-beta.26
       '@antv/x6-common': link:../x6-common
 
   packages/x6-plugin-keyboard:

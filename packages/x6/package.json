@@ -44,8 +44,8 @@
     "pretest": "rss"
   },
   "dependencies": {
-    "@antv/x6-common": "1.0.0-beta.1",
-    "@antv/x6-geometry": "2.0.0-beta.1",
+    "@antv/x6-common": "^1.100.0-beta.18",
+    "@antv/x6-geometry": "^1.100.0-beta.18",
     "utility-types": "^3.10.0"
   },
   "author": {
