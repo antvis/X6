@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@antv/x6-react-components",
   "version": "1.100.0-beta.16",
   "description": "React components for building x6 editors",

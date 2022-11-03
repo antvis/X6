@@ -105,7 +105,7 @@ jobs:
 
       - name: 📦　Semantic Release
         if: github.event_name == 'push'
-        run: pnpm srm --ignore-private-packages
+        run: pnpm srm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
