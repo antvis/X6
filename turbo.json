@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "clean": {
+      "outputs": []
+    },
+    "build:dev": {
+      "dependsOn": ["^build:dev"],
+      "outputs": ["lib/**", "es/**"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["lib/**", "es/**", "dist/**"]
+    },
+    "test": {
+      "outputs": [],
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+    }
+  }
+}
