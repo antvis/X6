@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  triage:
+  coveralls:
     runs-on: ubuntu-latest
     steps:
     - uses: codecov/codecov-action@v1

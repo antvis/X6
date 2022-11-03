@@ -63,7 +63,7 @@ jobs:
           env_name: bot_token
 
       - name: 💡　Coveralls
-        uses: .github/workflows/coveralls.yml@beta
+        uses: ./.github/workflows/coveralls.yml
         with:
           pkg: ${{ matrix.coveralls }}
 
