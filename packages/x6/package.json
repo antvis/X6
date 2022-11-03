@@ -25,6 +25,7 @@
     "antv"
   ],
   "scripts": {
+    "clean:turbo": "rss",
     "clean:build": "rss",
     "clean:coverage": "rss",
     "clean": "rss",
