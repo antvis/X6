@@ -13,8 +13,13 @@
       "outputs": ["lib/**", "es/**", "dist/**"]
     },
     "test": {
-      "outputs": [],
-      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+      "inputs": [
+        "src/**/*.tsx",
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "test/**/*.tsx"
+      ],
+      "outputs": ["test/coverage/**"]
     }
   }
 }
