@@ -18,12 +18,13 @@
     "*.less"
   ],
   "scripts": {
+    "clean:turbo": "rss",
     "clean:build": "rss",
     "clean:coverage": "rss",
     "clean": "rss",
     "build:esm": "rss",
     "build:cjs": "rss",
-    "build:umd": "rss",
+    "build:umd": "rollup -c --bundleConfigAsCjs",
     "build:dev": "rss",
     "build:watch": "rss",
     "build:watch:esm": "rss",
