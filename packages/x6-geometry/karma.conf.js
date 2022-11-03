@@ -1,10 +1,1 @@
-module.exports = (config) =>
-  require('../../karma.conf.js')(
-    config,
-    {
-      files: [{ pattern: './src/**/*.ts' }],
-    },
-    {
-      include: ['./src/**/*.ts'],
-    },
-  )
+module.exports = require('../../karma.conf.js')
