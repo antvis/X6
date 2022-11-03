@@ -82,3 +82,23 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6-geometry/test/coverage/lcov.info
           flags: x6-geometry
+
+      - name: 🔀　Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ env.bot_token }}
+          event-type: ci_passed
+
+      - name: 🔀　Repository Dispatch
+        if: github.event_name == 'pull_request_target'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ env.bot_token }}
+          event-type: ci_pr_passed
+
+      - name: 🔀　Repository Dispatch
+        if: github.event_name == 'push'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ env.bot_token }}
+          event-type: ci_master_passed

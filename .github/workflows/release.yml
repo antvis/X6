@@ -2,13 +2,8 @@
 
 name: 🚀　Release
 on:
-  push:
-    branches:
-      - master
-      - next
-      - next-major
-      - alpha
-      - beta
+  repository_dispatch:
+    types: [ci_master_passed]
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -50,8 +45,8 @@ jobs:
       - name: 📦　build
         run: pnpm run build
 
-      - name: ✅　Test
-        run: pnpm run test
+      # - name: ✅　Test
+      #   run: pnpm run test
 
       - name: 🔑　Generate Token
         uses: wow-actions/use-app-token@v1
@@ -73,7 +68,7 @@ jobs:
 
       - name: 🔀　Repository Dispatch
         if: github.ref == 'refs/heads/master'
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ env.bot_token }}
           event-type: released
