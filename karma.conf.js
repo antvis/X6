@@ -10,6 +10,8 @@ module.exports = function (config, base, karmaTypescriptConfig) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '.',
 
+    files: [{ pattern: './src/**/*.ts' }],
+
     // list of files to exclude
     exclude: [],
 
