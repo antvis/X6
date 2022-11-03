@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-history",
-  "version": "2.0.6-beta.20",
+  "version": "1.0.0",
   "description": "history plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,12 +36,12 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": ">=2.x",
-    "@antv/x6-common": ">=2.x"
+    "@antv/x6": "1.31.0",
+    "@antv/x6-common": "1.0.0"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.6-beta.0",
-    "@antv/x6-common": "^2.0.6-beta.18"
+    "@antv/x6": "1.31.0",
+    "@antv/x6-common": "1.0.0"
   },
   "author": {
     "name": "bubkoo",
