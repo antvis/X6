@@ -1,5 +1,4 @@
-import { Disposable, CssLoader } from '@antv/x6-common'
-import { Graph, EventArgs } from '@antv/x6'
+import { Disposable, CssLoader, Graph, EventArgs } from '@antv/x6'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
 
@@ -9,10 +8,10 @@ export class Snapline extends Disposable {
 
   constructor(public readonly options: Snapline.Options) {
     super()
+    CssLoader.ensure(this.name, content)
   }
 
   public init(graph: Graph) {
-    CssLoader.ensure(this.name, content)
     this.snaplineImpl = new SnaplineImpl({
       ...this.options,
       graph,
@@ -21,116 +20,116 @@ export class Snapline extends Disposable {
 
   // #region api
 
-  isSnaplineEnabled() {
+  isEnabled() {
     return !this.snaplineImpl.disabled
   }
 
-  enableSnapline() {
+  enable() {
     this.snaplineImpl.enable()
     return this
   }
 
-  disableSnapline() {
+  disable() {
     this.snaplineImpl.disable()
     return this
   }
 
-  toggleSnapline(enabled?: boolean) {
+  toggleEnabled(enabled?: boolean) {
     if (enabled != null) {
-      if (enabled !== this.isSnaplineEnabled()) {
+      if (enabled !== this.isEnabled()) {
         if (enabled) {
-          this.enableSnapline()
+          this.enable()
         } else {
-          this.disableSnapline()
+          this.disable()
         }
       }
     } else {
-      if (this.isSnaplineEnabled()) {
-        this.disableSnapline()
+      if (this.isEnabled()) {
+        this.disable()
       } else {
-        this.enableSnapline()
+        this.enable()
       }
       return this
     }
   }
 
-  hideSnapline() {
+  hide() {
     this.snaplineImpl.hide()
     return this
   }
 
-  setSnaplineFilter(filter?: SnaplineImpl.Filter) {
+  setFilter(filter?: SnaplineImpl.Filter) {
     this.snaplineImpl.setFilter(filter)
     return this
   }
 
-  isSnaplineOnResizingEnabled() {
+  isOnResizingEnabled() {
     return this.snaplineImpl.options.resizing === true
   }
 
-  enableSnaplineOnResizing() {
+  enableOnResizing() {
     this.snaplineImpl.options.resizing = true
     return this
   }
 
-  disableSnaplineOnResizing() {
+  disableOnResizing() {
     this.snaplineImpl.options.resizing = false
     return this
   }
 
-  toggleSnaplineOnResizing(enableOnResizing?: boolean) {
+  toggleOnResizing(enableOnResizing?: boolean) {
     if (enableOnResizing != null) {
-      if (enableOnResizing !== this.isSnaplineOnResizingEnabled()) {
+      if (enableOnResizing !== this.isOnResizingEnabled()) {
         if (enableOnResizing) {
-          this.enableSnaplineOnResizing()
+          this.enableOnResizing()
         } else {
-          this.disableSnaplineOnResizing()
+          this.disableOnResizing()
         }
       }
-    } else if (this.isSnaplineOnResizingEnabled()) {
-      this.disableSnaplineOnResizing()
+    } else if (this.isOnResizingEnabled()) {
+      this.disableOnResizing()
     } else {
-      this.enableSnaplineOnResizing()
+      this.enableOnResizing()
     }
     return this
   }
 
-  isSharpSnapline() {
+  isSharp() {
     return this.snaplineImpl.options.sharp === true
   }
 
-  enableSharpSnapline() {
+  enableSharp() {
     this.snaplineImpl.options.sharp = true
     return this
   }
 
-  disableSharpSnapline() {
+  disableSharp() {
     this.snaplineImpl.options.sharp = false
     return this
   }
 
-  toggleSharpSnapline(sharp?: boolean) {
+  toggleSharp(sharp?: boolean) {
     if (sharp != null) {
-      if (sharp !== this.isSharpSnapline()) {
+      if (sharp !== this.isSharp()) {
         if (sharp) {
-          this.enableSharpSnapline()
+          this.enableSharp()
         } else {
-          this.disableSharpSnapline()
+          this.disableSharp()
         }
       }
-    } else if (this.isSharpSnapline()) {
-      this.disableSharpSnapline()
+    } else if (this.isSharp()) {
+      this.disableSharp()
     } else {
-      this.enableSharpSnapline()
+      this.enableSharp()
     }
     return this
   }
 
-  getSnaplineTolerance() {
+  getTolerance() {
     return this.snaplineImpl.options.tolerance
   }
 
-  setSnaplineTolerance(tolerance: number) {
+  setTolerance(tolerance: number) {
     this.snaplineImpl.options.tolerance = tolerance
     return this
   }

@@ -1,21 +1,30 @@
-import { Disposable, CssLoader, KeyValue } from '@antv/x6-common'
-import { Node, Graph, EventArgs } from '@antv/x6'
+import { Basecoat, CssLoader, KeyValue, Node, Graph, EventArgs } from '@antv/x6'
 import { TransformImpl } from './transform'
 import { content } from './style/raw'
 
-export class Transform extends Disposable {
+export class Transform extends Basecoat<Transform.EventArgs> {
   private graph: Graph
   protected widgets: Map<Node, TransformImpl> = new Map()
   public name = 'transform'
 
   constructor(public readonly options: Transform.Options) {
     super()
+    CssLoader.ensure(this.name, content)
   }
 
   init(graph: Graph) {
-    CssLoader.ensure(this.name, content)
     this.graph = graph
     this.startListening()
+    this.setup()
+  }
+
+  protected setup() {
+    this.widgets.forEach((widget) => {
+      widget.on('*', (name, args) => {
+        this.trigger(name, args)
+        this.graph.trigger(name, args)
+      })
+    })
   }
 
   protected startListening() {
@@ -109,15 +118,18 @@ export class Transform extends Disposable {
     this.widgets.clear()
   }
 
-  @Disposable.dispose()
+  @Basecoat.dispose()
   dispose() {
     this.clearWidgets()
     this.stopListening()
+    this.off()
     CssLoader.clean(this.name)
   }
 }
 
 export namespace Transform {
+  export interface EventArgs extends TransformImpl.EventArgs {}
+
   type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
 
   export interface ResizingRaw {

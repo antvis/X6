@@ -1,9 +1,17 @@
-import { GeometryUtil, Angle, Point } from '@antv/x6-geometry'
-import { Dom, KeyValue, NumberExt } from '@antv/x6-common'
-import { Node, Graph, View, NodeView } from '@antv/x6'
-import { notify } from './util'
+import {
+  GeometryUtil,
+  Angle,
+  Point,
+  Dom,
+  KeyValue,
+  NumberExt,
+  Node,
+  Graph,
+  View,
+  NodeView,
+} from '@antv/x6'
 
-export class TransformImpl extends View {
+export class TransformImpl extends View<TransformImpl.EventArgs> {
   private node: Node
   private graph: Graph
   private options: TransformImpl.Options
@@ -215,10 +223,8 @@ export class TransformImpl extends View {
     evt.stopPropagation()
     this.model.startBatch('resize', { cid: this.cid })
     const dir = Dom.attr(evt.target, 'data-position') as Node.ResizeDirection
-    const view = this.graph.findViewByCell(this.node) as NodeView
     this.prepareResizing(evt, dir)
     this.startAction(evt)
-    notify('node:resize:mousedown', evt, view)
   }
 
   protected prepareResizing(
@@ -261,7 +267,6 @@ export class TransformImpl extends View {
 
     this.model.startBatch('rotate', { cid: this.cid })
 
-    const view = this.graph.findViewByCell(this.node) as NodeView
     const center = this.node.getBBox().getCenter()
     const e = this.normalizeEvent(evt)
     const client = this.graph.snapToGrid(e.clientX, e.clientY)
@@ -272,7 +277,6 @@ export class TransformImpl extends View {
       start: Point.create(client).theta(center),
     })
     this.startAction(evt)
-    notify('node:rotate:mousedown', evt, view)
   }
 
   protected onMouseMove(evt: Dom.MouseMoveEvent) {
@@ -306,7 +310,7 @@ export class TransformImpl extends View {
         if (!data.resized) {
           if (view) {
             view.addClass('node-resizing')
-            notify('node:resize', evt, view)
+            this.notify('node:resize', evt, view)
           }
           data.resized = true
         }
@@ -427,15 +431,14 @@ export class TransformImpl extends View {
             preserveAspectRatio: options.preserveAspectRatio === true,
           }
           node.resize(width, height, resizeOptions)
-          notify('node:resizing', evt, view)
+          this.notify('node:resizing', evt, view)
         }
-        notify('node:resize:mousemove', evt, view)
       } else if (data.action === 'rotating') {
         data = data as EventData.Rotating
         if (!data.rotated) {
           if (view) {
             view.addClass('node-rotating')
-            notify('node:rotate', evt, view)
+            this.notify('node:rotate', evt, view)
           }
           data.rotated = true
         }
@@ -450,27 +453,19 @@ export class TransformImpl extends View {
 
         if (currentAngle !== target) {
           node.rotate(target, { absolute: true })
-          notify('node:rotating', evt, view)
+          this.notify('node:rotating', evt, view)
         }
-        notify('node:rotate:mousemove', evt, view)
       }
     }
   }
 
   protected onMouseUp(evt: Dom.MouseUpEvent) {
-    const view = this.graph.findViewByCell(this.node) as NodeView
     const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       this.stopAction(evt)
       this.model.stopBatch(data.action === 'resizing' ? 'resize' : 'rotate', {
         cid: this.cid,
       })
-
-      if (data.action === 'resizing') {
-        notify('node:resize:mouseup', evt, view)
-      } else if (data.action === 'rotating') {
-        notify('node:rotate:mouseup', evt, view)
-      }
     }
   }
 
@@ -526,20 +521,53 @@ export class TransformImpl extends View {
     if (view) {
       view.removeClass(`node-${data.action}`)
       if (data.action === 'resizing' && data.resized) {
-        notify('node:resized', evt, view)
+        this.notify('node:resized', evt, view)
       } else if (data.action === 'rotating' && data.rotated) {
-        notify('node:rotated', evt, view)
+        this.notify('node:rotated', evt, view)
       }
+    }
+  }
+
+  protected notify<
+    K extends keyof TransformImpl.EventArgs,
+    T extends Dom.EventObject,
+  >(name: K, evt: T, view: NodeView, args: KeyValue = {}) {
+    if (view) {
+      const graph = view.graph
+      const e = graph.view.normalizeEvent(evt) as any
+      const localPoint = graph.snapToGrid(e.clientX, e.clientY)
+
+      this.trigger(name, {
+        e,
+        view,
+        node: view.cell,
+        cell: view.cell,
+        x: localPoint.x,
+        y: localPoint.y,
+        ...args,
+      })
     }
   }
 
   @View.dispose()
   dispose() {
     this.remove()
+    this.off()
   }
 }
 
 export namespace TransformImpl {
+  interface ResizeEventArgs<E> extends NodeView.PositionEventArgs<E> {}
+  interface RotateEventArgs<E> extends NodeView.PositionEventArgs<E> {}
+  export interface EventArgs {
+    'node:resize': ResizeEventArgs<Dom.MouseDownEvent>
+    'node:resizing': ResizeEventArgs<Dom.MouseMoveEvent>
+    'node:resized': ResizeEventArgs<Dom.MouseUpEvent>
+    'node:rotate': RotateEventArgs<Dom.MouseDownEvent>
+    'node:rotating': RotateEventArgs<Dom.MouseMoveEvent>
+    'node:rotated': RotateEventArgs<Dom.MouseUpEvent>
+  }
+
   export type Direction = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
 
   export interface Options {

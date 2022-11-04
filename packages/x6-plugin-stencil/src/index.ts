@@ -1,5 +1,14 @@
-import { Dom, FunctionExt, CssLoader } from '@antv/x6-common'
-import { Cell, Node, Model, View, Graph, EventArgs } from '@antv/x6'
+import {
+  Dom,
+  FunctionExt,
+  CssLoader,
+  Cell,
+  Node,
+  Model,
+  View,
+  Graph,
+  EventArgs,
+} from '@antv/x6'
 import { Dnd } from '@antv/x6-plugin-dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
@@ -28,6 +37,7 @@ export class Stencil extends View {
 
   constructor(options: Partial<Stencil.Options>) {
     super()
+
     CssLoader.ensure(this.name, content)
 
     this.graphs = {}
@@ -136,7 +146,6 @@ export class Stencil extends View {
     }
 
     this.startListening()
-    return this
   }
 
   protected renderSearch() {
