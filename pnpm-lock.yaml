@@ -151,12 +151,12 @@ importers:
 
   packages/x6:
     specifiers:
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
       utility-types: ^3.10.0
     dependencies:
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
       utility-types: 3.10.0
 
   packages/x6-common:
@@ -175,100 +175,100 @@ importers:
 
   packages/x6-plugin-clipboard:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-dnd:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-history:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
 
   packages/x6-plugin-keyboard:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
       '@types/mousetrap': ^1.6.5
       mousetrap: ^1.6.5
     dependencies:
       mousetrap: 1.6.5
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
       '@types/mousetrap': 1.6.10
 
   packages/x6-plugin-minimap:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
 
   packages/x6-plugin-scroller:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-selection:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-snapline:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-stencil:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
-      '@antv/x6-plugin-dnd': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
+      '@antv/x6-plugin-dnd': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
-      '@antv/x6-plugin-dnd': 2.0.6-beta.25_@antv+x6@2.0.6-beta.26
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
+      '@antv/x6-plugin-dnd': link:../x6-plugin-dnd
 
   packages/x6-plugin-transform:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
-      '@antv/x6-geometry': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
+      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-react-components:
     specifiers:
@@ -305,15 +305,15 @@ importers:
 
   packages/x6-react-shape:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
       '@types/react': 18.0.24
       '@types/react-dom': 18.0.8
       react: 18.2.0
@@ -321,16 +321,16 @@ importers:
 
   packages/x6-vue-shape:
     specifiers:
-      '@antv/x6': ^2.0.6-beta.1
-      '@antv/x6-common': ^2.0.6-beta.1
+      '@antv/x6': ^2.0.x
+      '@antv/x6-common': ^2.0.x
       '@vue/composition-api': ^1.0.0-rc.6
       vue: ^2.6.12
       vue-demi: ^0.7.4
     dependencies:
       vue-demi: 0.7.5_ugk432boennyisqo4tgx5zxzca
     devDependencies:
-      '@antv/x6': 2.0.6-beta.26
-      '@antv/x6-common': 2.0.6-beta.18
+      '@antv/x6': link:../x6
+      '@antv/x6-common': link:../x6-common
       '@vue/composition-api': 1.7.1_vue@2.7.13
       vue: 2.7.13
 
@@ -409,41 +409,6 @@ packages:
       lodash: 4.17.21
       react: 16.14.0
       resize-observer-polyfill: 1.5.1
-    dev: true
-
-  /@antv/x6-common/2.0.6-beta.18:
-    resolution:
-      {
-        integrity: sha512-bsxKnrvqn/gz4s+YLRzQNU0rFPeJxjuQcAJmjlftVzhlp8KlOljDwR7iZRXFN4wjhKu7eTcMVCCQ2YBNT1Qj9g==,
-      }
-    dependencies:
-      lodash-es: 4.17.21
-
-  /@antv/x6-geometry/2.0.6-beta.18:
-    resolution:
-      {
-        integrity: sha512-M3V2pBTGCHx00Q7LNFE8U0/zChonrutJ+w1mImh/1XJlAuwMjc/ibg1h/PEsbZCkWOqVD2ftY+++5G0NQu7yNw==,
-      }
-
-  /@antv/x6-plugin-dnd/2.0.6-beta.25_@antv+x6@2.0.6-beta.26:
-    resolution:
-      {
-        integrity: sha512-A0wCA8KERLsljHyxRiXVt3V0kOOcrA6xkJGNya78oH0/y+LYtn+OVVlnH+okZE5rr5/E3nKKMsvteYzm90P7eA==,
-      }
-    peerDependencies:
-      '@antv/x6': '>=2.0.6-beta.0'
-    dependencies:
-      '@antv/x6': 2.0.6-beta.26
-    dev: true
-
-  /@antv/x6/2.0.6-beta.26:
-    resolution:
-      {
-        integrity: sha512-FZQyA2jhCSFrzLHX+BO3673ntTmStGYU2XG6hVZgdwrc70b3DjfGsHH1BQrR2y6lYolnoqjo8EnZ8AalSVmAlg==,
-      }
-    dependencies:
-      '@antv/x6-common': 2.0.6-beta.18
-      '@antv/x6-geometry': 2.0.6-beta.18
     dev: true
 
   /@babel/code-frame/7.18.6:
@@ -10820,6 +10785,7 @@ packages:
       {
         integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==,
       }
+    dev: false
 
   /lodash.camelcase/4.3.0:
     resolution:
