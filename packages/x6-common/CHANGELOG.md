@@ -1,19 +1,6 @@
 # @antv/x6-common 1.0.0 (2022-11-04)
 
 
-### Bug Fixes
-
-* force bump to 2.0 ([ae7ad05](https://github.com/antvis/x6/commit/ae7ad05d9caddc1056afa17549bda74209cedfc0))
-
-
-### chore
-
-* bump to 2.0 ([0e258d0](https://github.com/antvis/x6/commit/0e258d0704b444103410a565fe033dae76426ad4))
-* force bump to 2.0.0 ([0cab334](https://github.com/antvis/x6/commit/0cab334e4b72a4df33a371c37dfbeff8dc0ae231))
-* force release 2.0-beta ([af8c588](https://github.com/antvis/x6/commit/af8c5887b3de721f125da6d71e40c3ec76d0f660))
-* release beta ([b5f3cfa](https://github.com/antvis/x6/commit/b5f3cfa2042f5196a995a38a8f41f140cabdce57))
-
-
 ### Features
 
 * ✨ add css method for dom ([#1959](https://github.com/antvis/x6/issues/1959)) ([e8fbcd8](https://github.com/antvis/x6/commit/e8fbcd83fd07b5d2df0abe020fc8e2481332c1b2))

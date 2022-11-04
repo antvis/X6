@@ -20,23 +20,10 @@
 * 修复x6-react-component antd引入的问题 ([ff29109](https://github.com/antvis/x6/commit/ff29109b9bc80e6e29ed6421939818904013563e))
 
 
-### chore
-
-* release beta ([b5f3cfa](https://github.com/antvis/x6/commit/b5f3cfa2042f5196a995a38a8f41f140cabdce57))
-
-
 ### Features
 
 * add scroller plugin ([#2580](https://github.com/antvis/x6/issues/2580)) ([5e0e2ac](https://github.com/antvis/x6/commit/5e0e2acde7d7e259ea27d001983e950878d0ecc8))
 * support turbo ([1da55bf](https://github.com/antvis/x6/commit/1da55bfda73edaa96515998b5766e9ed5f241ee9))
-
-
-### BREAKING CHANGES
-
-* force release 2.0-beta
-* 2.0-beta
-
-# @antv/x6-react-components [2.0.0](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.16...@antv/x6-react-components@2.0.0) (2022-11-04)
 
 
 ### Bug Fixes
@@ -44,23 +31,10 @@
 * commit message E2BIG ([a2c5f9e](https://github.com/antvis/x6/commit/a2c5f9e943ccf1d7ae478af30cb5022dd72e2e99))
 
 
-### chore
-
-* release beta ([b5f3cfa](https://github.com/antvis/x6/commit/b5f3cfa2042f5196a995a38a8f41f140cabdce57))
-
-
 ### Features
 
 * add scroller plugin ([#2580](https://github.com/antvis/x6/issues/2580)) ([5e0e2ac](https://github.com/antvis/x6/commit/5e0e2acde7d7e259ea27d001983e950878d0ecc8))
 * support turbo ([1da55bf](https://github.com/antvis/x6/commit/1da55bfda73edaa96515998b5766e9ed5f241ee9))
-
-
-### BREAKING CHANGES
-
-* force release 2.0-beta
-* 2.0-beta
-
-# @antv/x6-react-components [2.0.0-beta.1](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.1.16...@antv/x6-react-components@2.0.0-beta.1) (2022-11-03)
 
 
 ### Bug Fixes
