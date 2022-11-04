@@ -72,7 +72,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^8.2.5",
-    "@semantic-release-monorepo/cli": "^1.0.21",
+    "@semantic-release-monorepo/cli": "^1.0.23",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/jasmine": "^4.3.0",
