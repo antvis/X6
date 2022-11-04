@@ -1,3 +1,14 @@
+## @antv/x6 [2.0.6-beta.5](https://github.com/antvis/x6/compare/@antv/x6@2.0.6-beta.4...@antv/x6@2.0.6-beta.5) (2022-11-04)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-common:** upgraded to 2.0.6-beta.1
+* **@antv/x6-geometry:** upgraded to 2.0.6-beta.1
+
 ## @antv/x6 [2.0.6-beta.4](https://github.com/antvis/x6/compare/@antv/x6@2.0.6-beta.3...@antv/x6@2.0.6-beta.4) (2022-11-03)
 
 
