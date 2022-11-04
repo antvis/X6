@@ -1,3 +1,25 @@
+## @antv/x6-plugin-scroller [2.0.6-beta.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-scroller@1.0.0-beta.1...@antv/x6-plugin-scroller@2.0.6-beta.1) (2022-11-04)
+
+
+### chore
+
+* force release 2.0-beta ([af8c588](https://github.com/antvis/x6/commit/af8c5887b3de721f125da6d71e40c3ec76d0f660))
+
+
+### BREAKING CHANGES
+
+* force release 2.0-beta
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 2.0.6-beta.5
+* **@antv/x6-common:** upgraded to 2.0.6-beta.1
+* **@antv/x6-geometry:** upgraded to 2.0.6-beta.1
+
 # @antv/x6-plugin-scroller 1.0.0-beta.1 (2022-11-03)
 
 
