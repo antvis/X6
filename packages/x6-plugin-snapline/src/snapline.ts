@@ -1,6 +1,11 @@
-import { IDisablable, ArrayExt, FunctionExt, Vector } from '@antv/x6-common'
-import { Angle, Point, Rectangle } from '@antv/x6-geometry'
 import {
+  IDisablable,
+  ArrayExt,
+  FunctionExt,
+  Vector,
+  Angle,
+  Point,
+  Rectangle,
   Graph,
   EventArgs,
   Model,

@@ -1,15 +1,17 @@
 import {
-  Disposable,
+  Basecoat,
   ModifierKey,
   CssLoader,
   Dom,
   ObjectExt,
-} from '@antv/x6-common'
-import { Cell, EventArgs, Graph } from '@antv/x6'
+  Cell,
+  EventArgs,
+  Graph,
+} from '@antv/x6'
 import { SelectionImpl } from './selection'
 import { content } from './style/raw'
 
-export class Selection extends Disposable {
+export class Selection extends Basecoat<SelectionImpl.EventArgs> {
   private graph: Graph
   private selectionImpl: SelectionImpl
   private readonly options: Selection.Options
@@ -36,47 +38,52 @@ export class Selection extends Disposable {
   constructor(options: Selection.Options) {
     super()
     this.options = ObjectExt.merge({}, Selection.defaultOptions, options)
+    CssLoader.ensure(this.name, content)
   }
 
   public init(graph: Graph) {
     this.graph = graph
-    CssLoader.ensure(this.name, content)
     this.selectionImpl = new SelectionImpl({
       ...this.options,
       graph,
     })
+    this.setup()
     this.startListening()
   }
 
   // #region api
 
-  isSelectionEnabled() {
+  isEnabled() {
     return !this.disabled
   }
 
-  enableSelection() {
-    this.enable()
+  enable() {
+    if (this.disabled) {
+      this.options.enabled = true
+    }
     return this
   }
 
-  disableSelection() {
-    this.disable()
+  disable() {
+    if (!this.disabled) {
+      this.options.enabled = false
+    }
     return this
   }
 
-  toggleSelection(enabled?: boolean) {
+  toggleEnabled(enabled?: boolean) {
     if (enabled != null) {
-      if (enabled !== this.isSelectionEnabled()) {
+      if (enabled !== this.isEnabled()) {
         if (enabled) {
-          this.enableSelection()
+          this.enable()
         } else {
-          this.disableSelection()
+          this.disable()
         }
       }
-    } else if (this.isSelectionEnabled()) {
-      this.disableSelection()
+    } else if (this.isEnabled()) {
+      this.disable()
     } else {
-      this.enableSelection()
+      this.enable()
     }
 
     return this
@@ -228,20 +235,20 @@ export class Selection extends Disposable {
     return this
   }
 
-  isSelectionEmpty() {
-    return this.isEmpty()
+  isEmpty() {
+    return this.length <= 0
   }
 
-  cleanSelection(options?: Selection.SetOptions) {
-    this.clean(options)
+  clean(options: Selection.SetOptions = {}) {
+    this.selectionImpl.clean(options)
     return this
   }
 
-  resetSelection(
+  protected reset(
     cells?: Cell | string | (Cell | string)[],
-    options?: Selection.SetOptions,
+    options: Selection.SetOptions = {},
   ) {
-    this.reset(cells, options)
+    this.selectionImpl.reset(cells ? this.getCells(cells) : [], options)
     return this
   }
 
@@ -281,6 +288,13 @@ export class Selection extends Disposable {
   }
 
   // #endregion
+
+  protected setup() {
+    this.selectionImpl.on('*', (name, args) => {
+      this.trigger(name, args)
+      this.graph.trigger(name, args)
+    })
+  }
 
   protected startListening() {
     this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
@@ -374,43 +388,12 @@ export class Selection extends Disposable {
     }
   }
 
-  protected isEmpty() {
-    return this.length <= 0
-  }
-
   protected getCells(cells: Cell | string | (Cell | string)[]) {
     return (Array.isArray(cells) ? cells : [cells])
       .map((cell) =>
         typeof cell === 'string' ? this.graph.getCellById(cell) : cell,
       )
       .filter((cell) => cell != null)
-  }
-
-  protected reset(
-    cells?: Cell | string | (Cell | string)[],
-    options: Selection.SetOptions = {},
-  ) {
-    this.selectionImpl.reset(cells ? this.getCells(cells) : [], options)
-    return this
-  }
-
-  protected clean(options: Selection.SetOptions = {}) {
-    this.selectionImpl.clean(options)
-    return this
-  }
-
-  protected enable() {
-    if (this.disabled) {
-      this.options.enabled = true
-    }
-    return this
-  }
-
-  protected disable() {
-    if (!this.disabled) {
-      this.options.enabled = false
-    }
-    return this
   }
 
   protected startRubberband(e: Dom.MouseDownEvent) {
@@ -449,15 +432,17 @@ export class Selection extends Disposable {
     return this
   }
 
-  @Disposable.dispose()
+  @Basecoat.dispose()
   dispose() {
     this.stopListening()
+    this.off()
     this.selectionImpl.dispose()
     CssLoader.clean(this.name)
   }
 }
 
 export namespace Selection {
+  export interface EventArgs extends SelectionImpl.EventArgs {}
   export interface Options extends SelectionImpl.CommonOptions {
     enabled?: boolean
   }
