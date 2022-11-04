@@ -1,3 +1,15 @@
+## @antv/x6-common [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-common@1.0.0...@antv/x6-common@1.0.1) (2022-11-04)
+
+
+### chore
+
+* force bump to 2.0.0 ([0cab334](https://github.com/antvis/x6/commit/0cab334e4b72a4df33a371c37dfbeff8dc0ae231))
+
+
+### BREAKING CHANGES
+
+* force bump to 2.0.0
+
 # @antv/x6-common 1.0.0 (2022-11-04)
 
 
