@@ -12,7 +12,7 @@ importers:
       '@rollup/plugin-node-resolve': ^15.0.1
       '@rollup/plugin-replace': ^5.0.1
       '@rollup/plugin-typescript': ^8.2.5
-      '@semantic-release-monorepo/cli': ^1.0.24
+      '@semantic-release-monorepo/cli': ^1.0.25
       '@semantic-release/changelog': ^6.0.1
       '@semantic-release/git': ^10.0.1
       '@types/jasmine': ^4.3.0
@@ -85,7 +85,7 @@ importers:
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.2.5
       '@rollup/plugin-replace': 5.0.1_rollup@3.2.5
       '@rollup/plugin-typescript': 8.5.0_skqhbvp355vci76ty3pdffvjrq
-      '@semantic-release-monorepo/cli': 1.0.24_semantic-release@19.0.5
+      '@semantic-release-monorepo/cli': 1.0.25_semantic-release@19.0.5
       '@semantic-release/changelog': 6.0.1_semantic-release@19.0.5
       '@semantic-release/git': 10.0.1_semantic-release@19.0.5
       '@types/jasmine': 4.3.0
@@ -2848,17 +2848,17 @@ packages:
       rollup: 3.2.5
     dev: false
 
-  /@semantic-release-monorepo/cli/1.0.24_semantic-release@19.0.5:
+  /@semantic-release-monorepo/cli/1.0.25_semantic-release@19.0.5:
     resolution:
       {
-        integrity: sha512-Bwp+Yp0rdULw91tTO9xXCwQQUKQAH8KGNeWSZ1KJHrjhj7MzLMgah9Oq/Jnk4yhyTaAt52joAAfkISkX+CWynw==,
+        integrity: sha512-1tqbvfp+Po5bEnqNzz627Ucm/0osJrSljSUYnu8gN2QKbiiUYHRRNW7ZKMV07PDyceuKHbYIftG0Qm8M1HJejw==,
       }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
     hasBin: true
     peerDependencies:
       semantic-release: ^19.x
     dependencies:
-      '@semantic-release-monorepo/core': 1.2.8_semantic-release@19.0.5
+      '@semantic-release-monorepo/core': 1.2.10_semantic-release@19.0.5
       lodash: 4.17.21
       meow: 10.1.5
       semantic-release: 19.0.5
@@ -2866,10 +2866,10 @@ packages:
       - supports-color
     dev: false
 
-  /@semantic-release-monorepo/core/1.2.8_semantic-release@19.0.5:
+  /@semantic-release-monorepo/core/1.2.10_semantic-release@19.0.5:
     resolution:
       {
-        integrity: sha512-psBM7QJofi84VooLINbHwSkPQ+RXXA8fGFVvhwaomPJfCaBtVUrXEPz3pg3JMZ5nJsGg8HrtCfkU43Rs8e8QNg==,
+        integrity: sha512-NQLLnhbMpGJpQ2w3f4Nl99lHODVrUqt4c2aILHHPlPF3ttbSCsxCP9Jd9gqCyH/Mb2mXcb1IBNVmauiS/5MUHA==,
       }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
     peerDependencies:
