@@ -1,5 +1,4 @@
-import { Graph } from '@antv/x6'
-import { Path, Point } from '@antv/x6-geometry'
+import { Graph, Path, Point } from '@antv/x6'
 import { Connector } from '@antv/x6/lib/registry'
 
 export const connectors = {

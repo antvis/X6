@@ -1,6 +1,4 @@
-import { Shape } from '@antv/x6'
-import { Path } from '@antv/x6-geometry'
-import { NumberExt } from '@antv/x6-common'
+import { Shape, NumberExt, Path } from '@antv/x6'
 
 Shape.Path.define({
   title: 'Paper Tape',

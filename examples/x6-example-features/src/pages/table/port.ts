@@ -1,6 +1,4 @@
-import { Graph, Markup } from '@antv/x6'
-import { Dom } from '@antv/x6-common'
-import { Point } from '@antv/x6-geometry'
+import { Graph, Markup, Dom, Point } from '@antv/x6'
 import { PortLayout } from '@antv/x6/es/registry/port-layout'
 
 export interface PortArgs extends PortLayout.CommonArgs {

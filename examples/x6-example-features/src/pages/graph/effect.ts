@@ -1,6 +1,4 @@
-import { Graph } from '@antv/x6'
-import { FunctionExt, Vector } from '@antv/x6-common'
-import { Rectangle } from '@antv/x6-geometry'
+import { Graph, FunctionExt, Vector, Rectangle } from '@antv/x6'
 import { FitToContentCard } from './fit-card'
 import { ScaleContentToFitCard } from './scale-card'
 
