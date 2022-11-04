@@ -41,6 +41,22 @@
       "@commitlint/config-conventional"
     ]
   },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "rollup": "3"
+      },
+      "allowAny": [
+        "@antv/x6-*"
+      ]
+    },
+    "allowedDeprecatedVersions": {
+      "request": "*",
+      "querystring": "0.2.x",
+      "uuid": "3.4.x",
+      "source-map-resolve": "0.5.x"
+    }
+  },
   "dependencies": {
     "@antv/x6-build-tools": "workspace:*",
     "@babel/core": "^7.19.6",
