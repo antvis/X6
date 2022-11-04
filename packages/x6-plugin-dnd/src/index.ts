@@ -1,12 +1,20 @@
-import { GeometryUtil, Rectangle, Point } from '@antv/x6-geometry'
-import { FunctionExt, Dom, CssLoader } from '@antv/x6-common'
-import { Cell, Node, View, NodeView, Graph, EventArgs } from '@antv/x6'
+import {
+  GeometryUtil,
+  Rectangle,
+  Point,
+  FunctionExt,
+  Dom,
+  CssLoader,
+  Cell,
+  Node,
+  View,
+  NodeView,
+  Graph,
+  EventArgs,
+} from '@antv/x6'
 import { content } from './style/raw'
 
 export class Dnd extends View {
-  public name = 'dnd'
-  public readonly options: Dnd.Options
-  public readonly draggingGraph: Graph
   protected sourceNode: Node | null
   protected draggingNode: Node | null
   protected draggingView: NodeView | null
@@ -17,6 +25,10 @@ export class Dnd extends View {
   protected padding: number | null
   protected snapOffset: Point.PointLike | null
   protected originOffset: null | { left: number; top: number }
+
+  public name = 'dnd'
+  public readonly options: Dnd.Options
+  public readonly draggingGraph: Graph
 
   protected get targetScroller() {
     const target = this.options.target
@@ -40,6 +52,7 @@ export class Dnd extends View {
 
   constructor(options: Partial<Dnd.Options> & { target: Graph }) {
     super()
+
     CssLoader.ensure(this.name, content)
 
     this.options = {

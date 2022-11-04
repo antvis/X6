@@ -1,5 +1,4 @@
-import { Markup, Node } from '@antv/x6'
-import { ObjectExt } from '@antv/x6-common'
+import { ObjectExt, Markup, Node } from '@antv/x6'
 
 export class VueShape<
   Properties extends VueShape.Properties = VueShape.Properties,
