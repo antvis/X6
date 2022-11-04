@@ -12,7 +12,7 @@ jobs:
   ci:
     strategy:
       matrix:
-        coveralls: [x6, x6-common, x6-geometry]
+        codecov: [x6, x6-common, x6-geometry]
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -62,34 +62,12 @@ jobs:
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
 
-      - name: 💡　Coveralls
-        uses: ./.github/workflows/coveralls.yml
+      - name: 💡　Codecov
+        uses: codecov/codecov-action@v1
         with:
-          pkg: ${{ matrix.coveralls }}
-
-      # - name: 💡　Coveralls
-      #   uses: coverallsapp/github-action@master
-      #   with:
-      #     github-token: ${{ env.bot_token }}
-      #     path-to-lcov: ./packages/x6/test/coverage/lcov.info
-      # - name: 💡　Codecov(x6)
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: ./packages/x6/test/coverage/lcov.info
-      #     flags: x6
-      # - name: 💡　Codecov(x6-common)
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: ./packages/x6-common/test/coverage/lcov.info
-      #     flags: x6-common
-      # - name: 💡　Codecov(x6-geometry)
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: ./packages/x6-geometry/test/coverage/lcov.info
-      #     flags: x6-geometry
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/${{ matrix.codecov }}/test/coverage/lcov.info
+          flags: ${{ matrix.codecov }}
 
       - name: 🔀　Dispatch(ci_passed)
         uses: peter-evans/repository-dispatch@v2
