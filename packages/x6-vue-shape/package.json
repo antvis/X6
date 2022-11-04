@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-vue-shape",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "X6 shape for rendering vue components.",
   "main": "lib/index.js",
   "module": "es/index.js",
