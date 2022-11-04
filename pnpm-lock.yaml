@@ -151,8 +151,8 @@ importers:
 
   packages/x6:
     specifiers:
-      '@antv/x6-common': ^1.0.x
-      '@antv/x6-geometry': ^1.0.x
+      '@antv/x6-common': ^2.0.x
+      '@antv/x6-geometry': ^2.0.x
       utility-types: ^3.10.0
     dependencies:
       '@antv/x6-common': 1.0.2
@@ -175,31 +175,31 @@ importers:
 
   packages/x6-plugin-clipboard:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-dnd:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-export:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-history:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-keyboard:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
       '@types/mousetrap': ^1.6.5
       mousetrap: ^1.6.5
     dependencies:
@@ -210,39 +210,39 @@ importers:
 
   packages/x6-plugin-minimap:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-scroller:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-selection:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-snapline:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
   packages/x6-plugin-stencil:
     specifiers:
-      '@antv/x6': ^1.0.x
-      '@antv/x6-plugin-dnd': ^1.0.x
+      '@antv/x6': ^2.0.x
+      '@antv/x6-plugin-dnd': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
       '@antv/x6-plugin-dnd': link:../x6-plugin-dnd
 
   packages/x6-plugin-transform:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
     devDependencies:
       '@antv/x6': 1.34.5
 
@@ -281,7 +281,7 @@ importers:
 
   packages/x6-react-shape:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       react: ^18.0.0
@@ -295,7 +295,7 @@ importers:
 
   packages/x6-vue-shape:
     specifiers:
-      '@antv/x6': ^1.0.x
+      '@antv/x6': ^2.0.x
       '@vue/composition-api': ^1.0.0-rc.6
       vue: ^2.6.12
       vue-demi: ^0.7.4
