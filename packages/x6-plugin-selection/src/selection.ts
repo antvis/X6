@@ -912,25 +912,19 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }: Collection.EventArgs['updated']) {
     added.forEach((cell) => {
       this.trigger('cell:selected', { cell, options })
-      this.graph.trigger('cell:selected', { cell, options })
       if (cell.isNode()) {
         this.trigger('node:selected', { cell, options, node: cell })
-        this.graph.trigger('node:selected', { cell, options, node: cell })
       } else if (cell.isEdge()) {
         this.trigger('edge:selected', { cell, options, edge: cell })
-        this.graph.trigger('edge:selected', { cell, options, edge: cell })
       }
     })
 
     removed.forEach((cell) => {
       this.trigger('cell:unselected', { cell, options })
-      this.graph.trigger('cell:unselected', { cell, options })
       if (cell.isNode()) {
         this.trigger('node:unselected', { cell, options, node: cell })
-        this.graph.trigger('node:unselected', { cell, options, node: cell })
       } else if (cell.isEdge()) {
         this.trigger('edge:unselected', { cell, options, edge: cell })
-        this.graph.trigger('edge:unselected', { cell, options, edge: cell })
       }
     })
 
@@ -941,7 +935,6 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       selected: this.cells.filter((cell) => !!this.graph.getCellById(cell.id)),
     }
     this.trigger('selection:changed', args)
-    this.graph.trigger('selection:changed', args)
   }
 
   // #endregion

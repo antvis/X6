@@ -68,7 +68,7 @@ export class Clipboard
   private clean(force?: boolean) {
     if (!this.disabled || force) {
       this.clipboardImpl.clean()
-      this.notify('clipboard:changed', [])
+      this.notify('clipboard:changed', { cells: [] })
     }
     return this
   }
@@ -79,7 +79,7 @@ export class Clipboard
         ...this.commonOptions,
         ...options,
       })
-      this.notify('clipboard:changed', cells)
+      this.notify('clipboard:changed', { cells })
     }
     return this
   }
@@ -90,7 +90,7 @@ export class Clipboard
         ...this.commonOptions,
         ...options,
       })
-      this.notify('clipboard:changed', cells)
+      this.notify('clipboard:changed', { cells })
     }
     return this
   }
@@ -120,9 +120,12 @@ export class Clipboard
     return this.clipboardImpl.cells
   }
 
-  protected notify(name: keyof Clipboard.EventArgs, cells: Cell[]) {
-    this.trigger(name, { cells })
-    this.graph.trigger(name, { cells })
+  protected notify<K extends keyof Clipboard.EventArgs>(
+    name: K,
+    args: Clipboard.EventArgs[K],
+  ) {
+    this.trigger(name, args)
+    this.graph.trigger(name, args)
   }
 
   @Basecoat.dispose()

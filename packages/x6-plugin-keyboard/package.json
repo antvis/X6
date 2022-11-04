@@ -40,12 +40,10 @@
     "mousetrap": "^1.6.5"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x",
-    "@antv/x6-common": "1.0.1"
+    "@antv/x6": "^2.x"
   },
   "devDependencies": {
     "@antv/x6": "^2.0.x",
-    "@antv/x6-common": "1.0.1",
     "@types/mousetrap": "^1.6.5"
   },
   "author": {
