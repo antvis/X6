@@ -51,7 +51,8 @@
       ]
     },
     "allowedDeprecatedVersions": {
-      "urix": "3.4.x",
+      "uuid": "3.4.x",
+      "urix": "0.1.0",
       "request": "*",
       "stable": "0.1.x",
       "har-validator": "5.x",
