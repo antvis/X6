@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-dnd",
-  "version": "1.0.0-beta.1",
+  "version": "2.0.6-beta.1",
   "description": "dnd plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -38,14 +38,14 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "2.0.6-beta.4",
-    "@antv/x6-common": "1.0.0-beta.1",
-    "@antv/x6-geometry": "2.0.0-beta.1"
+    "@antv/x6": "2.0.6-beta.5",
+    "@antv/x6-common": "2.0.6-beta.1",
+    "@antv/x6-geometry": "2.0.6-beta.1"
   },
   "devDependencies": {
-    "@antv/x6": "2.0.6-beta.4",
-    "@antv/x6-common": "1.0.0-beta.1",
-    "@antv/x6-geometry": "2.0.0-beta.1"
+    "@antv/x6": "2.0.6-beta.5",
+    "@antv/x6-common": "2.0.6-beta.1",
+    "@antv/x6-geometry": "2.0.6-beta.1"
   },
   "author": {
     "name": "bubkoo",
