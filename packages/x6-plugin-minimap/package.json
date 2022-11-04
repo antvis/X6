@@ -41,8 +41,8 @@
     "@antv/x6-common": "^2.x"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x",
-    "@antv/x6-common": "^2.0.x"
+    "@antv/x6": "^2.0.6-beta.1",
+    "@antv/x6-common": "^2.0.6-beta.1"
   },
   "author": {
     "name": "bubkoo",

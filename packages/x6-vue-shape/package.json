@@ -52,8 +52,8 @@
     }
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x",
-    "@antv/x6-common": "^2.0.x",
+    "@antv/x6": "^2.0.6-beta.1",
+    "@antv/x6-common": "^2.0.6-beta.1",
     "@vue/composition-api": "^1.0.0-rc.6",
     "vue": "^2.6.12"
   },
