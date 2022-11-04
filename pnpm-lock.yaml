@@ -235,7 +235,7 @@ importers:
   packages/x6-plugin-stencil:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-plugin-dnd': ^2.0.x
+      '@antv/x6-plugin-dnd': 1.0.0
     devDependencies:
       '@antv/x6': link:../x6
       '@antv/x6-plugin-dnd': link:../x6-plugin-dnd
