@@ -182,93 +182,69 @@ importers:
   packages/x6-plugin-dnd:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
-      '@antv/x6-geometry': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
-      '@antv/x6-geometry': link:../x6-geometry
+
+  packages/x6-plugin-export:
+    specifiers:
+      '@antv/x6': ^2.0.0
+    devDependencies:
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-history:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
 
   packages/x6-plugin-keyboard:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
       '@types/mousetrap': ^1.6.5
       mousetrap: ^1.6.5
     dependencies:
       mousetrap: 1.6.5
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
       '@types/mousetrap': 1.6.10
 
   packages/x6-plugin-minimap:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
 
   packages/x6-plugin-scroller:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
-      '@antv/x6-geometry': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
-      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-selection:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
-      '@antv/x6-geometry': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
-      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-snapline:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
-      '@antv/x6-geometry': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
-      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-plugin-stencil:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
-      '@antv/x6-geometry': ^2.0.x
       '@antv/x6-plugin-dnd': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
-      '@antv/x6-geometry': link:../x6-geometry
       '@antv/x6-plugin-dnd': link:../x6-plugin-dnd
 
   packages/x6-plugin-transform:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
-      '@antv/x6-geometry': ^2.0.x
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
-      '@antv/x6-geometry': link:../x6-geometry
 
   packages/x6-react-components:
     specifiers:
@@ -306,14 +282,12 @@ importers:
   packages/x6-react-shape:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
       '@types/react': 18.0.24
       '@types/react-dom': 18.0.8
       react: 18.2.0
@@ -322,7 +296,6 @@ importers:
   packages/x6-vue-shape:
     specifiers:
       '@antv/x6': ^2.0.x
-      '@antv/x6-common': ^2.0.x
       '@vue/composition-api': ^1.0.0-rc.6
       vue: ^2.6.12
       vue-demi: ^0.7.4
@@ -330,7 +303,6 @@ importers:
       vue-demi: 0.7.5_ugk432boennyisqo4tgx5zxzca
     devDependencies:
       '@antv/x6': link:../x6
-      '@antv/x6-common': link:../x6-common
       '@vue/composition-api': 1.7.1_vue@2.7.13
       vue: 2.7.13
 
