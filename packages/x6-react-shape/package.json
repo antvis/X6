@@ -38,13 +38,11 @@
   },
   "peerDependencies": {
     "@antv/x6": ">=2.x",
-    "@antv/x6-common": ">=2.x",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@antv/x6": "^1.100.0-beta.0",
-    "@antv/x6-common": "^1.100.0-beta.18",
+    "@antv/x6": "^2.0.6-beta.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "react": "^18.0.0",

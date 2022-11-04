@@ -1,16 +1,20 @@
-import { Dom, ModifierKey, Disposable, CssLoader } from '@antv/x6-common'
 import {
+  Dom,
+  ModifierKey,
+  Basecoat,
+  CssLoader,
+  Rectangle,
+  Point,
   Graph,
   Config,
   TransformManager,
   Cell,
   BackgroundManager,
 } from '@antv/x6'
-import { Rectangle, Point } from '@antv/x6-geometry'
 import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 
-export class Scroller extends Disposable {
+export class Scroller extends Basecoat<Scroller.EventArgs> {
   private graph: Graph
   private scrollerImpl: ScrollerImpl
   public name = 'scroller'
@@ -32,16 +36,16 @@ export class Scroller extends Disposable {
 
   constructor(public readonly options: Scroller.Options) {
     super()
+    CssLoader.ensure(this.name, content)
   }
 
   public init(graph: Graph) {
     this.graph = graph
-    CssLoader.ensure(this.name, content)
-
     this.scrollerImpl = new ScrollerImpl({
       ...this.options,
       graph,
     })
+    this.setup()
     this.startListening()
     this.updateClassName()
     this.scrollerImpl.center()
@@ -293,6 +297,12 @@ export class Scroller extends Disposable {
 
   // #endregion
 
+  protected setup() {
+    this.scrollerImpl.on('*', (name, args) => {
+      this.trigger(name, args)
+    })
+  }
+
   protected startListening() {
     let eventTypes = []
     const pannable = this.options.pannable
@@ -374,15 +384,18 @@ export class Scroller extends Disposable {
     }
   }
 
-  @Disposable.dispose()
+  @Basecoat.dispose()
   dispose() {
     this.scrollerImpl.dispose()
     this.stopListening()
+    this.off()
     CssLoader.clean(this.name)
   }
 }
 
 export namespace Scroller {
+  export interface EventArgs extends ScrollerImpl.EventArgs {}
+
   type EventType = 'leftMouseDown' | 'rightMouseDown'
   export interface Options extends ScrollerImpl.CommonOptions {
     pannable?: boolean | { enabled: boolean; eventTypes: EventType[] }

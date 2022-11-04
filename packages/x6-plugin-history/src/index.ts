@@ -4,8 +4,10 @@ import {
   FunctionExt,
   Basecoat,
   IDisablable,
-} from '@antv/x6-common'
-import { Cell, Model, Graph } from '@antv/x6'
+  Cell,
+  Model,
+  Graph,
+} from '@antv/x6'
 
 export class History
   extends Basecoat<History.EventArgs>
@@ -142,7 +144,7 @@ export class History
     return this.options.enabled !== true
   }
 
-  validate(
+  protected validate(
     events: string | string[],
     ...callbacks: History.Validator.Callback[]
   ) {
@@ -513,7 +515,7 @@ export class History
    * This is an ugly WORKAROUND. It does not solve deficiencies in the batch
    * system itself.
    */
-  private consolidateCommands() {
+  protected consolidateCommands() {
     const lastCommandGroup = this.undoStack[this.undoStack.length - 1]
     const penultimateCommandGroup = this.undoStack[this.undoStack.length - 2]
 
@@ -562,6 +564,7 @@ export class History
     this.validator.dispose()
     this.clean()
     this.stopListening()
+    this.off()
   }
 }
 
