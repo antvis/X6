@@ -1,3 +1,10 @@
+## @antv/x6-react-shape [2.0.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@2.0.1...@antv/x6-react-shape@2.0.2) (2022-11-04)
+
+
+### Bug Fixes
+
+* remove x6-common and x6-geometry deps ([#2830](https://github.com/antvis/x6/issues/2830)) ([5b5f5aa](https://github.com/antvis/x6/commit/5b5f5aa7ea6fded1b15abc79b9b5a5e2281b3ab9))
+
 ## @antv/x6-react-shape [2.0.1](https://github.com/antvis/x6/compare/@antv/x6-react-shape@2.0.0...@antv/x6-react-shape@2.0.1) (2022-11-04)
 
 
