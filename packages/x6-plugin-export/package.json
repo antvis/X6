@@ -1,7 +1,7 @@
 {
-  "name": "@antv/x6-plugin-dnd",
+  "name": "@antv/x6-plugin-export",
   "version": "1.0.0",
-  "description": "dnd plugin for X6",
+  "description": "export plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/index.js",
@@ -14,19 +14,17 @@
   ],
   "keywords": [
     "plugin",
-    "dnd",
+    "export",
     "x6",
     "antv"
   ],
   "scripts": {
-    "clean:turbo": "rss",
     "clean:build": "rss",
     "clean:coverage": "rss",
     "clean": "rss",
     "build:esm": "rss",
     "build:cjs": "rss",
     "build:umd": "rss",
-    "build:less": "rss",
     "build:dev": "rss",
     "build:watch": "rss",
     "build:watch:esm": "rss",
@@ -38,10 +36,10 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x"
+    "@antv/x6": ">=2.x"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x"
+    "@antv/x6": "^2.0.0"
   },
   "author": {
     "name": "bubkoo",
@@ -55,7 +53,7 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/antvis/x6.git",
-    "directory": "packages/x6-plugin-dnd"
+    "directory": "packages/x6-plugin-export"
   },
   "publishConfig": {
     "access": "public",
