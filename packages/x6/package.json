@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -44,8 +44,8 @@
     "pretest": "rss"
   },
   "dependencies": {
-    "@antv/x6-common": "^1.0.x",
-    "@antv/x6-geometry": "^1.0.x",
+    "@antv/x6-common": "^2.0.x",
+    "@antv/x6-geometry": "^2.0.x",
     "utility-types": "^3.10.0"
   },
   "author": {
