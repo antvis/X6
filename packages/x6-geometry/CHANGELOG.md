@@ -1,3 +1,5 @@
+## @antv/x6-geometry [2.0.6-beta.1](https://github.com/antvis/x6/compare/@antv/x6-geometry@2.0.0-beta.1...@antv/x6-geometry@2.0.6-beta.1) (2022-11-04)
+
 # @antv/x6-geometry [2.0.0-beta.1](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.11...@antv/x6-geometry@2.0.0-beta.1) (2022-11-03)
 
 
