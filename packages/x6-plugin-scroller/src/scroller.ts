@@ -4,9 +4,8 @@ import {
   ObjectExt,
   Dom,
   FunctionExt,
-} from '@antv/x6-common'
-import { Point, Rectangle } from '@antv/x6-geometry'
-import {
+  Point,
+  Rectangle,
   Cell,
   View,
   Graph,
@@ -17,7 +16,7 @@ import {
   Util,
 } from '@antv/x6'
 
-export class ScrollerImpl extends View {
+export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
   private readonly content: HTMLDivElement
   protected pageBreak: HTMLDivElement | null
   public readonly options: ScrollerImpl.Options
@@ -1119,6 +1118,11 @@ export class ScrollerImpl extends View {
 }
 
 export namespace ScrollerImpl {
+  export interface EventArgs {
+    'pan:start': { e: Dom.MouseDownEvent }
+    panning: { e: Dom.MouseMoveEvent }
+    'pan:stop': { e: Dom.MouseUpEvent }
+  }
   export interface CommonOptions {
     enabled?: boolean
     className?: string

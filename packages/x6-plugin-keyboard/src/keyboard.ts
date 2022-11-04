@@ -1,6 +1,12 @@
 import Mousetrap from 'mousetrap'
-import { Dom, FunctionExt, Disposable, IDisablable } from '@antv/x6-common'
-import { Graph, EventArgs } from '@antv/x6'
+import {
+  Dom,
+  FunctionExt,
+  Disposable,
+  IDisablable,
+  Graph,
+  EventArgs,
+} from '@antv/x6'
 
 export class KeyboardImpl extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document

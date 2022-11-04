@@ -1,5 +1,4 @@
-import { Disposable } from '@antv/x6-common'
-import { Graph } from '@antv/x6'
+import { Disposable, Graph } from '@antv/x6'
 import { KeyboardImpl } from './keyboard'
 
 export class Keyboard extends Disposable {
@@ -19,33 +18,33 @@ export class Keyboard extends Disposable {
 
   // #region api
 
-  isKeyboardEnabled() {
+  isEnabled() {
     return !this.keyboardImpl.disabled
   }
 
-  enableKeyboard() {
+  enable() {
     this.keyboardImpl.enable()
     return this
   }
 
-  disableKeyboard() {
+  disable() {
     this.keyboardImpl.disable()
     return this
   }
 
-  toggleKeyboard(enabled?: boolean) {
+  toggleEnabled(enabled?: boolean) {
     if (enabled != null) {
-      if (enabled !== this.isKeyboardEnabled()) {
+      if (enabled !== this.isEnabled()) {
         if (enabled) {
-          this.enableKeyboard()
+          this.enable()
         } else {
-          this.disableKeyboard()
+          this.disable()
         }
       }
-    } else if (this.isKeyboardEnabled()) {
-      this.disableKeyboard()
+    } else if (this.isEnabled()) {
+      this.disable()
     } else {
-      this.enableKeyboard()
+      this.enable()
     }
     return this
   }

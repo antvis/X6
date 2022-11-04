@@ -2,7 +2,7 @@ import { Cell, Graph, IDisablable, Basecoat } from '@antv/x6'
 import { ClipboardImpl } from './clipboard'
 
 export class Clipboard
-  extends Basecoat<Clipboard.ClipboardEventArgs>
+  extends Basecoat<Clipboard.EventArgs>
   implements IDisablable
 {
   private clipboardImpl: ClipboardImpl
@@ -107,6 +107,10 @@ export class Clipboard
 
   // #endregion
 
+  get disabled() {
+    return this.options.enabled !== true
+  }
+
   private get commonOptions() {
     const { enabled, ...others } = this.options
     return others
@@ -116,11 +120,7 @@ export class Clipboard
     return this.clipboardImpl.cells
   }
 
-  get disabled() {
-    return this.options.enabled !== true
-  }
-
-  protected notify(name: keyof Clipboard.ClipboardEventArgs, cells: Cell[]) {
+  protected notify(name: keyof Clipboard.EventArgs, cells: Cell[]) {
     this.trigger(name, { cells })
     this.graph.trigger(name, { cells })
   }
@@ -128,11 +128,12 @@ export class Clipboard
   @Basecoat.dispose()
   dispose() {
     this.clean(true)
+    this.off()
   }
 }
 
 export namespace Clipboard {
-  export interface ClipboardEventArgs {
+  export interface EventArgs {
     'clipboard:changed': {
       cells: Cell[]
     }
