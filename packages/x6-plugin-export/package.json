@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-export",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "export plugin for X6.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,10 +36,10 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "^1.x"
+    "@antv/x6": "^2.x"
   },
   "devDependencies": {
-    "@antv/x6": "^1.0.x"
+    "@antv/x6": "^2.0.x"
   },
   "author": {
     "name": "bubkoo",
