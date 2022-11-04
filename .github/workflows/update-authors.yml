@@ -11,9 +11,6 @@ jobs:
   authors:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
