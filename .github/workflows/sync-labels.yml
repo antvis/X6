@@ -9,7 +9,6 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
