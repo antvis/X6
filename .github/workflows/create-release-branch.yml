@@ -8,9 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Update AUTHORS
-        run: |
-          touch .releasing
+      - run: |
+          echo "${{ github.sha }}" > .releasing
       - uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
@@ -20,5 +19,6 @@ jobs:
         with:
           token: ${{ env.bot_token }}
           branch: auto-release
+          commit-message: "trigger semantic release..."
           delete-branch: true
-          title: 'chore: auto release'
+          title: "chore: semantic release [skip ci]"
