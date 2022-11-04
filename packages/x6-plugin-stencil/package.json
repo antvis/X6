@@ -38,11 +38,11 @@
   },
   "peerDependencies": {
     "@antv/x6": "^2.x",
-    "@antv/x6-plugin-dnd": "^2.x"
+    "@antv/x6-plugin-dnd": "1.0.0"
   },
   "devDependencies": {
     "@antv/x6": "^2.0.x",
-    "@antv/x6-plugin-dnd": "^2.0.x"
+    "@antv/x6-plugin-dnd": "1.0.0"
   },
   "author": {
     "name": "bubkoo",
