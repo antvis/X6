@@ -20,6 +20,7 @@
     "@antv/x6-plugin-snapline": "^1.0.0",
     "@antv/x6-plugin-stencil": "^1.0.0",
     "@antv/x6-plugin-transform": "^1.0.0",
+    "@antv/x6-plugin-export": "1.0.0",
     "@antv/x6-react-components": "^2.0.0",
     "@antv/x6-react-shape": "^2.0.0",
     "antd": "^4.4.2",
@@ -47,7 +48,9 @@
     "react-test-renderer": "^16.7.0",
     "umi": "^2.9.0",
     "umi-plugin-react": "^1.8.0",
-    "umi-types": "^0.3.0"
+    "umi-types": "^0.3.0",
+    "babel-plugin-import": "^1.13.5",
+    "@antv/hierarchy": "^0.6.8"
   },
   "lint-staged": {
     "src/**/*.ts": [

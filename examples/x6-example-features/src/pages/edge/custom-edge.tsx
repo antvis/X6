@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Edge } from '@antv/x6'
-import { Timing } from '@antv/x6-common'
+import { Graph, Edge, Timing } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

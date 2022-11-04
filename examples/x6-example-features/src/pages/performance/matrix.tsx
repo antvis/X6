@@ -1,7 +1,5 @@
 import React from 'react'
-import { Graph, Node, Util } from '@antv/x6'
-import { Dom } from '@antv/x6-common'
-import { Rectangle } from '@antv/x6-geometry'
+import { Graph, Node, Util, Dom, Rectangle } from '@antv/x6'
 import { Button } from 'antd'
 import '../index.less'
 

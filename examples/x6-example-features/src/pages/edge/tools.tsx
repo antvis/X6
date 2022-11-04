@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Timing } from '@antv/x6-common'
+import { Graph, Timing } from '@antv/x6'
 import { Marker } from '@antv/x6/lib/registry/marker'
 import '../index.less'
 

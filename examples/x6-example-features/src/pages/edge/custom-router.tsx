@@ -1,7 +1,6 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Point } from '@antv/x6'
 import { Router } from '@antv/x6/es/registry/router'
-import { Point } from '@antv/x6-geometry'
 import '../index.less'
 
 Router.registry.register(

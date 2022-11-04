@@ -8,7 +8,6 @@ import '../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
-  private graph: Graph
   private selection: Selection
   private clipboard: Clipboard
 
@@ -25,6 +24,9 @@ export default class Example extends React.Component {
     })
     const selection = new Selection({
       enabled: true,
+      rubberband: true,
+      multiple: true,
+      strict: true,
     })
     const keyboard = new Keyboard({
       enabled: true,
@@ -68,7 +70,10 @@ export default class Example extends React.Component {
       this.onPaste()
     })
 
-    this.graph = graph
+    clipboard.on('clipboard:changed', ({ cells }) => {
+      console.log(cells)
+    })
+
     this.selection = selection
     this.clipboard = clipboard
   }
@@ -85,7 +90,7 @@ export default class Example extends React.Component {
   }
 
   onPaste = () => {
-    if (!this.clipboard.isClipboardEmpty()) {
+    if (!this.clipboard.isEmpty()) {
       this.clipboard.paste()
     }
   }

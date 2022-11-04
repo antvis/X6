@@ -67,6 +67,10 @@ export default class Example extends React.Component {
 
     selection.select(a)
     selection.select([b, c])
+
+    selection.on('selection:changed', ({ added }) => {
+      console.log('added', added)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {

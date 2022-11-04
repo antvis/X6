@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Rectangle } from '@antv/x6-geometry'
+import { Graph, Rectangle } from '@antv/x6'
 import '../index.less'
 import './index.less'
 import { render } from './render'
