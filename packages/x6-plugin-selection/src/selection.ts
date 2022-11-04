@@ -1,6 +1,10 @@
-import { Rectangle, Point } from '@antv/x6-geometry'
-import { ModifierKey, FunctionExt, Dom, KeyValue } from '@antv/x6-common'
 import {
+  Rectangle,
+  Point,
+  ModifierKey,
+  FunctionExt,
+  Dom,
+  KeyValue,
   Cell,
   Node,
   Edge,
@@ -946,6 +950,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   dispose() {
     this.clean()
     this.remove()
+    this.off()
   }
 }
 
