@@ -1,5 +1,1 @@
-# `x6-plugin-history`
-
-> TODO: description
-
-## Usage
+# x6-plugin-history
