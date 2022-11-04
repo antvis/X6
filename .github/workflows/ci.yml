@@ -62,10 +62,10 @@ jobs:
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
 
-      - name: 💡　Coveralls
-        uses: ./.github/workflows/coveralls.yml
-        with:
-          pkg: ${{ matrix.coveralls }}
+      # - name: 💡　Coveralls
+      #   uses: ./.github/workflows/coveralls.yml
+      #   with:
+      #     pkg: ${{ matrix.coveralls }}
 
       # - name: 💡　Coveralls
       #   uses: coverallsapp/github-action@master
