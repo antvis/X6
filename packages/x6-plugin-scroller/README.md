@@ -1,5 +1,1 @@
-# `x6-plugin-scroller`
-
-> TODO: description
-
-## Usage
+# x6-plugin-scrolle
