@@ -1,7 +1,5 @@
 import React from 'react'
-import { Node, Graph } from '@antv/x6'
-import { Vector } from '@antv/x6-common'
-import { Point, Line, Polyline } from '@antv/x6-geometry'
+import { Node, Graph, Vector, Point, Line, Polyline } from '@antv/x6'
 import { Connector } from '@antv/x6/es/registry/connector'
 import '../index.less'
 

@@ -15,16 +15,6 @@ export class Transform extends Basecoat<Transform.EventArgs> {
   init(graph: Graph) {
     this.graph = graph
     this.startListening()
-    this.setup()
-  }
-
-  protected setup() {
-    this.widgets.forEach((widget) => {
-      widget.on('*', (name, args) => {
-        this.trigger(name, args)
-        this.graph.trigger(name, args)
-      })
-    })
   }
 
   protected startListening() {
@@ -42,6 +32,10 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     const widget = this.createTransform(node)
     if (widget) {
       this.widgets.set(node, widget)
+      widget.on('*', (name, args) => {
+        this.trigger(name, args)
+        this.graph.trigger(name, args)
+      })
     }
   }
 

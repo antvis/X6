@@ -1,7 +1,5 @@
 import React from 'react'
-import { Graph, Cell } from '@antv/x6'
-import { Point } from '@antv/x6-geometry'
-import { Timing, Interp } from '@antv/x6-common'
+import { Graph, Cell, Point, Timing, Interp  } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

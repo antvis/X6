@@ -1,5 +1,4 @@
-import { Shape } from '@antv/x6'
-import { Path } from '@antv/x6-geometry'
+import { Shape, Path } from '@antv/x6'
 
 Shape.Path.define({
   shape: 'flowchart_database',

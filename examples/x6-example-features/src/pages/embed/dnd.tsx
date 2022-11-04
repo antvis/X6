@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Node } from '@antv/x6'
-import { Color } from '@antv/x6-common'
+import { Graph, Node, Color } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

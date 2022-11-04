@@ -27,6 +27,18 @@ export class Export extends Basecoat<Export.EventArgs> {
     return this.graph.view
   }
 
+  exportPNG(fileName = 'chart', options: Export.ToImageOptions = {}) {
+    this.toPNG((dataUri) => {
+      DataUri.downloadDataUri(dataUri, fileName)
+    }, options)
+  }
+
+  exportJPEG(fileName = 'chart', options: Export.ToImageOptions = {}) {
+    this.toPNG((dataUri) => {
+      DataUri.downloadDataUri(dataUri, fileName)
+    }, options)
+  }
+
   toSVG(callback: Export.ToSVGCallback, options: Export.ToSVGOptions = {}) {
     this.notify('before:export', options)
 
