@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-snapline",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "snapline plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -38,12 +38,12 @@
   },
   "peerDependencies": {
     "@antv/x6": "^2.x",
-    "@antv/x6-common": "^2.x",
+    "@antv/x6-common": "1.0.1",
     "@antv/x6-geometry": "^2.x"
   },
   "devDependencies": {
     "@antv/x6": "^2.0.x",
-    "@antv/x6-common": "^2.0.x",
+    "@antv/x6-common": "1.0.1",
     "@antv/x6-geometry": "^2.0.x"
   },
   "author": {
