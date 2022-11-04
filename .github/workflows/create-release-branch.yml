@@ -21,4 +21,7 @@ jobs:
           branch: auto-release
           commit-message: "trigger semantic release..."
           delete-branch: true
+          labels: semantic-release
           title: "chore: semantic release [skip ci]"
+          body: |
+            Your **[semantic-release-monorepo](https://github.com/bubkoo/semantic-release-monorepo)** bot base on **[semantic-release](https://github.com/semantic-release/semantic-release)** :package::rocket:`
