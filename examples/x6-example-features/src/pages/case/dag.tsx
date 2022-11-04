@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Node, Cell } from '@antv/x6'
-import { Path } from '@antv/x6-geometry'
+import { Graph, Node, Cell, Path } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Selection } from '@antv/x6-plugin-selection'
 import { Snapline } from '@antv/x6-plugin-snapline'

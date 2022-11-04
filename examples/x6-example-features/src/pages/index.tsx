@@ -9,7 +9,7 @@ const dataSource = [
     description: '画布',
   },
   {
-    example: 'position',
+    example: 'position/position',
     description: '画布定位',
   },
   {
@@ -169,6 +169,10 @@ const dataSource = [
   {
     example: 'transform',
     description: '调整节点形状',
+  },
+  {
+    example: 'undo',
+    description: '撤销重做',
   },
   // animation
   {

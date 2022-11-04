@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Color } from '@antv/x6-common'
+import { Graph, Color } from '@antv/x6'
 import ReactDOM from 'react-dom'
 import { generateData, parsePorts } from './data'
 import { getPortsDefinition } from './port'

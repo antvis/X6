@@ -1,39 +1,19 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, NodeView } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import { Scroller } from '@antv/x6-plugin-scroller'
 import { Selection } from '@antv/x6-plugin-selection'
 import { MiniMap } from '@antv/x6-plugin-minimap'
+import { Export } from '@antv/x6-plugin-export'
 import '../index.less'
 import './index.less'
-
-class SimpleNodeView extends NodeView {
-  protected renderMarkup() {
-    return this.renderJSONMarkup({
-      tagName: 'rect',
-      selector: 'body',
-    })
-  }
-
-  protected renderPorts() {}
-
-  update() {
-    super.update({
-      body: {
-        refWidth: '100%',
-        refHeight: '100%',
-        fill: '#31d0c6',
-      },
-    })
-  }
-}
-
 export default class Example extends React.Component {
   private graph: Graph
   private graphContainer: HTMLDivElement
   private minimapContainer: HTMLDivElement
   private scroller: Scroller
   private selection: Selection
+  private exportObj: Export
 
   componentDidMount() {
     this.graph = new Graph({
@@ -75,10 +55,12 @@ export default class Example extends React.Component {
       height: 200,
       padding: 10,
     })
+    this.exportObj = new Export()
 
     this.graph.use(this.scroller)
     this.graph.use(this.selection)
     this.graph.use(minimap)
+    this.graph.use(this.exportObj)
 
     const rect = this.graph.addNode({
       shape: 'rect',
@@ -140,9 +122,7 @@ export default class Example extends React.Component {
   }
 
   onDownload = () => {
-    // this.graph.toPNG((datauri: string) => {
-    //   DataUri.downloadDataUri(datauri, 'chart.png')
-    // })
+    this.exportObj.exportPNG('scroller')
   }
 
   render() {

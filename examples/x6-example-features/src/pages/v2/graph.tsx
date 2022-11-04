@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Path } from '@antv/x6-geometry'
+import { Graph, Path } from '@antv/x6'
 import data from './data'
 
 Graph.registerConnector(
