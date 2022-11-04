@@ -38,7 +38,7 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": ">=2.x",
+    "@antv/x6": "^2.x",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },

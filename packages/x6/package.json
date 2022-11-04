@@ -44,7 +44,7 @@
     "pretest": "rss"
   },
   "dependencies": {
-    "@antv/x6-common": "1.0.1",
+    "@antv/x6-common": "^2.0.x",
     "@antv/x6-geometry": "^2.0.x",
     "utility-types": "^3.10.0"
   },

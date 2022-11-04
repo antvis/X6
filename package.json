@@ -51,9 +51,13 @@
       ]
     },
     "allowedDeprecatedVersions": {
+      "urix": "3.4.x",
       "request": "*",
+      "stable": "0.1.x",
+      "har-validator": "5.x",
       "querystring": "0.2.x",
-      "uuid": "3.4.x",
+      "resolve-url": "0.2.x",
+      "source-map-url": "0.4.x",
       "source-map-resolve": "0.5.x"
     }
   },
