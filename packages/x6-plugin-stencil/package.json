@@ -38,14 +38,10 @@
   },
   "peerDependencies": {
     "@antv/x6": "^2.x",
-    "@antv/x6-common": "1.0.1",
-    "@antv/x6-geometry": "^2.x",
     "@antv/x6-plugin-dnd": "1.0.0"
   },
   "devDependencies": {
     "@antv/x6": "^2.0.x",
-    "@antv/x6-common": "1.0.1",
-    "@antv/x6-geometry": "^2.0.x",
     "@antv/x6-plugin-dnd": "1.0.0"
   },
   "author": {
