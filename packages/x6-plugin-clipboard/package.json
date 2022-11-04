@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-clipboard",
-  "version": "2.0.3",
+  "version": "1.0.0",
   "description": "clipboard plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,10 +37,10 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x"
+    "@antv/x6": "1.0.0"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x"
+    "@antv/x6": "1.0.0"
   },
   "author": {
     "name": "bubkoo",
