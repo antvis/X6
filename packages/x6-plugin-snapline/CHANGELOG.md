@@ -1,3 +1,10 @@
+## @antv/x6-plugin-snapline [2.0.6-beta.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-snapline@2.0.6-beta.1...@antv/x6-plugin-snapline@2.0.6-beta.2) (2022-11-04)
+
+
+### Bug Fixes
+
+* bump rule ([c9559f2](https://github.com/antvis/x6/commit/c9559f2f30790857ff066be7d0ce99ed8933e20c))
+
 ## @antv/x6-plugin-snapline [2.0.6-beta.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-snapline@1.0.0-beta.1...@antv/x6-plugin-snapline@2.0.6-beta.1) (2022-11-04)
 
 
