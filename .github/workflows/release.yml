@@ -2,14 +2,16 @@
 
 name: 🚀　Release
 on:
-  repository_dispatch:
-    types: [ci_master_passed]
+  push:
+    branches:
+      - master
+      - next
+      - next-major
+      - alpha
+      - beta
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: ⤵️　Checkout
         uses: actions/checkout@v3
@@ -56,7 +58,6 @@ jobs:
           env_name: bot_token
 
       - name: 📦　Semantic Release
-        if: github.event_name == 'push'
         run: pnpm srm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
