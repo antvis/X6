@@ -37,16 +37,16 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "2.0.6-beta.5",
-    "@antv/x6-common": "2.0.6-beta.1",
-    "@antv/x6-geometry": "2.0.6-beta.1",
-    "@antv/x6-plugin-dnd": "2.0.6-beta.1"
+    "@antv/x6": "^2.x",
+    "@antv/x6-common": "^2.x",
+    "@antv/x6-geometry": "^2.x",
+    "@antv/x6-plugin-dnd": "^2.x"
   },
   "devDependencies": {
-    "@antv/x6": "2.0.6-beta.5",
-    "@antv/x6-common": "2.0.6-beta.1",
-    "@antv/x6-plugin-dnd": "2.0.6-beta.1",
-    "@antv/x6-geometry": "2.0.6-beta.1"
+    "@antv/x6": "^2.0.x",
+    "@antv/x6-common": "^2.0.x",
+    "@antv/x6-geometry": "^2.0.x",
+    "@antv/x6-plugin-dnd": "^2.0.x"
   },
   "author": {
     "name": "bubkoo",

@@ -12,7 +12,7 @@ importers:
       '@rollup/plugin-node-resolve': ^15.0.1
       '@rollup/plugin-replace': ^5.0.1
       '@rollup/plugin-typescript': ^8.2.5
-      '@semantic-release-monorepo/cli': ^1.0.20
+      '@semantic-release-monorepo/cli': ^1.0.22
       '@semantic-release/changelog': ^6.0.1
       '@semantic-release/git': ^10.0.1
       '@types/jasmine': ^4.3.0
@@ -85,7 +85,7 @@ importers:
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.2.5
       '@rollup/plugin-replace': 5.0.1_rollup@3.2.5
       '@rollup/plugin-typescript': 8.5.0_skqhbvp355vci76ty3pdffvjrq
-      '@semantic-release-monorepo/cli': 1.0.20_semantic-release@19.0.5
+      '@semantic-release-monorepo/cli': 1.0.22_semantic-release@19.0.5
       '@semantic-release/changelog': 6.0.1_semantic-release@19.0.5
       '@semantic-release/git': 10.0.1_semantic-release@19.0.5
       '@types/jasmine': 4.3.0
@@ -1919,6 +1919,16 @@ packages:
     dependencies:
       regenerator-runtime: 0.13.10
 
+  /@babel/runtime/7.20.1:
+    resolution:
+      {
+        integrity: sha512-mrzLkl6U9YLF8qpqI7TB82PESyEGjm/0Ly91jG575eVxMMlb8fYfOXFZIJ8XfLrJZQbm7dlKry2bJmXBUEkdFg==,
+      }
+    engines: { node: '>=6.9.0' }
+    dependencies:
+      regenerator-runtime: 0.13.10
+    dev: false
+
   /@babel/template/7.18.10:
     resolution:
       {
@@ -2453,7 +2463,7 @@ packages:
         integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==,
       }
     dependencies:
-      '@babel/runtime': 7.20.0
+      '@babel/runtime': 7.20.1
       '@types/node': 12.20.55
       find-up: 4.1.0
       fs-extra: 8.1.0
@@ -2465,7 +2475,7 @@ packages:
         integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==,
       }
     dependencies:
-      '@babel/runtime': 7.20.0
+      '@babel/runtime': 7.20.1
       '@changesets/types': 4.1.0
       '@manypkg/find-root': 1.1.0
       fs-extra: 8.1.0
@@ -2866,17 +2876,17 @@ packages:
       rollup: 3.2.5
     dev: false
 
-  /@semantic-release-monorepo/cli/1.0.20_semantic-release@19.0.5:
+  /@semantic-release-monorepo/cli/1.0.22_semantic-release@19.0.5:
     resolution:
       {
-        integrity: sha512-0kguZ6je62Fs3kvbyTj3lhq9s50aLrC7PATpmnC5MYwOaFonlsL2kzA3nArBJ4IVVcQLILEjGMU+Z79D+vxuOQ==,
+        integrity: sha512-EL7kDfdh8n7HjNI5NSuXyRr2P0h+J5se2QtWXsEBxtA0ru4QPMmgJ+63O7yJbpCdlod419a/bQ5dEGU6SafgqA==,
       }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
     hasBin: true
     peerDependencies:
       semantic-release: ^19.x
     dependencies:
-      '@semantic-release-monorepo/core': 1.2.5_semantic-release@19.0.5
+      '@semantic-release-monorepo/core': 1.2.7_semantic-release@19.0.5
       lodash: 4.17.21
       meow: 10.1.5
       semantic-release: 19.0.5
@@ -2884,10 +2894,10 @@ packages:
       - supports-color
     dev: false
 
-  /@semantic-release-monorepo/core/1.2.5_semantic-release@19.0.5:
+  /@semantic-release-monorepo/core/1.2.7_semantic-release@19.0.5:
     resolution:
       {
-        integrity: sha512-am685lyk2/M9fZ2iVjz048JJas5V/jbRsDgts7OHmB/hnHCq+L1UcQhY4lSYcxJGpC0elA9Gf6uF9uG2UVjc+g==,
+        integrity: sha512-O7XBckGAA4QfJskkberYtIHvtKx8AGR0CVlKQZGsq63SfmcKCuXNdCfT8lDTVSEX5Imsf/27O9B6jKmMeVf1Iw==,
       }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
     peerDependencies:
@@ -6176,10 +6186,10 @@ packages:
       ms: 2.1.2
     dev: false
 
-  /decamelize-keys/1.1.0:
+  /decamelize-keys/1.1.1:
     resolution:
       {
-        integrity: sha512-ocLWuYzRPoS9bfiSdDd3cxvrzovVMZnRDVEzAs+hWIVXGDbHxWMECij2OBuyB/An0FFW/nLuq6Kv1i/YC5Qfzg==,
+        integrity: sha512-WiPxgEirIV0/eIOMcnFBA3/IJZAZqKnwAwWyvvdi4lsr1WCN22nhdf/3db3DoZcUjTV2SqfzIwNyp6y2xs3nmg==,
       }
     engines: { node: '>=0.10.0' }
     dependencies:
@@ -11221,7 +11231,7 @@ packages:
       '@types/minimist': 1.2.2
       camelcase-keys: 7.0.2
       decamelize: 5.0.1
-      decamelize-keys: 1.1.0
+      decamelize-keys: 1.1.1
       hard-rejection: 2.1.0
       minimist-options: 4.1.0
       normalize-package-data: 3.0.3
@@ -11240,7 +11250,7 @@ packages:
     engines: { node: '>=6' }
     dependencies:
       camelcase-keys: 4.2.0
-      decamelize-keys: 1.1.0
+      decamelize-keys: 1.1.1
       loud-rejection: 1.6.0
       minimist-options: 3.0.2
       normalize-package-data: 2.5.0
@@ -11259,7 +11269,7 @@ packages:
     dependencies:
       '@types/minimist': 1.2.2
       camelcase-keys: 6.2.2
-      decamelize-keys: 1.1.0
+      decamelize-keys: 1.1.1
       hard-rejection: 2.1.0
       minimist-options: 4.1.0
       normalize-package-data: 3.0.3
@@ -11280,7 +11290,7 @@ packages:
       '@types/minimist': 1.2.2
       camelcase-keys: 6.2.2
       decamelize: 1.2.0
-      decamelize-keys: 1.1.0
+      decamelize-keys: 1.1.1
       hard-rejection: 2.1.0
       minimist-options: 4.1.0
       normalize-package-data: 3.0.3
@@ -14881,7 +14891,7 @@ packages:
         integrity: sha512-LsrGtPmbYg19bcPHwdtmXwbW+TqNvtY4riE3P83foeHRroMbH6/2ddFBfab3t7kbzc7v7p4wbkIecHImqt0QNg==,
       }
     dependencies:
-      '@babel/runtime': 7.20.0
+      '@babel/runtime': 7.20.1
     dev: false
 
   /regex-not/1.0.2:
