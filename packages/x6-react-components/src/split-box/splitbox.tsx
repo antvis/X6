@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import clamp from 'clamp'
 import classNames from 'classnames'
 import { Box } from './box'
 import { Resizer } from './resizer'
 
 export class SplitBox extends React.PureComponent<
-  SplitBox.Props,
+  PropsWithChildren<SplitBox.Props>,
   SplitBox.State
 > {
   private container: HTMLDivElement

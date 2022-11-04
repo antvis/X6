@@ -9,27 +9,28 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "^2.0.x",
-    "@antv/x6-plugin-clipboard": "^2.0.x",
-    "@antv/x6-plugin-dnd": "^2.0.x",
-    "@antv/x6-plugin-history": "^2.0.x",
-    "@antv/x6-plugin-keyboard": "^2.0.x",
-    "@antv/x6-plugin-minimap": "^2.0.x",
-    "@antv/x6-plugin-scroller": "^2.0.x",
-    "@antv/x6-plugin-selection": "^2.0.x",
-    "@antv/x6-plugin-snapline": "^2.0.x",
-    "@antv/x6-plugin-stencil": "^2.0.x",
-    "@antv/x6-plugin-transform": "^2.0.x",
-    "@antv/x6-plugin-export": "^2.0.x",
-    "@antv/x6-react-components": "^2.0.x",
-    "@antv/x6-react-shape": "^2.0.x",
+    "@antv/x6": "^2.0.0",
+    "@antv/x6-plugin-clipboard": "^2.0.0",
+    "@antv/x6-plugin-dnd": "^2.0.0",
+    "@antv/x6-plugin-history": "^2.0.0",
+    "@antv/x6-plugin-keyboard": "^2.0.0",
+    "@antv/x6-plugin-minimap": "^2.0.0",
+    "@antv/x6-plugin-scroller": "^2.0.0",
+    "@antv/x6-plugin-selection": "^2.0.0",
+    "@antv/x6-plugin-snapline": "^2.0.0",
+    "@antv/x6-plugin-stencil": "^2.0.0",
+    "@antv/x6-plugin-transform": "^2.0.0",
+    "@antv/x6-plugin-export": "^2.0.0",
+    "@antv/x6-react-components": "^2.0.0",
+    "@antv/x6-react-shape": "^2.0.0",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
     "elkjs": "^0.7.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-helmet": "^6.0.0"
+    "react-helmet": "^6.0.0",
+    "@antv/hierarchy": "^0.6.8"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -49,8 +50,7 @@
     "umi": "^2.9.0",
     "umi-plugin-react": "^1.8.0",
     "umi-types": "^0.3.0",
-    "babel-plugin-import": "^1.13.5",
-    "@antv/hierarchy": "^0.6.8"
+    "babel-plugin-import": "^1.13.5"
   },
   "lint-staged": {
     "src/**/*.ts": [

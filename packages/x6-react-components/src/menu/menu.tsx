@@ -1,11 +1,11 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent, PropsWithChildren } from 'react'
 import classNames from 'classnames'
 import { MenuItem } from './item'
 import { MenuDivider } from './divider'
 import { MenuContext } from './context'
 import { MenuSubMenu } from './submenu'
 
-export class Menu extends React.PureComponent<Menu.Props> {
+export class Menu extends React.PureComponent<PropsWithChildren<Menu.Props>> {
   private onClick = (name: string, e?: MouseEvent) => {
     if (this.props.stopPropagation && e != null) {
       e.stopPropagation()

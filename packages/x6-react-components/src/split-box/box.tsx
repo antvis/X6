@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
-export class Box extends React.PureComponent<Box.Props> {
+export class Box extends React.PureComponent<PropsWithChildren<Box.Props>> {
   render() {
     const { refIt, className, index, currentSize, oppositeSize, vertical } =
       this.props
