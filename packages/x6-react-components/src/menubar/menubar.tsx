@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import classnames from 'classnames'
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import { MenubarItem } from './item'
 import { MenubarContext } from './context'
 
-export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
+export class Menubar extends React.PureComponent<
+  PropsWithChildren<Menubar.Props>,
+  Menubar.State
+> {
   private removeDocClickEvent: (() => void) | null
 
   constructor(props: Menubar.Props) {

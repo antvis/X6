@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import classNames from 'classnames'
 import { ToolbarItem } from './item'
 import { ToolbarGroup } from './group'
 import { ToolbarContext } from './context'
 
-export class Toolbar extends React.PureComponent<Toolbar.Props> {
+export class Toolbar extends React.PureComponent<
+  PropsWithChildren<Toolbar.Props>
+> {
   onClick = (key: string, value?: any) => {
     if (this.props.onClick) {
       this.props.onClick(key, value)

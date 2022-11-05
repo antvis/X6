@@ -94,7 +94,7 @@ export namespace MenuItemInner {
   }
 }
 
-export const MenuItem: React.SFC<MenuItem.Props> = (props) => (
+export const MenuItem: React.FC<MenuItem.Props> = (props) => (
   <MenuContext.Consumer>
     {(context) => <MenuItemInner context={context} {...props} />}
   </MenuContext.Consumer>
