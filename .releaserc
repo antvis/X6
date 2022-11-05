@@ -5,14 +5,16 @@
     "next",
     "next-major",
     { "name": "beta", "prerelease": true },
-    { "name": "alpha", "prerelease": true },
-    { "name": "v1", "prerelease": false, "range": "1.x" }
+    { "name": "alpha", "prerelease": true }
   ],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
       {
         "preset": "angular",
+        "parserOpts": {
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
+        },
         "releaseRules": [
           { "breaking": true, "release": "major" },
           { "revert": true, "release": "patch" },

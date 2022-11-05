@@ -8,7 +8,6 @@ on:
       - next-major
       - alpha
       - beta
-      - v1
 jobs:
   ci:
     strategy:
