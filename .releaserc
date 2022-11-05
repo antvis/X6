@@ -4,7 +4,6 @@
     "master",
     "next",
     "next-major",
-    "auto-release",
     { "name": "beta", "prerelease": true },
     { "name": "alpha", "prerelease": true }
   ],
