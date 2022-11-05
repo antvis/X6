@@ -1,6 +1,6 @@
 import { NumberExt } from '@antv/x6-common'
 import { Point, Rectangle, Angle } from '@antv/x6-geometry'
-import { Edge } from '../../../model'
+import { Node, Edge } from '../../../model'
 import { EdgeView } from '../../../view'
 import { orth } from '../orth'
 import { Router } from '../index'
@@ -50,6 +50,11 @@ export interface ResolvedOptions {
    * Should certain hidden nodes not be considered as obstacles?
    */
   excludeHiddenNodes: boolean
+
+  /**
+   * Should certain nodes not be considered as obstacles?
+   */
+   excludeNodes: Node[]
 
   /**
    * Possible starting directions from a node.
@@ -141,6 +146,7 @@ export const defaults: ManhattanRouterOptions = {
   perpendicular: true,
   excludeTerminals: [],
   excludeShapes: [], // ['text']
+  excludeNodes: [],
   excludeHiddenNodes: false,
   startDirections: ['top', 'right', 'bottom', 'left'],
   endDirections: ['top', 'right', 'bottom', 'left'],
@@ -221,7 +227,7 @@ export function resolveOptions(options: ManhattanRouterOptions) {
 
   if (result.padding) {
     const sides = NumberExt.normalizeSides(result.padding)
-    options.paddingBox = {
+    result.paddingBox = {
       x: -sides.left,
       y: -sides.top,
       width: sides.left + sides.right,

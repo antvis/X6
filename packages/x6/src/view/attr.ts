@@ -65,7 +65,9 @@ export class AttrManager {
         if (normal == null) {
           normal = {}
         }
-        const normalName = StringExt.kebabCase(name)
+        const normalName = Dom.CASE_SENSITIVE_ATTR.includes(name)
+          ? name
+          : StringExt.kebabCase(name)
         normal[normalName] = val as Attr.SimpleAttrValue
       }
     })

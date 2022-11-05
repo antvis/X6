@@ -1,7 +1,12 @@
 import { ns } from './elem'
 import { kebabCase } from '../string/format'
 
-const CASE_SENSITIVE_ATTR = ['viewBox']
+export const CASE_SENSITIVE_ATTR = [
+  'viewBox',
+  'attributeName',
+  'attributeType',
+  'repeatCount',
+]
 
 export type Attributes = { [key: string]: string | number | null | undefined }
 

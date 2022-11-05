@@ -41,7 +41,9 @@ export namespace Options {
     clickThreshold: number
     magnetThreshold: number | 'onleave'
     preventDefaultDblClick: boolean
-    preventDefaultContextMenu: boolean
+    preventDefaultContextMenu:
+      | boolean
+      | ((this: Graph, { view }: { view: CellView | null }) => boolean)
     preventDefaultMouseDown: boolean
     preventDefaultBlankAction: boolean
     interacting: CellView.Interacting

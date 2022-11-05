@@ -58,5 +58,6 @@ export namespace Base {
       }
       return others
     },
+    visible: true,
   })
 }

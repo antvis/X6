@@ -1975,14 +1975,24 @@ export class EdgeView<
     data: EventData.ArrowheadDragging,
   ) {
     const graph = this.graph
-    const snap = graph.options.connecting.snap
-    const radius = (typeof snap === 'object' && snap.radius) || 50
-    const views = graph.findViewsInArea({
+    const { snap, allowEdge } = graph.options.connecting;
+    const radius = (typeof snap === 'object' && snap.radius) || 50;
+
+    const findViewsOption = {
       x: x - radius,
       y: y - radius,
       width: 2 * radius,
       height: 2 * radius,
-    })
+    };
+
+    const views = graph.renderer.findViewsInArea(findViewsOption);
+
+    if (allowEdge) {
+      const edgeViews = graph.renderer.findEdgeViewsInArea(findViewsOption).filter( view => {
+        return view != this;
+      });
+      views.push(...edgeViews);
+    }
 
     const prevView = data.closestView || null
     const prevMagnet = data.closestMagnet || null
