@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-dnd",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "dnd plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -38,10 +38,10 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "1.0.0"
+    "@antv/x6": "^2.x"
   },
   "devDependencies": {
-    "@antv/x6": "1.0.0"
+    "@antv/x6": "^2.0.x"
   },
   "author": {
     "name": "bubkoo",
