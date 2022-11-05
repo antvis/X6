@@ -1,11 +1,12 @@
 {
   "branches": [
     "+([0-9])?(.{+([0-9]),x}).x",
-    { "name": "master", "prerelease": false, "range": ">=2.0.0" },
+    "master",
     "next",
     "next-major",
     { "name": "beta", "prerelease": true },
-    { "name": "alpha", "prerelease": true }
+    { "name": "alpha", "prerelease": true },
+    { "name": "v1", "prerelease": false, "range": "1.x" }
   ],
   "plugins": [
     [
