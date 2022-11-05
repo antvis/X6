@@ -44,6 +44,7 @@ interface SelectionOptions {
   rubberband?: boolean
   strict?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+  multipleSelectionModifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   movable?: boolean
   content?:
     | null
@@ -78,7 +79,17 @@ const graph = new Graph({
 
 ### multiple
 
-是否启用点击多选，默认为 `true`。启用多选后按住 `ctrl` 或 `command` 键点击节点实现多选。
+是否启用点击多选，默认为 `true`。启用多选后默认按住 `ctrl` 或 `command` 键点击节点实现多选。和 `multipleSelectionModifiers` 配合使用。
+
+### multipleSelectionModifiers
+
+修饰键(`'alt'`、`'ctrl'`、`'meta'`、`'shift'`)，设置修饰键后需按下修饰键才能触发点选多选。默认值是 `['ctrl', 'meta']`。
+
+支持配置单个（如 `'alt'`）或多个（如 `['alt', 'ctrl']`）修饰键，通过数组形式配置的多个修饰键是*或关系*，比如刚刚配置的修饰键表示按下 `'alt'` 或 `'ctrl'`，如果需要更加灵活的配置，可以使用如下这些形式：
+
+- `'alt|ctrl'` 表示按下 `'alt'` 或 `'ctrl'`。
+- `'alt&ctrl'` 表示同时按下 `'alt'` 和 `'ctrl'`。
+- `'alt|ctrl&shift'` 表示同时按下 `'alt'` 和 `'shift'` 或者同时按下 `'ctrl'` 和 `'shift'`。
 
 ### rubberband
 

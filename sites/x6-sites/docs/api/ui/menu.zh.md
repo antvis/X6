@@ -21,9 +21,9 @@ const Divider = Menu.Divider
 
 <Menu hasIcon={true} onClick={this.onMenuClick}>
   <MenuItem onClick={this.onMenuItemClick} name="undo" icon={<UndoOutlined />} hotkey="Cmd+Z" text="Undo" />
-  <MenuItem name="redo" icon={<RedoOutlined />} tkey="Cmd+Shift+Z" text="Redo" />
+  <MenuItem name="redo" icon={<RedoOutlined />} hotkey="Cmd+Shift+Z" text="Redo" />
   <Divider />
-  <MenuItem name="cut" icon={<ScissorOutlined />} hotkey="Cmd+X" t="Cut" />
+  <MenuItem name="cut" icon={<ScissorOutlined />} hotkey="Cmd+X" text="Cut" />
   <MenuItem name="copy" icon={<CopyOutlined />} hotkey="Cmd+C" text="Copy" />
   <MenuItem name="paste" icon={<SnippetsOutlined />} hotkey="Cmd+V" disabled={true} text="Paste" />
   <MenuItem name="delete" icon={<DeleteOutlined />} hotkey="Delete" text="Delete" />

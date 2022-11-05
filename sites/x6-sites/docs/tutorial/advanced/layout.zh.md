@@ -207,8 +207,9 @@ const dagreLayout = new DagreLayout({
 | 名称              | 类型      | 必选 | 默认值           | 描述                                                                          |
 |-------------------|-----------|:----:|------------------|-----------------------------------------------------------------------------|
 | type              | string                          |  `true`  |   `dagre`     | 布局类型 |
+| begin             | [number, number]                |  `false` |   -           | 布局左上角对齐位置 |
 | rankdir           | 'TB' \| 'BT' \| 'LR' \| 'RL'    |  `false` |   `TB`        | 布局的方向。T：top（上）；B：bottom（下）；L：left（左）；R：right（右）|
-| align             | 'UL' \| 'UR' \| 'DL' \| 'DR'    |  `false` |   `UL`        | 节点对齐方式。U：upper（上）；D：down（下）；L：left（左）；R：right（右） |
+| align             | 'UL' \| 'UR' \| 'DL' \| 'DR' \| undefined     |  `false` |   -        | 节点对齐方式。U：upper（上）；D：down（下）；L：left（左）；R：right（右）；undefined (居中) |
 | nodesep           | number                          |  `false` |    50         | 节点间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是节点的水平间距；在 `rankdir` 为 `LR` 或 `RL` 时代表节点的竖直方向间距 |
 | ranksep           | number                          |  `false` |    50         | 层间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是竖直方向相邻层间距；在 `rankdir` 为 `LR` 或 `RL` 时代表水平方向相邻层间距 |
 | nodesepFunc       | function                        |  `false` |    -          | 节点间距（px）的回调函数，通过该参数可以对不同节点设置不同的节点间距。 |

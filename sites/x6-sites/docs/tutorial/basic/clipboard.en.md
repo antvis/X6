@@ -183,3 +183,16 @@ toggleClipboard(enabled?: boolean): this
 | 名称    | 类型    | 必选 | 默认值 | 描述                                       |
 |---------|---------|:----:|--------|------------------------------------------|
 | enabled | boolean |      | -      | 是否启用剪切板，缺省时切换剪切板的启用状态。 |
+
+## 事件
+
+### clipboard:changed
+
+复制、剪切、清空剪切板时触发。
+
+```ts
+graph.on('clipboard:changed', ({ 
+  cells: Cell[]
+}) => { 
+  // code here
+})

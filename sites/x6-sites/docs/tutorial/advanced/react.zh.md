@@ -151,29 +151,7 @@ graph.addNode({
 })
 ```
 
-节点渲染时将自动为 React 组件注入一个名为 `'node'` 的属性，属性值为当前节点的实例。节点每次重新渲染都将触发 React 组件重新渲染，我们可以通过 `node` 属性和 `shouldComponentUpdate` 方法来决定是否需要重新渲染 React 组件。在下面示例中，仅当节点的 `data` 发生变化时才触发 `MyComponent` 组件重新渲染。
- 
-```tsx
-import { ReactShape } from '@antv/x6-react-shape'
-
-export class MyComponent extends React.Component<{ node?: ReactShape; text: string }> {
-  shouldComponentUpdate() {
-    const node = this.props.node
-    if (node) {
-      if (node.hasChanged('data')) {
-        return true
-      }
-    }
-
-    return false
-  }
-
-  render() {
-    return (<div>{this.props.text}</div>)
-  }
-}
-```
-
+节点渲染时将自动为 React 组件注入一个名为 `'node'` 的属性，属性值为当前节点的实例。
 
 另外 `component` 也可以是一个返回 React 组件的方法 `(this:Graph, node: ReactShape) => React.Component`，每次重新渲染都会调用该方法来获取最新的组件。
 
@@ -191,49 +169,75 @@ graph.addNode({
 })
 ```
 
-<iframe src="/demos/tutorial/advanced/react/react-shape"></iframe>
+#### 决定渲染频次
 
-**提升 React 节点挂载性能**
+节点每次重新渲染都将触发 React 组件的重新渲染。如果不希望组件有频繁的更新，可以通过 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) 获得 `node` 实例进行判断。
 
-当要挂载的 React 组件节点数量非常多时，挂载时长会比较长，此时可以通过 `@antv/x6-react-shape` 提供的 `usePortal` React Hook 来提升节点的挂载性能。具体做法为：
+在下面示例中，仅当节点的 `data` 发生变化时才触发 `MyComponent` 组件重新渲染。
 
 ```tsx
-import React, { useEffect } from 'react'
-import { Graph } from '@antv/x6'
-import { usePortal, ReactShape } from '@antv/x6-react-shape'
+import { ReactShape } from '@antv/x6-react-shape'
 
-const UNIQ_GRAPH_ID = 'UNIQ_GRAPH_ID' // 任意字符串，作为画布的唯一标识。注意：任意两张同时渲染的画布需要有不同的标识
+export const MyComponent = memo(
+  ({ node, text }: { node?: ReactShape; text: string }) => {
+    return // ...
+  },
+  (prev, next) => {
+    return Boolean(next.node?.hasChanged('data'))
+  },
+)
+```
 
-export const App: React.FC<{}> = () => {
-  const [Portal, setGraph] = usePortal(UNIQ_GRAPH_ID)
+<iframe src="/demos/tutorial/advanced/react/react-shape"></iframe>
+
+#### 获取组件上下文
+
+在默认情况下，每一个 React 节点的组件都会作为一个独立的 React 文档进行渲染（即使用 [`ReactDOM.createRoot`](https://reactjs.org/docs/react-dom-client.html#createroot)），此时你的 React 组件将不能正常获得你的主应用的上下文（Context），这意味着一些依赖上下文的第三方库（比如 `react-router`, `react-intl`, `umi` 等）将不能在 React 组件内部被正常使用：
+
+[[error]]
+| ```tsx
+| import { FormattedMessage } from 'react-intl;
+| 
+| function MyComponent () {
+|   return <FormattedMessage {...} />
+|   // [React Intl] Could not find required `intl` object. <IntlProvider /> needs to exist in the component ancestry.
+|   // ...
+| }
+| ```
+
+如果希望在 React 组件内获得应用的上下文，可以使用我们额外提供的 Portal 机制。它的大致用法是：
+
+```tsx
+import { Portal, ReactShape } from '@antv/x6-react-shape'
+
+// You should do this outside your components
+// (or make sure its not recreated on every render).
+//
+// 这个调用需要在组件外进行。
+const X6ReactPortalProvider = Portal.getProvider()
+
+function App() {
+  const container = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const graph = new Graph({
-      // ... 图的配置项
+      container: container.current,
+      // ...
     })
-    setGraph(graph) // 在添加节点前，先将生成的 Graph 实例传入 setGrah
-
-    // 生成一组可被添加的节点
-    const nodes = data.map(dataItem => {
-      return new ReactShape({
-        view: UNIQ_GRAPH_ID, // 需要指定 view 属性为定义的标识
-        component: <CustomReactNode />, // 自定义的 React 节点
-        // .. 其它配置项
-      })
-    })
-
-    // 批量添加一组节点以提升挂载性能
-    graph.addCell(nodes)
-  }, [setGraph])
+  }, [])
 
   return (
-    <div>
-      {/* 在原有的 React 树中挂载 Portal */}
-      <Portal />
-    </div>
+    <>
+      <X6ReactPortalProvider />
+      <div ref={container} className="x6-graph" />
+    </>
   )
 }
 ```
+
+<iframe src="/demos/tutorial/advanced/react/react-portal"></iframe>
+
+#### 序列化
 
 [[warning]]
 | 需要注意的是，当 `component` 为 React 组件或函数时，将不能通过 `graph.toJSON()` 方法导出画布数据。所以我们提供了以下两种方案来解决数据导出问题。
@@ -331,12 +335,7 @@ Graph.registerNode("my-count", {
   y: 150,
   width: 150,
   height: 100,
-  component: {
-    template: `<Count />`,
-    components: {
-      Count,
-    },
-  },
+  component: Count,
 });
 
 graph.addNode({
@@ -393,6 +392,34 @@ export default {
 
 [详细 demo](https://codesandbox.io/s/vue-shape-8ciig)
 
+**提升 Vue 节点挂载性能**
+
+当要挂载的 Vue 组件节点数量非常多时，挂载时长会比较长，此时可以通过 `@antv/x6-vue-shape` 提供的 `useTeleport`来提升节点的挂载性能（由于使用了vue3内置的Teleport组件，只在vue3可用）。具体做法为：
+
+```tsx
+import { useTeleport } from '@antv/x6-vue-shape'
+
+const UNIQ_GRAPH_ID = 'UNIQ_GRAPH_ID'
+
+const TeleportContainer = useTeleport(UNIQ_GRAPH_ID)
+
+graph.addNode({
+  id: "1",
+  shape: "my-count",
+  view: UNIQ_GRAPH_ID, // 需要指定 view 属性为定义的标识
+  x: 400,
+  y: 150,
+  width: 150,
+  height: 100,
+  data: {
+    num: 0,
+  },
+});
+
+{/* 在原有的 Vue 树中挂载 TeleportContainer */}
+<TeleportContainer />
+```
+
 [[warning]]
 | 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.JSON()`和`graph.fromJSON()` 方法正确导出和导入画布数据，因此我们提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
 
@@ -407,12 +434,7 @@ Graph.registerNode("my-count", {
   y: 150,
   width: 150,
   height: 100,
-  component: {
-    template: `<Count />`,
-    components: {
-      Count,
-    },
-  },
+  component: Count,
 });
 ```
 
@@ -433,16 +455,7 @@ graph.addNode({
 使用 `Graph.registerVueComponent(...)` 方法将 Vue 组件注册到系统中。
 
 ```ts
-Graph.registerVueComponent(
-  "count",
-  {
-    template: `<Count />`,
-    components: {
-      Count,
-    },
-  },
-  true
-);
+Graph.registerVueComponent("count", Count, true);
 ```
 
 然后将节点的 `component` 属性指定为注册的组件名。

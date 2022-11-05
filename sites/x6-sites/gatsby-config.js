@@ -97,6 +97,22 @@ module.exports = {
         },
         order: 2,
       },
+      {
+        slug: 'https://www.yuque.com/antv/x6/be9pfx',
+        title: {
+          zh: '常见问题',
+          en: 'Q&A',
+        },
+        order: 3,
+      },
+      {
+        slug: 'https://www.yuque.com/antv/x6/xgb04i',
+        title: {
+          zh: '更新日志',
+          en: 'Change Log',
+        },
+        order: 4,
+      },
     ],
     docs: [
       {
