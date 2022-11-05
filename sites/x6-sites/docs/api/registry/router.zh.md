@@ -169,13 +169,13 @@ graph.addEdge({
 | 参数名             | 参数类型                 | 是否必选 | 默认值                               | 参数说明                                                                                   |
 |--------------------|--------------------------|:-------:|--------------------------------------|----------------------------------------------------------------------------------------|
 | step               | number                   |    否    | `10`                                 | 路由算法步进步长，其值越小计算量越大。<br>推荐使用画布的网格大小（`graph.options.grid.size`）。 |
-| maximumLoops       | number                   |    否    | `2000`                               | 最大迭代次数，到达最大迭代次数后将使用候补路由。                                             |
-| maxDirectionChange | number                   |    否    | `90`                                 | 最大旋转角度。                                                                              |
 | excludeTerminals   | ('source' \| 'target')[] |    否    | `[]`                                 | 忽略起始或终止节点，忽略后不参与障碍物计算。                                                 |
 | excludeShapes      | string[]                 |    否    | `[]`                                 | 忽略指定形状的节点，忽略后不参与障碍物计算。                                               |
+| excludeNodes      | Node[]                 |    否    | `[]`                                 | 忽略的节点，忽略后不参与障碍物计算。                                               |
 | excludeHiddenNodes | boolean                  |    否    | `false`                              | 忽略隐藏的节点，忽略后不参与障碍物计算。                                               |
 | startDirections    | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向开始路由。                                                                    |
 | endDirections      | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向结束路由。                                                                    |
+| padding      | SideOptions                 |    否    | 20 | 设置锚点距离转角的最小距离，和 orth 路由配置一致。                                                                |
 
 例如：
 

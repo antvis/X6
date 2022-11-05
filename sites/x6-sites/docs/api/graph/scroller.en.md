@@ -145,6 +145,7 @@ interface {
   maxWidth?: number  // 画布最大宽度
   maxHeight?: number // 画布最大高度
   border?: number    // 距离画布边缘多少位置时触发自动扩展画布，例如设置为 `20` 表示当节点移动到距离画布边缘 `20px` 内时触发自动扩展画布。
+  direction?: ('top' | 'right' | 'bottom' | 'left') | ('top' | 'right' | 'bottom' | 'left')[] // 画布可扩展的方向，默认四个方向都可扩展
 }
 ```
 
@@ -388,14 +389,6 @@ disableAutoResize(): this
 ```
 
 关闭自动扩充/缩小画布
-
-### update()
-
-```sign
-update(): this
-```
-
-更新画布
 
 ### lockScroller()
 

@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-在[快速上手](/zh/docs/tutorialgetting-started)案例中，我们通过 JSON 数据来快速添加两个矩形节点和一条边到画布中，并简单介绍了如何定制节点样式。接下来我们将学习更多创建节点的方式，并了解创建节点的基础选项。
+在[快速上手](/zh/docs/tutorial/getting-started)案例中，我们通过 JSON 数据来快速添加两个矩形节点和一条边到画布中，并简单介绍了如何定制节点样式。接下来我们将学习更多创建节点的方式，并了解创建节点的基础选项。
 
 ## 创建节点
 
