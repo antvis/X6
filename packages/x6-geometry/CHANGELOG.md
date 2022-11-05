@@ -1,3 +1,15 @@
+## @antv/x6-geometry [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.1...@antv/x6-geometry@1.0.2) (2022-11-05)
+
+
+### chore
+
+* bump to 2.0 ([a02ca20](https://github.com/antvis/x6/commit/a02ca20f054d2eada7806f76b0abe5ae51fb18d1))
+
+
+### BREAKING CHANGES
+
+* bump to 2.0
+
 ## @antv/x6-geometry [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-geometry@1.0.0...@antv/x6-geometry@1.0.1) (2022-11-05)
 
 
