@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react-shape",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "X6 shape for rendering react components.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -38,12 +38,12 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "1.0.1",
+    "@antv/x6": "1.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@antv/x6": "1.0.1",
+    "@antv/x6": "1.1.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "react": "^18.0.0",
