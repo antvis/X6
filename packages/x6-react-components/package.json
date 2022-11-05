@@ -58,7 +58,7 @@
     "rc-dropdown": "^3.0.0-alpha.0",
     "rc-util": "^4.15.7",
     "react-color": "2.17.1",
-    "react-resize-detector": "^6.6.4",
+    "react-resize-detector": "^7.0.0",
     "ua-parser-js": "^0.7.20"
   },
   "devDependencies": {
@@ -67,7 +67,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "@types/react-color": "^3.0.1",
-    "@types/react-resize-detector": "^5.0.0",
+    "@types/react-resize-detector": "^6.0.0",
     "@types/ua-parser-js": "^0.7.33",
     "antd": "^4.4.2"
   },

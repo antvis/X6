@@ -305,6 +305,11 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
       const graphHeight = this.graph.options.height
       const pageWidth = this.options.pageWidth! * this.sx
       const pageHeight = this.options.pageHeight! * this.sy
+
+      if (pageWidth === 0 || pageHeight === 0) {
+        return
+      }
+
       if (graphWidth > pageWidth || graphHeight > pageHeight) {
         let hasPageBreak = false
         const container = document.createElement('div')
@@ -1140,15 +1145,11 @@ export namespace ScrollerImpl {
       | NumberExt.SideOptions
       | ((this: ScrollerImpl, scroller: ScrollerImpl) => NumberExt.SideOptions)
     autoResizeOptions?:
-      | (TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
-        })
+      | TransformManager.FitToContentFullOptions
       | ((
           this: ScrollerImpl,
           scroller: ScrollerImpl,
-        ) => TransformManager.FitToContentFullOptions & {
-          direction: AutoResizeDirection | AutoResizeDirection[]
-        })
+        ) => TransformManager.FitToContentFullOptions)
   }
 
   export interface Options extends CommonOptions {
