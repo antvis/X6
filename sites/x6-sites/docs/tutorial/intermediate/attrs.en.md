@@ -7,21 +7,21 @@ redirect_from:
   - /en/docs/tutorial/intermediate
 ---
 
-在之前教程中我们介绍了[如何通过 `attrs` 定制样式](/en/docs/tutorial/basic/cell#attrs-1)，同时在[使用箭头教程](/en/docs/tutorial/basic/edge#使用箭头-marker)中看到了 `sourceMarker` 和 `targetMarker` 两个特殊属性的强大作用，并了解到 `attrs` 在[节点样式](/en/docs/tutorial/basic/node#定制样式-attrs)、[边样式](/en/docs/tutorial/basic/edge#定制样式-attrs)、[标签样式](/en/docs/tutorial/intermediate/edge-labels#标签样式)等多处被广泛使用，所以有必要对属性相关概念作更详细的介绍。
+In the previous tutorial we introduced [How to customize styles with `attrs`](/en/docs/tutorial/basic/cell#attrs-1), and also saw in [Using arrows tutorial](/en/docs/tutorial/basic/edge#Using arrow-marker) the power of `sourceMarker` and `targetMarker` special attributes in [Node styles](/en/docs/tutorial/basic/cell#attrs-1). sourceMarker `and` `targetMarker`, and learned about the power of `attrs` in [node style](/en/docs/tutorial/basic/node#custom-style-attrs), [edge-style](/en/docs/tutorial/basic/ edge#custom styles-attrs), [label styles](/en/docs/tutorial/intermediate/edge-labels#label styles), and many other places are widely used, so it is necessary to introduce attribute-related concepts in more detail.
 
-对于原生 SVG 属性，网上有很多教程可以参考，例如 MDN 提供的 [SVG 属性参考](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute)，这里我们将更多聚焦到如何定义和使用特殊属性。特殊属性提供了比[原生 SVG 属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute)更加灵活和强大的功能，在应用属性时，原生属性被直接传递给对应的元素，特殊属性则被进一步加工处理，转换为浏览器认识的原生属性后，再传递给对应的元素。
+For native SVG attributes, there are many tutorials available online, such as the [SVG Attribute Reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) provided by MDN, but here we will focus more on how to define and use special attributes. Special attributes provide more flexibility and power than [native SVG attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute). When applying attributes, native attributes are passed directly to the corresponding element, while special attributes are further processed and converted to native attributes recognized by the browser and then passed to the corresponding element.
 
-## 相对大小和相对位置
+## Relative size and relative position
 
-在定制节点或边时，设置元素的相对大小是一个非常常见需求，我们在 X6 中提供了一系列以 `ref` 为前缀特殊属性，可以通过这些属性来为元素设置相对大小，同时这些属性的计算都是基于节点/边的数据大小，也就是说所有计算都不依赖浏览器的 bbox 计算，所以不存在任何性能问题。
+Setting the relative size of an element is a very common requirement when customizing nodes or edges. We provide a series of special attributes prefixed with `ref` in X6, which can be used to set the relative size of an element, and the calculation of these attributes is based on the data size of the node/edge, which means that all calculations do not rely on the browser's bbox calculation, so there is no performance problem.
 
-- [`refWidth`](/en/docs/api/registry/attr#refwidth) 和 [`refHeight`](/en/docs/api/registry/attr#refheight) 元素大小。
-- [`refX`](/en/docs/api/registry/attr#refx) 和 [`refY`](/en/docs/api/registry/attr#refy) 元素位置。
-- [`refCx`](/en/docs/api/registry/attr#refcx) 和 [`refCy`](/en/docs/api/registry/attr#refcy) 椭圆 `<ellipse>` 和圆 `<circle>` 中心位置。
-- [`refRx`](/en/docs/api/registry/attr#refrx) 和 [`refRy`](/en/docs/api/registry/attr#refry) 椭圆 `<ellipse>` 半径。
-- [`refR`](/en/docs/api/registry/attr#refr) 圆 `<circle>` 半径。
+- [`refWidth`](/en/docs/api/registry/attr#refwidth) and [`refHeight`](/en/docs/api/registry/attr#refheight) Element size.
+- [`refX`](/en/docs/api/registry/attr#refx) and [`refY`](/en/docs/api/registry/attr#refy) Element position.
+- [`refCx`](/en/docs/api/registry/attr#refcx) and [`refCy`](/en/docs/api/registry/attr#refcy) Oval `<ellipse>` and round `<circle>` Center position.
+- [`refRx`](/en/docs/api/registry/attr#refrx) and [`refRy`](/en/docs/api/registry/attr#refry) Oval `<ellipse>` Radius.
+- [`refR`](/en/docs/api/registry/attr#refr) Round `<circle>` Radius.
 
-接下来我们一起来看看如何使用这些相对属性。下面案例中，我们定一个红色椭圆 `e`、一个绿色矩形 `r`、和蓝色圆形 `c` 和一个表示节点大小的矩形 `outline`。
+Let's take a look at how to use these relative properties. In the following case, we have a red ellipse `e`, a green rectangle `r`, and a blue circle `c` and a rectangle indicating the size of the node `outline`.
 
 ```ts
 graph.addNode({
@@ -32,25 +32,25 @@ graph.addNode({
   height: 120,
   attrs: {
     e: {
-      refRx: '50%', // 椭圆 x 轴半径为宽度的一半
-      refRy: '25%', // 椭圆 y 轴半径为高度的 1/4
-      refCx: '50%', // 椭圆中心 x 坐标为宽度一半，即位于节点宽度的中心
-      refCy: 0,     // 椭圆中心 y 坐标为 0
-      refX: '-50%', // 向左偏移宽度一半
-      refY: '25%',  // 向下偏移高度的 1/4
+      refRx: '50%', // the radius of the ellipse's x-axis is half of the width
+      refRy: '25%', // the radius of the y-axis of the ellipse is 1/4 of the height
+      refCx: '50%', // the center x coordinate of the ellipse is half of the width, i.e. at the center of the node width
+      refCy: 0, // the y-coordinate of the center of the ellipse is 0
+      refX: '-50%', // shift left by half the width
+      refY: '25%', // offset down by 1/4 of the height
     },
     r: {
-      refX: '100%',     // 矩形 x 轴坐标位于节点右下角
-      refY: '100%',     // 矩形 y 轴坐标位于节点右下角
-      refWidth: '50%',  // 矩形宽度为节点宽的一半
-      refHeight: '50%', // 矩形高度为节点高度的一半
-      x: -10,           // 向左偏移 10px
-      y: -10,           // 向上偏移 10px
+      refX: '100%', // the x-axis of the rectangle is located at the bottom right corner of the node
+      refY: '100%', // the y-axis of the rectangle is at the bottom-right corner of the node
+      refWidth: '50%', // the width of the rectangle is half of the node width
+      refHeight: '50%', // the height of the rectangle is half of the node's height
+      x: -10, // shift 10px to the left
+      y: -10, // offset up by 10px
     },
     c: {
-      refRCircumscribed: '50%', // 圆半径为节点宽度/高度中较大的那个值的一半
-      refCx: '50%', // 圆中心 x 坐标位于节点中心
-      refCy: '50%', // 圆中心 y 坐标位于节点中心
+      refRCircumscribed: '50%', // the radius of the circle is half of the larger of the node's width/height
+      refCx: '50%', // center of circle x-coordinate is at the center of the node
+      refCy: '50%', // the center of the circle y-coordinate is at the center of the node
     },
   },
 })
@@ -58,12 +58,12 @@ graph.addNode({
 
 <iframe src="/demos/tutorial/intermediate/attrs/ref-node"></iframe>
 
-## 相对子元素
+## Relative child elements
 
-上面这些属性默认相对于节点的大小进行计算，另外我们可以通过 `ref` 属性来提供一个子元素选择器，这时所有的计算都相对于 `ref` 指代的元素，从而实现相对于子元素的大小和位置。
+These attributes above are calculated relative to the size of the node by default, in addition we can provide a child element selector via the `ref` attribute, where all calculations are relative to the element referred to by `ref`, thus achieving size and position relative to the child element.
 
 [[warning]]
-| 需要注意的是，设置 `ref` 后，所有计算都依赖子元素在浏览器中的 bbox 测量，所以性能会比相对于节点的方式要慢。
+| Note that with `ref` set, all calculations rely on the child element's bbox measurement in the browser, so performance will be slower than the relative-to-node approach.
 
 ```ts
 graph.addNode({
@@ -104,15 +104,15 @@ graph.addNode({
 
 <iframe src="/demos/tutorial/intermediate/attrs/ref-elem"></iframe>
 
-## 沿边长度的相对位置
+## Relative position along the length of the edge
 
-我们提供了下面几个属性来设置边以及相对于边的位置。
+We provide the following properties to set the edge and its position relative to the edge.
 
-- [`connection`](/en/docs/api/registry/attr#connection) 仅适用于边的 `<path>` 元素，当该属性为 `true` 时，表示将在该元素上渲染边。
-- [`atConnectionLength`](/en/docs/api/registry/attr#atconnectionlengthkeepgradient) 是 [`atConnectionLengthKeepGradient`](/en/docs/api/registry/attr#atconnectionlengthkeepgradient) 属性的简称，表示将指定元素移动到指定的偏移量的位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
-- [`atConnectionRatio`](/en/docs/api/registry/attr#atconnectionratiokeepgradient) 是 [`atConnectionRatioKeepGradient`](/en/docs/api/registry/attr#atconnectionratiokeepgradient) 属性的简称，表示将指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
-- [`atConnectionLengthIgnoreGradient`](/en/docs/api/registry/attr#atconnectionlengthignoregradient) 将指定元素移动到指定偏移量的位置处，忽略边的斜率，即不会跟随边自动旋转。
-- [`atConnectionRatioIgnoreGradient`](/en/docs/api/registry/attr#atconnectionratioignoregradient)，将指定元素移动到指定比例 `[0, 1]` 位置处，忽略边的斜率，即不会跟随边自动旋转。
+- [`connection`](/en/docs/api/registry/attr#connection) is only applicable to the `<path>` element of the edge, when this attribute is `true`, it means the edge will be rendered on that element.
+- [`atConnectionLength`](/en/docs/api/registry/attr#atconnectionlengthkeepgradient) is [`atConnectionLengthKeepGradient`](/en/docs/api/registry/attr#atconnectionlengthkeepgradient) attribute, which indicates that the specified element is moved to the position of the specified offset and the element is automatically rotated so that its direction is consistent with the slope of the edge at its location.
+- [`atConnectionRatio`](/en/docs/api/registry/attr#atconnectionratiokeepgradient) is [`atConnectionRatioKeepGradient`](/en/docs/api/registry/attr#atconnectionratiokeepgradient) attribute, which means that the specified element will be moved to the specified scale `[0, 1]` position and automatically rotated so that its direction is consistent with the slope of the edge where it is located.
+- [`atConnectionLengthIgnoreGradient`](/en/docs/api/registry/attr#atconnectionlengthignoregradient) Moves the specified element to the position with the specified offset, ignoring the slope of the edge, i.e. it will not follow the edge Auto-rotate.
+- [`atConnectionRatioIgnoreGradient`](/en/docs/api/registry/attr#atconnectionratioignoregradient) Move the specified element to the position with the specified ratio `[0, 1]`, ignoring the slope of the edge, i.e. it will not follow the automatic rotation of the edge.
 
 ```ts
 graph.addEdge({
@@ -122,10 +122,10 @@ graph.addEdge({
   vertices: [{ x: 300, y: 160 }],
   attrs: {
     symbol: {
-      atConnectionRatio: 0.75, // 沿边长度方向，距离起点 75% 位置处
+      atConnectionRatio: 0.75, // along the length of the edge, at 75% from the starting point
     },
     arrowhead: {
-      atConnectionLength: 100, // 沿边长度方向，距离起点 100px 位置处
+      atConnectionLength: 100, // Along the length of the edge, at 100px from the starting point
     },
   },
 })
@@ -203,6 +203,6 @@ graph.addEdge({
 
 <iframe src="/demos/tutorial/intermediate/attrs/edge-subelement-labels"></iframe>
 
-## 使用箭头
+## Using arrows
 
-我们可以使用 [`sourceMarker`](/en/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/en/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](/en/docs/tutorial/intermediate/marker)。
+We can use [`sourceMarker`](/en/docs/api/registry/attr#sourcemarker) and [`targetMarker`](/en/docs/api/registry/attr#targetmarker) two special attributes to Specify start arrow and end arrow, please refer to [this tutorial](/en/docs/tutorial/intermediate/marker) for details.

@@ -383,7 +383,7 @@ const edge = graph.addEdge({
 
 ### zIndex
 
-节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。节点/边渲染到画布后可以通过 `cell.getZIndex()` 和 `cell.setZIndex(z: number)` 来获取或设置 `zIndex` 的值，也可以调用 `cell.toFront()` 和 `cell.toBack()` 来将其移到最顶层或对底层。
+节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。节点/边渲染到画布后可以通过 `cell.getZIndex()` 和 `cell.setZIndex(z: number)` 来获取或设置 `zIndex` 的值，也可以调用 `cell.toFront()` 和 `cell.toBack()` 来将其移到最顶层或最底层。
 
 ### visible
 
@@ -2728,6 +2728,11 @@ addTools(
   items: Cell.ToolItem | Cell.ToolItem[],
   options?: Cell.AddToolOptions,
 ): this
+addTools(
+  items: Cell.ToolItem | Cell.ToolItem[],
+  name: string,
+  options?: Cell.AddToolOptions,
+): this
 ```
 
 添加小工具。
@@ -2737,6 +2742,7 @@ addTools(
 | 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                   |
 |------------------|----------------------------------|:----:|---------|----------------------------------------------------------------------------------------------------------------------|
 | items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具。                 |
+| name             | string                           |      | `null`  | 定义该组工具的别称，可以作为`hasTools(name)`的参数                       |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                 |
 | options.local    | boolean                          |      | `false` | 工具是否渲染到节点/边的容器中，默认为 `false`，所有工具会渲染在 `x6-graph-svg-decorator` 下面，只有在 `options.reset` 为 `true` 为时生效                                                                            |
 | options.silent   | boolean                          |      | `false` | 为 `true` 时不触发 `'change:tools'` 事件和小工具重绘。                                                              |

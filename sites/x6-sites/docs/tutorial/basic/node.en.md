@@ -7,33 +7,33 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-在[快速上手](/en/docs/tutorial/getting-started)案例中，我们通过 JSON 数据来快速添加两个矩形节点和一条边到画布中，并简单介绍了如何定制节点样式。接下来我们将学习更多创建节点的方式，并了解创建节点的基础选项。
+In the [Quick Start](/en/docs/tutorial/getting-started) case, we quickly added two rectangular nodes and an edge to the canvas using JSON data, and briefly described how to customize the node style. Next we'll learn more about how to create nodes and understand the basic options for creating nodes.
 
-## 创建节点
+## Create Node
 
-### 选项
+### Options
 
-节点都有共同的基类 [Cell](/en/docs/tutorial/basic/cell)，除了[从 Cell 继承的选项](/en/docs/tutorial/basic/cell#基础选项)外，还支持以下选项。
+Nodes all have a common base class [Cell](/en/docs/tutorial/basic/cell), which supports the following options in addition to [options inherited from Cell](/en/docs/tutorial/basic/cell#basic options).
 
-| 属性名 | 类型   | 默认值 | 描述                         |
+| Property Name | Type | Default | Description                         |
 |--------|--------|--------|----------------------------|
-| x      | Number | 0      | 节点位置 x 坐标，单位为 'px'。 |
-| y      | Number | 0      | 节点位置 y 坐标，单位为 'px'。 |
-| width  | Number | 1      | 节点宽度，单位为 'px'。        |
-| height | Number | 1      | 节点高度，单位为 'px'。        |
-| angle  | Number | 0      | 节点旋转角度。                |
+| x      | Number | 0      | The node position x-coordinate in 'px'. |
+| y      | Number | 0      | The y-coordinate of the node position in 'px'.。 |
+| width  | Number | 1      | The width of the node in 'px'.。        |
+| height | Number | 1      | The width of the node in 'px'.        |
+| angle  | Number | 0      |The node rotation angle.                |
 
-接下来我们就一起来看看，如何使用这些选项来创建节点。
+Next, let's take a look at how to use these options to create nodes.
 
-### 方式一：构造函数
+### Way 1: Constructor
 
 
-我们在 X6 的 `Shape` 命名空间中内置了一些基础节点，如 `Rect`、`Circle`、`Ellipse` 等，可以使用这些节点的构造函数来创建节点。
+We have some built-in base nodes in the `Shape` namespace of X6, such as `Rect`, `Circle`, `Ellipse`, etc. You can use the constructors of these nodes to create nodes.
 
 ```ts
 import { Shape } from '@antv/x6'
 
-// 创建节点
+// Create a node
 const rect = new Shape.Rect({
   x: 100,
   y: 200,
@@ -51,25 +51,25 @@ const rect = new Shape.Rect({
   },
 })
 
-// 添加到画布
+// Add to canvas
 graph.addNode(rect)
 ```
 
-这里我们创建了一个矩形节点，分别通过 `x` 和 `y` 选项指定了节点的位置，通过 `width` 和 `height` 选项指定了节点的大小，通过 `angle` 指定了节点的旋转角度，通过 `attrs` 选项指定了[节点样式](#节点样式)，然后通过 `graph.addNode` 方法将节点添加到画布，节点添加到画布后将触发画布重新渲染，最后节点被渲染到画布中。
+Here we create a rectangle node, specify the position of the node by `x` and `y` options, the size of the node by `width` and `height` options, the rotation angle of the node by `angle`, and the [node style](#node style) by `attrs` option, then add the node to the canvas by `graph. addNode` method to add the node to the canvas, the node will trigger the canvas re-rendering after it is added to the canvas, and finally the node is rendered to the canvas.
 
-我们也可以先创建节点，然后调用节点提供的方法来设置节点的大小、位置、旋转角度、样式等。
+We can also create the node first, and then call the methods provided by the node to set the size, position, rotation angle, style, etc. of the node.
 
 ```ts
 const rect = new Shape.Rect()
 
 rect
-  // 设置节点位置
+  // Set the node position
   .position(100, 200)
-  // 设置节点大小
+  // Set the node size
   .resize(80, 40)
-  // 旋转节点
+  // Rotate the node
   .rotate(30)
-  // 设置节点样式
+  // Set the node style
   .attr({
     body: {
       fill: 'blue',
@@ -80,17 +80,17 @@ rect
     },
   })
 
-// 添加到画布
+// Add to canvas
 graph.addNode(rect)
 ```
 
-### 方式二：graph.addNode
+### Way 2: graph.addNode
 
-另外，我们还可以使用 `graph.addNode` 方法来创建节点并添加节点到画布，**推荐大家使用这个便利的方法**。
+Alternatively, we can use the `graph.addNode` method to create nodes and add them to the canvas, **this handy method is recommended**.
 
 ```ts
 const rect = graph.addNode({
-  shape: 'rect', // 指定使用何种图形，默认值为 'rect'
+  shape: 'rect', // Specify which graph to use, the default value is 'rect'
   x: 100,
   y: 200,
   width: 80,
@@ -108,13 +108,13 @@ const rect = graph.addNode({
 })
 ```
 
-这里的关键是使用 `shape` 来指定节点图形，默认值为 `'rect'`，其他选项与使用节点构造函数创建节点的选项一致。在 X6 内部，我们通过 `shape` 指定的图形找到对应的构造函数来初始化节点，并将其添加到画布。内置节点构造函数与 `shape` 名称对应关系[参考此表](/en/docs/tutorial/basic/cell#内置节点)。除了使用[内置节点](/en/docs/tutorial/basic/cell#内置节点)，我们还可以使用注册的自定义节点，详情请参考[自定义节点](/en/docs/tutorial/intermediate/custom-node)教程。
+The key here is to use `shape` to specify the node graph, with a default value of `'rect'` and other options consistent with those for creating nodes using the node constructor. Internally in X6, we use the shape specified by `shape` to find the corresponding constructor to initialize the node and add it to the canvas. The built-in node constructors correspond to the `shape` names [refer to this table](/en/docs/tutorial/basic/cell#built-in nodes). In addition to using [built-in-node](/en/docs/tutorial/basic/cell#built-in-node), we can also use registered custom nodes, please refer to [custom-node](/en/docs/tutorial/intermediate/custom-node) tutorial for details.
 
-## 定制样式 Attrs
+## Custom Style Attrs
 
-我们在之前的教程中介绍了[如何通过 attrs 选项来定制样式](/en/docs/tutorial/basic/cell#attrs-1)，并且简单学习了如何通过[选项默认值](/en/docs/tutorial/basic/cell#选项默认值)和[自定义选项](/en/docs/tutorial/basic/cell#自定义选项)来定制节点，请结合这几个教程学习如何定制节点样式。
+We introduced [How to customize style by attrs option](/en/docs/tutorial/basic/cell#attrs-1) in the previous tutorial, and briefly learned how to customize style by [option default](/en/docs/tutorial/basic/cell#option default) and [custom option ](/en/docs/tutorial/basic/cell#custom options) to customize nodes, please combine these tutorials to learn how to customize node styles.
 
-例如 `Shape.Rect` 节点定义了 `'body'`（代表 `<rect>` 元素）和 `'label'`（代表 `<text>` 元素）两个选择器。我们在创建矩形节点时可以像下面这样定义节点样式。
+For example, the `Shape.Rect` node defines two selectors `'body'` (representing the `<rect>` element) and `'label'` (representing the `<text>` element). We can define the node style like the following when creating a rectangular node.
 
 ```ts
 const rect = new Shape.Rect({
@@ -124,13 +124,13 @@ const rect = new Shape.Rect({
   height: 40,
   attrs: { 
     body: {
-      fill: '#2ECC71', // 背景颜色
-      stroke: '#000',  // 边框颜色
+      fill: '#2ECC71', // Background color
+      stroke: '#000',  // Border color
     },
     label: {
-      text: 'rect',    // 文本
-      fill: '#333',    // 文字颜色
-      fontSize: 13,    // 文字大小
+      text: 'rect',    // Text
+      fill: '#333',    // Text color
+      fontSize: 13,    // Text size
     },
   },
 })

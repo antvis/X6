@@ -1,7 +1,7 @@
 import { Graph, Node } from '@antv/x6'
 
 class Group extends Node {
-  private collapsed: boolean = false
+  private collapsed = false
   private expandSize: { width: number; height: number }
 
   protected postprocess() {
@@ -88,7 +88,7 @@ Group.config({
       stroke: '#808080',
     },
     label: {
-      fontSzie: 12,
+      fontSize: 12,
       fill: '#fff',
       refX: 32,
       refY: 10,

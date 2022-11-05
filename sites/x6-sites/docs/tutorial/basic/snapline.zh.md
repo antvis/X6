@@ -43,7 +43,7 @@ if (graph.isSnaplineEnabled()) {
 interface SnaplineOptions {
   className?: string
   tolerance?: number
-  sharp?: boolean
+  // sharp?: boolean （废弃）
   resizing?: boolean
   clean?: boolean
   filter?: (string | { id: string })[] | ((this: Graph, node: Node) => boolean)
@@ -242,7 +242,7 @@ disableSharpSnapline(): this
 
 禁用短款对齐线，对齐线将贯穿整个画布。
 
-### graph.toggleSharpSnapline(...)
+### graph.toggleSharpSnapline()
 
 ```sign
 toggleSharpSnapline(enabled?: boolean): this
