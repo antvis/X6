@@ -15,9 +15,9 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@antv/layout": "^0.1.9",
-    "@antv/x6": "^1.30.2",
-    "@antv/x6-react-components": "^1.1.16",
-    "@antv/x6-react-shape": "^1.6.0",
+    "@antv/x6": "latest",
+    "@antv/x6-react-components": "latest",
+    "@antv/x6-react-shape": "latest",
     "@antv/x6-sites-demos-helper": "^1.2.2",
     "@types/d3-sankey": "^0.11.1",
     "@types/highlight.js": "^9.12.4",

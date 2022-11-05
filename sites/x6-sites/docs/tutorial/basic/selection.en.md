@@ -58,7 +58,9 @@ interface SelectionOptions {
   rubberEdge?: boolean
   strict?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+  multipleSelectionModifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   movable?: boolean
+  following?: boolean
   content?:
     | null
     | false
@@ -73,6 +75,10 @@ interface SelectionOptions {
     | string[]
     | ({ id: string })[]
     | ((this: Graph, cell: Cell) => boolean)
+  showEdgeSelectionBox?: boolean
+  showNodeSelectionBox?: boolean
+  useCellGeometry?: boolean
+  pointerEvents?: 'none' | 'auto'
 }
 ```
 
@@ -91,11 +97,21 @@ const graph = new Graph({
 
 ### multiple
 
-是否启用点击多选，默认为 `true`。启用多选后按住 `ctrl` 或 `command` 键点击节点实现多选。
+是否启用点击多选，默认为 `true`。启用多选后默认按住 `ctrl` 或 `command` 键点击节点实现多选。和 `multipleSelectionModifiers` 配合使用。
+
+### multipleSelectionModifiers
+
+修饰键(`'alt'`、`'ctrl'`、`'meta'`、`'shift'`)，设置修饰键后需按下修饰键才能触发点选多选。默认值是 `['ctrl', 'meta']`。
+
+支持配置单个（如 `'alt'`）或多个（如 `['alt', 'ctrl']`）修饰键，通过数组形式配置的多个修饰键是*或关系*，比如刚刚配置的修饰键表示按下 `'alt'` 或 `'ctrl'`，如果需要更加灵活的配置，可以使用如下这些形式：
+
+- `'alt|ctrl'` 表示按下 `'alt'` 或 `'ctrl'`。
+- `'alt&ctrl'` 表示同时按下 `'alt'` 和 `'ctrl'`。
+- `'alt|ctrl&shift'` 表示同时按下 `'alt'` 和 `'shift'` 或者同时按下 `'ctrl'` 和 `'shift'`。
 
 ### rubberband
 
-是否启用框选，默认为 `false`。是否启用框选，默认为 `false`。开启框选时，默认只能框选节点，如果需要自定义框选节点或者边，可以配置 `rubberNode` 和 `rubberEdge` 属性。
+是否启用框选，默认为 `false`。开启框选时，默认只能框选节点，如果需要自定义框选节点或者边，可以配置 `rubberNode` 和 `rubberEdge` 属性。
 
 ```ts
 const graph = new Graph({
@@ -180,6 +196,12 @@ const graph = new Graph({
 ### showEdgeSelectionBox
 
 是否显示边的选择框，默认为 `false`，建议使用下面的样式定制方法去定制自己的选择框样式。
+
+### useCellGeometry
+是否使用几何计算的方式计算节点包围盒，默认为 `false`，如果设置为 `true`，`selectionBox` 只会包含节点本身(不会包含连接桩)。
+
+### pointerEvents
+如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto`。
 
 ## 样式定制
 
