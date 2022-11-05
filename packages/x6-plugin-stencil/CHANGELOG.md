@@ -1,3 +1,14 @@
+## @antv/x6-plugin-stencil [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-stencil@1.0.1...@antv/x6-plugin-stencil@1.0.2) (2022-11-05)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.0
+* **@antv/x6-plugin-dnd:** upgraded to 1.0.2
+
 ## @antv/x6-plugin-stencil [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-stencil@1.0.0...@antv/x6-plugin-stencil@1.0.1) (2022-11-05)
 
 
