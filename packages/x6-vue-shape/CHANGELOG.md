@@ -1,3 +1,18 @@
+# @antv/x6-vue-shape [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.1...@antv/x6-vue-shape@1.1.0) (2022-11-05)
+
+
+### Features
+
+* sync some commit from v1 ([#2851](https://github.com/antvis/x6/issues/2851)) ([a772025](https://github.com/antvis/x6/commit/a7720251ff42f2892bff9c3cd5159932322362b1))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.0
+
 ## @antv/x6-vue-shape [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.0...@antv/x6-vue-shape@1.0.1) (2022-11-05)
 
 
