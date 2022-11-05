@@ -9,7 +9,6 @@ on:
       - next-major
       - alpha
       - beta
-      - v1
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -45,8 +44,8 @@ jobs:
       - name: 🚧　Install dependencies
         run: pnpm install --no-frozen-lockfile --ignore-scripts
 
-      # - name: 📦　build
-      #   run: pnpm run build
+      - name: 📦　build
+        run: pnpm run build
 
       # - name: ✅　Test
       #   run: pnpm run test
@@ -68,13 +67,6 @@ jobs:
           GIT_AUTHOR_EMAIL: x6-bot@users.noreply.github.com
           GIT_COMMITTER_NAME: x6-bot
           GIT_COMMITTER_EMAIL: x6-bot@users.noreply.github.com
-
-      # - uses: actions/github-script@v6
-      #   with:
-      #     github-token: ${{ env.bot_token }}
-      #     script: |
-      #       const action = require('./scripts/finalize-release.js')
-      #       return await action({github, context, core})
 
       - name: 🔀　Repository Dispatch
         if: github.ref == 'refs/heads/master'
