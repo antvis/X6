@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import ResizeDetector from 'react-resize-detector'
 import { ScrollBox } from '../scroll-box'
 
 export class AutoScrollBox extends React.PureComponent<
-  AutoScrollBox.Props,
+  PropsWithChildren<AutoScrollBox.Props>,
   AutoScrollBox.State
 > {
   constructor(props: AutoScrollBox.Props) {

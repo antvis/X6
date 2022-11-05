@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Dropdown } from '../dropdown'
 
-export class ContextMenu extends React.PureComponent<ContextMenu.Props> {
+export class ContextMenu extends React.PureComponent<
+  PropsWithChildren<ContextMenu.Props>
+> {
   render() {
     const { children, menu, overlay, ...props } = this.props
     return (

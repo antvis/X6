@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import clamp from 'clamp'
 import classNames from 'classnames'
 import { debounce } from '../util'
@@ -8,7 +8,7 @@ import { MouseMoveTracker } from '../util/dom/MouseMoveTracker'
 import { Scrollbar } from '../scrollbar'
 
 export class ScrollBox extends React.PureComponent<
-  ScrollBox.Props,
+  PropsWithChildren<ScrollBox.Props>,
   ScrollBox.State
 > {
   private containerElem: HTMLDivElement

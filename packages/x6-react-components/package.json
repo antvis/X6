@@ -49,8 +49,8 @@
   ],
   "peerDependencies": {
     "antd": ">=4.4.2",
-    "react": ">=16.8.6 || >=17.0.0",
-    "react-dom": ">=16.8.6 || >=17.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
     "clamp": "^1.0.1",
@@ -62,13 +62,14 @@
     "ua-parser-js": "^0.7.20"
   },
   "devDependencies": {
-    "@types/react": "^16.9.13",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "@types/react-color": "^3.0.1",
     "@types/react-resize-detector": "^5.0.0",
     "@types/ua-parser-js": "^0.7.33",
-    "antd": "^4.4.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "antd": "^4.4.2"
   },
   "author": {
     "name": "bubkoo",
