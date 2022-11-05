@@ -38,7 +38,7 @@
     "pretest": "rss"
   },
   "dependencies": {
-    "vue-demi": "^0.7.4"
+    "vue-demi": "latest"
   },
   "peerDependenciesMeta": {
     "@vue/composition-api": {

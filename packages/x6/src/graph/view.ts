@@ -133,13 +133,27 @@ export class GraphView extends View {
     }
   }
 
+  protected isPreventDefaultContextMenu(view: CellView | null) {
+    let preventDefaultContextMenu = this.options.preventDefaultContextMenu
+    if (typeof preventDefaultContextMenu === 'function') {
+      preventDefaultContextMenu = FunctionExt.call(
+        preventDefaultContextMenu,
+        this.graph,
+        { view },
+      )
+    }
+
+    return preventDefaultContextMenu
+  }
+
   protected onContextMenu(evt: Dom.ContextMenuEvent) {
-    if (this.options.preventDefaultContextMenu) {
+    const e = this.normalizeEvent(evt)
+    const view = this.findView(e.target)
+    
+    if (this.isPreventDefaultContextMenu(view)) {
       evt.preventDefault()
     }
 
-    const e = this.normalizeEvent(evt)
-    const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
     }
@@ -195,7 +209,10 @@ export class GraphView extends View {
     if (view) {
       view.onMouseDown(e, localPoint.x, localPoint.y)
     } else {
-      if (this.options.preventDefaultBlankAction) {
+      if (
+        this.options.preventDefaultBlankAction &&
+        ['touchstart'].includes(e.type)
+      ) {
         e.preventDefault()
       }
 
@@ -460,9 +477,11 @@ export class GraphView extends View {
   }
 
   protected onMagnetContextMenu(e: Dom.ContextMenuEvent) {
-    if (this.options.preventDefaultContextMenu) {
+    const view = this.findView(e.target)
+    if (this.isPreventDefaultContextMenu(view)) {
       e.preventDefault()
     }
+
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
       view.onMagnetContextMenu(e, magnet, x, y)
     })

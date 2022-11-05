@@ -1,4 +1,4 @@
-import { NodeView } from '@antv/x6'
+import { NodeView, Dom } from '@antv/x6'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 import { VueShape } from './node'
 import { shapeMaps } from './registry'
@@ -69,6 +69,30 @@ export class VueShapeView extends NodeView<VueShape> {
     }
     root.innerHTML = ''
     return root
+  }
+
+  onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
+    const target = e.target as Element
+    const tagName = target.tagName.toLowerCase()
+    if (tagName === 'input') {
+      const type = target.getAttribute('type')
+      if (
+        type == null ||
+        [
+          'text',
+          'password',
+          'number',
+          'email',
+          'search',
+          'tel',
+          'url',
+        ].includes(type)
+      ) {
+        return
+      }
+    }
+
+    super.onMouseDown(e, x, y)
   }
 
   unmount() {

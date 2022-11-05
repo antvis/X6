@@ -113,27 +113,14 @@ export class MouseWheel extends Base {
       targetScale = NumberExt.clamp(targetScale, minScale, maxScale)
 
       if (targetScale !== currentScale) {
-        const scroller = this.graph.getPlugin<any>('scroller')
-        if (scroller) {
-          if (this.widgetOptions.zoomAtMousePosition) {
-            const origin = this.graph.coord.clientToLocalPoint(this.startPos)
-            scroller.zoom(targetScale, {
-              absolute: true,
-              center: origin.clone(),
-            })
-          } else {
-            scroller.zoom(targetScale, { absolute: true })
-          }
+        if (this.widgetOptions.zoomAtMousePosition) {
+          const origin = this.graph.coord.clientToLocalPoint(this.startPos)
+          this.graph.zoom(targetScale, {
+            absolute: true,
+            center: origin.clone(),
+          })
         } else {
-          if (this.widgetOptions.zoomAtMousePosition) {
-            const origin = this.graph.coord.clientToGraphPoint(this.startPos)
-            this.graph.zoom(targetScale, {
-              absolute: true,
-              center: origin.clone(),
-            })
-          } else {
-            this.graph.zoom(targetScale, { absolute: true })
-          }
+          this.graph.zoom(targetScale, { absolute: true })
         }
       }
       this.currentScale = null
