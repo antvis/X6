@@ -294,6 +294,11 @@ export class NodeView<
       portContentElement,
     )
 
+    let portClass = 'x6-port'
+    if (port.group) {
+      portClass += ` x6-port-${port.group}`
+    }
+    Dom.addClass(portElement, portClass)
     Dom.addClass(portElement, 'x6-port')
     Dom.addClass(portContentElement, 'x6-port-body')
     portElement.appendChild(portContentElement)
@@ -655,8 +660,17 @@ export class NodeView<
 
     // Picks the node with the highest `z` index
     if (options.frontOnly) {
-      candidates = candidates.slice(-1)
+      if (candidates.length > 0) {
+        const zIndexMap = ArrayExt.groupBy(candidates, 'zIndex')
+        const maxZIndex = ArrayExt.max(Object.keys(zIndexMap))
+        if (maxZIndex) {
+          candidates = zIndexMap[maxZIndex]
+        }
+      }
     }
+
+    // Filter the nodes which is invisiable
+    candidates = candidates.filter((candidate) => candidate.visible)
 
     let newCandidateView = null
     const prevCandidateView = data.candidateEmbedView
@@ -713,6 +727,7 @@ export class NodeView<
   }
 
   finalizeEmbedding(e: Dom.MouseUpEvent, data: EventData.MovingTargetNode) {
+    this.graph.startBatch('embedding')
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const view = graph.findViewByCell(cell)
@@ -733,9 +748,8 @@ export class NodeView<
       edge.updateParent({ ui: true })
     })
 
-    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
-
-    if (view) {
+    if (view && candidateView) {
+      const localPoint = graph.snapToGrid(e.clientX, e.clientY)
       view.notify('node:embedded', {
         e,
         cell,
@@ -747,6 +761,8 @@ export class NodeView<
         currentParent: cell.getParent(),
       })
     }
+
+    this.graph.stopBatch('embedding')
   }
 
   getDelegatedView() {
@@ -811,6 +827,9 @@ export class NodeView<
       })
       this.stopPropagation(e)
     } else {
+      if (Dom.hasClass(magnet, 'x6-port-body') || !!magnet.closest('.x6-port-body')) {
+        this.stopPropagation(e)
+      }
       this.onMouseDown(e, x, y)
     }
 

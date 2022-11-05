@@ -157,27 +157,31 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   protected onEdgeTerminalChanged(edge: Edge, type: Edge.TerminalType) {
     const ref = type === 'source' ? this.outgoings : this.incomings
-    const prev = edge.previous<Edge.TerminalCellData>(type)
+    const prev = edge.previous<Edge.TerminalCellLooseData>(type)
 
     if (prev && prev.cell) {
-      const cache = ref[prev.cell]
+      const cellId = Cell.isCell(prev.cell) ? prev.cell.id : prev.cell
+      const cache = ref[cellId]
       const index = cache ? cache.indexOf(edge.id) : -1
       if (index >= 0) {
         cache.splice(index, 1)
         if (cache.length === 0) {
-          delete ref[prev.cell]
+          delete ref[cellId]
         }
       }
     }
 
-    const terminal = edge.getTerminal(type) as Edge.TerminalCellData
+    const terminal = edge.getTerminal(type) as Edge.TerminalCellLooseData
     if (terminal && terminal.cell) {
-      const cache = ref[terminal.cell] || []
+      const terminalId = Cell.isCell(terminal.cell)
+        ? terminal.cell.id
+        : terminal.cell
+      const cache = ref[terminalId] || []
       const index = cache.indexOf(edge.id)
       if (index === -1) {
         cache.push(edge.id)
       }
-      ref[terminal.cell] = cache
+      ref[terminalId] = cache
     }
   }
 

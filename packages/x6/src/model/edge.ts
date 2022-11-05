@@ -947,7 +947,7 @@ export namespace Edge {
     port?: string
   }
 
-  export type TerminalData = TerminalPointData | TerminalCellData
+  export type TerminalData = TerminalPointData | TerminalCellLooseData
 
   export function equalTerminals(a: TerminalData, b: TerminalData) {
     const a1 = a as TerminalCellData
