@@ -1,3 +1,36 @@
+## @antv/x6-example-features [1.0.1](https://github.com/antvis/X6/compare/@antv/x6-example-features@1.0.0...@antv/x6-example-features@1.0.1) (2022-11-05)
+
+
+### chore
+
+* bump to 2.0 ([a02ca20](https://github.com/antvis/X6/commit/a02ca20f054d2eada7806f76b0abe5ae51fb18d1))
+
+
+### BREAKING CHANGES
+
+* bump to 2.0
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.1
+* **@antv/x6-plugin-clipboard:** upgraded to 1.0.3
+* **@antv/x6-plugin-dnd:** upgraded to 1.0.3
+* **@antv/x6-plugin-history:** upgraded to 1.0.3
+* **@antv/x6-plugin-keyboard:** upgraded to 1.0.3
+* **@antv/x6-plugin-minimap:** upgraded to 1.0.3
+* **@antv/x6-plugin-scroller:** upgraded to 1.1.1
+* **@antv/x6-plugin-selection:** upgraded to 1.0.3
+* **@antv/x6-plugin-snapline:** upgraded to 1.0.3
+* **@antv/x6-plugin-stencil:** upgraded to 1.0.3
+* **@antv/x6-plugin-transform:** upgraded to 1.0.3
+* **@antv/x6-plugin-export:** upgraded to 1.0.3
+* **@antv/x6-react-components:** upgraded to 1.1.1
+* **@antv/x6-react-shape:** upgraded to 1.0.3
+
 # @antv/x6-example-features 1.0.0 (2022-11-05)
 
 
