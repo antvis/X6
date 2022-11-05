@@ -1,3 +1,23 @@
+## @antv/x6-plugin-minimap [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-minimap@1.0.0...@antv/x6-plugin-minimap@1.0.1) (2022-11-05)
+
+
+### chore
+
+* bump to 2.0 ([04cd9de](https://github.com/antvis/x6/commit/04cd9de505bd92a70f33dbc0cfc75b4f9b8126c1))
+
+
+### BREAKING CHANGES
+
+* bump to 2.0
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.1
+
 # @antv/x6-plugin-minimap 1.0.0 (2022-11-05)
 
 
