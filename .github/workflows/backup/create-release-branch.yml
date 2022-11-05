@@ -18,7 +18,7 @@ jobs:
       - uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ env.bot_token }}
-          branch: auto-release
+          branch: semantic-release
           commit-message: "trigger semantic release..."
           delete-branch: true
           labels: semantic-release

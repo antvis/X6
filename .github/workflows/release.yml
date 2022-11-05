@@ -4,7 +4,7 @@ name: 🚀　Release
 on:
   push:
     branches:
-      - auto-release
+      - master
       - next
       - next-major
       - alpha
@@ -68,12 +68,12 @@ jobs:
           GIT_COMMITTER_NAME: x6-bot
           GIT_COMMITTER_EMAIL: x6-bot@users.noreply.github.com
 
-      - uses: actions/github-script@v6
-        with:
-          github-token: ${{ env.bot_token }}
-          script: |
-            const action = require('./scripts/finalize-release.js')
-            return await action({github, context, core})
+      # - uses: actions/github-script@v6
+      #   with:
+      #     github-token: ${{ env.bot_token }}
+      #     script: |
+      #       const action = require('./scripts/finalize-release.js')
+      #       return await action({github, context, core})
 
       - name: 🔀　Repository Dispatch
         if: github.ref == 'refs/heads/master'
