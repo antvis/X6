@@ -2,7 +2,7 @@ import React from 'react'
 import { MenuContext } from './context'
 import { MenuItem, MenuItemInner } from './item'
 
-export const MenuSubMenu: React.SFC<MenuItem.Props> = (props) => {
+export const MenuSubMenu: React.FC<MenuItem.Props> = (props) => {
   const { hotkey, children, ...others } = props
   return (
     <MenuContext.Consumer>

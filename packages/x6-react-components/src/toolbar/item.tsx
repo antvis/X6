@@ -130,7 +130,7 @@ namespace ToolbarItemInner {
   }
 }
 
-export const ToolbarItem: React.SFC<ToolbarItem.Props> = (props) => (
+export const ToolbarItem: React.FC<ToolbarItem.Props> = (props) => (
   <ToolbarContext.Consumer>
     {(context) => <ToolbarItemInner context={context} {...props} />}
   </ToolbarContext.Consumer>

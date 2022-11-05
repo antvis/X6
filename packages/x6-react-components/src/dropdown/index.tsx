@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import classNames from 'classnames'
 import RcDropdown from 'rc-dropdown'
 
-export class Dropdown extends React.Component<Dropdown.Props, any> {
+export class Dropdown extends React.Component<
+  PropsWithChildren<Dropdown.Props>,
+  any
+> {
   // getTransitionName() {
   //   const { placement = '', transitionName } = this.props
   //   if (transitionName !== undefined) {
