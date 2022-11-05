@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-scroller",
-  "version": "2.0.0",
+  "version": "1.1.1",
   "description": "scroller plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,10 +37,10 @@
     "pretest": "rss"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x"
+    "@antv/x6": "1.1.1"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x"
+    "@antv/x6": "1.1.1"
   },
   "author": {
     "name": "bubkoo",
