@@ -1,4 +1,4 @@
-export { template, uniqueId } from 'lodash-es'
+export { uniqueId } from 'lodash-es'
 
 export * from './format'
 export * from './hashcode'

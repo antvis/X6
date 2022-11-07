@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, StringExt, JQuery } from '@antv/x6'
+import { Graph, JQuery } from '@antv/x6'
 import { Settings, State } from './settings'
 import './app.css'
 
@@ -61,9 +61,9 @@ export default class Example extends React.Component {
     this.graph.setSelectionDisplayContent(
       options.content
         ? (selection) => {
-            return StringExt.template(
-              '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
-            )({ length: selection.length })
+            return `${selection.length} node${
+              selection.length > 1 ? 's' : ''
+            } selected.`
           }
         : null,
     )
