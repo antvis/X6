@@ -111,8 +111,9 @@ pnpm run start
 如果希望参与到 X6 的开发中，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。如果你贡献度足够活跃，你可以申请成为社区协作者。
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+  <img src="https://raw.githubusercontent.com/antvis/X6/master/CONTRIBUTORS.svg" alt="Contributors" />
 </a>
+
 
 ## 开源协议
 
