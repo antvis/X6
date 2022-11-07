@@ -1,4 +1,3 @@
-export * from './af'
 export * from './attr'
 export * from './elem'
 export * from './class'
