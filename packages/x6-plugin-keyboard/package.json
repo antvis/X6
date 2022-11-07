@@ -43,7 +43,7 @@
     "@antv/x6": "^2.x"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x",
+    "@antv/x6": "^2.x",
     "@types/mousetrap": "^1.6.5"
   },
   "author": {

@@ -51,7 +51,7 @@
     "vue": "^2.6.12 || ^3.0.0"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x",
+    "@antv/x6": "^2.x",
     "@vue/composition-api": "^1.0.0-rc.6",
     "vue": "^2.6.12"
   },
