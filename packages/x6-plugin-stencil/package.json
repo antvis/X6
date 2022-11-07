@@ -41,7 +41,7 @@
     "@antv/x6-plugin-dnd": "^2.x"
   },
   "devDependencies": {
-    "@antv/x6": "^2.0.x",
+    "@antv/x6": "^2.x",
     "@antv/x6-plugin-dnd": "^2.0.x"
   },
   "author": {
