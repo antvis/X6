@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import spawn from 'cross-spawn'
-import colors from 'colors/safe.js'
 
 const cwd = process.cwd()
 const karmaConf = path.join(cwd, 'karma.conf.js')
@@ -18,8 +17,8 @@ if (npmPathIsJs) {
 const cmd = fs.existsSync(karmaConf)
   ? ['karma', 'start']
   : fs.existsSync(jestConf)
-  ? ['jest']
-  : null
+    ? ['jest']
+    : null
 
 if (cmd) {
   spawn(execPath, [...spawnArgs, ...cmd], { stdio: 'inherit' })
