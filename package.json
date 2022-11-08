@@ -21,6 +21,25 @@
     "setup:husky": "husky install .husky",
     "prepare": "is-ci || run-p setup:husky build:dev"
   },
+  "rss": {
+    "clean:turbo": "rimraf .turbo",
+    "clean:build": "rimraf dist es lib",
+    "clean:coverage": "rimraf ./test/coverage",
+    "clean": "run-p clean:**",
+    "build:less": "rss",
+    "build:esm": "tsc --module esnext --target es6 --outDir ./es",
+    "build:cjs": "tsc --module commonjs --target es6 --outDir ./lib",
+    "build:umd": "rss-less && rollup -c ../../rollup.config.js --bundleConfigAsCjs",
+    "build:dev": "rss-less && run-p -s build:cjs build:esm",
+    "build:watch": "run-s -s build:watch:esm",
+    "build:watch:esm": "run-s -s 'build:esm -w'",
+    "build:watch:cjs": "run-s -s 'build:cjs -w'",
+    "build": "run-p -s build:dev build:umd",
+    "prebuild": "run-s -s clean:build",
+    "test": "rss-test",
+    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
+    "pretest": "run-s -s clean:coverage"
+  },
   "lint-staged": {
     "*": [
       "prettier --write --ignore-unknown"
