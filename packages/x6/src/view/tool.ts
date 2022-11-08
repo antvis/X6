@@ -418,7 +418,7 @@ export namespace ToolsView {
       return this
     }
 
-    protected stamp(elem: Element = this.container) {
+    protected stamp(elem: Element) {
       if (elem) {
         elem.setAttribute('data-cell-id', this.cellView.cell.id)
       }
