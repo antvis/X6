@@ -1,6 +1,8 @@
-import fs from 'fs'
-import path from 'path'
-import spawn from 'cross-spawn'
+#!/usr/bin/env node
+
+const fs = require('fs')
+const path = require('path')
+const spawn = require('cross-spawn')
 
 const cwd = process.cwd()
 const karmaConf = path.join(cwd, 'karma.conf.js')
