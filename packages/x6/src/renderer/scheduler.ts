@@ -107,6 +107,12 @@ export class Scheduler extends Disposable {
     viewItem.flag = flag
     viewItem.options = options
 
+    const positionFlag = view.getFlag(['translate', 'tools'])
+    if (view.isNodeView() && flag === positionFlag) {
+      priority = JOB_PRIORITY.PRIOR // eslint-disable-line
+      flush = false // eslint-disable-line
+    }
+
     this.queue.queueJob({
       id,
       priority,
