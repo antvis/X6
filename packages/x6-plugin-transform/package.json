@@ -27,6 +27,7 @@
     "build:cjs": "rss",
     "build:umd": "rss",
     "build:dev": "rss",
+    "build:less": "rss",
     "build:watch": "rss",
     "build:watch:esm": "rss",
     "build:watch:cjs": "rss",
