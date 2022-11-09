@@ -445,7 +445,11 @@ function setupAnimation(
   repeat && animate.addEventListener('repeatEvent', repeat)
 
   const ani = animate as any
-  ani.beginElement()
+
+  setTimeout(() => {
+    ani.beginElement()
+  })
+
   return () => ani.endElement()
 }
 
