@@ -7,9 +7,13 @@ export class JobQueue {
   private initialTime = Date.now()
 
   queueJob(job: Job) {
-    const index = this.findInsertionIndex(job)
-    if (index >= 0) {
-      this.queue.splice(index, 0, job)
+    if (job.priority === JOB_PRIORITY.PRIOR) {
+      job.cb()
+    } else {
+      const index = this.findInsertionIndex(job)
+      if (index >= 0) {
+        this.queue.splice(index, 0, job)
+      }
     }
   }
 
@@ -133,6 +137,7 @@ export enum JOB_PRIORITY {
   RenderEdge = 1,
   RenderNode = 2,
   Update = 3,
+  PRIOR = 100,
 }
 
 // function findInsertionIndex(job: Job) {

@@ -69,7 +69,7 @@ export namespace HTML {
       },
     })
 
-    NodeView.registry.register('html-view', View)
+    NodeView.registry.register('html-view', View, true)
   }
 }
 
@@ -103,7 +103,7 @@ export namespace HTML {
     },
   })
 
-  Node.registry.register('html', HTML)
+  Node.registry.register('html', HTML, true)
 }
 
 export namespace HTML {
