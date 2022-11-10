@@ -1,6 +1,7 @@
 import { Disposable, CssLoader, Graph, EventArgs } from '@antv/x6'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
+import './api'
 
 export class Snapline extends Disposable {
   private snaplineImpl: SnaplineImpl
@@ -149,4 +150,5 @@ export class Snapline extends Disposable {
 
 export namespace Snapline {
   export interface Options extends SnaplineImpl.Options {}
+  export type Filter = SnaplineImpl.Filter
 }
