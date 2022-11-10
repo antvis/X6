@@ -10,6 +10,7 @@ import {
   Dom,
   Graph,
 } from '@antv/x6'
+import './api'
 
 export class Export extends Basecoat<Export.EventArgs> {
   private graph: Graph

@@ -1,5 +1,6 @@
 import { Cell, Graph, IDisablable, Basecoat } from '@antv/x6'
 import { ClipboardImpl } from './clipboard'
+import './api'
 
 export class Clipboard
   extends Basecoat<Clipboard.EventArgs>
@@ -7,10 +8,12 @@ export class Clipboard
 {
   private clipboardImpl: ClipboardImpl
   private graph: Graph
+  public options: Clipboard.Options
   public name = 'clipboard'
 
-  constructor(public readonly options: Clipboard.Options) {
+  constructor(options: Clipboard.Options) {
     super()
+    this.options = options
   }
 
   init(graph: Graph) {
@@ -65,7 +68,7 @@ export class Clipboard
     return this.cells
   }
 
-  private clean(force?: boolean) {
+  clean(force?: boolean) {
     if (!this.disabled || force) {
       this.clipboardImpl.clean()
       this.notify('clipboard:changed', { cells: [] })
@@ -111,12 +114,12 @@ export class Clipboard
     return this.options.enabled !== true
   }
 
-  private get commonOptions() {
+  protected get commonOptions() {
     const { enabled, ...others } = this.options
     return others
   }
 
-  private get cells() {
+  protected get cells() {
     return this.clipboardImpl.cells
   }
 
