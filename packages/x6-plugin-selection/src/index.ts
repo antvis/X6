@@ -10,6 +10,7 @@ import {
 } from '@antv/x6'
 import { SelectionImpl } from './selection'
 import { content } from './style/raw'
+import './api'
 
 export class Selection extends Basecoat<SelectionImpl.EventArgs> {
   private graph: Graph
@@ -244,7 +245,7 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     return this
   }
 
-  protected reset(
+  reset(
     cells?: Cell | string | (Cell | string)[],
     options: Selection.SetOptions = {},
   ) {

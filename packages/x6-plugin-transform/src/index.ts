@@ -1,6 +1,7 @@
 import { Basecoat, CssLoader, KeyValue, Node, Graph, EventArgs } from '@antv/x6'
 import { TransformImpl } from './transform'
 import { content } from './style/raw'
+import './api'
 
 export class Transform extends Basecoat<Transform.EventArgs> {
   private graph: Graph

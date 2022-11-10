@@ -13,7 +13,7 @@ export default class Example extends React.Component {
   private minimapContainer: HTMLDivElement
   private scroller: Scroller
   private selection: Selection
-  private exportObj: Export
+  private exportInstance: Export
 
   componentDidMount() {
     this.graph = new Graph({
@@ -55,12 +55,12 @@ export default class Example extends React.Component {
       height: 200,
       padding: 10,
     })
-    this.exportObj = new Export()
+    this.exportInstance = new Export()
 
     this.graph.use(this.scroller)
     this.graph.use(this.selection)
     this.graph.use(minimap)
-    this.graph.use(this.exportObj)
+    this.graph.use(this.exportInstance)
 
     const rect = this.graph.addNode({
       shape: 'rect',
@@ -122,7 +122,7 @@ export default class Example extends React.Component {
   }
 
   onDownload = () => {
-    this.exportObj.exportPNG('scroller')
+    this.exportInstance.exportPNG('scroller')
   }
 
   render() {

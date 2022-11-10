@@ -8,6 +8,7 @@ import {
   Model,
   Graph,
 } from '@antv/x6'
+import './api'
 
 export class History
   extends Basecoat<History.EventArgs>
@@ -643,7 +644,7 @@ export namespace History {
 }
 
 export namespace History {
-  interface Args<T = never> {
+  export interface Args<T = never> {
     cmds: Command[] | T
     options: KeyValue
   }
