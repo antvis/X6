@@ -3,7 +3,7 @@ import { Clipboard } from './index'
 
 declare module '@antv/x6/lib/graph/graph' {
   interface Graph {
-    isClipboardEnabled: () => void
+    isClipboardEnabled: () => boolean
     enableClipboard: () => Graph
     disableClipboard: () => Graph
     toggleClipboard: (enabled?: boolean) => Graph

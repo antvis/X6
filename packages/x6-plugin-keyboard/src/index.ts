@@ -1,12 +1,15 @@
 import { Disposable, Graph } from '@antv/x6'
 import { KeyboardImpl } from './keyboard'
+import './api'
 
 export class Keyboard extends Disposable {
   private keyboardImpl: KeyboardImpl
   public name = 'keyboard'
+  public options: KeyboardImpl.Options
 
-  constructor(public readonly options: KeyboardImpl.Options) {
+  constructor(options: KeyboardImpl.Options) {
     super()
+    this.options = options
   }
 
   init(graph: Graph) {

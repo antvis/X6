@@ -50,10 +50,6 @@ export class History
 
   // #region api
 
-  setOptions(options: Partial<History.Options>) {
-    ObjectExt.merge(this.options, Util.getOptions(options))
-  }
-
   isEnabled() {
     return !this.disabled
   }

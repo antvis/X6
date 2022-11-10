@@ -24,10 +24,6 @@ export class Clipboard
 
   // #region api
 
-  setOptions(options: Partial<Clipboard.Options>) {
-    Object.assign(this.options, options)
-  }
-
   isEnabled() {
     return !this.disabled
   }
