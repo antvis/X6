@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@antv/x6": "2.x",
+    "@antv/x6": "2.0.0-beta.2",
+    "@antv/x6-react-shape": "2.0.0-beta.2",
     "@antv/x6-sites-demos-helper": "2.x",
     "antd": "^4.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^3.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.25",
@@ -22,9 +23,6 @@
     "eject": "react-scripts eject",
     "deploy": "yarn -s prepare && yarn -s static",
     "prestart": "yarn prepare"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
