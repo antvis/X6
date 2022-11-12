@@ -24,11 +24,11 @@ const data = {
     },
     {
       id: 'node2',
-      shape: 'circle',
+      shape: 'rect',
       x: 160,
       y: 180,
-      width: 60,
-      height: 60,
+      width: 100,
+      height: 40,
       label: 'world',
       attrs: {
         body: {
