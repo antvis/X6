@@ -554,7 +554,7 @@ export class Graph extends Basecoat<EventArgs> {
   resize(width?: number, height?: number) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.resize()
+      scroller.resize(width, height)
     } else {
       this.transform.resize(width, height)
     }

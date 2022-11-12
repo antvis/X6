@@ -1,60 +1,44 @@
-import React, { FC } from 'react'
-import { Graph, Node } from '@antv/x6'
-import { register } from '@antv/x6-react-shape'
-import { Dropdown, Menu } from 'antd'
+import React from 'react'
+import { Graph } from '@antv/x6'
 import './app.css'
-
-const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
-  const label = node.prop('label')
-  return (
-    <Dropdown
-      overlay={
-        <Menu
-          items={[
-            {
-              key: 'copy',
-              label: '复制',
-            },
-            {
-              key: 'paste',
-              label: '粘贴',
-            },
-            {
-              key: 'delete',
-              label: '删除',
-            },
-          ]}
-        />
-      }
-      trigger={['contextMenu']}
-    >
-      <div className="custom-react-node">{label}</div>
-    </Dropdown>
-  )
-}
-
-register({
-  shape: 'custom-react-node',
-  width: 100,
-  height: 40,
-  component: CustomComponent,
-})
 
 const data = {
   nodes: [
     {
       id: 'node1',
-      shape: 'custom-react-node',
+      shape: 'rect',
       x: 40,
       y: 40,
+      width: 100,
+      height: 40,
       label: 'hello',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     },
     {
       id: 'node2',
-      shape: 'custom-react-node',
+      shape: 'rect',
       x: 160,
       y: 180,
+      width: 100,
+      height: 40,
       label: 'world',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     },
   ],
   edges: [
@@ -81,6 +65,21 @@ export default class Example extends React.Component {
       container: this.container,
       background: {
         color: '#F2F7FA',
+      },
+      grid: {
+        visible: true,
+        type: 'doubleMesh',
+        args: [
+          {
+            color: '#eee', // 主网格线颜色
+            thickness: 1, // 主网格线宽度
+          },
+          {
+            color: '#ddd', // 次网格线颜色
+            thickness: 1, // 次网格线宽度
+            factor: 4, // 主次网格线间隔
+          },
+        ],
       },
     })
 
