@@ -26,7 +26,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
     const node = this.cell
 
     if (container) {
-      const elem = React.createElement(Wrap, { node })
+      const elem = React.createElement(Wrap, { node, graph: node.model!.graph })
       if (Portal.isActive()) {
         const portal = createPortal(elem, container) as ReactPortal
         Portal.connect(this.cell.id, portal)

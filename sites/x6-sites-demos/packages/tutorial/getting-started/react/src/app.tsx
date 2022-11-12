@@ -1,59 +1,53 @@
-import React from 'react'
-import { Graph } from '@antv/x6'
+import React, { FC } from 'react'
+import { Graph, Node } from '@antv/x6'
+import { register } from '@antv/x6-react-shape'
+import { Input } from 'antd'
 import './app.css'
 
+const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
+  const label = node.prop('label')
+  return (
+    <div className="custom-react-node">
+      <Input value={label} />
+    </div>
+  )
+}
+
+register({
+  shape: 'custom-react-node',
+  width: 100,
+  height: 40,
+  component: CustomComponent,
+})
+
 const data = {
-  // 节点
   nodes: [
     {
       id: 'node1',
+      shape: 'custom-react-node',
       x: 40,
       y: 40,
-      width: 80,
-      height: 40,
       label: 'hello',
-      attrs: {
-        body: {
-          fill: '#2ECC71',
-          stroke: '#000',
-          strokeDasharray: '10,2',
-        },
-        label: {
-          text: 'Hello',
-          fill: '#333',
-          fontSize: 13,
-        },
-      },
     },
     {
       id: 'node2',
+      shape: 'custom-react-node',
       x: 160,
       y: 180,
-      width: 80,
-      height: 40,
       label: 'world',
-      attrs: {
-        body: {
-          fill: '#F39C12',
-          stroke: '#000',
-          rx: 16,
-          ry: 16,
-        },
-        label: {
-          text: 'World',
-          fill: '#333',
-          fontSize: 18,
-          fontWeight: 'bold',
-          fontVariant: 'small-caps',
-        },
-      },
     },
   ],
-  // 边
   edges: [
     {
       source: 'node1',
       target: 'node2',
+      label: 'x6',
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
     },
   ],
 }
@@ -64,10 +58,13 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      background: {
+        color: '#F2F7FA',
+      },
     })
 
     graph.fromJSON(data)
+    graph.centerContent()
   }
 
   refContainer = (container: HTMLDivElement) => {

@@ -1,0 +1,23 @@
+.app {
+  font-family: sans-serif;
+  padding: 0;
+  display: flex;
+  padding: 16px 8px;
+}
+
+.app-content {
+  flex: 1;
+  height: 280px;
+  margin-left: 8px;
+  margin-right: 8px;
+  border-radius: 5px;
+  box-shadow: 0 12px 5px -10px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.custom-react-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #8f8f8f;
+  border-radius: 6px;
+}
