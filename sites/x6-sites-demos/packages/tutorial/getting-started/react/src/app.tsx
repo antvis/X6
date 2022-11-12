@@ -1,14 +1,15 @@
 import React, { FC } from 'react'
 import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
-import { Input } from 'antd'
+import { Tooltip } from 'antd'
+import 'antd/dist/antd.css'
 import './app.css'
 
 const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
   const label = node.prop('label')
   return (
     <div className="custom-react-node">
-      <Input value={label} />
+      <Tooltip title={label}>{label}</Tooltip>
     </div>
   )
 }
@@ -39,6 +40,7 @@ const data = {
   ],
   edges: [
     {
+      shape: 'edge',
       source: 'node1',
       target: 'node2',
       label: 'x6',
