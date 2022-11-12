@@ -1,4 +1,5 @@
 import React from 'react'
+import { Graph } from '@antv/x6'
 import { ReactShape } from './node'
 import { shapeMaps } from './registry'
 
@@ -23,10 +24,10 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
   }
 
   clone(elem: React.ReactElement) {
-    const { node } = this.props
+    const { node, graph } = this.props
     return typeof elem.type === 'string'
       ? React.cloneElement(elem)
-      : React.cloneElement(elem, { node })
+      : React.cloneElement(elem, { node, graph })
   }
 
   render() {
@@ -42,7 +43,7 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
       return this.clone(component)
     }
 
-    const FC = component
+    const FC = component as any
     return this.clone(<FC />)
   }
 }
@@ -54,5 +55,6 @@ export namespace Wrap {
 
   export interface Props {
     node: ReactShape
+    graph: Graph
   }
 }
