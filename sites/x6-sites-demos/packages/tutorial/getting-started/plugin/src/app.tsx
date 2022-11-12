@@ -1,36 +1,17 @@
 import React, { FC } from 'react'
 import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
-import { Dropdown, Menu } from 'antd'
+import { Tooltip } from 'antd'
+import { Snapline } from '@antv/x6-plugin-snapline'
 import 'antd/dist/antd.css'
 import './app.css'
 
 const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
   const label = node.prop('label')
   return (
-    <Dropdown
-      overlay={
-        <Menu
-          items={[
-            {
-              key: 'copy',
-              label: '复制',
-            },
-            {
-              key: 'paste',
-              label: '粘贴',
-            },
-            {
-              key: 'delete',
-              label: '删除',
-            },
-          ]}
-        />
-      }
-      trigger={['contextMenu']}
-    >
-      <div className="custom-react-node">{label}</div>
-    </Dropdown>
+    <div className="custom-react-node">
+      <Tooltip title={label}>{label}</Tooltip>
+    </div>
   )
 }
 
@@ -85,6 +66,11 @@ export default class Example extends React.Component {
       },
     })
 
+    graph.use(
+      new Snapline({
+        enabled: true,
+      }),
+    )
     graph.fromJSON(data)
     graph.centerContent()
   }
