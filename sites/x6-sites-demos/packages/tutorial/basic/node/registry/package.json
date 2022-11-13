@@ -1,5 +1,5 @@
 {
-  "name": "@antv/x6-sites-demos-tutorial.basic.node.style",
+  "name": "@antv/x6-sites-demos-tutorial.basic.node.registry",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

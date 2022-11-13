@@ -1,5 +1,5 @@
 {
-  "name": "@antv/x6-sites-demos-tutorial.basic.graph.transform",
+  "name": "@antv/x6-sites-demos-tutorial.basic.node.prop",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
