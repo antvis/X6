@@ -1,46 +1,49 @@
 import React from 'react'
-import { Graph, Shape } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import './app.css'
 
-Shape.Rect.define({
-  shape: 'my-rect',
-  width: 180,
-  height: 80,
-  ports: {
-    groups: {
-      in: {
-        position: 'top',
-        label: {
+Graph.registerNode(
+  'custom-node-width-port',
+  {
+    inherit: 'rect',
+    width: 100,
+    height: 40,
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
+    ports: {
+      groups: {
+        top: {
           position: 'top',
-        },
-        attrs: {
-          circle: {
-            r: 6,
-            magnet: true,
-            stroke: '#31d0c6',
-            strokeWidth: 2,
-            fill: '#fff',
+          attrs: {
+            circle: {
+              magnet: true,
+              stroke: '#8f8f8f',
+              r: 5,
+            },
           },
         },
-      },
-      out: {
-        position: 'bottom',
-        label: {
+        bottom: {
           position: 'bottom',
-        },
-        attrs: {
-          circle: {
-            r: 6,
-            magnet: true,
-            stroke: '#31d0c6',
-            strokeWidth: 2,
-            fill: '#fff',
+          attrs: {
+            circle: {
+              magnet: true,
+              stroke: '#8f8f8f',
+              r: 5,
+            },
           },
         },
       },
     },
   },
-})
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -48,40 +51,61 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      height: 200,
-      grid: {
-        visible: true,
+      background: {
+        color: '#F2F7FA',
       },
     })
 
-    graph.addNode({
-      x: 60,
-      y: 50,
-      shape: 'my-rect',
-      label: 'In&Out Ports',
-      ports: [
-        {
-          id: 'port1',
-          group: 'in',
-        },
-        {
-          id: 'port2',
-          group: 'in',
-        },
-        {
-          id: 'port3',
-          group: 'in',
-        },
-        {
-          id: 'port4',
-          group: 'out',
-        },
-        {
-          id: 'port5',
-          group: 'out',
-        },
-      ],
+    const source = graph.addNode({
+      shape: 'custom-node-width-port',
+      x: 40,
+      y: 40,
+      label: 'hello',
+      ports: {
+        items: [
+          {
+            id: 'port_1',
+            group: 'bottom',
+          },
+          {
+            id: 'port_2',
+            group: 'bottom',
+          },
+        ],
+      },
     })
+
+    const target = graph.addNode({
+      shape: 'custom-node-width-port',
+      x: 160,
+      y: 180,
+      label: 'world',
+      ports: {
+        items: [
+          {
+            id: 'port_3',
+            group: 'top',
+          },
+          {
+            id: 'port_4',
+            group: 'top',
+          },
+        ],
+      },
+    })
+
+    graph.addEdge({
+      source: { cell: source, port: 'port_2' },
+      target: { cell: target, port: 'port_3' },
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
+    })
+
+    graph.centerContent()
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -91,7 +115,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="app">
-        <div ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }
