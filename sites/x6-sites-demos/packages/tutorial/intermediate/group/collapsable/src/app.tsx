@@ -3,13 +3,33 @@ import { Graph } from '@antv/x6'
 import { Group } from './shape'
 import './app.css'
 
+Graph.registerNode(
+  'custom-node',
+  {
+    inherit: 'rect',
+    width: 100,
+    height: 40,
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
+  },
+  true,
+)
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      background: {
+        color: '#F2F7FA',
+      },
     })
 
     const createGroup = (
@@ -41,25 +61,15 @@ export default class Example extends React.Component {
       y: number,
       width: number,
       height: number,
-      fill: string,
     ) => {
       return graph.addNode({
+        shape: 'custom-node',
         id,
         x,
         y,
         width,
         height,
-        attrs: {
-          body: {
-            fill: fill || 'blue',
-            stroke: 'none',
-          },
-          label: {
-            text: id,
-            fill: '#fff',
-            fontSize: 12,
-          },
-        },
+        label: id,
       })
     }
 
@@ -75,19 +85,25 @@ export default class Example extends React.Component {
         target,
         vertices,
         label: id,
+        attrs: {
+          line: {
+            stroke: '#8f8f8f',
+            strokeWidth: 1,
+          },
+        },
       })
     }
 
     const a = createGroup('a', 100, 40, 480, 280, '#91d5ff')
     const aa = createGroup('aa', 180, 100, 160, 140, '#47C769')
-    const aaa = createGroup('aaa', 200, 160, 120, 40, '#3199FF')
-    const c = createNode('c', 450, 200, 50, 50, 'orange')
+    const aaa = createGroup('aaa', 200, 160, 120, 40, '#0491e4')
+    const c = createNode('b', 450, 200, 50, 50)
 
     a.addChild(aa)
     aa.addChild(aaa)
     a.addChild(c)
 
-    createNode('d', 680, 80, 50, 50, 'black')
+    createNode('d', 680, 80, 50, 50)
 
     createEdge('edge1', 'aa', 'c')
     createEdge('edge3', 'c', 'd')
