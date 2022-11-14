@@ -1,16 +1,35 @@
 import React, { FC } from 'react'
 import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
-import { Tooltip } from 'antd'
-import 'antd/dist/antd.css'
+import { Dropdown, Menu } from 'antd'
 import './app.css'
 
 const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
   const label = node.prop('label')
   return (
-    <div className="custom-react-node">
-      <Tooltip title={label}>{label}</Tooltip>
-    </div>
+    <Dropdown
+      overlay={
+        <Menu
+          items={[
+            {
+              key: 'copy',
+              label: '复制',
+            },
+            {
+              key: 'paste',
+              label: '粘贴',
+            },
+            {
+              key: 'delete',
+              label: '删除',
+            },
+          ]}
+        />
+      }
+      trigger={['contextMenu']}
+    >
+      <div className="custom-react-node">{label}</div>
+    </Dropdown>
   )
 }
 
