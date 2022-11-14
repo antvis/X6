@@ -1,6 +1,5 @@
-import { ArrayExt } from '../../../util'
-import { KeyValue } from '../../../types'
-import { Rectangle, Point } from '../../../geometry'
+import { ArrayExt, KeyValue } from '@antv/x6-common'
+import { Rectangle, Point } from '@antv/x6-geometry'
 import { Cell, Edge, Model } from '../../../model'
 import { ResolvedOptions } from './options'
 

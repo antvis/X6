@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Shape, Addon } from '@antv/x6'
+import { Graph, Shape } from '@antv/x6'
+import { Stencil } from '@antv/x6-plugin-stencil'
 import '../index.less'
 import './index.less'
 
@@ -12,20 +13,8 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 800,
-      snapline: {
-        enabled: true,
-        sharp: true,
-      },
       grid: {
         visible: true,
-      },
-      scroller: {
-        enabled: true,
-        width: 600,
-        height: 400,
-        pageVisible: true,
-        pageBreak: false,
-        pannable: true,
       },
     })
 
@@ -48,13 +37,12 @@ export default class Example extends React.Component {
       },
     })
 
-    const stencil = new Addon.Stencil({
+    const stencil = new Stencil({
       target: graph,
       stencilGraphWidth: 200,
       stencilGraphHeight: 180,
       search: { rect: true },
       collapsable: true,
-      grid: 1,
       groups: [
         {
           name: 'group1',
@@ -144,7 +132,7 @@ export default class Example extends React.Component {
             left: 32,
             top: 40,
             width: 200,
-            height: 300,
+            height: 600,
           }}
         />
         <div ref={this.refContainer} className="x6-graph" />

@@ -1,8 +1,8 @@
-import { Line, Point } from '../../geometry'
+import { Line, Point } from '@antv/x6-geometry'
+import { FunctionExt } from '@antv/x6-common'
 import { ResolveOptions, resolve, getPointAtEdge } from '../node-anchor/util'
 import { getClosestPoint } from './closest'
 import { EdgeAnchor } from './index'
-import { FunctionExt } from '../../util'
 
 export interface OrthEndpointOptions extends ResolveOptions {
   fallbackAt?: number | string

@@ -1,5 +1,5 @@
-import type { Rectangle } from './rectangle'
-import { Util } from './util'
+import { Rectangle } from './rectangle'
+import { GeometryUtil } from './util'
 import { Angle } from './angle'
 import { Geometry } from './geometry'
 
@@ -19,8 +19,8 @@ export class Point extends Geometry implements Point.PointLike {
    * Rounds the point to the given precision.
    */
   round(precision = 0) {
-    this.x = Util.round(this.x, precision)
-    this.y = Util.round(this.y, precision)
+    this.x = GeometryUtil.round(this.x, precision)
+    this.y = GeometryUtil.round(this.y, precision)
     return this
   }
 
@@ -231,7 +231,7 @@ export class Point extends Geometry implements Point.PointLike {
    * it becomes the nearest point on the boundary of `rect`.
    */
   adhereToRect(rect: Rectangle.RectangleLike) {
-    if (!Util.containsPoint(rect, this)) {
+    if (!GeometryUtil.containsPoint(rect, this)) {
       this.x = Math.min(Math.max(this.x, rect.x), rect.x + rect.width)
       this.y = Math.min(Math.max(this.y, rect.y), rect.y + rect.height)
     }
@@ -358,8 +358,8 @@ export class Point extends Geometry implements Point.PointLike {
   snapToGrid(gx: number, gy: number): this
   snapToGrid(gx: number, gy?: number): this
   snapToGrid(gx: number, gy?: number): this {
-    this.x = Util.snapToGrid(this.x, gx)
-    this.y = Util.snapToGrid(this.y, gy == null ? gx : gy)
+    this.x = GeometryUtil.snapToGrid(this.x, gx)
+    this.y = GeometryUtil.snapToGrid(this.y, gy == null ? gx : gy)
     return this
   }
 
@@ -536,7 +536,7 @@ export namespace Point {
    * `[x1, x2]` and `[y1, y2]`.
    */
   export function random(x1: number, x2: number, y1: number, y2: number) {
-    return new Point(Util.random(x1, x2), Util.random(y1, y2))
+    return new Point(GeometryUtil.random(x1, x2), GeometryUtil.random(y1, y2))
   }
 
   export function rotate(

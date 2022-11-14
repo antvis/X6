@@ -1,6 +1,4 @@
-import { KeyValue } from '../types'
-import { ObjectExt, Dom } from '../util'
-import { Timing, Interp } from '../common'
+import { ObjectExt, KeyValue, Timing, Interp } from '@antv/x6-common'
 import { Cell } from './cell'
 
 export class Animation {
@@ -46,7 +44,7 @@ export class Animation {
       const elaspe = now - startTime
       let progress = elaspe / localOptions.duration
       if (progress < 1) {
-        this.ids[key] = Dom.requestAnimationFrame(iterate)
+        this.ids[key] = requestAnimationFrame(iterate)
       } else {
         progress = 1
       }
@@ -59,8 +57,6 @@ export class Animation {
       }
 
       if (progress === 1) {
-        // TODO: remove in the next major version
-        this.cell.notify('transition:end', this.getArgs<T>(key))
         this.cell.notify('transition:complete', this.getArgs<T>(key))
         options.complete && options.complete(this.getArgs<T>(key))
 
@@ -73,10 +69,8 @@ export class Animation {
     setTimeout(() => {
       this.stop(path, undefined, delim)
       this.cache[key] = { startValue, targetValue, options: localOptions }
-      this.ids[key] = Dom.requestAnimationFrame(iterate)
+      this.ids[key] = requestAnimationFrame(iterate)
 
-      // TODO: remove in the next major version
-      this.cell.notify('transition:begin', this.getArgs<T>(key))
       this.cell.notify('transition:start', this.getArgs<T>(key))
       options.start && options.start(this.getArgs<T>(key))
     }, options.delay)
@@ -95,7 +89,7 @@ export class Animation {
         ObjectExt.isEqual(paths, key.split(delim).slice(0, paths.length)),
       )
       .forEach((key) => {
-        Dom.cancelAnimationFrame(this.ids[key])
+        cancelAnimationFrame(this.ids[key])
         const data = this.cache[key]
         const commonArgs = this.getArgs<T>(key)
         const localOptions = { ...data.options, ...options }

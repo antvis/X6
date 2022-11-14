@@ -1,6 +1,5 @@
-import { KeyValue } from '../../../types'
-import { Util } from '../../../global/util'
-import { Point, Line, Angle, Rectangle } from '../../../geometry'
+import { Point, Line, Angle, Rectangle, GeometryUtil } from '@antv/x6-geometry'
+import { KeyValue } from '@antv/x6-common'
 import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'
 
@@ -134,8 +133,8 @@ function getGridDimension(diff: number, step: number) {
 
 function snapGrid(point: Point, grid: Grid) {
   const source = grid.source
-  const x = Util.snapToGrid(point.x - source.x, grid.x) + source.x
-  const y = Util.snapToGrid(point.y - source.y, grid.y) + source.y
+  const x = GeometryUtil.snapToGrid(point.x - source.x, grid.x) + source.x
+  const y = GeometryUtil.snapToGrid(point.y - source.y, grid.y) + source.y
 
   return new Point(x, y)
 }

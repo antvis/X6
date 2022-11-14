@@ -1,6 +1,6 @@
 # 代码贡献规范
 
-有任何疑问，欢迎提交 [issue](https://github.com/antvis/x6/issues) 或 [PR](https://github.com/antvis/x6/pulls)!
+如果你有任何疑问，欢迎提交 [issue](https://github.com/antvis/x6/issues) 或 [PR](https://github.com/antvis/x6/pulls)!
 
 ## 提交 issue
 
@@ -41,7 +41,7 @@ $ git push origin branch-name
 
 ### 代码风格
 
-你的代码风格必须通过 eslint，你可以运行 `$ yarn lint` 本地测试。
+你的代码风格必须通过 eslint，你可以运行 `$ npm run lint` 本地测试。
 
 ### Commit 提交规范
 
@@ -109,8 +109,8 @@ BREAKING CHANGE:
 
 ## 发布管理
 
-- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/maintenance-releases.md)
-- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/pre-releases.md)
+- [发布维护版本](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/maintenance-releases.md)
+- [发布预发版本](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/pre-releases.md)
 
 X6 基于 [semver](http://semver.org/lang/zh-CN/) 语义化版本号进行发布。
 
@@ -121,7 +121,7 @@ X6 基于 [semver](http://semver.org/lang/zh-CN/) 语义化版本号进行发布
 
 ### 发布策略
 
-每个大版本都有一个发布经理管理（PM），他/她要做的事情
+在每个大版本的发布中，都会有一个PM，他在发布的不同阶段负有以下职责：
 
 #### 准备工作：
 
@@ -135,6 +135,6 @@ X6 基于 [semver](http://semver.org/lang/zh-CN/) 语义化版本号进行发布
 
 #### 发布时：
 
-- 将老的稳定版本（master）备份到以当前大版本为名字的分支上（例如 `1.x`），并设置 tag 为 {v}.x`（ v 为当前版本，例如 `1.x`）。
+- 将老的稳定版本（master）备份到以当前大版本为名字的分支上（例如 `1.x`），并设置 tag 为 {v}.x（ v 为当前版本，例如 `1.x`）。
 - 发布新的稳定版本到 [npm](http://npmjs.com)，并通知上层框架进行更新。
 - `npm publish` 之前，请先阅读[『我是如何发布一个 npm 包的』](https://fengmk2.com/blog/2016/how-i-publish-a-npm-package)。

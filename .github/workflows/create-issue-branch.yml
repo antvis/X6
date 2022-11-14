@@ -1,6 +1,3 @@
-# Create a new branch dedicated to a specific issue
-# (may be superseded by GitHub functionalities)
-
 name: 🚧　Create Issue Branch
 on:
   issue_comment:
@@ -9,7 +6,6 @@ jobs:
   cib:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}

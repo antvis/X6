@@ -1,5 +1,3 @@
-# Continuous integration.
-
 name: 👷　CI
 on:
   pull_request_target:
@@ -12,59 +10,82 @@ on:
       - beta
 jobs:
   ci:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        codecov: [x6, x6-common, x6-geometry]
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: ⤵️　Checkout
         uses: actions/checkout@v3
-      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+
+      - name: 🎉　Setup nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: 🌱　Get Cache Directory
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: 🚸　Setup Cache
+          node-version: 16.x
+
+      - name: 🎉　Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+          run_install: false
+
+      - name: 🌱　Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: 🚸　Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: 🚧　Prepare
-        run: yarn global add lerna
-      - name: 🚀　Bootstrap
-        run: yarn bootstrap
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 🚧　Install
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      - name: 🚀　Build
+        run: pnpm run build
+
       - name: ✅　Test
-        run: yarn test
+        run: pnpm run test
+
       - name: 🔑　Generate Token
         uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - name: 💡　Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ env.bot_token }}
-          path-to-lcov: ./packages/x6/test/coverage/lcov.info
-      - name: 💡　Codecov(x6)
-        uses: codecov/codecov-action@v3
+
+      - name: 💡　Codecov
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/x6/test/coverage/lcov.info
-          flags: x6
-      - name: 💡　Codecov(x6-vector)
-        uses: codecov/codecov-action@v3
+          files: ./packages/${{ matrix.codecov }}/test/coverage/lcov.info
+          flags: ${{ matrix.codecov }}
+
+      - name: 🔀　Dispatch(ci_passed)
+        uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/x6-vector/test/coverage/lcov.info
-          flags: x6-vector
-      - name: 💡　Codecov(x6-geometry)
-        uses: codecov/codecov-action@v3
+          token: ${{ env.bot_token }}
+          event-type: ci_passed
+
+      - name: 🔀　Dispatch(ci_pr_passed)
+        if: github.event_name == 'pull_request_target'
+        uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/x6-geometry/test/coverage/lcov.info
-          flags: x6-geometry
+          token: ${{ env.bot_token }}
+          event-type: ci_pr_passed
+
+      - name: 🔀　Dispatch(ci_master_passed)
+        if: github.event_name == 'push'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ env.bot_token }}
+          event-type: ci_master_passed
+

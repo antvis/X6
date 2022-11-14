@@ -1,12 +1,9 @@
-# Assign labels based on pull request change sizes.
-
 name: 🏷️　Label(Patch Size)
 on: pull_request_target
 jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - uses: wow-actions/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
@@ -15,4 +12,4 @@ jobs:
       - uses: pascalgn/size-label-action@v0.4.3
         env:
           GITHUB_TOKEN: ${{ env.bot_token }}
-          IGNORED: "!.gitignore\nyarn.lock"
+          IGNORED: "!.gitignore\nyarn.lock\npnpm-lock.yaml"

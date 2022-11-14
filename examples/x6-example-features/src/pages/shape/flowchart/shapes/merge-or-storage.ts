@@ -1,4 +1,4 @@
-import { NumberExt, Shape, Path, Point } from '@antv/x6'
+import { Shape, Path, Point, NumberExt } from '@antv/x6'
 
 Shape.Path.define({
   title: 'Merge or Storage',

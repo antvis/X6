@@ -2,6 +2,8 @@ import React from 'react'
 import { Graph, Cell, Node } from '@antv/x6'
 import { connectors } from '../connector/xmind-definitions'
 import Hierarchy from '@antv/hierarchy'
+import { Selection } from '@antv/x6-plugin-selection'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
 import '../index.less'
 import './mind.less'
 
@@ -181,13 +183,15 @@ export default class Example extends React.Component {
       connecting: {
         connectionPoint: 'anchor',
       },
-      selecting: {
-        enabled: true,
-      },
-      keyboard: {
-        enabled: true,
-      },
     })
+    const selection = new Selection({
+      enabled: true,
+    })
+    graph.use(selection)
+    const keyboard = new Keyboard({
+      enabled: true,
+    })
+    graph.use(keyboard)
 
     const render = () => {
       const result: HierarchyResult = Hierarchy.mindmap(data, {
@@ -346,8 +350,8 @@ export default class Example extends React.Component {
         render()
       }
     })
-    graph.bindKey(['backspace', 'delete'], () => {
-      const selectedNodes = graph
+    keyboard.bindKey(['backspace', 'delete'], () => {
+      const selectedNodes = selection
         .getSelectedCells()
         .filter((item) => item.isNode())
       if (selectedNodes.length) {
@@ -358,9 +362,9 @@ export default class Example extends React.Component {
       }
     })
 
-    graph.bindKey('tab', (e) => {
+    keyboard.bindKey('tab', (e) => {
       e.preventDefault()
-      const selectedNodes = graph
+      const selectedNodes = selection
         .getSelectedCells()
         .filter((item) => item.isNode())
       if (selectedNodes.length) {

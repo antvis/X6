@@ -1,10 +1,11 @@
 {
   "name": "@antv/x6-react-components",
-  "version": "1.1.19",
+  "version": "2.0.0",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6-react-components.min.js",
+  "unpkg": "dist/index.js",
+  "jsdelivr": "dist/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
@@ -17,22 +18,24 @@
     "*.less"
   ],
   "scripts": {
-    "clean": "rimraf dist es lib",
-    "lint": "run-s lint:ts lint:style",
-    "lint:ts": "eslint 'src/**/*.{js,ts}?(x)' --fix",
-    "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
-    "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
-    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
-    "build:umd": "rollup -c",
-    "build:watch": "yarn build:esm --w",
-    "build:watch:esm": "yarn build:esm --w",
-    "build:watch:cjs": "yarn build:cjs --w",
-    "build:ts": "run-p build:cjs build:esm build:umd",
+    "clean:turbo": "rss",
+    "clean:build": "rss",
+    "clean:coverage": "rss",
+    "clean": "rss",
+    "build:esm": "rss",
+    "build:cjs": "rss",
+    "build:umd": "rollup -c --bundleConfigAsCjs",
+    "build:dev": "rss",
+    "build:watch": "rss",
+    "build:watch:esm": "rss",
+    "build:watch:cjs": "rss",
+    "build:ts": "run-p -s build:cjs build:esm build:umd",
     "build:less": "node ./scripts/less.js",
-    "build": "run-s build:ts build:less",
-    "prebuild": "run-s lint clean",
-    "prepare": "yarn build",
-    "precommit": "lint-staged"
+    "build": "run-s -s build:ts build:less",
+    "prebuild": "rss",
+    "test": "rss",
+    "coveralls": "rss",
+    "pretest": "rss"
   },
   "keywords": [
     "component",
@@ -44,26 +47,10 @@
     "ui",
     "antv"
   ],
-  "lint-staged": {
-    "src/**/*.ts": [
-      "eslint --fix"
-    ],
-    "src/**/*.less": [
-      "stylelint --syntax less --fix"
-    ]
-  },
-  "inherits": [
-    "@antv/x6-package-json/cli.json",
-    "@antv/x6-package-json/antd.json",
-    "@antv/x6-package-json/react.json",
-    "@antv/x6-package-json/less.json",
-    "@antv/x6-package-json/eslint.json",
-    "@antv/x6-package-json/rollup.json"
-  ],
   "peerDependencies": {
     "antd": ">=4.4.2",
-    "react": ">=16.8.6 || >=17.0.0",
-    "react-dom": ">=16.8.6 || >=17.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
     "clamp": "^1.0.1",
@@ -71,65 +58,23 @@
     "rc-dropdown": "^3.0.0-alpha.0",
     "rc-util": "^4.15.7",
     "react-color": "2.17.1",
-    "react-resize-detector": "^7.0.0",
+    "react-resize-detector": "^6.6.4",
     "ua-parser-js": "^0.7.20"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "@rollup/plugin-replace": "^3.0.0",
-    "@rollup/plugin-typescript": "^8.2.5",
-    "@types/node": "^16.9.1",
-    "@types/react": "^16.9.13",
+    "@types/react": "^18.0.25",
     "@types/react-color": "^3.0.1",
+    "@types/react-dom": "^18.0.0",
     "@types/react-resize-detector": "^5.0.0",
     "@types/ua-parser-js": "^0.7.33",
-    "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
     "antd": "^4.4.2",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jest": "^24.4.0",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-react": "^7.25.1",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-unicorn": "^36.0.0",
-    "fs-extra": "^10.0.0",
-    "less": "^4.1.1",
-    "lint-staged": "^11.1.2",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.3.6",
-    "prettier": "^2.4.0",
-    "pretty-quick": "^3.1.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.56.3",
-    "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-filesize": "^9.1.1",
-    "rollup-plugin-postcss": "^4.0.1",
-    "rollup-plugin-progress": "^1.1.2",
-    "rollup-plugin-terser": "^7.0.2",
-    "stylelint": "^13.13.1",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-config-standard": "^22.0.0",
-    "stylelint-declaration-block-no-ignored-properties": "^2.4.0",
-    "stylelint-order": "^4.1.0",
-    "ts-node": "^10.2.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.3"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "author": {
     "name": "bubkoo",
     "email": "bubkoo.wy@gmail.com"
   },
-  "contributors": [],
   "license": "MIT",
   "homepage": "https://github.com/antvis/x6",
   "bugs": {
@@ -143,5 +88,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "gitHead": "576fa342fa65a6867ead29f6801a30dcb31bcdb5"
 }

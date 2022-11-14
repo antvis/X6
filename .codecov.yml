@@ -11,11 +11,10 @@ coverage:
         threshold: 1%
         flags:
           - x6
-      x6-vector:
+      x6-common:
         threshold: 1%
-        target: 80% # will fail a Pull Request if coverage is less than 80%
         flags:
-          - x6-vector
+          - x6-common
       x6-geometry:
         threshold: 1%
         flags:
@@ -26,9 +25,9 @@ flags:
     paths:
       # filter the folder(s) you wish to measure by that flag
       - packages/x6
-  x6-vector:
+  x6-common:
     paths:
-      - packages/x6-vector
+      - packages/x6-common
   x6-geometry:
     paths:
       - packages/x6-geometry

@@ -105,6 +105,7 @@ export class FitToContentCard extends React.Component<
   }
 }
 
+// eslint-disable-next-line
 export namespace FitToContentCard {
   export interface Props {
     onChange: (options: State) => void

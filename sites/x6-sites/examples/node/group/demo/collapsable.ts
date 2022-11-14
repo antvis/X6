@@ -1,7 +1,7 @@
 import { Graph, Node } from '@antv/x6'
 
 class Group extends Node {
-  private collapsed: boolean = false
+  private collapsed = false
   private expandSize: { width: number; height: number }
 
   protected postprocess() {

@@ -1,39 +1,44 @@
 import React from 'react'
-import { Graph, Shape } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import '../../index.less'
 
-Shape.Rect.config({
-  attrs: {
-    body: {
-      fill: '#f5f5f5',
-      stroke: '#d9d9d9',
-      strokeWidth: 1,
+Graph.registerNode(
+  'custom-port-rect',
+  {
+    inherit: 'rect',
+    attrs: {
+      body: {
+        fill: '#f5f5f5',
+        stroke: '#d9d9d9',
+        strokeWidth: 1,
+      },
     },
+    ports: {
+      groups: {
+        in: {
+          position: { name: 'top' },
+        },
+        out: {
+          position: { name: 'bottom' },
+        },
+      },
+    },
+    portMarkup: [
+      {
+        tagName: 'circle',
+        selector: 'portBody',
+        attrs: {
+          r: 5,
+          magnet: true,
+          stroke: '#31d0c6',
+          fill: '#fff',
+          strokeWidth: 2,
+        },
+      },
+    ],
   },
-  ports: {
-    groups: {
-      in: {
-        position: { name: 'top' },
-      },
-      out: {
-        position: { name: 'bottom' },
-      },
-    },
-  },
-  portMarkup: [
-    {
-      tagName: 'circle',
-      selector: 'portBody',
-      attrs: {
-        r: 5,
-        magnet: true,
-        stroke: '#31d0c6',
-        fill: '#fff',
-        strokeWidth: 2,
-      },
-    },
-  ],
-})
+  true,
+)
 
 const magnetAvailabilityHighlighter = {
   name: 'stroke',
@@ -54,7 +59,6 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 400,
-      // grid: true,
       highlighting: {
         magnetAvailable: magnetAvailabilityHighlighter,
       },
@@ -91,6 +95,7 @@ export default class Example extends React.Component {
     })
 
     const source = graph.addNode({
+      shape: 'custom-port-rect',
       x: 40,
       y: 40,
       width: 100,
@@ -104,6 +109,7 @@ export default class Example extends React.Component {
     })
 
     const target = graph.addNode({
+      shape: 'custom-port-rect',
       x: 140,
       y: 240,
       width: 100,
@@ -117,6 +123,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
+      shape: 'custom-port-rect',
       x: 320,
       y: 120,
       width: 100,

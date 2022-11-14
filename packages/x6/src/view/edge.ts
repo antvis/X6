@@ -1,15 +1,20 @@
-import { KeyValue } from '../types'
-import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
 import {
-  StringExt,
+  Rectangle,
+  Polyline,
+  Point,
+  Angle,
+  Path,
+  Line,
+} from '@antv/x6-geometry'
+import {
   ObjectExt,
   NumberExt,
   FunctionExt,
   Dom,
   Vector,
-} from '../util'
+  KeyValue,
+} from '@antv/x6-common'
 import {
-  Attr,
   Router,
   Connector,
   NodeAnchor,
@@ -22,6 +27,8 @@ import { Markup } from './markup'
 import { CellView } from './cell'
 import { NodeView } from './node'
 import { ToolsView } from './tool'
+import { Graph } from '../graph'
+import { Options as GraphOptions } from '../graph/options'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -34,18 +41,16 @@ export class EdgeView<
   public targetAnchor: Point
   public sourcePoint: Point
   public targetPoint: Point
+  public sourceMarkerPoint: Point
+  public targetMarkerPoint: Point
   public sourceView: CellView | null
   public targetView: CellView | null
   public sourceMagnet: Element | null
   public targetMagnet: Element | null
-  protected toolCache: Element
-  protected tool2Cache: Element
-  protected readonly markerCache: {
-    sourcePoint?: Point
-    targetPoint?: Point
-    sourceBBox?: Rectangle
-    targetBBox?: Rectangle
-  } = {}
+
+  protected labelContainer: Element | null
+  protected labelCache: { [index: number]: Element }
+  protected labelSelectors: { [index: number]: Markup.Selectors }
 
   protected get [Symbol.toStringTag]() {
     return EdgeView.toStringTag
@@ -118,91 +123,27 @@ export class EdgeView<
 
     if (this.hasAction(ref, 'render')) {
       this.render()
-      ref = this.removeAction(ref, [
-        'render',
-        'update',
-        'vertices',
-        'labels',
-        'tools',
-        'widget',
-      ])
+      ref = this.removeAction(ref, ['render', 'update', 'labels', 'tools'])
       return ref
     }
-
-    ref = this.handleAction(ref, 'vertices', () => this.renderVertexMarkers())
-    ref = this.handleAction(ref, 'update', () => this.update(null, options))
+    ref = this.handleAction(ref, 'update', () => this.update(options))
     ref = this.handleAction(ref, 'labels', () => this.onLabelsChange(options))
-    ref = this.handleAction(ref, 'tools', () => {
-      this.renderTools()
-      this.updateToolsPosition()
-    })
-    ref = this.handleAction(ref, 'widget', () => this.renderExternalTools())
+    ref = this.handleAction(ref, 'tools', () => this.renderTools())
 
     return ref
   }
 
-  onLabelsChange(options: any = {}) {
-    // Note: this optimization works in async=false mode only
-    if (this.shouldRerenderLabels(options)) {
-      this.renderLabels()
-    } else {
-      this.updateLabels()
-    }
-
-    this.updateLabelPositions()
-  }
-
-  protected shouldRerenderLabels(options: any = {}) {
-    const previousLabels = this.cell.previous('labels')
-    if (previousLabels == null) {
-      return true
-    }
-
-    // Here is an optimization for cases when we know, that change does
-    // not require re-rendering of all labels.
-    if ('propertyPathArray' in options && 'propertyValue' in options) {
-      // The label is setting by `prop()` method
-      const pathArray = options.propertyPathArray || []
-      const pathLength = pathArray.length
-      if (pathLength > 1) {
-        // We are changing a single label here e.g. 'labels/0/position'
-        const index = pathArray[1]
-        if (previousLabels[index]) {
-          if (pathLength === 2) {
-            // We are changing the entire label. Need to check if the
-            // markup is also being changed.
-            return (
-              typeof options.propertyValue === 'object' &&
-              ObjectExt.has(options.propertyValue, 'markup')
-            )
-          }
-
-          // We are changing a label property but not the markup
-          if (pathArray[2] !== 'markup') {
-            return false
-          }
-        }
-      }
-    }
-
-    return true
-  }
-
   // #region render
-
-  protected containers: EdgeView.ContainerCache
-
-  protected labelCache: { [index: number]: Element }
-
-  protected labelSelectors: { [index: number]: Markup.Selectors }
-
   render() {
     this.empty()
-    this.containers = {}
+
     this.renderMarkup()
+
+    this.labelContainer = null
     this.renderLabels()
+
     this.update()
-    this.renderExternalTools()
+    this.renderTools()
 
     return this
   }
@@ -211,7 +152,7 @@ export class EdgeView<
     const markup = this.cell.markup
     if (markup) {
       if (typeof markup === 'string') {
-        return this.renderStringMarkup(markup)
+        throw new TypeError('Not support string markup.')
       }
       return this.renderJSONMarkup(markup)
     }
@@ -224,33 +165,32 @@ export class EdgeView<
     this.container.append(ret.fragment)
   }
 
-  protected renderStringMarkup(markup: string) {
-    const cache = this.containers
-    const children = Vector.createVectors(markup)
-    // Cache children elements for quicker access.
-    children.forEach((child) => {
-      const className = child.attr('class')
-      if (className) {
-        cache[StringExt.camelCase(className) as keyof EdgeView.ContainerCache] =
-          child.node
+  protected customizeLabels() {
+    if (this.labelContainer) {
+      const edge = this.cell
+      const labels = edge.labels
+      for (let i = 0, n = labels.length; i < n; i += 1) {
+        const label = labels[i]
+        const container = this.labelCache[i]
+        const selectors = this.labelSelectors[i]
+        const onEdgeLabelRendered = this.graph.options.onEdgeLabelRendered
+        if (onEdgeLabelRendered) {
+          onEdgeLabelRendered({
+            edge,
+            label,
+            container,
+            selectors,
+          })
+        }
       }
-    })
-
-    this.renderTools()
-    this.renderVertexMarkers()
-    this.renderArrowheadMarkers()
-
-    Dom.append(
-      this.container,
-      children.map((child) => child.node),
-    )
+    }
   }
 
   protected renderLabels() {
     const edge = this.cell
     const labels = edge.getLabels()
     const count = labels.length
-    let container = this.containers.labels
+    let container = this.labelContainer
 
     this.labelCache = {}
     this.labelSelectors = {}
@@ -267,7 +207,7 @@ export class EdgeView<
     } else {
       container = Dom.createSvgElement('g')
       this.addClass(this.prefixClassName('edge-labels'), container)
-      this.containers.labels = container
+      this.labelContainer = container
     }
 
     for (let i = 0, ii = labels.length; i < ii; i += 1) {
@@ -313,6 +253,52 @@ export class EdgeView<
     return this
   }
 
+  onLabelsChange(options: any = {}) {
+    if (this.shouldRerenderLabels(options)) {
+      this.renderLabels()
+    } else {
+      this.updateLabels()
+    }
+
+    this.updateLabelPositions()
+  }
+
+  protected shouldRerenderLabels(options: any = {}) {
+    const previousLabels = this.cell.previous('labels')
+    if (previousLabels == null) {
+      return true
+    }
+
+    // Here is an optimization for cases when we know, that change does
+    // not require re-rendering of all labels.
+    if ('propertyPathArray' in options && 'propertyValue' in options) {
+      // The label is setting by `prop()` method
+      const pathArray = options.propertyPathArray || []
+      const pathLength = pathArray.length
+      if (pathLength > 1) {
+        // We are changing a single label here e.g. 'labels/0/position'
+        const index = pathArray[1]
+        if (previousLabels[index]) {
+          if (pathLength === 2) {
+            // We are changing the entire label. Need to check if the
+            // markup is also being changed.
+            return (
+              typeof options.propertyValue === 'object' &&
+              ObjectExt.has(options.propertyValue, 'markup')
+            )
+          }
+
+          // We are changing a label property but not the markup
+          if (pathArray[2] !== 'markup') {
+            return false
+          }
+        }
+      }
+    }
+
+    return true
+  }
+
   protected parseLabelMarkup(markup?: Markup) {
     if (markup) {
       if (typeof markup === 'string') {
@@ -353,8 +339,6 @@ export class EdgeView<
     let vel
     const childNodes = fragment.childNodes
     if (childNodes.length > 1 || childNodes[0].nodeName.toUpperCase() !== 'G') {
-      // default markup fragment is not wrapped in `<g/>`
-      // add a `<g/>` container
       vel = Vector.create('g').append(fragment)
     } else {
       vel = Vector.create(childNodes[0] as SVGElement)
@@ -369,7 +353,7 @@ export class EdgeView<
   }
 
   protected updateLabels() {
-    if (this.containers.labels) {
+    if (this.labelContainer) {
       const edge = this.cell
       const labels = edge.labels
       const canLabelMove = this.can('edgeLabelMovable')
@@ -391,134 +375,9 @@ export class EdgeView<
     }
   }
 
-  protected mergeLabelAttrs(
-    hasCustomMarkup: boolean,
-    labelAttrs?: Attr.CellAttrs | null,
-    defaultLabelAttrs?: Attr.CellAttrs | null,
-  ) {
-    if (labelAttrs === null) {
-      return null
-    }
-
-    if (labelAttrs === undefined) {
-      if (defaultLabelAttrs === null) {
-        return null
-      }
-      if (defaultLabelAttrs === undefined) {
-        return undefined
-      }
-
-      if (hasCustomMarkup) {
-        return defaultLabelAttrs
-      }
-
-      return ObjectExt.merge({}, defaultLabelAttrs)
-    }
-
-    if (hasCustomMarkup) {
-      return ObjectExt.merge({}, defaultLabelAttrs, labelAttrs)
-    }
-  }
-
-  protected customizeLabels() {
-    if (this.containers.labels) {
-      const edge = this.cell
-      const labels = edge.labels
-      for (let i = 0, n = labels.length; i < n; i += 1) {
-        const label = labels[i]
-        const container = this.labelCache[i]
-        const selectors = this.labelSelectors[i]
-        this.graph.hook.onEdgeLabelRendered({
-          edge,
-          label,
-          container,
-          selectors,
-        })
-      }
-    }
-  }
-
   protected renderTools() {
-    const container = this.containers.tools
-    if (container == null) {
-      return this
-    }
-
-    const markup = this.cell.toolMarkup
-    const $container = this.$(container).empty()
-
-    if (Markup.isStringMarkup(markup)) {
-      let template = StringExt.template(markup)
-      const tool = Vector.create(template())
-
-      $container.append(tool.node)
-      this.toolCache = tool.node
-
-      // If `doubleTools` is enabled, we render copy of the tools on the
-      // other side of the edge as well but only if the edge is longer
-      // than `longLength`.
-      if (this.options.doubleTools) {
-        let tool2
-        const doubleToolMarkup = this.cell.doubleToolMarkup
-        if (Markup.isStringMarkup(doubleToolMarkup)) {
-          template = StringExt.template(doubleToolMarkup)
-          tool2 = Vector.create(template())
-        } else {
-          tool2 = tool.clone()
-        }
-
-        $container.append(tool2.node)
-        this.tool2Cache = tool2.node
-      }
-    }
-
-    return this
-  }
-
-  protected renderExternalTools() {
     const tools = this.cell.getTools()
     this.addTools(tools as ToolsView.Options)
-    return this
-  }
-
-  renderVertexMarkers() {
-    const container = this.containers.vertices
-    if (container == null) {
-      return this
-    }
-
-    const markup = this.cell.vertexMarkup
-    const $container = this.$(container).empty()
-    if (Markup.isStringMarkup(markup)) {
-      const template = StringExt.template(markup)
-      this.cell.getVertices().forEach((vertex, index) => {
-        $container.append(Vector.create(template({ index, ...vertex })).node)
-      })
-    }
-
-    return this
-  }
-
-  renderArrowheadMarkers() {
-    const container = this.containers.arrowheads
-    if (container == null) {
-      return this
-    }
-
-    const markup = this.cell.arrowheadMarkup
-    const $container = this.$(container).empty()
-
-    if (Markup.isStringMarkup(markup)) {
-      const template = StringExt.template(markup)
-      const sourceArrowhead = Vector.create(template({ end: 'source' })).node
-      const targetArrowhead = Vector.create(template({ end: 'target' })).node
-
-      this.containers.sourceArrowhead = sourceArrowhead
-      this.containers.targetArrowhead = targetArrowhead
-
-      $container.append(sourceArrowhead, targetArrowhead)
-    }
-
     return this
   }
 
@@ -526,22 +385,18 @@ export class EdgeView<
 
   // #region updating
 
-  update(partialAttrs?: Attr.CellAttrs | null, options: any = {}) {
+  update(options: any = {}) {
     this.cleanCache()
     this.updateConnection(options)
 
     const attrs = this.cell.getAttrs()
     if (attrs != null) {
       this.updateAttrs(this.container, attrs, {
-        attrs: partialAttrs === attrs ? null : partialAttrs,
         selectors: this.selectors,
       })
     }
 
-    this.updateConnectionPath()
     this.updateLabelPositions()
-    this.updateToolsPosition()
-    this.updateArrowheadMarkers()
     this.updateTools(options)
 
     return this
@@ -568,26 +423,6 @@ export class EdgeView<
     // Removes first and last polyline points again (source/target anchors).
     edge.setVertices(simplifiedPoints.slice(1, simplifiedCount - 1), options)
     return rawCount - simplifiedCount
-  }
-
-  updateConnectionPath() {
-    const containers = this.containers
-    if (containers.connection) {
-      const pathData = this.getConnectionPathData()
-      containers.connection.setAttribute('d', pathData)
-    }
-
-    if (containers.connectionWrap) {
-      const pathData = this.getConnectionPathData()
-      containers.connectionWrap.setAttribute('d', pathData)
-    }
-
-    if (containers.sourceMarker && containers.targetMarker) {
-      this.translateAndAutoOrientArrows(
-        containers.sourceMarker,
-        containers.targetMarker,
-      )
-    }
   }
 
   getTerminalView(type: Edge.TerminalType) {
@@ -656,6 +491,7 @@ export class EdgeView<
 
     // The edge is being translated by an ancestor that will shift
     // source, target and vertices by an equal distance.
+    // todo isFragmentDescendantOf is invalid
     if (
       options.translateBy &&
       edge.isFragmentDescendantOf(options.translateBy)
@@ -970,22 +806,6 @@ export class EdgeView<
     return connectionPoint ? connectionPoint.round(this.POINT_ROUNDING) : anchor
   }
 
-  protected updateMarkerAttr(type: Edge.TerminalType) {
-    const attrs = this.cell.getAttrs()
-    const key = `.${type}-marker`
-    const partial = attrs && attrs[key]
-    if (partial) {
-      this.updateAttrs(
-        this.container,
-        {},
-        {
-          attrs: { [key]: partial },
-          selectors: this.selectors,
-        },
-      )
-    }
-  }
-
   protected findMarkerPoints(
     routePoints: Point[],
     sourcePoint: Point,
@@ -1010,63 +830,25 @@ export class EdgeView<
 
     const firstRoutePoint = routePoints[0]
     const lastRoutePoint = routePoints[routePoints.length - 1]
-    const sourceMarkerElem = this.containers.sourceMarker as SVGElement
-    const targetMarkerElem = this.containers.targetMarker as SVGElement
-    const cache = this.markerCache
     let sourceMarkerPoint
     let targetMarkerPoint
 
-    // Move the source point by the width of the marker taking into
-    // account its scale around x-axis. Note that scale is the only
-    // transform that makes sense to be set in `.marker-source`
-    // attributes object as all other transforms (translate/rotate)
-    // will be replaced by the `translateAndAutoOrient()` function.
-    if (sourceMarkerElem) {
-      this.updateMarkerAttr('source')
-      // support marker connection point registry???
-      cache.sourceBBox = cache.sourceBBox || Dom.getBBox(sourceMarkerElem)
-      if (cache.sourceBBox.width > 0) {
-        const scale = Dom.scale(sourceMarkerElem)
-        sourceMarkerPoint = sourcePoint
-          .clone()
-          .move(
-            firstRoutePoint || targetPoint,
-            cache.sourceBBox.width * scale.sx * -1,
-          )
-      }
-    } else {
-      const strokeWidth = getLineWidth('source')
-      if (strokeWidth) {
-        sourceMarkerPoint = sourcePoint
-          .clone()
-          .move(firstRoutePoint || targetPoint, -strokeWidth)
-      }
+    const sourceStrokeWidth = getLineWidth('source')
+    if (sourceStrokeWidth) {
+      sourceMarkerPoint = sourcePoint
+        .clone()
+        .move(firstRoutePoint || targetPoint, -sourceStrokeWidth)
     }
 
-    if (targetMarkerElem) {
-      this.updateMarkerAttr('target')
-      cache.targetBBox = cache.targetBBox || Dom.getBBox(targetMarkerElem)
-      if (cache.targetBBox.width > 0) {
-        const scale = Dom.scale(targetMarkerElem)
-        targetMarkerPoint = targetPoint
-          .clone()
-          .move(
-            lastRoutePoint || sourcePoint,
-            cache.targetBBox.width * scale.sx * -1,
-          )
-      }
-    } else {
-      const strokeWidth = getLineWidth('target')
-      if (strokeWidth) {
-        targetMarkerPoint = targetPoint
-          .clone()
-          .move(lastRoutePoint || sourcePoint, -strokeWidth)
-      }
+    const targetStrokeWidth = getLineWidth('target')
+    if (targetStrokeWidth) {
+      targetMarkerPoint = targetPoint
+        .clone()
+        .move(lastRoutePoint || sourcePoint, -targetStrokeWidth)
     }
 
-    // If there was no markup for the marker, use the connection point.
-    cache.sourcePoint = sourceMarkerPoint || sourcePoint.clone()
-    cache.targetPoint = targetMarkerPoint || targetPoint.clone()
+    this.sourceMarkerPoint = sourceMarkerPoint || sourcePoint.clone()
+    this.targetMarkerPoint = targetMarkerPoint || targetPoint.clone()
 
     return {
       source: sourceMarkerPoint,
@@ -1117,21 +899,16 @@ export class EdgeView<
   }
 
   protected translateConnectionPoints(tx: number, ty: number) {
-    const cache = this.markerCache
-    if (cache.sourcePoint) {
-      cache.sourcePoint.translate(tx, ty)
-    }
-    if (cache.targetPoint) {
-      cache.targetPoint.translate(tx, ty)
-    }
     this.sourcePoint.translate(tx, ty)
     this.targetPoint.translate(tx, ty)
     this.sourceAnchor.translate(tx, ty)
     this.targetAnchor.translate(tx, ty)
+    this.sourceMarkerPoint.translate(tx, ty)
+    this.targetMarkerPoint.translate(tx, ty)
   }
 
   updateLabelPositions() {
-    if (this.containers.labels == null) {
+    if (this.labelContainer == null) {
       return this
     }
 
@@ -1162,86 +939,6 @@ export class EdgeView<
         'transform',
         Dom.matrixToTransformString(matrix),
       )
-    }
-
-    return this
-  }
-
-  updateToolsPosition() {
-    if (this.containers.tools == null) {
-      return this
-    }
-
-    // Move the tools a bit to the target position but don't cover the
-    // `sourceArrowhead` marker. Note that the offset is hardcoded here.
-    // The offset should be always more than the
-    // `this.$('.marker-arrowhead[end="source"]')[0].bbox().width` but looking
-    // this up all the time would be slow.
-
-    let scale = ''
-    let offset = this.options.toolsOffset
-    const connectionLength = this.getConnectionLength()
-
-    // Firefox returns `connectionLength=NaN` in odd cases (for bezier curves).
-    // In that case we won't update tools position at all.
-    if (connectionLength != null) {
-      // If the edge is too short, make the tools half the
-      // size and the offset twice as low.
-      if (connectionLength < this.options.shortLength) {
-        scale = 'scale(.5)'
-        offset /= 2
-      }
-
-      let pos = this.getPointAtLength(offset)
-      if (pos != null) {
-        Dom.attr(
-          this.toolCache,
-          'transform',
-          `translate(${pos.x},${pos.y}) ${scale}`,
-        )
-      }
-
-      if (
-        this.options.doubleTools &&
-        connectionLength >= this.options.longLength
-      ) {
-        const doubleToolsOffset = this.options.doubleToolsOffset || offset
-
-        pos = this.getPointAtLength(connectionLength - doubleToolsOffset)
-        if (pos != null) {
-          Dom.attr(
-            this.tool2Cache,
-            'transform',
-            `translate(${pos.x},${pos.y}) ${scale}`,
-          )
-        }
-        Dom.attr(this.tool2Cache, 'visibility', 'visible')
-      } else if (this.options.doubleTools) {
-        Dom.attr(this.tool2Cache, 'visibility', 'hidden')
-      }
-    }
-
-    return this
-  }
-
-  updateArrowheadMarkers() {
-    const container = this.containers.arrowheads
-    if (container == null) {
-      return this
-    }
-
-    if ((container as HTMLElement).style.display === 'none') {
-      return this
-    }
-
-    const sourceArrowhead = this.containers.sourceArrowhead
-    const targetArrowhead = this.containers.targetArrowhead
-    if (sourceArrowhead && targetArrowhead) {
-      const len = this.getConnectionLength() || 0
-      const sx = len < this.options.shortLength ? 0.5 : 1
-      Dom.scale(sourceArrowhead as SVGElement, sx)
-      Dom.scale(targetArrowhead as SVGElement, sx)
-      this.translateAndAutoOrientArrows(sourceArrowhead, targetArrowhead)
     }
 
     return this
@@ -1291,30 +988,6 @@ export class EdgeView<
     }
   }
 
-  protected translateAndAutoOrientArrows(
-    sourceArrow?: Element,
-    targetArrow?: Element,
-  ) {
-    const route = this.routePoints
-    if (sourceArrow) {
-      Dom.translateAndAutoOrient(
-        sourceArrow as SVGElement,
-        this.sourcePoint,
-        route[0] || this.targetPoint,
-        this.graph.view.stage,
-      )
-    }
-
-    if (targetArrow) {
-      Dom.translateAndAutoOrient(
-        targetArrow as SVGElement,
-        this.targetPoint,
-        route[route.length - 1] || this.sourcePoint,
-        this.graph.view.stage,
-      )
-    }
-  }
-
   protected getLabelPositionAngle(idx: number) {
     const label = this.cell.getLabelAt(idx)
     if (label && label.position && typeof label.position === 'object') {
@@ -1341,8 +1014,6 @@ export class EdgeView<
     }
   }
 
-  // merge default label position args into label position args
-  // keep `undefined` or `null` because `{}` means something else
   protected mergeLabelPositionArgs(
     labelPositionArgs?: Edge.LabelPositionOptions,
     defaultLabelPositionArgs?: Edge.LabelPositionOptions,
@@ -1358,212 +1029,6 @@ export class EdgeView<
     }
 
     return ObjectExt.merge({}, defaultLabelPositionArgs, labelPositionArgs)
-  }
-
-  // Add default label at given position at end of `labels` array.
-  addLabel(
-    x: number,
-    y: number,
-    options?: Edge.LabelPositionOptions & Edge.SetOptions,
-  ): number
-  addLabel(
-    x: number,
-    y: number,
-    angle: number,
-    options?: Edge.LabelPositionOptions & Edge.SetOptions,
-  ): number
-  addLabel(
-    p: Point | Point.PointLike,
-    options?: Edge.LabelPositionOptions & Edge.SetOptions,
-  ): number
-  addLabel(
-    p: Point | Point.PointLike,
-    angle: number,
-    options?: Edge.LabelPositionOptions & Edge.SetOptions,
-  ): number
-  addLabel(
-    p1: number | Point | Point.PointLike,
-    p2?: number | (Edge.LabelPositionOptions & Edge.SetOptions),
-    p3?: number | (Edge.LabelPositionOptions & Edge.SetOptions),
-    options?: Edge.LabelPositionOptions & Edge.SetOptions,
-  ) {
-    let localX: number
-    let localY: number
-    let localAngle = 0
-    let localOptions
-
-    if (typeof p1 !== 'number') {
-      localX = p1.x
-      localY = p1.y
-      if (typeof p2 === 'number') {
-        localAngle = p2
-        localOptions = p3
-      } else {
-        localOptions = p2
-      }
-    } else {
-      localX = p1
-      localY = p2 as number
-      if (typeof p3 === 'number') {
-        localAngle = p3
-        localOptions = options
-      } else {
-        localOptions = p3
-      }
-    }
-
-    // merge label position arguments
-    const defaultLabelPositionArgs = this.getDefaultLabelPositionArgs()
-    const labelPositionArgs = localOptions as Edge.LabelPositionOptions
-    const positionArgs = this.mergeLabelPositionArgs(
-      labelPositionArgs,
-      defaultLabelPositionArgs,
-    )
-
-    // append label to labels array
-    const label = {
-      position: this.getLabelPosition(localX, localY, localAngle, positionArgs),
-    }
-    const index = -1
-    this.cell.insertLabel(label, index, localOptions as Edge.SetOptions)
-    return index
-  }
-
-  addVertex(p: Point | Point.PointLike, options?: Edge.SetOptions): number
-  addVertex(x: number, y: number, options?: Edge.SetOptions): number
-  addVertex(
-    x: number | Point | Point.PointLike,
-    y?: number | Edge.SetOptions,
-    options?: Edge.SetOptions,
-  ) {
-    const isPoint = typeof x !== 'number'
-    const localX = isPoint ? (x as Point).x : (x as number)
-    const localY = isPoint ? (x as Point).y : (y as number)
-    const localOptions = isPoint ? (y as Edge.SetOptions) : options
-    const vertex = { x: localX, y: localY }
-    const index = this.getVertexIndex(localX, localY)
-    this.cell.insertVertex(vertex, index, localOptions)
-    return index
-  }
-
-  sendToken(
-    token: string | SVGElement,
-    options?:
-      | number
-      | ({
-          duration?: number
-          reversed?: boolean
-          selector?: string
-          // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rotate
-          rotate?: boolean | number | 'auto' | 'auto-reverse'
-          // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/calcMode
-          timing?: 'linear' | 'discrete' | 'paced' | 'spline'
-        } & Dom.AnimateCallbacks &
-          KeyValue<string | number | undefined>),
-    callback?: () => void,
-  ) {
-    let duration
-    let reversed
-    let selector
-    let rorate
-    let timing = 'linear'
-
-    if (typeof options === 'object') {
-      duration = options.duration
-      reversed = options.reversed === true
-      selector = options.selector
-      if (options.rotate === false) {
-        rorate = ''
-      } else if (options.rotate === true) {
-        rorate = 'auto'
-      } else if (options.rotate != null) {
-        rorate = `${options.rotate}`
-      }
-
-      if (options.timing) {
-        timing = options.timing
-      }
-    } else {
-      duration = options
-      reversed = false
-      selector = null
-    }
-
-    duration = duration || 1000
-
-    const attrs: Dom.AnimationOptions = {
-      dur: `${duration}ms`,
-      repeatCount: '1',
-      calcMode: timing,
-      fill: 'freeze',
-    }
-
-    if (rorate) {
-      attrs.rotate = rorate
-    }
-
-    if (reversed) {
-      attrs.keyPoints = '1;0'
-      attrs.keyTimes = '0;1'
-    }
-
-    if (typeof options === 'object') {
-      const { duration, reversed, selector, rotate, timing, ...others } =
-        options
-      Object.keys(others).forEach((key) => {
-        attrs[key] = others[key]
-      })
-    }
-
-    let path
-    if (typeof selector === 'string') {
-      path = this.findOne(selector, this.container, this.selectors)
-    } else {
-      // Select connection path automatically.
-      path = this.containers.connection
-        ? this.containers.connection
-        : this.container.querySelector('path')
-    }
-
-    if (!(path instanceof SVGPathElement)) {
-      throw new Error('Token animation requires a valid connection path.')
-    }
-
-    const target = typeof token === 'string' ? this.findOne(token) : token
-    if (target == null) {
-      throw new Error('Token animation requires a valid token element.')
-    }
-
-    const parent = target.parentNode
-    const revert = () => {
-      if (!parent) {
-        Dom.remove(target)
-      }
-    }
-
-    const vToken = Vector.create(target as SVGElement)
-    if (!parent) {
-      vToken.appendTo(this.graph.view.stage)
-    }
-
-    const onComplete = attrs.complete
-    attrs.complete = (e: Event) => {
-      revert()
-
-      if (callback) {
-        callback()
-      }
-
-      if (onComplete) {
-        onComplete(e)
-      }
-    }
-
-    const stop = vToken.animateAlongPath(attrs, path)
-    return () => {
-      revert()
-      stop()
-    }
   }
 
   // #endregion
@@ -1685,7 +1150,6 @@ export class EdgeView<
     })
   }
 
-  // Get label position object based on two provided coordinates, x and y.
   getLabelPosition(
     x: number,
     y: number,
@@ -1850,11 +1314,6 @@ export class EdgeView<
       .rotate(angle)
   }
 
-  getLabelCoordinates(pos: Edge.LabelPosition) {
-    const matrix = this.getLabelTransformationMatrix(pos)
-    return new Point(matrix.e, matrix.f)
-  }
-
   getVertexIndex(x: number, y: number) {
     const edge = this.cell
     const vertices = edge.getVertices()
@@ -1894,7 +1353,7 @@ export class EdgeView<
   }
 
   protected notifyUnhandledMouseDown(
-    e: JQuery.MouseDownEvent,
+    e: Dom.MouseDownEvent,
     x: number,
     y: number,
   ) {
@@ -1908,83 +1367,43 @@ export class EdgeView<
     })
   }
 
-  notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+  notifyMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
     this.notify('edge:mousedown', this.getEventArgs(e, x, y))
   }
 
-  notifyMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  notifyMouseMove(e: Dom.MouseMoveEvent, x: number, y: number) {
     super.onMouseMove(e, x, y)
     this.notify('edge:mousemove', this.getEventArgs(e, x, y))
   }
 
-  notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+  notifyMouseUp(e: Dom.MouseUpEvent, x: number, y: number) {
     super.onMouseUp(e, x, y)
     this.notify('edge:mouseup', this.getEventArgs(e, x, y))
   }
 
-  onClick(e: JQuery.ClickEvent, x: number, y: number) {
+  onClick(e: Dom.ClickEvent, x: number, y: number) {
     super.onClick(e, x, y)
     this.notify('edge:click', this.getEventArgs(e, x, y))
   }
 
-  onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
+  onDblClick(e: Dom.DoubleClickEvent, x: number, y: number) {
     super.onDblClick(e, x, y)
     this.notify('edge:dblclick', this.getEventArgs(e, x, y))
   }
 
-  onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
+  onContextMenu(e: Dom.ContextMenuEvent, x: number, y: number) {
     super.onContextMenu(e, x, y)
     this.notify('edge:contextmenu', this.getEventArgs(e, x, y))
   }
 
-  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
-    this.notifyMouseDown(e, x, y)
-    const className = e.target.getAttribute('class')
-    switch (className) {
-      case 'vertex': {
-        this.startVertexDragging(e, x, y)
-        return
-      }
-
-      case 'vertex-remove':
-      case 'vertex-remove-area': {
-        this.handleVertexRemoving(e, x, y)
-        return
-      }
-
-      case 'connection':
-      case 'connection-wrap': {
-        this.handleVertexAdding(e, x, y)
-        return
-      }
-
-      case 'arrowhead': {
-        this.startArrowheadDragging(e, x, y)
-        return
-      }
-
-      case 'source-marker':
-      case 'target-marker': {
-        this.notifyUnhandledMouseDown(e, x, y)
-        return
-      }
-
-      default:
-        break
-    }
-
+  onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     this.startEdgeDragging(e, x, y)
   }
 
-  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  onMouseMove(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData(e)
     switch (data.action) {
-      case 'drag-vertex': {
-        this.dragVertex(e, x, y)
-        break
-      }
-
       case 'drag-label': {
         this.dragLabel(e, x, y)
         break
@@ -2008,14 +1427,9 @@ export class EdgeView<
     return data
   }
 
-  onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+  onMouseUp(e: Dom.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData(e)
     switch (data.action) {
-      case 'drag-vertex': {
-        this.stopVertexDragging(e, x, y)
-        break
-      }
-
       case 'drag-label': {
         this.stopLabelDragging(e, x, y)
         break
@@ -2040,27 +1454,27 @@ export class EdgeView<
     return data
   }
 
-  onMouseOver(e: JQuery.MouseOverEvent) {
+  onMouseOver(e: Dom.MouseOverEvent) {
     super.onMouseOver(e)
     this.notify('edge:mouseover', this.getEventArgs(e))
   }
 
-  onMouseOut(e: JQuery.MouseOutEvent) {
+  onMouseOut(e: Dom.MouseOutEvent) {
     super.onMouseOut(e)
     this.notify('edge:mouseout', this.getEventArgs(e))
   }
 
-  onMouseEnter(e: JQuery.MouseEnterEvent) {
+  onMouseEnter(e: Dom.MouseEnterEvent) {
     super.onMouseEnter(e)
     this.notify('edge:mouseenter', this.getEventArgs(e))
   }
 
-  onMouseLeave(e: JQuery.MouseLeaveEvent) {
+  onMouseLeave(e: Dom.MouseLeaveEvent) {
     super.onMouseLeave(e)
     this.notify('edge:mouseleave', this.getEventArgs(e))
   }
 
-  onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+  onMouseWheel(e: Dom.EventObject, x: number, y: number, delta: number) {
     super.onMouseWheel(e, x, y, delta)
     this.notify('edge:mousewheel', {
       delta,
@@ -2068,7 +1482,7 @@ export class EdgeView<
     })
   }
 
-  onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
+  onCustomEvent(e: Dom.MouseDownEvent, name: string, x: number, y: number) {
     // For default edge tool
     const tool = Dom.findParentByClass(e.target, 'edge-tool', this.container)
     if (tool) {
@@ -2081,14 +1495,14 @@ export class EdgeView<
         this.notify('edge:customevent', { name, ...this.getEventArgs(e, x, y) })
       }
 
-      this.notifyMouseDown(e as JQuery.MouseDownEvent, x, y)
+      this.notifyMouseDown(e as Dom.MouseDownEvent, x, y)
     } else {
       this.notify('edge:customevent', { name, ...this.getEventArgs(e, x, y) })
       super.onCustomEvent(e, name, x, y)
     }
   }
 
-  onLabelMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+  onLabelMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     this.notifyMouseDown(e, x, y)
     this.startLabelDragging(e, x, y)
 
@@ -2100,7 +1514,7 @@ export class EdgeView<
 
   // #region drag edge
 
-  protected startEdgeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
+  protected startEdgeDragging(e: Dom.MouseDownEvent, x: number, y: number) {
     if (!this.can('edgeMovable')) {
       this.notifyUnhandledMouseDown(e, x, y)
       return
@@ -2114,7 +1528,7 @@ export class EdgeView<
     })
   }
 
-  protected dragEdge(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  protected dragEdge(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.EdgeDragging>(e)
     if (!data.moving) {
       data.moving = true
@@ -2141,7 +1555,7 @@ export class EdgeView<
     })
   }
 
-  protected stopEdgeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
+  protected stopEdgeDragging(e: Dom.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData<EventData.EdgeDragging>(e)
     if (data.moving) {
       this.removeClass('edge-moving')
@@ -2212,7 +1626,7 @@ export class EdgeView<
     const cellId = (terminal as Edge.TerminalCellData).cell
     if (cellId) {
       let magnet
-      const view = (args[i] = this.graph.renderer.findViewByCell(cellId))
+      const view = (args[i] = this.graph.findViewByCell(cellId))
       if (view) {
         magnet = view.getMagnetFromEdgeTerminal(terminal)
         if (magnet === view.container) {
@@ -2256,6 +1670,230 @@ export class EdgeView<
     }
   }
 
+  protected validateConnection(
+    sourceView: CellView | null | undefined,
+    sourceMagnet: Element | null | undefined,
+    targetView: CellView | null | undefined,
+    targetMagnet: Element | null | undefined,
+    terminalType: Edge.TerminalType,
+    edgeView?: EdgeView | null | undefined,
+    candidateTerminal?: Edge.TerminalCellData | null | undefined,
+  ) {
+    const options = this.graph.options.connecting
+    const allowLoop = options.allowLoop
+    const allowNode = options.allowNode
+    const allowEdge = options.allowEdge
+    const allowPort = options.allowPort
+    const allowMulti = options.allowMulti
+    const validate = options.validateConnection
+
+    const edge = edgeView ? edgeView.cell : null
+    const terminalView = terminalType === 'target' ? targetView : sourceView
+    const terminalMagnet =
+      terminalType === 'target' ? targetMagnet : sourceMagnet
+
+    let valid = true
+    const doValidate = (
+      validate: (
+        this: Graph,
+        args: GraphOptions.ValidateConnectionArgs,
+      ) => boolean,
+    ) => {
+      const sourcePort =
+        terminalType === 'source'
+          ? candidateTerminal
+            ? candidateTerminal.port
+            : null
+          : edge
+          ? edge.getSourcePortId()
+          : null
+      const targetPort =
+        terminalType === 'target'
+          ? candidateTerminal
+            ? candidateTerminal.port
+            : null
+          : edge
+          ? edge.getTargetPortId()
+          : null
+      return FunctionExt.call(validate, this.graph, {
+        edge,
+        edgeView,
+        sourceView,
+        targetView,
+        sourcePort,
+        targetPort,
+        sourceMagnet,
+        targetMagnet,
+        sourceCell: sourceView ? sourceView.cell : null,
+        targetCell: targetView ? targetView.cell : null,
+        type: terminalType,
+      })
+    }
+
+    if (allowLoop != null) {
+      if (typeof allowLoop === 'boolean') {
+        if (!allowLoop && sourceView === targetView) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowLoop)
+      }
+    }
+
+    if (valid && allowPort != null) {
+      if (typeof allowPort === 'boolean') {
+        if (!allowPort && terminalMagnet) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowPort)
+      }
+    }
+
+    if (valid && allowEdge != null) {
+      if (typeof allowEdge === 'boolean') {
+        if (!allowEdge && EdgeView.isEdgeView(terminalView)) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowEdge)
+      }
+    }
+
+    // When judging nodes, the influence of the ports should be excluded,
+    // because the ports and nodes have the same terminalView
+    if (valid && allowNode != null && terminalMagnet == null) {
+      if (typeof allowNode === 'boolean') {
+        if (!allowNode && NodeView.isNodeView(terminalView)) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowNode)
+      }
+    }
+
+    if (valid && allowMulti != null && edgeView) {
+      const edge = edgeView.cell
+      const source =
+        terminalType === 'source'
+          ? candidateTerminal
+          : (edge.getSource() as Edge.TerminalCellData)
+      const target =
+        terminalType === 'target'
+          ? candidateTerminal
+          : (edge.getTarget() as Edge.TerminalCellData)
+      const terminalCell = candidateTerminal
+        ? this.graph.getCellById(candidateTerminal.cell)
+        : null
+
+      if (source && target && source.cell && target.cell && terminalCell) {
+        if (typeof allowMulti === 'function') {
+          valid = doValidate(allowMulti)
+        } else {
+          const connectedEdges = this.graph.model.getConnectedEdges(
+            terminalCell,
+            {
+              outgoing: terminalType === 'source',
+              incoming: terminalType === 'target',
+            },
+          )
+          if (connectedEdges.length) {
+            if (allowMulti === 'withPort') {
+              const exist = connectedEdges.some((link) => {
+                const s = link.getSource() as Edge.TerminalCellData
+                const t = link.getTarget() as Edge.TerminalCellData
+                return (
+                  s &&
+                  t &&
+                  s.cell === source.cell &&
+                  t.cell === target.cell &&
+                  s.port != null &&
+                  s.port === source.port &&
+                  t.port != null &&
+                  t.port === target.port
+                )
+              })
+              if (exist) {
+                valid = false
+              }
+            } else if (!allowMulti) {
+              const exist = connectedEdges.some((link) => {
+                const s = link.getSource() as Edge.TerminalCellData
+                const t = link.getTarget() as Edge.TerminalCellData
+                return (
+                  s && t && s.cell === source.cell && t.cell === target.cell
+                )
+              })
+              if (exist) {
+                valid = false
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (valid && validate != null) {
+      valid = doValidate(validate)
+    }
+
+    return valid
+  }
+
+  protected allowConnectToBlank(edge: Edge) {
+    const graph = this.graph
+    const options = graph.options.connecting
+    const allowBlank = options.allowBlank
+
+    if (typeof allowBlank !== 'function') {
+      return !!allowBlank
+    }
+
+    const edgeView = graph.findViewByCell(edge) as EdgeView
+    const sourceCell = edge.getSourceCell()
+    const targetCell = edge.getTargetCell()
+    const sourceView = graph.findViewByCell(sourceCell)
+    const targetView = graph.findViewByCell(targetCell)
+    return FunctionExt.call(allowBlank, graph, {
+      edge,
+      edgeView,
+      sourceCell,
+      targetCell,
+      sourceView,
+      targetView,
+      sourcePort: edge.getSourcePortId(),
+      targetPort: edge.getTargetPortId(),
+      sourceMagnet: edgeView.sourceMagnet,
+      targetMagnet: edgeView.targetMagnet,
+    })
+  }
+
+  protected validateEdge(
+    edge: Edge,
+    type: Edge.TerminalType,
+    initialTerminal: Edge.TerminalData,
+  ) {
+    const graph = this.graph
+    if (!this.allowConnectToBlank(edge)) {
+      const sourceId = edge.getSourceCellId()
+      const targetId = edge.getTargetCellId()
+      if (!(sourceId && targetId)) {
+        return false
+      }
+    }
+
+    const validate = graph.options.connecting.validateEdge
+    if (validate) {
+      return FunctionExt.call(validate, graph, {
+        edge,
+        type,
+        previous: initialTerminal,
+      })
+    }
+
+    return true
+  }
+
   protected arrowheadDragging(
     target: Element,
     x: number,
@@ -2274,7 +1912,7 @@ export class EdgeView<
         })
       }
 
-      data.currentView = this.graph.renderer.findViewByElem(target)
+      data.currentView = this.graph.findViewByElem(target)
       if (data.currentView) {
         // If we found a view that is under the pointer, we need to find
         // the closest magnet based on the real target element of the event.
@@ -2282,7 +1920,7 @@ export class EdgeView<
 
         if (
           data.currentMagnet &&
-          this.graph.hook.validateConnection(
+          this.validateConnection(
             ...data.getValidateConnectionArgs(
               data.currentView,
               data.currentMagnet,
@@ -2337,25 +1975,23 @@ export class EdgeView<
     data: EventData.ArrowheadDragging,
   ) {
     const graph = this.graph
-    const { snap, allowEdge } = graph.options.connecting
-    const radius = (typeof snap === 'object' && snap.radius) || 50
+    const { snap, allowEdge } = graph.options.connecting;
+    const radius = (typeof snap === 'object' && snap.radius) || 50;
 
     const findViewsOption = {
       x: x - radius,
       y: y - radius,
       width: 2 * radius,
       height: 2 * radius,
-    }
+    };
 
-    const views = graph.renderer.findViewsInArea(findViewsOption)
+    const views = graph.renderer.findViewsInArea(findViewsOption);
 
     if (allowEdge) {
-      const edgeViews = graph.renderer
-        .findEdgeViewsInArea(findViewsOption)
-        .filter((view) => {
-          return view !== this
-        })
-      views.push(...edgeViews)
+      const edgeViews = graph.renderer.findEdgeViewsInArea(findViewsOption).filter( view => {
+        return view != this;
+      });
+      views.push(...edgeViews);
     }
 
     const prevView = data.closestView || null
@@ -2376,7 +2012,7 @@ export class EdgeView<
         if (distance < radius && distance < minDistance) {
           if (
             prevMagnet === view.container ||
-            graph.hook.validateConnection(
+            this.validateConnection(
               ...data.getValidateConnectionArgs(view, null),
               view.getEdgeTerminal(
                 view.container,
@@ -2401,7 +2037,7 @@ export class EdgeView<
           if (distance < radius && distance < minDistance) {
             if (
               prevMagnet === magnet ||
-              graph.hook.validateConnection(
+              this.validateConnection(
                 ...data.getValidateConnectionArgs(view, magnet),
                 view.getEdgeTerminal(
                   magnet,
@@ -2494,7 +2130,7 @@ export class EdgeView<
 
   protected notifyConnectionEvent(
     data: EventData.ArrowheadDragging,
-    e: JQuery.MouseUpEvent,
+    e: Dom.MouseUpEvent,
   ) {
     const terminalType = data.terminalType
     const initialTerminal = data.initialTerminal
@@ -2551,7 +2187,7 @@ export class EdgeView<
     data.marked = {}
 
     for (let i = 0, ii = cells.length; i < ii; i += 1) {
-      const view = graph.renderer.findViewByCell(cells[i])
+      const view = graph.findViewByCell(cells[i])
 
       if (!view) {
         continue
@@ -2566,7 +2202,7 @@ export class EdgeView<
       }
 
       const availableMagnets = magnets.filter((magnet) =>
-        graph.hook.validateConnection(
+        this.validateConnection(
           ...data.getValidateConnectionArgs(view, magnet),
           view.getEdgeTerminal(
             magnet,
@@ -2594,7 +2230,7 @@ export class EdgeView<
   protected unhighlightAvailableMagnets(data: EventData.ArrowheadDragging) {
     const marked = data.marked || {}
     Object.keys(marked).forEach((id) => {
-      const view = this.graph.renderer.findViewByCell(id)
+      const view = this.graph.findViewByCell(id)
 
       if (view) {
         const magnets = marked[id]
@@ -2609,7 +2245,7 @@ export class EdgeView<
   }
 
   protected startArrowheadDragging(
-    e: JQuery.MouseDownEvent,
+    e: Dom.MouseDownEvent,
     x: number,
     y: number,
   ) {
@@ -2624,7 +2260,7 @@ export class EdgeView<
     this.setEventData<EventData.ArrowheadDragging>(e, data)
   }
 
-  protected dragArrowhead(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  protected dragArrowhead(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.ArrowheadDragging>(e)
     if (this.graph.options.connecting.snap) {
       this.snapArrowhead(x, y, data)
@@ -2633,11 +2269,7 @@ export class EdgeView<
     }
   }
 
-  protected stopArrowheadDragging(
-    e: JQuery.MouseUpEvent,
-    x: number,
-    y: number,
-  ) {
+  protected stopArrowheadDragging(e: Dom.MouseUpEvent, x: number, y: number) {
     const graph = this.graph
     const data = this.getEventData<EventData.ArrowheadDragging>(e)
     if (graph.options.connecting.snap) {
@@ -2646,7 +2278,7 @@ export class EdgeView<
       this.arrowheadDragged(data, x, y)
     }
 
-    const valid = graph.hook.validateEdge(
+    const valid = this.validateEdge(
       this.cell,
       data.terminalType,
       data.initialTerminal,
@@ -2667,7 +2299,7 @@ export class EdgeView<
   // #region drag lable
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  startLabelDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
+  startLabelDragging(e: Dom.MouseDownEvent, x: number, y: number) {
     if (this.can('edgeLabelMovable')) {
       const target = e.currentTarget
       const index = parseInt(target.getAttribute('data-index'), 10)
@@ -2694,7 +2326,7 @@ export class EdgeView<
     this.graph.view.delegateDragEvents(e, this)
   }
 
-  dragLabel(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  dragLabel(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.LabelDragging>(e)
     const originLabel = this.cell.getLabelAt(data.index)
     const label = ObjectExt.merge({}, originLabel, {
@@ -2709,88 +2341,14 @@ export class EdgeView<
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  stopLabelDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
+  stopLabelDragging(e: Dom.MouseUpEvent, x: number, y: number) {}
 
   // #endregion
-
-  // #region drag vertex
-
-  handleVertexAdding(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexAddable')) {
-      this.notifyUnhandledMouseDown(e, x, y)
-      return
-    }
-
-    // Store the index at which the new vertex has just been placed.
-    // We'll be update the very same vertex position in `pointermove()`.
-    const index = this.addVertex({ x, y }, { ui: true })
-    this.setEventData(e, {
-      index,
-      action: 'drag-vertex',
-    })
-  }
-
-  handleVertexRemoving(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexDeletable')) {
-      this.notifyUnhandledMouseDown(e, x, y)
-      return
-    }
-
-    const target = e.target
-    const index = parseInt(target.getAttribute('idx'), 10)
-    this.cell.removeVertexAt(index)
-  }
-
-  startVertexDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexMovable')) {
-      this.notifyUnhandledMouseDown(e, x, y)
-      return
-    }
-
-    const target = e.target
-    const index = parseInt(target.getAttribute('idx'), 10)
-    this.setEventData<EventData.VertexDragging>(e, {
-      index,
-      action: 'drag-vertex',
-    })
-  }
-
-  dragVertex(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.VertexDragging>(e)
-    this.cell.setVertexAt(data.index, { x, y }, { ui: true })
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  stopVertexDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
-
-  // #endregion
-
   // #endregion
 }
 
 export namespace EdgeView {
-  export interface Options extends CellView.Options {
-    perpendicular: boolean
-    doubleTools: boolean
-    shortLength: number
-    longLength: number
-    toolsOffset: number
-    doubleToolsOffset: number
-    sampleInterval: number
-  }
-
-  export interface ContainerCache {
-    connection?: Element
-    connectionWrap?: Element
-    sourceMarker?: Element
-    targetMarker?: Element
-    labels?: Element
-    vertices?: Element
-    arrowheads?: Element
-    sourceArrowhead?: Element
-    targetArrowhead?: Element
-    tools?: Element
-  }
+  export interface Options extends CellView.Options {}
 }
 
 export namespace EdgeView {
@@ -2806,27 +2364,27 @@ export namespace EdgeView {
       CellView.PositionEventArgs {}
 
   export interface EventArgs {
-    'edge:click': PositionEventArgs<JQuery.ClickEvent>
-    'edge:dblclick': PositionEventArgs<JQuery.DoubleClickEvent>
-    'edge:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent>
-    'edge:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
-    'edge:mousemove': PositionEventArgs<JQuery.MouseMoveEvent>
-    'edge:mouseup': PositionEventArgs<JQuery.MouseUpEvent>
-    'edge:mouseover': MouseEventArgs<JQuery.MouseOverEvent>
-    'edge:mouseout': MouseEventArgs<JQuery.MouseOutEvent>
-    'edge:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
-    'edge:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
-    'edge:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> &
+    'edge:click': PositionEventArgs<Dom.ClickEvent>
+    'edge:dblclick': PositionEventArgs<Dom.DoubleClickEvent>
+    'edge:contextmenu': PositionEventArgs<Dom.ContextMenuEvent>
+    'edge:mousedown': PositionEventArgs<Dom.MouseDownEvent>
+    'edge:mousemove': PositionEventArgs<Dom.MouseMoveEvent>
+    'edge:mouseup': PositionEventArgs<Dom.MouseUpEvent>
+    'edge:mouseover': MouseEventArgs<Dom.MouseOverEvent>
+    'edge:mouseout': MouseEventArgs<Dom.MouseOutEvent>
+    'edge:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
+    'edge:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
+    'edge:mousewheel': PositionEventArgs<Dom.EventObject> &
       CellView.MouseDeltaEventArgs
 
-    'edge:customevent': EdgeView.PositionEventArgs<JQuery.MouseDownEvent> & {
+    'edge:customevent': EdgeView.PositionEventArgs<Dom.MouseDownEvent> & {
       name: string
     }
 
-    'edge:unhandled:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
+    'edge:unhandled:mousedown': PositionEventArgs<Dom.MouseDownEvent>
 
     'edge:connected': {
-      e: JQuery.MouseUpEvent
+      e: Dom.MouseUpEvent
       edge: Edge
       view: EdgeView
       isNew: boolean
@@ -2852,9 +2410,9 @@ export namespace EdgeView {
     }
     'edge:unhighlight': EventArgs['edge:highlight']
 
-    'edge:move': PositionEventArgs<JQuery.MouseMoveEvent>
-    'edge:moving': PositionEventArgs<JQuery.MouseMoveEvent>
-    'edge:moved': PositionEventArgs<JQuery.MouseUpEvent>
+    'edge:move': PositionEventArgs<Dom.MouseMoveEvent>
+    'edge:moving': PositionEventArgs<Dom.MouseMoveEvent>
+    'edge:moved': PositionEventArgs<Dom.MouseUpEvent>
   }
 }
 
@@ -2947,11 +2505,6 @@ namespace EventData {
     positionArgs?: Edge.LabelPositionOptions | null
     stopPropagation: true
   }
-
-  export interface VertexDragging {
-    action: 'drag-vertex'
-    index: number
-  }
 }
 
 EdgeView.config<EdgeView.Options>({
@@ -2968,17 +2521,8 @@ EdgeView.config<EdgeView.Options>({
     connector: ['update'],
     labels: ['labels'],
     defaultLabel: ['labels'],
-    vertices: ['vertices', 'update'],
-    vertexMarkup: ['vertices'],
-    toolMarkup: ['tools'],
-    tools: ['widget'],
+    tools: ['tools'],
   },
-  shortLength: 105,
-  longLength: 155,
-  toolsOffset: 40,
-  doubleTools: false,
-  doubleToolsOffset: 65,
-  sampleInterval: 50,
 })
 
 EdgeView.registry.register('edge', EdgeView, true)

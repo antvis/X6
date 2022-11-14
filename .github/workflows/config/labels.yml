@@ -138,9 +138,6 @@
 - name: pkg:x6
   color: eeeeee
   description: Denotes a PR that changes packages/x6
-- name: pkg:x6-react
-  color: eeeeee
-  description: Denotes a PR that changes packages/x6-react
 - name: pkg:x6-react-shape
   color: eeeeee
   description: Denotes a PR that changes packages/x6-react-shape

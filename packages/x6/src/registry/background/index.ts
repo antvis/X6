@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-types */
+
 import { ValuesType } from 'utility-types'
-import { KeyValue } from '../../types'
-import { Property } from '../../types/csstype'
+import { KeyValue } from '@antv/x6-common'
 import { Registry } from '../registry'
 import * as patterns from './main'
 
@@ -8,15 +9,15 @@ export namespace Background {
   export interface Options {
     color?: string
     image?: string
-    position?: Property.BackgroundPosition<{
+    position?: Background.BackgroundPosition<{
       x: number
       y: number
     }>
-    size?: Property.BackgroundSize<{
+    size?: Background.BackgroundSize<{
       width: number
       height: number
     }>
-    repeat?: Property.BackgroundRepeat
+    repeat?: Background.BackgroundRepeat
     opacity?: number
   }
 
@@ -61,4 +62,40 @@ export namespace Background {
   })
 
   registry.register(presets, true)
+}
+
+export namespace Background {
+  type Globals = '-moz-initial' | 'inherit' | 'initial' | 'revert' | 'unset'
+  type BgPosition<TLength> =
+    | TLength
+    | 'bottom'
+    | 'center'
+    | 'left'
+    | 'right'
+    | 'top'
+    | (string & {})
+  type BgSize<TLength> = TLength | 'auto' | 'contain' | 'cover' | (string & {})
+  type RepeatStyle =
+    | 'no-repeat'
+    | 'repeat'
+    | 'repeat-x'
+    | 'repeat-y'
+    | 'round'
+    | 'space'
+    | (string & {})
+  export type BackgroundPosition<TLength = (string & {}) | 0> =
+    | Globals
+    | BgPosition<TLength>
+    | (string & {})
+  export type BackgroundSize<TLength = (string & {}) | 0> =
+    | Globals
+    | BgSize<TLength>
+    | (string & {})
+  export type BackgroundRepeat = Globals | RepeatStyle | (string & {})
+  export interface Padding {
+    left: number
+    top: number
+    right: number
+    bottom: number
+  }
 }

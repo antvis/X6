@@ -31,7 +31,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
           trigger={['contextMenu']}
           overlay={this.options.menu}
         >
-          <a />
+          <a href="#" />
         </Dropdown>,
         this.knob,
       )
@@ -117,7 +117,6 @@ export default class Example extends React.Component {
       },
       panning: true,
       mousewheel: true,
-      resizing: true,
     })
 
     const source = graph.addNode({

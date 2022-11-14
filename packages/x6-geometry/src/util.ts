@@ -1,7 +1,7 @@
-import type { Point } from './point'
-import type { Rectangle } from './rectangle'
+import { Point } from './point'
+import { Rectangle } from './rectangle'
 
-export namespace Util {
+export namespace GeometryUtil {
   export function round(num: number, precision = 0) {
     return Number.isInteger(num) ? num : +num.toFixed(precision)
   }

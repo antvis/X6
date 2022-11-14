@@ -16,7 +16,7 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.addNode({
-      shape: 'basic.rect',
+      shape: 'rect',
       x: 280,
       y: 120,
       width: 100,
@@ -25,9 +25,17 @@ export default class Example extends React.Component {
       attrs: {
         rect: { stroke: '#31d0c6', strokeWidth: 2 },
       },
+      ports: {
+        groups: {
+          left: {
+            position: 'left',
+          },
+        },
+      },
     })
 
     rect.addPort({
+      group: 'left',
       attrs: {
         circle: {
           magnet: true,
@@ -39,6 +47,7 @@ export default class Example extends React.Component {
     })
 
     rect.addPort({
+      group: 'left',
       attrs: {
         circle: {
           magnet: true,
@@ -50,6 +59,7 @@ export default class Example extends React.Component {
     })
 
     rect.addPort({
+      group: 'left',
       attrs: {
         circle: {
           magnet: true,
@@ -61,7 +71,7 @@ export default class Example extends React.Component {
     })
 
     const circle = graph.addNode({
-      shape: 'basic.circle',
+      shape: 'circle',
       x: 100,
       y: 165,
       width: 60,
@@ -91,6 +101,7 @@ export default class Example extends React.Component {
 
   onAddPort = () => {
     this.rect.addPort({
+      group: 'left',
       attrs: {
         circle: {
           magnet: true,

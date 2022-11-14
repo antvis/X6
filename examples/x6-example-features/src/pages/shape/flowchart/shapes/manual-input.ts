@@ -1,5 +1,4 @@
-import { NumberExt, Shape, Path, Line, JSONObject } from '@antv/x6'
-
+import { Shape, Path, Line, NumberExt, JSONObject } from '@antv/x6'
 interface KnobsAttrValue extends JSONObject {
   round: boolean | string | number
   ridge: boolean | string | number

@@ -1,4 +1,4 @@
-import { Point, Vector } from '@antv/x6'
+import { Vector, Point } from '@antv/x6'
 import React from 'react'
 import '../index.less'
 
@@ -31,6 +31,7 @@ class Coords {
   }
 }
 
+// eslint-disable-next-line
 namespace RandomDir {
   let radian = 4
 

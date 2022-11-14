@@ -1,5 +1,5 @@
-import { NumberExt } from '../../util'
-import { Point } from '../../geometry'
+import { NumberExt } from '@antv/x6-common'
+import { Point } from '@antv/x6-geometry'
 import { Attr } from './index'
 
 // `x-align` when set to `middle` causes centering of the subelement around its new x coordinate.

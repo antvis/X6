@@ -1,7 +1,5 @@
+import { ObjectExt, KeyValue, Basecoat } from '@antv/x6-common'
 import { Assign, NonUndefined } from 'utility-types'
-import { KeyValue } from '../types'
-import { Basecoat } from '../common'
-import { ObjectExt } from '../util'
 
 export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   protected data: D

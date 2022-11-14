@@ -1,5 +1,4 @@
-import { ModifierKey } from '../types'
-import { Dom } from '../util'
+import { ModifierKey, Dom } from '@antv/x6-common'
 import { Base } from './base'
 
 export class PanningManager extends Base {
@@ -33,7 +32,7 @@ export class PanningManager extends Base {
     }
     if (eventTypes.includes('rightMouseDown')) {
       this.onRightMouseDown = this.onRightMouseDown.bind(this)
-      this.view.$(this.graph.container).on('mousedown', this.onRightMouseDown)
+      Dom.Event.on(this.graph.container, 'mousedown', this.onRightMouseDown)
     }
     if (eventTypes.includes('mouseWheel')) {
       this.mousewheelHandle = new Dom.MouseWheelHandle(
@@ -56,7 +55,7 @@ export class PanningManager extends Base {
       this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
     }
     if (eventTypes.includes('rightMouseDown')) {
-      this.view.$(this.graph.container).off('mousedown', this.onRightMouseDown)
+      Dom.Event.off(this.graph.container, 'mousedown', this.onRightMouseDown)
     }
     if (eventTypes.includes('mouseWheel')) {
       if (this.mousewheelHandle) {
@@ -65,38 +64,39 @@ export class PanningManager extends Base {
     }
   }
 
-  protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
+  protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
+    const selection = this.graph.getPlugin<any>('selection')
+    const allowRubberband = selection && selection.allowRubberband(e, true)
     if (
       this.allowPanning(e, true) ||
-      (this.allowPanning(e) && !this.graph.selection.allowRubberband(e, true))
+      (this.allowPanning(e) && !allowRubberband)
     ) {
       this.startPanning(e)
     }
   }
 
-  allowPanning(e: JQuery.MouseDownEvent, strict?: boolean) {
+  allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
       this.pannable &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict) &&
-      this.graph.hook.allowPanning(e)
+      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict)
     )
   }
 
-  protected startPanning(evt: JQuery.MouseDownEvent) {
+  protected startPanning(evt: Dom.MouseDownEvent) {
     const e = this.view.normalizeEvent(evt)
     this.clientX = e.clientX
     this.clientY = e.clientY
     this.panning = true
     this.updateClassName()
-    this.view.$(document.body).on({
+    Dom.Event.on(document.body, {
       'mousemove.panning touchmove.panning': this.pan.bind(this),
       'mouseup.panning touchend.panning': this.stopPanning.bind(this),
       'mouseleave.panning': this.stopPanning.bind(this),
     })
-    this.view.$(window).on('mouseup.panning', this.stopPanning.bind(this))
+    Dom.Event.on(window as any, 'mouseup.panning', this.stopPanning.bind(this))
   }
 
-  protected pan(evt: JQuery.MouseMoveEvent) {
+  protected pan(evt: Dom.MouseMoveEvent) {
     const e = this.view.normalizeEvent(evt)
     const dx = e.clientX - this.clientX
     const dy = e.clientY - this.clientY
@@ -109,11 +109,11 @@ export class PanningManager extends Base {
   }
 
   // eslint-disable-next-line
-  protected stopPanning(e: JQuery.MouseUpEvent) {
+  protected stopPanning(e: Dom.MouseUpEvent) {
     this.panning = false
     this.updateClassName()
-    this.view.$(document.body).off('.panning')
-    this.view.$(window).off('.panning')
+    Dom.Event.off(document.body, '.panning')
+    Dom.Event.off(window as any, '.panning')
   }
 
   protected updateClassName() {
@@ -134,21 +134,17 @@ export class PanningManager extends Base {
     }
   }
 
-  protected onRightMouseDown(e: JQuery.MouseDownEvent) {
+  protected onRightMouseDown(e: Dom.MouseDownEvent) {
     if (e.button === 2 && this.allowPanning(e, true)) {
       this.startPanning(e)
     }
   }
 
-  protected allowMouseWheel(e: JQueryMousewheel.JQueryMousewheelEventObject) {
+  protected allowMouseWheel(e: WheelEvent) {
     return this.pannable && !e.ctrlKey
   }
 
-  protected onMouseWheel(
-    e: JQueryMousewheel.JQueryMousewheelEventObject,
-    deltaX: number,
-    deltaY: number,
-  ) {
+  protected onMouseWheel(e: WheelEvent, deltaX: number, deltaY: number) {
     if (!e.ctrlKey) {
       this.graph.translateBy(-deltaX, -deltaY)
     }

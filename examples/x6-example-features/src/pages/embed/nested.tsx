@@ -1,56 +1,76 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Checkbox } from 'antd'
+import { Graph, Node, Edge } from '@antv/x6'
 import '../index.less'
 
-export default class Example extends React.Component {
+export default class Example extends React.Component<
+  Example.Props,
+  Example.State
+> {
   private container: HTMLDivElement
+  private parent: Node
+  private edge1: Edge
+  private edge2: Edge
+
+  // default embeded
+  state = { embedEdges: true }
 
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
       width: 800,
       height: 600,
-      grid: 10,
     })
 
-    const r1 = graph.addNode({
-      size: { width: 600, height: 240 },
+    const parent = graph.addNode({
+      size: { width: 100, height: 30 },
       position: { x: 100, y: 40 },
       attrs: {
-        body: { fill: 'orange' },
-        label: { text: 'Box' },
+        body: { fill: 'blue' },
+        label: { text: 'parent', fill: 'white' },
       },
     })
 
-    var r11 = r1.clone()
-    r11
-      .resize(240, 120)
-      .attr({ body: { fill: 'yellow' } })
-      .translate(24, 24)
-      .addTo(r1)
-
-    var r12 = r11.clone()
-    r12
-      .resize(120, 80)
-      .attr({ body: { fill: 'yellow' } })
-      .translate(400, 80)
-      .addTo(r1)
-
-    // auto update parent
-    graph.addEdge({
-      source: r11,
-      target: r12,
-    })
-
-    graph
-      .addEdge({
-        source: { x: 160, y: 100 },
-        target: { x: 240, y: 240 },
+    const child1 = graph
+      .addNode({
+        x: 70,
+        y: 130,
+        width: 80,
+        height: 30,
+        attrs: {
+          body: { fill: 'lightgreen', rx: 5, ry: 5 },
+          label: { text: 'child', fill: 'white' },
+        },
       })
-      .addTo(r1)
+      .addTo(parent)
 
-    const r2 = r1.clone({ deep: true }).translate(0, 300)
-    graph.addNode(r2)
+    const child2 = child1.clone().translate(100).addTo(parent)
+
+    this.parent = parent
+    this.edge1 = graph.addEdge({
+      source: parent,
+      target: child1,
+    })
+    this.edge2 = graph.addEdge({
+      source: parent,
+      target: child2,
+      vertices: [
+        { x: 210, y: 75 },
+        { x: 190, y: 105 },
+      ],
+    })
+  }
+
+  onEmbedEdgesChanged = (e: any) => {
+    const embedEdges = e.target.checked
+    this.setState({ embedEdges })
+    if (embedEdges) {
+      this.parent.embed(this.edge1)
+      this.parent.embed(this.edge2)
+    } else {
+      this.parent.unembed(this.edge1)
+      this.parent.unembed(this.edge2)
+    }
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -60,8 +80,24 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
+        <div className="x6-graph-tools">
+          <Checkbox
+            checked={this.state.embedEdges}
+            onChange={this.onEmbedEdgesChanged}
+          >
+            Embed Edges
+          </Checkbox>
+        </div>
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
+  }
+}
+
+// eslint-disable-next-line
+namespace Example {
+  export interface Props {}
+  export interface State {
+    embedEdges: boolean
   }
 }

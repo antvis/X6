@@ -1,8 +1,14 @@
+import { Point, Rectangle, Angle } from '@antv/x6-geometry'
+import {
+  StringExt,
+  ObjectExt,
+  NumberExt,
+  Size,
+  KeyValue,
+  Interp,
+} from '@antv/x6-common'
 import { DeepPartial, Omit } from 'utility-types'
-import { Size, KeyValue } from '../types'
-import { Registry } from '../registry'
-import { Point, Rectangle, Angle } from '../geometry'
-import { StringExt, ObjectExt, NumberExt } from '../util'
+import { Registry } from '../registry/registry'
 import { Markup } from '../view/markup'
 import { Cell } from './cell'
 import { Edge } from './edge'
@@ -10,7 +16,6 @@ import { Store } from './store'
 import { ShareRegistry } from './registry'
 import { PortManager } from './port'
 import { Animation } from './animation'
-import { Interp } from '../common'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties,

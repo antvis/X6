@@ -1,5 +1,5 @@
+import { Angle } from '@antv/x6-geometry'
 import { Background } from './index'
-import { Angle } from '../../geometry'
 
 export interface WatermarkOptions extends Background.CommonOptions {
   angle?: number

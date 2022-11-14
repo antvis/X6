@@ -1,5 +1,5 @@
+import { NumberExt, Dom } from '@antv/x6-common'
 import { Attr } from '../attr'
-import { NumberExt, Dom } from '../../util'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
 import { ToolsView } from '../../view/tool'
@@ -69,6 +69,7 @@ export namespace Boundary {
     name: 'boundary',
     tagName: 'rect',
     padding: 10,
+    useCellGeometry: true,
     attrs: {
       fill: 'none',
       stroke: '#333',

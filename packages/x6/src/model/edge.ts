@@ -1,15 +1,13 @@
-import { Size, KeyValue } from '../types'
-import { ObjectExt, StringExt } from '../util'
-import { Point, Polyline } from '../geometry'
+import { ObjectExt, StringExt, Size, KeyValue } from '@antv/x6-common'
+import { Point, Polyline } from '@antv/x6-geometry'
+import { Registry } from '../registry/registry'
 import {
-  Registry,
   Attr,
   Router,
   Connector,
   EdgeAnchor,
   NodeAnchor,
   ConnectionPoint,
-  ConnectionStrategy,
 } from '../registry'
 import { Markup } from '../view/markup'
 import { ShareRegistry } from './registry'
@@ -430,45 +428,6 @@ export class Edge<
 
   // #endregion
 
-  // #region strategy
-
-  get strategy() {
-    return this.getStrategy()
-  }
-
-  set strategy(data: Edge.StrategyData | undefined) {
-    if (data == null) {
-      this.removeStrategy()
-    } else {
-      this.setStrategy(data)
-    }
-  }
-
-  getStrategy() {
-    return this.store.get('strategy')
-  }
-
-  setStrategy(name: string, args?: KeyValue, options?: Edge.SetOptions): this
-  setStrategy(strategy: Edge.StrategyData, options?: Edge.SetOptions): this
-  setStrategy(
-    name?: string | Edge.StrategyData,
-    args?: KeyValue | Edge.SetOptions,
-    options?: Edge.SetOptions,
-  ) {
-    if (typeof name === 'object') {
-      this.store.set('strategy', name, args)
-    } else {
-      this.store.set('strategy', { name, args }, options)
-    }
-    return this
-  }
-
-  removeStrategy(options: Edge.SetOptions = {}) {
-    return this.store.remove('strategy', options)
-  }
-
-  // #endregion
-
   // #region labels
 
   getDefaultLabel(): Edge.Label {
@@ -607,28 +566,6 @@ export class Edge<
   // #endregion
 
   // #region vertices
-
-  get vertexMarkup() {
-    return this.getVertexMarkup()
-  }
-
-  set vertexMarkup(markup: Markup) {
-    this.setVertexMarkup(markup)
-  }
-
-  getDefaultVertexMarkup() {
-    return this.store.get('defaultVertexMarkup') || Markup.getEdgeVertexMarkup()
-  }
-
-  getVertexMarkup() {
-    return this.store.get('vertexMarkup') || this.getDefaultVertexMarkup()
-  }
-
-  setVertexMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('vertexMarkup', Markup.clone(markup), options)
-    return this
-  }
-
   get vertices() {
     return this.getVertices()
   }
@@ -749,82 +686,6 @@ export class Edge<
 
   getMarkup() {
     return super.getMarkup() || this.getDefaultMarkup()
-  }
-
-  // #endregion
-
-  // #region toolMarkup
-
-  get toolMarkup() {
-    return this.getToolMarkup()
-  }
-
-  set toolMarkup(markup: Markup) {
-    this.setToolMarkup(markup)
-  }
-
-  getDefaultToolMarkup() {
-    return this.store.get('defaultToolMarkup') || Markup.getEdgeToolMarkup()
-  }
-
-  getToolMarkup() {
-    return this.store.get('toolMarkup') || this.getDefaultToolMarkup()
-  }
-
-  setToolMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('toolMarkup', markup, options)
-    return this
-  }
-
-  get doubleToolMarkup() {
-    return this.getDoubleToolMarkup()
-  }
-
-  set doubleToolMarkup(markup: Markup | undefined) {
-    this.setDoubleToolMarkup(markup)
-  }
-
-  getDefaultDoubleToolMarkup() {
-    return this.store.get('defaultDoubleToolMarkup')
-  }
-
-  getDoubleToolMarkup() {
-    return (
-      this.store.get('doubleToolMarkup') || this.getDefaultDoubleToolMarkup()
-    )
-  }
-
-  setDoubleToolMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('doubleToolMarkup', markup, options)
-    return this
-  }
-
-  // #endregion
-
-  // #region arrowheadMarkup
-
-  get arrowheadMarkup() {
-    return this.getArrowheadMarkup()
-  }
-
-  set arrowheadMarkup(markup: Markup) {
-    this.setArrowheadMarkup(markup)
-  }
-
-  getDefaultArrowheadMarkup() {
-    return (
-      this.store.get('defaultArrowheadMarkup') ||
-      Markup.getEdgeArrowheadMarkup()
-    )
-  }
-
-  getArrowheadMarkup() {
-    return this.store.get('arrowheadMarkup') || this.getDefaultArrowheadMarkup()
-  }
-
-  setArrowheadMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
-    this.store.set('arrowheadMarkup', markup, options)
-    return this
   }
 
   // #endregion
@@ -993,9 +854,6 @@ export class Edge<
 export namespace Edge {
   export type RouterData = Router.NativeItem | Router.ManaualItem
   export type ConnectorData = Connector.NativeItem | Connector.ManaualItem
-  export type StrategyData =
-    | ConnectionStrategy.NativeItem
-    | ConnectionStrategy.ManaualItem
 }
 
 export namespace Edge {
@@ -1004,20 +862,10 @@ export namespace Edge {
     target?: TerminalData
     router?: RouterData
     connector?: ConnectorData
-    strategy?: StrategyData
     labels?: Label[] | string[]
     defaultLabel?: Label
     vertices?: (Point.PointLike | Point.PointData)[]
-    toolMarkup?: Markup
-    doubleToolMarkup?: Markup
-    vertexMarkup?: Markup
-    arrowheadMarkup?: Markup
-
     defaultMarkup?: Markup
-    defaultToolMarkup?: Markup
-    defaultDoubleToolMarkup?: Markup
-    defaultVertexMarkup?: Markup
-    defaultArrowheadMarkup?: Markup
   }
 
   interface TerminalOptions {

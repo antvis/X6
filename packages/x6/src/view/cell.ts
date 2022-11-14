@@ -1,23 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { Nilable, KeyValue } from '../types'
-import { Rectangle, Point } from '../geometry'
-import { ArrayExt, ObjectExt, Dom, FunctionExt, Vector } from '../util'
-import { Attr } from '../registry/attr'
+import { Rectangle } from '@antv/x6-geometry'
+import {
+  ArrayExt,
+  ObjectExt,
+  Dom,
+  FunctionExt,
+  Nilable,
+  KeyValue,
+} from '@antv/x6-common'
 import { Registry } from '../registry/registry'
-import { ConnectionStrategy } from '../registry/connection-strategy'
-import { Cell } from '../model/cell'
-import { Edge } from '../model/edge'
-import { Model } from '../model/model'
-import { Graph } from '../graph/graph'
 import { View } from './view'
 import { Cache } from './cache'
 import { Markup } from './markup'
-import { EdgeView } from './edge'
-import { NodeView } from './node'
 import { ToolsView } from './tool'
 import { AttrManager } from './attr'
 import { FlagManager } from './flag'
+import { Util } from '../util'
+import { Attr } from '../registry/attr'
+import { Cell } from '../model/cell'
+import { Edge } from '../model/edge'
+import { Model } from '../model/model'
+import { EdgeView } from './edge'
+import { NodeView } from './node'
+import { Graph } from '../graph'
 
 export class CellView<
   Entity extends Cell = Cell,
@@ -91,8 +96,6 @@ export class CellView<
   protected readonly flag: FlagManager
   protected readonly attr: AttrManager
   protected readonly cache: Cache
-  public scalableNode: Element | null
-  public rotatableNode: Element | null
 
   protected get [Symbol.toStringTag]() {
     return CellView.toStringTag
@@ -114,7 +117,6 @@ export class CellView<
 
     this.setContainer(this.ensureContainer())
     this.setup()
-    this.$(this.container).data('view', this)
 
     this.init()
   }
@@ -146,7 +148,7 @@ export class CellView<
   }
 
   protected getContainerStyle(): Nilable<
-    JQuery.PlainObject<string | number>
+    Record<string, string | number>
   > | void {}
 
   protected getContainerAttrs(): Nilable<Attr.SimpleAttrs> {
@@ -269,7 +271,7 @@ export class CellView<
     }
 
     if (this.graph != null) {
-      this.graph.renderer.requestViewUpdate(this, flag, this.priority, options)
+      this.graph.renderer.requestViewUpdate(this, flag, options)
     }
   }
 
@@ -332,21 +334,6 @@ export class CellView<
     return this.cache.getShape(elem)
   }
 
-  getScaleOfElement(node: Element, scalableNode?: SVGElement) {
-    let sx
-    let sy
-    if (scalableNode && scalableNode.contains(node)) {
-      const scale = Dom.scale(scalableNode)
-      sx = 1 / scale.sx
-      sy = 1 / scale.sy
-    } else {
-      sx = 1
-      sy = 1
-    }
-
-    return { sx, sy }
-  }
-
   getBoundingRectOfElement(elem: Element) {
     return this.cache.getBoundingRect(elem)
   }
@@ -356,14 +343,14 @@ export class CellView<
     const matrix = this.getMatrixOfElement(elem)
     const rm = this.getRootRotatedMatrix()
     const tm = this.getRootTranslatedMatrix()
-    return Dom.transformRectangle(rect, tm.multiply(rm).multiply(matrix))
+    return Util.transformRectangle(rect, tm.multiply(rm).multiply(matrix))
   }
 
   getUnrotatedBBoxOfElement(elem: SVGElement) {
     const rect = this.getBoundingRectOfElement(elem)
     const matrix = this.getMatrixOfElement(elem)
     const tm = this.getRootTranslatedMatrix()
-    return Dom.transformRectangle(rect, tm.multiply(matrix))
+    return Util.transformRectangle(rect, tm.multiply(matrix))
   }
 
   getBBox(options: { useCellGeometry?: boolean } = {}) {
@@ -376,7 +363,7 @@ export class CellView<
       bbox = this.getBBoxOfElement(this.container)
     }
 
-    return this.graph.localToGraph(bbox)
+    return this.graph.coord.localToGraphRect(bbox)
   }
 
   getRootTranslatedMatrix() {
@@ -399,11 +386,6 @@ export class CellView<
   }
 
   findMagnet(elem: Element = this.container) {
-    // If the overall cell has set `magnet === false`, then returns
-    // `undefined` to announce there is no magnet found for this cell.
-    // This is especially useful to set on cells that have 'ports'.
-    // In this case, only the ports have set `magnet === true` and the
-    // overall element has `magnet === false`.
     return this.findByAttr('magnet', elem)
   }
 
@@ -433,7 +415,7 @@ export class CellView<
     elem?: Element | null,
     options: CellView.HighlightOptions = {},
   ) {
-    const magnet = (elem && this.$(elem)[0]) || this.container
+    const magnet = elem || this.container
     options.partial = magnet === this.container
     return magnet
   }
@@ -527,47 +509,6 @@ export class CellView<
       terminal.selector = this.getSelector(magnet)
     }
 
-    return this.customizeEdgeTerminal(terminal, magnet, x, y, edge, type)
-  }
-
-  protected customizeEdgeTerminal(
-    terminal: Edge.TerminalCellData,
-    magnet: Element,
-    x: number,
-    y: number,
-    edge: Edge,
-    type: Edge.TerminalType,
-  ): Edge.TerminalCellData {
-    const raw = edge.getStrategy() || this.graph.options.connecting.strategy
-    if (raw) {
-      const name = typeof raw === 'string' ? raw : raw.name
-      const args = typeof raw === 'string' ? {} : raw.args || {}
-      const registry = ConnectionStrategy.registry
-
-      if (name) {
-        const fn = registry.get(name)
-        if (fn == null) {
-          return registry.onNotFound(name)
-        }
-
-        const result = FunctionExt.call(
-          fn,
-          this.graph,
-          terminal,
-          this,
-          magnet,
-          new Point(x, y),
-          edge,
-          type,
-          args,
-        )
-
-        if (result) {
-          return result
-        }
-      }
-    }
-
     return terminal
   }
 
@@ -591,70 +532,6 @@ export class CellView<
 
     return magnet
   }
-
-  // #region animate
-
-  animate(elem: SVGElement | string, options: Dom.AnimationOptions) {
-    const target = typeof elem === 'string' ? this.findOne(elem) : elem
-    if (target == null) {
-      throw new Error('Invalid animation element.')
-    }
-
-    const parent = target.parentNode
-    const revert = () => {
-      if (!parent) {
-        Dom.remove(target)
-      }
-    }
-
-    const vTarget = Vector.create(target as SVGElement)
-    if (!parent) {
-      vTarget.appendTo(this.graph.view.stage)
-    }
-
-    const onComplete = options.complete
-    options.complete = (e: Event) => {
-      revert()
-
-      if (onComplete) {
-        onComplete(e)
-      }
-    }
-
-    return vTarget.animate(options)
-  }
-
-  animateTransform(elem: SVGElement | string, options: Dom.AnimationOptions) {
-    const target = typeof elem === 'string' ? this.findOne(elem) : elem
-    if (target == null) {
-      throw new Error('Invalid animation element.')
-    }
-
-    const parent = target.parentNode
-    const revert = () => {
-      if (!parent) {
-        Dom.remove(target)
-      }
-    }
-
-    const vTarget = Vector.create(target as SVGElement)
-    if (!parent) {
-      vTarget.appendTo(this.graph.view.stage)
-    }
-
-    const onComplete = options.complete
-    options.complete = (e: Event) => {
-      revert()
-
-      if (onComplete) {
-        onComplete(e)
-      }
-    }
-
-    return vTarget.animateTransform(options)
-  }
-
-  // #endregion
 
   // #region tools
 
@@ -685,9 +562,6 @@ export class CellView<
         ? config
         : new ToolsView(config)
       this.tools = tools
-      this.graph.on('tools:hide', this.hideTools, this)
-      this.graph.on('tools:show', this.showTools, this)
-      this.graph.on('tools:remove', this.removeTools, this)
       tools.config({ view: this })
       tools.mount()
     }
@@ -704,9 +578,6 @@ export class CellView<
   removeTools() {
     if (this.tools) {
       this.tools.remove()
-      this.graph.off('tools:hide', this.hideTools, this)
-      this.graph.off('tools:show', this.showTools, this)
-      this.graph.off('tools:remove', this.removeTools, this)
       this.tools = null
     }
     return this
@@ -765,21 +636,21 @@ export class CellView<
     return { e, x, y, view, cell } as CellView.MousePositionEventArgs<E>
   }
 
-  onClick(e: JQuery.ClickEvent, x: number, y: number) {
+  onClick(e: Dom.ClickEvent, x: number, y: number) {
     this.notify('cell:click', this.getEventArgs(e, x, y))
   }
 
-  onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
+  onDblClick(e: Dom.DoubleClickEvent, x: number, y: number) {
     this.notify('cell:dblclick', this.getEventArgs(e, x, y))
   }
 
-  onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
+  onContextMenu(e: Dom.ContextMenuEvent, x: number, y: number) {
     this.notify('cell:contextmenu', this.getEventArgs(e, x, y))
   }
 
   protected cachedModelForMouseEvent: Model | null
 
-  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+  onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     if (this.cell.model) {
       this.cachedModelForMouseEvent = this.cell.model
       this.cachedModelForMouseEvent.startBatch('mouse')
@@ -788,7 +659,7 @@ export class CellView<
     this.notify('cell:mousedown', this.getEventArgs(e, x, y))
   }
 
-  onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+  onMouseUp(e: Dom.MouseUpEvent, x: number, y: number) {
     this.notify('cell:mouseup', this.getEventArgs(e, x, y))
 
     if (this.cachedModelForMouseEvent) {
@@ -797,81 +668,76 @@ export class CellView<
     }
   }
 
-  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  onMouseMove(e: Dom.MouseMoveEvent, x: number, y: number) {
     this.notify('cell:mousemove', this.getEventArgs(e, x, y))
   }
 
-  onMouseOver(e: JQuery.MouseOverEvent) {
+  onMouseOver(e: Dom.MouseOverEvent) {
     this.notify('cell:mouseover', this.getEventArgs(e))
   }
 
-  onMouseOut(e: JQuery.MouseOutEvent) {
+  onMouseOut(e: Dom.MouseOutEvent) {
     this.notify('cell:mouseout', this.getEventArgs(e))
   }
 
-  onMouseEnter(e: JQuery.MouseEnterEvent) {
+  onMouseEnter(e: Dom.MouseEnterEvent) {
     this.notify('cell:mouseenter', this.getEventArgs(e))
   }
 
-  onMouseLeave(e: JQuery.MouseLeaveEvent) {
+  onMouseLeave(e: Dom.MouseLeaveEvent) {
     this.notify('cell:mouseleave', this.getEventArgs(e))
   }
 
-  onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+  onMouseWheel(e: Dom.EventObject, x: number, y: number, delta: number) {
     this.notify('cell:mousewheel', {
       delta,
       ...this.getEventArgs(e, x, y),
     })
   }
 
-  onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
+  onCustomEvent(e: Dom.MouseDownEvent, name: string, x: number, y: number) {
     this.notify('cell:customevent', { name, ...this.getEventArgs(e, x, y) })
     this.notify(name, { ...this.getEventArgs(e, x, y) })
   }
 
   onMagnetMouseDown(
-    e: JQuery.MouseDownEvent,
+    e: Dom.MouseDownEvent,
     magnet: Element,
     x: number,
     y: number,
   ) {}
 
   onMagnetDblClick(
-    e: JQuery.DoubleClickEvent,
+    e: Dom.DoubleClickEvent,
     magnet: Element,
     x: number,
     y: number,
   ) {}
 
   onMagnetContextMenu(
-    e: JQuery.ContextMenuEvent,
+    e: Dom.ContextMenuEvent,
     magnet: Element,
     x: number,
     y: number,
   ) {}
 
-  onLabelMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {}
+  onLabelMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {}
 
-  checkMouseleave(e: JQuery.TriggeredEvent) {
-    const graph = this.graph
-    if (graph.renderer.isAsync()) {
-      // Do the updates of the current view synchronously now
-      graph.renderer.dumpView(this)
-    }
+  checkMouseleave(e: Dom.EventObject) {
     const target = this.getEventTarget(e, { fromPoint: true })
-    const view = graph.renderer.findViewByElem(target)
+    const view = this.graph.findViewByElem(target)
     if (view === this) {
       return
     }
 
     // Leaving the current view
-    this.onMouseLeave(e as JQuery.MouseLeaveEvent)
+    this.onMouseLeave(e as Dom.MouseLeaveEvent)
     if (!view) {
       return
     }
 
     // Entering another view
-    view.onMouseEnter(e as JQuery.MouseEnterEvent)
+    view.onMouseEnter(e as Dom.MouseEnterEvent)
   }
 
   // #endregion
@@ -952,19 +818,19 @@ export namespace CellView {
       PositionEventArgs {}
 
   export interface EventArgs extends NodeView.EventArgs, EdgeView.EventArgs {
-    'cell:click': MousePositionEventArgs<JQuery.ClickEvent>
-    'cell:dblclick': MousePositionEventArgs<JQuery.DoubleClickEvent>
-    'cell:contextmenu': MousePositionEventArgs<JQuery.ContextMenuEvent>
-    'cell:mousedown': MousePositionEventArgs<JQuery.MouseDownEvent>
-    'cell:mousemove': MousePositionEventArgs<JQuery.MouseMoveEvent>
-    'cell:mouseup': MousePositionEventArgs<JQuery.MouseUpEvent>
-    'cell:mouseover': MouseEventArgs<JQuery.MouseOverEvent>
-    'cell:mouseout': MouseEventArgs<JQuery.MouseOutEvent>
-    'cell:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
-    'cell:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
-    'cell:mousewheel': MousePositionEventArgs<JQuery.TriggeredEvent> &
+    'cell:click': MousePositionEventArgs<Dom.ClickEvent>
+    'cell:dblclick': MousePositionEventArgs<Dom.DoubleClickEvent>
+    'cell:contextmenu': MousePositionEventArgs<Dom.ContextMenuEvent>
+    'cell:mousedown': MousePositionEventArgs<Dom.MouseDownEvent>
+    'cell:mousemove': MousePositionEventArgs<Dom.MouseMoveEvent>
+    'cell:mouseup': MousePositionEventArgs<Dom.MouseUpEvent>
+    'cell:mouseover': MouseEventArgs<Dom.MouseOverEvent>
+    'cell:mouseout': MouseEventArgs<Dom.MouseOutEvent>
+    'cell:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
+    'cell:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
+    'cell:mousewheel': MousePositionEventArgs<Dom.EventObject> &
       MouseDeltaEventArgs
-    'cell:customevent': MousePositionEventArgs<JQuery.MouseDownEvent> & {
+    'cell:customevent': MousePositionEventArgs<Dom.MouseDownEvent> & {
       name: string
     }
     'cell:highlight': {

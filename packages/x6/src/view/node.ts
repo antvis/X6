@@ -1,29 +1,21 @@
-import JQuery from 'jquery'
-import { Util, Config } from '../global'
-import { ArrayExt, FunctionExt, Dom, Vector } from '../util'
-import { Rectangle, Point } from '../geometry'
+import { ArrayExt, FunctionExt, Dom } from '@antv/x6-common'
+import { Rectangle, Point, GeometryUtil } from '@antv/x6-geometry'
+import { Config } from '../config'
 import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
+import { Edge } from '../model/edge'
 import { PortManager } from '../model/port'
-import { Graph } from '../graph'
 import { CellView } from './cell'
 import { EdgeView } from './edge'
 import { Markup } from './markup'
 import { AttrManager } from './attr'
+import { Graph } from '../graph'
 
 export class NodeView<
   Entity extends Node = Node,
   Options extends NodeView.Options = NodeView.Options,
 > extends CellView<Entity, Options> {
-  public scalableNode: Element | null = null
-  public rotatableNode: Element | null = null
-  protected readonly scalableSelector: string = 'scalable'
-  protected readonly rotatableSelector: string = 'rotatable'
-  protected readonly defaultPortMarkup = Markup.getPortMarkup()
-  protected readonly defaultPortLabelMarkup = Markup.getPortLabelMarkup()
-  protected readonly defaultPortContainerMarkup =
-    Markup.getPortContainerMarkup()
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   protected get [Symbol.toStringTag]() {
@@ -41,7 +33,7 @@ export class NodeView<
     return classList.join(' ')
   }
 
-  protected updateClassName(e: JQuery.MouseEnterEvent) {
+  protected updateClassName(e: Dom.MouseEnterEvent) {
     const target = e.target
     if (target.hasAttribute('magnet')) {
       // port
@@ -66,7 +58,7 @@ export class NodeView<
     return true
   }
 
-  confirmUpdate(flag: number, options: any = {}) {
+  confirmUpdate(flag: number) {
     let ret = flag
     if (this.hasAction(ret, 'ports')) {
       this.removePorts()
@@ -88,7 +80,7 @@ export class NodeView<
       ret = this.handleAction(
         ret,
         'resize',
-        () => this.resize(options),
+        () => this.resize(),
         'update', // Resize method is calling `update()` internally
       )
 
@@ -124,8 +116,6 @@ export class NodeView<
       attrs: partialAttrs === attrs ? null : partialAttrs,
       rootBBox: new Rectangle(0, 0, size.width, size.height),
       selectors: this.selectors,
-      scalableNode: this.scalableNode,
-      rotatableNode: this.rotatableNode,
     })
 
     if (Config.useCSSSelector) {
@@ -137,7 +127,7 @@ export class NodeView<
     const markup = this.cell.markup
     if (markup) {
       if (typeof markup === 'string') {
-        return this.renderStringMarkup(markup)
+        throw new TypeError('Not support string markup.')
       }
 
       return this.renderJSONMarkup(markup)
@@ -148,45 +138,16 @@ export class NodeView<
 
   protected renderJSONMarkup(markup: Markup.JSONMarkup | Markup.JSONMarkup[]) {
     const ret = this.parseJSONMarkup(markup, this.container)
-    const one = (elems: Element | Element[] | null) =>
-      Array.isArray(elems) ? elems[0] : elems
     this.selectors = ret.selectors
-    this.rotatableNode = one(this.selectors[this.rotatableSelector])
-    this.scalableNode = one(this.selectors[this.scalableSelector])
     this.container.appendChild(ret.fragment)
-  }
-
-  protected renderStringMarkup(markup: string) {
-    Dom.append(this.container, Vector.toNodes(Vector.createVectors(markup)))
-    this.rotatableNode = Dom.findOne(
-      this.container,
-      `.${this.rotatableSelector}`,
-    )
-    this.scalableNode = Dom.findOne(this.container, `.${this.scalableSelector}`)
-    this.selectors = {}
-    if (this.rootSelector) {
-      this.selectors[this.rootSelector] = this.container
-    }
   }
 
   render() {
     this.empty()
     this.renderMarkup()
 
-    if (this.scalableNode) {
-      // Double update is necessary for elements with the scalable group only
-      // Note the `resize()` triggers the other `update`.
-      this.update()
-    }
-
     this.resize()
-
-    if (this.rotatableNode) {
-      this.rotate()
-      this.translate()
-    } else {
-      this.updateTransform()
-    }
+    this.updateTransform()
 
     if (!Config.useCSSSelector) {
       this.renderPorts()
@@ -197,11 +158,7 @@ export class NodeView<
     return this
   }
 
-  resize(opt: any = {}) {
-    if (this.scalableNode) {
-      return this.updateSize(opt)
-    }
-
+  resize() {
     if (this.cell.getAngle()) {
       this.rotate()
     }
@@ -210,22 +167,10 @@ export class NodeView<
   }
 
   translate() {
-    if (this.rotatableNode) {
-      return this.updateTranslation()
-    }
-
     this.updateTransform()
   }
 
   rotate() {
-    if (this.rotatableNode) {
-      this.updateRotation()
-      // It's necessary to call the update for the nodes outside
-      // the rotatable group referencing nodes inside the group
-      this.update()
-      return
-    }
-
     this.updateTransform()
   }
 
@@ -251,84 +196,6 @@ export class NodeView<
     this.container.setAttribute('transform', transform)
   }
 
-  protected updateRotation() {
-    if (this.rotatableNode != null) {
-      const transform = this.getRotationString()
-      if (transform != null) {
-        this.rotatableNode.setAttribute('transform', transform)
-      } else {
-        this.rotatableNode.removeAttribute('transform')
-      }
-    }
-  }
-
-  protected updateTranslation() {
-    this.container.setAttribute('transform', this.getTranslationString())
-  }
-
-  protected updateSize(opt: any = {}) {
-    const cell = this.cell
-    const size = cell.getSize()
-    const angle = cell.getAngle()
-    const scalableNode = this.scalableNode!
-
-    // Getting scalable group's bbox.
-    // Due to a bug in webkit's native SVG .getBBox implementation, the
-    // bbox of groups with path children includes the paths' control points.
-    // To work around the issue, we need to check whether there are any path
-    // elements inside the scalable group.
-    let recursive = false
-    if (scalableNode.getElementsByTagName('path').length > 0) {
-      // If scalable has at least one descendant that is a path, we need
-      // toswitch to recursive bbox calculation. Otherwise, group bbox
-      // calculation works and so we can use the (faster) native function.
-      recursive = true
-    }
-    const scalableBBox = Dom.getBBox(scalableNode as SVGElement, { recursive })
-
-    // Make sure `scalableBbox.width` and `scalableBbox.height` are not zero
-    // which can happen if the element does not have any content.
-    const sx = size.width / (scalableBBox.width || 1)
-    const sy = size.height / (scalableBBox.height || 1)
-    scalableNode.setAttribute('transform', `scale(${sx},${sy})`)
-
-    // Now the interesting part. The goal is to be able to store the object geometry via just `x`, `y`, `angle`, `width` and `height`
-    // Order of transformations is significant but we want to reconstruct the object always in the order:
-    // resize(), rotate(), translate() no matter of how the object was transformed. For that to work,
-    // we must adjust the `x` and `y` coordinates of the object whenever we resize it (because the origin of the
-    // rotation changes). The new `x` and `y` coordinates are computed by canceling the previous rotation
-    // around the center of the resized object (which is a different origin then the origin of the previous rotation)
-    // and getting the top-left corner of the resulting object. Then we clean up the rotation back to what it originally was.
-
-    // Cancel the rotation but now around a different origin, which is the center of the scaled object.
-    const rotatableNode = this.rotatableNode
-    if (rotatableNode != null) {
-      const transform = rotatableNode.getAttribute('transform')
-      if (transform) {
-        rotatableNode.setAttribute(
-          'transform',
-          `${transform} rotate(${-angle},${size.width / 2},${size.height / 2})`,
-        )
-        const rotatableBBox = Dom.getBBox(scalableNode as SVGElement, {
-          target: this.graph.view.stage,
-        })
-
-        // Store new x, y and perform rotate() again against the new rotation origin.
-        cell.prop(
-          'position',
-          { x: rotatableBBox.x, y: rotatableBBox.y },
-          { updated: true, ...opt },
-        )
-        this.translate()
-        this.rotate()
-      }
-    }
-
-    // Update must always be called on non-rotated element. Otherwise,
-    // relative positioning would work with wrong (rotated) bounding boxes.
-    this.update()
-  }
-
   // #region ports
 
   findPortElem(portId?: string, selector?: string) {
@@ -339,16 +206,6 @@ export class NodeView<
     const portRoot = cache.portContentElement
     const portSelectors = cache.portContentSelectors || {}
     return this.findOne(selector, portRoot, portSelectors)
-  }
-
-  protected initializePorts() {
-    this.cleanPortsCache()
-  }
-
-  protected refreshPorts() {
-    this.removePorts()
-    this.cleanPortsCache()
-    this.renderPorts()
   }
 
   protected cleanPortsCache() {
@@ -363,14 +220,14 @@ export class NodeView<
   }
 
   protected renderPorts() {
-    const container = this.getPortsContainer()
+    const container = this.container
     // References to rendered elements without z-index
     const references: Element[] = []
     container.childNodes.forEach((child) => {
       references.push(child as Element)
     })
-
-    const portsGropsByZ = ArrayExt.groupBy(this.cell.getParsedPorts(), 'zIndex')
+    const parsedPorts = this.cell.getParsedPorts()
+    const portsGropsByZ = ArrayExt.groupBy(parsedPorts, 'zIndex')
     const autoZIndexKey = 'auto'
 
     // render non-z first
@@ -392,10 +249,6 @@ export class NodeView<
     this.updatePorts()
   }
 
-  protected getPortsContainer() {
-    return this.rotatableNode || this.container
-  }
-
   protected appendPorts(
     ports: PortManager.Port[],
     zIndex: number,
@@ -405,7 +258,7 @@ export class NodeView<
     if (refs[zIndex] || zIndex < 0) {
       Dom.before(refs[Math.max(zIndex, 0)], elems)
     } else {
-      Dom.append(this.getPortsContainer(), elems)
+      Dom.append(this.container, elems)
     }
   }
 
@@ -414,11 +267,12 @@ export class NodeView<
     if (cached) {
       return cached.portElement
     }
+
     return this.createPortElement(port)
   }
 
   protected createPortElement(port: PortManager.Port) {
-    let renderResult = Markup.renderMarkup(this.getPortContainerMarkup())
+    let renderResult = Markup.renderMarkup(this.cell.getPortContainerMarkup())
     const portElement = renderResult.elem
     if (portElement == null) {
       throw new Error('Invalid port container markup.')
@@ -440,40 +294,41 @@ export class NodeView<
       portContentElement,
     )
 
-    renderResult = Markup.renderMarkup(this.getPortLabelMarkup(port.label))
-    const portLabelElement = renderResult.elem
-    const portLabelSelectors = renderResult.selectors
-
-    if (portLabelElement == null) {
-      throw new Error('Invalid port label markup.')
-    }
-
-    let portSelectors: Markup.Selectors | undefined
-    if (portContentSelectors && portLabelSelectors) {
-      // eslint-disable-next-line
-      for (const key in portLabelSelectors) {
-        if (portContentSelectors[key] && key !== this.rootSelector) {
-          throw new Error('Selectors within port must be unique.')
-        }
-      }
-      portSelectors = {
-        ...portContentSelectors,
-        ...portLabelSelectors,
-      }
-    } else {
-      portSelectors = portContentSelectors || portLabelSelectors
-    }
-
     let portClass = 'x6-port'
     if (port.group) {
       portClass += ` x6-port-${port.group}`
     }
     Dom.addClass(portElement, portClass)
+    Dom.addClass(portElement, 'x6-port')
     Dom.addClass(portContentElement, 'x6-port-body')
-    Dom.addClass(portLabelElement, 'x6-port-label')
-
     portElement.appendChild(portContentElement)
-    portElement.appendChild(portLabelElement)
+
+    let portSelectors: Markup.Selectors | undefined = portContentSelectors
+    let portLabelElement: Element | undefined
+    let portLabelSelectors: Markup.Selectors | null | undefined
+    const existLabel = this.existPortLabel(port)
+    if (existLabel) {
+      renderResult = Markup.renderMarkup(this.getPortLabelMarkup(port.label))
+      portLabelElement = renderResult.elem
+      portLabelSelectors = renderResult.selectors
+      if (portLabelElement == null) {
+        throw new Error('Invalid port label markup.')
+      }
+      if (portContentSelectors && portLabelSelectors) {
+        // eslint-disable-next-line
+        for (const key in portLabelSelectors) {
+          if (portContentSelectors[key] && key !== this.rootSelector) {
+            throw new Error('Selectors within port must be unique.')
+          }
+        }
+        portSelectors = {
+          ...portContentSelectors,
+          ...portLabelSelectors,
+        }
+      }
+      Dom.addClass(portLabelElement, 'x6-port-label')
+      portElement.appendChild(portLabelElement)
+    }
 
     this.portsCache[port.id] = {
       portElement,
@@ -484,25 +339,23 @@ export class NodeView<
       portContentSelectors,
     }
 
-    this.graph.hook.onPortRendered({
-      port,
-      node: this.cell,
-      container: portElement,
-      selectors: portSelectors,
-      labelContainer: portLabelElement,
-      labelSelectors: portLabelSelectors,
-      contentContainer: portContentElement,
-      contentSelectors: portContentSelectors,
-    })
+    if (this.graph.options.onPortRendered) {
+      this.graph.options.onPortRendered({
+        port,
+        node: this.cell,
+        container: portElement,
+        selectors: portSelectors,
+        labelContainer: portLabelElement,
+        labelSelectors: portLabelSelectors,
+        contentContainer: portContentElement,
+        contentSelectors: portContentSelectors,
+      })
+    }
 
     return portElement
   }
 
   protected updatePorts() {
-    // Layout ports without group
-    this.updatePortGroup()
-
-    // Layout ports with explicit group
     const groups = this.cell.getParsedGroups()
     Object.keys(groups).forEach((groupName) => this.updatePortGroup(groupName))
   }
@@ -530,7 +383,7 @@ export class NodeView<
       }
 
       const labelLayout = metric.labelLayout
-      if (labelLayout) {
+      if (labelLayout && cached.portLabelElement) {
         this.applyPortTransform(
           cached.portLabelElement,
           labelLayout,
@@ -567,18 +420,16 @@ export class NodeView<
     Dom.transform(element as SVGElement, matrix, { absolute: true })
   }
 
-  protected getPortContainerMarkup() {
-    return this.cell.getPortContainerMarkup() || this.defaultPortContainerMarkup
-  }
-
   protected getPortMarkup(port: PortManager.Port) {
-    return port.markup || this.cell.portMarkup || this.defaultPortMarkup
+    return port.markup || this.cell.portMarkup
   }
 
   protected getPortLabelMarkup(label: PortManager.Label) {
-    return (
-      label.markup || this.cell.portLabelMarkup || this.defaultPortLabelMarkup
-    )
+    return label.markup || this.cell.portLabelMarkup
+  }
+
+  protected existPortLabel(port: PortManager.Port) {
+    return port.attrs && port.attrs.text
   }
 
   // #endregion
@@ -601,58 +452,45 @@ export class NodeView<
     return { e, x, y, view, node, cell } as NodeView.PositionEventArgs<E>
   }
 
-  notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+  notifyMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
     this.notify('node:mousedown', this.getEventArgs(e, x, y))
   }
 
-  notifyMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  notifyMouseMove(e: Dom.MouseMoveEvent, x: number, y: number) {
     super.onMouseMove(e, x, y)
     this.notify('node:mousemove', this.getEventArgs(e, x, y))
   }
 
-  notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
-    // Problem: super will call stopBatch before event listeners
-    // attached to this **node** run. Those events will not count
-    // towards this batch, despite being triggered by the same UI event.
-    //
-    // This complicates a lot of stuff e.g. history recording.
-    //
-    // See https://github.com/antvis/X6/issues/2421 for background.
+  notifyMouseUp(e: Dom.MouseUpEvent, x: number, y: number) {
     super.onMouseUp(e, x, y)
     this.notify('node:mouseup', this.getEventArgs(e, x, y))
   }
 
-  onClick(e: JQuery.ClickEvent, x: number, y: number) {
+  onClick(e: Dom.ClickEvent, x: number, y: number) {
     super.onClick(e, x, y)
     this.notify('node:click', this.getEventArgs(e, x, y))
   }
 
-  onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
+  onDblClick(e: Dom.DoubleClickEvent, x: number, y: number) {
     super.onDblClick(e, x, y)
     this.notify('node:dblclick', this.getEventArgs(e, x, y))
   }
 
-  onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
+  onContextMenu(e: Dom.ContextMenuEvent, x: number, y: number) {
     super.onContextMenu(e, x, y)
     this.notify('node:contextmenu', this.getEventArgs(e, x, y))
   }
 
-  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+  onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     if (this.isPropagationStopped(e)) {
-      return
-    }
-    // 避免处于foreignObject内部元素触发onMouseDown导致节点被拖拽
-    // 拖拽的时候是以onMouseDown启动的
-    const target = e.target as Element
-    if (Dom.clickable(target) || Dom.isInputElement(target)) {
       return
     }
     this.notifyMouseDown(e, x, y)
     this.startNodeDragging(e, x, y)
   }
 
-  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  onMouseMove(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.Mousemove>(e)
     const action = data.action
     if (action === 'magnet') {
@@ -677,18 +515,12 @@ export class NodeView<
     this.setEventData<EventData.Mousemove>(e, data)
   }
 
-  onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+  onMouseUp(e: Dom.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData<EventData.Mousemove>(e)
     const action = data.action
     if (action === 'magnet') {
       this.stopMagnetDragging(e, x, y)
     } else {
-      // 避免处于foreignObject内部元素触发onMouseUp导致节点被选中
-      // 选中的时候是以onMouseUp启动的
-      const target = e.target as Element
-      if (Dom.clickable(target) || Dom.isInputElement(target)) {
-        return
-      }
       this.notifyMouseUp(e, x, y)
       if (action === 'move') {
         const meta = data as EventData.Moving
@@ -705,28 +537,28 @@ export class NodeView<
     this.checkMouseleave(e)
   }
 
-  onMouseOver(e: JQuery.MouseOverEvent) {
+  onMouseOver(e: Dom.MouseOverEvent) {
     super.onMouseOver(e)
     this.notify('node:mouseover', this.getEventArgs(e))
   }
 
-  onMouseOut(e: JQuery.MouseOutEvent) {
+  onMouseOut(e: Dom.MouseOutEvent) {
     super.onMouseOut(e)
     this.notify('node:mouseout', this.getEventArgs(e))
   }
 
-  onMouseEnter(e: JQuery.MouseEnterEvent) {
+  onMouseEnter(e: Dom.MouseEnterEvent) {
     this.updateClassName(e)
     super.onMouseEnter(e)
     this.notify('node:mouseenter', this.getEventArgs(e))
   }
 
-  onMouseLeave(e: JQuery.MouseLeaveEvent) {
+  onMouseLeave(e: Dom.MouseLeaveEvent) {
     super.onMouseLeave(e)
     this.notify('node:mouseleave', this.getEventArgs(e))
   }
 
-  onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+  onMouseWheel(e: Dom.EventObject, x: number, y: number, delta: number) {
     super.onMouseWheel(e, x, y, delta)
     this.notify('node:mousewheel', {
       delta,
@@ -734,9 +566,10 @@ export class NodeView<
     })
   }
 
-  onMagnetClick(e: JQuery.MouseUpEvent, magnet: Element, x: number, y: number) {
-    const count = this.graph.view.getMouseMovedCount(e)
-    if (count > this.graph.options.clickThreshold) {
+  onMagnetClick(e: Dom.MouseUpEvent, magnet: Element, x: number, y: number) {
+    const graph = this.graph
+    const count = graph.view.getMouseMovedCount(e)
+    if (count > graph.options.clickThreshold) {
       return
     }
     this.notify('node:magnet:click', {
@@ -746,7 +579,7 @@ export class NodeView<
   }
 
   onMagnetDblClick(
-    e: JQuery.DoubleClickEvent,
+    e: Dom.DoubleClickEvent,
     magnet: Element,
     x: number,
     y: number,
@@ -758,7 +591,7 @@ export class NodeView<
   }
 
   onMagnetContextMenu(
-    e: JQuery.ContextMenuEvent,
+    e: Dom.ContextMenuEvent,
     magnet: Element,
     x: number,
     y: number,
@@ -770,7 +603,7 @@ export class NodeView<
   }
 
   onMagnetMouseDown(
-    e: JQuery.MouseDownEvent,
+    e: Dom.MouseDownEvent,
     magnet: Element,
     x: number,
     y: number,
@@ -778,49 +611,17 @@ export class NodeView<
     this.startMagnetDragging(e, x, y)
   }
 
-  onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
+  onCustomEvent(e: Dom.MouseDownEvent, name: string, x: number, y: number) {
     this.notify('node:customevent', { name, ...this.getEventArgs(e, x, y) })
     super.onCustomEvent(e, name, x, y)
   }
 
-  protected prepareEmbedding(e: JQuery.MouseMoveEvent) {
-    // const cell = data.cell || this.cell
-    // const graph = data.graph || this.graph
-    // const model = graph.model
-
-    // model.startBatch('to-front')
-
-    // // Bring the model to the front with all his embeds.
-    // cell.toFront({ deep: true, ui: true })
-
-    // const maxZ = model
-    //   .getNodes()
-    //   .reduce((max, cell) => Math.max(max, cell.getZIndex() || 0), 0)
-
-    // const connectedEdges = model.getConnectedEdges(cell, {
-    //   deep: true,
-    //   enclosed: true,
-    // })
-
-    // connectedEdges.forEach((edge) => {
-    //   const zIndex = edge.getZIndex() || 0
-    //   if (zIndex <= maxZ) {
-    //     edge.setZIndex(maxZ + 1, { ui: true })
-    //   }
-    // })
-
-    // model.stopBatch('to-front')
-
-    // Before we start looking for suitable parent we remove the current one.
-    // const parent = cell.getParent()
-    // if (parent) {
-    //   parent.unembed(cell, { ui: true })
-    // }
-
+  protected prepareEmbedding(e: Dom.MouseMoveEvent) {
+    const graph = this.graph
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const node = data.cell || this.cell
-    const view = this.graph.findViewByCell(node)
-    const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
+    const view = graph.findViewByCell(node)
+    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
 
     this.notify('node:embed', {
       e,
@@ -833,7 +634,7 @@ export class NodeView<
     })
   }
 
-  processEmbedding(e: JQuery.MouseMoveEvent, data: EventData.MovingTargetNode) {
+  processEmbedding(e: Dom.MouseMoveEvent, data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const options = graph.options.embedding
@@ -925,7 +726,7 @@ export class NodeView<
     }
   }
 
-  finalizeEmbedding(e: JQuery.MouseUpEvent, data: EventData.MovingTargetNode) {
+  finalizeEmbedding(e: Dom.MouseUpEvent, data: EventData.MovingTargetNode) {
     this.graph.startBatch('embedding')
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
@@ -960,6 +761,7 @@ export class NodeView<
         currentParent: cell.getParent(),
       })
     }
+
     this.graph.stopBatch('embedding')
   }
 
@@ -975,17 +777,33 @@ export class NodeView<
         return view
       }
       cell = cell.getParent() as Entity
-      view = this.graph.renderer.findViewByCell(cell) as NodeView
+      view = this.graph.findViewByCell(cell) as NodeView
     }
 
     return null
   }
 
-  protected startMagnetDragging(
-    e: JQuery.MouseDownEvent,
-    x: number,
-    y: number,
+  protected validateMagnet(
+    cellView: CellView,
+    magnet: Element,
+    e: Dom.MouseDownEvent | Dom.MouseEnterEvent,
   ) {
+    if (magnet.getAttribute('magnet') !== 'passive') {
+      const validate = this.graph.options.connecting.validateMagnet
+      if (validate) {
+        return FunctionExt.call(validate, this.graph, {
+          e,
+          magnet,
+          view: cellView,
+          cell: cellView.cell,
+        })
+      }
+      return true
+    }
+    return false
+  }
+
+  protected startMagnetDragging(e: Dom.MouseDownEvent, x: number, y: number) {
     if (!this.can('magnetConnectable')) {
       return
     }
@@ -999,20 +817,17 @@ export class NodeView<
       targetMagnet: magnet,
     })
 
-    if (graph.hook.validateMagnet(this, magnet, e)) {
+    if (this.validateMagnet(this, magnet, e)) {
       if (graph.options.magnetThreshold <= 0) {
         this.startConnectting(e, magnet, x, y)
       }
+
       this.setEventData<Partial<EventData.Magnet>>(e, {
         action: 'magnet',
       })
       this.stopPropagation(e)
     } else {
-      // 只需要阻止port的冒泡 #2258
-      if (
-        Dom.hasClass(magnet, 'x6-port-body') ||
-        JQuery(magnet).closest('.x6-port-body').length > 0
-      ) {
+      if (Dom.hasClass(magnet, 'x6-port-body') || !!magnet.closest('.x6-port-body')) {
         this.stopPropagation(e)
       }
       this.onMouseDown(e, x, y)
@@ -1022,7 +837,7 @@ export class NodeView<
   }
 
   protected startConnectting(
-    e: JQuery.MouseDownEvent,
+    e: Dom.MouseDownEvent,
     magnet: Element,
     x: number,
     y: number,
@@ -1042,10 +857,25 @@ export class NodeView<
     this.setEventData<Partial<EventData.Magnet>>(e, { edgeView })
   }
 
+  protected getDefaultEdge(sourceView: CellView, sourceMagnet: Element) {
+    let edge: Edge | undefined | null | void
+
+    const create = this.graph.options.connecting.createEdge
+    if (create) {
+      edge = FunctionExt.call(create, this.graph, {
+        sourceMagnet,
+        sourceView,
+        sourceCell: sourceView.cell,
+      })
+    }
+
+    return edge as Edge
+  }
+
   protected createEdgeFromMagnet(magnet: Element, x: number, y: number) {
     const graph = this.graph
     const model = graph.model
-    const edge = graph.hook.getDefaultEdge(this, magnet)
+    const edge = this.getDefaultEdge(this, magnet)
 
     edge.setSource({
       ...edge.getSource(),
@@ -1057,7 +887,7 @@ export class NodeView<
     return edge.findView(graph) as EdgeView
   }
 
-  protected dragMagnet(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  protected dragMagnet(e: Dom.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.Magnet>(e)
     const edgeView = data.edgeView
     if (edgeView) {
@@ -1088,7 +918,7 @@ export class NodeView<
     }
   }
 
-  protected stopMagnetDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
+  protected stopMagnetDragging(e: Dom.MouseUpEvent, x: number, y: number) {
     const data = this.eventData<EventData.Magnet>(e)
     const edgeView = data.edgeView
     if (edgeView) {
@@ -1098,7 +928,7 @@ export class NodeView<
   }
 
   protected notifyUnhandledMouseDown(
-    e: JQuery.MouseDownEvent,
+    e: Dom.MouseDownEvent,
     x: number,
     y: number,
   ) {
@@ -1114,16 +944,16 @@ export class NodeView<
 
   protected notifyNodeMove<Key extends keyof NodeView.EventArgs>(
     name: Key,
-    e: JQuery.MouseMoveEvent | JQuery.MouseUpEvent,
+    e: Dom.MouseMoveEvent | Dom.MouseUpEvent,
     x: number,
     y: number,
     cell: Cell,
   ) {
     let cells = [cell]
 
-    const selection = this.graph.selection.widget
-    if (selection && selection.options.movable) {
-      const selectedCells = this.graph.getSelectedCells()
+    const selection = this.graph.getPlugin<any>('selection')
+    if (selection && selection.isSelectionMovable()) {
+      const selectedCells = selection.getSelectedCells()
       if (selectedCells.includes(cell)) {
         cells = selectedCells.filter((c: Cell) => c.isNode())
       }
@@ -1141,7 +971,25 @@ export class NodeView<
     })
   }
 
-  protected startNodeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
+  protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+    const restrict = this.graph.options.translating.restrict
+    const area =
+      typeof restrict === 'function'
+        ? FunctionExt.call(restrict, this.graph, view!)
+        : restrict
+
+    if (typeof area === 'number') {
+      return this.graph.transform.getGraphArea().inflate(area)
+    }
+
+    if (area === true) {
+      return this.graph.transform.getGraphArea()
+    }
+
+    return area || null
+  }
+
+  protected startNodeDragging(e: Dom.MouseDownEvent, x: number, y: number) {
     const targetView = this.getDelegatedView()
     if (targetView == null || !targetView.can('nodeMovable')) {
       return this.notifyUnhandledMouseDown(e, x, y)
@@ -1156,11 +1004,11 @@ export class NodeView<
     targetView.setEventData<EventData.MovingTargetNode>(e, {
       moving: false,
       offset: position.diff(x, y),
-      restrict: this.graph.hook.getRestrictArea(targetView),
+      restrict: this.getRestrictArea(targetView),
     })
   }
 
-  protected dragNode(e: JQuery.MouseMoveEvent, x: number, y: number) {
+  protected dragNode(e: Dom.MouseMoveEvent, x: number, y: number) {
     const node = this.cell
     const graph = this.graph
     const gridSize = graph.getGridSize()
@@ -1176,8 +1024,8 @@ export class NodeView<
 
     this.autoScrollGraph(e.clientX, e.clientY)
 
-    const posX = Util.snapToGrid(x + offset.x, gridSize)
-    const posY = Util.snapToGrid(y + offset.y, gridSize)
+    const posX = GeometryUtil.snapToGrid(x + offset.x, gridSize)
+    const posY = GeometryUtil.snapToGrid(y + offset.y, gridSize)
     node.setPosition(posX, posY, {
       restrict,
       deep: true,
@@ -1193,7 +1041,7 @@ export class NodeView<
     }
   }
 
-  protected stopNodeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
+  protected stopNodeDragging(e: Dom.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     if (data.embedding) {
       this.finalizeEmbedding(e, data)
@@ -1208,8 +1056,9 @@ export class NodeView<
     data.embedding = false
   }
 
+  // eslint-disable-next-line
   protected autoScrollGraph(x: number, y: number) {
-    const scroller = this.graph.scroller.widget
+    const scroller = this.graph.getPlugin<any>('scroller')
     if (scroller) {
       scroller.autoScroll(x, y)
     }
@@ -1224,9 +1073,9 @@ export namespace NodeView {
   export interface PortCache {
     portElement: Element
     portSelectors?: Markup.Selectors | null
-    portLabelElement: Element
+    portLabelElement?: Element
     portLabelSelectors?: Markup.Selectors | null
-    portContentElement: Element
+    portContentElement?: Element
     portContentSelectors?: Markup.Selectors | null
   }
 }
@@ -1254,24 +1103,24 @@ export namespace NodeView {
   export interface RotateEventArgs<E> extends PositionEventArgs<E> {}
 
   export interface EventArgs {
-    'node:click': PositionEventArgs<JQuery.ClickEvent>
-    'node:dblclick': PositionEventArgs<JQuery.DoubleClickEvent>
-    'node:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent>
-    'node:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
-    'node:mousemove': PositionEventArgs<JQuery.MouseMoveEvent>
-    'node:mouseup': PositionEventArgs<JQuery.MouseUpEvent>
-    'node:mouseover': MouseEventArgs<JQuery.MouseOverEvent>
-    'node:mouseout': MouseEventArgs<JQuery.MouseOutEvent>
-    'node:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
-    'node:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
-    'node:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> &
+    'node:click': PositionEventArgs<Dom.ClickEvent>
+    'node:dblclick': PositionEventArgs<Dom.DoubleClickEvent>
+    'node:contextmenu': PositionEventArgs<Dom.ContextMenuEvent>
+    'node:mousedown': PositionEventArgs<Dom.MouseDownEvent>
+    'node:mousemove': PositionEventArgs<Dom.MouseMoveEvent>
+    'node:mouseup': PositionEventArgs<Dom.MouseUpEvent>
+    'node:mouseover': MouseEventArgs<Dom.MouseOverEvent>
+    'node:mouseout': MouseEventArgs<Dom.MouseOutEvent>
+    'node:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
+    'node:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
+    'node:mousewheel': PositionEventArgs<Dom.EventObject> &
       CellView.MouseDeltaEventArgs
 
-    'node:customevent': PositionEventArgs<JQuery.MouseDownEvent> & {
+    'node:customevent': PositionEventArgs<Dom.MouseDownEvent> & {
       name: string
     }
 
-    'node:unhandled:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
+    'node:unhandled:mousedown': PositionEventArgs<Dom.MouseDownEvent>
 
     'node:highlight': {
       magnet: Element
@@ -1282,33 +1131,24 @@ export namespace NodeView {
     }
     'node:unhighlight': EventArgs['node:highlight']
 
-    'node:magnet:click': PositionEventArgs<JQuery.MouseUpEvent> &
+    'node:magnet:click': PositionEventArgs<Dom.MouseUpEvent> & MagnetEventArgs
+    'node:magnet:dblclick': PositionEventArgs<Dom.DoubleClickEvent> &
       MagnetEventArgs
-    'node:magnet:dblclick': PositionEventArgs<JQuery.DoubleClickEvent> &
-      MagnetEventArgs
-    'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
+    'node:magnet:contextmenu': PositionEventArgs<Dom.ContextMenuEvent> &
       MagnetEventArgs
 
-    'node:move': TranslateEventArgs<JQuery.MouseMoveEvent>
-    'node:moving': TranslateEventArgs<JQuery.MouseMoveEvent>
-    'node:moved': TranslateEventArgs<JQuery.MouseUpEvent>
+    'node:move': TranslateEventArgs<Dom.MouseMoveEvent>
+    'node:moving': TranslateEventArgs<Dom.MouseMoveEvent>
+    'node:moved': TranslateEventArgs<Dom.MouseUpEvent>
 
-    'node:resize': ResizeEventArgs<JQuery.MouseDownEvent>
-    'node:resizing': ResizeEventArgs<JQuery.MouseMoveEvent>
-    'node:resized': ResizeEventArgs<JQuery.MouseUpEvent>
-
-    'node:rotate': RotateEventArgs<JQuery.MouseDownEvent>
-    'node:rotating': RotateEventArgs<JQuery.MouseMoveEvent>
-    'node:rotated': RotateEventArgs<JQuery.MouseUpEvent>
-
-    'node:embed': PositionEventArgs<JQuery.MouseMoveEvent> & {
+    'node:embed': PositionEventArgs<Dom.MouseMoveEvent> & {
       currentParent: Node | null
     }
-    'node:embedding': PositionEventArgs<JQuery.MouseMoveEvent> & {
+    'node:embedding': PositionEventArgs<Dom.MouseMoveEvent> & {
       currentParent: Node | null
       candidateParent: Node | null
     }
-    'node:embedded': PositionEventArgs<JQuery.MouseUpEvent> & {
+    'node:embedded': PositionEventArgs<Dom.MouseUpEvent> & {
       currentParent: Node | null
       previousParent: Node | null
     }

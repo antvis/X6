@@ -1,12 +1,10 @@
-import JQuery from 'jquery'
-import { Dom } from '../util'
-import { Attr } from '../registry'
-import { KeyValue } from '../types'
-import { Basecoat } from '../common'
-import { Util, Config } from '../global'
+import { Dom, KeyValue, Basecoat } from '@antv/x6-common'
+import { EventArgs } from '@antv/x6-common/lib/event/types'
+import { Config } from '../config'
 import { Markup } from './markup'
+import { Attr } from '../registry'
 
-export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
+export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   public readonly cid: string
   public container: Element
   protected selectors: Markup.Selectors
@@ -26,17 +24,13 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return 0
   }
 
-  $(elem: any) {
-    return View.$(elem)
-  }
-
   empty(elem: Element = this.container) {
-    this.$(elem).empty()
+    Dom.empty(elem)
     return this
   }
 
   unmount(elem: Element = this.container) {
-    this.$(elem).remove()
+    Dom.remove(elem)
     return this
   }
 
@@ -59,34 +53,32 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   }
 
   addClass(className: string | string[], elem: Element = this.container) {
-    this.$(elem).addClass(
+    Dom.addClass(
+      elem,
       Array.isArray(className) ? className.join(' ') : className,
     )
     return this
   }
 
   removeClass(className: string | string[], elem: Element = this.container) {
-    this.$(elem).removeClass(
+    Dom.removeClass(
+      elem,
       Array.isArray(className) ? className.join(' ') : className,
     )
     return this
   }
 
   setStyle(
-    style: JQuery.PlainObject<string | number>,
+    style: Record<string, string | number>,
     elem: Element = this.container,
   ) {
-    this.$(elem).css(style)
+    Dom.css(elem, style)
     return this
   }
 
   setAttrs(attrs?: Attr.SimpleAttrs | null, elem: Element = this.container) {
     if (attrs != null && elem != null) {
-      if (elem instanceof SVGElement) {
-        Dom.attr(elem, attrs)
-      } else {
-        this.$(elem).attr(attrs)
-      }
+      Dom.attr(elem, attrs)
     }
     return this
   }
@@ -176,7 +168,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   }
 
   prefixClassName(className: string) {
-    return Util.prefix(className)
+    return Config.prefix(className)
   }
 
   delegateEvents(events: View.Events, append?: boolean) {
@@ -205,7 +197,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   }
 
   undelegateEvents() {
-    this.$(this.container).off(this.getEventNamespace())
+    Dom.Event.off(this.container, this.getEventNamespace())
     return this
   }
 
@@ -224,7 +216,8 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     selector: string | Record<string, unknown>,
     listener: any,
   ) {
-    this.$(this.container).on(
+    Dom.Event.on(
+      this.container,
       eventName + this.getEventNamespace(),
       selector,
       listener,
@@ -246,17 +239,17 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   ) {
     const name = eventName + this.getEventNamespace()
     if (selector == null) {
-      this.$(this.container).off(name)
+      Dom.Event.off(this.container, name)
     } else if (typeof selector === 'string') {
-      this.$(this.container).off(name, selector, listener)
+      Dom.Event.off(this.container, name, selector, listener)
     } else {
-      this.$(this.container).off(name, selector)
+      Dom.Event.off(this.container, name, selector)
     }
     return this
   }
 
   protected addEventListeners(
-    elem: Element | Document | JQuery,
+    elem: Element | Document,
     events: View.Events,
     data?: KeyValue,
   ) {
@@ -265,20 +258,24 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     }
 
     const ns = this.getEventNamespace()
-    const $elem = this.$(elem)
     Object.keys(events).forEach((eventName) => {
       const method = this.getEventHandler(events[eventName])
       if (typeof method === 'function') {
-        $elem.on(eventName + ns, data, method as any)
+        Dom.Event.on<string, KeyValue | undefined>(
+          elem as Element,
+          eventName + ns,
+          data,
+          method as any,
+        )
       }
     })
 
     return this
   }
 
-  protected removeEventListeners(elem: Element | Document | JQuery) {
+  protected removeEventListeners(elem: Element | Document) {
     if (elem != null) {
-      this.$(elem).off(this.getEventNamespace())
+      Dom.Event.off(elem as Element, this.getEventNamespace())
     }
     return this
   }
@@ -303,10 +300,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return method
   }
 
-  getEventTarget(
-    e: JQuery.TriggeredEvent,
-    options: { fromPoint?: boolean } = {},
-  ) {
+  getEventTarget(e: Dom.EventObject, options: { fromPoint?: boolean } = {}) {
     // Touchmove/Touchend event's target is not reflecting the element
     // under the coordinates as mousemove does.
     // It holds the element when a touchstart triggered.
@@ -318,27 +312,24 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return target
   }
 
-  stopPropagation(e: JQuery.TriggeredEvent) {
+  stopPropagation(e: Dom.EventObject) {
     this.setEventData(e, { propagationStopped: true })
     return this
   }
 
-  isPropagationStopped(e: JQuery.TriggeredEvent) {
+  isPropagationStopped(e: Dom.EventObject) {
     return this.getEventData(e).propagationStopped === true
   }
 
-  getEventData<T extends KeyValue>(e: JQuery.TriggeredEvent): T {
+  getEventData<T extends KeyValue>(e: Dom.EventObject): T {
     return this.eventData<T>(e)
   }
 
-  setEventData<T extends KeyValue>(e: JQuery.TriggeredEvent, data: T): T {
+  setEventData<T extends KeyValue>(e: Dom.EventObject, data: T): T {
     return this.eventData(e, data)
   }
 
-  protected eventData<T extends KeyValue>(
-    e: JQuery.TriggeredEvent,
-    data?: T,
-  ): T {
+  protected eventData<T extends KeyValue>(e: Dom.EventObject, data?: T): T {
     if (e == null) {
       throw new TypeError('Event object required')
     }
@@ -368,7 +359,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return currentData[key]
   }
 
-  normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
+  normalizeEvent<T extends Dom.EventObject>(evt: T) {
     return View.normalizeEvent(evt)
   }
 }
@@ -378,10 +369,6 @@ export namespace View {
 }
 
 export namespace View {
-  export function $(elem: any) {
-    return JQuery(elem)
-  }
-
   export function createElement(tagName?: string, isSvgElement?: boolean) {
     return isSvgElement
       ? Dom.createSvgElement(tagName || 'g')
@@ -405,17 +392,22 @@ export namespace View {
     }
 
     if (Config.useCSSSelector) {
+      const validSelector = selector.includes('>')
+        ? `:scope ${selector}`
+        : selector
       return {
         isCSSSelector: true,
-        // elems: Array.prototype.slice.call(rootElem.querySelectorAll(selector)),
-        elems: $(rootElem).find(selector).toArray() as Element[],
+        // $(rootElem).find(selector).toArray() as Element[]
+        elems: Array.prototype.slice.call(
+          rootElem.querySelectorAll(validSelector),
+        ),
       }
     }
 
     return { elems: [] }
   }
 
-  export function normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
+  export function normalizeEvent<T extends Dom.EventObject>(evt: T) {
     let normalizedEvent = evt
     const originalEvent = evt.originalEvent as TouchEvent
     const touchEvt: any =

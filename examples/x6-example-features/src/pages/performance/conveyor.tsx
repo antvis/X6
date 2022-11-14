@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, NodeView, Point, Angle, Dom, Vector } from '@antv/x6'
+import { Graph, Node, NodeView, Dom, Vector, Point, Angle } from '@antv/x6'
 import '../index.less'
 
 class ConveyorNode extends Node {
@@ -154,8 +154,6 @@ export default class Example extends React.Component {
       width: 1000,
       height: 1000,
       grid: 1,
-      async: true,
-      sorting: 'approx',
       background: {
         color: '#000000',
       },
@@ -163,10 +161,9 @@ export default class Example extends React.Component {
 
     // efficient drawing
     var rectSize = 18
-    var center = graph.getArea().getCenter()
+    var center = graph.getGraphArea().getCenter()
     var radius = 1000 / 2
     var nodes: ConveyorNode[] = []
-
     for (var i = 0; i < 10; i++) {
       nodes.push(...createCircle(center, radius - 50 - i * 30, rectSize))
     }
@@ -196,7 +193,7 @@ export default class Example extends React.Component {
       }
     }
 
-    setInterval(updateConveyor, 1)
+    setInterval(updateConveyor, 100)
   }
 
   refContainer = (container: HTMLDivElement) => {

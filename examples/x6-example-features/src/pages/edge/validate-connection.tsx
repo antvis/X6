@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Edge, EdgeView } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import '../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -8,60 +9,134 @@ export default class Example extends React.Component {
     const graph = new Graph({
       container: this.container,
       width: 800,
-      height: 600,
+      height: 400,
       grid: true,
       connecting: {
-        validateMagnet({ cell, magnet }) {
-          let count = 0
-          const connectionCount = magnet.getAttribute('connection-count')
-          const max = connectionCount ? parseInt(connectionCount, 10) : Number.MAX_SAFE_INTEGER
-          const outgoingEdges = graph.getOutgoingEdges(cell)
-          if (outgoingEdges) {
-            outgoingEdges.forEach((edge: Edge) => {
-              const edgeView = graph.findViewByCell(edge) as EdgeView
-              if (edgeView.sourceMagnet === magnet) {
-                count += 1
-              }
-            })
-          }
-          return count < max
-        },
+        allowNode: false,
+        allowEdge: true,
+        allowLoop: false,
+        allowBlank: false,
+        allowMulti: 'withPort',
       },
     })
 
     graph.addNode({
-      shape: 'rect',
-      x: 80,
-      y: 80,
-      width: 160,
-      height: 60,
-      label: 'source',
-      ports: [
-        {
-          id: 'a',
-          attrs: {
-            circle: {
-              magnet: true,
-              connectionCount: 3, // 自定义属性，控制连接桩可连接多少条边
+      x: 60,
+      y: 50,
+      width: 120,
+      height: 64,
+      ports: {
+        groups: {
+          in: {
+            attrs: {
+              circle: {
+                r: 6,
+                magnet: true,
+                stroke: '#31d0c6',
+                strokeWidth: 2,
+                fill: '#fff',
+              },
             },
+            position: 'top',
+          },
+          out: {
+            attrs: {
+              circle: {
+                r: 6,
+                magnet: true,
+                stroke: '#31d0c6',
+                strokeWidth: 2,
+                fill: '#fff',
+              },
+            },
+            position: 'bottom',
           },
         },
-        {
-          id: 'b',
-          attrs: {
-            circle: {
-              magnet: true,
-              connectionCount: 0, // 自定义属性，控制连接桩可连接多少条边
-            },
+        items: [
+          {
+            id: 'port1',
+            group: 'in',
           },
-        },
-      ],
-      attrs: {
-        body: {
-          magnet: true,
-          connectionCount: 2, // 自定义属性，控制节点可连接多少条边
-        },
+          {
+            id: 'port2',
+            group: 'in',
+          },
+          {
+            id: 'port3',
+            group: 'in',
+          },
+          {
+            id: 'port4',
+            group: 'out',
+          },
+          {
+            id: 'port5',
+            group: 'out',
+          },
+        ],
       },
+    })
+
+    graph.addNode({
+      x: 160,
+      y: 240,
+      width: 120,
+      height: 64,
+      ports: {
+        groups: {
+          in: {
+            attrs: {
+              circle: {
+                r: 6,
+                magnet: true,
+                stroke: '#31d0c6',
+                strokeWidth: 2,
+                fill: '#fff',
+              },
+            },
+            position: 'top',
+          },
+          out: {
+            attrs: {
+              circle: {
+                r: 6,
+                magnet: true,
+                stroke: '#31d0c6',
+                strokeWidth: 2,
+                fill: '#fff',
+              },
+            },
+            position: 'bottom',
+          },
+        },
+        items: [
+          {
+            id: 'port1',
+            group: 'in',
+          },
+          {
+            id: 'port2',
+            group: 'in',
+          },
+          {
+            id: 'port3',
+            group: 'in',
+          },
+          {
+            id: 'port4',
+            group: 'out',
+          },
+          {
+            id: 'port5',
+            group: 'out',
+          },
+        ],
+      },
+    })
+
+    graph.addEdge({
+      source: [360, 80],
+      target: [560, 200],
     })
   }
 

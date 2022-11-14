@@ -3,15 +3,15 @@ import {
   ArrayExt,
   Dom,
   FunctionExt,
+  Dictionary,
   StringExt,
-  Scheduler,
-} from '../util'
-import { Rectangle, Point } from '../geometry'
-import { Dictionary } from '../common'
+} from '@antv/x6-common'
+import { Rectangle, Point } from '@antv/x6-geometry'
 import { Attr } from '../registry/attr'
 import { View } from './view'
 import { Markup } from './markup'
 import { CellView } from './cell'
+import { Util } from '../util'
 
 export class AttrManager {
   constructor(protected view: CellView) {}
@@ -32,7 +32,6 @@ export class AttrManager {
     let set: Attr.ComplexAttrs | undefined
     let offset: Attr.ComplexAttrs | undefined
     let position: Attr.ComplexAttrs | undefined
-    let delay: Attr.ComplexAttrs | undefined
 
     const specials: { name: string; definition: Attr.Definition }[] = []
 
@@ -78,20 +77,10 @@ export class AttrManager {
 
       const setDefine = definition as Attr.SetDefinition
       if (typeof setDefine.set === 'function') {
-        if (
-          !Dom.isHTMLElement(elem) &&
-          AttrManager.DELAY_ATTRS.includes(name)
-        ) {
-          if (delay == null) {
-            delay = {}
-          }
-          delay[name] = val
-        } else {
-          if (set == null) {
-            set = {}
-          }
-          set[name] = val
+        if (set == null) {
+          set = {}
         }
+        set[name] = val
       }
 
       const offsetDefine = definition as Attr.OffsetDefinition
@@ -117,7 +106,6 @@ export class AttrManager {
       set,
       offset,
       position,
-      delay,
     }
   }
 
@@ -237,15 +225,12 @@ export class AttrManager {
     elem: Element,
     processedAttrs: AttrManager.ProcessedAttrs,
     refBBox: Rectangle,
-    options: AttrManager.UpdateOptions,
   ) {
     const rawAttrs = processedAttrs.raw || {}
     let nodeAttrs = processedAttrs.normal || {}
     const setAttrs = processedAttrs.set
     const positionAttrs = processedAttrs.position
     const offsetAttrs = processedAttrs.offset
-    const delayAttrs = processedAttrs.delay
-
     const getOptions = () => ({
       elem,
       cell: this.cell,
@@ -277,7 +262,7 @@ export class AttrManager {
       })
     }
 
-    if (Dom.isHTMLElement(elem)) {
+    if (elem instanceof HTMLElement) {
       // TODO: setting the `transform` attribute on HTMLElements
       // via `node.style.transform = 'matrix(...)';` would introduce
       // a breaking change (e.g. basic.TextBlock).
@@ -296,18 +281,6 @@ export class AttrManager {
       nodeMatrix.f = 0
     }
 
-    // Calculates node scale determined by the scalable group.
-    let sx = 1
-    let sy = 1
-    if (positionAttrs || offsetAttrs) {
-      const scale = this.view.getScaleOfElement(
-        elem,
-        options.scalableNode as SVGElement,
-      )
-      sx = scale.sx
-      sy = scale.sy
-    }
-
     let positioned = false
     if (positionAttrs != null) {
       Object.keys(positionAttrs).forEach((name) => {
@@ -323,7 +296,7 @@ export class AttrManager {
 
           if (ts != null) {
             positioned = true
-            nodePosition.translate(Point.create(ts).scale(sx, sy))
+            nodePosition.translate(Point.create(ts))
           }
         }
       })
@@ -338,10 +311,7 @@ export class AttrManager {
       // Check if the node is visible
       const nodeBoundingRect = this.view.getBoundingRectOfElement(elem)
       if (nodeBoundingRect.width > 0 && nodeBoundingRect.height > 0) {
-        const nodeBBox = Dom.transformRectangle(
-          nodeBoundingRect,
-          nodeMatrix,
-        ).scale(1 / sx, 1 / sy)
+        const nodeBBox = Util.transformRectangle(nodeBoundingRect, nodeMatrix)
 
         Object.keys(offsetAttrs).forEach((name) => {
           const val = offsetAttrs[name]
@@ -362,7 +332,7 @@ export class AttrManager {
 
             if (ts != null) {
               offseted = true
-              nodePosition.translate(Point.create(ts).scale(sx, sy))
+              nodePosition.translate(Point.create(ts))
             }
           }
         })
@@ -374,39 +344,6 @@ export class AttrManager {
       nodeMatrix.e = nodePosition.x
       nodeMatrix.f = nodePosition.y
       elem.setAttribute('transform', Dom.matrixToTransformString(nodeMatrix))
-    }
-
-    // delay render
-    const updateDelayAttrs = () => {
-      if (delayAttrs != null) {
-        Object.keys(delayAttrs).forEach((name) => {
-          const val = delayAttrs[name]
-          const def = this.getDefinition(name)
-          if (def != null) {
-            const ret = FunctionExt.call(
-              (def as Attr.SetDefinition).set,
-              this.view,
-              val,
-              getOptions(),
-            )
-            if (typeof ret === 'object') {
-              this.view.setAttrs(ret, elem)
-            } else if (ret != null) {
-              this.view.setAttrs(
-                {
-                  [name]: ret,
-                },
-                elem,
-              )
-            }
-          }
-        })
-      }
-    }
-    if (options.forceSync) {
-      updateDelayAttrs()
-    } else {
-      Scheduler.scheduleTask(updateDelayAttrs)
     }
   }
 
@@ -443,8 +380,7 @@ export class AttrManager {
       if (
         processed.set == null &&
         processed.position == null &&
-        processed.offset == null &&
-        processed.delay == null
+        processed.offset == null
       ) {
         this.view.setAttrs(processed.normal, node)
       } else {
@@ -512,7 +448,7 @@ export class AttrManager {
         ) as SVGElement
 
         unrotatedRefBBox = refNode
-          ? Dom.getBBox(refNode as SVGElement, { target })
+          ? Util.getBBox(refNode as SVGElement, { target })
           : options.rootBBox
 
         if (refNode) {
@@ -546,15 +482,10 @@ export class AttrManager {
             Dom.attr(options.rotatableNode, 'transform'),
           )
         }
-        refBBox = Dom.transformRectangle(unrotatedRefBBox!, rotatableMatrix)
+        refBBox = Util.transformRectangle(unrotatedRefBBox!, rotatableMatrix)
       }
 
-      const caller = specialItems.find((item) => item.refNode === node)
-      if (caller) {
-        options.forceSync = true
-      }
-
-      this.updateRelativeAttrs(node, processedAttrs, refBBox, options)
+      this.updateRelativeAttrs(node, processedAttrs, refBBox)
     })
   }
 }
@@ -569,10 +500,6 @@ export namespace AttrManager {
      * Rendering only the specified attributes.
      */
     attrs?: Attr.CellAttrs | null
-    /**
-     * Whether to force synchronous rendering
-     */
-    forceSync?: boolean
   }
 
   export interface ProcessedAttrs {
@@ -581,13 +508,5 @@ export namespace AttrManager {
     set?: Attr.ComplexAttrs | undefined
     offset?: Attr.ComplexAttrs | undefined
     position?: Attr.ComplexAttrs | undefined
-    delay?: Attr.ComplexAttrs | undefined
   }
-
-  export const DELAY_ATTRS = [
-    'text',
-    'textWrap',
-    'sourceMarker',
-    'targetMarker',
-  ]
 }

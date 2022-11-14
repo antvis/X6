@@ -1,73 +1,45 @@
-import { Basecoat } from '../common'
-import { NumberExt, Dom } from '../util'
-import { Point, Rectangle } from '../geometry'
-import { KeyValue, ModifierKey } from '../types'
-import { Cell } from '../model/cell'
-import { Node } from '../model/node'
-import { Edge } from '../model/edge'
-import { Model } from '../model/model'
-import { Collection } from '../model/collection'
-import { CellView } from '../view/cell'
+import { Basecoat, NumberExt, Dom, KeyValue } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
+import { Model, Collection, Cell, Node, Edge } from '../model'
+import { CellView } from '../view'
 import * as Registry from '../registry'
-import { HTML } from '../shape/standard/html'
-import { Scroller as ScrollerWidget } from '../addon/scroller'
-import { Base } from './base'
 import { GraphView } from './view'
 import { EventArgs } from './events'
-import { Decorator } from './decorator'
-import { CSSManager } from './css'
-import { SizeManager } from './size'
-import { Hook as HookManager } from './hook'
+import { CSSManager as Css } from './css'
 import { Options as GraphOptions } from './options'
-import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
-import { CoordManager as Coord } from './coord'
-import { Keyboard as Shortcut } from './keyboard'
-import { KnobManager as Knob } from './knob'
-import { PrintManager as Print } from './print'
-import { MouseWheel as Wheel } from './mousewheel'
-import { FormatManager as Format } from './format'
-import { Renderer as ViewRenderer } from './renderer'
-import { HistoryManager as History } from './history'
-import { PanningManager as Panning } from './panning'
-import { MiniMapManager as MiniMap } from './minimap'
-import { SnaplineManager as Snapline } from './snapline'
-import { ScrollerManager as Scroller } from './scroller'
-import { SelectionManager as Selection } from './selection'
-import { HighlightManager as Highlight } from './highlight'
 import { TransformManager as Transform } from './transform'
-import { ClipboardManager as Clipboard } from './clipboard'
 import { BackgroundManager as Background } from './background'
+import { PanningManager as Panning } from './panning'
+import { MouseWheel as Wheel } from './mousewheel'
+import { VirtualRenderManager as VirtualRender } from './virtual-render'
+import { Renderer as ViewRenderer } from '../renderer'
+import { DefsManager as Defs } from './defs'
+import { CoordManager as Coord } from './coord'
+import { HighlightManager as Highlight } from './highlight'
+import { SizeManager as Size } from './size'
 
 export class Graph extends Basecoat<EventArgs> {
+  private installedPlugins: Set<Graph.Plugin> = new Set()
+
   public readonly options: GraphOptions.Definition
-  public readonly css: CSSManager
+  public readonly css: Css
   public readonly model: Model
   public readonly view: GraphView
-  public readonly hook: HookManager
   public readonly grid: Grid
   public readonly defs: Defs
-  public readonly knob: Knob
   public readonly coord: Coord
   public readonly renderer: ViewRenderer
-  public readonly snapline: Snapline
   public readonly highlight: Highlight
   public readonly transform: Transform
-  public readonly clipboard: Clipboard
-  public readonly selection: Selection
   public readonly background: Background
-  public readonly history: History
-  public readonly scroller: Scroller
-  public readonly minimap: MiniMap
-  public readonly keyboard: Shortcut
-  public readonly mousewheel: Wheel
   public readonly panning: Panning
-  public readonly print: Print
-  public readonly format: Format
-  public readonly size: SizeManager
+  public readonly mousewheel: Wheel
+  public readonly virtualRender: VirtualRender
+  public readonly size: Size
 
   public get container() {
-    return this.view.container
+    return this.options.container
   }
 
   protected get [Symbol.toStringTag]() {
@@ -76,32 +48,24 @@ export class Graph extends Basecoat<EventArgs> {
 
   constructor(options: Partial<GraphOptions.Manual>) {
     super()
-
     this.options = GraphOptions.get(options)
-    this.css = new CSSManager(this)
-    this.hook = new HookManager(this)
-    this.view = this.hook.createView()
-    this.defs = this.hook.createDefsManager()
-    this.coord = this.hook.createCoordManager()
-    this.transform = this.hook.createTransformManager()
-    this.knob = this.hook.createKnobManager()
-    this.highlight = this.hook.createHighlightManager()
-    this.grid = this.hook.createGridManager()
-    this.background = this.hook.createBackgroundManager()
-    this.model = this.hook.createModel()
-    this.renderer = this.hook.createRenderer()
-    this.clipboard = this.hook.createClipboardManager()
-    this.snapline = this.hook.createSnaplineManager()
-    this.selection = this.hook.createSelectionManager()
-    this.history = this.hook.createHistoryManager()
-    this.scroller = this.hook.createScrollerManager()
-    this.minimap = this.hook.createMiniMapManager()
-    this.keyboard = this.hook.createKeyboard()
-    this.mousewheel = this.hook.createMouseWheel()
-    this.print = this.hook.createPrintManager()
-    this.format = this.hook.createFormatManager()
-    this.panning = this.hook.createPanningManager()
-    this.size = this.hook.createSizeManager()
+    this.css = new Css(this)
+    this.view = new GraphView(this)
+    this.defs = new Defs(this)
+    this.coord = new Coord(this)
+    this.transform = new Transform(this)
+    this.highlight = new Highlight(this)
+    this.grid = new Grid(this)
+    this.background = new Background(this)
+
+    this.model = this.options.model ? this.options.model : new Model()
+    this.model.graph = this
+
+    this.renderer = new ViewRenderer(this)
+    this.panning = new Panning(this)
+    this.mousewheel = new Wheel(this)
+    this.virtualRender = new VirtualRender(this)
+    this.size = new Size(this)
   }
 
   // #region model
@@ -215,16 +179,6 @@ export class Graph extends Basecoat<EventArgs> {
   hasCell(cell: Cell): boolean
   hasCell(cell: string | Cell): boolean {
     return this.model.has(cell as Cell)
-  }
-
-  /**
-   * **Deprecation Notice:** `getCell` is deprecated and will be moved in next
-   * major release. Use `getCellById()` instead.
-   *
-   * @deprecated
-   */
-  getCell<T extends Cell = Cell>(id: string) {
-    return this.model.getCell<T>(id)
   }
 
   getCells() {
@@ -504,30 +458,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region view
 
-  isFrozen() {
-    return this.renderer.isFrozen()
-  }
-
-  freeze(options: ViewRenderer.FreezeOptions = {}) {
-    this.renderer.freeze(options)
-    return this
-  }
-
-  unfreeze(options: ViewRenderer.UnfreezeOptions = {}) {
-    this.renderer.unfreeze(options)
-    return this
-  }
-
-  isAsync() {
-    return this.renderer.isAsync()
-  }
-
-  setAsync(async: boolean) {
-    this.renderer.setAsync(async)
-    return this
-  }
-
-  findView(ref: Cell | JQuery | Element) {
+  findView(ref: Cell | Element) {
     if (Cell.isCell(ref)) {
       return this.findViewByCell(ref)
     }
@@ -555,7 +486,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.renderer.findViewByCell(cell as Cell)
   }
 
-  findViewByElem(elem: string | JQuery | Element | undefined | null) {
+  findViewByElem(elem: string | Element | undefined | null) {
     return this.renderer.findViewByElem(elem)
   }
 
@@ -600,18 +531,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this.renderer.findViewsInArea(rect, localOptions)
   }
 
-  isViewMounted(view: CellView) {
-    return this.renderer.isViewMounted(view)
-  }
-
-  getMountedViews() {
-    return this.renderer.getMountedViews()
-  }
-
-  getUnmountedViews() {
-    return this.renderer.getUnmountedViews()
-  }
-
   // #endregion
 
   // #region transform
@@ -633,22 +552,12 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   resize(width?: number, height?: number) {
-    this.size.resize(width, height)
-    return this
-  }
-
-  resizeGraph(width?: number, height?: number) {
-    this.size.resizeGraph(width, height)
-    return this
-  }
-
-  resizeScroller(width?: number, height?: number) {
-    this.size.resizeScroller(width, height)
-    return this
-  }
-
-  resizePage(width?: number, height?: number) {
-    this.size.resizePage(width, height)
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.resize(width, height)
+    } else {
+      this.transform.resize(width, height)
+    }
     return this
   }
 
@@ -665,7 +574,7 @@ export class Graph extends Basecoat<EventArgs> {
   zoom(): number
   zoom(factor: number, options?: Transform.ZoomOptions): this
   zoom(factor?: number, options?: Transform.ZoomOptions) {
-    const scroller = this.scroller.widget
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       if (typeof factor === 'undefined') {
         return scroller.zoom()
@@ -685,7 +594,7 @@ export class Graph extends Basecoat<EventArgs> {
     factor: number,
     options: Omit<Transform.ZoomOptions, 'absolute'> = {},
   ) {
-    const scroller = this.scroller.widget
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoom(factor, { ...options, absolute: true })
     } else {
@@ -700,7 +609,7 @@ export class Graph extends Basecoat<EventArgs> {
     options: Transform.ScaleContentToFitOptions &
       Transform.ScaleContentToFitOptions = {},
   ) {
-    const scroller = this.scroller.widget
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoomToRect(rect, options)
     } else {
@@ -714,7 +623,7 @@ export class Graph extends Basecoat<EventArgs> {
     options: Transform.GetContentAreaOptions &
       Transform.ScaleContentToFitOptions = {},
   ) {
-    const scroller = this.scroller.widget
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoomToFit(options)
     } else {
@@ -753,16 +662,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this.translate(tx, ty)
   }
 
-  /**
-   * **Deprecation Notice:** `getArea` is deprecated and will be moved in next
-   * major release. Use `getGraphArea()` instead.
-   *
-   * @deprecated
-   */
-  getArea() {
-    return this.transform.getGraphArea()
-  }
-
   getGraphArea() {
     return this.transform.getGraphArea()
   }
@@ -799,8 +698,8 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center(optons?: ScrollerWidget.CenterOptions) {
-    return this.centerPoint(optons)
+  center() {
+    return this.centerPoint()
   }
 
   /**
@@ -809,25 +708,13 @@ export class Graph extends Basecoat<EventArgs> {
    * only center along the specified dimension and keep the other coordinate
    * unchanged.
    */
-  centerPoint(
-    x: number,
-    y: null | number,
-    options?: ScrollerWidget.CenterOptions,
-  ): this
-  centerPoint(
-    x: null | number,
-    y: number,
-    options?: ScrollerWidget.CenterOptions,
-  ): this
-  centerPoint(optons?: ScrollerWidget.CenterOptions): this
-  centerPoint(
-    x?: number | null | ScrollerWidget.CenterOptions,
-    y?: number | null,
-    options?: ScrollerWidget.CenterOptions,
-  ) {
-    const scroller = this.scroller.widget
+  centerPoint(x: number, y: null | number): this
+  centerPoint(x: null | number, y: number): this
+  centerPoint(): this
+  centerPoint(x?: number | null, y?: number | null) {
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.centerPoint(x as number, y as number, options)
+      scroller.centerPoint(x as number, y as number)
     } else {
       this.transform.centerPoint(x as number, y as number)
     }
@@ -835,20 +722,21 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  centerContent(options?: ScrollerWidget.PositionContentOptions) {
-    const scroller = this.scroller.widget
+  centerContent(options?: Transform.PositionContentOptions) {
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.centerContent(options)
     } else {
       this.transform.centerContent(options)
     }
+
     return this
   }
 
-  centerCell(cell: Cell, options?: ScrollerWidget.CenterOptions) {
-    const scroller = this.scroller.widget
+  centerCell(cell: Cell) {
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.centerCell(cell, options)
+      scroller.centerCell(cell)
     } else {
       this.transform.centerCell(cell)
     }
@@ -860,11 +748,10 @@ export class Graph extends Basecoat<EventArgs> {
     point: Point.PointLike,
     x: number | string,
     y: number | string,
-    options: ScrollerWidget.CenterOptions = {},
   ) {
-    const scroller = this.scroller.widget
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.positionPoint(point, x, y, options)
+      scroller.positionPoint(point, x, y)
     } else {
       this.transform.positionPoint(point, x, y)
     }
@@ -872,14 +759,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionRect(
-    rect: Rectangle.RectangleLike,
-    direction: ScrollerWidget.Direction,
-    options?: ScrollerWidget.CenterOptions,
-  ) {
-    const scroller = this.scroller.widget
+  positionRect(rect: Rectangle.RectangleLike, direction: Transform.Direction) {
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.positionRect(rect, direction, options)
+      scroller.positionRect(rect, direction)
     } else {
       this.transform.positionRect(rect, direction)
     }
@@ -887,14 +770,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionCell(
-    cell: Cell,
-    direction: ScrollerWidget.Direction,
-    options?: ScrollerWidget.CenterOptions,
-  ) {
-    const scroller = this.scroller.widget
+  positionCell(cell: Cell, direction: Transform.Direction) {
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.positionCell(cell, direction, options)
+      scroller.positionCell(cell, direction)
     } else {
       this.transform.positionCell(cell, direction)
     }
@@ -903,10 +782,10 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   positionContent(
-    pos: ScrollerWidget.Direction,
-    options?: ScrollerWidget.PositionContentOptions,
+    pos: Transform.Direction,
+    options?: Transform.PositionContentOptions,
   ) {
-    const scroller = this.scroller.widget
+    const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.positionContent(pos, options)
     } else {
@@ -919,24 +798,6 @@ export class Graph extends Basecoat<EventArgs> {
   // #endregion
 
   // #region coord
-
-  getClientMatrix() {
-    return this.coord.getClientMatrix()
-  }
-
-  /**
-   * Returns coordinates of the graph viewport, relative to the window.
-   */
-  getClientOffset() {
-    return this.coord.getClientOffset()
-  }
-
-  /**
-   * Returns coordinates of the graph viewport, relative to the document.
-   */
-  getPageOffset() {
-    return this.coord.getPageOffset()
-  }
 
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
@@ -1197,198 +1058,27 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawBackground(options?: Background.Options, onGraph?: boolean) {
-    const scroller = this.scroller.widget
-    if (scroller != null && (this.options.background == null || !onGraph)) {
-      scroller.backgroundManager.draw(options)
-    } else {
-      this.background.draw(options)
-    }
+  drawBackground(options?: Background.Options) {
+    this.background.draw(options)
     return this
   }
 
-  clearBackground(onGraph?: boolean) {
-    const scroller = this.scroller.widget
-    if (scroller != null && (this.options.background == null || !onGraph)) {
-      scroller.backgroundManager.clear()
-    } else {
-      this.background.clear()
-    }
+  clearBackground() {
+    this.background.clear()
     return this
   }
 
   // #endregion
 
-  // #region clipboard
+  // #region virtual-render
 
-  isClipboardEnabled() {
-    return !this.clipboard.disabled
-  }
-
-  enableClipboard() {
-    this.clipboard.enable()
+  enableVirtualRender() {
+    this.virtualRender.enableVirtualRender()
     return this
   }
 
-  disableClipboard() {
-    this.clipboard.disable()
-    return this
-  }
-
-  toggleClipboard(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isClipboardEnabled()) {
-        if (enabled) {
-          this.enableClipboard()
-        } else {
-          this.disableClipboard()
-        }
-      }
-    } else if (this.isClipboardEnabled()) {
-      this.disableClipboard()
-    } else {
-      this.enableClipboard()
-    }
-
-    return this
-  }
-
-  isClipboardEmpty() {
-    return this.clipboard.isEmpty()
-  }
-
-  getCellsInClipboard() {
-    return this.clipboard.cells
-  }
-
-  cleanClipboard() {
-    this.clipboard.clean()
-    return this
-  }
-
-  copy(cells: Cell[], options: Clipboard.CopyOptions = {}) {
-    this.clipboard.copy(cells, options)
-    return this
-  }
-
-  cut(cells: Cell[], options: Clipboard.CopyOptions = {}) {
-    this.clipboard.cut(cells, options)
-    return this
-  }
-
-  paste(options: Clipboard.PasteOptions = {}, graph: Graph = this) {
-    return this.clipboard.paste(options, graph)
-  }
-
-  // #endregion
-
-  // #region redo/undo
-
-  isHistoryEnabled() {
-    return !this.history.disabled
-  }
-
-  enableHistory() {
-    this.history.enable()
-    return this
-  }
-
-  disableHistory() {
-    this.history.disable()
-    return this
-  }
-
-  toggleHistory(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isHistoryEnabled()) {
-        if (enabled) {
-          this.enableHistory()
-        } else {
-          this.disableHistory()
-        }
-      }
-    } else if (this.isHistoryEnabled()) {
-      this.disableHistory()
-    } else {
-      this.enableHistory()
-    }
-
-    return this
-  }
-
-  undo(options: KeyValue = {}) {
-    this.history.undo(options)
-    return this
-  }
-
-  undoAndCancel(options: KeyValue = {}) {
-    this.history.cancel(options)
-    return this
-  }
-
-  redo(options: KeyValue = {}) {
-    this.history.redo(options)
-    return this
-  }
-
-  canUndo() {
-    return this.history.canUndo()
-  }
-
-  canRedo() {
-    return this.history.canRedo()
-  }
-
-  cleanHistory(options: KeyValue = {}) {
-    this.history.clean(options)
-  }
-
-  // #endregion
-
-  // #region keyboard
-
-  isKeyboardEnabled() {
-    return !this.keyboard.disabled
-  }
-
-  enableKeyboard() {
-    this.keyboard.enable()
-    return this
-  }
-
-  disableKeyboard() {
-    this.keyboard.disable()
-    return this
-  }
-
-  toggleKeyboard(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isKeyboardEnabled()) {
-        if (enabled) {
-          this.enableKeyboard()
-        } else {
-          this.disableKeyboard()
-        }
-      }
-    } else if (this.isKeyboardEnabled()) {
-      this.disableKeyboard()
-    } else {
-      this.enableKeyboard()
-    }
-    return this
-  }
-
-  bindKey(
-    keys: string | string[],
-    callback: Shortcut.Handler,
-    action?: Shortcut.Action,
-  ) {
-    this.keyboard.on(keys, callback, action)
-    return this
-  }
-
-  unbindKey(keys: string | string[], action?: Shortcut.Action) {
-    this.keyboard.off(keys, action)
+  disableVirtualRender() {
+    this.virtualRender.disableVirtualRender()
     return this
   }
 
@@ -1430,32 +1120,16 @@ export class Graph extends Basecoat<EventArgs> {
   // #region panning
 
   isPannable() {
-    const scroller = this.scroller.widget
-    if (scroller) {
-      return this.scroller.pannable
-    }
     return this.panning.pannable
   }
 
   enablePanning() {
-    const scroller = this.scroller.widget
-    if (scroller) {
-      this.scroller.enablePanning()
-    } else {
-      this.panning.enablePanning()
-    }
-
+    this.panning.enablePanning()
     return this
   }
 
   disablePanning() {
-    const scroller = this.scroller.widget
-    if (scroller) {
-      this.scroller.disablePanning()
-    } else {
-      this.panning.disablePanning()
-    }
-
+    this.panning.disablePanning()
     return this
   }
 
@@ -1479,494 +1153,26 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
-  // #region scroller
+  // #region plugin
 
-  @Decorator.checkScroller()
-  lockScroller() {
-    this.scroller.widget?.lock()
-  }
-
-  @Decorator.checkScroller()
-  unlockScroller() {
-    this.scroller.widget?.unlock()
-  }
-
-  @Decorator.checkScroller()
-  updateScroller() {
-    this.scroller.widget?.update()
-  }
-
-  @Decorator.checkScroller()
-  getScrollbarPosition() {
-    const scroller = this.scroller.widget!
-    return scroller.scrollbarPosition()
-  }
-
-  @Decorator.checkScroller()
-  setScrollbarPosition(
-    left?: number,
-    top?: number,
-    options?: ScrollerWidget.ScrollOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.scrollbarPosition(left, top, options)
-    return this
-  }
-
-  /**
-   * Try to scroll to ensure that the position (x,y) on the graph (in local
-   * coordinates) is at the center of the viewport. If only one of the
-   * coordinates is specified, only scroll in the specified dimension and
-   * keep the other coordinate unchanged.
-   */
-  @Decorator.checkScroller()
-  scrollToPoint(
-    x: number | null | undefined,
-    y: number | null | undefined,
-    options?: ScrollerWidget.ScrollOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.scrollToPoint(x, y, options)
-    return this
-  }
-
-  /**
-   * Try to scroll to ensure that the center of graph content is at the
-   * center of the viewport.
-   */
-  @Decorator.checkScroller()
-  scrollToContent(options?: ScrollerWidget.ScrollOptions) {
-    const scroller = this.scroller.widget!
-    scroller.scrollToContent(options)
-    return this
-  }
-
-  /**
-   * Try to scroll to ensure that the center of cell is at the center of
-   * the viewport.
-   */
-  @Decorator.checkScroller()
-  scrollToCell(cell: Cell, options?: ScrollerWidget.ScrollOptions) {
-    const scroller = this.scroller.widget!
-    scroller.scrollToCell(cell, options)
-    return this
-  }
-
-  transitionToPoint(
-    p: Point.PointLike,
-    options?: ScrollerWidget.TransitionOptions,
-  ): this
-  transitionToPoint(
-    x: number,
-    y: number,
-    options?: ScrollerWidget.TransitionOptions,
-  ): this
-  @Decorator.checkScroller()
-  transitionToPoint(
-    x: number | Point.PointLike,
-    y?: number | ScrollerWidget.TransitionOptions,
-    options?: ScrollerWidget.TransitionOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.transitionToPoint(x as number, y as number, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  transitionToRect(
-    rect: Rectangle.RectangleLike,
-    options: ScrollerWidget.TransitionToRectOptions = {},
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.transitionToRect(rect, options)
-    return this
-  }
-  // #endregion
-
-  // #region selection
-
-  isSelectionEnabled() {
-    return !this.selection.disabled
-  }
-
-  enableSelection() {
-    this.selection.enable()
-    return this
-  }
-
-  disableSelection() {
-    this.selection.disable()
-    return this
-  }
-
-  toggleSelection(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isSelectionEnabled()) {
-        if (enabled) {
-          this.enableSelection()
-        } else {
-          this.disableSelection()
-        }
-      }
-    } else if (this.isSelectionEnabled()) {
-      this.disableSelection()
-    } else {
-      this.enableSelection()
-    }
-
-    return this
-  }
-
-  isMultipleSelection() {
-    return this.selection.isMultiple()
-  }
-
-  enableMultipleSelection() {
-    this.selection.enableMultiple()
-    return this
-  }
-
-  disableMultipleSelection() {
-    this.selection.disableMultiple()
-    return this
-  }
-
-  toggleMultipleSelection(multiple?: boolean) {
-    if (multiple != null) {
-      if (multiple !== this.isMultipleSelection()) {
-        if (multiple) {
-          this.enableMultipleSelection()
-        } else {
-          this.disableMultipleSelection()
-        }
-      }
-    } else if (this.isMultipleSelection()) {
-      this.disableMultipleSelection()
-    } else {
-      this.enableMultipleSelection()
-    }
-
-    return this
-  }
-
-  isSelectionMovable() {
-    return this.selection.widget.options.movable !== false
-  }
-
-  enableSelectionMovable() {
-    this.selection.widget.options.movable = true
-    return this
-  }
-
-  disableSelectionMovable() {
-    this.selection.widget.options.movable = false
-    return this
-  }
-
-  toggleSelectionMovable(movable?: boolean) {
-    if (movable != null) {
-      if (movable !== this.isSelectionMovable()) {
-        if (movable) {
-          this.enableSelectionMovable()
-        } else {
-          this.disableSelectionMovable()
-        }
-      }
-    } else if (this.isSelectionMovable()) {
-      this.disableSelectionMovable()
-    } else {
-      this.enableSelectionMovable()
-    }
-
-    return this
-  }
-
-  isRubberbandEnabled() {
-    return !this.selection.rubberbandDisabled
-  }
-
-  enableRubberband() {
-    this.selection.enableRubberband()
-    return this
-  }
-
-  disableRubberband() {
-    this.selection.disableRubberband()
-    return this
-  }
-
-  toggleRubberband(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isRubberbandEnabled()) {
-        if (enabled) {
-          this.enableRubberband()
-        } else {
-          this.disableRubberband()
-        }
-      }
-    } else if (this.isRubberbandEnabled()) {
-      this.disableRubberband()
-    } else {
-      this.enableRubberband()
-    }
-
-    return this
-  }
-
-  isStrictRubberband() {
-    return this.selection.widget.options.strict === true
-  }
-
-  enableStrictRubberband() {
-    this.selection.widget.options.strict = true
-    return this
-  }
-
-  disableStrictRubberband() {
-    this.selection.widget.options.strict = false
-    return this
-  }
-
-  toggleStrictRubberband(strict?: boolean) {
-    if (strict != null) {
-      if (strict !== this.isStrictRubberband()) {
-        if (strict) {
-          this.enableStrictRubberband()
-        } else {
-          this.disableStrictRubberband()
-        }
-      }
-    } else if (this.isStrictRubberband()) {
-      this.disableStrictRubberband()
-    } else {
-      this.enableStrictRubberband()
-    }
-
-    return this
-  }
-
-  setRubberbandModifiers(modifiers?: string | ModifierKey[] | null) {
-    this.selection.setModifiers(modifiers)
-  }
-
-  setSelectionFilter(filter?: Selection.Filter) {
-    this.selection.setFilter(filter)
-    return this
-  }
-
-  setSelectionDisplayContent(content?: Selection.Content) {
-    this.selection.setContent(content)
-    return this
-  }
-
-  isSelectionEmpty() {
-    return this.selection.isEmpty()
-  }
-
-  cleanSelection(options?: Selection.SetOptions) {
-    this.selection.clean(options)
-    return this
-  }
-
-  resetSelection(
-    cells?: Cell | string | (Cell | string)[],
-    options?: Selection.SetOptions,
-  ) {
-    this.selection.reset(cells, options)
-    return this
-  }
-
-  getSelectedCells() {
-    return this.selection.cells
-  }
-
-  getSelectedCellCount() {
-    return this.selection.length
-  }
-
-  isSelected(cell: Cell | string) {
-    return this.selection.isSelected(cell)
-  }
-
-  select(
-    cells: Cell | string | (Cell | string)[],
-    options?: Selection.AddOptions,
-  ) {
-    this.selection.select(cells, options)
-    return this
-  }
-
-  unselect(
-    cells: Cell | string | (Cell | string)[],
-    options?: Selection.RemoveOptions,
-  ) {
-    this.selection.unselect(cells, options)
-    return this
-  }
-
-  // #endregion
-
-  // #region snapline
-
-  isSnaplineEnabled() {
-    return !this.snapline.widget.disabled
-  }
-
-  enableSnapline() {
-    this.snapline.widget.enable()
-    return this
-  }
-
-  disableSnapline() {
-    this.snapline.widget.disable()
-    return this
-  }
-
-  toggleSnapline(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isSnaplineEnabled()) {
-        if (enabled) {
-          this.enableSnapline()
-        } else {
-          this.disableSnapline()
-        }
-      }
-    } else {
-      if (this.isSnaplineEnabled()) {
-        this.disableSnapline()
-      } else {
-        this.enableSnapline()
-      }
-      return this
-    }
-  }
-
-  hideSnapline() {
-    this.snapline.widget.hide()
-    return this
-  }
-
-  setSnaplineFilter(filter?: Snapline.Filter) {
-    this.snapline.widget.setFilter(filter)
-    return this
-  }
-
-  isSnaplineOnResizingEnabled() {
-    return this.snapline.widget.options.resizing === true
-  }
-
-  enableSnaplineOnResizing() {
-    this.snapline.widget.options.resizing = true
-    return this
-  }
-
-  disableSnaplineOnResizing() {
-    this.snapline.widget.options.resizing = false
-    return this
-  }
-
-  toggleSnaplineOnResizing(enableOnResizing?: boolean) {
-    if (enableOnResizing != null) {
-      if (enableOnResizing !== this.isSnaplineOnResizingEnabled()) {
-        if (enableOnResizing) {
-          this.enableSnaplineOnResizing()
-        } else {
-          this.disableSnaplineOnResizing()
-        }
-      }
-    } else if (this.isSnaplineOnResizingEnabled()) {
-      this.disableSnaplineOnResizing()
-    } else {
-      this.enableSnaplineOnResizing()
+  use(plugin: Graph.Plugin, ...options: any[]) {
+    if (!this.installedPlugins.has(plugin)) {
+      this.installedPlugins.add(plugin)
+      plugin.init(this, ...options)
     }
     return this
   }
 
-  isSharpSnapline() {
-    return this.snapline.widget.options.sharp === true
-  }
+  getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
+    let result: Graph.Plugin | undefined
 
-  enableSharpSnapline() {
-    this.snapline.widget.options.sharp = true
-    return this
-  }
-
-  disableSharpSnapline() {
-    this.snapline.widget.options.sharp = false
-    return this
-  }
-
-  toggleSharpSnapline(sharp?: boolean) {
-    if (sharp != null) {
-      if (sharp !== this.isSharpSnapline()) {
-        if (sharp) {
-          this.enableSharpSnapline()
-        } else {
-          this.disableSharpSnapline()
-        }
+    this.installedPlugins.forEach((plugin) => {
+      if (plugin.name === pluginName) {
+        result = plugin
       }
-    } else if (this.isSharpSnapline()) {
-      this.disableSharpSnapline()
-    } else {
-      this.enableSharpSnapline()
-    }
-    return this
-  }
+    })
 
-  getSnaplineTolerance() {
-    return this.snapline.widget.options.tolerance
-  }
-
-  setSnaplineTolerance(tolerance: number) {
-    this.snapline.widget.options.tolerance = tolerance
-    return this
-  }
-
-  // #endregion
-
-  // #region tools
-
-  removeTools() {
-    this.emit('tools:remove')
-    return this
-  }
-
-  hideTools() {
-    this.emit('tools:hide')
-    return this
-  }
-
-  showTools() {
-    this.emit('tools:show')
-    return this
-  }
-
-  // #endregion
-
-  // #region format
-
-  toSVG(callback: Format.ToSVGCallback, options: Format.ToSVGOptions = {}) {
-    this.format.toSVG(callback, options)
-  }
-
-  toDataURL(callback: Format.ToSVGCallback, options: Format.ToDataURLOptions) {
-    this.format.toDataURL(callback, options)
-  }
-
-  toPNG(callback: Format.ToSVGCallback, options: Format.ToImageOptions = {}) {
-    this.format.toPNG(callback, options)
-  }
-
-  toJPEG(callback: Format.ToSVGCallback, options: Format.ToImageOptions = {}) {
-    this.format.toJPEG(callback, options)
-  }
-
-  // #endregion
-
-  // #region print
-
-  printPreview(options?: Partial<Print.Options>) {
-    this.print.show(options)
+    return result as T
   }
 
   // #endregion
@@ -1979,28 +1185,20 @@ export class Graph extends Basecoat<EventArgs> {
     this.off()
 
     this.css.dispose()
-    this.hook.dispose()
     this.defs.dispose()
     this.grid.dispose()
     this.coord.dispose()
     this.transform.dispose()
-    this.knob.dispose()
     this.highlight.dispose()
     this.background.dispose()
-    this.clipboard.dispose()
-    this.snapline.dispose()
-    this.selection.dispose()
-    this.history.dispose()
-    this.keyboard.dispose()
     this.mousewheel.dispose()
-    this.print.dispose()
-    this.format.dispose()
-    this.minimap.dispose()
     this.panning.dispose()
-    this.scroller.dispose()
     this.view.dispose()
     this.renderer.dispose()
-    this.size.dispose()
+
+    this.installedPlugins.forEach((plugin) => {
+      plugin.dispose()
+    })
   }
 
   // #endregion
@@ -2009,25 +1207,14 @@ export class Graph extends Basecoat<EventArgs> {
 export namespace Graph {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   export import View = GraphView
-  export import Hook = HookManager
   export import Renderer = ViewRenderer
-  export import Keyboard = Shortcut
   export import MouseWheel = Wheel
-  export import BaseManager = Base
   export import DefsManager = Defs
   export import GridManager = Grid
   export import CoordManager = Coord
-  export import PrintManager = Print
-  export import FormatManager = Format
-  export import MiniMapManager = MiniMap
-  export import HistoryManager = History
-  export import SnaplineManager = Snapline
-  export import ScrollerManager = Scroller
-  export import ClipboardManager = Clipboard
   export import TransformManager = Transform
   export import HighlightManager = Highlight
   export import BackgroundManager = Background
-  export import SelectionManager = Selection
 }
 
 export namespace Graph {
@@ -2047,14 +1234,8 @@ export namespace Graph {
     }
 
     const tag = instance[Symbol.toStringTag]
-    const graph = instance as Graph
 
-    if (
-      (tag == null || tag === toStringTag) &&
-      graph.hook != null &&
-      graph.view != null &&
-      graph.model != null
-    ) {
+    if (tag == null || tag === toStringTag) {
       return true
     }
 
@@ -2109,9 +1290,6 @@ export namespace Graph {
   export const registerEdgeAnchor = Registry.EdgeAnchor.registry.register
   export const registerConnectionPoint =
     Registry.ConnectionPoint.registry.register
-  export const registerConnectionStrategy =
-    Registry.ConnectionStrategy.registry.register
-  export const registerHTMLComponent = HTML.componentRegistry.register
 }
 
 export namespace Graph {
@@ -2135,7 +1313,12 @@ export namespace Graph {
   export const unregisterEdgeAnchor = Registry.EdgeAnchor.registry.unregister
   export const unregisterConnectionPoint =
     Registry.ConnectionPoint.registry.unregister
-  export const unregisterConnectionStrategy =
-    Registry.ConnectionStrategy.registry.unregister
-  export const unregisterHTMLComponent = HTML.componentRegistry.unregister
+}
+
+export namespace Graph {
+  export type Plugin = {
+    name: string
+    init: (graph: Graph, ...options: any[]) => any
+    dispose: () => void
+  }
 }

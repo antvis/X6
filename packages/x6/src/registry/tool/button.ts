@@ -1,5 +1,5 @@
-import { Point } from '../../geometry'
-import { Dom, NumberExt, FunctionExt } from '../../util'
+import { Point } from '@antv/x6-geometry'
+import { Dom, NumberExt, FunctionExt } from '@antv/x6-common'
 import { CellView } from '../../view/cell'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
@@ -113,7 +113,7 @@ export class Button extends ToolsView.ToolItem<
     return matrix
   }
 
-  protected onMouseDown(e: JQuery.MouseDownEvent) {
+  protected onMouseDown(e: Dom.MouseDownEvent) {
     if (this.guard(e)) {
       return
     }
@@ -144,7 +144,7 @@ export namespace Button {
     onClick?: (
       this: CellView,
       args: {
-        e: JQuery.MouseDownEvent
+        e: Dom.MouseDownEvent
         cell: Cell
         view: CellView
         btn: Button
@@ -156,6 +156,7 @@ export namespace Button {
 export namespace Button {
   Button.config<Button.Options>({
     name: 'button',
+    useCellGeometry: true,
     events: {
       mousedown: 'onMouseDown',
       touchstart: 'onMouseDown',
@@ -190,6 +191,7 @@ export namespace Button {
     ],
     distance: 60,
     offset: 0,
+    useCellGeometry: true,
     onClick({ view, btn }) {
       btn.parent.remove()
       view.cell.remove({ ui: true, toolId: btn.cid })

@@ -1,8 +1,8 @@
-import { KeyValue } from '../../types'
-import { Point } from '../../geometry'
+import { Point } from '@antv/x6-geometry'
+import { KeyValue } from '@antv/x6-common'
+import { Registry } from '../registry'
 import { Edge } from '../../model/edge'
 import { EdgeView } from '../../view'
-import { Registry } from '../registry'
 import * as anchors from './main'
 
 export namespace EdgeAnchor {

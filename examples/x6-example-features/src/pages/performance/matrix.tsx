@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Dom, Rectangle } from '@antv/x6'
+import { Graph, Node, Util, Dom, Rectangle } from '@antv/x6'
 import { Button } from 'antd'
 import '../index.less'
 
@@ -14,8 +14,6 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: true,
-      resizing: true,
-      rotating: true,
       panning: true,
       mousewheel: true,
     })
@@ -250,7 +248,10 @@ export default class Example extends React.Component {
 
     s = performance.now()
     const newMatrixList = q.map((item) =>
-      Dom.getMatrixByElementAttr(item as SVGElement, container as SVGElement),
+      Dom.getTransformToParentElement(
+        item as SVGElement,
+        container as SVGElement,
+      ),
     )
     console.log('new getMatrixOfElement spend:', performance.now() - s)
 
@@ -265,13 +266,11 @@ export default class Example extends React.Component {
 
     // bbox
     s = performance.now()
-    const oldBoundingList = q.map((item) => Dom.getBBox(item as SVGElement))
+    const oldBoundingList = q.map((item) => Util.getBBox(item as SVGElement))
     console.log('old getBoundingRectOfElement spend:', performance.now() - s)
 
     s = performance.now()
-    const newBoundingList = q.map((item) =>
-      Dom.getBBoxByElementAttr(item as SVGElement),
-    )
+    const newBoundingList = q.map((item) => Util.getBBoxV2(item as SVGElement))
     console.log('new getBoundingRectOfElement spend:', performance.now() - s)
 
     isSame = oldBoundingList.every((item, index) => {

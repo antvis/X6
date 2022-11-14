@@ -3,16 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@antv/x6-react-components": "latest",
-    "@antv/x6-sites-demos-helper": "latest",
+    "@antv/x6-react-components": "2.0.0-beta.1",
+    "@antv/x6-sites-demos-helper": "2.x",
     "antd": "^4.4.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-scripts": "^3.4.1"
   },
   "devDependencies": {
-    "@types/react": "^16.9.19",
-    "@types/react-dom": "^16.9.5",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "typescript": "^4.1.2"
   },
   "scripts": {

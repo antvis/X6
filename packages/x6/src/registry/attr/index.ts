@@ -1,8 +1,8 @@
-import { Rectangle, Point } from '../../geometry'
-import { JSONObject, FunctionExt } from '../../util'
+import { Rectangle, Point } from '@antv/x6-geometry'
+import { JSONObject, FunctionExt } from '@antv/x6-common'
+import { Registry } from '../registry'
 import { Cell } from '../../model'
 import { CellView } from '../../view'
-import { Registry } from '../registry'
 import { raw } from './raw'
 import * as attrs from './main'
 

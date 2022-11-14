@@ -1,4 +1,4 @@
-import { FunctionExt } from '../../../util'
+import { FunctionExt } from '@antv/x6-common'
 import { Router } from '../index'
 import { router } from './router'
 import { defaults, ManhattanRouterOptions } from './options'

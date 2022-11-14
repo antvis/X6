@@ -1,11 +1,9 @@
-import { Graph } from './graph'
-import { ModifierKey } from '../types'
-import { Dom, NumberExt } from '../util'
-import { Disposable, IDisablable } from '../common'
+import { ModifierKey, Dom, NumberExt, Disposable } from '@antv/x6-common'
+import { Base } from './base'
 
-export class MouseWheel extends Disposable implements IDisablable {
-  public readonly target: HTMLElement | Document
-  public readonly container: HTMLElement
+export class MouseWheel extends Base {
+  public target: HTMLElement | Document
+  public container: HTMLElement
 
   protected cumulatedFactor = 1
   protected currentScale: number | null
@@ -13,74 +11,65 @@ export class MouseWheel extends Disposable implements IDisablable {
 
   private mousewheelHandle: Dom.MouseWheelHandle
 
-  protected get graph() {
-    return this.options.graph
+  protected get widgetOptions() {
+    return this.options.mousewheel
   }
 
-  constructor(public readonly options: MouseWheel.Options) {
-    super()
-
-    const scroller = this.graph.scroller.widget
-    this.container = scroller ? scroller.container : this.graph.container
-    this.target = this.options.global ? document : this.container
+  protected init() {
+    this.container = this.graph.container
+    this.target = this.widgetOptions.global ? document : this.container
     this.mousewheelHandle = new Dom.MouseWheelHandle(
       this.target,
       this.onMouseWheel.bind(this),
       this.allowMouseWheel.bind(this),
     )
-    if (this.options.enabled) {
+    if (this.widgetOptions.enabled) {
       this.enable(true)
     }
   }
 
   get disabled() {
-    return this.options.enabled !== true
+    return this.widgetOptions.enabled !== true
   }
 
   enable(force?: boolean) {
     if (this.disabled || force) {
-      this.options.enabled = true
-      this.graph.options.mousewheel.enabled = true
+      this.widgetOptions.enabled = true
       this.mousewheelHandle.enable()
     }
   }
 
   disable() {
     if (!this.disabled) {
-      this.options.enabled = false
-      this.graph.options.mousewheel.enabled = false
+      this.widgetOptions.enabled = false
       this.mousewheelHandle.disable()
     }
   }
 
-  protected allowMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
-    const e = (evt.originalEvent || evt) as WheelEvent
-    const guard = this.options.guard
+  protected allowMouseWheel(e: WheelEvent) {
+    const guard = this.widgetOptions.guard
 
     return (
-      (guard == null || guard.call(this.graph, e)) &&
-      ModifierKey.isMatch(e, this.options.modifiers)
+      (guard == null || guard.call(e)) &&
+      ModifierKey.isMatch(e, this.widgetOptions.modifiers)
     )
   }
 
-  protected onMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
-    const e = (evt.originalEvent || evt) as WheelEvent
-    const guard = this.options.guard
+  protected onMouseWheel(e: WheelEvent) {
+    const guard = this.widgetOptions.guard
 
     if (
-      (guard == null || guard.call(this.graph, e)) &&
-      ModifierKey.isMatch(e, this.options.modifiers)
+      (guard == null || guard.call(e)) &&
+      ModifierKey.isMatch(e, this.widgetOptions.modifiers)
     ) {
-      const factor = this.options.factor || 1.2
+      const factor = this.widgetOptions.factor || 1.2
 
       if (this.currentScale == null) {
-        this.startPos = { x: evt.clientX, y: evt.clientY }
-        this.currentScale = this.graph.scroller.widget
-          ? this.graph.scroller.widget.zoom()
-          : this.graph.transform.getScale().sx
+        this.startPos = { x: e.clientX, y: e.clientY }
+        this.currentScale = this.graph.transform.getScale().sx
       }
 
-      const delta = evt.deltaY
+      const delta = e.deltaY
       if (delta < 0) {
         // zoomin
         // ------
@@ -115,37 +104,23 @@ export class MouseWheel extends Disposable implements IDisablable {
           this.currentScale,
       )
 
-      const scroller = this.graph.scroller.widget
       const currentScale = this.currentScale!
       let targetScale = this.graph.transform.clampScale(
         currentScale * this.cumulatedFactor,
       )
-      const minScale = this.options.minScale || Number.MIN_SAFE_INTEGER
-      const maxScale = this.options.maxScale || Number.MAX_SAFE_INTEGER
+      const minScale = this.widgetOptions.minScale || Number.MIN_SAFE_INTEGER
+      const maxScale = this.widgetOptions.maxScale || Number.MAX_SAFE_INTEGER
       targetScale = NumberExt.clamp(targetScale, minScale, maxScale)
 
       if (targetScale !== currentScale) {
-        if (scroller) {
-          if (this.options.zoomAtMousePosition) {
-            const origin = this.graph.coord.clientToLocalPoint(this.startPos)
-            scroller.zoom(targetScale, {
-              absolute: true,
-              center: origin.clone(),
-            })
-          } else {
-            scroller.zoom(targetScale, { absolute: true })
-          }
+        if (this.widgetOptions.zoomAtMousePosition) {
+          const origin = this.graph.coord.clientToLocalPoint(this.startPos)
+          this.graph.zoom(targetScale, {
+            absolute: true,
+            center: origin.clone(),
+          })
         } else {
-          if (this.options.zoomAtMousePosition) {
-            const origin = this.graph.coord.clientToGraphPoint(this.startPos)
-            this.graph.transform.zoom(targetScale, {
-              absolute: true,
-              center: origin.clone(),
-              ui: true,
-            })
-          } else {
-            this.graph.transform.zoom(targetScale, { absolute: true, ui: true })
-          }
+          this.graph.zoom(targetScale, { absolute: true })
         }
       }
       this.currentScale = null
@@ -161,14 +136,13 @@ export class MouseWheel extends Disposable implements IDisablable {
 
 export namespace MouseWheel {
   export interface Options {
-    graph: Graph
     enabled?: boolean
     global?: boolean
     factor?: number
     minScale?: number
     maxScale?: number
     modifiers?: string | ModifierKey[] | null
-    guard?: (this: Graph, e: WheelEvent) => boolean
+    guard?: (e: WheelEvent) => boolean
     zoomAtMousePosition?: boolean
   }
 }

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import classNames from 'classnames'
 import { ToolbarContext } from './context'
 
-export const ToolbarGroup: React.SFC<ToolbarGroup.Props> = ({
+export const ToolbarGroup: React.FC<PropsWithChildren<ToolbarGroup.Props>> = ({
   children,
   className,
 }) => (

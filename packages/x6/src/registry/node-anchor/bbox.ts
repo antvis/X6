@@ -1,4 +1,4 @@
-import { NumberExt } from '../../util'
+import { NumberExt } from '@antv/x6-common'
 import { NodeAnchor } from './index'
 
 export interface BBoxEndpointOptions {

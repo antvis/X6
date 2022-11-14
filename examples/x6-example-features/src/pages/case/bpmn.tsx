@@ -3,7 +3,7 @@ import { Graph, Cell } from '@antv/x6'
 import '../index.less'
 
 Graph.registerNode(
-  'event',
+  'bpmn-event',
   {
     inherit: 'circle',
     attrs: {
@@ -18,7 +18,7 @@ Graph.registerNode(
 )
 
 Graph.registerNode(
-  'activity',
+  'bpmn-activity',
   {
     inherit: 'rect',
     markup: [
@@ -61,7 +61,7 @@ Graph.registerNode(
 )
 
 Graph.registerNode(
-  'gateway',
+  'bpmn-gateway',
   {
     inherit: 'polygon',
     attrs: {
@@ -98,14 +98,14 @@ Graph.registerEdge(
 const data = [
   {
     id: '1',
-    shape: 'event',
+    shape: 'bpmn-event',
     width: 40,
     height: 40,
     position: { x: 50, y: 180 },
   },
   {
     id: '2',
-    shape: 'activity',
+    shape: 'bpmn-activity',
     width: 100,
     height: 60,
     position: { x: 20, y: 280 },
@@ -119,7 +119,7 @@ const data = [
   },
   {
     id: '4',
-    shape: 'gateway',
+    shape: 'bpmn-gateway',
     width: 55,
     height: 55,
     position: { x: 170, y: 282.5 },
@@ -132,7 +132,7 @@ const data = [
   },
   {
     id: '6',
-    shape: 'activity',
+    shape: 'bpmn-activity',
     width: 100,
     height: 60,
     position: { x: 300, y: 240 },
@@ -140,7 +140,7 @@ const data = [
   },
   {
     id: '7',
-    shape: 'activity',
+    shape: 'bpmn-activity',
     width: 100,
     height: 60,
     position: { x: 300, y: 320 },
@@ -160,7 +160,7 @@ const data = [
   },
   {
     id: '10',
-    shape: 'gateway',
+    shape: 'bpmn-gateway',
     width: 55,
     height: 55,
     position: { x: 460, y: 282.5 },
@@ -179,7 +179,7 @@ const data = [
   },
   {
     id: '13',
-    shape: 'activity',
+    shape: 'bpmn-activity',
     width: 100,
     height: 60,
     position: { x: 560, y: 280 },
@@ -193,7 +193,7 @@ const data = [
   },
   {
     id: '15',
-    shape: 'event',
+    shape: 'bpmn-event',
     width: 40,
     height: 40,
     position: { x: 710, y: 290 },

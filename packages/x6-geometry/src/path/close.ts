@@ -1,7 +1,8 @@
 import { Line } from '../line'
-import { Point } from '../point'
 import { LineTo } from './lineto'
 import { Segment } from './segment'
+
+import { Point } from '../point'
 
 export class Close extends Segment {
   get end() {

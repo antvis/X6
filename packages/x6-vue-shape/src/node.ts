@@ -1,38 +1,8 @@
-import { Node, Markup, ObjectExt } from '@antv/x6'
-import { Definition } from './registry'
+import { ObjectExt, Markup, Node } from '@antv/x6'
 
 export class VueShape<
   Properties extends VueShape.Properties = VueShape.Properties,
-> extends Node<Properties> {
-  get component() {
-    return this.getComponent()
-  }
-
-  set component(val: VueShape.Properties['component']) {
-    this.setComponent(val)
-  }
-
-  getComponent(): VueShape.Properties['component'] {
-    return this.store.get('component')
-  }
-
-  setComponent(
-    component: VueShape.Properties['component'],
-    options: Node.SetOptions = {},
-  ) {
-    if (component == null) {
-      this.removeComponent(options)
-    } else {
-      this.store.set('component', component, options)
-    }
-    return this
-  }
-
-  removeComponent(options: Node.SetOptions = {}) {
-    this.store.remove('component', options)
-    return this
-  }
-}
+> extends Node<Properties> {}
 
 export namespace VueShape {
   export type Primer =
@@ -45,39 +15,34 @@ export namespace VueShape {
 
   export interface Properties extends Node.Properties {
     primer?: Primer
-    useForeignObject?: boolean
-    component?: Definition | string
   }
 }
 
 export namespace VueShape {
-  function getMarkup(useForeignObject: boolean, primer: Primer = 'rect') {
-    const markup: Markup.JSONMarkup[] = [
-      {
-        tagName: primer,
-        selector: 'body',
-      },
-    ]
+  function getMarkup(primer?: Primer) {
+    const markup: Markup.JSONMarkup[] = []
+    const content = Markup.getForeignObjectMarkup()
 
-    if (useForeignObject) {
-      markup.push(Markup.getForeignObjectMarkup())
+    if (primer) {
+      markup.push(
+        ...[
+          {
+            tagName: primer,
+            selector: 'body',
+          },
+          content,
+        ],
+      )
     } else {
-      markup.push({
-        tagName: 'g',
-        selector: 'content',
-      })
+      markup.push(content)
     }
-
-    markup.push({
-      tagName: 'text',
-      selector: 'label',
-    })
 
     return markup
   }
-  VueShape.config({
+
+  VueShape.config<Properties>({
     view: 'vue-shape-view',
-    markup: getMarkup(true),
+    markup: getMarkup(),
     attrs: {
       body: {
         fill: 'none',
@@ -89,51 +54,44 @@ export namespace VueShape {
         refWidth: '100%',
         refHeight: '100%',
       },
-      label: {
-        fontSize: 14,
-        fill: '#333',
-        refX: '50%',
-        refY: '50%',
-        textAnchor: 'middle',
-        textVerticalAnchor: 'middle',
-      },
     },
     propHooks(metadata: Properties) {
       if (metadata.markup == null) {
         const primer = metadata.primer
-        const useForeignObject = metadata.useForeignObject
-        if (primer != null || useForeignObject != null) {
-          metadata.markup = getMarkup(useForeignObject !== false, primer)
-          if (primer) {
-            if (metadata.attrs == null) {
-              metadata.attrs = {}
-            }
-            let attrs = {}
-            if (primer === 'circle') {
+        if (primer) {
+          metadata.markup = getMarkup(primer)
+
+          let attrs = {}
+          switch (primer) {
+            case 'circle':
               attrs = {
                 refCx: '50%',
                 refCy: '50%',
                 refR: '50%',
               }
-            } else if (primer === 'ellipse') {
+              break
+            case 'ellipse':
               attrs = {
                 refCx: '50%',
                 refCy: '50%',
                 refRx: '50%',
                 refRy: '50%',
               }
-            }
-
-            if (primer !== 'rect') {
-              metadata.attrs = ObjectExt.merge({}, metadata.attrs, {
-                body: {
-                  refWidth: null,
-                  refHeight: null,
-                  ...attrs,
-                },
-              })
-            }
+              break
+            default:
+              break
           }
+          metadata.attrs = ObjectExt.merge(
+            {},
+            {
+              body: {
+                refWidth: null,
+                refHeight: null,
+                ...attrs,
+              },
+            },
+            metadata.attrs || {},
+          )
         }
       }
       return metadata

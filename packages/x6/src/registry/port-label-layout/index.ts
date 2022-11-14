@@ -1,7 +1,7 @@
-import { KeyValue } from '../../types'
-import { Point, Rectangle } from '../../geometry'
-import { Attr } from '../attr'
+import { Point, Rectangle } from '@antv/x6-geometry'
+import { KeyValue } from '@antv/x6-common'
 import { Registry } from '../registry'
+import { Attr } from '../attr'
 import * as layouts from './main'
 
 export namespace PortLabelLayout {

@@ -1,18 +1,16 @@
-import { KeyValue } from '../types'
-import { FunctionExt } from '../util'
-import { Basecoat, Dijkstra } from '../common'
-import { Point, Rectangle } from '../geometry'
-import { Graph } from '../graph'
+import { FunctionExt, Dijkstra, KeyValue, Basecoat } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
 import { Collection } from './collection'
+import { Graph } from '../graph'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
   protected readonly batches: KeyValue<number> = {}
   protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
-  public graph: Graph | null
+  public graph: Graph
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
   protected outgoings: KeyValue<string[]> = {}

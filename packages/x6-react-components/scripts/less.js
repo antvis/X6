@@ -13,9 +13,9 @@ const src = path.join(cwd, 'src')
 const dist = path.join(cwd, 'dist')
 
 function compile(source, target) {
-  let cmd = './node_modules/.bin/lessc'
+  let cmd = '../../node_modules/.bin/lessc'
   if (os.type() === 'Windows_NT') {
-    cmd = path.join(cwd, './node_modules/.bin/lessc.cmd')
+    cmd = path.join(cwd, `${cmd}.cmd`)
   }
   cp.execFileSync(cmd, [source, target])
 }

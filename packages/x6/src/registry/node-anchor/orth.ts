@@ -1,4 +1,4 @@
-import { Angle } from '../../geometry'
+import { Angle } from '@antv/x6-geometry'
 import { ResolveOptions, resolve } from './util'
 import { NodeAnchor } from './index'
 

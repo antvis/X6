@@ -41,7 +41,7 @@ No one can guarantee how much will be remembered about certain PR after some tim
 
 ### Style Guide
 
-eslint can help to identify styling issues that may exist in your code. Your code is required to pass the test from eslint. Run the test locally by `$ yarn lint`.
+eslint can help to identify styling issues that may exist in your code. Your code is required to pass the test from eslint. Run the test locally by `$ npm run lint`.
 
 ### Commit Message Format
 
@@ -110,8 +110,8 @@ Look at [these files](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJyg
 
 X6 uses semantic versioning in release process based on [semver](https://semver.org/).
 
-- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/maintenance-releases.md)
-- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/pre-releases.md)
+- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/maintenance-releases.md)
+- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/release-workflow/pre-releases.md)
 
 ### Branch Strategy
 

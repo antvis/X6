@@ -1,20 +1,25 @@
 /* eslint-disable no-underscore-dangle */
 
+import {
+  ArrayExt,
+  StringExt,
+  ObjectExt,
+  FunctionExt,
+  KeyValue,
+  Size,
+  Basecoat,
+} from '@antv/x6-common'
+import { Rectangle, Point } from '@antv/x6-geometry'
 import { NonUndefined } from 'utility-types'
-import { ArrayExt, StringExt, ObjectExt, FunctionExt } from '../util'
-import { Rectangle, Point } from '../geometry'
-import { KeyValue, Size } from '../types'
-import { Knob } from '../addon/knob'
-import { Basecoat } from '../common'
 import { Attr } from '../registry'
-import { Markup, CellView } from '../view'
-import { Graph } from '../graph'
 import { Model } from './model'
-import { Animation } from './animation'
 import { PortManager } from './port'
 import { Store } from './store'
-import { Node } from './node'
 import { Edge } from './edge'
+import { Animation } from './animation'
+import { CellView, Markup } from '../view'
+import { Node } from './node'
+import { Graph } from '../graph'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties,
@@ -1392,7 +1397,7 @@ export class Cell<
   }
 
   findView(graph: Graph): CellView | null {
-    return graph.renderer.findViewByCell(this)
+    return graph.findViewByCell(this)
   }
 
   // #endregion
@@ -1458,7 +1463,6 @@ export namespace Cell {
     zIndex?: number
     visible?: boolean
     data?: any
-    knob?: Knob.Metadata | Knob.Metadata[]
   }
 
   export interface Defaults extends Common {}
@@ -1613,8 +1617,6 @@ export namespace Cell {
     'change:vertices': EdgeChangeArgs<Point.PointLike[]>
     'change:labels': EdgeChangeArgs<Edge.Label[]>
     'change:defaultLabel': EdgeChangeArgs<Edge.Label>
-    'change:toolMarkup': EdgeChangeArgs<Markup>
-    'change:doubleToolMarkup': EdgeChangeArgs<Markup>
     'change:vertexMarkup': EdgeChangeArgs<Markup>
     'change:arrowheadMarkup': EdgeChangeArgs<Markup>
     'vertexs:added': {

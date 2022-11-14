@@ -1,6 +1,6 @@
+import { Dom } from '@antv/x6-common'
+import { Point } from '@antv/x6-geometry'
 import { Attr } from '../attr'
-import { Dom } from '../../util'
-import { Point } from '../../geometry'
 import { Edge } from '../../model/edge'
 import { EdgeView } from '../../view/edge'
 import { ToolsView } from '../../view/tool'
@@ -53,7 +53,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
     return this
   }
 
-  protected onMouseDown(evt: JQuery.MouseDownEvent) {
+  protected onMouseDown(evt: Dom.MouseDownEvent) {
     if (this.guard(evt)) {
       return
     }
@@ -87,14 +87,14 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
     this.focus()
   }
 
-  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+  protected onMouseMove(evt: Dom.MouseMoveEvent) {
     const e = this.normalizeEvent(evt)
     const coords = this.graph.snapToGrid(e.clientX, e.clientY)
     this.cellView.onMouseMove(e, coords.x, coords.y)
     this.update()
   }
 
-  protected onMouseUp(evt: JQuery.MouseUpEvent) {
+  protected onMouseUp(evt: Dom.MouseUpEvent) {
     this.undelegateDocumentEvents()
     const e = this.normalizeEvent(evt)
     const edgeView = this.cellView

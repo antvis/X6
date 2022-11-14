@@ -1,8 +1,4 @@
-# Create new GitHub releases using scripts/monorepo-semantic-release
-# and the semantic-release package.
-#
-# See https://www.npmjs.com/package/semantic-release
-# See https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
+# @see: https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
 
 name: 🚀　Release
 on:
@@ -16,32 +12,43 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
     steps:
       - name: ⤵️　Checkout
         uses: actions/checkout@v3
-      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+
+      - name: 🎉　Setup nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: 🌱　Get Cache Directory
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: 🚸　Setup Cache
+          node-version: 16.x
+
+      - name: 🎉　Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+          run_install: false
+
+      - name: 🌱　Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: 🚸　Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: 🚧　Prepare
-        run: yarn global add lerna
-      - name: 🚀　Bootstrap
-        run: yarn bootstrap
-      - name: ✅　Test
-        run: yarn test
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 🚧　Install dependencies
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      - name: 📦　build
+        run: pnpm run build
+
+      # - name: ✅　Test
+      #   run: pnpm run test
 
       - name: 🔑　Generate Token
         uses: wow-actions/use-app-token@v1
@@ -51,12 +58,11 @@ jobs:
           env_name: bot_token
 
       - name: 📦　Semantic Release
-        run: |
-          sh ./scripts/release
+        run: pnpm srm --debug --comment-footer 'Thanks for being a part of the [AntV](https://github.com/antvis) community! 💪💯'
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ env.bot_token }}
-          ACTION_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_AUTHOR_NAME: x6-bot
           GIT_AUTHOR_EMAIL: x6-bot@users.noreply.github.com
           GIT_COMMITTER_NAME: x6-bot

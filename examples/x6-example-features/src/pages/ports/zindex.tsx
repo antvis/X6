@@ -19,28 +19,16 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.addNode({
-      shape: 'basic.rect',
-      markup:
-        '<g class="rotatable"><g class="scalable"><rect class="main"/></g><rect class="inner"/></g>',
+      shape: 'rect',
       x: 130,
       y: 30,
       width: 80,
       height: 150,
-      attrs: {
-        '.main': {
-          width: 80,
-          height: 150,
-          stroke: '#31d0c6',
-          'stroke-width': 2,
-        },
-        '.inner': {
-          width: 60,
-          height: 130,
-          'ref-x': 10,
-          'ref-y': 10,
-          stroke: '#31d0c6',
-          'stroke-width': 2,
-          fill: '#7c68fc',
+      ports: {
+        groups: {
+          left: {
+            position: 'left',
+          },
         },
       },
     })
@@ -52,6 +40,7 @@ export default class Example extends React.Component {
       rect.addPort({
         zIndex,
         id: `${portIndex}`,
+        group: 'left',
         attrs: {
           circle: {
             r: 20,

@@ -1,6 +1,7 @@
 .DS_Store
 .vscode
 .idea
+.turbo
 npm-debug.log
 yarn-error.log
 lerna-debug.log
@@ -11,3 +12,6 @@ es
 dist
 *.pem
 !mock-cert.pem
+tmp
+test/coverage
+packages/**/src/style/raw.ts

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Node, Vector, Graph, Point, Line, Polyline } from '@antv/x6'
+import { Node, Graph, Vector, Point, Line, Polyline } from '@antv/x6'
 import { Connector } from '@antv/x6/es/registry/connector'
 import '../index.less'
 
@@ -24,6 +24,7 @@ export default class Example extends React.Component {
           height: 500,
         },
       },
+      async: false,
     })
 
     function createCircle(x: number, y: number, group: 'inner' | 'outer') {

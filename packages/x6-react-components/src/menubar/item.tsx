@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events  */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import classnames from 'classnames'
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import { MenubarContext } from './context'
 
 const cacheDeactiveMap = new WeakMap()
 class MenubarItemInner extends React.PureComponent<
-  MenubarItemInner.Props,
+  PropsWithChildren<MenubarItemInner.Props>,
   MenubarItemInner.State
 > {
   private readonly popupClassName: string
@@ -174,7 +174,7 @@ namespace MenubarItemInner {
   }
 }
 
-export const MenubarItem: React.SFC<MenubarItem.Props> = (props) => (
+export const MenubarItem: React.FC<MenubarItem.Props> = (props) => (
   <MenubarContext.Consumer>
     {(context) => <MenubarItemInner context={context} {...props} />}
   </MenubarContext.Consumer>

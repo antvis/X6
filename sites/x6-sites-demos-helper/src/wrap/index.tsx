@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Alert } from 'antd'
 import { Helmet } from 'react-helmet'
 import { Content } from './content'
 import 'antd/es/alert/style/index.css'
 
-export const Wrap: React.FC = ({ children }) => (
+export const Wrap: React.FC<PropsWithChildren> = ({ children }) => (
   <Alert.ErrorBoundary>
     {process.env.NODE_ENV !== 'development' && (
       <Helmet>

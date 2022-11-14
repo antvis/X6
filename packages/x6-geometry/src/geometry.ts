@@ -1,5 +1,5 @@
-import type { Point } from './point'
-import type { JSONObject, JSONArray } from './types'
+import { Point } from './point'
+import { JSONObject, JSONArray } from './types'
 
 export abstract class Geometry {
   abstract scale(

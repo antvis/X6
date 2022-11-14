@@ -1,9 +1,9 @@
-import { FunctionExt } from '../../util'
-import { Point } from '../../geometry'
+import { FunctionExt } from '@antv/x6-common'
+import { Point } from '@antv/x6-geometry'
+import { ConnectionStrategy } from '../connection-strategy'
 import { Edge } from '../../model/edge'
 import { CellView } from '../../view/cell'
 import { EdgeView } from '../../view/edge'
-import { ConnectionStrategy } from '../connection-strategy'
 
 export function getAnchor(
   this: EdgeView,

@@ -1,23 +1,33 @@
-import { Graph, Node, Registry } from '@antv/x6'
-import { ComponentInstance } from 'vue-demi'
+import { Graph, Node } from '@antv/x6'
 
-export declare type VueComponent = ComponentInstance
-
-export declare type Definition =
-  | VueComponent
-  | ((this: Graph, node: Node) => VueComponent)
-
-export const registry = Registry.create<Definition>({
-  type: 'vue componnet',
-})
-
-declare module '@antv/x6/lib/graph/graph' {
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  namespace Graph {
-    let registerVueComponent: typeof registry.register
-    let unregisterVueComponent: typeof registry.unregister
-  }
+export type VueShapeConfig = Node.Properties & {
+  shape: string
+  component: any
+  inherit?: string
 }
 
-Graph.registerVueComponent = registry.register
-Graph.unregisterVueComponent = registry.unregister
+export const shapeMaps: Record<
+  string,
+  {
+    component: any
+  }
+> = {}
+
+export function register(config: VueShapeConfig) {
+  const { shape, component, inherit, ...others } = config
+  if (!shape) {
+    throw new Error('should specify shape in config')
+  }
+  shapeMaps[shape] = {
+    component,
+  }
+
+  Graph.registerNode(
+    shape,
+    {
+      inherit: inherit || 'vue-shape',
+      ...others,
+    },
+    true,
+  )
+}

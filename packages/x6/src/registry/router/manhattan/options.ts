@@ -1,6 +1,6 @@
-import { NumberExt } from '../../../util'
-import { Point, Rectangle, Angle } from '../../../geometry'
-import { Edge, Node } from '../../../model'
+import { NumberExt } from '@antv/x6-common'
+import { Point, Rectangle, Angle } from '@antv/x6-geometry'
+import { Node, Edge } from '../../../model'
 import { EdgeView } from '../../../view'
 import { orth } from '../orth'
 import { Router } from '../index'
@@ -47,14 +47,14 @@ export interface ResolvedOptions {
   excludeShapes: string[]
 
   /**
-   * Should certain nodes not be considered as obstacles?
-   */
-  excludeNodes: Node[]
-
-  /**
    * Should certain hidden nodes not be considered as obstacles?
    */
   excludeHiddenNodes: boolean
+
+  /**
+   * Should certain nodes not be considered as obstacles?
+   */
+   excludeNodes: Node[]
 
   /**
    * Possible starting directions from a node.

@@ -1,13 +1,11 @@
-import { NodeView, Scheduler } from '@antv/x6'
+import { NodeView, Dom } from '@antv/x6'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
 import { VueShape } from './node'
+import { shapeMaps } from './registry'
+import { isActive, connect, disconnect } from './teleport'
 
 export class VueShapeView extends NodeView<VueShape> {
   private vm: any
-
-  protected init() {
-    super.init()
-  }
 
   getComponentContainer() {
     return this.selectors.foContent as HTMLDivElement
@@ -16,9 +14,7 @@ export class VueShapeView extends NodeView<VueShape> {
   confirmUpdate(flag: number) {
     const ret = super.confirmUpdate(flag)
     return this.handleAction(ret, VueShapeView.action, () => {
-      Scheduler.scheduleTask(() => {
-        this.renderVueComponent()
-      })
+      this.renderVueComponent()
     })
   }
 
@@ -26,43 +22,40 @@ export class VueShapeView extends NodeView<VueShape> {
     this.unmountVueComponent()
     const root = this.getComponentContainer()
     const node = this.cell
-    const graph = this.graph
 
     if (root) {
-      const component = this.graph.hook.getVueComponent(node)
-      if (isVue2) {
-        const Vue = Vue2 as any
-        if (typeof component === 'string') {
-          this.vm = new Vue({ template: component })
-        } else {
+      const { component } = shapeMaps[node.shape]
+      if (component) {
+        if (isVue2) {
+          const Vue = Vue2 as any
           this.vm = new Vue({
-            render() {
-              // 保留之前的provide，增加传递graph和node
-              return h(component as any, { graph, node } as any)
+            el: root,
+            render(h: any) {
+              return h(component)
             },
             provide() {
               return {
-                getGraph: () => graph,
                 getNode: () => node,
               }
             },
           })
+        } else if (isVue3) {
+          if (isActive()) {
+            connect(node.id, component, root, node)
+          } else {
+            this.vm = createApp({
+              render() {
+                return h(component)
+              },
+              provide() {
+                return {
+                  getNode: () => node,
+                }
+              },
+            })
+            this.vm.mount(root)
+          }
         }
-        this.vm.$mount(root)
-      } else if (isVue3) {
-        this.vm = createApp({
-          render() {
-            // 保留之前的provide，增加传递graph和node
-            return h(component as any, { graph, node } as any)
-          },
-          provide() {
-            return {
-              getGraph: () => graph,
-              getNode: () => node,
-            }
-          },
-        })
-        this.vm.mount(root)
       }
     }
   }
@@ -78,7 +71,34 @@ export class VueShapeView extends NodeView<VueShape> {
     return root
   }
 
+  onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
+    const target = e.target as Element
+    const tagName = target.tagName.toLowerCase()
+    if (tagName === 'input') {
+      const type = target.getAttribute('type')
+      if (
+        type == null ||
+        [
+          'text',
+          'password',
+          'number',
+          'email',
+          'search',
+          'tel',
+          'url',
+        ].includes(type)
+      ) {
+        return
+      }
+    }
+
+    super.onMouseDown(e, x, y)
+  }
+
   unmount() {
+    if (isActive()) {
+      disconnect(this.cell.id)
+    }
     this.unmountVueComponent()
     super.unmount()
     return this

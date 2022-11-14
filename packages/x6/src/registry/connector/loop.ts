@@ -1,4 +1,4 @@
-import { Path, Point } from '../../geometry'
+import { Path, Point } from '@antv/x6-geometry'
 import { Connector } from './index'
 
 export interface LoopConnectorOptions extends Connector.BaseOptions {

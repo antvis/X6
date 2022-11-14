@@ -1,14 +1,10 @@
-import { Dom, NumberExt } from '../util'
-import { Point, Rectangle } from '../geometry'
-import { Transform } from '../addon/transform'
-import { Node } from '../model/node'
-import { Cell } from '../model/cell'
-import { EventArgs } from './events'
+import { Dom, NumberExt } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
 import { Base } from './base'
+import { Util } from '../util'
+import { Cell } from '../model'
 
 export class TransformManager extends Base {
-  protected widgets: Map<Node, Transform> = new Map()
-
   protected viewportMatrix: DOMMatrix | null
 
   protected viewportTransformString: string | null
@@ -21,53 +17,12 @@ export class TransformManager extends Base {
     return this.graph.view.viewport
   }
 
-  protected get isSelectionEnabled() {
-    return this.options.selecting.enabled === true
+  protected get stage() {
+    return this.graph.view.stage
   }
 
   protected init() {
-    this.startListening()
     this.resize()
-  }
-
-  protected startListening() {
-    this.graph.on('node:mouseup', this.onNodeMouseUp, this)
-    this.graph.on('node:selected', this.onNodeSelected, this)
-    this.graph.on('node:unselected', this.onNodeUnSelected, this)
-  }
-
-  protected stopListening() {
-    this.graph.off('node:mouseup', this.onNodeMouseUp, this)
-    this.graph.off('node:selected', this.onNodeSelected, this)
-    this.graph.off('node:unselected', this.onNodeUnSelected, this)
-  }
-
-  protected onNodeMouseUp({ node }: EventArgs['node:mouseup']) {
-    if (!this.isSelectionEnabled) {
-      const widget = this.graph.hook.createTransform(node, { clearAll: true })
-      if (widget) {
-        this.widgets.set(node, widget)
-      }
-    }
-  }
-
-  protected onNodeSelected({ node }: EventArgs['node:selected']) {
-    if (this.isSelectionEnabled) {
-      const widget = this.graph.hook.createTransform(node, { clearAll: false })
-      if (widget) {
-        this.widgets.set(node, widget)
-      }
-    }
-  }
-
-  protected onNodeUnSelected({ node }: EventArgs['node:unselected']) {
-    if (this.isSelectionEnabled) {
-      const widget = this.widgets.get(node)
-      if (widget) {
-        widget.dispose()
-      }
-      this.widgets.delete(node)
-    }
   }
 
   /**
@@ -234,7 +189,7 @@ export class TransformManager extends Base {
 
   rotate(angle: number, cx?: number, cy?: number) {
     if (cx == null || cy == null) {
-      const bbox = Dom.getBBox(this.graph.view.stage)
+      const bbox = Util.getBBox(this.stage)
       cx = bbox.width / 2 // eslint-disable-line
       cy = bbox.height / 2 // eslint-disable-line
     }
@@ -455,11 +410,12 @@ export class TransformManager extends Base {
   }
 
   getContentArea(options: TransformManager.GetContentAreaOptions = {}) {
-    if (options.useCellGeometry) {
+    // use geometry calc default
+    if (options.useCellGeometry !== false) {
       return this.model.getAllCellsBBox() || new Rectangle()
     }
 
-    return Dom.getBBox(this.graph.view.stage)
+    return Util.getBBox(this.stage)
   }
 
   getContentBBox(options: TransformManager.GetContentAreaOptions = {}) {
@@ -597,13 +553,6 @@ export class TransformManager extends Base {
     const rect = this.graph.getContentArea(options)
     return this.positionRect(rect, pos)
   }
-
-  @TransformManager.dispose()
-  dispose() {
-    this.widgets.forEach((widget) => widget.dispose())
-    this.widgets.clear()
-    this.stopListening()
-  }
 }
 
 export namespace TransformManager {
@@ -662,4 +611,10 @@ export namespace TransformManager {
     | 'bottom'
     | 'bottom-left'
     | 'left'
+
+  export interface CenterOptions {
+    padding?: NumberExt.SideOptions
+  }
+
+  export type PositionContentOptions = GetContentAreaOptions & CenterOptions
 }

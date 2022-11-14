@@ -1,5 +1,4 @@
-import { ObjectExt } from '../../util'
-import { DefsManager } from '../../graph/defs'
+import { ObjectExt } from '@antv/x6-common'
 import { EdgeView } from '../../view/edge'
 import { Attr } from './index'
 
@@ -7,7 +6,7 @@ export const stroke: Attr.Definition = {
   qualify: ObjectExt.isPlainObject,
   set(stroke: any, { view }) {
     const cell = view.cell
-    const options = { ...stroke } as DefsManager.GradientOptions
+    const options = { ...stroke }
 
     if (cell.isEdge() && options.type === 'linearGradient') {
       const edgeView = view as EdgeView

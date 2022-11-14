@@ -1,4 +1,4 @@
-import { Line } from '../../geometry'
+import { Line } from '@antv/x6-geometry'
 import { ConnectionPoint } from './index'
 import { offset } from './util'
 

@@ -1,6 +1,6 @@
-import { KeyValue } from '../../types'
-import { ToolsView } from '../../view/tool'
+import { KeyValue } from '@antv/x6-common'
 import { Registry } from '../registry'
+import { ToolsView } from '../../view/tool'
 import { Button } from './button'
 import { Boundary } from './boundary'
 import { Vertices } from './vertices'

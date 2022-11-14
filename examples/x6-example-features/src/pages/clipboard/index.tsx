@@ -1,11 +1,15 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
+import { Clipboard } from '@antv/x6-plugin-clipboard'
+import { Selection } from '@antv/x6-plugin-selection'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
 import '../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
-  private graph: Graph
+  private selection: Selection
+  private clipboard: Clipboard
 
   componentDidMount() {
     const graph = new Graph({
@@ -13,14 +17,24 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: true,
-      selecting: {
-        enabled: true,
-      },
-      clipboard: {
-        enabled: true,
-        useLocalStorage: true,
-      },
     })
+    const clipboard = new Clipboard({
+      enabled: true,
+      useLocalStorage: true,
+    })
+    const selection = new Selection({
+      enabled: true,
+      rubberband: true,
+      multiple: true,
+      strict: true,
+    })
+    const keyboard = new Keyboard({
+      enabled: true,
+    })
+
+    graph.use(clipboard)
+    graph.use(selection)
+    graph.use(keyboard)
 
     graph.addNode({
       x: 50,
@@ -46,24 +60,22 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'C' } },
     })
 
-    graph.bindKey('meta+c', () => {
-      const cells = graph.getSelectedCells()
-      if (cells.length) {
-        graph.copy(cells)
-      }
-      return false
+    keyboard.bindKey('meta+c', (e) => {
+      e.preventDefault()
+      this.onCopy()
     })
 
-    graph.bindKey('meta+v', () => {
-      if (!graph.isClipboardEmpty()) {
-        const cells = graph.paste({ offset: 32 })
-        graph.cleanSelection()
-        graph.select(cells)
-      }
-      return false
+    keyboard.bindKey('meta+v', (e) => {
+      e.preventDefault()
+      this.onPaste()
     })
 
-    this.graph = graph
+    clipboard.on('clipboard:changed', ({ cells }) => {
+      console.log(cells)
+    })
+
+    this.selection = selection
+    this.clipboard = clipboard
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -71,18 +83,15 @@ export default class Example extends React.Component {
   }
 
   onCopy = () => {
-    const cells = this.graph.getSelectedCells()
+    const cells = this.selection.getSelectedCells()
     if (cells && cells.length) {
-      console.log(cells)
-      this.graph.copy(cells)
+      this.clipboard.copy(cells)
     }
   }
 
   onPaste = () => {
-    if (!this.graph.isClipboardEmpty()) {
-      this.graph.paste()
-    } else {
-      console.log('empty')
+    if (!this.clipboard.isEmpty()) {
+      this.clipboard.paste()
     }
   }
 

@@ -1,6 +1,6 @@
+import { Point } from '@antv/x6-geometry'
 import { ResolveOptions, resolve } from './util'
 import { NodeAnchor } from './index'
-import { Point } from '../../geometry'
 
 export interface MiddleSideEndpointOptions extends ResolveOptions {
   rotate?: boolean

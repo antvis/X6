@@ -1,9 +1,8 @@
-import JQuery from 'jquery'
-import { Dom, FunctionExt } from '../util'
+import { Dom, FunctionExt } from '@antv/x6-common'
 import { Cell } from '../model'
-import { Config } from '../global'
+import { Config } from '../config'
 import { View, Markup, CellView } from '../view'
-import { Graph } from './graph'
+import { Graph } from '../graph'
 
 export class GraphView extends View {
   public readonly container: HTMLElement
@@ -18,10 +17,6 @@ export class GraphView extends View {
   public readonly overlay: SVGGElement
 
   private restore: () => void
-
-  protected get model() {
-    return this.graph.model
-  }
 
   protected get options() {
     return this.graph.options
@@ -43,9 +38,8 @@ export class GraphView extends View {
     this.container = this.options.container
     this.restore = GraphView.snapshoot(this.container)
 
-    this.$(this.container)
-      .addClass(this.prefixClassName('graph'))
-      .append(fragment)
+    Dom.addClass(this.container, this.prefixClassName('graph'))
+    Dom.append(this.container, fragment)
 
     this.delegateEvents()
   }
@@ -60,7 +54,7 @@ export class GraphView extends View {
    * Guard the specified event. If the event is not interesting, it
    * returns `true`, otherwise returns `false`.
    */
-  guard(e: JQuery.TriggeredEvent, view?: CellView | null) {
+  guard(e: Dom.EventObject, view?: CellView | null) {
     // handled as `contextmenu` type
     if (e.type === 'mousedown' && e.button === 2) {
       return true
@@ -81,7 +75,7 @@ export class GraphView extends View {
     if (
       this.svg === e.target ||
       this.container === e.target ||
-      JQuery.contains(this.svg, e.target)
+      this.svg.contains(e.target)
     ) {
       return false
     }
@@ -90,10 +84,10 @@ export class GraphView extends View {
   }
 
   protected findView(elem: Element) {
-    return this.graph.renderer.findViewByElem(elem)
+    return this.graph.findViewByElem(elem)
   }
 
-  protected onDblClick(evt: JQuery.DoubleClickEvent) {
+  protected onDblClick(evt: Dom.DoubleClickEvent) {
     if (this.options.preventDefaultDblClick) {
       evt.preventDefault()
     }
@@ -118,7 +112,7 @@ export class GraphView extends View {
     }
   }
 
-  protected onClick(evt: JQuery.ClickEvent) {
+  protected onClick(evt: Dom.ClickEvent) {
     if (this.getMouseMovedCount(evt) <= this.options.clickThreshold) {
       const e = this.normalizeEvent(evt)
       const view = this.findView(e.target)
@@ -139,10 +133,7 @@ export class GraphView extends View {
     }
   }
 
-  protected isPreventDefaultContextMenu(
-    evt: JQuery.ContextMenuEvent,
-    view: CellView | null,
-  ) {
+  protected isPreventDefaultContextMenu(view: CellView | null) {
     let preventDefaultContextMenu = this.options.preventDefaultContextMenu
     if (typeof preventDefaultContextMenu === 'function') {
       preventDefaultContextMenu = FunctionExt.call(
@@ -155,11 +146,11 @@ export class GraphView extends View {
     return preventDefaultContextMenu
   }
 
-  protected onContextMenu(evt: JQuery.ContextMenuEvent) {
+  protected onContextMenu(evt: Dom.ContextMenuEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
-
-    if (this.isPreventDefaultContextMenu(e, view)) {
+    
+    if (this.isPreventDefaultContextMenu(view)) {
       evt.preventDefault()
     }
 
@@ -180,7 +171,7 @@ export class GraphView extends View {
     }
   }
 
-  delegateDragEvents(e: JQuery.MouseDownEvent, view: CellView | null) {
+  delegateDragEvents(e: Dom.MouseDownEvent, view: CellView | null) {
     if (e.data == null) {
       e.data = {}
     }
@@ -197,12 +188,12 @@ export class GraphView extends View {
     this.undelegateEvents()
   }
 
-  getMouseMovedCount(e: JQuery.TriggeredEvent) {
+  getMouseMovedCount(e: Dom.EventObject) {
     const data = this.getEventData<EventData.Moving>(e)
     return data.mouseMovedCount || 0
   }
 
-  protected onMouseDown(evt: JQuery.MouseDownEvent) {
+  protected onMouseDown(evt: Dom.MouseDownEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
@@ -235,7 +226,7 @@ export class GraphView extends View {
     this.delegateDragEvents(e, view)
   }
 
-  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+  protected onMouseMove(evt: Dom.MouseMoveEvent) {
     const data = this.getEventData<EventData.Moving>(evt)
 
     const startPosition = data.startPosition
@@ -273,7 +264,7 @@ export class GraphView extends View {
     this.setEventData(e, data)
   }
 
-  protected onMouseUp(e: JQuery.MouseUpEvent) {
+  protected onMouseUp(e: Dom.MouseUpEvent) {
     this.undelegateDocumentEvents()
 
     const normalized = this.normalizeEvent(e)
@@ -294,12 +285,11 @@ export class GraphView extends View {
     }
 
     if (!e.isPropagationStopped()) {
-      this.onClick(
-        JQuery.Event(e as any, {
-          type: 'click',
-          data: e.data,
-        }) as JQuery.ClickEvent,
-      )
+      const ev = new Dom.EventObject(e as any, {
+        type: 'click',
+        data: e.data,
+      }) as Dom.ClickEvent
+      this.onClick(ev)
     }
 
     e.stopImmediatePropagation()
@@ -307,7 +297,7 @@ export class GraphView extends View {
     this.delegateEvents()
   }
 
-  protected onMouseOver(evt: JQuery.MouseOverEvent) {
+  protected onMouseOver(evt: Dom.MouseOverEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
@@ -325,7 +315,7 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseOut(evt: JQuery.MouseOutEvent) {
+  protected onMouseOut(evt: Dom.MouseOutEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
 
@@ -343,16 +333,14 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseEnter(evt: JQuery.MouseEnterEvent) {
+  protected onMouseEnter(evt: Dom.MouseEnterEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
     }
 
-    const relatedView = this.graph.renderer.findViewByElem(
-      e.relatedTarget as Element,
-    )
+    const relatedView = this.graph.findViewByElem(e.relatedTarget as Element)
     if (view) {
       if (relatedView === view) {
         // mouse moved from tool to view
@@ -367,16 +355,14 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseLeave(evt: JQuery.MouseLeaveEvent) {
+  protected onMouseLeave(evt: Dom.MouseLeaveEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
     }
 
-    const relatedView = this.graph.renderer.findViewByElem(
-      e.relatedTarget as Element,
-    )
+    const relatedView = this.graph.findViewByElem(e.relatedTarget as Element)
 
     if (view) {
       if (relatedView === view) {
@@ -392,7 +378,7 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseWheel(evt: JQuery.TriggeredEvent) {
+  protected onMouseWheel(evt: Dom.EventObject) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
@@ -421,7 +407,7 @@ export class GraphView extends View {
     }
   }
 
-  protected onCustomEvent(evt: JQuery.MouseDownEvent) {
+  protected onCustomEvent(evt: Dom.MouseDownEvent) {
     const elem = evt.currentTarget
     const event = elem.getAttribute('event') || elem.getAttribute('data-event')
     if (event) {
@@ -441,7 +427,7 @@ export class GraphView extends View {
     }
   }
 
-  protected handleMagnetEvent<T extends JQuery.TriggeredEvent>(
+  protected handleMagnetEvent<T extends Dom.EventObject>(
     evt: T,
     handler: (
       this: Graph,
@@ -478,31 +464,30 @@ export class GraphView extends View {
     }
   }
 
-  protected onMagnetMouseDown(e: JQuery.MouseDownEvent) {
+  protected onMagnetMouseDown(e: Dom.MouseDownEvent) {
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
       view.onMagnetMouseDown(e, magnet, x, y)
     })
   }
 
-  protected onMagnetDblClick(e: JQuery.DoubleClickEvent) {
+  protected onMagnetDblClick(e: Dom.DoubleClickEvent) {
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
       view.onMagnetDblClick(e, magnet, x, y)
     })
   }
 
-  protected onMagnetContextMenu(evt: JQuery.ContextMenuEvent) {
-    const e = this.normalizeEvent(evt)
+  protected onMagnetContextMenu(e: Dom.ContextMenuEvent) {
     const view = this.findView(e.target)
-
-    if (this.isPreventDefaultContextMenu(e, view)) {
+    if (this.isPreventDefaultContextMenu(view)) {
       e.preventDefault()
     }
+
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
       view.onMagnetContextMenu(e, magnet, x, y)
     })
   }
 
-  protected onLabelMouseDown(evt: JQuery.MouseDownEvent) {
+  protected onLabelMouseDown(evt: Dom.MouseDownEvent) {
     const labelNode = evt.currentTarget
     const view = this.findView(labelNode)
     if (view) {

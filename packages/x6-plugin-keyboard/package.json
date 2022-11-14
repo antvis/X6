@@ -1,0 +1,67 @@
+{
+  "name": "@antv/x6-plugin-keyboard",
+  "version": "2.0.0",
+  "description": "keyboard plugin for X6",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "unpkg": "dist/index.js",
+  "jsdelivr": "dist/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist",
+    "es",
+    "lib"
+  ],
+  "keywords": [
+    "plugin",
+    "keyboard",
+    "x6",
+    "antv"
+  ],
+  "scripts": {
+    "clean:turbo": "rss",
+    "clean:build": "rss",
+    "clean:coverage": "rss",
+    "clean": "rss",
+    "build:esm": "rss",
+    "build:cjs": "rss",
+    "build:umd": "rss",
+    "build:dev": "rss",
+    "build:watch": "rss",
+    "build:watch:esm": "rss",
+    "build:watch:cjs": "rss",
+    "build": "rss",
+    "prebuild": "rss",
+    "test": "rss",
+    "coveralls": "rss",
+    "pretest": "rss"
+  },
+  "dependencies": {
+    "mousetrap": "^1.6.5"
+  },
+  "peerDependencies": {
+    "@antv/x6": "^2.x"
+  },
+  "devDependencies": {
+    "@antv/x6": "^2.x",
+    "@types/mousetrap": "^1.6.5"
+  },
+  "author": {
+    "name": "bubkoo",
+    "email": "bubkoo.wy@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/antvis/x6",
+  "bugs": {
+    "url": "https://github.com/antvis/x6/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/antvis/x6.git",
+    "directory": "packages/x6-plugin-keyboard"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}

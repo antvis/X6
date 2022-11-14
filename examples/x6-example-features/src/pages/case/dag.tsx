@@ -1,11 +1,13 @@
 import React from 'react'
-import { Graph, Node, Path, Cell } from '@antv/x6'
-import '@antv/x6-react-shape'
+import { Graph, Node, Cell, Path } from '@antv/x6'
+import { register } from '@antv/x6-react-shape'
+import { Selection } from '@antv/x6-plugin-selection'
+import { Snapline } from '@antv/x6-plugin-snapline'
 import '../index.less'
 import './index.less'
 interface NodeStatus {
   id: string
-  status: 'default' | 'success' | 'failed' | 'running'
+  status: string
   label?: string
 }
 
@@ -36,56 +38,52 @@ export class AlgoNode extends React.Component<{ node?: Node }> {
 
     return (
       <div className={`node ${status}`}>
-        <img src={image.logo} />
+        <img src={image.logo} alt="logo" />
         <span className="label">{label}</span>
         <span className="status">
-          {status === 'success' && <img src={image.success} />}
-          {status === 'failed' && <img src={image.failed} />}
-          {status === 'running' && <img src={image.running} />}
+          {status === 'success' && <img src={image.success} alt="success" />}
+          {status === 'failed' && <img src={image.failed} alt="failed" />}
+          {status === 'running' && <img src={image.running} alt="running" />}
         </span>
       </div>
     )
   }
 }
 
-Graph.registerNode(
-  'dag-node',
-  {
-    inherit: 'react-shape',
-    width: 180,
-    height: 36,
-    component: <AlgoNode />,
-    ports: {
-      groups: {
-        top: {
-          position: 'top',
-          attrs: {
-            circle: {
-              r: 4,
-              magnet: true,
-              stroke: '#C2C8D5',
-              strokeWidth: 1,
-              fill: '#fff',
-            },
+register({
+  shape: 'dag-node',
+  width: 180,
+  height: 36,
+  component: AlgoNode,
+  ports: {
+    groups: {
+      top: {
+        position: 'top',
+        attrs: {
+          circle: {
+            r: 4,
+            magnet: true,
+            stroke: '#C2C8D5',
+            strokeWidth: 1,
+            fill: '#fff',
           },
         },
-        bottom: {
-          position: 'bottom',
-          attrs: {
-            circle: {
-              r: 4,
-              magnet: true,
-              stroke: '#C2C8D5',
-              strokeWidth: 1,
-              fill: '#fff',
-            },
+      },
+      bottom: {
+        position: 'bottom',
+        attrs: {
+          circle: {
+            r: 4,
+            magnet: true,
+            stroke: '#C2C8D5',
+            strokeWidth: 1,
+            fill: '#fff',
           },
         },
       },
     },
   },
-  true,
-)
+})
 
 Graph.registerEdge(
   'dag-edge',
@@ -374,15 +372,18 @@ export default class Example extends React.Component {
           })
         },
       },
-      selecting: {
-        enabled: true,
-        multiple: true,
-        rubberEdge: true,
-        rubberNode: true,
-        modifiers: 'shift',
-        rubberband: true,
-      },
     })
+
+    const selection = new Selection({
+      enabled: true,
+      multiple: true,
+      rubberEdge: true,
+      rubberNode: true,
+      modifiers: 'shift',
+      rubberband: true,
+    })
+    graph.use(selection)
+    graph.use(new Snapline({ enabled: true }))
 
     graph.on('edge:connected', ({ edge }) => {
       edge.attr({
@@ -447,7 +448,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
+        <div ref={this.refContainer} className="dag" />
       </div>
     )
   }

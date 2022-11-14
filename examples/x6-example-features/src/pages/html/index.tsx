@@ -1,7 +1,21 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Cell, Shape } from '@antv/x6'
 import '../index.less'
+import './index.less'
 
+Shape.HTML.register({
+  shape: 'custom-html',
+  width: 160,
+  height: 80,
+  effect: ['data'],
+  html(cell: Cell) {
+    const data = cell.getData()
+    const div = document.createElement('div')
+    div.className = 'custom-html'
+    div.innerHTML = data.time
+    return div
+  },
+})
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
@@ -13,50 +27,26 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    const source = graph.addNode({
-      shape: 'html',
+    const node = graph.addNode({
+      shape: 'custom-html',
       x: 80,
       y: 80,
-      width: 160,
-      height: 60,
-      html: () => {
-        const wrap = document.createElement('div')
-        wrap.style.width = '100%'
-        wrap.style.height = '100%'
-        wrap.style.background = '#f0f0f0'
-        wrap.style.display = 'flex'
-        wrap.style.justifyContent = 'center'
-        wrap.style.alignItems = 'center'
-
-        wrap.innerText = 'hello'
-
-        return wrap
+      data: {
+        time: Date.now(),
       },
     })
+    console.log(graph.toJSON())
 
-    const wrap = document.createElement('div')
-    wrap.style.width = '100%'
-    wrap.style.height = '100%'
-    wrap.style.background = '#f0f0f0'
-    wrap.style.display = 'flex'
-    wrap.style.justifyContent = 'center'
-    wrap.style.alignItems = 'center'
+    const change = () => {
+      setTimeout(() => {
+        node.setData({
+          time: Date.now(),
+        })
+        change()
+      }, 1000)
+    }
 
-    wrap.innerText = 'world'
-
-    const target = graph.addNode({
-      shape: 'html',
-      x: 320,
-      y: 320,
-      width: 160,
-      height: 60,
-      html: wrap,
-    })
-
-    graph.addEdge({
-      source,
-      target,
-    })
+    change()
   }
 
   refContainer = (container: HTMLDivElement) => {

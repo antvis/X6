@@ -1,0 +1,138 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Point, Rectangle } from '@antv/x6-geometry'
+import { Base } from '../graph/base'
+import { Cell } from '../model'
+import { Scheduler } from './scheduler'
+import { CellView } from '../view'
+import { Util } from '../util'
+
+export class Renderer extends Base {
+  private readonly schedule: Scheduler = new Scheduler(this.graph)
+
+  requestViewUpdate(view: CellView, flag: number, options: any = {}) {
+    this.schedule.requestViewUpdate(view, flag, options)
+  }
+
+  isViewMounted(view: CellView) {
+    return this.schedule.isViewMounted(view)
+  }
+
+  setRenderArea(area?: Rectangle) {
+    this.schedule.setRenderArea(area)
+  }
+
+  findViewByElem(elem: string | Element | undefined | null) {
+    if (elem == null) {
+      return null
+    }
+    const container = this.options.container
+    const target =
+      typeof elem === 'string'
+        ? container.querySelector(elem)
+        : elem instanceof Element
+        ? elem
+        : elem[0]
+
+    if (target) {
+      const id = this.graph.view.findAttr('data-cell-id', target)
+      if (id) {
+        const views = this.schedule.views
+        if (views[id]) {
+          return views[id].view
+        }
+      }
+    }
+
+    return null
+  }
+
+  findViewByCell(cellId: string | number): CellView | null
+  findViewByCell(cell: Cell | null): CellView | null
+  findViewByCell(
+    cell: Cell | string | number | null | undefined,
+  ): CellView | null {
+    if (cell == null) {
+      return null
+    }
+    const id = Cell.isCell(cell) ? cell.id : cell
+    const views = this.schedule.views
+    if (views[id]) {
+      return views[id].view
+    }
+
+    return null
+  }
+
+  findViewsFromPoint(p: Point.PointLike) {
+    const ref = { x: p.x, y: p.y }
+    return this.model
+      .getCells()
+      .map((cell) => this.findViewByCell(cell))
+      .filter((view) => {
+        if (view != null) {
+          return Util.getBBox(view.container as SVGElement, {
+            target: this.view.stage,
+          }).containsPoint(ref)
+        }
+        return false
+      }) as CellView[]
+  }
+
+  findViewsInArea(
+    rect: Rectangle.RectangleLike,
+    options: { strict?: boolean } = {},
+  ) {
+    const area = Rectangle.create(rect)
+    return this.model
+      .getNodes()
+      .map((node) => this.findViewByCell(node))
+      .filter((view) => {
+        if (view) {
+          const bbox = Util.getBBox(view.container as SVGElement, {
+            target: this.graph.view.stage,
+          })
+          return options.strict
+            ? area.containsRect(bbox)
+            : area.isIntersectWithRect(bbox)
+        }
+        return false
+      }) as CellView[]
+  }
+
+  findEdgeViewsInArea(
+    rect: Rectangle.RectangleLike,
+    options: Renderer.FindViewsInAreaOptions = {},
+  ) {
+    const area = Rectangle.create(rect)
+    return this.model
+      .getEdges()
+      .map((edge) => this.findViewByCell(edge))
+      .filter((view) => {
+        if (view) {
+          const bbox = Util.getBBox(view.container as SVGElement, {
+            target: this.view.stage,
+          })
+          if (bbox.width === 0) {
+            bbox.inflate(1, 0)
+          } else if (bbox.height === 0) {
+            bbox.inflate(0, 1)
+          }
+          return options.strict
+            ? area.containsRect(bbox)
+            : area.isIntersectWithRect(bbox)
+        }
+        return false
+      }) as CellView[]
+  }
+
+  @Base.dispose()
+  dispose() {
+    this.schedule.dispose()
+  }
+}
+
+export namespace Renderer {
+  export interface FindViewsInAreaOptions {
+    strict?: boolean
+  }
+}
