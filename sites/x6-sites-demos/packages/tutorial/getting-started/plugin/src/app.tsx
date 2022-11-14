@@ -2,6 +2,8 @@ import React, { FC } from 'react'
 import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Dropdown, Menu } from 'antd'
+import { Snapline } from '@antv/x6-plugin-snapline'
+import 'antd/dist/antd.css'
 import './app.css'
 
 const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
@@ -84,6 +86,11 @@ export default class Example extends React.Component {
       },
     })
 
+    graph.use(
+      new Snapline({
+        enabled: true,
+      }),
+    )
     graph.fromJSON(data)
     graph.centerContent()
   }

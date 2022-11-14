@@ -3,11 +3,25 @@ import { Graph } from '@antv/x6'
 import './app.css'
 
 Graph.registerNode(
-  'custom-node-width-port',
+  'custom-node',
   {
-    inherit: 'rect',
+    inherit: 'rect', // 继承于 rect 节点
     width: 100,
     height: 40,
+    markup: [
+      {
+        tagName: 'rect', // 标签名称
+        selector: 'body', // 选择器
+      },
+      {
+        tagName: 'image',
+        selector: 'img',
+      },
+      {
+        tagName: 'text',
+        selector: 'label',
+      },
+    ],
     attrs: {
       body: {
         stroke: '#8f8f8f',
@@ -16,29 +30,13 @@ Graph.registerNode(
         rx: 6,
         ry: 6,
       },
-    },
-    ports: {
-      groups: {
-        top: {
-          position: 'top',
-          attrs: {
-            circle: {
-              magnet: true,
-              stroke: '#8f8f8f',
-              r: 5,
-            },
-          },
-        },
-        bottom: {
-          position: 'bottom',
-          attrs: {
-            circle: {
-              magnet: true,
-              stroke: '#8f8f8f',
-              r: 5,
-            },
-          },
-        },
+      img: {
+        'xlink:href':
+          'https://gw.alipayobjects.com/zos/antfincdn/FLrTNDvlna/antv.png',
+        width: 16,
+        height: 16,
+        x: 12,
+        y: 12,
       },
     },
   },
@@ -57,46 +55,22 @@ export default class Example extends React.Component {
     })
 
     const source = graph.addNode({
-      shape: 'custom-node-width-port',
+      shape: 'custom-node', // 可以直接使用上面注册过的 shape
       x: 40,
       y: 40,
       label: 'hello',
-      ports: {
-        items: [
-          {
-            id: 'port_1',
-            group: 'bottom',
-          },
-          {
-            id: 'port_2',
-            group: 'bottom',
-          },
-        ],
-      },
     })
 
     const target = graph.addNode({
-      shape: 'custom-node-width-port',
+      shape: 'custom-node',
       x: 160,
       y: 180,
       label: 'world',
-      ports: {
-        items: [
-          {
-            id: 'port_3',
-            group: 'top',
-          },
-          {
-            id: 'port_4',
-            group: 'top',
-          },
-        ],
-      },
     })
 
     graph.addEdge({
-      source: { cell: source, port: 'port_2' },
-      target: { cell: target, port: 'port_3' },
+      source,
+      target,
       attrs: {
         line: {
           stroke: '#8f8f8f',

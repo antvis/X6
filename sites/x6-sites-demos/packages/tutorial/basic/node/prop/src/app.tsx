@@ -1,5 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Button } from 'antd'
 import './app.css'
 
 Graph.registerNode(
@@ -43,8 +44,20 @@ Graph.registerNode(
   true,
 )
 
+const commands = [
+  {
+    key: 'prop',
+    label: 'prop',
+  },
+  {
+    key: 'attr',
+    label: 'attr',
+  },
+]
+
 export default class Example extends React.Component {
   private container: HTMLDivElement
+  private graph: Graph
 
   componentDidMount() {
     const graph = new Graph({
@@ -55,7 +68,7 @@ export default class Example extends React.Component {
     })
 
     const source = graph.addNode({
-      shape: 'custom-node', // 可以直接使用上面注册过的 shape
+      shape: 'custom-node',
       x: 40,
       y: 40,
       label: 'hello',
@@ -63,8 +76,8 @@ export default class Example extends React.Component {
 
     const target = graph.addNode({
       shape: 'custom-node',
-      x: 300,
-      y: 220,
+      x: 160,
+      y: 180,
       label: 'world',
     })
 
@@ -77,11 +90,22 @@ export default class Example extends React.Component {
           strokeWidth: 1,
         },
       },
-      vertices: [
-        { x: 100, y: 200 },
-        { x: 300, y: 120 },
-      ],
     })
+
+    graph.centerContent()
+    this.graph = graph
+  }
+
+  change = (command: string) => {
+    const nodes = this.graph.getNodes()
+    switch (command) {
+      case 'prop':
+        nodes.forEach((node) => node.prop('size', { width: 120, height: 50 }))
+        break
+      case 'attr':
+        nodes.forEach((node) => node.attr('body/fill', '#ccc'))
+        break
+    }
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -91,6 +115,15 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="app">
+        <div className="app-btns">
+          <Button.Group>
+            {commands.map((item) => (
+              <Button onClick={() => this.change(item.key)} key={item.key}>
+                {item.label}
+              </Button>
+            ))}
+          </Button.Group>
+        </div>
         <div className="app-content" ref={this.refContainer} />
       </div>
     )

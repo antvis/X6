@@ -3,11 +3,17 @@
   padding: 0;
   display: flex;
   padding: 16px 8px;
+  flex-direction: column;
+}
+
+.app-btns {
+  bottom: 0;
+  padding: 0 8px;
 }
 
 .app-content {
-  flex: 1;
-  height: 280px;
+  height: 240px;
+  margin-top: 16px;
   margin-left: 8px;
   margin-right: 8px;
   border-radius: 5px;
