@@ -53,9 +53,11 @@ Graph.registerNode(
         pointerEvent: 'none',
       },
       body: {
-        fill: '#ffffff',
-        stroke: '#333333',
-        strokeWidth: 2,
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
         refWidth: '100%',
         refHeight: '100%',
       },
@@ -78,13 +80,15 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      background: {
+        color: '#F2F7FA',
+      },
     })
 
     const source = graph.addNode({
       shape: 'custom-node',
       x: 40,
-      y: 40,
+      y: 80,
       width: 120,
       height: 40,
       attrs: {
@@ -97,7 +101,7 @@ export default class Example extends React.Component {
     const target = graph.addNode({
       shape: 'custom-node',
       x: 360,
-      y: 40,
+      y: 80,
       width: 120,
       height: 40,
       attrs: {
@@ -107,7 +111,16 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.addEdge({ source, target })
+    graph.addEdge({
+      source,
+      target,
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
+    })
 
     graph.on('node:delete', ({ view, e }: any) => {
       e.stopPropagation()

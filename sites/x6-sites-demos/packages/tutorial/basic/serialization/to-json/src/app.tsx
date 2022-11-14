@@ -14,7 +14,9 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      background: {
+        color: '#F2F7FA',
+      },
     })
 
     const source = graph.addNode({
@@ -25,8 +27,11 @@ export default class Example extends React.Component {
       label: 'Hello',
       attrs: {
         body: {
-          rx: 10,
-          ry: 10,
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
         },
       },
     })
@@ -38,11 +43,27 @@ export default class Example extends React.Component {
       height: 40,
       shape: 'ellipse',
       label: 'World',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
     graph.addEdge({
       source,
       target,
+      label: 'X6',
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
     })
 
     const parse = () => {
