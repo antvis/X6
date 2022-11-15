@@ -6,7 +6,7 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import 'antd/dist/antd.css'
 import './app.css'
 
-const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
+const CustomComponent = ({ node }: { node: Node }) => {
   const label = node.prop('label')
   return (
     <Dropdown

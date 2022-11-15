@@ -11,5 +11,24 @@
     "deploy1": "yarn speedup && wsrun -y=3 -c deploy",
     "deploy2": "yarn speedup && ultra -r --concurrency '3' --silent deploy",
     "clean": "rimraf **/node_modules"
+  },
+  "dependencies": {
+    "@antv/x6": "2.0.0-beta.3",
+    "@antv/x6-sites-demos-helper": "2.x",
+    "@antv/x6-vue-shape": "2.0.0-beta.1",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "@vue/cli-plugin-babel": "~4.5.11",
+    "@vue/cli-plugin-eslint": "~4.5.11",
+    "@vue/cli-plugin-typescript": "~4.5.11",
+    "@vue/cli-service": "~4.5.11",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "core-js": "^3.6.5",
+    "element-plus": "^2.2.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^7.0.0",
+    "typescript": "~4.1.5",
+    "vue": "^3.0.0"
   }
 }

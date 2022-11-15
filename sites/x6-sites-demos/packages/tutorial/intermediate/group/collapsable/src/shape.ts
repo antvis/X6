@@ -64,9 +64,8 @@ Group.config({
     body: {
       refWidth: '100%',
       refHeight: '100%',
-      strokeWidth: 1,
-      fill: '#ffffff',
       stroke: 'none',
+      fill: '#fff',
     },
     buttonGroup: {
       refX: 8,

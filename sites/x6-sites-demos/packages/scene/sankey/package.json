@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@antv/x6": "2.0.0-beta.2",
+    "@antv/x6": "2.0.0-beta.3",
     "@antv/x6-sites-demos-helper": "2.x",
     "antd": "^4.4.2",
     "d3-sankey": "^0.12.3",
