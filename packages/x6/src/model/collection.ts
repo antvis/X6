@@ -418,8 +418,6 @@ export namespace Collection {
     'cell:change:vertices': Cell.EventArgs['change:vertices']
     'cell:change:labels': Cell.EventArgs['change:labels']
     'cell:change:defaultLabel': Cell.EventArgs['change:defaultLabel']
-    'cell:change:vertexMarkup': Cell.EventArgs['change:vertexMarkup']
-    'cell:change:arrowheadMarkup': Cell.EventArgs['change:arrowheadMarkup']
     'cell:vertexs:added': Cell.EventArgs['vertexs:added']
     'cell:vertexs:removed': Cell.EventArgs['vertexs:removed']
     'cell:labels:added': Cell.EventArgs['labels:added']
@@ -524,10 +522,6 @@ export namespace Collection {
     'edge:change:labels': EdgeEventCommonArgs & Cell.EventArgs['change:labels']
     'edge:change:defaultLabel': EdgeEventCommonArgs &
       Cell.EventArgs['change:defaultLabel']
-    'edge:change:vertexMarkup': EdgeEventCommonArgs &
-      Cell.EventArgs['change:vertexMarkup']
-    'edge:change:arrowheadMarkup': EdgeEventCommonArgs &
-      Cell.EventArgs['change:arrowheadMarkup']
     'edge:vertexs:added': EdgeEventCommonArgs & Cell.EventArgs['vertexs:added']
     'edge:vertexs:removed': EdgeEventCommonArgs &
       Cell.EventArgs['vertexs:removed']

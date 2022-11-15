@@ -2,59 +2,66 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import './app.css'
 
+Graph.registerNode(
+  'custom-node',
+  {
+    inherit: 'rect',
+    width: 100,
+    height: 40,
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
+  },
+  true,
+)
+
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      background: {
+        color: '#F2F7FA',
+      },
       translating: {
         restrict(view) {
-          const cell = view.cell
-          if (cell.isNode()) {
-            const parent = cell.getParent()
-            if (parent) {
-              return parent.getBBox()
+          if (view) {
+            const cell = view.cell
+            if (cell.isNode()) {
+              const parent = cell.getParent()
+              if (parent) {
+                return parent.getBBox()
+              }
             }
           }
-
-          return null as any
+          return null
         },
       },
     })
 
     const child = graph.addNode({
+      shape: 'custom-node',
       x: 100,
-      y: 80,
-      width: 120,
-      height: 60,
+      y: 60,
       label: 'Child',
-      zIndex: 10,
-      attrs: {
-        body: {
-          stroke: 'none',
-          fill: '#3199FF',
-        },
-        label: {
-          fill: '#fff',
-        },
-      },
+      zIndex: 2,
     })
 
     const parent = graph.addNode({
+      shape: 'custom-node',
       x: 40,
       y: 40,
       width: 240,
       height: 160,
       zIndex: 1,
       label: 'Parent\n(try to move me)',
-      attrs: {
-        label: { refY: 130 },
-        body: {
-          fill: '#fffbe6',
-        },
-      },
     })
 
     parent.addChild(child)

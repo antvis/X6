@@ -2,64 +2,59 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import './app.css'
 
+Graph.registerNode(
+  'custom-node',
+  {
+    inherit: 'rect',
+    width: 100,
+    height: 40,
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
+  },
+  true,
+)
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      background: {
+        color: '#F2F7FA',
+      },
     })
 
     const source = graph.addNode({
-      x: 80,
+      shape: 'custom-node',
+      x: 60,
       y: 100,
-      width: 80,
-      height: 40,
-      label: 'Child\n(source)',
-      zIndex: 10,
-      attrs: {
-        body: {
-          stroke: 'none',
-          fill: '#3199FF',
-        },
-        label: {
-          fill: '#fff',
-        },
-      },
+      label: 'Child\n(inner)',
+      zIndex: 2,
     })
 
     const target = graph.addNode({
-      x: 280,
+      shape: 'custom-node',
+      x: 420,
       y: 80,
-      width: 80,
-      height: 40,
-      label: 'Child\n(target)',
-      zIndex: 10,
-      attrs: {
-        body: {
-          stroke: 'none',
-          fill: '#47C769',
-        },
-        label: {
-          fill: '#fff',
-        },
-      },
+      label: 'Child\n(outer)',
+      zIndex: 2,
     })
 
     const parent = graph.addNode({
+      shape: 'custom-node',
       x: 40,
       y: 40,
       width: 360,
       height: 160,
       zIndex: 1,
       label: 'Parent\n(try to move me)',
-      attrs: {
-        label: { refY: 140 },
-        body: {
-          fill: '#fffbe6',
-        },
-      },
     })
 
     parent.addChild(source)
@@ -72,6 +67,12 @@ export default class Example extends React.Component {
         { x: 120, y: 60 },
         { x: 200, y: 100 },
       ],
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
     })
   }
 
