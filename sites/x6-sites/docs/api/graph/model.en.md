@@ -191,23 +191,6 @@ addCell(cell: Cell | Cell[], options?: AddOptions): this
 | options.sort     | boolean        |      | `true`  | 是否按照  `zIndex` 排序。                                                           |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                             |
 
-### addCells(...)
-
-```sign
-addCells(cells: Cell[], options?: AddOptions): this
-```
-
-添加多个节点或边到画布。
-
-<span class="tag-param">参数<span>
-
-| 名称             | 类型           | 必选 | 默认值  | 描述                                                                               |
-|------------------|----------------|:----:|---------|----------------------------------------------------------------------------------|
-| cells             | Cell[] |  ✓   |         | [节点实例](/en/docs/api/model/node)或[边实例](/en/docs/api/model/edge)的数组。 |
-| options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'cell:added'`、`'node:added'` 和 `'edge:added'` 事件和画布重绘。 |
-| options.sort     | boolean        |      | `true`  | 是否按照  `zIndex` 排序。                                                           |
-| options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                             |
-
 ### removeCell(...)
 
 ```sign
