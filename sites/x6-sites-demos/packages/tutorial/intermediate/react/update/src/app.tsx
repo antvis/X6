@@ -4,7 +4,7 @@ import { register } from '@antv/x6-react-shape'
 import { Progress } from 'antd'
 import './app.css'
 
-const NodeComponent: any = ({ node }: { node: Node }) => {
+const NodeComponent = ({ node }: { node: Node }) => {
   const { progress } = node.getData()
   return (
     <div className="react-node">

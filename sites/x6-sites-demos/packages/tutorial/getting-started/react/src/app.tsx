@@ -1,10 +1,10 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Dropdown, Menu } from 'antd'
 import './app.css'
 
-const CustomComponent: FC<any> = ({ node }: { node: Node }) => {
+const CustomComponent = ({ node }: { node: Node }) => {
   const label = node.prop('label')
   return (
     <Dropdown

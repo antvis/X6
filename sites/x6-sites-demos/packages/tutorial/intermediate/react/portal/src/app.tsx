@@ -7,7 +7,7 @@ import './app.css'
 const X6ReactPortalProvider = Portal.getProvider() // 注意，一个 graph 只能申明一个 portal provider
 const ProgressContext = React.createContext(30)
 
-const NodeComponent: any = () => {
+const NodeComponent = () => {
   const progress = React.useContext(ProgressContext)
   return (
     <div className="react-node">

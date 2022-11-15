@@ -4,7 +4,7 @@ import { register } from '@antv/x6-react-shape'
 import { Progress } from 'antd'
 import './app.css'
 
-const NodeComponent: any = () => {
+const NodeComponent = () => {
   return (
     <div className="react-node">
       <Progress type="circle" percent={30} width={80} />
