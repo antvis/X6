@@ -100,7 +100,7 @@ export class ColorPicker extends React.Component<
     const { color } = this.state
     const { disabled, overlayProps, style } = this.props
     const baseCls = `${this.props.prefixCls}-color-picker`
-    const popoverProps: PopoverProps = {}
+    const popoverProps: PopoverProps & { open?: boolean } = {}
     if (disabled) {
       popoverProps.visible = false
       // Support for antd 5.0
