@@ -299,7 +299,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     }
 
     if (typeof filter === 'function') {
-      return cells.filter((cell) => FunctionExt.call(filter, this.graph, cell))
+      return cells.filter((cell) => !FunctionExt.call(filter, this.graph, cell))
     }
 
     return cells
