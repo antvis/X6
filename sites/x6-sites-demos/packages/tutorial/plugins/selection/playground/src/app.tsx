@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, JQuery } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Selection } from '@antv/x6-plugin-selection'
 import { Settings, State } from './settings'
 import './app.css'
 
@@ -10,15 +11,20 @@ export default class Example extends React.Component {
   componentDidMount() {
     this.graph = new Graph({
       container: this.container,
-      grid: { visible: true },
-      selecting: {
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+
+    this.graph.use(
+      new Selection({
         enabled: true,
         multiple: true,
         rubberband: true,
         movable: true,
         showNodeSelectionBox: true,
-      },
-    })
+      }),
+    )
 
     this.graph.addNode({
       x: 320,
@@ -26,6 +32,15 @@ export default class Example extends React.Component {
       width: 100,
       height: 40,
       label: 'Rect',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
     const source = this.graph.addNode({
@@ -34,6 +49,15 @@ export default class Example extends React.Component {
       width: 100,
       height: 40,
       label: 'Hello',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
     const target = this.graph.addNode({
@@ -43,11 +67,24 @@ export default class Example extends React.Component {
       width: 60,
       height: 60,
       label: 'World',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+        },
+      },
     })
 
     this.graph.addEdge({
       source,
       target,
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
     })
   }
 
@@ -68,10 +105,10 @@ export default class Example extends React.Component {
         : null,
     )
 
-    JQuery(this.graph.selection.widget.container).toggleClass(
-      'my-selection',
-      options.className,
-    )
+    // JQuery(this.graph.selection.widget.container).toggleClass(
+    //   'my-selection',
+    //   options.className,
+    // )
   }
 
   refContainer = (container: HTMLDivElement) => {
