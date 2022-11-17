@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@antv/x6-react-components": "2.0.0-beta.1",
-    "@antv/x6": "2.0.0-beta.3",
+    "@antv/x6": "2.0.0-beta.4",
     "@antv/x6-sites-demos-helper": "2.x",
     "antd": "^4.4.2",
     "react": "^18.0.0",
