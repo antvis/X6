@@ -23,3 +23,11 @@
   height: 150px;
   margin-top: -10px;
 }
+
+.x6-widget-minimap-viewport {
+  border: 2px solid #8f8f8f;
+}
+
+.x6-widget-minimap-viewport-zoom {
+  border: 2px solid #8f8f8f;
+}

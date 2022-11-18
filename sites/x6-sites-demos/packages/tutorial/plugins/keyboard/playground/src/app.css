@@ -27,3 +27,11 @@
   margin-right: 8px;
   box-shadow: 0 0 10px 1px #e9e9e9;
 }
+
+.x6-widget-selection-box {
+  border: 2px dashed #239edd;
+}
+
+.x6-widget-selection-inner {
+  border: 1px solid #239edd;
+}

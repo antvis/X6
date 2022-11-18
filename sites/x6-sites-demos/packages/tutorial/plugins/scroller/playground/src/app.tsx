@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
+import { Scroller } from '@antv/x6-plugin-scroller'
 import { Settings, State } from './settings'
 import './app.css'
 
@@ -12,6 +13,15 @@ const data: any = {
     width: 100,
     height: 40,
     label: 'Hello',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
   },
   world: {
     id: 'world',
@@ -21,6 +31,13 @@ const data: any = {
     width: 60,
     height: 60,
     label: 'World',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+      },
+    },
   },
   rect: {
     id: 'rect',
@@ -29,6 +46,15 @@ const data: any = {
     width: 100,
     height: 40,
     label: 'Rect',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
   },
 }
 
@@ -49,15 +75,19 @@ export default class Example extends React.Component {
 
     const graph = new Graph({
       container: this.container,
-      grid: { visible: true },
-      scroller: {
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+    graph.use(
+      new Scroller({
         enabled: true,
         pageVisible: true,
         pageBreak: true,
         pannable: true,
         ...options,
-      },
-    })
+      }),
+    )
 
     graph.fromJSON({ nodes: Object.keys(data).map((key) => data[key]) })
 

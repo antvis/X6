@@ -1117,7 +1117,7 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
 
   @View.dispose()
   dispose() {
-    Dom.before(this.graph.container, this.container)
+    Dom.before(this.container, this.graph.container)
     this.remove()
   }
 }

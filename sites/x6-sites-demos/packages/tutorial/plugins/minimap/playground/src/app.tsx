@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Graph } from '@antv/x6'
-import { SimpleNodeView } from './view'
+import { MiniMap } from '@antv/x6-plugin-minimap'
+import { Scroller } from '@antv/x6-plugin-scroller'
 import './app.css'
 
 export default class Example extends React.Component {
@@ -12,34 +13,27 @@ export default class Example extends React.Component {
     this.graph = new Graph({
       container: this.container,
       width: 400,
-      grid: { visible: true },
-      scroller: {
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+
+    this.graph.use(
+      new Scroller({
         enabled: true,
         pageVisible: true,
         pageBreak: false,
         pannable: true,
-      },
-      minimap: {
-        enabled: true,
+      }),
+    )
+    this.graph.use(
+      new MiniMap({
         container: this.minimapContainer,
         width: 200,
         height: 160,
         padding: 10,
-        graphOptions: {
-          async: true,
-          getCellView(cell) {
-            if (cell.isNode()) {
-              return SimpleNodeView
-            }
-          },
-          createCellView(cell) {
-            if (cell.isEdge()) {
-              return null
-            }
-          },
-        },
-      },
-    })
+      }),
+    )
 
     this.graph.addNode({
       x: 200,
@@ -47,6 +41,15 @@ export default class Example extends React.Component {
       width: 100,
       height: 40,
       label: 'Rect',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
     const source = this.graph.addNode({
@@ -55,6 +58,15 @@ export default class Example extends React.Component {
       width: 100,
       height: 40,
       label: 'Hello',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
     const target = this.graph.addNode({
@@ -64,14 +76,27 @@ export default class Example extends React.Component {
       width: 60,
       height: 60,
       label: 'World',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+        },
+      },
     })
 
     this.graph.addEdge({
       source,
       target,
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
     })
 
-    this.graph.zoomTo(1.8)
+    //this.graph.zoomTo(1.8)
   }
 
   refContainer = (container: HTMLDivElement) => {

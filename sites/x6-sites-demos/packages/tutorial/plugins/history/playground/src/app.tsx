@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
+import { History } from '@antv/x6-plugin-history'
 import './app.css'
 
 interface Props {}
@@ -12,7 +13,7 @@ interface State {
 
 export default class App extends React.Component<Props, State> {
   private container: HTMLDivElement
-  private history: Graph.HistoryManager
+  private graph: Graph
 
   state: State = {
     canRedo: false,
@@ -22,9 +23,16 @@ export default class App extends React.Component<Props, State> {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
-      history: true,
+      background: {
+        color: '#F2F7FA',
+      },
     })
+
+    graph.use(
+      new History({
+        enabled: true,
+      }),
+    )
 
     graph.addNode({
       x: 100,
@@ -32,23 +40,33 @@ export default class App extends React.Component<Props, State> {
       width: 100,
       height: 40,
       label: 'Drag Me',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
-    this.history = graph.history
-    this.history.on('change', () => {
+    graph.on('history:change', () => {
       this.setState({
-        canRedo: this.history.canRedo(),
-        canUndo: this.history.canUndo(),
+        canRedo: graph.canRedo(),
+        canUndo: graph.canUndo(),
       })
     })
+
+    this.graph = graph
   }
 
   onUndo = () => {
-    this.history.undo()
+    this.graph.undo()
   }
 
   onRedo = () => {
-    this.history.redo()
+    this.graph.redo()
   }
 
   refContainer = (container: HTMLDivElement) => {
