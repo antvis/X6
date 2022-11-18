@@ -26,7 +26,8 @@
 .dnd-rect {
   width: 100px;
   height: 40px;
-  border: 2px solid #31d0c6;
+  border: 1px solid #8f8f8f;
+  border-radius: 6px;
   text-align: center;
   line-height: 40px;
   margin: 16px;
@@ -37,7 +38,7 @@
   width: 60px;
   height: 60px;
   border-radius: 100%;
-  border: 2px solid #31d0c6;
+  border: 1px solid #8f8f8f;
   text-align: center;
   line-height: 60px;
   margin: 16px;
