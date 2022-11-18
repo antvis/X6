@@ -40,6 +40,12 @@ export class Export extends Basecoat<Export.EventArgs> {
     }, options)
   }
 
+  exportSVG(fileName = 'chart', options: Export.ToSVGOptions = {}) {
+    this.toSVG((svg: string) => {
+      DataUri.downloadDataUri(DataUri.svgToDataUrl(svg), fileName)
+    }, options)
+  }
+
   toSVG(callback: Export.ToSVGCallback, options: Export.ToSVGOptions = {}) {
     this.notify('before:export', options)
 
