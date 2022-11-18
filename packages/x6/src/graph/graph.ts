@@ -1058,13 +1058,23 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawBackground(options?: Background.Options) {
-    this.background.draw(options)
+  drawBackground(options?: Background.Options, onGraph?: boolean) {
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller != null && (this.options.background == null || !onGraph)) {
+      scroller.drawBackground(options, onGraph)
+    } else {
+      this.background.draw(options)
+    }
     return this
   }
 
-  clearBackground() {
-    this.background.clear()
+  clearBackground(onGraph?: boolean) {
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller != null && (this.options.background == null || !onGraph)) {
+      scroller.clearBackground(onGraph)
+    } else {
+      this.background.clear()
+    }
     return this
   }
 
@@ -1120,16 +1130,31 @@ export class Graph extends Basecoat<EventArgs> {
   // #region panning
 
   isPannable() {
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      return scroller.isPannable()
+    }
     return this.panning.pannable
   }
 
   enablePanning() {
-    this.panning.enablePanning()
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.enablePanning()
+    } else {
+      this.panning.enablePanning()
+    }
+
     return this
   }
 
   disablePanning() {
-    this.panning.disablePanning()
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      scroller.disablePanning()
+    } else {
+      this.panning.disablePanning()
+    }
     return this
   }
 
