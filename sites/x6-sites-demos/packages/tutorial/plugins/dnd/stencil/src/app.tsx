@@ -1,9 +1,16 @@
 import React from 'react'
-import { Graph, Addon, Shape } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Snapline } from '@antv/x6-plugin-snapline'
+import { Stencil } from '@antv/x6-plugin-stencil'
 import './app.css'
 
-const { Stencil } = Addon
-const { Rect, Circle } = Shape
+const commonAttrs = {
+  body: {
+    fill: '#fff',
+    stroke: '#8f8f8f',
+    strokeWidth: 1,
+  },
+}
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -12,31 +19,30 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
-      snapline: {
-        enabled: true,
-        sharp: true,
-      },
-      scroller: {
-        enabled: true,
-        pageVisible: false,
-        pageBreak: false,
-        pannable: true,
+      background: {
+        color: '#F2F7FA',
       },
     })
+    graph.use(
+      new Snapline({
+        enabled: true,
+        sharp: true,
+      }),
+    )
 
     const source = graph.addNode({
       x: 130,
       y: 30,
       width: 100,
       height: 40,
+      label: 'Hello',
       attrs: {
-        label: {
-          text: 'Hello',
-          fill: '#6a6c8a',
-        },
         body: {
-          stroke: '#31d0c6',
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
         },
       },
     })
@@ -46,18 +52,28 @@ export default class Example extends React.Component {
       y: 240,
       width: 100,
       height: 40,
+      label: 'World',
       attrs: {
-        label: {
-          text: 'World',
-          fill: '#6a6c8a',
-        },
         body: {
-          stroke: '#31d0c6',
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
         },
       },
     })
 
-    graph.addEdge({ source, target })
+    graph.addEdge({
+      source,
+      target,
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
+    })
 
     graph.centerContent()
 
@@ -71,7 +87,7 @@ export default class Example extends React.Component {
       notFoundText: 'Not Found',
       collapsable: true,
       stencilGraphWidth: 200,
-      stencilGraphHeight: 180,
+      stencilGraphHeight: 100,
       groups: [
         {
           name: 'group1',
@@ -87,62 +103,50 @@ export default class Example extends React.Component {
 
     this.stencilContainer.appendChild(stencil.container)
 
-    const r = new Rect({
-      width: 70,
+    const n1 = graph.createNode({
+      shape: 'rect',
+      x: 40,
+      y: 40,
+      width: 80,
       height: 40,
-      attrs: {
-        rect: { fill: '#31D0C6', stroke: '#4B4A67', strokeWidth: 6 },
-        text: { text: 'rect', fill: 'white' },
-      },
+      label: 'rect',
+      attrs: commonAttrs,
     })
 
-    const c = new Circle({
-      width: 60,
-      height: 60,
-      attrs: {
-        circle: { fill: '#FE854F', strokeWidth: 6, stroke: '#4B4A67' },
-        text: { text: 'ellipse', fill: 'white' },
-      },
-    })
-
-    const c2 = new Circle({
-      width: 60,
-      height: 60,
-      attrs: {
-        circle: { fill: '#4B4A67', 'stroke-width': 6, stroke: '#FE854F' },
-        text: { text: 'ellipse', fill: 'white' },
-      },
-    })
-
-    const r2 = new Rect({
-      width: 70,
+    const n2 = graph.createNode({
+      shape: 'circle',
+      x: 180,
+      y: 40,
+      width: 40,
       height: 40,
-      attrs: {
-        rect: { fill: '#4B4A67', stroke: '#31D0C6', strokeWidth: 6 },
-        text: { text: 'rect', fill: 'white' },
-      },
+      label: 'circle',
+      attrs: commonAttrs,
     })
 
-    const r3 = new Rect({
-      width: 70,
+    const n3 = graph.createNode({
+      shape: 'ellipse',
+      x: 280,
+      y: 40,
+      width: 80,
       height: 40,
-      attrs: {
-        rect: { fill: '#31D0C6', stroke: '#4B4A67', strokeWidth: 6 },
-        text: { text: 'rect', fill: 'white' },
-      },
+      label: 'ellipse',
+      attrs: commonAttrs,
     })
 
-    const c3 = new Circle({
-      width: 60,
-      height: 60,
-      attrs: {
-        circle: { fill: '#FE854F', strokeWidth: 6, stroke: '#4B4A67' },
-        text: { text: 'ellipse', fill: 'white' },
-      },
+    const n4 = graph.createNode({
+      shape: 'path',
+      x: 420,
+      y: 40,
+      width: 40,
+      height: 40,
+      // https://www.svgrepo.com/svg/13653/like
+      path: 'M24.85,10.126c2.018-4.783,6.628-8.125,11.99-8.125c7.223,0,12.425,6.179,13.079,13.543c0,0,0.353,1.828-0.424,5.119c-1.058,4.482-3.545,8.464-6.898,11.503L24.85,48L7.402,32.165c-3.353-3.038-5.84-7.021-6.898-11.503c-0.777-3.291-0.424-5.119-0.424-5.119C0.734,8.179,5.936,2,13.159,2C18.522,2,22.832,5.343,24.85,10.126z',
+      attrs: commonAttrs,
+      label: 'path',
     })
 
-    stencil.load([r, c, c2, r2.clone()], 'group1')
-    stencil.load([c2.clone(), r2, r3, c3], 'group2')
+    stencil.load([n1, n2], 'group1')
+    stencil.load([n3, n4], 'group2')
   }
 
   refContainer = (container: HTMLDivElement) => {

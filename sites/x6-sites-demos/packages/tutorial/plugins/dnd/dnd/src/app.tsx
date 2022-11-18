@@ -1,8 +1,8 @@
 import React from 'react'
-import { Graph, Dom, Addon } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { Dnd } from '@antv/x6-plugin-dnd'
+import { Snapline } from '@antv/x6-plugin-snapline'
 import './app.css'
-
-const { Dnd } = Addon
 
 export default class Example extends React.Component {
   private graph: Graph
@@ -13,17 +13,8 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      grid: true,
-      history: true,
-      snapline: {
-        enabled: true,
-        sharp: true,
-      },
-      scroller: {
-        enabled: true,
-        pageVisible: false,
-        pageBreak: false,
-        pannable: true,
+      background: {
+        color: '#F2F7FA',
       },
       mousewheel: {
         enabled: true,
@@ -31,19 +22,26 @@ export default class Example extends React.Component {
       },
     })
 
+    graph.use(
+      new Snapline({
+        enabled: true,
+        sharp: true,
+      }),
+    )
+
     const source = graph.addNode({
       x: 130,
       y: 30,
       width: 100,
       height: 40,
+      label: 'Hello',
       attrs: {
-        label: {
-          text: 'Hello',
-          fill: '#6a6c8a',
-        },
         body: {
-          stroke: '#31d0c6',
-          strokeWidth: 2,
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
         },
       },
     })
@@ -53,39 +51,34 @@ export default class Example extends React.Component {
       y: 160,
       width: 100,
       height: 40,
+      label: 'World',
       attrs: {
-        label: {
-          text: 'World',
-          fill: '#6a6c8a',
-        },
         body: {
-          stroke: '#31d0c6',
-          strokeWidth: 2,
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
         },
       },
     })
 
-    graph.addEdge({ source, target })
+    graph.addEdge({
+      source,
+      target,
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
+    })
     graph.centerContent()
+
     this.dnd = new Dnd({
       target: graph,
       scaled: false,
-      animation: true,
       dndContainer: this.dndContainer,
-      validateNode(droppingNode, options) {
-        return droppingNode.shape === 'html'
-          ? new Promise<boolean>((resolve) => {
-              const { draggingNode, draggingGraph } = options
-              const view = draggingGraph.findView(draggingNode)!
-              const contentElem = view.findOne('foreignObject > body > div')
-              Dom.addClass(contentElem, 'validating')
-              setTimeout(() => {
-                Dom.removeClass(contentElem, 'validating')
-                resolve(true)
-              }, 3000)
-            })
-          : true
-      },
     })
     this.graph = graph
   }
@@ -98,33 +91,28 @@ export default class Example extends React.Component {
         ? this.graph.createNode({
             width: 100,
             height: 40,
+            label: 'Rect',
             attrs: {
-              label: {
-                text: 'Rect',
-                fill: '#6a6c8a',
-              },
               body: {
-                stroke: '#31d0c6',
-                strokeWidth: 2,
+                stroke: '#8f8f8f',
+                strokeWidth: 1,
+                fill: '#fff',
+                rx: 6,
+                ry: 6,
               },
             },
           })
         : this.graph.createNode({
             width: 60,
             height: 60,
-            shape: 'html',
-            html: () => {
-              const wrap = document.createElement('div')
-              wrap.style.width = '100%'
-              wrap.style.height = '100%'
-              wrap.style.display = 'flex'
-              wrap.style.alignItems = 'center'
-              wrap.style.justifyContent = 'center'
-              wrap.style.border = '2px solid rgb(49, 208, 198)'
-              wrap.style.background = '#fff'
-              wrap.style.borderRadius = '100%'
-              wrap.innerText = 'Circle'
-              return wrap
+            shape: 'circle',
+            label: 'Circle',
+            attrs: {
+              body: {
+                stroke: '#8f8f8f',
+                strokeWidth: 1,
+                fill: '#fff',
+              },
             },
           })
 

@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-snapline",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "snapline plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
