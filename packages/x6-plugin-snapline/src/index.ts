@@ -139,6 +139,10 @@ export class Snapline extends Disposable {
     this.snaplineImpl.captureCursorOffset(e)
   }
 
+  snapOnMoving(args: EventArgs['node:mousemove']) {
+    this.snaplineImpl.snapOnMoving(args)
+  }
+
   // #endregion
 
   @Disposable.dispose()

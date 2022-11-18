@@ -104,7 +104,7 @@ export class Dnd extends View {
   }
 
   protected isSnaplineEnabled() {
-    return this.snapline && this.snapline.isSnaplineEnabled()
+    return this.snapline && this.snapline.isEnabled()
   }
 
   protected prepareDragging(
