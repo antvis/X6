@@ -404,7 +404,7 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     this.sy = sy
 
     this.graph.translate(options.x * dx, options.y * dy)
-    this.graph.resize(options.width * dx, options.height * dy)
+    this.graph.transform.resize(options.width * dx, options.height * dy)
   }
 
   scrollbarPosition(): { left: number; top: number }
