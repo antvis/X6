@@ -13,6 +13,7 @@ import {
 } from '@antv/x6'
 import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
+import './api'
 
 export class Scroller extends Basecoat<Scroller.EventArgs> {
   private graph: Graph
@@ -219,14 +220,17 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
 
   lockScroller() {
     this.scrollerImpl.lock()
+    return this
   }
 
   unlockScroller() {
     this.scrollerImpl.unlock()
+    return this
   }
 
   updateScroller() {
     this.scrollerImpl.update()
+    return this
   }
 
   getScrollbarPosition() {
