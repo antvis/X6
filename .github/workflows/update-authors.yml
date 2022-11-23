@@ -21,7 +21,7 @@ jobs:
 
       - uses: wow-actions/update-authors@v1
         with:
-          GITHUB_TOKEN: ${{ env.bot_token  }}
+          GITHUB_TOKEN: ${{ env.BOT_TOKEN  }}
           bots: false
           path: CONTRIBUTORS
           commit: 'chore: update CONTRIBUTORS [skip ci]'
