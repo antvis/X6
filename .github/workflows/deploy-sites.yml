@@ -64,15 +64,15 @@ jobs:
         run: yarn build:sites
 
       - name: 🔑　Generate Token
-        uses: wow-actions/use-app-token@v1
+        uses: wow-actions/use-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
+
 
       - name: ✅　Deploy sites
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ env.bot_token }}
+          github_token: ${{ env.BOT_TOKEN }}
           publish_dir: ./sites/x6-sites/public
           publish_branch: gh-pages
