@@ -6,12 +6,12 @@ jobs:
   cmd:
     runs-on: ubuntu-latest
     steps:
-      - uses: wow-actions/use-app-token@v1
+      - uses: wow-actions/use-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
+
       - uses: wow-actions/slash-commands@v1
         with:
-          GITHUB_TOKEN: ${{ env.bot_token }}
+          GITHUB_TOKEN: ${{ env.BOT_TOKEN }}
           CONFIG_FILE: .github/workflows/config/slash-commands.yml

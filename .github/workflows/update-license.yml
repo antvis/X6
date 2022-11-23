@@ -9,11 +9,11 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - uses: wow-actions/use-app-token@v1
+    - uses: wow-actions/use-app-token@v2
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.PRIVATE_KEY }}
-        env_name: bot_token
+
     - uses: FantasticFiasco/action-update-license-year@v2
       with:
-        token: ${{ env.bot_token }}
+        token: ${{ env.BOT_TOKEN }}

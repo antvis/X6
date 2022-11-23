@@ -11,15 +11,15 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - uses: wow-actions/use-app-token@v1
+      - uses: wow-actions/use-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
+
       - uses: Naturalclar/issue-action@v2.0.1
         with:
           title-or-body: title
-          github-token: ${{ env.bot_token }}
+          github-token: ${{ env.BOT_TOKEN }}
           parameters: >
             [
               {
