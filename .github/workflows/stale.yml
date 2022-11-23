@@ -6,14 +6,14 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: wow-actions/use-app-token@v1
+      - uses: wow-actions/use-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
+
       - uses: actions/stale@v3
         with:
-          repo-token: ${{ env.bot_token }}
+          repo-token: ${{ env.BOT_TOKEN }}
           stale-issue-message: |
             Hiya!
 

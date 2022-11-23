@@ -56,11 +56,11 @@ jobs:
         run: pnpm run test
 
       - name: 🔑　Generate Token
-        uses: wow-actions/use-app-token@v1
+        uses: wow-actions/use-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
+
 
       - name: 💡　Codecov
         uses: codecov/codecov-action@v1
@@ -72,20 +72,20 @@ jobs:
       - name: 🔀　Dispatch(ci_passed)
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ env.bot_token }}
+          token: ${{ env.BOT_TOKEN }}
           event-type: ci_passed
 
       - name: 🔀　Dispatch(ci_pr_passed)
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ env.bot_token }}
+          token: ${{ env.BOT_TOKEN }}
           event-type: ci_pr_passed
 
       - name: 🔀　Dispatch(ci_master_passed)
         if: github.event_name == 'push'
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ env.bot_token }}
+          token: ${{ env.BOT_TOKEN }}
           event-type: ci_master_passed
 
