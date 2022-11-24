@@ -5,7 +5,6 @@ import React from 'react'
 import classNames from 'classnames'
 import { Popover } from 'antd'
 import { PopoverProps } from 'antd/es/popover'
-import 'antd/es/popover/style/index.css'
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import {
   SketchPicker,
@@ -104,8 +103,12 @@ export class ColorPicker extends React.Component<
     const popoverProps: PopoverProps = {}
     if (disabled) {
       popoverProps.visible = false
+      // Support for antd 5.0
+      popoverProps.open = false
     } else {
       popoverProps.visible = this.state.active
+      // Support for antd 5.0
+      popoverProps.open = this.state.active
     }
 
     const colorStr =
