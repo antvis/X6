@@ -48,7 +48,7 @@
     "antv"
   ],
   "peerDependencies": {
-    "antd": ">=4.4.2",
+    "antd": ">=4.4.2 || >=5.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
