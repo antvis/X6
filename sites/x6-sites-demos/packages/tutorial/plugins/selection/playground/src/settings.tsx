@@ -173,7 +173,7 @@ export class Settings extends React.Component<Props, State> {
               checked={this.state.filter != null}
               onChange={this.onFilterChanged}
             >
-              Add filter (exclude circle)
+              Add filter (only circle)
             </Checkbox>
           </Col>
         </Row>
