@@ -1,3 +1,10 @@
+## @antv/x6-plugin-snapline [2.1.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-snapline@2.1.0...@antv/x6-plugin-snapline@2.1.1) (2022-11-24)
+
+
+### Bug Fixes
+
+* modify the semantics of filter ([#2927](https://github.com/antvis/x6/issues/2927)) ([bc261fb](https://github.com/antvis/x6/commit/bc261fb9929aa0b4d3fa4194bcc780ea701b029e))
+
 # @antv/x6-plugin-snapline [2.1.0](https://github.com/antvis/x6/compare/@antv/x6-plugin-snapline@2.0.0...@antv/x6-plugin-snapline@2.1.0) (2022-11-24)
 
 
