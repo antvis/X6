@@ -1,3 +1,10 @@
+## @antv/x6 [2.0.2](https://github.com/antvis/x6/compare/@antv/x6@2.0.1...@antv/x6@2.0.2) (2022-11-24)
+
+
+### Bug Fixes
+
+* get correct center when zoom ([#2934](https://github.com/antvis/x6/issues/2934)) ([557d2df](https://github.com/antvis/x6/commit/557d2df1529226e505e3488a43fa358191d79271))
+
 ## @antv/x6 [2.0.1](https://github.com/antvis/x6/compare/@antv/x6@2.0.0...@antv/x6@2.0.1) (2022-11-24)
 
 
