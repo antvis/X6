@@ -292,17 +292,22 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
   filter(cells: Cell[]) {
     const filter = this.options.filter
-    if (Array.isArray(filter)) {
-      return cells.filter(
-        (cell) => !filter.includes(cell) && !filter.includes(cell.shape),
-      )
-    }
 
-    if (typeof filter === 'function') {
-      return cells.filter((cell) => FunctionExt.call(filter, this.graph, cell))
-    }
+    return cells.filter((cell) => {
+      if (Array.isArray(filter)) {
+        return filter.some((item) => {
+          if (typeof item === 'string') {
+            return cell.shape === item
+          }
+          return cell.id === item.id
+        })
+      }
+      if (typeof filter === 'function') {
+        return FunctionExt.call(filter, this.graph, cell)
+      }
 
-    return cells
+      return true
+    })
   }
 
   protected stopSelecting(evt: Dom.MouseUpEvent) {
