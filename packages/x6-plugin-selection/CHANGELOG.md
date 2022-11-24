@@ -1,3 +1,10 @@
+## @antv/x6-plugin-selection [2.1.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-selection@2.1.1...@antv/x6-plugin-selection@2.1.2) (2022-11-24)
+
+
+### Bug Fixes
+
+* support antd5 in react components ([#2933](https://github.com/antvis/x6/issues/2933)) ([2ecc213](https://github.com/antvis/x6/commit/2ecc213094250b476b533b444c0f3716f88b7987))
+
 ## @antv/x6-plugin-selection [2.1.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-selection@2.1.0...@antv/x6-plugin-selection@2.1.1) (2022-11-24)
 
 
