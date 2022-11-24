@@ -18,9 +18,6 @@ import {
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImpl.Options
   protected readonly graph: Graph
-  protected filterShapes: { [type: string]: boolean }
-  protected filterCells: { [id: string]: boolean }
-  protected filterFunction: SnaplineImpl.FilterFunction | null
   protected offset: Point.PointLike
   protected timer: number | null
 
@@ -53,7 +50,6 @@ export class SnaplineImpl extends View implements IDisablable {
     this.options = { tolerance: 10, ...others }
     this.offset = { x: 0, y: 0 }
     this.render()
-    this.parseFilter()
     if (!this.disabled) {
       this.startListening()
     }
@@ -79,7 +75,6 @@ export class SnaplineImpl extends View implements IDisablable {
 
   setFilter(filter?: SnaplineImpl.Filter) {
     this.options.filter = filter
-    this.parseFilter()
   }
 
   protected render() {
@@ -122,24 +117,6 @@ export class SnaplineImpl extends View implements IDisablable {
     this.graph.off('node:mousemove', this.snapOnMoving, this)
     this.model.off('batch:stop', this.onBatchStop, this)
     this.undelegateDocumentEvents()
-  }
-
-  protected parseFilter() {
-    this.filterShapes = {}
-    this.filterCells = {}
-    this.filterFunction = null
-    const filter = this.options.filter
-    if (Array.isArray(filter)) {
-      filter.forEach((item) => {
-        if (typeof item === 'string') {
-          this.filterShapes[item] = true
-        } else {
-          this.filterCells[item.id] = true
-        }
-      })
-    } else if (typeof filter === 'function') {
-      this.filterFunction = filter
-    }
   }
 
   protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
@@ -577,11 +554,23 @@ export class SnaplineImpl extends View implements IDisablable {
     return (
       targetNode.id === snapNode.id ||
       targetNode.isDescendantOf(snapNode) ||
-      this.filterShapes[targetNode.shape] ||
-      this.filterCells[targetNode.id] ||
-      (this.filterFunction &&
-        FunctionExt.call(this.filterFunction, this.graph, targetNode))
+      !this.filter(targetNode)
     )
+  }
+
+  protected filter(node: Node) {
+    const filter = this.options.filter
+    if (Array.isArray(filter)) {
+      return filter.some((item) => {
+        if (typeof item === 'string') {
+          return node.shape === item
+        }
+        return node.id === item.id
+      })
+    }
+    if (typeof filter === 'function') {
+      return FunctionExt.call(filter, this.graph, node)
+    }
   }
 
   protected update(metadata: {
