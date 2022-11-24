@@ -62,12 +62,12 @@
     "ua-parser-js": "^0.7.20"
   },
   "devDependencies": {
-    "@types/react": "^18.0.25",
+    "@types/react": "^18.0.0",
     "@types/react-color": "^3.0.1",
     "@types/react-dom": "^18.0.0",
-    "@types/react-resize-detector": "^5.0.0",
+    "@types/react-resize-detector": "^6.1.0",
     "@types/ua-parser-js": "^0.7.33",
-    "antd": "^4.4.2",
+    "antd": "^5.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
