@@ -366,7 +366,7 @@ export class History
         if (data.prev == null) {
           data.prev = {}
         }
-        data.prev[key] = ObjectExt.clone(cell.previous(key))
+        data.prev[key] = ObjectExt.cloneDeep(cell.previous(key))
 
         if (isModelChange) {
           cmd.modelChange = true
@@ -378,7 +378,7 @@ export class History
       if (data.next == null) {
         data.next = {}
       }
-      data.next[key] = ObjectExt.clone(cell.prop(key))
+      data.next[key] = ObjectExt.cloneDeep(cell.prop(key))
       return this.push(cmd, options)
     }
 
