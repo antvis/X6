@@ -1,6 +1,5 @@
 import React from 'react'
 import { Slider, Card, Row, Col } from 'antd'
-import 'antd/dist/antd.css'
 
 export interface Props {
   onChange: (state: State) => void

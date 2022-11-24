@@ -37,7 +37,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@stackblitz/sdk": "^1.4.0",
-    "antd": "^4.4.2",
+    "antd": "^5.0.0",
     "chalk": "^4.1.0",
     "codesandbox": "^2.2.1",
     "folder-hash": "^3.3.2",

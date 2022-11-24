@@ -1,9 +1,9 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Dropdown, Menu } from 'antd'
 import { Snapline } from '@antv/x6-plugin-snapline'
-import 'antd/dist/antd.css'
+
 import './app.css'
 
 const CustomComponent = ({ node }: { node: Node }) => {
