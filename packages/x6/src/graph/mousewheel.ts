@@ -114,7 +114,10 @@ export class MouseWheel extends Base {
 
       if (targetScale !== currentScale) {
         if (this.widgetOptions.zoomAtMousePosition) {
-          const origin = this.graph.coord.clientToLocalPoint(this.startPos)
+          const hasScroller = !!this.graph.getPlugin<any>('scroller')
+          const origin = hasScroller
+            ? this.graph.clientToLocal(this.startPos)
+            : this.graph.clientToGraph(this.startPos)
           this.graph.zoom(targetScale, {
             absolute: true,
             center: origin.clone(),
