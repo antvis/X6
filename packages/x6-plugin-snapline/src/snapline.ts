@@ -571,6 +571,8 @@ export class SnaplineImpl extends View implements IDisablable {
     if (typeof filter === 'function') {
       return FunctionExt.call(filter, this.graph, node)
     }
+
+    return true
   }
 
   protected update(metadata: {
