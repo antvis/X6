@@ -5,7 +5,6 @@ import Icon, {
   CodeSandboxOutlined,
 } from '@ant-design/icons'
 import { Tooltip } from 'antd'
-import 'antd/dist/antd.css'
 // import stackblitzSdk from '@stackblitz/sdk'
 import { getParameters } from 'codesandbox/lib/api/define'
 import './index.css'

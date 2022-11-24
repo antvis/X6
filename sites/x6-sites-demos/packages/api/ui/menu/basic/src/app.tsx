@@ -1,7 +1,7 @@
 import React from 'react'
 import { message } from 'antd'
 import { Menu } from '@antv/x6-react-components'
-import 'antd/dist/antd.css'
+
 import '@antv/x6-react-components/es/menu/style/index.css'
 import {
   UndoOutlined,
