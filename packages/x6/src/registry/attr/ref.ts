@@ -1,5 +1,5 @@
 import { Point, Path, Polyline, Rectangle } from '@antv/x6-geometry'
-import { NumberExt, FunctionExt, Dom } from '@antv/x6-common'
+import { NumberExt, FunctionExt } from '@antv/x6-common'
 import { Attr } from './index'
 
 export const ref: Attr.Definition = {
@@ -187,24 +187,11 @@ function shapeWrapper(
   shapeConstructor: (value: Attr.ComplexAttrValue) => any,
   options: { resetOffset: boolean },
 ): <T>(value: Attr.ComplexAttrValue, options: Attr.Options) => T {
-  const cacheName = 'x6-shape'
   const resetOffset = options && options.resetOffset
 
-  return function (value, { elem, refBBox }) {
-    let cache = Dom.data(elem, cacheName)
-    if (!cache || cache.value !== value) {
-      // only recalculate if value has changed
-      const cachedShape = shapeConstructor(value)
-      cache = {
-        value,
-        shape: cachedShape,
-        shapeBBox: cachedShape.bbox(),
-      }
-      Dom.data(elem, cacheName, cache)
-    }
-
-    const shape = cache.shape.clone()
-    const shapeBBox = cache.shapeBBox.clone() as Rectangle
+  return function (value, { refBBox }) {
+    const shape = shapeConstructor(value).clone()
+    const shapeBBox = shape.bbox().clone() as Rectangle
     const shapeOrigin = shapeBBox.getOrigin()
     const refOrigin = refBBox.getOrigin()
 
