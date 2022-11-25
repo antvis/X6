@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-transform",
-  "version": "2.1.0",
+  "version": "2.0.2",
   "description": "transform plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",

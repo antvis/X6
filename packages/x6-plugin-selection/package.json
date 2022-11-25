@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-selection",
-  "version": "2.1.2",
+  "version": "2.1.4",
   "description": "selection plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
