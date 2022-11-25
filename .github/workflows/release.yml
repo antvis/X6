@@ -44,8 +44,8 @@ jobs:
       - name: 🚧　Install dependencies
         run: pnpm install --no-frozen-lockfile --ignore-scripts
 
-      - name: 📦　build
-        run: pnpm run build
+      # - name: 📦　build
+      #   run: pnpm run build
 
       # - name: ✅　Test
       #   run: pnpm run test
