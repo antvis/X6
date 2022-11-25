@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-keyboard",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "keyboard plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
