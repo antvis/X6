@@ -1,3 +1,5 @@
+## @antv/x6-plugin-history [2.1.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-history@2.1.1...@antv/x6-plugin-history@2.1.2) (2022-11-25)
+
 ## @antv/x6-plugin-history [2.1.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-history@2.1.0...@antv/x6-plugin-history@2.1.1) (2022-11-24)
 
 
