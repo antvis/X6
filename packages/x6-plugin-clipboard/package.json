@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-clipboard",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "clipboard plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
