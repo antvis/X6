@@ -1,3 +1,10 @@
+## @antv/x6-react-components [2.0.5](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.4...@antv/x6-react-components@2.0.5) (2022-11-25)
+
+
+### Bug Fixes
+
+* npm version ([cb0cfde](https://github.com/antvis/x6/commit/cb0cfdeb4dbe8858569e6899db08ccb9ab8ba4e7))
+
 ## @antv/x6-react-components [2.0.4](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.3...@antv/x6-react-components@2.0.4) (2022-11-25)
 
 ## @antv/x6-react-components [2.0.3](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.2...@antv/x6-react-components@2.0.3) (2022-11-25)
