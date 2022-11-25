@@ -16,7 +16,7 @@
           "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
         },
         "releaseRules": [
-          { "breaking": true, "release": "major" },
+          { "breaking": false, "release": "major" },
           { "revert": true, "release": "patch" },
           { "type": "feat", "release": "minor" },
           { "type": "build", "release": "patch" },
