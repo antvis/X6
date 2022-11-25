@@ -1,3 +1,10 @@
+## @antv/x6-react-shape [2.0.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@2.0.1...@antv/x6-react-shape@2.0.2) (2022-11-25)
+
+
+### Performance Improvements
+
+* update deps ([f20127a](https://github.com/antvis/x6/commit/f20127af555d9b7beaac3a07ac308d5c0d4e53a3))
+
 ## @antv/x6-react-shape [2.0.1](https://github.com/antvis/x6/compare/@antv/x6-react-shape@2.0.0...@antv/x6-react-shape@2.0.1) (2022-11-24)
 
 
