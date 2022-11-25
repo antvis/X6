@@ -11,12 +11,7 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "angular",
-        "parserOpts": {
-          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
-        },
         "releaseRules": [
-          { "breaking": false, "release": "major" },
           { "revert": true, "release": "patch" },
           { "type": "feat", "release": "minor" },
           { "type": "build", "release": "patch" },
