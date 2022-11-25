@@ -298,7 +298,7 @@ export class Edge<
 
     const cell = this.getTerminalCell(type)
     if (cell) {
-      return cell.getConnectionPoint(this, type)
+      return cell.getConnectionPoint(this as any, type)
     }
 
     return new Point()
