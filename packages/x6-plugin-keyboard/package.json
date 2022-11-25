@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@antv/x6": "^2.x",
-    "@types/mousetrap": "^1.6.5"
+    "@types/mousetrap": "^1.6.11"
   },
   "author": {
     "name": "bubkoo",
