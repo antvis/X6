@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-stencil",
-  "version": "2.0.3",
+  "version": "2.0.2",
   "description": "stencil plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -56,7 +56,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/antvis/x6.git",
+    "url": "https://github.com/antvis/x6.git",
     "directory": "packages/x6-plugin-stencil"
   },
   "publishConfig": {

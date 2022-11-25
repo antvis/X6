@@ -99,7 +99,7 @@ export class JobQueue {
       if (this.scheduleId) {
         this.cancelScheduleJob()
       }
-      this.scheduleId = window.setTimeout(this.flushJobs.bind(this))
+      this.scheduleId = (window as Window).setTimeout(this.flushJobs.bind(this))
     }
   }
 
