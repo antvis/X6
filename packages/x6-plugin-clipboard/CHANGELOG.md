@@ -1,3 +1,10 @@
+## @antv/x6-plugin-clipboard [2.1.3](https://github.com/antvis/x6/compare/@antv/x6-plugin-clipboard@2.1.2...@antv/x6-plugin-clipboard@2.1.3) (2022-11-25)
+
+
+### Bug Fixes
+
+* broken file ([d6df2d5](https://github.com/antvis/x6/commit/d6df2d59811dc18791208af36b452e11e6391f3b))
+
 ## @antv/x6-plugin-clipboard [2.1.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-clipboard@2.1.1...@antv/x6-plugin-clipboard@2.1.2) (2022-11-25)
 
 
