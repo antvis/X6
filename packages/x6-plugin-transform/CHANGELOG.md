@@ -1,3 +1,5 @@
+## @antv/x6-plugin-transform [2.1.1](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.0...@antv/x6-plugin-transform@2.1.1) (2022-11-25)
+
 # @antv/x6-plugin-transform [2.1.0](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.0.0...@antv/x6-plugin-transform@2.1.0) (2022-11-24)
 
 
