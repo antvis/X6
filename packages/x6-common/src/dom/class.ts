@@ -33,7 +33,7 @@ export function addClass(
   }
 
   if (typeof selector === 'string' && elem.nodeType === 1) {
-    const classes = selector.match(rnotwhite) || []
+    const classes: string[] = selector.match(rnotwhite) || []
     const oldValue = fillSpaces(getClass(elem)).replace(rclass, ' ')
     let newValue = classes.reduce((memo, cls) => {
       if (memo.indexOf(fillSpaces(cls)) < 0) {
@@ -63,7 +63,7 @@ export function removeClass(
   }
 
   if ((!selector || typeof selector === 'string') && elem.nodeType === 1) {
-    const classes = (selector || '').match(rnotwhite) || []
+    const classes: string[] = (selector || '').match(rnotwhite) || []
     const oldValue = fillSpaces(getClass(elem)).replace(rclass, ' ')
     let newValue = classes.reduce((memo, cls) => {
       const className = fillSpaces(cls)
