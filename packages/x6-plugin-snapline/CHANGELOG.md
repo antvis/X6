@@ -1,3 +1,5 @@
+## @antv/x6-plugin-snapline [2.1.3](https://github.com/antvis/x6/compare/@antv/x6-plugin-snapline@2.1.2...@antv/x6-plugin-snapline@2.1.3) (2022-11-25)
+
 ## @antv/x6-plugin-snapline [2.1.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-snapline@2.1.1...@antv/x6-plugin-snapline@2.1.2) (2022-11-24)
 
 
