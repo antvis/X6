@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-vue-shape",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "X6 shape for rendering vue components.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -65,7 +65,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/antvis/x6.git",
+    "url": "https://github.com/antvis/x6.git",
     "directory": "packages/x6-vue-shape"
   },
   "publishConfig": {
