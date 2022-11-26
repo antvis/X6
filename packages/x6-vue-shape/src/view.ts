@@ -18,7 +18,7 @@ export class VueShapeView extends NodeView<VueShape> {
     })
   }
 
-  protected viewId(){
+  protected targetId(){
     return `${this.graph.view.cid}:${this.cell.id}`
   }
 
@@ -45,7 +45,7 @@ export class VueShapeView extends NodeView<VueShape> {
           })
         } else if (isVue3) {
           if (isActive()) {
-            connect(this.viewId(), component, root, node)
+            connect(this.targetId(), component, root, node)
           } else {
             this.vm = createApp({
               render() {
@@ -101,7 +101,7 @@ export class VueShapeView extends NodeView<VueShape> {
 
   unmount() {
     if (isActive()) {
-      disconnect(this.viewId())
+      disconnect(this.targetId())
     }
     this.unmountVueComponent()
     super.unmount()
