@@ -1,0 +1,7 @@
+paths-ignore:
+  - sites/x6-sites/static
+query-filters:
+  - exclude:
+      id: js/use-before-declaration
+  - exclude:
+      id: js/polynomial-redos
