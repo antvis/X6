@@ -19,16 +19,16 @@ export class Transform extends Basecoat<Transform.EventArgs> {
   }
 
   protected startListening() {
-    this.graph.on('node:mouseup', this.onNodeMouseUp, this)
+    this.graph.on('node:click', this.onNodeClick, this)
     this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
   }
 
   protected stopListening() {
-    this.graph.off('node:mouseup', this.onNodeMouseUp, this)
+    this.graph.off('node:click', this.onNodeClick, this)
     this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
   }
 
-  protected onNodeMouseUp({ node }: EventArgs['node:mouseup']) {
+  protected onNodeClick({ node }: EventArgs['node:click']) {
     this.clearWidgets()
     const widget = this.createTransform(node)
     if (widget) {
@@ -109,7 +109,11 @@ export class Transform extends Basecoat<Transform.EventArgs> {
   }
 
   protected clearWidgets() {
-    this.widgets.forEach((widget) => widget.dispose())
+    this.widgets.forEach((widget, node) => {
+      if (this.graph.getCellById(node.id)) {
+        widget.dispose()
+      }
+    })
     this.widgets.clear()
   }
 
