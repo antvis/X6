@@ -1,26 +1,25 @@
 import { StringExt } from '../string'
 
-export function getData(dataset: Record<string, any>, name: string) {
-  const value = dataset[name] || dataset[StringExt.camelCase(name)]
-  try {
-    return JSON.parse(value)
-  } catch {
-    return value
+const dataset: WeakMap<Element, Record<string, any>> = new WeakMap()
+
+export function getData(elem: Element, name: string) {
+  const key = StringExt.camelCase(name)
+  const cache = dataset.get(elem)
+  if (cache) {
+    return cache[key]
   }
 }
 
-export function setData(
-  dataset: Record<string, any>,
-  name: string,
-  value: any,
-) {
-  let val = value
-  try {
-    val = JSON.stringify(val)
-  } catch (e) {
-    // paas
+export function setData(elem: Element, name: string, value: any) {
+  const key = StringExt.camelCase(name)
+  const cache = dataset.get(elem)
+  if (cache) {
+    cache[key] = value
+  } else {
+    dataset.set(elem, {
+      [key]: value,
+    })
   }
-  dataset[StringExt.camelCase(name)] = val
 }
 
 export function data(elem: Element): Record<string, any> | undefined
@@ -34,20 +33,17 @@ export function data(
 ) {
   if (!name) {
     const datas: Record<string, any> = {}
-    const dataset = (elem as any).dataset
-    // eslint-disable-next-line
-    for (const key in dataset) {
-      datas[key] = getData(dataset, key)
-    }
+    Object.keys(dataset).forEach((key) => {
+      datas[key] = getData(elem, key)
+    })
     return datas
   }
 
   if (typeof name === 'string') {
-    const dataset = (elem as any).dataset
     if (value === undefined) {
-      return getData(dataset, name)
+      return getData(elem, name)
     }
-    setData(dataset, name, value)
+    setData(elem, name, value)
 
     return
   }
