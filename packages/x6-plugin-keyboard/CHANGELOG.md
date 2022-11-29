@@ -1,3 +1,10 @@
+## @antv/x6-plugin-keyboard [2.1.4](https://github.com/antvis/x6/compare/@antv/x6-plugin-keyboard@2.1.3...@antv/x6-plugin-keyboard@2.1.4) (2022-11-29)
+
+
+### Bug Fixes
+
+* not trigger keyboard event whith delete key in contenteditable elem ([#2965](https://github.com/antvis/x6/issues/2965)) ([4978110](https://github.com/antvis/x6/commit/4978110b4594aee801d39c74f5c190432846eba4))
+
 ## @antv/x6-plugin-keyboard [2.1.3](https://github.com/antvis/x6/compare/@antv/x6-plugin-keyboard@2.1.2...@antv/x6-plugin-keyboard@2.1.3) (2022-11-25)
 
 
