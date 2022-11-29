@@ -57,8 +57,9 @@ jobs:
           private_key: ${{ secrets.PRIVATE_KEY }}
 
       - name: 📦　Semantic Release
-        run: pnpm srm --debug --combine-commits --comment-footer 'Thanks for being a part of the [AntV](https://github.com/antvis) community! 💪💯'
+        run: pnpm srm --combine-commits --comment-footer 'Thanks for being a part of the [AntV](https://github.com/antvis) community! 💪💯'
         env:
+          SRM_DEBUG: ${{ secrets.SRM_DEBUG }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ env.BOT_TOKEN }}
