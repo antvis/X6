@@ -129,15 +129,18 @@ export class KeyboardImpl extends Disposable implements IDisablable {
   isInputEvent(e: KeyboardEvent | Dom.MouseUpEvent) {
     const target = e.target as Element
     const tagName = target?.tagName?.toLowerCase()
-    return ['input', 'textarea'].includes(tagName)
+    let isInput = ['input', 'textarea'].includes(tagName)
+    if (Dom.attr(target, 'contenteditable') === 'true') {
+      isInput = true
+    }
+    return isInput
   }
 
   isEnabledForEvent(e: KeyboardEvent) {
     const allowed = !this.disabled && this.isGraphEvent(e)
     const isInputEvent = this.isInputEvent(e)
     if (allowed) {
-      const code = e.keyCode || e.which
-      if (isInputEvent && (code === 8 || code === 46)) {
+      if (isInputEvent && (e.key === 'Backspace' || e.key === 'Delete')) {
         return false
       }
       if (this.options.guard) {
