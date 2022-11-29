@@ -29,12 +29,12 @@
 
 ## 兼容环境
 
-- 现代浏览器和 IE11（需要 polyfills）
+- 现代浏览器
 - 支持服务端渲染。
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| IE11, Edge                                                                                                                                                                                                     | last 2 versions                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                              |
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| last 2 versions                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                              |
 
 ## 安装
 
@@ -84,12 +84,12 @@ graph.addEdge({
 
 ## 链接
 
-- [文档](https://x6.antv.vision/zh/docs/tutorial/about)
-- [示例](https://x6.antv.vision/zh/examples/gallery)
-- [博客](https://www.yuque.com/antv/x6/gcinvi)
+- [文档](http://x6.antv.antgroup.com/tutorial/about)
+- [示例](http://x6.antv.antgroup.com/examples)
+- [博客](https://www.yuque.com/antv/x6/huhla47wqalq5n7r)
 - [更新日志](https://www.yuque.com/antv/x6/bbfu6r)
-- [常见问题](https://www.yuque.com/antv/x6/be9pfx)
-- [CodeSanbox 模板](https://codesandbox.io/s/qosj0?file=/src/app.tsx)
+- [常见问题](https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy)
+- [CodeSanbox 模板](https://codesandbox.io/s/mo-ban-wchooy?file=/src/App.tsx)
 
 ## 本地开发
 
