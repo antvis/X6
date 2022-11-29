@@ -1,11 +1,14 @@
-import React, { ReactPortal } from 'react'
-import { createPortal } from 'react-dom'
-import { createRoot, Root } from 'react-dom/client'
+import React, { ReactPortal, version as reactVersion } from 'react'
+import ReactDOM, { createPortal } from 'react-dom'
+import type { Root, createRoot as CreateRoot } from 'react-dom/client'
 import { Dom, NodeView } from '@antv/x6'
 import { ReactShape } from './node'
 import { Portal } from './portal'
 import { Wrap } from './wrap'
 
+const [, major] = /^(\d+)\.\d+\.\d+$/.exec(reactVersion)!
+const reactMajor = Number(major)
+const isPreEighteen = reactMajor < 18
 export class ReactShapeView extends NodeView<ReactShape> {
   root?: Root
 
@@ -31,16 +34,28 @@ export class ReactShapeView extends NodeView<ReactShape> {
         const portal = createPortal(elem, container) as ReactPortal
         Portal.connect(this.cell.id, portal)
       } else {
-        const root = createRoot(container)
-        root.render(elem)
+        if (isPreEighteen) {
+          ReactDOM.render(elem, container)
+        } else {
+          // eslint-disable-next-line
+          const createRoot = require('react-dom/client')
+            .createRoot as typeof CreateRoot
+          this.root = createRoot(container)
+          this.root.render(elem)
+        }
       }
     }
   }
 
   protected unmountReactComponent() {
-    if (this.root) {
-      this.root.unmount()
-      this.root = undefined
+    const container = this.getComponentContainer()
+    if (container) {
+      if (isPreEighteen) {
+        ReactDOM.unmountComponentAtNode(container)
+      } else if (this.root) {
+        this.root.unmount()
+        this.root = undefined
+      }
     }
   }
 
