@@ -72,7 +72,8 @@ export class JobQueue {
       try {
         job.cb()
       } catch (error) {
-        // pass
+        // eslint-disable-next-line
+        console.log(error)
       }
     }
 

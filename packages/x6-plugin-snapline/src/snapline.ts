@@ -47,7 +47,7 @@ export class SnaplineImpl extends View implements IDisablable {
 
     const { graph, ...others } = options
     this.graph = graph
-    this.options = { tolerance: 10, ...others }
+    this.options = { ...others }
     this.offset = { x: 0, y: 0 }
     this.render()
     if (!this.disabled) {

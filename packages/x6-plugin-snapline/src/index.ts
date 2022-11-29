@@ -5,10 +5,12 @@ import './api'
 
 export class Snapline extends Disposable {
   private snaplineImpl: SnaplineImpl
+  public options: Snapline.Options
   public name = 'snapline'
 
-  constructor(public readonly options: Snapline.Options) {
+  constructor(options: Snapline.Options) {
     super()
+    this.options = { tolerance: 10, ...options }
     CssLoader.ensure(this.name, content)
   }
 
