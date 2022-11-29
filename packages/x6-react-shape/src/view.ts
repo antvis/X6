@@ -29,7 +29,10 @@ export class ReactShapeView extends NodeView<ReactShape> {
     const node = this.cell
 
     if (container) {
-      const elem = React.createElement(Wrap, { node, graph: node.model!.graph })
+      const graph = node.model ? node.model.graph : null
+      // Actually in the dnd plugin, this graph is empty,
+      // in order to make the external perception type of graph is a graph, rather than graph | null, so hack this.
+      const elem = React.createElement(Wrap, { node, graph: graph! })
       if (Portal.isActive()) {
         const portal = createPortal(elem, container) as ReactPortal
         Portal.connect(this.cell.id, portal)
