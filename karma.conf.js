@@ -96,7 +96,7 @@ module.exports = function (config, base, karmaTypescriptConfig) {
         },
         coverageOptions: {
           instrumentation: !isDebug,
-          exclude: /\.test|spec\.ts$/,
+          exclude: /(\.test)|(spec\.ts$)/,
         },
         reports: {
           html: reportsDir,
