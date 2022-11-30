@@ -13,7 +13,7 @@ import './index.css'
 // eslint-disable-next-line
 const repo = require('../../loaders/repo.js!./data.js')
 
-const iconOpenInNewWindow: React.SFC = () => (
+const iconOpenInNewWindow: React.FC = () => (
   <svg
     width="15"
     height="12"
