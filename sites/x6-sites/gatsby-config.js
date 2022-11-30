@@ -71,6 +71,7 @@ module.exports = {
     showLanguageSwitcher: false,
     versions: {
       [version]: 'https://x6.antv.vision',
+      '2.x': 'https://x6.antv.antgroup.com',
     },
     navs: [
       {
