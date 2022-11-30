@@ -1,0 +1,290 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta name="hash" content="R3k2VWZ0V2NHdVMybzhVUnBNN21TZnBpbzZVPSBEYkpiVU1lRENHUk9TS3lia2RocENJQmR0U0k9IGJWZHczaS9VdmpxQzZGZFhhdzFTL0RmVDZIND0="/><title>tutorial/basic/dnd/dnd</title><link href="./static/css/2.8db581ad.chunk.css" rel="stylesheet"><link href="./static/css/main.2aee94e5.chunk.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div>
+<div
+  id="loading"
+  style="
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+  "
+>
+  <style>
+    .loader {
+      --duration: 3s;
+      width: 44px;
+      height: 44px;
+      position: relative;
+      display: inline-block;
+      margin: 0 16px;
+    }
+    .loader:before {
+      content: ' ';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      position: absolute;
+      display: block;
+      background: #ff700a;
+      top: 37px;
+      left: 19px;
+      -webkit-transform: translate(-18px, -18px);
+      transform: translate(-18px, -18px);
+      -webkit-animation: dotRect var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+      animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        infinite;
+    }
+    .loader svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .loader svg rect,
+    .loader svg polygon,
+    .loader svg circle {
+      fill: none;
+      stroke-width: 10px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    .loader svg polygon {
+      stroke-dasharray: 145 76 145 76;
+      stroke-dashoffset: 0;
+      -webkit-animation: pathTriangle var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+      animation: pathTriangle var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+    }
+    .loader svg rect {
+      stroke-dasharray: 192 64 192 64;
+      stroke-dashoffset: 0;
+      -webkit-animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86)
+        infinite;
+      animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+    }
+    .loader svg circle {
+      stroke-dasharray: 150 50 150 50;
+      stroke-dashoffset: 75;
+      -webkit-animation: pathCircle var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+      animation: pathCircle var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+    }
+    .loader.triangle {
+      width: 48px;
+    }
+    .loader.triangle:before {
+      left: 21px;
+      -webkit-transform: translate(-10px, -18px);
+      transform: translate(-10px, -18px);
+      -webkit-animation: dotTriangle var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+      animation: dotTriangle var(--duration)
+        cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+    }
+    @-webkit-keyframes pathTriangle {
+      33% {
+        stroke-dashoffset: 74;
+      }
+      66% {
+        stroke-dashoffset: 147;
+      }
+      100% {
+        stroke-dashoffset: 221;
+      }
+    }
+    @keyframes pathTriangle {
+      33% {
+        stroke-dashoffset: 74;
+      }
+      66% {
+        stroke-dashoffset: 147;
+      }
+      100% {
+        stroke-dashoffset: 221;
+      }
+    }
+    @-webkit-keyframes dotTriangle {
+      33% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+      }
+      66% {
+        -webkit-transform: translate(10px, -18px);
+        transform: translate(10px, -18px);
+      }
+      100% {
+        -webkit-transform: translate(-10px, -18px);
+        transform: translate(-10px, -18px);
+      }
+    }
+    @keyframes dotTriangle {
+      33% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+      }
+      66% {
+        -webkit-transform: translate(10px, -18px);
+        transform: translate(10px, -18px);
+      }
+      100% {
+        -webkit-transform: translate(-10px, -18px);
+        transform: translate(-10px, -18px);
+      }
+    }
+    @-webkit-keyframes pathRect {
+      25% {
+        stroke-dashoffset: 64;
+      }
+      50% {
+        stroke-dashoffset: 128;
+      }
+      75% {
+        stroke-dashoffset: 192;
+      }
+      100% {
+        stroke-dashoffset: 256;
+      }
+    }
+    @keyframes pathRect {
+      25% {
+        stroke-dashoffset: 64;
+      }
+      50% {
+        stroke-dashoffset: 128;
+      }
+      75% {
+        stroke-dashoffset: 192;
+      }
+      100% {
+        stroke-dashoffset: 256;
+      }
+    }
+    @-webkit-keyframes dotRect {
+      25% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+      }
+      50% {
+        -webkit-transform: translate(18px, -18px);
+        transform: translate(18px, -18px);
+      }
+      75% {
+        -webkit-transform: translate(0, -36px);
+        transform: translate(0, -36px);
+      }
+      100% {
+        -webkit-transform: translate(-18px, -18px);
+        transform: translate(-18px, -18px);
+      }
+    }
+    @keyframes dotRect {
+      25% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+      }
+      50% {
+        -webkit-transform: translate(18px, -18px);
+        transform: translate(18px, -18px);
+      }
+      75% {
+        -webkit-transform: translate(0, -36px);
+        transform: translate(0, -36px);
+      }
+      100% {
+        -webkit-transform: translate(-18px, -18px);
+        transform: translate(-18px, -18px);
+      }
+    }
+    @-webkit-keyframes pathCircle {
+      25% {
+        stroke-dashoffset: 125;
+      }
+      50% {
+        stroke-dashoffset: 175;
+      }
+      75% {
+        stroke-dashoffset: 225;
+      }
+      100% {
+        stroke-dashoffset: 275;
+      }
+    }
+    @keyframes pathCircle {
+      25% {
+        stroke-dashoffset: 125;
+      }
+      50% {
+        stroke-dashoffset: 175;
+      }
+      75% {
+        stroke-dashoffset: 225;
+      }
+      100% {
+        stroke-dashoffset: 275;
+      }
+    }
+    .loading-text {
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: #666;
+    }
+  </style>
+  <div
+    style="
+      display: inline-block;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: -50px 0 0 -120px;
+    "
+  >
+    <div class="loader">
+      <svg viewBox="0 0 80 80">
+        <defs>
+          <linearGradient
+            id="gradient"
+            x1=".004%"
+            x2="100.131%"
+            y1="49.993%"
+            y2="49.993%"
+          >
+            <stop offset="0%" stop-color="#6500FF"></stop>
+            <stop offset="16%" stop-color="#6A09FF"></stop>
+            <stop offset="43%" stop-color="#7623FF"></stop>
+            <stop offset="77%" stop-color="#8A4CFF"></stop>
+            <stop offset="99%" stop-color="#996BFF"></stop>
+          </linearGradient>
+        </defs>
+        <circle
+          id="test"
+          cx="40"
+          cy="40"
+          r="32"
+          stroke="url(#gradient)"
+        ></circle>
+      </svg>
+    </div>
+    <div class="loader triangle">
+      <svg viewBox="0 0 86 80">
+        <polygon points="43 8 79 72 7 72" stroke="url(#gradient)"></polygon>
+      </svg>
+    </div>
+    <div class="loader">
+      <svg viewBox="0 0 80 80">
+        <rect x="8" y="8" width="64" height="64" stroke="url(#gradient)"></rect>
+      </svg>
+    </div>
+    <div class="loading-text">
+      <p>Loading...</p>
+    </div>
+  </div>
+</div>
+<script>!function(e){function t(t){for(var n,i,a=t[0],l=t[1],f=t[2],p=0,s=[];p<a.length;p++)i=a[p],Object.prototype.hasOwnProperty.call(o,i)&&o[i]&&s.push(o[i][0]),o[i]=0;for(n in l)Object.prototype.hasOwnProperty.call(l,n)&&(e[n]=l[n]);for(c&&c(t);s.length;)s.shift()();return u.push.apply(u,f||[]),r()}function r(){for(var e,t=0;t<u.length;t++){for(var r=u[t],n=!0,a=1;a<r.length;a++){var l=r[a];0!==o[l]&&(n=!1)}n&&(u.splice(t--,1),e=i(i.s=r[0]))}return e}var n={},o={1:0},u=[];function i(t){if(n[t])return n[t].exports;var r=n[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,i),r.l=!0,r.exports}i.m=e,i.c=n,i.d=function(e,t,r){i.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},i.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.t=function(e,t){if(1&t&&(e=i(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(i.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var n in e)i.d(r,n,function(t){return e[t]}.bind(null,n));return r},i.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return i.d(t,"a",t),t},i.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},i.p="./";var a=this["webpackJsonp@antv/x6-sites-demos-tutorial.basic.dnd.dnd"]=this["webpackJsonp@antv/x6-sites-demos-tutorial.basic.dnd.dnd"]||[],l=a.push.bind(a);a.push=t,a=a.slice();for(var f=0;f<a.length;f++)t(a[f]);var c=l;r()}([])</script><script src="./static/js/2.b0c442e9.chunk.js"></script><script src="./static/js/main.d7bcb2ef.chunk.js"></script></body></html>
