@@ -284,36 +284,6 @@
   dependencies:
     tslib "^2.0.3"
 
-"@antv/x6-react-components@latest":
-  version "1.1.15"
-  resolved "https://registry.npmjs.org/@antv/x6-react-components/-/x6-react-components-1.1.15.tgz#9d35b06ffe261272d11caee63b463f3ac744b392"
-  integrity sha512-tXUak5CPuZLIA0fVBSM2vZ+TxxoEGBcokr0J69e7H0G3WIutDf6J6RkNeRGuKvcW8O1Lef1jiBGSLLjlrRXf0g==
-  dependencies:
-    clamp "^1.0.1"
-    classnames "^2.2.6"
-    rc-dropdown "^3.0.0-alpha.0"
-    rc-util "^4.15.7"
-    react-color "^2.17.3"
-    react-resize-detector "^6.6.4"
-    ua-parser-js "^0.7.20"
-
-"@antv/x6-react-shape@latest":
-  version "1.6.1"
-  resolved "https://registry.npmjs.org/@antv/x6-react-shape/-/x6-react-shape-1.6.1.tgz#cf029ac6580300eaffa7539555cffa6723e8f199"
-  integrity sha512-EkcDoIlfbQC69DGgwznFRsi78fW+apTO0OW5J6tnKpMW3r6zB5zr5QM06hzq5UEUgGheMUxNh3wrTd0jnCwR3A==
-
-"@antv/x6@latest":
-  version "1.32.9"
-  resolved "https://registry.npmjs.org/@antv/x6/-/x6-1.32.9.tgz#0e29527289001e29795087cbb536afdbbead2c56"
-  integrity sha512-zpAd8RBCeBw5/POpMp3v0A4d4hUF5SXRZAqTvwxFzRsQ7q3/byTpwAqUtqq/AWNJAzFJm6oc5TqbWaRrBltJVQ==
-  dependencies:
-    csstype "^3.0.3"
-    jquery "^3.5.1"
-    jquery-mousewheel "^3.1.13"
-    lodash-es "^4.17.15"
-    mousetrap "^1.6.5"
-    utility-types "^3.10.0"
-
 "@ardatan/aggregate-error@0.0.6":
   version "0.0.6"
   resolved "https://registry.npmjs.org/@ardatan/aggregate-error/-/aggregate-error-0.0.6.tgz#fe6924771ea40fc98dc7a7045c2e872dc8527609"
@@ -26005,19 +25975,6 @@ react-color@2.17.1:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
-react-color@^2.17.3:
-  version "2.19.3"
-  resolved "https://registry.npmjs.org/react-color/-/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
-  integrity sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA==
-  dependencies:
-    "@icons/material" "^0.2.4"
-    lodash "^4.17.15"
-    lodash-es "^4.17.15"
-    material-colors "^1.2.1"
-    prop-types "^15.5.10"
-    reactcss "^1.2.0"
-    tinycolor2 "^1.4.1"
-
 react-copy-to-clipboard@^5.0.1:
   version "5.0.3"
   resolved "https://registry.npmjs.org/react-copy-to-clipboard/-/react-copy-to-clipboard-5.0.3.tgz#2a0623b1115a1d8c84144e9434d3342b5af41ab4"
@@ -26312,16 +26269,6 @@ react-refresh@^0.8.3:
   version "0.8.3"
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
-
-react-resize-detector@^6.6.4:
-  version "6.7.2"
-  resolved "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-6.7.2.tgz#780901b8b5f6a26cccbb12fc0518e03196d58c50"
-  integrity sha512-+W8DcJtXHXUa3NtBe8jw26IGs7rDTZNaLz7LefbqN1nvTVqZD4ThC6el3XNPHaIL9498nSYGnjLLYkSXlR3eOA==
-  dependencies:
-    "@types/resize-observer-browser" "^0.1.5"
-    lodash.debounce "^4.0.8"
-    lodash.throttle "^4.1.1"
-    resize-observer-polyfill "^1.5.1"
 
 react-resize-detector@^7.0.0:
   version "7.1.2"

@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Toolbar } from '../toolbar'
 import './content.css'
 
-export class Content extends React.Component<Content.Props, Content.State> {
+export class Content extends React.Component<
+  PropsWithChildren<Content.Props>,
+  Content.State
+> {
   private container: HTMLDivElement
 
   constructor(props: Content.Props) {

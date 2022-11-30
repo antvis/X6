@@ -4,6 +4,7 @@ import SEO from '@antv/gatsby-theme-antv/site/components/Seo'
 import Banner from '@antv/gatsby-theme-antv/site/components/Banner'
 import Companies from '@antv/gatsby-theme-antv/site/components/Companies'
 import Features from '@antv/gatsby-theme-antv/site/components/Features'
+import { Modal } from 'antd'
 import './index.less'
 
 const IndexPage = () => {
@@ -76,11 +77,23 @@ const IndexPage = () => {
   const notifications = [
     {
       type: 'News',
-      title: 'X6：深度打磨，日臻完善',
-      date: '2021.11.22',
-      link: 'https://www.yuque.com/antv/blog/2021x6',
+      title: 'X6 2.0 来了！',
+      date: '2022.11.22',
+      link: 'https://www.yuque.com/antv/operation/bgo171',
     },
   ]
+
+  React.useEffect(() => {
+    Modal.confirm({
+      content: 'X6 2.0 已经发布了🎉🎉🎉，是否跳转到 2.0 新版官网?',
+      title: '小提醒',
+      cancelText: '取消',
+      okText: '前往',
+      onOk() {
+        window.location.href = 'https://x6.antv.antgroup.com'
+      },
+    })
+  }, [])
 
   return (
     <>
