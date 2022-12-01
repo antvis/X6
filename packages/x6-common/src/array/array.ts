@@ -6,5 +6,5 @@ export {
   sortBy,
   groupBy,
   difference,
-  max
+  max,
 } from 'lodash-es'
