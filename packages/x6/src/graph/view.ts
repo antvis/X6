@@ -149,7 +149,7 @@ export class GraphView extends View {
   protected onContextMenu(evt: Dom.ContextMenuEvent) {
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
-    
+
     if (this.isPreventDefaultContextMenu(view)) {
       evt.preventDefault()
     }
