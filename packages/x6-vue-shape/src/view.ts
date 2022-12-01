@@ -18,7 +18,7 @@ export class VueShapeView extends NodeView<VueShape> {
     })
   }
 
-  protected targetId(){
+  protected targetId() {
     return `${this.graph.view.cid}:${this.cell.id}`
   }
 

@@ -54,7 +54,7 @@ export interface ResolvedOptions {
   /**
    * Should certain nodes not be considered as obstacles?
    */
-   excludeNodes: Node[]
+  excludeNodes: Node[]
 
   /**
    * Possible starting directions from a node.
