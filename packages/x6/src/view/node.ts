@@ -827,7 +827,10 @@ export class NodeView<
       })
       this.stopPropagation(e)
     } else {
-      if (Dom.hasClass(magnet, 'x6-port-body') || !!magnet.closest('.x6-port-body')) {
+      if (
+        Dom.hasClass(magnet, 'x6-port-body') ||
+        !!magnet.closest('.x6-port-body')
+      ) {
         this.stopPropagation(e)
       }
       this.onMouseDown(e, x, y)

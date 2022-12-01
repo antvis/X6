@@ -328,7 +328,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
     if (partialRoute === null) {
       // eslint-next-line
       console.warn(`Unable to execute manhattan algorithm, use orth instead`)
-      
+
       return FunctionExt.call(
         options.fallbackRouter,
         this,
