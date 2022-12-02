@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "preinstall": "node ./scripts/preinstall",
-    "lint:ts": "eslint '**/src/**/*.{js,ts}?(x)' --fix",
-    "lint:style": "stylelint '**/src/**/*.less' --syntax less --fix",
+    "lint:ts": "eslint '**/src/**/*.{js,ts}?(x)' --cache --fix",
+    "lint:style": "stylelint '**/src/**/*.less' --syntax less --cache --fix",
     "lint": "run-s lint:ts lint:style",
     "prettier": "prettier --write '**/*.{js,mjs,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
