@@ -899,7 +899,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   protected onCellAdded({ cell }: Collection.EventArgs['added']) {
     // The collection do not known the cell was removed when cell was
     // removed by interaction(such as, by "delete" shortcut), so we should
-    // manually listen to cell's remove evnet.
+    // manually listen to cell's remove event.
     this.listenCellRemoveEvent(cell)
     this.createSelectionBox(cell)
     this.updateContainer()
