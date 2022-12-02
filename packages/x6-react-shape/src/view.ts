@@ -13,7 +13,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
   root?: Root
 
   getComponentContainer() {
-    return this.selectors.foContent as HTMLDivElement
+    return this.selectors && (this.selectors.foContent as HTMLDivElement)
   }
 
   confirmUpdate(flag: number) {
