@@ -464,7 +464,6 @@ export namespace Selection {
     multipleSelectionModifiers: ['ctrl', 'meta'],
     movable: true,
     strict: false,
-    useCellGeometry: false,
     selectCellOnMoved: false,
     selectNodeOnMoved: false,
     selectEdgeOnMoved: false,

@@ -607,29 +607,21 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     let views: CellView[] = []
 
     if (this.options.rubberNode) {
-      if (this.options.useCellGeometry) {
-        views = views.concat(
-          graph.model
-            .getNodesInArea(rect, options)
-            .map((node) => graph.renderer.findViewByCell(node))
-            .filter((view) => view != null) as CellView[],
-        )
-      } else {
-        views = views.concat(graph.renderer.findViewsInArea(rect, options))
-      }
+      views = views.concat(
+        graph.model
+          .getNodesInArea(rect, options)
+          .map((node) => graph.renderer.findViewByCell(node))
+          .filter((view) => view != null) as CellView[],
+      )
     }
 
     if (this.options.rubberEdge) {
-      if (this.options.useCellGeometry) {
-        views = views.concat(
-          graph.model
-            .getEdgesInArea(rect, options)
-            .map((edge) => graph.renderer.findViewByCell(edge))
-            .filter((view) => view != null) as CellView[],
-        )
-      } else {
-        views = views.concat(graph.renderer.findEdgeViewsInArea(rect, options))
-      }
+      views = views.concat(
+        graph.model
+          .getEdgesInArea(rect, options)
+          .map((edge) => graph.renderer.findViewByCell(edge))
+          .filter((view) => view != null) as CellView[],
+      )
     }
 
     return views
@@ -761,7 +753,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
-          useCellGeometry: this.options.useCellGeometry,
+          useCellGeometry: true,
         })
         origin.x = Math.min(origin.x, bbox.x)
         origin.y = Math.min(origin.y, bbox.y)
@@ -822,7 +814,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
-          useCellGeometry: this.options.useCellGeometry,
+          useCellGeometry: true,
         })
 
         const className = this.boxClassName
@@ -971,7 +963,6 @@ export namespace SelectionImpl {
     showNodeSelectionBox?: boolean
     movable?: boolean
     following?: boolean
-    useCellGeometry?: boolean
     content?: Content
 
     // Can select node or edge when rubberband
