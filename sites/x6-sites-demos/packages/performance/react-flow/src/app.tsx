@@ -45,7 +45,7 @@ const CustomNodeFlow = () => {
     setNodes(nodes as any);
 
     setEdges(edges as any);
-  }, []);
+  }, [setNodes, setEdges]);
 
   return (
     <div className="app">
