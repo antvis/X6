@@ -1,6 +1,8 @@
+/* eslint-disable default-param-last */
+
 import { Point } from '../point'
 
-const regexSupportedData = new RegExp(`^[\\s\\dLMCZz,.]*$`)
+const regexSupportedData = new RegExp(`^[\\s\\dLMCZz,.]*$`) // eslint-disable-line prefer-regex-literals
 
 export function isValid(data: any) {
   if (typeof data !== 'string') {

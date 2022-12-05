@@ -4,7 +4,7 @@
   "scripts": {
     "preinstall": "node ./scripts/preinstall",
     "lint:ts": "eslint '**/src/**/*.{js,ts}?(x)' --cache --fix",
-    "lint:style": "stylelint '**/src/**/*.less' --syntax less --cache --fix",
+    "lint:style": "stylelint '**/src/**/*.less' --customSyntax postcss-less --cache --fix",
     "lint": "run-s lint:ts lint:style",
     "prettier": "prettier --write '**/*.{js,mjs,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
@@ -138,6 +138,7 @@
     "lodash": "^4.17.21",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.19",
+    "postcss-less": "^6.0.0",
     "prettier": "^2.8.0",
     "pretty-quick": "^3.1.1",
     "rimraf": "^3.0.2",

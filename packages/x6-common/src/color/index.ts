@@ -1,3 +1,5 @@
+/* eslint-disable no-constructor-return */
+
 import { NumberExt } from '../number'
 
 export class Color {
