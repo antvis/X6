@@ -1,41 +1,44 @@
 .tools {
   width: 800px;
   margin: 32px auto;
+
   .ant-input {
     margin-bottom: 16px;
   }
 }
 
 .react-node {
+  display: flex;
+  align-items: center;
   width: 100%;
   height: 100%;
   border: 1px solid #5f95ff;
   border-radius: 14px;
-  display: flex;
-  align-items: center;
+
   img {
     width: 24px;
     height: 24px;
   }
+
   span {
     margin-left: 4px;
-    font-size: 12px;
     color: #000000a6;
+    font-size: 12px;
   }
 }
 
 .stutterer {
-  transform: scale(1.5);
-  height: 310px;
-  width: 310px;
   position: absolute;
-  left: 0;
-  right: 0;
   top: 0;
+  right: 0;
   bottom: 0;
+  left: 0;
+  width: 310px;
+  height: 310px;
   margin: auto;
-  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.2);
   border-radius: 200px;
+  box-shadow: 0 0 10px 10px rgb(0 0 0 / 20%);
+  transform: scale(1.5);
 }
 
 .clockHand {
@@ -50,12 +53,12 @@
 }
 
 .innerLine {
-  border-radius: 6px;
   position: absolute;
-  height: 149px;
-  left: 47.5%;
   top: 0%;
+  left: 47.5%;
   width: 5%;
+  height: 149px;
   background-color: red;
+  border-radius: 6px;
   transform-origin: bottom center;
 }

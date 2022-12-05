@@ -15,6 +15,11 @@
     "no-invalid-double-slash-comments": null,
     "no-descending-specificity": null,
     "declaration-empty-line-before": null,
-    "no-duplicate-selectors": null
+    "no-duplicate-selectors": null,
+    "value-no-vendor-prefix": null,
+    "selector-pseudo-class-no-unknown": null,
+    "selector-class-pattern": null,
+    "keyframes-name-pattern": null,
+    "number-max-precision": null
   }
 }

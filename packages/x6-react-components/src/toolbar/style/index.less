@@ -1,5 +1,5 @@
-@import '../../style/themes/index';
-@import '../../dropdown/style/index';
+@import url('../../style/themes/index');
+@import url('../../dropdown/style/index');
 
 @toolbar-prefix-cls: ~'@{x6-prefix}-toolbar';
 
@@ -42,7 +42,7 @@
       width: 1px;
       height: 40%;
       margin: 0 6px;
-      background-color: rgba(0, 0, 0, 0.15);
+      background-color: rgb(0 0 0 / 15%);
       content: ' ';
       pointer-events: none;
     }
@@ -111,9 +111,9 @@
     width: 0;
     height: 0;
     margin-left: 6px;
-    border-color: #262626 transparent transparent transparent;
+    border-color: #262626 transparent transparent;
     border-style: solid;
-    border-width: 5px 4px 0 4px;
+    border-width: 5px 4px 0;
     opacity: 0.4;
   }
 

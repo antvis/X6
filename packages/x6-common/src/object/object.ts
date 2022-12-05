@@ -117,6 +117,7 @@ export function unsetByPath(
   return obj
 }
 
+// eslint-disable-next-line default-param-last
 export function flatten(obj: any, delim = '/', stop?: (val: any) => boolean) {
   const ret: { [key: string]: any } = {}
 

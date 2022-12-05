@@ -1,3 +1,5 @@
+/* eslint-disable no-constructor-return */
+
 import { Line } from './line'
 import { Point } from './point'
 import { Rectangle } from './rectangle'
