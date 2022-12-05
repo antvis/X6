@@ -8,13 +8,15 @@
     border: 1px solid #c2c8d5;
     border-left: 4px solid #1890ff;
     border-radius: 4px;
-    box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 5px 1px rgb(0 0 0 / 6%);
+
     img {
+      flex-shrink: 0;
       width: 20px;
       height: 20px;
-      flex-shrink: 0;
       margin-left: 8px;
     }
+
     .label {
       display: inline-block;
       flex-shrink: 0;
@@ -23,15 +25,19 @@
       color: #666;
       font-size: 12px;
     }
+
     .status {
       flex-shrink: 0;
     }
+
     &.success {
       border-left: 4px solid #52c41a;
     }
+
     &.failed {
       border-left: 4px solid #ff4d4f;
     }
+
     &.running .status img {
       animation: spin 1s linear infinite;
     }
@@ -43,11 +49,13 @@
       border-radius: 2px;
       box-shadow: 0 0 0 4px #d4e8fe;
     }
+
     .node.success {
       border-color: #52c41a;
       border-radius: 2px;
       box-shadow: 0 0 0 4px #ccecc0;
     }
+
     .node.failed {
       border-color: #ff4d4f;
       border-radius: 2px;
@@ -80,6 +88,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
