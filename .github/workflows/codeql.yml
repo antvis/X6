@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: ⛵️　CodeQL
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
-          config-file: ./.github/codeql.yml
+          config-file: ./.github/workflows/config/codeql.yml
           queries: +security-and-quality
 
       - name: Autobuild
