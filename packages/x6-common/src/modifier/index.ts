@@ -1,10 +1,90 @@
 import { Dom } from '../dom'
 
-export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift'
+export type ModifierKey =
+  | 'ctrl'
+  | 'alt'
+  | 'shift'
+  | 'meta'
+  | 'tab'
+  | 'space'
+  | 'caps'
+  | '~'
+  | 'a'
+  | 'b'
+  | 'c'
+  | 'd'
+  | 'e'
+  | 'f'
+  | 'g'
+  | 'h'
+  | 'i'
+  | 'j'
+  | 'k'
+  | 'l'
+  | 'm'
+  | 'n'
+  | 'o'
+  | 'p'
+  | 'q'
+  | 'r'
+  | 's'
+  | 't'
+  | 'u'
+  | 'v'
+  | 'w'
+  | 'x'
+  | 'y'
+  | 'z'
+  | '0'
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
 
 // eslint-disable-next-line
-export namespace ModifierKey {
-  export function parse(modifiers: string | ModifierKey[]) {
+export class Modifier {
+  private modifier: string | null
+
+  startListenModifier() {
+    Dom.Event.on(document.body, {
+      'keydown.modifierKey': this.onKeydown.bind(this),
+      'keypress.modifierKey': this.onKeydown.bind(this),
+      'keyup.modifierKey': this.onKeyup.bind(this),
+    })
+    Dom.Event.on(window as any, {
+      'keydown.modifierKey': this.onKeydown.bind(this),
+      'keypress.modifierKey': this.onKeydown.bind(this),
+      'keyup.modifierKey': this.onKeyup.bind(this),
+    })
+  }
+
+  stopListenModifier() {
+    Dom.Event.off(document.body, '.modifierKey')
+    Dom.Event.off(window as any, '.modifierKey')
+  }
+
+  protected onKeydown(evt: KeyboardEvent) {
+    this.modifier = this.formatKey(evt.key)
+  }
+
+  protected onKeyup() {
+    this.modifier = null
+  }
+
+  protected formatKey(key: string) {
+    return key
+      .replace(/\s/g, 'space')
+      .replace('control', 'ctrl')
+      .replace('CapsLock', 'caps')
+      .toLowerCase()
+  }
+
+  parse(modifiers: string | ModifierKey[]) {
     const or: ModifierKey[] = []
     const and: ModifierKey[] = []
 
@@ -23,13 +103,13 @@ export namespace ModifierKey {
     return { or, and }
   }
 
-  export function equals(
+  equals(
     modifiers1?: string | ModifierKey[] | null,
     modifiers2?: string | ModifierKey[] | null,
   ) {
     if (modifiers1 != null && modifiers2 != null) {
-      const m1 = parse(modifiers1)
-      const m2 = parse(modifiers2)
+      const m1 = this.parse(modifiers1)
+      const m2 = this.parse(modifiers2)
       const or1 = m1.or.sort()
       const or2 = m2.or.sort()
       const and1 = m1.and.sort()
@@ -52,28 +132,16 @@ export namespace ModifierKey {
     return false
   }
 
-  export function isMatch(
-    e: Dom.EventObject | WheelEvent,
-    modifiers?: string | ModifierKey[] | null,
-    strict?: boolean,
-  ) {
+  isMatch(modifiers?: string | ModifierKey[] | null, strict?: boolean) {
     if (
       modifiers == null ||
       (Array.isArray(modifiers) && modifiers.length === 0)
     ) {
-      return strict
-        ? e.altKey !== true &&
-            e.ctrlKey !== true &&
-            e.metaKey !== true &&
-            e.shiftKey !== true
-        : true
+      return strict ? this.modifier === null : true
     }
 
-    const { or, and } = parse(modifiers)
-    const match = (key: ModifierKey) => {
-      const name = `${key.toLowerCase()}Key` as 'altKey'
-      return e[name] === true
-    }
+    const { or, and } = this.parse(modifiers)
+    const match = (key: string) => this.modifier === key
 
     return or.some((key) => match(key)) && and.every((key) => match(key))
   }
