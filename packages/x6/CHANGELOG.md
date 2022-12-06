@@ -1,3 +1,10 @@
+## @antv/x6 [2.0.7](https://github.com/antvis/x6/compare/@antv/x6@2.0.6...@antv/x6@2.0.7) (2022-12-06)
+
+
+### Bug Fixes
+
+* hide elems when visible is false ([#3007](https://github.com/antvis/x6/issues/3007)) ([057d520](https://github.com/antvis/x6/commit/057d5209ff827d0231ecc6562e768907f75aff2d))
+
 ## @antv/x6 [2.0.4](https://github.com/antvis/x6/compare/@antv/x6@2.0.3...@antv/x6@2.0.4) (2022-11-25)
 
 
