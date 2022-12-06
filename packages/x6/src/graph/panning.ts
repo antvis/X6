@@ -1,4 +1,4 @@
-import { ModifierKey, Dom } from '@antv/x6-common'
+import { Modifier, ModifierKey, Dom } from '@antv/x6-common'
 import { Base } from './base'
 
 export class PanningManager extends Base {
@@ -6,6 +6,7 @@ export class PanningManager extends Base {
   private clientX: number
   private clientY: number
   private mousewheelHandle: Dom.MouseWheelHandle
+  private modifier: Modifier
 
   protected get widgetOptions() {
     return this.options.panning
@@ -16,6 +17,7 @@ export class PanningManager extends Base {
   }
 
   protected init() {
+    this.modifier = new Modifier()
     this.startListening()
     this.updateClassName()
   }
@@ -25,6 +27,7 @@ export class PanningManager extends Base {
     if (!eventTypes) {
       return
     }
+    this.modifier.startListenModifier()
     if (eventTypes.includes('leftMouseDown')) {
       this.graph.on('blank:mousedown', this.preparePanning, this)
       this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
@@ -49,6 +52,7 @@ export class PanningManager extends Base {
     if (!eventTypes) {
       return
     }
+    this.modifier.stopListenModifier()
     if (eventTypes.includes('leftMouseDown')) {
       this.graph.off('blank:mousedown', this.preparePanning, this)
       this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
@@ -66,19 +70,16 @@ export class PanningManager extends Base {
 
   protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
     const selection = this.graph.getPlugin<any>('selection')
-    const allowRubberband = selection && selection.allowRubberband(e, true)
-    if (
-      this.allowPanning(e, true) ||
-      (this.allowPanning(e) && !allowRubberband)
-    ) {
+    const allowRubberband = selection && selection.allowRubberband(true)
+    if (this.allowPanning(true) || (this.allowPanning() && !allowRubberband)) {
       this.startPanning(e)
     }
   }
 
-  allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
+  allowPanning(strict?: boolean) {
     return (
       this.pannable &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict)
+      this.modifier.isMatch(this.widgetOptions.modifiers, strict)
     )
   }
 
@@ -132,7 +133,7 @@ export class PanningManager extends Base {
   }
 
   protected onRightMouseDown(e: Dom.MouseDownEvent) {
-    if (e.button === 2 && this.allowPanning(e, true)) {
+    if (e.button === 2 && this.allowPanning(true)) {
       this.startPanning(e)
     }
   }

@@ -1,5 +1,6 @@
 import {
   Dom,
+  Modifier,
   ModifierKey,
   Basecoat,
   CssLoader,
@@ -19,6 +20,7 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
   private graph: Graph
   private scrollerImpl: ScrollerImpl
   public name = 'scroller'
+  public modifier: Modifier
 
   public get pannable() {
     if (this.options) {
@@ -46,6 +48,8 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
       ...this.options,
       graph,
     })
+    this.modifier = new Modifier()
+    this.modifier.startListenModifier()
     this.setup()
     this.startListening()
     this.updateClassName()
@@ -373,7 +377,7 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
 
   protected allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
-      this.pannable && ModifierKey.isMatch(e, this.options.modifiers, strict)
+      this.pannable && this.modifier.isMatch(this.options.modifiers, strict)
     )
   }
 
@@ -394,6 +398,7 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
     this.stopListening()
     this.off()
     CssLoader.clean(this.name)
+    this.modifier.stopListenModifier()
   }
 }
 
