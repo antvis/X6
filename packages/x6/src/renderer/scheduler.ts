@@ -272,6 +272,11 @@ export class Scheduler extends Disposable {
       const zIndex = view.cell.getZIndex()
       const pivot = this.addZPivot(zIndex)
       this.container.insertBefore(view.container, pivot)
+
+      if (!view.cell.isVisible()) {
+        this.toggleVisible(view.cell, false)
+      }
+
       viewItem.state = Scheduler.ViewState.MOUNTED
     }
   }

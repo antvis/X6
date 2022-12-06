@@ -358,14 +358,14 @@ export class Model extends Basecoat<Model.EventArgs> {
   disconnectConnectedEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
     const cellId = typeof cell === 'string' ? cell : cell.id
     this.getConnectedEdges(cell).forEach((edge) => {
-      const sourceCell = edge.getSourceCell()
-      const targetCell = edge.getTargetCell()
+      const sourceCellId = edge.getSourceCellId()
+      const targetCellId = edge.getTargetCellId()
 
-      if (sourceCell && sourceCell.id === cellId) {
+      if (sourceCellId === cellId) {
         edge.setSource({ x: 0, y: 0 }, options)
       }
 
-      if (targetCell && targetCell.id === cellId) {
+      if (targetCellId === cellId) {
         edge.setTarget({ x: 0, y: 0 }, options)
       }
     })
