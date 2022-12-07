@@ -201,7 +201,7 @@ export class GraphView extends View {
     }
 
     if (this.options.preventDefaultMouseDown) {
-      e.preventDefault()
+      evt.preventDefault()
     }
 
     const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
@@ -213,7 +213,7 @@ export class GraphView extends View {
         this.options.preventDefaultBlankAction &&
         ['touchstart'].includes(e.type)
       ) {
-        e.preventDefault()
+        evt.preventDefault()
       }
 
       this.graph.trigger('blank:mousedown', {
