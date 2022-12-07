@@ -90,18 +90,23 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     )
 
     const options: TransformImpl.Options = {
-      resizable: resizing.enabled,
+      resizable: !!resizing.enabled,
       minWidth: resizing.minWidth || 0,
       maxWidth: resizing.maxWidth || Number.MAX_SAFE_INTEGER,
       minHeight: resizing.minHeight || 0,
       maxHeight: resizing.maxHeight || Number.MAX_SAFE_INTEGER,
-      orthogonalResizing: resizing.orthogonal || true,
-      restrictedResizing: resizing.restrict || false,
-      autoScrollOnResizing: resizing.autoScroll || true,
-      preserveAspectRatio: resizing.preserveAspectRatio || false,
-      allowReverse: resizing.allowReverse || true,
+      orthogonalResizing:
+        typeof resizing.orthogonal === 'boolean' ? resizing.orthogonal : true,
+      restrictedResizing: !!resizing.restrict,
+      autoScrollOnResizing:
+        typeof resizing.autoScroll === 'boolean' ? resizing.autoScroll : true,
+      preserveAspectRatio: !!resizing.preserveAspectRatio,
+      allowReverse:
+        typeof resizing.allowReverse === 'boolean'
+          ? resizing.allowReverse
+          : true,
 
-      rotatable: rotating.enabled || false,
+      rotatable: !!rotating.enabled,
       rotateGrid: rotating.grid || 15,
     }
 
