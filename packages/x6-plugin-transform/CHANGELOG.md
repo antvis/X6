@@ -1,3 +1,10 @@
+## @antv/x6-plugin-transform [2.1.4](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.3...@antv/x6-plugin-transform@2.1.4) (2022-12-07)
+
+
+### Bug Fixes
+
+* make resizing options take effect ([#3014](https://github.com/antvis/x6/issues/3014)) ([604c024](https://github.com/antvis/x6/commit/604c0244cd71ec8e911754dfe524f12c04e4e9ad))
+
 ## @antv/x6-plugin-transform [2.1.2](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.1...@antv/x6-plugin-transform@2.1.2) (2022-11-25)
 
 
