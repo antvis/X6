@@ -1,5 +1,6 @@
 import {
   Basecoat,
+  Modifier,
   ModifierKey,
   CssLoader,
   Dom,
@@ -15,6 +16,7 @@ import './api'
 export class Selection extends Basecoat<SelectionImpl.EventArgs> {
   private graph: Graph
   private selectionImpl: SelectionImpl
+  private modifier: Modifier
   private readonly options: Selection.Options
   private movedMap = new WeakMap<Cell, boolean>()
   private unselectMap = new WeakMap<Cell, boolean>()
@@ -48,6 +50,8 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
       ...this.options,
       graph,
     })
+    this.modifier = new Modifier()
+    this.modifier.startListenModifier()
     this.setup()
     this.startListening()
   }
@@ -314,12 +318,12 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
-    const allowGraphPanning = this.graph.panning.allowPanning(e, true)
+    const allowGraphPanning = this.graph.panning.allowPanning(true)
     const scroller = this.graph.getPlugin<any>('scroller')
-    const allowScrollerPanning = scroller && scroller.allowPanning(e, true)
+    const allowScrollerPanning = scroller && scroller.allowPanning(true)
     if (
-      this.allowRubberband(e, true) ||
-      (this.allowRubberband(e) && !allowScrollerPanning && !allowGraphPanning)
+      this.allowRubberband(true) ||
+      (this.allowRubberband() && !allowScrollerPanning && !allowGraphPanning)
     ) {
       this.startRubberband(e)
     }
@@ -329,17 +333,17 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     this.clean()
   }
 
-  protected allowRubberband(e: Dom.MouseDownEvent, strict?: boolean) {
+  protected allowRubberband(strict?: boolean) {
     return (
       !this.rubberbandDisabled &&
-      ModifierKey.isMatch(e, this.options.modifiers, strict)
+      this.modifier.isMatch(this.options.modifiers, strict)
     )
   }
 
-  protected allowMultipleSelection(e: Dom.MouseDownEvent | Dom.MouseUpEvent) {
+  protected allowMultipleSelection() {
     return (
       this.isMultiple() &&
-      ModifierKey.isMatch(e, this.options.multipleSelectionModifiers)
+      this.modifier.isMatch(this.options.multipleSelectionModifiers)
     )
   }
 
@@ -347,7 +351,7 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     this.movedMap.set(cell, true)
   }
 
-  protected onCellMouseUp({ e, cell }: EventArgs['cell:mouseup']) {
+  protected onCellMouseUp({ cell }: EventArgs['cell:mouseup']) {
     const options = this.options
     let disabled = this.disabled
     if (!disabled && this.movedMap.has(cell)) {
@@ -363,7 +367,7 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     }
 
     if (!disabled) {
-      if (!this.allowMultipleSelection(e)) {
+      if (!this.allowMultipleSelection()) {
         this.reset(cell)
       } else if (this.unselectMap.has(cell)) {
         this.unselectMap.delete(cell)
@@ -377,12 +381,9 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     this.movedMap.delete(cell)
   }
 
-  protected onBoxMouseDown({
-    e,
-    cell,
-  }: SelectionImpl.EventArgs['box:mousedown']) {
+  protected onBoxMouseDown({ cell }: SelectionImpl.EventArgs['box:mousedown']) {
     if (!this.disabled) {
-      if (this.allowMultipleSelection(e)) {
+      if (this.allowMultipleSelection()) {
         this.unselect(cell)
         this.unselectMap.set(cell, true)
       }
@@ -438,6 +439,7 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     this.stopListening()
     this.off()
     this.selectionImpl.dispose()
+    this.modifier.stopListenModifier()
     CssLoader.clean(this.name)
   }
 }

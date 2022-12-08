@@ -1,9 +1,16 @@
-import { ModifierKey, Dom, NumberExt, Disposable } from '@antv/x6-common'
+import {
+  Modifier,
+  ModifierKey,
+  Dom,
+  NumberExt,
+  Disposable,
+} from '@antv/x6-common'
 import { Base } from './base'
 
 export class MouseWheel extends Base {
   public target: HTMLElement | Document
   public container: HTMLElement
+  public modifier: Modifier
 
   protected cumulatedFactor = 1
   protected currentScale: number | null
@@ -18,6 +25,7 @@ export class MouseWheel extends Base {
   protected init() {
     this.container = this.graph.container
     this.target = this.widgetOptions.global ? document : this.container
+    this.modifier = new Modifier()
     this.mousewheelHandle = new Dom.MouseWheelHandle(
       this.target,
       this.onMouseWheel.bind(this),
@@ -36,6 +44,7 @@ export class MouseWheel extends Base {
     if (this.disabled || force) {
       this.widgetOptions.enabled = true
       this.mousewheelHandle.enable()
+      this.modifier.startListenModifier()
     }
   }
 
@@ -43,6 +52,7 @@ export class MouseWheel extends Base {
     if (!this.disabled) {
       this.widgetOptions.enabled = false
       this.mousewheelHandle.disable()
+      this.modifier.stopListenModifier()
     }
   }
 
@@ -51,7 +61,7 @@ export class MouseWheel extends Base {
 
     return (
       (guard == null || guard.call(e)) &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers)
+      this.modifier.isMatch(this.widgetOptions.modifiers)
     )
   }
 
@@ -60,7 +70,7 @@ export class MouseWheel extends Base {
 
     if (
       (guard == null || guard.call(e)) &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers)
+      this.modifier.isMatch(this.widgetOptions.modifiers)
     ) {
       const factor = this.widgetOptions.factor || 1.2
 
