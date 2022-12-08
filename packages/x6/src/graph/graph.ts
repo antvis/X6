@@ -58,8 +58,12 @@ export class Graph extends Basecoat<EventArgs> {
     this.grid = new Grid(this)
     this.background = new Background(this)
 
-    this.model = this.options.model ? this.options.model : new Model()
-    this.model.graph = this
+    if (this.options.model) {
+      this.model = this.options.model
+    } else {
+      this.model = new Model()
+      this.model.graph = this
+    }
 
     this.renderer = new ViewRenderer(this)
     this.panning = new Panning(this)
