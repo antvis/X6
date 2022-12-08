@@ -1,3 +1,10 @@
+## @antv/x6 [2.0.8](https://github.com/antvis/x6/compare/@antv/x6@2.0.7...@antv/x6@2.0.8) (2022-12-08)
+
+
+### Bug Fixes
+
+* trigger preventDefault by origin event ([#3017](https://github.com/antvis/x6/issues/3017)) ([4a6a634](https://github.com/antvis/x6/commit/4a6a634a8acfad5c1a7bb93ac17fb3b97239e853))
+
 ## @antv/x6 [2.0.7](https://github.com/antvis/x6/compare/@antv/x6@2.0.6...@antv/x6@2.0.7) (2022-12-06)
 
 
