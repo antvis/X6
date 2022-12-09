@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [2.0.7](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@2.0.6...@antv/x6-vue-shape@2.0.7) (2022-12-09)
+
+
+### Bug Fixes
+
+* cannot read properties of undefined when unmount vue component ([#3024](https://github.com/antvis/x6/issues/3024)) ([187e318](https://github.com/antvis/x6/commit/187e318aee8622591781d3b8fc45d72a4d54a989))
+
 ## @antv/x6-vue-shape [2.0.4](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@2.0.3...@antv/x6-vue-shape@2.0.4) (2022-11-25)
 
 
