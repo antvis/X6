@@ -8,7 +8,7 @@ export class VueShapeView extends NodeView<VueShape> {
   private vm: any
 
   getComponentContainer() {
-    return this.selectors ? (this.selectors.foContent as HTMLDivElement) : null
+    return this.selectors && (this.selectors.foContent as HTMLDivElement)
   }
 
   confirmUpdate(flag: number) {
