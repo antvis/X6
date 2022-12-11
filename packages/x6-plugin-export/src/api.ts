@@ -5,15 +5,15 @@ declare module '@antv/x6/lib/graph/graph' {
   interface Graph {
     toSVG: (
       callback: Export.ToSVGCallback,
-      options: Export.ToSVGOptions,
+      options?: Export.ToSVGOptions,
     ) => void
     toPNG: (
       callback: Export.ToSVGCallback,
-      options: Export.ToImageOptions,
+      options?: Export.ToImageOptions,
     ) => void
     toJPEG: (
       callback: Export.ToSVGCallback,
-      options: Export.ToImageOptions,
+      options?: Export.ToImageOptions,
     ) => void
     exportPNG: (fileName?: string, options?: Export.ToImageOptions) => void
     exportJPEG: (fileName?: string, options?: Export.ToImageOptions) => void
@@ -23,7 +23,7 @@ declare module '@antv/x6/lib/graph/graph' {
 
 Graph.prototype.toSVG = function (
   callback: Export.ToSVGCallback,
-  options: Export.ToSVGOptions,
+  options?: Export.ToSVGOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -33,7 +33,7 @@ Graph.prototype.toSVG = function (
 
 Graph.prototype.toPNG = function (
   callback: Export.ToSVGCallback,
-  options: Export.ToImageOptions,
+  options?: Export.ToImageOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -43,7 +43,7 @@ Graph.prototype.toPNG = function (
 
 Graph.prototype.toJPEG = function (
   callback: Export.ToSVGCallback,
-  options: Export.ToImageOptions,
+  options?: Export.ToImageOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
