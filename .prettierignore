@@ -12,5 +12,5 @@ es/
 lib/
 dist/
 coverage/
-sites/x6-sites/static/demos
+sites/public
 csstype.ts
