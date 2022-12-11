@@ -47,7 +47,6 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     super()
 
     this.options = ScrollerImpl.getOptions(options)
-    this.onUpdate = FunctionExt.debounce(this.onUpdate, 200)
 
     const scale = this.graph.transform.getScale()
     this.sx = scale.sx
