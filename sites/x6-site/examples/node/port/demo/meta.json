@@ -1,0 +1,132 @@
+{
+  "demos": [
+    {
+      "filename": "default.ts",
+      "title": {
+        "zh": "默认连接桩",
+        "en": "Default Port"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*DYDDQLNARFYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "group.ts",
+      "title": {
+        "zh": "使用 Group 定义连接桩样式",
+        "en": "Use Group to Custom Port Style"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*2xpxTbuyTngAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "dynamic.ts",
+      "title": {
+        "zh": "添加或移除连接桩",
+        "en": "Add or Remove Port Dynamically"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ABl7SrXZRQoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "connect-to-port.ts",
+      "title": {
+        "zh": "连接到连接桩",
+        "en": "Connect to Port"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*6R08SbvgI6MAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "render-port-with-react.tsx",
+      "title": {
+        "zh": "使用 React 渲染连接桩",
+        "en": "Render Port with React"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XWjES4Hv1HcAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label.ts",
+      "title": {
+        "zh": "连接桩标签",
+        "en": "Label of Port"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*jxynTYy8bH8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-absolute.ts",
+      "title": {
+        "zh": "绝对定位的连接桩",
+        "en": "Absolute Position of Ports"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mQfCQZhthxsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-side.ts",
+      "title": {
+        "zh": "沿矩形边框均匀分布的连接桩",
+        "en": "Uniform Distributed Ports Along the Rectangle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*iccNRLkBahEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-line.ts",
+      "title": {
+        "zh": "沿任意直线均匀分布的连接桩",
+        "en": "Uniform Distributed Ports Along the Line"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-EXyT5PxgdcAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-ellipse-spread.ts",
+      "title": {
+        "zh": "沿椭圆均匀分布的连接桩",
+        "en": "Uniform Distributed Ports Along the Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*WV01TIKfPmkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-ellipse.ts",
+      "title": {
+        "zh": "沿椭圆分布的连接桩",
+        "en": "Ports Along the Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*roBwQYYlJjMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-ellipse-compensation.ts",
+      "title": {
+        "zh": "沿圆弧自动旋转的连接桩",
+        "en": "Auto Rotate Ports Along the Arc"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*HKxoQ6kpw4oAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-position-custom.ts",
+      "title": {
+        "zh": "自定义连接桩位置",
+        "en": "Custom the Position of Ports"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*8Cz3SKibsO4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-label-position-side.ts",
+      "title": {
+        "zh": "位于连接桩一侧的标签",
+        "en": "Place Label On the Side of Port"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XgvYSp7pggAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-label-position-in-out.ts",
+      "title": {
+        "zh": "位于节点内部或外部的标签",
+        "en": "Place Label Inside/Outside of Node"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*H-KnRZhXNckAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-label-position-radial.ts",
+      "title": {
+        "zh": "位于椭圆外围的标签",
+        "en": "Place Label Outside of Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*M-u1R4Tdu7kAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
