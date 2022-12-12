@@ -1,0 +1,8 @@
+{
+  "previewer.actions.code.expand": "展开代码",
+  "previewer.actions.code.shrink": "收起代码",
+  "previewer.actions.codesandbox": "在 CodeSandbox 中打开",
+  "previewer.actions.codepen": "在 CodePen 中打开（未实现）",
+  "previewer.actions.stackblitz": "在 StackBlitz 中打开",
+  "previewer.actions.separate": "在独立页面中打开"
+}

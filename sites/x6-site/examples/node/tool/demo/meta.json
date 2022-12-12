@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "filename": "button.ts",
+      "title": {
+        "zh": "自定义按钮",
+        "en": "Custom Button"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*CrBoSbn-b84AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "button-remove.ts",
+      "title": {
+        "zh": "删除按钮",
+        "en": "Delete Button"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*EkLwQKIR81MAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "boundary.ts",
+      "title": {
+        "zh": "包围框",
+        "en": "Boundary Box"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9jEGTak16UEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "editable.ts",
+      "title": {
+        "zh": "文本编辑",
+        "en": "Text Editor"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*hf4qR7MuOToAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "port-tooltip.tsx",
+      "title": {
+        "zh": "连接桩 ToolTip",
+        "en": "ToolTip For Port"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*r2LgQINPEd8AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

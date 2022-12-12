@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "filename": "edge.ts",
+      "title": {
+        "zh": "默认边",
+        "en": "Default Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*6UGgRb4EkuMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "gradient.ts",
+      "title": {
+        "zh": "渐变背景色",
+        "en": "Gradient Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ZwHVS56I4-oAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "cross-fill.ts",
+      "title": {
+        "zh": "交错背景色",
+        "en": "Cross Filled Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*e_nGTKT-IvwAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "shape-on-edge.ts",
+      "title": {
+        "zh": "沿边长度方向上的图形",
+        "en": "Custom Shape On the Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-Fx8R7nNZuMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-click-event.ts",
+      "title": {
+        "zh": "自定义点击事件",
+        "en": "Custom Click Event"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ZmhTRaPgOQgAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

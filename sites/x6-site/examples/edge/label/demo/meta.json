@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "filename": "render-with-svg.ts",
+      "title": {
+        "zh": "使用 SVG 渲染 Label",
+        "en": "Use SVG to Render Label"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*g1_HTZNyfC0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "render-with-html.ts",
+      "title": {
+        "zh": "使用 HTML 渲染 Label",
+        "en": "Use HTML to Render Label"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*EN48Tbp7jcAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "render-with-react.tsx",
+      "title": {
+        "zh": "使用 React 渲染 Label",
+        "en": "Use React to Render Label"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*8Er1Tb89MaoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "multi-labels.ts",
+      "title": {
+        "zh": "渲染多个 Label",
+        "en": "Render Multiple Labels"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*hHq7R4vqWjIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-along-path.ts",
+      "title": {
+        "zh": "沿路径的 Label",
+        "en": "Label Along Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OHSrQop8Z30AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
