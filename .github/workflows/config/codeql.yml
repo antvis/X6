@@ -1,5 +1,5 @@
 paths-ignore:
-  - sites/x6-sites/static
+  - sites/public
 query-filters:
   - exclude:
       id: js/use-before-declaration
