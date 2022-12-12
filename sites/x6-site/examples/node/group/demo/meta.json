@@ -1,0 +1,52 @@
+{
+  "demos": [
+    {
+      "filename": "embedding-nodes.ts",
+      "title": {
+        "zh": "嵌套节点",
+        "en": "Embedding Nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*cUSYR4GD9TMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "embedding-edges.ts",
+      "title": {
+        "zh": "自动更新边的父节点",
+        "en": "Auto Update Edge's Parent"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*5wMTSKjHCysAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "embedding-by-dnd.ts",
+      "title": {
+        "zh": "拖入/拖出父节点",
+        "en": "Embedding by Drag and Drop"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MhYYRZnohv4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "restrict-movement.ts",
+      "title": {
+        "zh": "限制子节点的移动范围",
+        "en": "Restrict the Movement of Child Nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4YxDQ712eyEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "expand-shrink.ts",
+      "title": {
+        "zh": "自动扩展/收缩父节点",
+        "en": "Auto Expand/Shrink the Parent Node"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*92fsRq_2YV0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "collapsable.ts",
+      "title": {
+        "zh": "折叠/展开父节点",
+        "en": "Collapse/Expand the Parent Node"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-HGVS6LIcEMAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
