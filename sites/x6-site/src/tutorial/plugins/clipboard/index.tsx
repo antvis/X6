@@ -133,7 +133,7 @@ export default class Example extends React.Component {
             <Button onClick={this.onCopy} type="primary">
               Copy Selected Cells
             </Button>
-            <Button onClick={this.onPaste} type="ghost" autoFocus={true}>
+            <Button onClick={this.onPaste} type="ghost">
               Paste
             </Button>
           </div>

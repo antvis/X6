@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Dom } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import { Snapline } from '@antv/x6-plugin-snapline'
 import { Settings, State } from './settings'
 import styles from './index.less'

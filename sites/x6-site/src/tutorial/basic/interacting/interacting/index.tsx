@@ -177,7 +177,7 @@ export default class Example extends React.Component {
           strokeWidth: 1,
         },
       },
-      label: 'Move Me'
+      label: 'Move Me',
     })
 
     this.graph = graph

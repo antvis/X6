@@ -112,6 +112,8 @@ export default class Example extends React.Component {
           node.attr('body/fill', color)
         })
         break
+      default:
+        break
     }
   }
 

@@ -96,7 +96,7 @@ export default class Example extends React.Component {
       },
     })
 
-    //this.graph.zoomTo(1.8)
+    // this.graph.zoomTo(1.8)
   }
 
   refContainer = (container: HTMLDivElement) => {

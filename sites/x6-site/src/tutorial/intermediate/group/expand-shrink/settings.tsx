@@ -54,7 +54,7 @@ export class Settings extends React.Component<Props, State> {
           <Col style={{ padding: '24px 0 8px 0', color: '#666' }}>
             Press and hold on{' '}
             <strong style={{ color: '#faad14' }}>Ctrl or Command</strong> key,
-            then move the child node to remove it from it's parent node.
+            then move the child node to remove it from parent node.
           </Col>
         </Row>
       </Card>

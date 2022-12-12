@@ -23,7 +23,7 @@ Graph.registerNode(
 )
 export default class Example extends React.Component {
   private container: HTMLDivElement
-  private embedPadding: number = 20
+  private embedPadding = 20
 
   componentDidMount() {
     const graph = new Graph({

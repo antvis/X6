@@ -110,7 +110,7 @@ export default class Example extends React.Component {
       panning: true,
       mousewheel: {
         enabled: true,
-        modifiers: 'Ctrl'
+        modifiers: 'Ctrl',
       },
     })
 
@@ -138,6 +138,8 @@ export default class Example extends React.Component {
         break
       case 'centerContent':
         this.graph.centerContent()
+        break
+      default:
         break
     }
   }

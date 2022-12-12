@@ -22,7 +22,7 @@ const CustomComponent = ({ node }: { node: Node }) => {
             key: 'delete',
             label: '删除',
           },
-        ]
+        ],
       }}
       trigger={['contextMenu']}
     >

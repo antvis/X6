@@ -1,40 +1,40 @@
 .app {
-  font-family: sans-serif;
-  padding: 0;
   display: flex;
+  padding: 0;
   padding: 16px 8px;
+  font-family: sans-serif;
 }
 
 .app-content {
   flex: 1;
   height: 240px;
-  margin-left: 8px;
   margin-right: 8px;
+  margin-left: 8px;
   box-shadow: 0 0 10px 1px #e9e9e9;
 }
 
 .custom-html {
   width: 100%;
   height: 100%;
-  border-radius: 1em;
-  perspective: 600px;
   background: #333232;
-  box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.25),
-    0 0.02125em 0.06125em rgba(0, 0, 0, 0.25);
+  border-radius: 1em;
+  box-shadow: 0 0.125em 0.3125em rgb(0 0 0 / 25%),
+    0 0.02125em 0.06125em rgb(0 0 0 / 25%);
+  perspective: 600px;
 
   &::before {
-    content: ' ';
     position: absolute;
-    left: 0;
     top: 50%;
-    border-radius: 0 0 1em 1em;
+    left: 0;
     width: 100%;
     height: 50%;
-    transform-origin: center top;
-    transform: rotateX(180deg);
     background: #333232
-      linear-gradient(180deg, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.4));
+      linear-gradient(180deg, rgb(0 0 0 / 10%) 50%, rgb(0 0 0 / 40%));
+    border-radius: 0 0 1em 1em;
+    transform: rotateX(180deg);
+    transform-origin: center top;
     transition: 0.7s ease-in-out transform;
+    content: ' ';
   }
 
   &:hover::before {

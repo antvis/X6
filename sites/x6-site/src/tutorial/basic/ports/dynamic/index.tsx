@@ -94,6 +94,7 @@ export default class Example extends React.Component {
   change = (command: string) => {
     const node = this.graph.getCellById('1') as Node
     const ports = node.getPorts()
+    let color: string
     switch (command) {
       case 'addPort':
         node.addPort({
@@ -111,10 +112,12 @@ export default class Example extends React.Component {
         }
         break
       case 'updatePort':
-        const color = Color.random().toHex()
+        color = Color.random().toHex()
         ports.forEach((port) => {
           node.portProp(port.id!, 'attrs/circle/stroke', color)
         })
+        break
+      default:
         break
     }
   }

@@ -81,22 +81,22 @@ export default class Example extends React.Component {
         {
           attrs: {
             label: {
-              text: "40%",
-              stroke: '#aaa'
+              text: '40%',
+              stroke: '#aaa',
             },
           },
-          position: 0.4
+          position: 0.4,
         },
         {
           attrs: {
             label: {
-              text: "60%",
-              stroke: '#aaa'
+              text: '60%',
+              stroke: '#aaa',
             },
           },
-          position: 0.6
+          position: 0.6,
         },
-      ]
+      ],
     })
   }
 

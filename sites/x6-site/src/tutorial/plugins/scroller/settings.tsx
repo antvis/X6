@@ -127,7 +127,9 @@ export class Settings extends React.Component<Props, State> {
             Min Visible Width
           </Col>
           <Col span={2} offset={1}>
-            <div className={styles['slider-value']}>{this.state.minVisibleWidth}</div>
+            <div className={styles['slider-value']}>
+              {this.state.minVisibleWidth}
+            </div>
           </Col>
         </Row>
         <Row align="middle" style={{ marginTop: 0 }}>
@@ -153,7 +155,9 @@ export class Settings extends React.Component<Props, State> {
             Min Visible Height
           </Col>
           <Col span={2} offset={1}>
-            <div className={styles['slider-value']}>{this.state.minVisibleHeight}</div>
+            <div className={styles['slider-value']}>
+              {this.state.minVisibleHeight}
+            </div>
           </Col>
         </Row>
         <Row align="middle" style={{ marginTop: 0 }}>

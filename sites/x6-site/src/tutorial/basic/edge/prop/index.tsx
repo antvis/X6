@@ -92,6 +92,8 @@ export default class Example extends React.Component {
           edge.attr('line/stroke', color)
         })
         break
+      default:
+        break
     }
   }
 

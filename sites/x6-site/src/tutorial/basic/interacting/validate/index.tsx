@@ -70,19 +70,30 @@ export default class Example extends React.Component {
         },
         validateMagnet({ magnet }) {
           // 节点上方的连接桩无法创建连线
-          return magnet.getAttribute('port-group') !== 'top';
+          return magnet.getAttribute('port-group') !== 'top'
         },
-        validateConnection({ sourceCell, targetCell, sourceMagnet, targetMagnet }) {
+        validateConnection({
+          sourceCell,
+          targetCell,
+          sourceMagnet,
+          targetMagnet,
+        }) {
           // 不能连接自身
           if (sourceCell === targetCell) {
             return false
           }
 
           // 只能从 bottom 连接桩开始连接，连接到 top 连接桩
-          if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'top') {
+          if (
+            !sourceMagnet ||
+            sourceMagnet.getAttribute('port-group') === 'top'
+          ) {
             return false
           }
-          if (!targetMagnet || targetMagnet.getAttribute('port-group') !== 'top') {
+          if (
+            !targetMagnet ||
+            targetMagnet.getAttribute('port-group') !== 'top'
+          ) {
             return false
           }
 
@@ -90,7 +101,7 @@ export default class Example extends React.Component {
           const edges = this.getEdges()
           const portId = targetMagnet.getAttribute('port')
           if (edges.find((edge) => edge.getTargetPortId() === portId)) {
-            return false;
+            return false
           }
 
           return true
