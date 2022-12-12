@@ -15,7 +15,6 @@
     "build:dev": "turbo run build:dev --filter=./packages/*",
     "build:umd": "turbo run build:umd --filter=./packages/*",
     "build:demos": "sh ./scripts/build-demos",
-    "build:sites": "sh ./scripts/build-sites",
     "clean:turbo": "pnpm -r --if-present --parallel --filter=./packages/* run clean:turbo",
     "clean:build": "pnpm -r --if-present --parallel --filter=./packages/* run clean",
     "clean:modules": "pnpm -r --parallel exec rimraf node_modules && rimraf node_modules",
