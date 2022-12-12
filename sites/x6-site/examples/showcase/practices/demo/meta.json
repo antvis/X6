@@ -1,0 +1,92 @@
+{
+  "demos": [
+    {
+      "filename": "flowchart.ts",
+      "title": {
+        "zh": "流程图",
+        "en": "Flow Chart"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*JSr-RbwCgmcAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "dag.tsx",
+      "title": {
+        "zh": "人工智能建模 DAG 图",
+        "en": "DAG for AI Model"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*RPiGRaSus3UAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "er.ts",
+      "title": {
+        "zh": "ER 图",
+        "en": "ER"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*JC4fSosMaVIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "mindmap.ts",
+      "title": {
+        "zh": "思维导图",
+        "en": "MindMap"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*GsEGSaBkc84AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "bpmn.ts",
+      "title": {
+        "zh": "BPMN",
+        "en": "BPMN"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aPSySa8oz4sAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "swimlane.ts",
+      "title": {
+        "zh": "泳道图",
+        "en": "Swimlane"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mUVrSJMkP1UAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "elk.ts",
+      "title": {
+        "zh": "ELK",
+        "en": "ELK"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Z3ebTKy0w9cAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "org.ts",
+      "title": {
+        "zh": "组织架构图",
+        "en": "Organizational Charts"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FWx5SYDzLw4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "orgchart.ts",
+      "title": {
+        "zh": "组织架构图（自动布局）",
+        "en": "Organizational Charts"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-1_wQ6zLmMYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "class.ts",
+      "title": {
+        "zh": "UML 类图",
+        "en": "UML Class"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OaCpR7t_mVoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "tree.ts",
+      "title": {
+        "zh": "展开/折叠树",
+        "en": "Expand/Collapse the Tree"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XDnNRqnj4WkAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

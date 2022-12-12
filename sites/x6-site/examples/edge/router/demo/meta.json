@@ -1,0 +1,76 @@
+{
+  "demos": [
+    {
+      "filename": "normal.ts",
+      "title": {
+        "zh": "默认路由",
+        "en": "Normal Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*rpQdR4VOZQMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "orth-normal.ts",
+      "title": {
+        "zh": "拐线",
+        "en": "Orth Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*61fPRbYQnwEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "orth-vertices.ts",
+      "title": {
+        "zh": "正交线",
+        "en": "Orth Router With Vertices"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*xdwhR5Z3PfAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "er-normal.ts",
+      "title": {
+        "zh": "关系路由",
+        "en": "ER Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9FmqSaP7LoYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "er-center.ts",
+      "title": {
+        "zh": "关系路由",
+        "en": "ER Center Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*NTVWSbc9Cz0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "manhattan.ts",
+      "title": {
+        "zh": "智能路由",
+        "en": "Manhattan Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MaA1T5rdWVYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "metro.ts",
+      "title": {
+        "zh": "智能地铁路由",
+        "en": "Metro Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*guRmSZlF-oEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "one-side.ts",
+      "title": {
+        "zh": "单侧路由",
+        "en": "OneSide Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*H42jSbTYRyoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-random-router.ts",
+      "title": {
+        "zh": "自定义随机路由",
+        "en": "Custom Random Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*byYNRLBM9_0AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

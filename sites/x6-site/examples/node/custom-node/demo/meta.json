@@ -1,0 +1,36 @@
+{
+  "demos": [
+    {
+      "filename": "custom-with-svg.ts",
+      "title": {
+        "zh": "使用 SVG 自定义节点",
+        "en": "Custom Node with SVG"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*PJn8T5hMua8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-icon-with-svg.ts",
+      "title": {
+        "zh": "使用 SVG 自定义图标",
+        "en": "Custom Node with SVG"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*jX20T6ewn_sAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-with-react.tsx",
+      "title": {
+        "zh": "使用 React 自定节点",
+        "en": "Custom Node with React"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*_aX6Qb5gYz4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "switch.ts",
+      "title": {
+        "zh": "自定义开关节点",
+        "en": "Custom Switch Node"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*hC_CTIqqE5gAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

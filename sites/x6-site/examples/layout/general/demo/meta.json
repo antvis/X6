@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "filename": "grid.ts",
+      "title": {
+        "zh": "网格布局",
+        "en": "Grid"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*14yLQY9-FQ0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "circle.ts",
+      "title": {
+        "zh": "环形布局",
+        "en": "Circular"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*8IF1SYl7wrwAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "dagre.ts",
+      "title": {
+        "zh": "Dagre",
+        "en": "Dagre"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*D-QDTo_YzQgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "ellipse.ts",
+      "title": {
+        "zh": "椭圆布局",
+        "en": "Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Er8NQ7Qsap8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "force.ts",
+      "title": {
+        "zh": "力导向布局",
+        "en": "Force"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*0HvAR6qMEf8AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
