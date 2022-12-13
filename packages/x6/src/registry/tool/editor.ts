@@ -94,6 +94,15 @@ export class CellEditor extends ToolsView.ToolItem<
     }
     editor.innerText = text || ''
 
+    // clear display value when edit status because char ghosting.
+    const setText = this.options.setText
+    FunctionExt.call(setText, this.cellView, {
+      cell: this.cell,
+      value: '',
+      index: this.labelIndex,
+      distance: this.distance,
+    })
+
     return this
   }
 
