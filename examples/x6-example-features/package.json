@@ -5,13 +5,14 @@
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
-    "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
-    "precommit": "lint-staged"
+    "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix"
   },
   "dependencies": {
+    "@antv/hierarchy": "^0.6.8",
     "@antv/x6": "^2.x",
     "@antv/x6-plugin-clipboard": "^2.x",
     "@antv/x6-plugin-dnd": "^2.x",
+    "@antv/x6-plugin-export": "^2.x",
     "@antv/x6-plugin-history": "^2.x",
     "@antv/x6-plugin-keyboard": "^2.x",
     "@antv/x6-plugin-minimap": "^2.x",
@@ -20,42 +21,34 @@
     "@antv/x6-plugin-snapline": "^2.x",
     "@antv/x6-plugin-stencil": "^2.x",
     "@antv/x6-plugin-transform": "^2.x",
-    "@antv/x6-plugin-export": "^2.x",
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
-    "elkjs": "^0.7.1",
+    "elkjs": "^0.8.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-helmet": "^6.0.0",
-    "@antv/hierarchy": "^0.6.8"
+    "react-helmet": "^6.0.0"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.2.2",
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^29.2.4",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/react-helmet": "^6.0.0",
-    "@types/react-test-renderer": "^16.0.3",
-    "eslint": "^7.16.0",
+    "@types/react-test-renderer": "^18.0.0",
+    "babel-plugin-import": "^1.13.5",
+    "eslint": "^8.29.0",
     "eslint-config-umi": "^1.4.0",
-    "eslint-plugin-flowtype": "^4.7.0",
+    "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.11.1",
-    "lint-staged": "^10.5.3",
     "react-test-renderer": "^16.7.0",
     "umi": "^2.9.0",
     "umi-plugin-react": "^1.8.0",
-    "umi-types": "^0.3.0",
-    "babel-plugin-import": "^1.13.5"
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "eslint --fix"
-    ]
+    "umi-types": "^0.3.0"
   },
   "engines": {
     "node": ">=8.0.0"
