@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import _ from 'lodash'
 import colors from 'colors/safe.js'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -37,8 +37,8 @@ function makeOutput() {
   return output
 }
 
-export function config(config) {
-  let { plugins = [], output, external = [], ...others } = config || {}
+export function config(config = {}) {
+  let { plugins = [], output, external = [], ...others } = config
   if (output == null) {
     output = makeOutput()
   }
@@ -74,10 +74,10 @@ export function config(config) {
         preventAssignment: true,
         'process.env.NODE_ENV': JSON.stringify('production'),
       }),
-      terser(),
+      terser({ sourceMap: true }),
       filesize({
         reporter: [
-          function (options, bundle, result) {
+          async (options, bundle, result) => {
             return import('boxen').then((mod) => {
               const boxen = mod.default
               const primaryColor = options.theme === 'dark' ? 'green' : 'black'
