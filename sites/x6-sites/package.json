@@ -39,16 +39,5 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-i18next": "^11.5.0"
-  },
-  "author": {
-    "name": "bubkoo",
-    "email": "bubkoo.wy@gmail.com"
-  },
-  "contributors": [],
-  "license": "MIT",
-  "homepage": "https://github.com/antvis/x6",
-  "bugs": {
-    "url": "https://github.com/antvis/x6/issues"
-  },
-  "repository": "https://github.com/antvis/x6/tree/master/sites/x6-sites"
+  }
 }
