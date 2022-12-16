@@ -1,3 +1,10 @@
+## @antv/x6 [2.0.9](https://github.com/antvis/x6/compare/@antv/x6@2.0.8...@antv/x6@2.0.9) (2022-12-16)
+
+
+### Bug Fixes
+
+* :bug: char ghosting when edit text ([#2560](https://github.com/antvis/x6/issues/2560)) ([#3043](https://github.com/antvis/x6/issues/3043)) ([15284e7](https://github.com/antvis/x6/commit/15284e778a09f4f2e5a8f777330744b0cfe88e9e))
+
 ## @antv/x6 [2.0.8](https://github.com/antvis/x6/compare/@antv/x6@2.0.7...@antv/x6@2.0.8) (2022-12-08)
 
 
