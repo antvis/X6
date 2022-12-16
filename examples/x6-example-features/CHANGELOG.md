@@ -1,3 +1,10 @@
+## @antv/x6-example-features [2.0.1](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.0.0...@antv/x6-example-features@2.0.1) (2022-12-16)
+
+
+### Bug Fixes
+
+* make resizing options take effect ([#3014](https://github.com/antvis/X6/issues/3014)) ([604c024](https://github.com/antvis/X6/commit/604c0244cd71ec8e911754dfe524f12c04e4e9ad))
+
 # @antv/x6-example-features [2.0.0](https://github.com/antvis/X6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@2.0.0) (2022-11-24)
 
 
