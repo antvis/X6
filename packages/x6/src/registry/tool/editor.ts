@@ -94,6 +94,9 @@ export class CellEditor extends ToolsView.ToolItem<
     }
     editor.innerText = text || ''
 
+    // clear display value when edit status because char ghosting.
+    this.setCellText('')
+
     return this
   }
 
@@ -102,15 +105,7 @@ export class CellEditor extends ToolsView.ToolItem<
       const cell = this.cell
       const value = this.editor.innerText.replace(/\n$/, '') || ''
       // set value
-      const setText = this.options.setText
-      if (typeof setText === 'function') {
-        FunctionExt.call(setText, this.cellView, {
-          cell: this.cell,
-          value,
-          index: this.labelIndex,
-          distance: this.distance,
-        })
-      }
+      this.setCellText(value)
       // remove tool
       cell.removeTool(cell.isEdge() ? 'edge-editor' : 'node-editor')
       this.undelegateDocumentEvents()
@@ -139,6 +134,18 @@ export class CellEditor extends ToolsView.ToolItem<
       range.selectNodeContents(this.editor)
       selection.removeAllRanges()
       selection.addRange(range)
+    }
+  }
+
+  setCellText(value: string) {
+    const setText = this.options.setText
+    if (typeof setText === 'function') {
+      FunctionExt.call(setText, this.cellView, {
+        cell: this.cell,
+        value,
+        index: this.labelIndex,
+        distance: this.distance,
+      })
     }
   }
 }
