@@ -42,19 +42,9 @@ export interface ResolvedOptions {
   excludeTerminals: Edge.TerminalType[]
 
   /**
-   * Should certain types of nodes not be considered as obstacles?
-   */
-  excludeShapes: string[]
-
-  /**
-   * Should certain hidden nodes not be considered as obstacles?
-   */
-  excludeHiddenNodes: boolean
-
-  /**
    * Should certain nodes not be considered as obstacles?
    */
-  excludeNodes: Node[]
+  excludeNodes: (Node | string)[]
 
   /**
    * Possible starting directions from a node.
@@ -132,6 +122,9 @@ export interface ResolvedOptions {
   ) => Point[] | null
 
   previousDirectionAngle?: number | null
+
+  // Whether the calculation results are aligned with the grid
+  snapToGrid?: boolean
 }
 
 export type ManhattanRouterOptions = {
@@ -145,9 +138,7 @@ export const defaults: ManhattanRouterOptions = {
   maxDirectionChange: 90,
   perpendicular: true,
   excludeTerminals: [],
-  excludeShapes: [], // ['text']
   excludeNodes: [],
-  excludeHiddenNodes: false,
   startDirections: ['top', 'right', 'bottom', 'left'],
   endDirections: ['top', 'right', 'bottom', 'left'],
   directionMap: {
@@ -195,6 +186,7 @@ export const defaults: ManhattanRouterOptions = {
 
   fallbackRouter: orth,
   draggingRouter: null,
+  snapToGrid: true,
 }
 
 export function resolve<T>(
