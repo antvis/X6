@@ -847,7 +847,6 @@ export class NodeView<
   ) {
     this.graph.model.startBatch('add-edge')
     const edgeView = this.createEdgeFromMagnet(magnet, x, y)
-    edgeView.notifyMouseDown(e, x, y) // backwards compatibility events
     edgeView.setEventData(
       e,
       edgeView.prepareArrowheadDragging('target', {
@@ -858,6 +857,7 @@ export class NodeView<
       }),
     )
     this.setEventData<Partial<EventData.Magnet>>(e, { edgeView })
+    edgeView.notifyMouseDown(e, x, y)
   }
 
   protected getDefaultEdge(sourceView: CellView, sourceMagnet: Element) {
