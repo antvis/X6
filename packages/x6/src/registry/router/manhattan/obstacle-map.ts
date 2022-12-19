@@ -71,15 +71,17 @@ export class ObstacleMap {
     const mapGridSize = this.mapGridSize
 
     model.getNodes().reduce((map, node) => {
-      const shape = node.shape
-      const excludeShapes = options.excludeShapes
-      const excType = shape ? excludeShapes.includes(shape) : false
-      const excTerminal = excludedTerminals.some((cell) => cell.id === node.id)
-      const excNode = options.excludeNodes.includes(node)
-      const excAncestor = excludedAncestors.includes(node.id)
-      const excHidden = options.excludeHiddenNodes && !node.isVisible()
-      const excluded =
-        excType || excTerminal || excNode || excAncestor || excHidden
+      const excludedTerminal = excludedTerminals.some(
+        (cell) => cell.id === node.id,
+      )
+      const excludedNode = options.excludeNodes.some((item) => {
+        if (typeof item === 'string') {
+          return node.id === item
+        }
+        return item === node
+      })
+      const excludedAncestor = excludedAncestors.includes(node.id)
+      const excluded = excludedTerminal || excludedNode || excludedAncestor
 
       if (!excluded) {
         const bbox = node.getBBox().moveAndExpand(options.paddingBox)
