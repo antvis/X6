@@ -74,6 +74,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
         x: coords.x,
         y: coords.y,
         options: {
+          ...this.options,
           toolId: this.cid,
         },
       })
