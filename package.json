@@ -51,7 +51,7 @@
       "prettier --write --ignore-unknown"
     ],
     "*.less": [
-      "stylelint --syntax less --fix"
+      "stylelint --custom-syntax postcss-less --fix"
     ],
     "*.js": [
       "prettier --write"
@@ -137,7 +137,6 @@
     "lodash": "^4.17.21",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.20",
-    "postcss-less": "^6.0.0",
     "prettier": "^2.8.0",
     "pretty-quick": "^3.1.1",
     "rimraf": "^3.0.2",
@@ -162,6 +161,7 @@
     "typescript": "^4.9.3"
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.2.0"
+    "@rollup/plugin-terser": "^0.2.0",
+    "postcss-less": "^6.0.0"
   }
 }
