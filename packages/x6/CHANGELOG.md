@@ -1,3 +1,11 @@
+## @antv/x6 [2.1.1](https://github.com/antvis/x6/compare/@antv/x6@2.1.0...@antv/x6@2.1.1) (2022-12-19)
+
+
+### Bug Fixes
+
+* arrowhead not get options bug ([#3065](https://github.com/antvis/x6/issues/3065)) ([3b668fe](https://github.com/antvis/x6/commit/3b668feb4eac47994f52d0cc977d22a8a2c06acd))
+* set snapToGrid to false by default ([#3066](https://github.com/antvis/x6/issues/3066)) ([e2bb71d](https://github.com/antvis/x6/commit/e2bb71d95484b29187fafca97f1a386e9b984095))
+
 # @antv/x6 [2.1.0](https://github.com/antvis/x6/compare/@antv/x6@2.0.9...@antv/x6@2.1.0) (2022-12-19)
 
 
