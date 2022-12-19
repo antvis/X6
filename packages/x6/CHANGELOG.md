@@ -1,3 +1,10 @@
+# @antv/x6 [2.1.0](https://github.com/antvis/x6/compare/@antv/x6@2.0.9...@antv/x6@2.1.0) (2022-12-19)
+
+
+### Features
+
+* add snapToGrid options for manhattan router ([#3062](https://github.com/antvis/x6/issues/3062)) ([824560d](https://github.com/antvis/x6/commit/824560ddda7016158cce3166773e1af009bfe498))
+
 ## @antv/x6 [2.0.9](https://github.com/antvis/x6/compare/@antv/x6@2.0.8...@antv/x6@2.0.9) (2022-12-16)
 
 
