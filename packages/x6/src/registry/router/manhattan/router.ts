@@ -282,7 +282,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
   )
 
   const oldVertices = vertices.map((p) => Point.create(p))
-  const newVertices: Point[] = []
+  let newVertices: Point[] = []
 
   // The origin of first route's grid, does not need snapping
   let tailPoint = sourceEndpoint
@@ -348,6 +348,13 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
     // Save tailPoint for next iteration
     tailPoint = partialRoute[partialRoute.length - 1] || tailPoint
     newVertices.push(...partialRoute)
+  }
+
+  if (options.snapToGrid) {
+    newVertices = newVertices.map((vertice) => {
+      const gridSize = edgeView.graph.grid.getGridSize()
+      return vertice.snapToGrid(gridSize)
+    })
   }
 
   return newVertices
