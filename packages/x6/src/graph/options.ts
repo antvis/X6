@@ -55,6 +55,8 @@ export namespace Options {
 
     onPortRendered?: (args: OnPortRenderedArgs) => void
     onEdgeLabelRendered?: (args: OnEdgeLabelRenderedArgs) => void
+
+    createCellView?: (this: Graph, cell: Cell) => CellView | null | undefined
   }
 
   export interface ManualBooleans {
