@@ -1,4 +1,5 @@
 import { defineComponent, h, reactive, isVue3, Vue } from 'vue-demi'
+import { Graph } from '@antv/x6'
 import { VueShape } from './node'
 
 let active = false
@@ -9,6 +10,7 @@ export function connect(
   component: any,
   container: HTMLDivElement,
   node: VueShape,
+  graph: Graph,
 ) {
   if (active) {
     const { Teleport, markRaw } = Vue as any
@@ -17,6 +19,7 @@ export function connect(
         render: () => h(Teleport, { to: container } as any, [h(component)]),
         provide: () => ({
           getNode: () => node,
+          getGraph: () => graph,
         }),
       }),
     )
