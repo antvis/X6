@@ -10,9 +10,13 @@ redirect_from:
 
 ### async
 
-是否是异步渲染的画布。异步渲染不会阻塞 UI，对需要添加大量节点和边时的性能提升非常明显。但需要注意的是，一些同步操作可能会出现意外结果，比如获取某个节点的视图、获取节点/边的包围盒等，因为这些同步操作触发时异步渲染可能并没有完成，此时只能通过监听 `render:done` 事件来确保所有变更都已经生效，然后在事件回调中进行这些操作。
+是否是异步渲染的画布。异步渲染不会阻塞 UI，对需要添加大量节点和边时的性能提升非常明显。但需要注意的是，一些同步操作可能会出现意外结果，比如获取某个节点的视图、获取节点/边的包围盒等，因为这些同步操作触发时异步渲染可能并没有完成。
 
 <!-- <iframe src="/demos/api/graph/async"></iframe> -->
+
+### virtual
+
+是否只渲染可视区域内的元素，默认为 `false`，如果设置为 `true`，首屏加载只会渲染当前可视区域内的元素，当拖动画布或者缩放画布时，会根据画布窗口大小自动加载剩余元素。在元素数量很大的场景，性能提升非常明显。
 
 ### magnetThreshold
 
@@ -34,14 +38,6 @@ redirect_from:
 
 在画布空白位置响应鼠标事件时，是否禁用鼠标默认行为，默认为 `true`。
 
-### guard
-
-```sign
-(e: Dom.EventObject, view?: CellView | null) => boolean
-```
-
-是否应该忽略某个鼠标事件，返回 `true` 时忽略指定的鼠标事件，否则不忽略。
-
 ### onPortRendered
 
 ```sign
@@ -60,9 +56,7 @@ redirect_from:
 ) => void
 ```
 
-当某个连接桩渲染完成时触发的回调。
-
-<span class="tag-param">args 参数<span>
+当某个连接桩渲染完成时触发的回调,参数如下：
 
 | 名称             | 类型             | 非空 | 描述                                     |
 | ---------------- | ---------------- | :--: | ---------------------------------------- |
@@ -75,7 +69,6 @@ redirect_from:
 | contentContainer | Element          |  ✓   | 连接桩内容的容器元素。                   |
 | contentSelectors | Markup.Selectors |      | 连接桩内容 Markup 渲染后的选择器键值对。 |
 
-<span class="tag-example">使用<span>
 
 例如，我们可以渲染一个 React 类型的连接桩。
 
@@ -97,7 +90,7 @@ const graph = new Graph({
 });
 ```
 
-<iframe src="/demos/tutorial/advanced/react/react-port"></iframe>
+<!-- <iframe src="/demos/tutorial/advanced/react/react-port"></iframe> -->
 
 ### onEdgeLabelRendered
 
@@ -113,9 +106,8 @@ const graph = new Graph({
 ) => void
 ```
 
-当边的文本标签渲染完成时触发的回调。
+当边的文本标签渲染完成时触发的回调，参数如下：
 
-<span class="tag-param">args 参数<span>
 
 | 名称      | 类型             | 非空 | 描述                                   |
 | --------- | ---------------- | :--: | -------------------------------------- |
@@ -124,7 +116,6 @@ const graph = new Graph({
 | container | Element          |  ✓   | 文本标签容器。                         |
 | selectors | Markup.Selectors |  ✓   | 文本标签 Markup 渲染后的选择器键值对。 |
 
-<span class="tag-example">使用<span>
 
 例如，我们可以在标签上渲染任何想要的元素。
 
@@ -164,7 +155,7 @@ const graph = new Graph({
 });
 ```
 
-<iframe src="/demos/tutorial/advanced/react/react-label-base"></iframe>
+<!-- <iframe src="/demos/tutorial/advanced/react/react-label-base"></iframe> -->
 
 我们也可以在定义 Label 的 Markup 时添加 `<foreignObject>` 元素来支持 HTML 和 React 的渲染能力。
 
@@ -185,71 +176,20 @@ const graph = new Graph({
 });
 ```
 
-<iframe src="/demos/tutorial/advanced/react/react-label-markup"></iframe>
+<!-- <iframe src="/demos/tutorial/advanced/react/react-label-markup"></iframe> -->
 
-### onToolItemCreated
+### createCellView
 
 ```sign
 (
   this: Graph,
-  args: {
-    name: string
-    cell: Cell
-    view: CellView
-    tool: View
-  },
-) => void
+  cell: Cell,
+) => CellView | null | undefined
 ```
 
-当工具项渲染完成时触发的回调。
-
-<span class="tag-param">args 参数<span>
-
-| 名称 | 类型     | 非空 | 描述          |
-| ---- | -------- | :--: | ------------- |
-| cell | Cell     |  ✓   | 节点/边实例。 |
-| view | CellView |  ✓   | 节点/边视图。 |
-| name | string   |  ✓   | 工具项名称。  |
-| tool | View     |  ✓   | 工具视图。    |
-
-<span class="tag-example">使用<span>
-
-例如，我们为 `vertices` 工具设置间隔填充效果。
-
-```ts
-const graph = new Graph({
-  container: this.container,
-  grid: true,
-  onToolItemCreated({ name, cell, tool }) {
-    if (name === "vertices" && cell === edge2) {
-      const options = (tool as any).options;
-      if (options && options.index % 2 === 1) {
-        tool.setAttrs({ fill: "red" });
-      }
-    }
-  },
-});
-```
-
-<iframe src="/demos/api/registry/edge-tool/vertices"></iframe>
+自定义元素的视图，可以返回一个 `CellView`，会替换默认的视图，如果返回 `null`，则不会渲染，如果返回 `undefined`，会按照默认方式渲染。 
 
 ## 方法
-
-### isAsync()
-
-```sign
-isAsync(): boolean
-```
-
-返回画布是否是异步渲染模式。异步渲染不会阻塞 UI，对需要添加大量节点和边时的性能提升非常明显，异步画布的使用细节请参考 [`async`](#async) 选项。
-
-### isFrozen()
-
-```sign
-isFrozen(): boolean
-```
-
-返回[异步画布](#async)是否处于冻结状态。处于冻结状态的画布不会立即响应画布中节点和边的变更，直到调用 [`unfreeze(...)`](#unfreeze) 方法来解除冻结并重新渲染画布。
 
 ### findView(...)
 
