@@ -1,4 +1,4 @@
-import { KeyValue, Dom, Disposable } from '@antv/x6-common'
+import { KeyValue, Dom, Disposable, FunctionExt } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
@@ -181,13 +181,15 @@ export class Scheduler extends Disposable {
         }
       }
 
-      this.requestViewUpdate(
-        viewItem.view,
-        flag,
-        options,
-        cell.isNode() ? JOB_PRIORITY.RenderNode : JOB_PRIORITY.RenderEdge,
-        false,
-      )
+      if (viewItem) {
+        this.requestViewUpdate(
+          viewItem.view,
+          flag,
+          options,
+          cell.isNode() ? JOB_PRIORITY.RenderNode : JOB_PRIORITY.RenderEdge,
+          false,
+        )
+      }
     })
 
     this.flush()
@@ -375,15 +377,22 @@ export class Scheduler extends Disposable {
   }
 
   protected createCellView(cell: Cell) {
-    const options = { graph: this.graph }
+    const createViewHook = this.graph.options.createCellView
+    if (createViewHook) {
+      const ret = FunctionExt.call(createViewHook, this.graph, cell)
+      if (ret || ret === null) {
+        return ret
+      }
+    }
 
     const view = cell.view
+    const options = { graph: this.graph }
+
     if (view != null && typeof view === 'string') {
       const def = CellView.registry.get(view)
       if (def) {
         return new def(cell, options) // eslint-disable-line new-cap
       }
-
       return CellView.registry.onNotFound(view)
     }
 
