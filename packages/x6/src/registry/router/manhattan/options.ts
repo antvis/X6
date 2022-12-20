@@ -186,7 +186,7 @@ export const defaults: ManhattanRouterOptions = {
 
   fallbackRouter: orth,
   draggingRouter: null,
-  snapToGrid: false,
+  snapToGrid: true,
 }
 
 export function resolve<T>(
