@@ -26,6 +26,7 @@ export class VueShapeView extends NodeView<VueShape> {
     this.unmountVueComponent()
     const root = this.getComponentContainer()
     const node = this.cell
+    const graph = this.graph
 
     if (root) {
       const { component } = shapeMaps[node.shape]
@@ -40,13 +41,13 @@ export class VueShapeView extends NodeView<VueShape> {
             provide() {
               return {
                 getNode: () => node,
-                getGraph: () => this.graph,
+                getGraph: () => graph,
               }
             },
           })
         } else if (isVue3) {
           if (isActive()) {
-            connect(this.targetId(), component, root, node, this.graph)
+            connect(this.targetId(), component, root, node, graph)
           } else {
             this.vm = createApp({
               render() {
@@ -55,7 +56,7 @@ export class VueShapeView extends NodeView<VueShape> {
               provide() {
                 return {
                   getNode: () => node,
-                  getGraph: () => this.graph,
+                  getGraph: () => graph,
                 }
               },
             })
