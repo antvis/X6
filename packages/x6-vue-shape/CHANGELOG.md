@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [2.0.9](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@2.0.8...@antv/x6-vue-shape@2.0.9) (2022-12-21)
+
+
+### Bug Fixes
+
+* get graph from right place ([#3078](https://github.com/antvis/x6/issues/3078)) ([844ee5f](https://github.com/antvis/x6/commit/844ee5fa043cbcd788ec1693f88576e797426228))
+
 ## @antv/x6-vue-shape [2.0.7](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@2.0.6...@antv/x6-vue-shape@2.0.7) (2022-12-09)
 
 
