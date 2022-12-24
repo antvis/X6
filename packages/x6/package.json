@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "2.1.1",
+  "version": "2.1.3",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering",
   "main": "lib/index.js",
   "module": "es/index.js",

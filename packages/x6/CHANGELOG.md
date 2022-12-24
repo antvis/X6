@@ -1,3 +1,10 @@
+## @antv/x6 [2.1.3](https://github.com/antvis/x6/compare/@antv/x6@2.1.2...@antv/x6@2.1.3) (2022-12-24)
+
+
+### Bug Fixes
+
+* schedule edge when source and target is not ready ([#3090](https://github.com/antvis/x6/issues/3090)) ([019333d](https://github.com/antvis/x6/commit/019333d79d7f22c44c400f29d501497f4323af1a))
+
 ## @antv/x6 [2.1.1](https://github.com/antvis/x6/compare/@antv/x6@2.1.0...@antv/x6@2.1.1) (2022-12-19)
 
 
