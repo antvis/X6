@@ -1,3 +1,10 @@
+## @antv/x6-plugin-transform [2.1.5](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.4...@antv/x6-plugin-transform@2.1.5) (2022-12-24)
+
+
+### Bug Fixes
+
+* add defense for view in transform plugin ([#3092](https://github.com/antvis/x6/issues/3092)) ([fb8098c](https://github.com/antvis/x6/commit/fb8098c1c06440dd69f4e93881fd36f7e6de2a56))
+
 ## @antv/x6-plugin-transform [2.1.4](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.3...@antv/x6-plugin-transform@2.1.4) (2022-12-07)
 
 
