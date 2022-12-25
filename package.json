@@ -2,7 +2,7 @@
   "name": "x6",
   "private": true,
   "scripts": {
-    "preinstall": "node ./scripts/preinstall",
+    "preinstall": "npx only-allow pnpm",
     "lint:ts": "eslint '**/src/**/*.{js,ts}?(x)' --cache --fix",
     "lint:style": "stylelint '**/src/**/*.less' --customSyntax postcss-less --cache --fix",
     "lint": "run-s lint:ts lint:style",
