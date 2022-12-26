@@ -12,7 +12,9 @@ if (window) {
   (window as any).x6PluginStencil = require('@antv/x6-plugin-stencil');
   (window as any).x6PluginHistory = require('@antv/x6-plugin-history');
   (window as any).x6ReactShape = require('@antv/x6-react-shape');
+  (window as any).x6Common = require('@antv/x6-common');
   (window as any).layout = require('@antv/layout');
+  (window as any).classnames = require('classnames');
   (window as any).hierarchy = require('@antv/hierarchy');
   (window as any).elkjs = require('elkjs/lib/elk.bundled.js');
 }
