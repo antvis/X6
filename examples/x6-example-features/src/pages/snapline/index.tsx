@@ -2,6 +2,7 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import { Snapline } from '@antv/x6-plugin-snapline'
 import '../index.less'
+import { SNAP_PORT_RECT } from './port-node'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -45,6 +46,49 @@ export default class Example extends React.Component {
       width: 80,
       height: 40,
       attrs: { label: { text: 'C' } },
+    })
+
+    graph.addNode({
+      shape: SNAP_PORT_RECT,
+      x: 400,
+      y: 250,
+      width: 80,
+      height: 40,
+      ports: [
+        { id: 'port2', group: 'right' },
+        { id: 'port3', group: 'right' },
+        { id: 'port4', group: 'bottom' },
+        { id: 'port5', group: 'bottom' },
+        { id: 'port6', group: 'bottom' },
+      ],
+    })
+
+    graph.addNode({
+      shape: SNAP_PORT_RECT,
+      x: 400,
+      y: 350,
+      width: 100,
+      height: 60,
+      ports: [
+        { id: 'port1', group: 'left' },
+        { id: 'port2', group: 'left' },
+        { id: 'port3', group: 'left' },
+        { id: 'port4', group: 'left' },
+      ],
+    })
+
+    graph.addNode({
+      shape: SNAP_PORT_RECT,
+      x: 400,
+      y: 500,
+      width: 100,
+      height: 60,
+      ports: [
+        { id: 'port1', group: 'top' },
+        { id: 'port2', group: 'top' },
+        { id: 'port3', group: 'top' },
+        { id: 'port4', group: 'top' },
+      ],
     })
   }
 
