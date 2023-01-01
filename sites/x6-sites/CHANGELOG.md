@@ -1,3 +1,10 @@
+# @antv/x6-sites [1.3.0](https://github.com/antvis/X6/compare/@antv/x6-sites@1.2.2...@antv/x6-sites@1.3.0) (2023-01-01)
+
+
+### Features
+
+* add data processing dag example ([#3091](https://github.com/antvis/X6/issues/3091)) ([d3301d3](https://github.com/antvis/X6/commit/d3301d33d575269d9219ab1337a2ec1785d61494))
+
 ## @antv/x6-sites [1.2.2](https://github.com/antvis/X6/compare/@antv/x6-sites@1.2.1...@antv/x6-sites@1.2.2) (2022-12-24)
 
 
