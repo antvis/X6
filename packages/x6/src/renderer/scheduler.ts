@@ -223,13 +223,13 @@ export class Scheduler extends Disposable {
         cell.isEdge() &&
         (result & view.getFlag(['source', 'target'])) === 0
       ) {
-        this.requestViewUpdate(
-          view,
-          result,
-          options,
-          JOB_PRIORITY.RenderEdge,
-          false,
-        )
+        this.queue.queueJob({
+          id,
+          priority: JOB_PRIORITY.RenderEdge,
+          cb: () => {
+            this.updateView(view, flag, options)
+          },
+        })
       }
     }
   }
