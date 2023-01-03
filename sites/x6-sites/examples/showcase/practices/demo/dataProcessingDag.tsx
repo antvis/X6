@@ -1,7 +1,6 @@
 import React from 'react'
-import { Graph, Node, Path, Edge, Platform } from '@antv/x6'
+import { Graph, Node, Path, Edge, Platform, StringExt } from '@antv/x6'
 import { Selection } from '@antv/x6-plugin-selection'
-import { StringExt } from '@antv/x6-common'
 import classnames from 'classnames'
 import insertCss from 'insert-css'
 import { register } from '@antv/x6-react-shape'
@@ -57,12 +56,16 @@ const PROCESSING_TYPE_LIST = [
 
 // 不同节点类型的icon
 const NODE_TYPE_LOGO = {
-  INPUT: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*RXnuTpQ22xkAAAAAAAAAAAAADtOHAQ/original', // 数据输入
-  FILTER: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*ZJ6qToit8P4AAAAAAAAAAAAADtOHAQ/original', // 数据筛选
+  INPUT:
+    'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*RXnuTpQ22xkAAAAAAAAAAAAADtOHAQ/original', // 数据输入
+  FILTER:
+    'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*ZJ6qToit8P4AAAAAAAAAAAAADtOHAQ/original', // 数据筛选
   JOIN: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*EHqyQoDeBvIAAAAAAAAAAAAADtOHAQ/original', // 数据连接
-  UNION: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*k4eyRaXv8gsAAAAAAAAAAAAADtOHAQ/original', // 数据合并
+  UNION:
+    'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*k4eyRaXv8gsAAAAAAAAAAAAADtOHAQ/original', // 数据合并
   AGG: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*TKG8R6nfYiAAAAAAAAAAAAAADtOHAQ/original', // 数据聚合
-  OUTPUT: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*zUgORbGg1HIAAAAAAAAAAAAADtOHAQ/original', // 数据输出
+  OUTPUT:
+    'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*zUgORbGg1HIAAAAAAAAAAAAADtOHAQ/original', // 数据输出
 }
 
 /**
@@ -105,7 +108,7 @@ const getDownstreamNodePosition = (
 
   return {
     x: minX !== Infinity ? minX : position.x + dx,
-    y: maxY !== -Infinity ? maxY + dy  : position.y,
+    y: maxY !== -Infinity ? maxY + dy : position.y,
   }
 }
 
@@ -161,8 +164,12 @@ export const createNode = (
     return {}
   }
   let newNode = {}
-  const sameTypeNodes = graph.getNodes().filter(item => item.getData()?.type === type);
-  const typeName = PROCESSING_TYPE_LIST?.find((item) => item.type === type)?.name;
+  const sameTypeNodes = graph
+    .getNodes()
+    .filter((item) => item.getData()?.type === type)
+  const typeName = PROCESSING_TYPE_LIST?.find(
+    (item) => item.type === type,
+  )?.name
   const id = StringExt.uuid()
   const node = {
     id,
@@ -243,21 +250,24 @@ class DataProcessingDagNode extends React.Component<{
   getPlusDagMenu = () => {
     return (
       <ul>
-        {
-          PROCESSING_TYPE_LIST.map((item) => {
-            const content = (
-              <a onClick={() => this.clickPlusDragMenu(item.type)}>
-                <i
-                  className="node-mini-logo"
-                  style={{ backgroundImage: `url(${NODE_TYPE_LOGO[item.type]})` }}
-                />
+        {PROCESSING_TYPE_LIST.map((item) => {
+          const content = (
+            // eslint-disable-next-line
+            <a onClick={() => this.clickPlusDragMenu(item.type)}>
+              <i
+                className="node-mini-logo"
+                style={{ backgroundImage: `url(${NODE_TYPE_LOGO[item.type]})` }}
+              />
 
-                <span>{item.name}</span>
-              </a>
-            )
-            return <li className="each-sub-menu">{content}</li>
-          })
-        }
+              <span>{item.name}</span>
+            </a>
+          )
+          return (
+            <li className="each-sub-menu" key={item.type}>
+              {content}
+            </li>
+          )
+        })}
       </ul>
     )
   }
@@ -273,9 +283,12 @@ class DataProcessingDagNode extends React.Component<{
   onMainMouseEnter = () => {
     const { node } = this.props
     // 获取该节点下的所有连接桩
-    const ports = node.getPorts() || [];
+    const ports = node.getPorts() || []
     ports.forEach((port) => {
-      node.setPortProp(port.id, 'attrs/circle', { fill: '#fff', stroke: '#85A5FF' })
+      node.setPortProp(port.id, 'attrs/circle', {
+        fill: '#fff',
+        stroke: '#85A5FF',
+      })
     })
   }
 
@@ -285,7 +298,10 @@ class DataProcessingDagNode extends React.Component<{
     // 获取该节点下的所有连接桩
     const ports = node.getPorts() || []
     ports.forEach((port) => {
-      node.setPortProp(port.id, 'attrs/circle', { fill: 'transparent', stroke: 'transparent' })
+      node.setPortProp(port.id, 'attrs/circle', {
+        fill: 'transparent',
+        stroke: 'transparent',
+      })
     })
   }
 
@@ -404,21 +420,31 @@ Graph.registerConnector(
   (sourcePoint, targetPoint) => {
     const hgap = Math.abs(targetPoint.x - sourcePoint.x)
     const path = new Path()
-    path.appendSegment(Path.createSegment('M', sourcePoint.x - 4, sourcePoint.y))
-    path.appendSegment(Path.createSegment('L', sourcePoint.x + 12, sourcePoint.y))
+    path.appendSegment(
+      Path.createSegment('M', sourcePoint.x - 4, sourcePoint.y),
+    )
+    path.appendSegment(
+      Path.createSegment('L', sourcePoint.x + 12, sourcePoint.y),
+    )
     // 水平三阶贝塞尔曲线
     path.appendSegment(
       Path.createSegment(
         'C',
-        sourcePoint.x < targetPoint.x ? sourcePoint.x + hgap / 2 : sourcePoint.x - hgap / 2,
+        sourcePoint.x < targetPoint.x
+          ? sourcePoint.x + hgap / 2
+          : sourcePoint.x - hgap / 2,
         sourcePoint.y,
-        sourcePoint.x < targetPoint.x ? targetPoint.x - hgap / 2 : targetPoint.x + hgap / 2,
+        sourcePoint.x < targetPoint.x
+          ? targetPoint.x - hgap / 2
+          : targetPoint.x + hgap / 2,
         targetPoint.y,
         targetPoint.x - 6,
         targetPoint.y,
       ),
     )
-    path.appendSegment(Path.createSegment('L', targetPoint.x + 2, targetPoint.y))
+    path.appendSegment(
+      Path.createSegment('L', targetPoint.x + 2, targetPoint.y),
+    )
 
     return path.serialize()
   },
@@ -521,7 +547,7 @@ const graph: Graph = new Graph({
       })
     },
     // 连接桩校验
-    validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
+    validateConnection({ sourceMagnet, targetMagnet }) {
       // 只能从输出链接桩创建连接
       if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'in') {
         return false
@@ -535,14 +561,16 @@ const graph: Graph = new Graph({
   },
 })
 
-graph.use(new Selection({
-  enabled: true,
-  multiple: true,
-  rubberEdge: true,
-  rubberNode: true,
-  modifiers: 'shift',
-  rubberband: true,
-}))
+graph.use(
+  new Selection({
+    enabled: true,
+    multiple: true,
+    rubberEdge: true,
+    rubberNode: true,
+    modifiers: 'shift',
+    rubberband: true,
+  }),
+)
 
 // 节点状态列表
 const nodeStatusList = [
@@ -565,7 +593,7 @@ const nodeStatusList = [
   {
     id: 'node-4',
     status: 'error',
-    statusMsg: '错误信息示例'
+    statusMsg: '错误信息示例',
   },
 ]
 
@@ -655,7 +683,6 @@ fetch('/data/data-processing-dag.json')
       stopAnimate()
     }, 3000)
   })
-
 
 insertCss(`
   .data-processing-dag-node {
