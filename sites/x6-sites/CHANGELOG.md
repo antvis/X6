@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.3.1) (2023-01-03)
+
+
+### Bug Fixes
+
+* optimize rendering logic to prevent loops ([#3108](https://github.com/antvis/x6/issues/3108)) ([45337e4](https://github.com/antvis/x6/commit/45337e4a62224aaffd60fc8b2670a071c5560796))
+
 # @antv/x6-sites [1.3.0](https://github.com/antvis/X6/compare/@antv/x6-sites@1.2.2...@antv/x6-sites@1.3.0) (2023-01-01)
 
 
