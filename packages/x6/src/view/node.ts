@@ -357,7 +357,12 @@ export class NodeView<
 
   protected updatePorts() {
     const groups = this.cell.getParsedGroups()
-    Object.keys(groups).forEach((groupName) => this.updatePortGroup(groupName))
+    const groupList = Object.keys(groups)
+    if (groupList.length === 0) {
+      this.updatePortGroup()
+    } else {
+      groupList.forEach((groupName) => this.updatePortGroup(groupName))
+    }
   }
 
   protected updatePortGroup(groupName?: string) {
