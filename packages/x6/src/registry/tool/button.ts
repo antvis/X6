@@ -129,7 +129,7 @@ export class Button extends ToolsView.ToolItem<
     }
   }
 
-  protected onMouseMove(e: Dom.MouseDownEvent) {
+  protected onMouseMove(e: Dom.MouseMoveEvent) {
     if (this.guard(e)) {
       return
     }
@@ -169,7 +169,7 @@ export namespace Button {
     onMouseMove?: (
       this: CellView,
       args: {
-        e: Dom.MouseDownEvent
+        e: Dom.MouseMoveEvent
         cell: Cell
         view: CellView
         btn: Button
