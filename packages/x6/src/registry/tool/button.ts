@@ -1,9 +1,6 @@
 import { Point } from '@antv/x6-geometry'
 import { Dom, NumberExt, FunctionExt } from '@antv/x6-common'
-import { CellView } from '../../view/cell'
-import { NodeView } from '../../view/node'
-import { EdgeView } from '../../view/edge'
-import { ToolsView } from '../../view/tool'
+import { CellView, NodeView, EdgeView, ToolsView } from '../../view'
 import * as Util from './util'
 import { Cell } from '../../model'
 
@@ -131,6 +128,25 @@ export class Button extends ToolsView.ToolItem<
       })
     }
   }
+
+  protected onMouseMove(e: Dom.MouseDownEvent) {
+    if (this.guard(e)) {
+      return
+    }
+
+    e.stopPropagation()
+    e.preventDefault()
+
+    const onMouseMove = this.options.onMouseMove
+    if (typeof onMouseMove === 'function') {
+      FunctionExt.call(onMouseMove, this.cellView, {
+        e,
+        view: this.cellView,
+        cell: this.cellView.cell,
+        btn: this,
+      })
+    }
+  }
 }
 
 export namespace Button {
@@ -150,6 +166,15 @@ export namespace Button {
         btn: Button
       },
     ) => any
+    onMouseMove?: (
+      this: CellView,
+      args: {
+        e: Dom.MouseDownEvent
+        cell: Cell
+        view: CellView
+        btn: Button
+      },
+    ) => any
   }
 }
 
@@ -160,6 +185,8 @@ export namespace Button {
     events: {
       mousedown: 'onMouseDown',
       touchstart: 'onMouseDown',
+      mousemove: 'onMouseMove',
+      touchmove: 'onMouseMove',
     },
   })
 }
