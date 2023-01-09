@@ -13,7 +13,14 @@ import {
   CellView,
   NodeView,
   View,
+  PointLike,
 } from '@antv/x6'
+
+interface AlignOptions {
+  diff: number
+  src: PointLike
+  dist: PointLike
+}
 
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImpl.Options
@@ -415,114 +422,151 @@ export class SnaplineImpl extends View implements IDisablable {
     }
   }
 
-  snapOnMoving({ view, e, x, y }: EventArgs['node:mousemove']) {
-    const targetView: NodeView = view.getEventData(e).delegatedView || view
-    if (!this.isNodeMovable(targetView)) {
-      return
-    }
+  getPortPosition(node: Node, portId: string) {
+    const port = node.getPort(portId)
+    if (!port) return null
+    const positions = node.getPortsPosition(port.group!)
+    const portRelPos = positions[portId]
+    const { x, y } = node.getPosition()
+    const { width, height } = node.getSize()
+    const angle = node.getAngle()
+    const relPos = Point.rotate(portRelPos.position, -angle || 0, {
+      x: width / 2,
+      y: height / 2,
+    })
 
-    const node = targetView.cell
+    return { x: x + relPos.x, y: y + relPos.y }
+  }
+
+  findMinDistance(ports: PointLike[], tPorts: PointLike[]) {
+    const distance = this.options.tolerance || 0
+    const getMin = (type: 'x' | 'y'): AlignOptions | null => {
+      let min: AlignOptions | null = null
+      ports.forEach((point) => {
+        tPorts.forEach((tPoint) => {
+          const diff = Math.abs(point[type] - tPoint[type])
+          if (diff > distance) return
+          if (!min) {
+            min = { diff, src: point, dist: tPoint }
+          } else if (min.diff > diff) {
+            min = { diff, src: point, dist: tPoint }
+          }
+        })
+      })
+
+      return min
+    }
+    const minX = getMin('x')
+    const minY = getMin('y')
+
+    return { minX, minY }
+  }
+
+  getNodePorts(node: Node): PointLike[] {
+    return <PointLike[]>node
+      .getPorts()
+      .map((portMeta) => this.getPortPosition(node, portMeta.id!))
+      .filter((item) => !!item)
+  }
+
+  getAlignArgsByPorts(targetView: NodeView) {
+    const tNode = targetView.cell
+    const nodes = this.model.getNodes().filter((item) => item !== tNode)
+    const tPorts = this.getNodePorts(tNode)
+    const aligns = nodes
+      .map((node) => this.findMinDistance(this.getNodePorts(node), tPorts))
+      .filter((item) => !!item)
+
+    return this.getAlign(aligns)
+  }
+
+  getNodePoints(node: Node): PointLike[] {
     const size = node.getSize()
     const position = node.getPosition()
     const cellBBox = new Rectangle(
-      x - this.offset.x,
-      y - this.offset.y,
+      position.x,
+      position.y,
       size.width,
       size.height,
     )
     const angle = node.getAngle()
-    const nodeCenter = cellBBox.getCenter()
-    const nodeBBoxRotated = cellBBox.bbox(angle)
-    const nodeTopLeft = nodeBBoxRotated.getTopLeft()
-    const nodeBottomRight = nodeBBoxRotated.getBottomRight()
+    const rotatedBox = cellBBox.bbox(angle)
+    const topLeft = rotatedBox.getTopLeft()
+    const topRight = rotatedBox.getTopRight()
+    const bottomRight = rotatedBox.getBottomRight()
+    const bottomLeft = rotatedBox.getBottomLeft()
+    const center = rotatedBox.getCenter()
 
-    const distance = this.options.tolerance || 0
+    return [topLeft, topRight, bottomRight, bottomLeft, center]
+  }
+
+  getAlign(
+    aligns: Array<{ minX: AlignOptions | null; minY: AlignOptions | null }>,
+  ) {
+    const xAligns: AlignOptions[] = []
+    const yAligns: AlignOptions[] = []
+    aligns.forEach((item) => {
+      const { minX, minY } = item
+      minX && xAligns.push(minX)
+      minY && yAligns.push(minY)
+    })
+
+    return {
+      minX: minBy<AlignOptions>(xAligns, 'diff'),
+      minY: minBy<AlignOptions>(yAligns, 'diff'),
+    }
+  }
+
+  getAlignArgsByNode(targetView: NodeView) {
+    const tNode = targetView.cell
+    const nodes = this.model.getNodes().filter((item) => item !== tNode)
+    const tPoints = this.getNodePoints(tNode)
+    const aligns = nodes
+      .map((node) => this.findMinDistance(this.getNodePoints(node), tPoints))
+      .filter((item) => !!item)
+
+    return this.getAlign(aligns)
+  }
+
+  snapOnMoving(event: EventArgs['node:mousemove']) {
+    const { view, e } = event
+    const targetView: NodeView = view.getEventData(e).delegatedView || view
+    if (!this.isNodeMovable(targetView)) {
+      return
+    }
+    const portArgs = this.getAlignArgsByPorts(targetView)
+    const nodeArgs = this.getAlignArgsByNode(targetView)
+    const xArgs = minBy([portArgs.minX, nodeArgs.minX], 'diff')
+    const yArgs = minBy([portArgs.minY, nodeArgs.minY], 'diff')
+
+    const node = targetView.cell
+
     let verticalLeft: number | undefined
     let verticalTop: number | undefined
     let verticalHeight: number | undefined
     let horizontalTop: number | undefined
     let horizontalLeft: number | undefined
     let horizontalWidth: number | undefined
-    let verticalFix = 0
-    let horizontalFix = 0
-
-    this.model.getNodes().some((targetNode) => {
-      if (this.isIgnored(node, targetNode)) {
-        return false
-      }
-
-      const snapBBox = targetNode.getBBox().bbox(targetNode.getAngle())
-      const snapCenter = snapBBox.getCenter()
-      const snapTopLeft = snapBBox.getTopLeft()
-      const snapBottomRight = snapBBox.getBottomRight()
-
-      if (verticalLeft == null) {
-        if (Math.abs(snapCenter.x - nodeCenter.x) < distance) {
-          verticalLeft = snapCenter.x
-          verticalFix = 0.5
-        } else if (Math.abs(snapTopLeft.x - nodeTopLeft.x) < distance) {
-          verticalLeft = snapTopLeft.x
-          verticalFix = 0
-        } else if (Math.abs(snapTopLeft.x - nodeBottomRight.x) < distance) {
-          verticalLeft = snapTopLeft.x
-          verticalFix = 1
-        } else if (Math.abs(snapBottomRight.x - nodeBottomRight.x) < distance) {
-          verticalLeft = snapBottomRight.x
-          verticalFix = 1
-        } else if (Math.abs(snapBottomRight.x - nodeTopLeft.x) < distance) {
-          verticalLeft = snapBottomRight.x
-        }
-
-        if (verticalLeft != null) {
-          verticalTop = Math.min(nodeBBoxRotated.y, snapBBox.y)
-          verticalHeight =
-            Math.max(nodeBottomRight.y, snapBottomRight.y) - verticalTop
-        }
-      }
-
-      if (horizontalTop == null) {
-        if (Math.abs(snapCenter.y - nodeCenter.y) < distance) {
-          horizontalTop = snapCenter.y
-          horizontalFix = 0.5
-        } else if (Math.abs(snapTopLeft.y - nodeTopLeft.y) < distance) {
-          horizontalTop = snapTopLeft.y
-        } else if (Math.abs(snapTopLeft.y - nodeBottomRight.y) < distance) {
-          horizontalTop = snapTopLeft.y
-          horizontalFix = 1
-        } else if (Math.abs(snapBottomRight.y - nodeBottomRight.y) < distance) {
-          horizontalTop = snapBottomRight.y
-          horizontalFix = 1
-        } else if (Math.abs(snapBottomRight.y - nodeTopLeft.y) < distance) {
-          horizontalTop = snapBottomRight.y
-        }
-
-        if (horizontalTop != null) {
-          horizontalLeft = Math.min(nodeBBoxRotated.x, snapBBox.x)
-          horizontalWidth =
-            Math.max(nodeBottomRight.x, snapBottomRight.x) - horizontalLeft
-        }
-      }
-
-      return verticalLeft != null && horizontalTop != null
-    })
 
     this.hide()
 
-    if (horizontalTop != null || verticalLeft != null) {
-      if (horizontalTop != null) {
-        nodeBBoxRotated.y =
-          horizontalTop - horizontalFix * nodeBBoxRotated.height
+    if (xArgs || yArgs) {
+      let dx = 0
+      let dy = 0
+      if (xArgs) {
+        const { src, dist } = xArgs as AlignOptions
+        verticalLeft = src.x
+        verticalTop = Math.min(src.y, dist.y) - 100
+        verticalHeight = Math.max(src.y, dist.y) - verticalTop + 100
+        dx = verticalLeft! - dist.x
       }
-
-      if (verticalLeft != null) {
-        nodeBBoxRotated.x = verticalLeft - verticalFix * nodeBBoxRotated.width
+      if (yArgs) {
+        const { src, dist } = yArgs as AlignOptions
+        horizontalTop = src.y
+        horizontalLeft = Math.min(src.x, dist.x) - 100
+        horizontalWidth = Math.max(src.x, dist.x) - horizontalLeft + 100
+        dy = horizontalTop! - dist.y
       }
-
-      const newCenter = nodeBBoxRotated.getCenter()
-      const newX = newCenter.x - cellBBox.width / 2
-      const newY = newCenter.y - cellBBox.height / 2
-      const dx = newX - position.x
-      const dy = newY - position.y
 
       if (dx !== 0 || dy !== 0) {
         node.translate(dx, dy, {
@@ -669,6 +713,25 @@ export class SnaplineImpl extends View implements IDisablable {
   dispose() {
     this.remove()
   }
+}
+
+function minBy<T>(
+  arr: Array<{ [key: string]: any } | null>,
+  att: string,
+): T | null {
+  let res: any = null
+  arr.forEach((item) => {
+    if (!item) return
+    if (!res) {
+      res = item
+    } else {
+      if (res[att] > item[att]) {
+        res = item
+      }
+    }
+  })
+
+  return res
 }
 
 export namespace SnaplineImpl {

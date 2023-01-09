@@ -60,6 +60,7 @@ export default class Example extends React.Component {
         { id: 'port4', group: 'bottom' },
         { id: 'port5', group: 'bottom' },
         { id: 'port6', group: 'bottom' },
+        { id: 'port7', group: 'absolute', args: { x: -10, y: 10 } },
       ],
     })
 
@@ -88,6 +89,39 @@ export default class Example extends React.Component {
         { id: 'port2', group: 'top' },
         { id: 'port3', group: 'top' },
         { id: 'port4', group: 'top' },
+      ],
+    })
+    graph.addNode({
+      x: 200,
+      y: 500,
+      width: 100,
+      height: 60,
+      angle: 45,
+      ports: [
+        {
+          id: 'port1',
+          attrs: {
+            circle: {
+              r: 6,
+              magnet: true,
+              stroke: '#31d0c6',
+              strokeWidth: 2,
+              fill: '#fff',
+            },
+          },
+        },
+        {
+          id: 'port2',
+          attrs: {
+            circle: {
+              r: 6,
+              magnet: true,
+              stroke: '#31d0c6',
+              strokeWidth: 2,
+              fill: '#fff',
+            },
+          },
+        },
       ],
     })
   }

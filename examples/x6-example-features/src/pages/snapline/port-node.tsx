@@ -18,6 +18,11 @@ Shape.Rect.define({
   height: 60,
   ports: {
     groups: {
+      absolute: {
+        position: 'absolute',
+        args: { x: 0, y: 0 },
+        attrs: PortAttrs,
+      },
       top: {
         position: 'top',
         attrs: PortAttrs,
