@@ -81,7 +81,10 @@ export class Dnd extends View {
 
     this.targetModel.startBatch('dnd')
     Dom.addClass(this.container, 'dragging')
-    Dom.appendTo(this.container, this.options.containerParent || document.body)
+    Dom.appendTo(
+      this.container,
+      this.options.draggingContainer || document.body,
+    )
 
     this.sourceNode = node
     this.prepareDragging(node, e.clientX, e.clientY)
@@ -481,7 +484,7 @@ export namespace Dnd {
     //       duration?: number
     //       easing?: string
     //     }
-    containerParent?: HTMLElement
+    draggingContainer?: HTMLElement
     /**
      * dnd tool box container.
      */

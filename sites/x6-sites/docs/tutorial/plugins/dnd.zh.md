@@ -70,11 +70,12 @@ export default () => {
 
 | 选项                 | 类型                                                                                | 必选 | 默认值 | 说明                                                                                                     |
 | -------------------- | ----------------------------------------------------------------------------------- | :--: | ------ | -------------------------------------------------------------------------------------------------------- |
-| options.target       | Graph                                                                               |  ✓️  |        | 目标画布。                                                                                               |
-| options.getDragNode  | (sourceNode: Node, options: GetDragNodeOptions) => Node                             |      |        | 拖拽开始时，获取被拖拽的节点，默认克隆 `dnd.start` 传入的节点。                                          |
-| options.getDropNode  | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |        | 拖拽结束时，获取放置到目标画布的节点，默认克隆被拖拽的节点。                                             |
-| options.validateNode | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |        | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                           |
-| options.dndContainer | HTMLElement                                                                         |      |        | 如果设置 `dndContainer`，在 `dndContainer` 上放开鼠标不会放置节点，常用于 `dnd` 容器处于画布上面的场景。 |
+| target       | Graph                                                                               |  ✓️  |        | 目标画布。                                                                                               |
+| getDragNode  | (sourceNode: Node, options: GetDragNodeOptions) => Node                             |      |        | 拖拽开始时，获取被拖拽的节点，默认克隆 `dnd.start` 传入的节点。                                          |
+| getDropNode  | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |        | 拖拽结束时，获取放置到目标画布的节点，默认克隆被拖拽的节点。                                             |
+| validateNode | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |        | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                           |
+| dndContainer | HTMLElement                                                                         |      |        | 如果设置 `dndContainer`，在 `dndContainer` 上放开鼠标不会放置节点，常用于 `dnd` 容器处于画布上面的场景。 |
+| draggingContainer | HTMLElement                                                                         |      |    `document.body`   | 自定义拖拽画布容器。 |
 
 ## 常见问题
 
