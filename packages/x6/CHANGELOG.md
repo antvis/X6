@@ -1,3 +1,10 @@
+## @antv/x6 [2.1.5](https://github.com/antvis/x6/compare/@antv/x6@2.1.4...@antv/x6@2.1.5) (2023-01-13)
+
+
+### Bug Fixes
+
+* update group even group is empty ([#3117](https://github.com/antvis/x6/issues/3117)) ([6abd068](https://github.com/antvis/x6/commit/6abd0683eab22eb0fa1a4702642ab76b91320694))
+
 ## @antv/x6 [2.1.4](https://github.com/antvis/x6/compare/@antv/x6@2.1.3...@antv/x6@2.1.4) (2023-01-03)
 
 

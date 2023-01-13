@@ -1,3 +1,10 @@
+## @antv/x6-plugin-dnd [2.0.4](https://github.com/antvis/x6/compare/@antv/x6-plugin-dnd@2.0.3...@antv/x6-plugin-dnd@2.0.4) (2023-01-13)
+
+
+### Bug Fixes
+
+* change dragging container options ([#3139](https://github.com/antvis/x6/issues/3139)) ([7b091f3](https://github.com/antvis/x6/commit/7b091f35dee147c5e7bf97577e14e11ceb7e8e3d))
+
 ## @antv/x6-plugin-dnd [2.0.3](https://github.com/antvis/x6/compare/@antv/x6-plugin-dnd@2.0.2...@antv/x6-plugin-dnd@2.0.3) (2022-11-25)
 
 

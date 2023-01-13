@@ -1,3 +1,11 @@
+## @antv/x6-sites [1.3.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.1...@antv/x6-sites@1.3.2) (2023-01-13)
+
+
+### Bug Fixes
+
+* change dragging container options ([#3139](https://github.com/antvis/x6/issues/3139)) ([7b091f3](https://github.com/antvis/x6/commit/7b091f35dee147c5e7bf97577e14e11ceb7e8e3d))
+* update group even group is empty ([#3117](https://github.com/antvis/x6/issues/3117)) ([6abd068](https://github.com/antvis/x6/commit/6abd0683eab22eb0fa1a4702642ab76b91320694))
+
 ## @antv/x6-sites [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.3.1) (2023-01-03)
 
 
