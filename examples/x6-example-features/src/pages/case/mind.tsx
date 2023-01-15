@@ -212,12 +212,15 @@ export default class Example extends React.Component {
           return 'right'
         },
       })
-      const cells: Cell[] = []
       const traverse = (hierarchyItem: HierarchyResult) => {
         if (hierarchyItem) {
           const { data, children } = hierarchyItem
-          cells.push(
-            graph.createNode({
+          // 检查当前遍历的节点已经存在还是需要新添加？
+          if (graph.hasCell(data.id)) {
+            const node = graph.getCellById(data.id)
+            node.prop('position', { x: hierarchyItem.x, y: hierarchyItem.y })
+          } else {
+            const node = graph.addNode({
               id: data.id,
               shape: data.type === 'topic-child' ? 'topic-child' : 'topic',
               x: hierarchyItem.x,
@@ -226,13 +229,16 @@ export default class Example extends React.Component {
               height: data.height,
               label: data.label,
               type: data.type,
-            }),
-          )
+            })
+          }
           if (children) {
             children.forEach((item: HierarchyResult) => {
               const { id, data } = item
-              cells.push(
-                graph.createEdge({
+              const eid = `${hierarchyItem.id}-->${id}`
+              // 检查当前边是否已经存在
+              if (!graph.hasCell(eid)) {
+                graph.addEdge({
+                  id: `${hierarchyItem.id}-->${id}`,
                   shape: 'mindmap-edge',
                   source: {
                     cell: hierarchyItem.id,
@@ -257,15 +263,14 @@ export default class Example extends React.Component {
                       name: 'left',
                     },
                   },
-                }),
-              )
+                })
+              }
               traverse(item)
             })
           }
         }
       }
       traverse(result)
-      graph.resetCells(cells)
       graph.centerContent()
     }
 
@@ -334,10 +339,16 @@ export default class Example extends React.Component {
 
     const removeNode = (id: string) => {
       const res = findItem(data, id)
-      const dataItem = res?.parent
-      if (dataItem && dataItem.children) {
-        const { children } = dataItem
+      const parentItem = res?.parent
+      const nodeItem = res?.node
+      if (parentItem && parentItem.children) {
+        const { children } = parentItem
         const index = children.findIndex((item) => item.id === id)
+        // 删除的时候，先删节点以及可能存在的子节点，再调用render，对data数据进行遍历
+        if (nodeItem && nodeItem.children) {
+          nodeItem.children.forEach((item) => graph.removeCell(item.id))
+        }
+        graph.removeCell(id)
         return children.splice(index, 1)
       }
       return null
