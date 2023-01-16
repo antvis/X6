@@ -234,11 +234,13 @@ export default class Example extends React.Component {
           if (children) {
             children.forEach((item: HierarchyResult) => {
               const { id, data } = item
+              // 先遍历子节点（里面包含创建逻辑，如果画布没有开启async的时候，创建边会提示找不到target节点）
+              traverse(item)
               const eid = `${hierarchyItem.id}-->${id}`
               // 检查当前边是否已经存在
               if (!graph.hasCell(eid)) {
                 graph.addEdge({
-                  id: `${hierarchyItem.id}-->${id}`,
+                  id: eid,
                   shape: 'mindmap-edge',
                   source: {
                     cell: hierarchyItem.id,
@@ -265,7 +267,6 @@ export default class Example extends React.Component {
                   },
                 })
               }
-              traverse(item)
             })
           }
         }
