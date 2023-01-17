@@ -1,3 +1,10 @@
+## @antv/x6-example-features [2.0.2](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.0.1...@antv/x6-example-features@2.0.2) (2023-01-17)
+
+
+### Bug Fixes
+
+* **mindmap demo:** can not find target id when create edge ([#3144](https://github.com/antvis/X6/issues/3144)) ([bfc8d7f](https://github.com/antvis/X6/commit/bfc8d7f17ac900f70b696c1fa7a3f3f3a389103f))
+
 ## @antv/x6-example-features [2.0.1](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.0.0...@antv/x6-example-features@2.0.1) (2022-12-16)
 
 

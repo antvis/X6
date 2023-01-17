@@ -1,3 +1,10 @@
+## @antv/x6-react-components [2.0.6](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.5...@antv/x6-react-components@2.0.6) (2023-01-17)
+
+
+### Bug Fixes
+
+* stop propagation when click menu item ([#3147](https://github.com/antvis/x6/issues/3147)) ([90dad14](https://github.com/antvis/x6/commit/90dad14d7e1ad8639b80b215596c8f4bad7b00ed))
+
 ## @antv/x6-react-components [2.0.5](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.4...@antv/x6-react-components@2.0.5) (2022-11-25)
 
 
