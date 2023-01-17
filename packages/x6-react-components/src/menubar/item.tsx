@@ -26,6 +26,7 @@ class MenubarItemInner extends React.PureComponent<
   }
 
   onClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
     this.props.context.activeMenubar()
     this.removeDeactive(e.currentTarget.parentElement)
     this.active()
