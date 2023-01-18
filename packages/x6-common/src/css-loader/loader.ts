@@ -2,6 +2,7 @@ import { Platform } from '../platform'
 
 interface CssModule {
   name: string
+  loadTimes: number
   styleElement: HTMLStyleElement | null
 }
 
@@ -10,7 +11,10 @@ const cssModules: CssModule[] = []
 export function ensure(name: string, content: string) {
   const cssModule = cssModules.find((m) => m.name === name)
   if (cssModule) {
-    return
+    cssModule.loadTimes += 1
+    if (cssModule.loadTimes > 1) {
+      return
+    }
   }
 
   if (!Platform.isApplyingHMR()) {
@@ -25,6 +29,7 @@ export function ensure(name: string, content: string) {
 
     cssModules.push({
       name,
+      loadTimes: 1,
       styleElement,
     })
   }
@@ -34,7 +39,13 @@ export function clean(name: string) {
   const index = cssModules.findIndex((m) => m.name === name)
 
   if (index > -1) {
-    let styleElement = cssModules[index].styleElement
+    const cssModule = cssModules[index]
+    cssModule.loadTimes -= 1
+    if (cssModule.loadTimes > 0) {
+      return
+    }
+
+    let styleElement = cssModule.styleElement
     if (styleElement && styleElement.parentNode) {
       styleElement.parentNode.removeChild(styleElement)
     }
