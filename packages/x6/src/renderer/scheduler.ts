@@ -8,6 +8,7 @@ import { Graph } from '../graph'
 
 export class Scheduler extends Disposable {
   public views: KeyValue<Scheduler.View> = {}
+  public willRemoveViews: KeyValue<Scheduler.View> = {}
   protected zPivots: KeyValue<Comment>
   private graph: Graph
   private renderArea?: Rectangle
@@ -51,7 +52,7 @@ export class Scheduler extends Disposable {
   protected onModelReseted({ options }: Model.EventArgs['reseted']) {
     this.queue.clearJobs()
     this.removeZPivots()
-    this.removeViews()
+    this.resetViews()
     this.renderViews(this.model.getCells(), options)
   }
 
@@ -59,12 +60,8 @@ export class Scheduler extends Disposable {
     this.renderViews([cell], options)
   }
 
-  protected onCellRemoved({ cell, options }: Model.EventArgs['cell:removed']) {
-    const viewItem = this.views[cell.id]
-    if (viewItem) {
-      const view = viewItem.view
-      this.requestViewUpdate(view, Scheduler.FLAG_REMOVE, options)
-    }
+  protected onCellRemoved({ cell }: Model.EventArgs['cell:removed']) {
+    this.removeViews([cell])
   }
 
   protected onCellZIndexChanged({
@@ -186,7 +183,7 @@ export class Scheduler extends Disposable {
           viewItem.view,
           flag,
           options,
-          cell.isNode() ? JOB_PRIORITY.RenderNode : JOB_PRIORITY.RenderEdge,
+          this.getRenderPriority(viewItem.view),
           false,
         )
       }
@@ -234,6 +231,28 @@ export class Scheduler extends Disposable {
     }
   }
 
+  protected removeViews(cells: Cell[]) {
+    cells.forEach((cell) => {
+      const id = cell.id
+      const viewItem = this.views[id]
+
+      if (viewItem) {
+        this.willRemoveViews[id] = viewItem
+        delete this.views[id]
+
+        this.queue.queueJob({
+          id,
+          priority: this.getRenderPriority(viewItem.view),
+          cb: () => {
+            this.removeView(viewItem.view)
+          },
+        })
+      }
+    })
+
+    this.flush()
+  }
+
   protected flush() {
     this.graph.options.async
       ? this.queue.queueFlush()
@@ -246,10 +265,13 @@ export class Scheduler extends Disposable {
       const viewItem = this.views[ids[i]]
       if (viewItem && viewItem.state === Scheduler.ViewState.WAITTING) {
         const { view, flag, options } = viewItem
-        const priority = view.cell.isNode()
-          ? JOB_PRIORITY.RenderNode
-          : JOB_PRIORITY.RenderEdge
-        this.requestViewUpdate(view, flag, options, priority, false)
+        this.requestViewUpdate(
+          view,
+          flag,
+          options,
+          this.getRenderPriority(view),
+          false,
+        )
       }
     }
 
@@ -295,23 +317,25 @@ export class Scheduler extends Disposable {
     }
   }
 
-  protected removeViews() {
-    Object.keys(this.views).forEach((id) => {
-      const viewItem = this.views[id]
+  protected resetViews() {
+    this.willRemoveViews = { ...this.views }
+    Object.keys(this.willRemoveViews).forEach((id) => {
+      const viewItem = this.willRemoveViews[id]
       if (viewItem) {
-        this.removeView(viewItem.view.cell)
+        this.removeView(viewItem.view)
       }
     })
     this.views = {}
+    this.willRemoveViews = {}
   }
 
-  protected removeView(cell: Cell) {
-    const viewItem = this.views[cell.id]
-    if (viewItem) {
+  protected removeView(view: CellView) {
+    const cell = view.cell
+    const viewItem = this.willRemoveViews[cell.id]
+    if (view) {
       viewItem.view.remove()
-      delete this.views[cell.id]
+      delete this.willRemoveViews[cell.id]
     }
-    return viewItem.view
   }
 
   protected toggleVisible(cell: Cell, visible: boolean) {
@@ -453,6 +477,12 @@ export class Scheduler extends Disposable {
       !this.renderArea ||
       this.renderArea.isIntersectWithRect(view.cell.getBBox())
     )
+  }
+
+  protected getRenderPriority(view: CellView) {
+    return view.cell.isNode()
+      ? JOB_PRIORITY.RenderNode
+      : JOB_PRIORITY.RenderEdge
   }
 
   @Disposable.dispose()
