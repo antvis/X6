@@ -1,3 +1,5 @@
+## @antv/x6 [2.1.6](https://github.com/antvis/x6/compare/@antv/x6@2.1.5...@antv/x6@2.1.6) (2023-01-19)
+
 ## @antv/x6 [2.1.5](https://github.com/antvis/x6/compare/@antv/x6@2.1.4...@antv/x6@2.1.5) (2023-01-13)
 
 
