@@ -60,12 +60,12 @@ export default class Example extends React.Component<
 
   enablePlugins = () => {
     const { graph } = this.state
-    graph?.enablePlugins('keyboard')
+    graph.enablePlugins('keyboard')
   }
 
   disablePlugins = () => {
     const { graph } = this.state
-    graph?.disablePlugins('keyboard')
+    graph.disablePlugins('keyboard')
   }
 
   render() {

@@ -1192,15 +1192,25 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
+    return Array.from(this.installedPlugins).find(
+      (plugin) => plugin.name === pluginName,
+    ) as T
+  }
+
+  getPlugins<T extends Graph.Plugin[]>(pluginName: string[]): T | undefined {
+    return Array.from(this.installedPlugins).filter((plugin) =>
+      pluginName.includes(plugin.name),
+    ) as T
+  }
+
   disablePlugins(plugins: string[] | string) {
     let postPlugins = plugins
-    if (!Array.isArray(plugins)) {
-      postPlugins = [plugins]
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
     }
-    const aboutToChangePlugins = Array.from(this.installedPlugins).filter(
-      (plugin) => postPlugins.includes(plugin.name),
-    )
-    aboutToChangePlugins.forEach((plugin) => {
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
       plugin.disable()
     })
     return this
@@ -1208,22 +1218,14 @@ export class Graph extends Basecoat<EventArgs> {
 
   enablePlugins(plugins: string[] | string) {
     let postPlugins = plugins
-    if (!Array.isArray(plugins)) {
-      postPlugins = [plugins]
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
     }
-    const aboutToChangePlugins = Array.from(this.installedPlugins).filter(
-      (plugin) => postPlugins.includes(plugin.name),
-    )
-    aboutToChangePlugins.forEach((plugin) => {
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
       plugin.enable()
     })
     return this
-  }
-
-  getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
-    return Array.from(this.installedPlugins).find(
-      (plugin) => plugin.name === pluginName,
-    ) as T
   }
 
   // #endregion
