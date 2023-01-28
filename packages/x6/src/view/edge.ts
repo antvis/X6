@@ -2191,7 +2191,9 @@ export class EdgeView<
     for (let i = 0, ii = cells.length; i < ii; i += 1) {
       const view = graph.findViewByCell(cells[i])
 
-      if (!view) {
+      // Prevent highlighting new edge
+      // Close https://github.com/antvis/X6/issues/2853
+      if (!view || view.cell.id === this.cell.id) {
         continue
       }
 
