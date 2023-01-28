@@ -1211,7 +1211,7 @@ export class Graph extends Basecoat<EventArgs> {
     }
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
-      plugin.disable()
+      plugin?.disable?.()
     })
     return this
   }
@@ -1223,7 +1223,7 @@ export class Graph extends Basecoat<EventArgs> {
     }
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
-      plugin.enable()
+      plugin?.enable?.()
     })
     return this
   }
@@ -1373,7 +1373,7 @@ export namespace Graph {
     name: string
     init: (graph: Graph, ...options: any[]) => any
     dispose: () => void
-    disable: () => void
-    enable: () => void
+    disable?: () => void
+    enable?: () => void
   }
 }
