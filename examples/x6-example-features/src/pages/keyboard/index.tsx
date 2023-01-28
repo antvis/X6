@@ -4,7 +4,10 @@ import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Selection } from '@antv/x6-plugin-selection'
 import '../index.less'
 
-export default class Example extends React.Component {
+export default class Example extends React.Component<
+  {},
+  { graph: Graph | undefined }
+> {
   private container: HTMLDivElement
 
   componentDidMount() {
@@ -14,6 +17,8 @@ export default class Example extends React.Component {
       height: 600,
       grid: true,
     })
+
+    this.setState({ graph })
 
     const selection = new Selection({ enabled: true })
     const keyboard = new Keyboard({ enabled: true })
@@ -53,10 +58,22 @@ export default class Example extends React.Component {
     this.container = container
   }
 
+  enablePlugins = () => {
+    const { graph } = this.state
+    graph?.enablePlugins('keyboard')
+  }
+
+  disablePlugins = () => {
+    const { graph } = this.state
+    graph?.disablePlugins('keyboard')
+  }
+
   render() {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
+        <button onClick={this.enablePlugins}>enable</button>
+        <button onClick={this.disablePlugins}>disable</button>
       </div>
     )
   }

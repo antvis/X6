@@ -1192,6 +1192,34 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  disablePlugins(plugins: string[] | string) {
+    let postPlugin = plugins
+    if (!Array.isArray(plugins)) {
+      postPlugin = [plugins]
+    }
+    const aboutToChangePlugins = Array.from(this.installedPlugins).filter(
+      (plugin) => postPlugin.includes(plugin.name),
+    )
+    aboutToChangePlugins.forEach((plugin) => {
+      plugin.disable()
+    })
+    return this
+  }
+
+  enablePlugins(plugins: string[] | string) {
+    let postPlugin = plugins
+    if (!Array.isArray(plugins)) {
+      postPlugin = [plugins]
+    }
+    const aboutToChangePlugins = Array.from(this.installedPlugins).filter(
+      (plugin) => postPlugin.includes(plugin.name),
+    )
+    aboutToChangePlugins.forEach((plugin) => {
+      plugin.enable()
+    })
+    return this
+  }
+
   getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
     return Array.from(this.installedPlugins).find(
       (plugin) => plugin.name === pluginName,
@@ -1343,5 +1371,7 @@ export namespace Graph {
     name: string
     init: (graph: Graph, ...options: any[]) => any
     dispose: () => void
+    disable: () => void
+    enable: () => void
   }
 }
