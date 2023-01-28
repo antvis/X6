@@ -62,8 +62,8 @@ graph.use(
 | className                  | string         | -                  |      | 附加样式名，用于定制样式                                                                                                                       |
 | multiple                   | boolean        | `true`             |      | 是否启用点击多选，启用后按住 `ctrl` 或 `command` 键点击节点实现多选                                                                            |
 | multipleSelectionModifiers | ModifierKey    | `['ctrl', 'meta']` |      | 用于设置上面点击多选配套的修饰键                                                                                                               |
-| rubberband                 | boolean        | `false`            |      | 是否启用多选节点功能                                                                                                                           |
-| modifiers                  | ModifierKey    | -                  |      | 设置修饰键后需要点击鼠标并按下修饰键才能触发多选                                                                                               |
+| rubberband                 | boolean        | `false`            |      | 是否启用框选节点功能                                                                                                                           |
+| modifiers                  | ModifierKey    | -                  |      | 用于设置上面框选配套的修饰键                                                                                               |
 | strict                     | boolean        | `false`            |      | 选框是否需要完全包围节点时才选中节点                                                                                                           |
 | movable                    | boolean        | `true`             |      | 拖动选框时框选的节点是否一起移动                                                                                                               |
 | content                    | string         | -                  |      | 设置附加显示的内容                                                                                                                             |
