@@ -1398,8 +1398,7 @@ export class EdgeView<
   }
 
   onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
-    super.onMouseDown(e, x, y)
-    this.notify('edge:mousedown', this.getEventArgs(e))
+    this.notifyMouseDown(e, x, y)
     this.startEdgeDragging(e, x, y)
   }
 
