@@ -1193,12 +1193,12 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   disablePlugins(plugins: string[] | string) {
-    let postPlugin = plugins
+    let postPlugins = plugins
     if (!Array.isArray(plugins)) {
-      postPlugin = [plugins]
+      postPlugins = [plugins]
     }
     const aboutToChangePlugins = Array.from(this.installedPlugins).filter(
-      (plugin) => postPlugin.includes(plugin.name),
+      (plugin) => postPlugins.includes(plugin.name),
     )
     aboutToChangePlugins.forEach((plugin) => {
       plugin.disable()
@@ -1207,12 +1207,12 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   enablePlugins(plugins: string[] | string) {
-    let postPlugin = plugins
+    let postPlugins = plugins
     if (!Array.isArray(plugins)) {
-      postPlugin = [plugins]
+      postPlugins = [plugins]
     }
     const aboutToChangePlugins = Array.from(this.installedPlugins).filter(
-      (plugin) => postPlugin.includes(plugin.name),
+      (plugin) => postPlugins.includes(plugin.name),
     )
     aboutToChangePlugins.forEach((plugin) => {
       plugin.enable()
