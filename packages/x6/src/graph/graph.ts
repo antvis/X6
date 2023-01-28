@@ -1193,15 +1193,9 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
-    let result: Graph.Plugin | undefined
-
-    this.installedPlugins.forEach((plugin) => {
-      if (plugin.name === pluginName) {
-        result = plugin
-      }
-    })
-
-    return result as T
+    return Array.from(this.installedPlugins).find(
+      (plugin) => plugin.name === pluginName,
+    ) as T
   }
 
   // #endregion
