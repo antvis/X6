@@ -37,7 +37,9 @@ export class ColorPicker extends React.Component<
 
   onDocumentClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLDivElement
-    if (target === this.container || this.container.contains(target)) {
+    const picker = this.container.querySelector('.sketch-picker')!
+
+    if (target === picker || picker.contains(target)) {
       return
     }
 
@@ -59,12 +61,9 @@ export class ColorPicker extends React.Component<
     if (this.props.onChange) {
       this.props.onChange(value, event)
     }
-
     this.setState({
-      active: false,
       color: value.rgb,
     })
-    this.unbindDocEvent()
   }
 
   handleClick = (e: React.MouseEvent) => {
@@ -84,8 +83,10 @@ export class ColorPicker extends React.Component<
     }
   }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
+  refContainer = (popoverRef: { getContainer: () => HTMLDivElement }) => {
+    if (popoverRef) {
+      this.container = popoverRef.getContainer()
+    }
   }
 
   renderPicker() {
@@ -123,10 +124,12 @@ export class ColorPicker extends React.Component<
         {...popoverProps}
         content={this.renderPicker()}
         overlayClassName={`${baseCls}-overlay`}
+        destroyTooltipOnHide
+        ref={this.refContainer}
+        trigger={[]}
       >
         <div
           style={style}
-          ref={this.refContainer}
           onClick={this.handleClick}
           className={classNames(baseCls, {
             [`${baseCls}-disabled`]: disabled,
