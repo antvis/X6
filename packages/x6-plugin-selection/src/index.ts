@@ -62,14 +62,12 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     if (this.disabled) {
       this.options.enabled = true
     }
-    return this
   }
 
   disable() {
     if (!this.disabled) {
       this.options.enabled = false
     }
-    return this
   }
 
   toggleEnabled(enabled?: boolean) {
