@@ -16,7 +16,9 @@ export class Transform extends Basecoat<Transform.EventArgs> {
 
   init(graph: Graph) {
     this.graph = graph
-    this.disabled = false
+    if (this.disabled) {
+      return
+    }
     this.startListening()
   }
 
