@@ -45,7 +45,7 @@ export class PriorityQueue<T> {
    */
   insert(priority: number, value: T, id?: string) {
     const item: PriorityQueue.DataItem<T> = { priority, value }
-    const index = this.data.length - 1
+    const index = this.data.length
     if (id) {
       item.id = id
       this.index[id] = index
@@ -96,7 +96,9 @@ export class PriorityQueue<T> {
     const data = this.data
     const peek = data[0]
     const last = data.pop()!
-    delete this.index[data.length]
+    if (peek.id) {
+      delete this.index[peek.id]
+    }
 
     if (data.length > 0) {
       data[0] = last
