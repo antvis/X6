@@ -18,28 +18,26 @@ export class Events<Args extends EventArgs = any> {
     name: Name,
     handler: Handler<Args[Name]>,
     context?: any,
-  ): this
+  ): () => void
   on<Name extends UnknownNames<Args>>(
     name: Name,
     handler: Handler<any>,
     context?: any,
-  ): this
+  ): () => void
   on<Name extends EventNames<Args>>(
     name: Name,
     handler: Handler<Args[Name]>,
     context?: any,
   ) {
-    if (handler == null) {
-      return this
-    }
-
     if (!this.listeners[name]) {
       this.listeners[name] = []
     }
     const cache = this.listeners[name]
     cache.push(handler, context)
 
-    return this
+    return () => {
+      this.off(name, handler, context)
+    }
   }
 
   once<Name extends EventNames<Args>>(
@@ -61,8 +59,9 @@ export class Events<Args extends EventArgs = any> {
       this.off(name, cb as any)
       return call([handler, context], args)
     }
+    this.on(name, cb as any, this)
 
-    return this.on(name, cb as any, this)
+    return this
   }
 
   off(): this

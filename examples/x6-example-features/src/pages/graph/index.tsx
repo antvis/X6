@@ -67,34 +67,33 @@ export default class Example extends React.Component<
       return attrs as Example.State['attrs']
     }
 
-    this.graph
-      .on('scale', ({ sx, sy }) => {
-        this.effect.hideAll()
-        this.setState({
-          attrs: getAttrs({
-            scaleX: sx,
-            scaleY: sy,
-          }),
-        })
+    this.graph.on('scale', ({ sx, sy }) => {
+      this.effect.hideAll()
+      this.setState({
+        attrs: getAttrs({
+          scaleX: sx,
+          scaleY: sy,
+        }),
       })
-      .on('translate', ({ tx, ty }) => {
-        this.effect.hideAll()
-        this.setState({
-          attrs: getAttrs({
-            originX: tx,
-            originY: ty,
-          }),
-        })
+    })
+    this.graph.on('translate', ({ tx, ty }) => {
+      this.effect.hideAll()
+      this.setState({
+        attrs: getAttrs({
+          originX: tx,
+          originY: ty,
+        }),
       })
-      .on('resize', ({ width, height }) => {
-        this.effect.hideAll()
-        this.setState({
-          attrs: getAttrs({ width, height }),
-        })
+    })
+    this.graph.on('resize', ({ width, height }) => {
+      this.effect.hideAll()
+      this.setState({
+        attrs: getAttrs({ width, height }),
       })
-      .on('cell:change:*', () => {
-        this.updateContentBBox()
-      })
+    })
+    this.graph.on('cell:change:*', () => {
+      this.updateContentBBox()
+    })
   }
 
   updateContentBBox() {
