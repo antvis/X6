@@ -243,5 +243,9 @@ module.exports = {
       apiKey: 'fe8bee8366e56a9463229c3c81200866',
       indexName: 'antv_x6',
     },
+    playground: {
+      container:
+        '<div id="container" style="min-width: 400px; min-height: 600px;"></div>',
+    },
   },
 }
