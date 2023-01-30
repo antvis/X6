@@ -1,23 +1,26 @@
-import { defineConfig } from 'dumi';
-import { repository, version } from './package.json';
+import { defineConfig } from 'dumi'
+import { repository, version } from './package.json'
 
 export default defineConfig({
-  locales: [{ id: 'zh', name: '中文' }, { id: 'en', name: 'English' }],
+  locales: [
+    { id: 'zh', name: '中文' },
+    { id: 'en', name: 'English' },
+  ],
   themeConfig: {
     title: 'X6',
     description: 'JavaScript diagramming library',
     defaultLanguage: 'zh',
     siteUrl: 'https://x6.antv.antgroup.com',
     isAntVSite: false,
-    githubUrl: repository,                                              // GitHub 地址
-    showSearch: true,                                                   // 是否显示搜索框
-    showGithubCorner: true,                                             // 是否显示头部的 GitHub icon
-    showGithubStars: true,                                              // 是否显示 GitHub star 数量
-    showAntVProductsCard: true,                                         // 是否显示 AntV 产品汇总的卡片
-    showLanguageSwitcher: false,                                        // 是否显示官网语言切换
-    showWxQrcode: true,                                                 // 是否显示头部菜单的微信公众号
-    showChartResize: true,                                              // 是否在 demo 页展示图表视图切换
-    showAPIDoc: false,                                                  // 是否在 demo 页展示API文档
+    githubUrl: repository, // GitHub 地址
+    showSearch: true, // 是否显示搜索框
+    showGithubCorner: true, // 是否显示头部的 GitHub icon
+    showGithubStars: true, // 是否显示 GitHub star 数量
+    showAntVProductsCard: true, // 是否显示 AntV 产品汇总的卡片
+    showLanguageSwitcher: false, // 是否显示官网语言切换
+    showWxQrcode: true, // 是否显示头部菜单的微信公众号
+    showChartResize: true, // 是否在 demo 页展示图表视图切换
+    showAPIDoc: false, // 是否在 demo 页展示API文档
     versions: {
       [version]: 'https://x6.antv.antgroup.com',
       '1.x': 'https://x6.antv.vision',
@@ -73,7 +76,8 @@ export default defineConfig({
         zh: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
         en: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
       },
-      image: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*A1g0RaZ-GJcAAAAAAAAAAAAADtOHAQ/original',
+      image:
+        'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*A1g0RaZ-GJcAAAAAAAAAAAAADtOHAQ/original',
       buttons: [
         {
           text: {
@@ -152,19 +156,44 @@ export default defineConfig({
           zh: '可视化编排可以用简单的方式将复杂的流程呈现出来，让用户更容易理解工作流',
           en: '可视化编排可以用简单的方式将复杂的流程呈现出来，让用户更容易理解工作流',
         },
-        image: 'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*QsT0TpxA8-AAAAAAAAAAAAAADtOHAQ/original',
+        image:
+          'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*QsT0TpxA8-AAAAAAAAAAAAAADtOHAQ/original',
         isAppLogo: true,
       },
     ],
     companies: [
-      { name: '阿里云', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*V_xMRIvw2iwAAAAAAAAAAABkARQnAQ' },
-      { name: '支付宝', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*lYDrRZvcvD4AAAAAAAAAAABkARQnAQ', },
-      { name: '天猫', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*BQrxRK6oemMAAAAAAAAAAABkARQnAQ', },
-      { name: '淘宝网', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*1l8-TqUr7UcAAAAAAAAAAABkARQnAQ', },
-      { name: '网上银行', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ZAKFQJ5Bz4MAAAAAAAAAAABkARQnAQ', },
-      { name: '京东', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*yh-HRr3hCpgAAAAAAAAAAABkARQnAQ', },
-      { name: 'yunos', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_js7SaNosUwAAAAAAAAAAABkARQnAQ', },
-      { name: '菜鸟', img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*TgV-RZDODJIAAAAAAAAAAABkARQnAQ', },
+      {
+        name: '阿里云',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*V_xMRIvw2iwAAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: '支付宝',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*lYDrRZvcvD4AAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: '天猫',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*BQrxRK6oemMAAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: '淘宝网',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*1l8-TqUr7UcAAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: '网上银行',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ZAKFQJ5Bz4MAAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: '京东',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*yh-HRr3hCpgAAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: 'yunos',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_js7SaNosUwAAAAAAAAAAABkARQnAQ',
+      },
+      {
+        name: '菜鸟',
+        img: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*TgV-RZDODJIAAAAAAAAAAABkARQnAQ',
+      },
     ],
     docs: [
       {
@@ -264,22 +293,21 @@ export default defineConfig({
     },
     playground: {
       extraLib: '',
-      container: '<div id="container"></div>',
+      container:
+        '<div id="container" style="min-width: 400px; min-height: 600px;"></div>',
       devDependencies: {
         typescript: 'latest',
       },
     },
     announcement: {
       zh: '',
-      en: ''
-    }
+      en: '',
+    },
   },
   mfsu: false,
   alias: {
     '@': __dirname,
   },
-  links: [
-  ],
-  scripts: [
-  ],
+  links: [],
+  scripts: [],
 })
