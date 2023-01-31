@@ -1,3 +1,10 @@
+## @antv/x6-react-components [2.0.7](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.6...@antv/x6-react-components@2.0.7) (2023-01-31)
+
+
+### Bug Fixes
+
+* don't hide when click on color picker ([#3172](https://github.com/antvis/x6/issues/3172)) ([cae8625](https://github.com/antvis/x6/commit/cae8625feb20fd93cc8002fa6ed00d345d3cf33c))
+
 ## @antv/x6-react-components [2.0.6](https://github.com/antvis/x6/compare/@antv/x6-react-components@2.0.5...@antv/x6-react-components@2.0.6) (2023-01-17)
 
 
