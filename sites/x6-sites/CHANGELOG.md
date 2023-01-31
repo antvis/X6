@@ -1,3 +1,16 @@
+# @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.2...@antv/x6-sites@1.4.0) (2023-01-31)
+
+
+### Bug Fixes
+
+* fix index error for priorityQueue ([#3179](https://github.com/antvis/x6/issues/3179)) ([d64150b](https://github.com/antvis/x6/commit/d64150bfadf10fe21f44734a0267261260b8c53b))
+* prevent highlighting new edge ([#3170](https://github.com/antvis/x6/issues/3170)) ([bd30f7f](https://github.com/antvis/x6/commit/bd30f7f61de530a9b6671aaedd4be2e026de8d44))
+
+
+### Features
+
+* add port events ([#3185](https://github.com/antvis/x6/issues/3185)) ([3265fe5](https://github.com/antvis/x6/commit/3265fe5b983f22e34d60c647212824961ecfdab5))
+
 ## @antv/x6-sites [1.3.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.1...@antv/x6-sites@1.3.2) (2023-01-13)
 
 

@@ -1,3 +1,10 @@
+## @antv/x6-common [2.0.6](https://github.com/antvis/x6/compare/@antv/x6-common@2.0.5...@antv/x6-common@2.0.6) (2023-01-31)
+
+
+### Bug Fixes
+
+* fix index error for priorityQueue ([#3179](https://github.com/antvis/x6/issues/3179)) ([d64150b](https://github.com/antvis/x6/commit/d64150bfadf10fe21f44734a0267261260b8c53b))
+
 ## @antv/x6-common [2.0.5](https://github.com/antvis/x6/compare/@antv/x6-common@2.0.4...@antv/x6-common@2.0.5) (2023-01-18)
 
 
