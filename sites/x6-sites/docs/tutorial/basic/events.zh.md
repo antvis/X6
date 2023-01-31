@@ -19,17 +19,17 @@ redirect_from:
 
 ### 鼠标事件
 
-| 事件     | cell 节点/边       | node 节点          | edge 边            | blank 画布空白区域  |
-| -------- | ------------------ | ------------------ | ------------------ | ------------------- |
-| 单击     | `cell:click`       | `node:click`       | `edge:click`       | `blank:click`       |
-| 双击     | `cell:dblclick`    | `node:dblclick`    | `edge:dblclick`    | `blank:dblclick`    |
-| 右键     | `cell:contextmenu` | `node:contextmenu` | `edge:contextmenu` | `blank:contextmenu` |
-| 鼠标按下 | `cell:mousedown`   | `node:mousedown`   | `edge:mousedown`   | `blank:mousedown`   |
-| 移动鼠标 | `cell:mousemove`   | `node:mousemove`   | `edge:mousemove`   | `blank:mousemove`   |
-| 鼠标抬起 | `cell:mouseup`     | `node:mouseup`     | `edge:mouseup`     | `blank:mouseup`     |
-| 鼠标滚轮 | `cell:mousewheel`  | `node:mousewheel`  | `edge:mousewheel`  | `blank:mousewheel`  |
-| 鼠标进入 | `cell:mouseenter`  | `node:mouseenter`  | `edge:mouseenter`  | `graph:mouseenter`  |
-| 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `edge:mouseleave`  | `graph:mouseleave`  |
+| 事件   | cell 节点/边          | node 节点            | port 连接桩                | edge 边             | blank 画布空白区域        |
+|-------|---------------------|---------------------|--------------------------|---------------------|----------------------|
+| 单击   | `cell:click`       | `node:click`       | `node:port:click`       | `edge:click`       | `blank:click`       |
+| 双击   | `cell:dblclick`    | `node:dblclick`    | `node:port:dblclick`    | `edge:dblclick`    | `blank:dblclick`    |
+| 右键   | `cell:contextmenu` | `node:contextmenu` | `node:port:contextmenu` | `edge:contextmenu` | `blank:contextmenu` |
+| 鼠标按下 | `cell:mousedown`   | `node:mousedown`   | `node:port:mousedown`   | `edge:mousedown`   | `blank:mousedown`   |
+| 移动鼠标 | `cell:mousemove`   | `node:mousemove`   | `node:port:mousemove`   | `edge:mousemove`   | `blank:mousemove`   |
+| 鼠标抬起 | `cell:mouseup`     | `node:mouseup`     | `node:port:mouseup`     | `edge:mouseup`     | `blank:mouseup`     |
+| 鼠标滚轮 | `cell:mousewheel`  | `node:mousewheel`  | -                       | `edge:mousewheel`  | `blank:mousewheel`  |
+| 鼠标进入 | `cell:mouseenter`  | `node:mouseenter`  | `node:port:mouseenter`  | `edge:mouseenter`  | `graph:mouseenter`  |
+| 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `node:port:mouseleave`  | `edge:mouseleave`  | `graph:mouseleave`  |
 
 :::warning{title=注意：}
 需要注意的是，这里的 `mousemove` 事件和通常的鼠标移动事件有所区别，它需要在鼠标按下后移动鼠标才能触发。

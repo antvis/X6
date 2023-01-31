@@ -457,6 +457,28 @@ export class NodeView<
     return { e, x, y, view, node, cell } as NodeView.PositionEventArgs<E>
   }
 
+  protected getPortEventArgs<E>(
+    e: E,
+    port: string,
+    pos?: { x: number; y: number },
+  ) {
+    const view = this // eslint-disable-line
+    const node = view.cell
+    const cell = node
+    if (pos) {
+      return {
+        e,
+        x: pos.x,
+        y: pos.y,
+        view,
+        node,
+        cell,
+        port,
+      } as NodeView.PositionEventArgs<E>
+    }
+    return { e, view, node, cell, port } as NodeView.MouseEventArgs<E>
+  }
+
   notifyMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
     this.notify('node:mousedown', this.getEventArgs(e, x, y))
@@ -472,19 +494,33 @@ export class NodeView<
     this.notify('node:mouseup', this.getEventArgs(e, x, y))
   }
 
+  notifyPortEvent(
+    name: string,
+    e: Dom.EventObject,
+    pos?: { x: number; y: number },
+  ) {
+    const port = this.findAttr('port', e.target)
+    if (port) {
+      this.notify(name, this.getPortEventArgs(e, port, pos))
+    }
+  }
+
   onClick(e: Dom.ClickEvent, x: number, y: number) {
     super.onClick(e, x, y)
     this.notify('node:click', this.getEventArgs(e, x, y))
+    this.notifyPortEvent('node:port:click', e, { x, y })
   }
 
   onDblClick(e: Dom.DoubleClickEvent, x: number, y: number) {
     super.onDblClick(e, x, y)
     this.notify('node:dblclick', this.getEventArgs(e, x, y))
+    this.notifyPortEvent('node:port:dblclick', e, { x, y })
   }
 
   onContextMenu(e: Dom.ContextMenuEvent, x: number, y: number) {
     super.onContextMenu(e, x, y)
     this.notify('node:contextmenu', this.getEventArgs(e, x, y))
+    this.notifyPortEvent('node:port:contextmenu', e, { x, y })
   }
 
   onMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
@@ -492,6 +528,7 @@ export class NodeView<
       return
     }
     this.notifyMouseDown(e, x, y)
+    this.notifyPortEvent('node:port:mousedown', e, { x, y })
     this.startNodeDragging(e, x, y)
   }
 
@@ -515,6 +552,7 @@ export class NodeView<
         })
       }
       this.notifyMouseMove(e, x, y)
+      this.notifyPortEvent('node:port:mousemove', e, { x, y })
     }
 
     this.setEventData<EventData.Mousemove>(e, data)
@@ -527,6 +565,7 @@ export class NodeView<
       this.stopMagnetDragging(e, x, y)
     } else {
       this.notifyMouseUp(e, x, y)
+      this.notifyPortEvent('node:port:mouseup', e, { x, y })
       if (action === 'move') {
         const meta = data as EventData.Moving
         const view = meta.targetView || this
@@ -545,22 +584,26 @@ export class NodeView<
   onMouseOver(e: Dom.MouseOverEvent) {
     super.onMouseOver(e)
     this.notify('node:mouseover', this.getEventArgs(e))
+    this.notifyPortEvent('node:port:mouseover', e)
   }
 
   onMouseOut(e: Dom.MouseOutEvent) {
     super.onMouseOut(e)
     this.notify('node:mouseout', this.getEventArgs(e))
+    this.notifyPortEvent('node:port:mouseout', e)
   }
 
   onMouseEnter(e: Dom.MouseEnterEvent) {
     this.updateClassName(e)
     super.onMouseEnter(e)
     this.notify('node:mouseenter', this.getEventArgs(e))
+    this.notifyPortEvent('node:port:mouseenter', e)
   }
 
   onMouseLeave(e: Dom.MouseLeaveEvent) {
     super.onMouseLeave(e)
     this.notify('node:mouseleave', this.getEventArgs(e))
+    this.notifyPortEvent('node:port:mouseleave', e)
   }
 
   onMouseWheel(e: Dom.EventObject, x: number, y: number, delta: number) {
@@ -1092,14 +1135,13 @@ export namespace NodeView {
   interface MagnetEventArgs {
     magnet: Element
   }
-
   export interface MouseEventArgs<E> {
     e: E
     node: Node
     cell: Node
     view: NodeView
+    port?: string
   }
-
   export interface PositionEventArgs<E>
     extends MouseEventArgs<E>,
       CellView.PositionEventArgs {}
@@ -1123,6 +1165,17 @@ export namespace NodeView {
     'node:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
     'node:mousewheel': PositionEventArgs<Dom.EventObject> &
       CellView.MouseDeltaEventArgs
+
+    'node:port:click': PositionEventArgs<Dom.ClickEvent>
+    'node:port:dblclick': PositionEventArgs<Dom.DoubleClickEvent>
+    'node:port:contextmenu': PositionEventArgs<Dom.ContextMenuEvent>
+    'node:port:mousedown': PositionEventArgs<Dom.MouseDownEvent>
+    'node:port:mousemove': PositionEventArgs<Dom.MouseMoveEvent>
+    'node:port:mouseup': PositionEventArgs<Dom.MouseUpEvent>
+    'node:port:mouseover': MouseEventArgs<Dom.MouseOverEvent>
+    'node:port:mouseout': MouseEventArgs<Dom.MouseOutEvent>
+    'node:port:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
+    'node:port:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
 
     'node:customevent': PositionEventArgs<Dom.MouseDownEvent> & {
       name: string
