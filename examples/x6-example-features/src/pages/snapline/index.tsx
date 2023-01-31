@@ -18,6 +18,7 @@ export default class Example extends React.Component {
     const snapline = new Snapline({
       enabled: true,
       sharp: true,
+      byPort: false,
     })
     graph.use(snapline)
 

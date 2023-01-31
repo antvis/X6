@@ -54,6 +54,7 @@ graph.use(
 | tolerance | number  | 10      |      | 对齐精度，即移动节点时与目标位置的距离小于 `tolerance` 时触发显示对齐线                             |
 | sharp     | boolean | `false` |      | 是否显示截断的对齐线                                                                                |
 | resizing  | boolean | `false` |      | 改变节点大小时是否触发对齐线                                                                        |
+| byPort  | boolean | `false` |      | 是否根据节点Port 的位置对齐节点 |
 | clean     | boolean | `true`  |      | 如果为 `true`，则在 3s 后清除对齐线，为 `false`，不会清除，如果为数字(ms)，则在指定时间后清除对齐线 |
 | filter    | Filter  | -       |      | 节点过滤器                                                                                          |
 

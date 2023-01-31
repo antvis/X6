@@ -66,6 +66,10 @@ export class SnaplineImpl extends View implements IDisablable {
     return this.options.enabled !== true
   }
 
+  public get byPort() {
+    return this.options.byPort === true
+  }
+
   enable() {
     if (this.disabled) {
       this.options.enabled = true
@@ -534,10 +538,14 @@ export class SnaplineImpl extends View implements IDisablable {
     if (!this.isNodeMovable(targetView)) {
       return
     }
-    const portArgs = this.getAlignArgsByPorts(targetView)
     const nodeArgs = this.getAlignArgsByNode(targetView)
-    const xArgs = minBy([portArgs.minX, nodeArgs.minX], 'diff')
-    const yArgs = minBy([portArgs.minY, nodeArgs.minY], 'diff')
+    let xArgs = nodeArgs.minX
+    let yArgs = nodeArgs.minY
+    if (this.byPort) {
+      const portArgs = this.getAlignArgsByPorts(targetView)
+      xArgs = minBy([portArgs.minX, nodeArgs.minX], 'diff')
+      yArgs = minBy([portArgs.minY, nodeArgs.minY], 'diff')
+    }
 
     const node = targetView.cell
 
@@ -744,6 +752,10 @@ export namespace SnaplineImpl {
      * Specify if snap on node resizing or not.
      */
     resizing?: boolean
+    /**
+     * Specify if snap by port position or not.
+     */
+    byPort?: boolean
     clean?: boolean | number
     filter?: Filter
   }
