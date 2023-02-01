@@ -60,8 +60,8 @@ export class Clipboard
     return this
   }
 
-  isEmpty() {
-    return this.clipboardImpl.isEmpty()
+  isEmpty(options: Clipboard.Options = {}) {
+    return this.clipboardImpl.isEmpty(options)
   }
 
   getCellsInClipboard() {
