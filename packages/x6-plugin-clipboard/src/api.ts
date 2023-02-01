@@ -7,7 +7,7 @@ declare module '@antv/x6/lib/graph/graph' {
     enableClipboard: () => Graph
     disableClipboard: () => Graph
     toggleClipboard: (enabled?: boolean) => Graph
-    isClipboardEmpty: () => boolean
+    isClipboardEmpty: (options?: Clipboard.Options) => boolean
     getCellsInClipboard: () => Cell[]
     cleanClipboard: () => Graph
     copy: (cells: Cell[], options?: Clipboard.CopyOptions) => Graph
@@ -55,10 +55,10 @@ Graph.prototype.toggleClipboard = function (enabled?: boolean) {
   return this
 }
 
-Graph.prototype.isClipboardEmpty = function () {
+Graph.prototype.isClipboardEmpty = function (options?: Clipboard.Options) {
   const clipboard = this.getPlugin('clipboard') as Clipboard
   if (clipboard) {
-    return clipboard.isEmpty()
+    return clipboard.isEmpty(options)
   }
   return true
 }
