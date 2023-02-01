@@ -89,7 +89,12 @@ export class ClipboardImpl {
     }
   }
 
-  isEmpty() {
+  isEmpty(options: ClipboardImpl.Options = {}) {
+    if (options.useLocalStorage) {
+      // With useLocalStorage turned on, no real cells can be obtained without deserialize first
+      // https://github.com/antvis/X6/issues/2573
+      this.deserialize(options)
+    }
     return this.cells.length <= 0
   }
 
