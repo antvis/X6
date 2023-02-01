@@ -1266,7 +1266,7 @@ export namespace ScrollerImpl {
       result.background == null
     ) {
       result.background = graphOptions.background
-      delete graphOptions.background
+      options.graph.background.clear()
     }
 
     return result as ScrollerImpl.Options
