@@ -1228,6 +1228,23 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  disposePlugins(plugins: string[] | string) {
+    let postPlugins = plugins
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
+    }
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
+      plugin?.dispose?.()
+    })
+    return this
+  }
+
+  isPluginEnabled(pluginName: string) {
+    const pluginIns = this.getPlugin(pluginName)
+    return pluginIns?.isEnabled?.()
+  }
+
   // #endregion
 
   // #region dispose
@@ -1375,5 +1392,6 @@ export namespace Graph {
     dispose: () => void
     disable?: () => void
     enable?: () => void
+    isEnabled?: () => boolean
   }
 }
