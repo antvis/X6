@@ -23,12 +23,7 @@ const graph = new Graph({
     maxScale: 3,
   },
   connecting: {
-    router: {
-      name: 'manhattan',
-      args: {
-        padding: 1,
-      },
-    },
+    router: 'manhattan',
     connector: {
       name: 'rounded',
       args: {
@@ -77,27 +72,39 @@ const graph = new Graph({
 
 // #region 使用插件
 graph
-.use(new Transform({
-  resizing: true,
-  rotating: true,
-}))
-.use(new Selection({
-  enabled: true,
-  rubberband: true,
-  showNodeSelectionBox: true,
-}))
-.use(new Snapline({
-  enabled: true,
-}))
-.use(new Keyboard({
-  enabled: true,
-}))
-.use(new Clipboard({
-  enabled: true,
-}))
-.use(new History({
-  enabled: true,
-}))
+  .use(
+    new Transform({
+      resizing: true,
+      rotating: true,
+    }),
+  )
+  .use(
+    new Selection({
+      enabled: true,
+      rubberband: true,
+      showNodeSelectionBox: true,
+    }),
+  )
+  .use(
+    new Snapline({
+      enabled: true,
+    }),
+  )
+  .use(
+    new Keyboard({
+      enabled: true,
+    }),
+  )
+  .use(
+    new Clipboard({
+      enabled: true,
+    }),
+  )
+  .use(
+    new History({
+      enabled: true,
+    }),
+  )
 // #endregion
 
 // #region 初始化 stencil
@@ -154,7 +161,7 @@ graph.bindKey(['meta+v', 'ctrl+v'], () => {
   return false
 })
 
-//undo redo
+// undo redo
 graph.bindKey(['meta+z', 'ctrl+z'], () => {
   if (graph.canUndo()) {
     graph.undo()
@@ -176,7 +183,7 @@ graph.bindKey(['meta+a', 'ctrl+a'], () => {
   }
 })
 
-//delete
+// delete
 graph.bindKey('backspace', () => {
   const cells = graph.getSelectedCells()
   if (cells.length) {
@@ -200,7 +207,7 @@ graph.bindKey(['ctrl+2', 'meta+2'], () => {
 
 // 控制连接桩显示/隐藏
 const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
-  for (let i = 0, len = ports.length; i < len; i = i + 1) {
+  for (let i = 0, len = ports.length; i < len; i += 1) {
     ports[i].style.visibility = show ? 'visible' : 'hidden'
   }
 }

@@ -1128,7 +1128,8 @@ export namespace ScrollerImpl {
     panning: { e: Dom.MouseMoveEvent }
     'pan:stop': { e: Dom.MouseUpEvent }
   }
-  export interface CommonOptions {
+  export interface Options {
+    graph: Graph
     enabled?: boolean
     className?: string
     width?: number
@@ -1150,10 +1151,6 @@ export namespace ScrollerImpl {
           this: ScrollerImpl,
           scroller: ScrollerImpl,
         ) => TransformManager.FitToContentFullOptions)
-  }
-
-  export interface Options extends CommonOptions {
-    graph: Graph
   }
   export interface CenterOptions {
     padding?: NumberExt.SideOptions
