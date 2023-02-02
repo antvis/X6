@@ -35,17 +35,15 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
     return this.scrollerImpl.container
   }
 
-  constructor(public readonly options: Scroller.Options) {
+  constructor(public options: Scroller.Options) {
     super()
     CssLoader.ensure(this.name, content)
   }
 
   public init(graph: Graph) {
     this.graph = graph
-    this.scrollerImpl = new ScrollerImpl({
-      ...this.options,
-      graph,
-    })
+    this.options = ScrollerImpl.getOptions({ ...this.options, graph })
+    this.scrollerImpl = new ScrollerImpl(this.options)
     this.setup()
     this.startListening()
     this.updateClassName()
@@ -401,7 +399,7 @@ export namespace Scroller {
   export interface EventArgs extends ScrollerImpl.EventArgs {}
 
   type EventType = 'leftMouseDown' | 'rightMouseDown'
-  export interface Options extends ScrollerImpl.CommonOptions {
+  export interface Options extends ScrollerImpl.Options {
     pannable?: boolean | { enabled: boolean; eventTypes: EventType[] }
     modifiers?: string | ModifierKey[] | null // alt, ctrl, shift, meta
   }
