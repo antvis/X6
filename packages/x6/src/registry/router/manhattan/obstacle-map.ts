@@ -76,11 +76,16 @@ export class ObstacleMap {
       const excludeShapes = options.excludeShapes
       const excType = shape ? excludeShapes.includes(shape) : false
       const excTerminal = excludedTerminals.some((cell) => cell.id === node.id)
-      const excNode = options.excludeNodes.includes(node)
+      const excludedNode = options.excludeNodes.some((item) => {
+        if (typeof item === 'string') {
+          return node.id === item
+        }
+        return item === node
+      })
       const excAncestor = excludedAncestors.includes(node.id)
       const excHidden = options.excludeHiddenNodes && !node.isVisible()
       const excluded =
-        excType || excTerminal || excNode || excAncestor || excHidden
+        excType || excTerminal || excludedNode || excAncestor || excHidden
 
       if (!excluded) {
         const bbox = node.getBBox().moveAndExpand(options.paddingBox)
