@@ -1235,7 +1235,7 @@ export class Graph extends Basecoat<EventArgs> {
     }
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
-      plugin?.dispose?.()
+      plugin.dispose()
     })
     return this
   }
