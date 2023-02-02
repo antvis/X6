@@ -49,7 +49,7 @@ export interface ResolvedOptions {
   /**
    * Should certain nodes not be considered as obstacles?
    */
-  excludeNodes: Node[]
+  excludeNodes: (Node | string)[]
 
   /**
    * Should certain hidden nodes not be considered as obstacles?
