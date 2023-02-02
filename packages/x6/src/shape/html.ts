@@ -36,7 +36,8 @@ export namespace HTML {
     }
 
     protected renderHTMLComponent() {
-      const container = this.selectors.foContent as Element
+      const container =
+        this.selectors && (this.selectors.foContent as HTMLDivElement)
       if (container) {
         Dom.empty(container)
         const content = shapeMaps[this.cell.shape]
