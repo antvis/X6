@@ -215,7 +215,6 @@ export class Scheduler extends Disposable {
     }
 
     if (result) {
-      console.log('left flag', result) // eslint-disable-line
       if (
         cell.isEdge() &&
         (result & view.getFlag(['source', 'target'])) === 0
