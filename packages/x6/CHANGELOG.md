@@ -1,3 +1,10 @@
+## @antv/x6 [2.2.1](https://github.com/antvis/x6/compare/@antv/x6@2.2.0...@antv/x6@2.2.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* ensure the container in html view ([#3196](https://github.com/antvis/x6/issues/3196)) ([3a59703](https://github.com/antvis/x6/commit/3a59703f1c2da3ac8c8471eb9b864ac4cf468f97))
+
 # @antv/x6 [2.2.0](https://github.com/antvis/x6/compare/@antv/x6@2.1.7...@antv/x6@2.2.0) (2023-01-31)
 
 
