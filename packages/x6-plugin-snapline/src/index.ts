@@ -29,12 +29,10 @@ export class Snapline extends Disposable {
 
   enable() {
     this.snaplineImpl.enable()
-    return this
   }
 
   disable() {
     this.snaplineImpl.disable()
-    return this
   }
 
   toggleEnabled(enabled?: boolean) {

@@ -27,12 +27,10 @@ export class Keyboard extends Disposable {
 
   enable() {
     this.keyboardImpl.enable()
-    return this
   }
 
   disable() {
     this.keyboardImpl.disable()
-    return this
   }
 
   toggleEnabled(enabled?: boolean) {
