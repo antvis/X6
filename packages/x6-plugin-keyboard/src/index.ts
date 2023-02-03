@@ -61,10 +61,12 @@ export class Keyboard extends Disposable {
 
   trigger(key: string, action?: KeyboardImpl.Action) {
     this.keyboardImpl.trigger(key, action)
+    return this
   }
 
   clear() {
     this.keyboardImpl.clear()
+    return this
   }
 
 
