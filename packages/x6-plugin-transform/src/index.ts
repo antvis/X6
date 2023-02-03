@@ -7,6 +7,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
   private graph: Graph
   protected widgets: Map<Node, TransformImpl> = new Map()
   public name = 'transform'
+  private disabled = false
 
   constructor(public readonly options: Transform.Options) {
     super()
@@ -15,6 +16,9 @@ export class Transform extends Basecoat<Transform.EventArgs> {
 
   init(graph: Graph) {
     this.graph = graph
+    if (this.disabled) {
+      return
+    }
     this.startListening()
   }
 
@@ -26,6 +30,24 @@ export class Transform extends Basecoat<Transform.EventArgs> {
   protected stopListening() {
     this.graph.off('node:click', this.onNodeClick, this)
     this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
+  }
+
+  enable() {
+    if (this.disabled) {
+      this.disabled = false
+      this.startListening()
+    }
+  }
+
+  disable() {
+    if (!this.disabled) {
+      this.disabled = true
+      this.stopListening()
+    }
+  }
+
+  isEnabled() {
+    return !this.disabled
   }
 
   protected onNodeClick({ node }: EventArgs['node:click']) {

@@ -1198,6 +1198,53 @@ export class Graph extends Basecoat<EventArgs> {
     ) as T
   }
 
+  getPlugins<T extends Graph.Plugin[]>(pluginName: string[]): T | undefined {
+    return Array.from(this.installedPlugins).filter((plugin) =>
+      pluginName.includes(plugin.name),
+    ) as T
+  }
+
+  disablePlugins(plugins: string[] | string) {
+    let postPlugins = plugins
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
+    }
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
+      plugin?.disable?.()
+    })
+    return this
+  }
+
+  enablePlugins(plugins: string[] | string) {
+    let postPlugins = plugins
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
+    }
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
+      plugin?.enable?.()
+    })
+    return this
+  }
+
+  disposePlugins(plugins: string[] | string) {
+    let postPlugins = plugins
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
+    }
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
+      plugin.dispose()
+    })
+    return this
+  }
+
+  isPluginEnabled(pluginName: string) {
+    const pluginIns = this.getPlugin(pluginName)
+    return pluginIns?.isEnabled?.()
+  }
+
   // #endregion
 
   // #region dispose
@@ -1343,5 +1390,8 @@ export namespace Graph {
     name: string
     init: (graph: Graph, ...options: any[]) => any
     dispose: () => void
+    disable?: () => void
+    enable?: () => void
+    isEnabled?: () => boolean
   }
 }
