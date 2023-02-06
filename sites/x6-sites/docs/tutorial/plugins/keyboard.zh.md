@@ -113,12 +113,23 @@ unbindKey(
 isKeyboardEnabled(): boolean
 ```
 
-获取是否启用了键盘事件。
+清除快捷键。
 
-### graph.enableKeyboard()
+### graph.clearKeys()
 
 ```sign
-enableKeyboard(): this
+clearKeys(): this
+```
+
+手动触发快捷键。
+
+### graph.triggerKey()
+
+```sign
+triggerKey(
+  keys: string,
+  action?: 'keypress' | 'keydown' | 'keyup',
+): this
 ```
 
 启用键盘事件。
