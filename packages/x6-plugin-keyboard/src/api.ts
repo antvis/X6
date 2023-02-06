@@ -14,6 +14,8 @@ declare module '@antv/x6/lib/graph/graph' {
       action?: KeyboardImpl.Action,
     ) => Graph
     unbindKey: (keys: string | string[], action?: KeyboardImpl.Action) => Graph
+    clearKeys: () => Graph
+    triggerKey: (key: string, action: KeyboardImpl.Action) => Graph
   }
 }
 
@@ -68,6 +70,22 @@ Graph.prototype.unbindKey = function (
   const keyboard = this.getPlugin('keyboard') as Keyboard
   if (keyboard) {
     keyboard.unbindKey(keys, action)
+  }
+  return this
+}
+
+Graph.prototype.clearKeys = function() {
+  const keyboard = this.getPlugin('keyboard') as Keyboard
+  if(keyboard) {
+    keyboard.clear()
+  }
+  return this
+}
+
+Graph.prototype.triggerKey = function(key: string, action: KeyboardImpl.Action) {
+  const keyboard = this.getPlugin('keyboard') as Keyboard
+  if(keyboard) {
+    keyboard.trigger(key, action)
   }
   return this
 }
