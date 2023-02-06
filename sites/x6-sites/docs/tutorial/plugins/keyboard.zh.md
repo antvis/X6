@@ -105,15 +105,7 @@ unbindKey(
 ): this
 ```
 
-解绑快捷键。
-
-### graph.isKeyboardEnabled()
-
-```sign
-isKeyboardEnabled(): boolean
-```
-
-清除快捷键。
+清除所有快捷键。
 
 ### graph.clearKeys()
 
@@ -130,6 +122,14 @@ triggerKey(
   keys: string,
   action?: 'keypress' | 'keydown' | 'keyup',
 ): this
+```
+
+解绑快捷键。
+
+### graph.isKeyboardEnabled()
+
+```sign
+isKeyboardEnabled(): boolean
 ```
 
 获取是否启用了键盘事件。
