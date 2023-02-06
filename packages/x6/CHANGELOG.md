@@ -1,3 +1,15 @@
+# @antv/x6 [2.3.0](https://github.com/antvis/x6/compare/@antv/x6@2.2.1...@antv/x6@2.3.0) (2023-02-06)
+
+
+### Bug Fixes
+
+* **scheduler:** remove spammy console.log ([#3200](https://github.com/antvis/x6/issues/3200)) ([1f83a2b](https://github.com/antvis/x6/commit/1f83a2b8a84b53303293e724e7f9d0ee49182efc))
+
+
+### Features
+
+* add options for positionCell api ([#3208](https://github.com/antvis/x6/issues/3208)) ([58c0fe4](https://github.com/antvis/x6/commit/58c0fe459c0314997440b4af7dc0443abe199924))
+
 ## @antv/x6 [2.2.1](https://github.com/antvis/x6/compare/@antv/x6@2.2.0...@antv/x6@2.2.1) (2023-02-02)
 
 

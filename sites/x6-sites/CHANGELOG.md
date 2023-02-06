@@ -1,3 +1,10 @@
+# @antv/x6-sites [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.5.0) (2023-02-06)
+
+
+### Features
+
+* keyboard support clear and custom trigger ([#3202](https://github.com/antvis/x6/issues/3202)) ([668c932](https://github.com/antvis/x6/commit/668c93242fbcebb987cccc3dcfd56982f7c66252))
+
 # @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.2...@antv/x6-sites@1.4.0) (2023-01-31)
 
 
