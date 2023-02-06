@@ -105,7 +105,7 @@ unbindKey(
 ): this
 ```
 
-清除所有快捷键。
+解绑快捷键。
 
 ### graph.clearKeys()
 
@@ -113,7 +113,7 @@ unbindKey(
 clearKeys(): this
 ```
 
-手动触发快捷键。
+清除所有快捷键。
 
 ### graph.triggerKey()
 
@@ -124,7 +124,7 @@ triggerKey(
 ): this
 ```
 
-解绑快捷键。
+手动触发快捷键。
 
 ### graph.isKeyboardEnabled()
 
