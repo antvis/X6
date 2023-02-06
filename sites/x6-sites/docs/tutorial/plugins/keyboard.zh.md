@@ -132,6 +132,14 @@ triggerKey(
 ): this
 ```
 
+获取是否启用了键盘事件。
+
+### graph.enableKeyboard()
+
+```sign
+enableKeyboard(): this
+```
+
 启用键盘事件。
 
 ### graph.disableKeyboard()
