@@ -59,6 +59,17 @@ export class Keyboard extends Disposable {
     return this
   }
 
+  trigger(key: string, action?: KeyboardImpl.Action) {
+    this.keyboardImpl.trigger(key, action)
+    return this
+  }
+
+  clear() {
+    this.keyboardImpl.clear()
+    return this
+  }
+
+
   unbindKey(keys: string | string[], action?: KeyboardImpl.Action) {
     this.keyboardImpl.off(keys, action)
     return this

@@ -107,6 +107,25 @@ unbindKey(
 
 解绑快捷键。
 
+### graph.clearKeys()
+
+```sign
+clearKeys(): this
+```
+
+清除所有快捷键。
+
+### graph.triggerKey()
+
+```sign
+triggerKey(
+  keys: string,
+  action?: 'keypress' | 'keydown' | 'keyup',
+): this
+```
+
+手动触发快捷键。
+
 ### graph.isKeyboardEnabled()
 
 ```sign
