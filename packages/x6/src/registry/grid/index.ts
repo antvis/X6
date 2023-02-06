@@ -6,13 +6,20 @@ export class Grid {
   root: Element
   patterns: { [id: string]: Element }
 
-  constructor() {
+  constructor(options?: Grid.GridRegisterProps) {
+    let width: number | string = '100%'
+    let height: number | string = '100%'
+    if (options) {
+      const { size, sx, sy } = options
+      width = size * sx
+      height = size * sy
+    }
     this.patterns = {}
     this.root = Vector.create(
       Dom.createSvgDocument(),
       {
-        width: '100%',
-        height: '100%',
+        width,
+        height,
       },
       [Dom.createSvgElement('defs')],
     ).node
@@ -35,6 +42,10 @@ export class Grid {
 
   get(id: string) {
     return this.patterns[id]
+  }
+
+  getRoot() {
+    return this.root
   }
 
   has(id: string) {
@@ -79,6 +90,12 @@ export namespace Grid {
 }
 
 export namespace Grid {
+  export interface GridRegisterProps {
+    size: number
+    sx: number
+    sy: number
+  }
+
   export type Presets = typeof Grid['presets']
 
   export type OptionsMap = {

@@ -36,6 +36,13 @@ export class GridManager extends Base {
     }
   }
 
+  protected getScale() {
+    const ctm = this.graph.matrix()
+    const x = ctm.a || 1
+    const y = ctm.d || 1
+    return { x, y }
+  }
+
   getGridSize() {
     return this.grid.size
   }
@@ -83,9 +90,7 @@ export class GridManager extends Base {
 
     this.patterns.forEach((settings, index) => {
       const id = `pattern_${index}`
-      const sx = ctm.a || 1
-      const sy = ctm.d || 1
-
+      const { x: sx, y: sy } = this.getScale()
       const { update, markup, ...others } = settings
       const options = {
         ...others,
@@ -131,6 +136,12 @@ export class GridManager extends Base {
         width: options.width,
         height: options.height,
       })
+
+      const root = grid.getRoot()
+      Dom.attr(root, {
+        width: options.width,
+        height: options.height,
+      })
     })
 
     const base64 = new XMLSerializer().serializeToString(grid.root)
@@ -140,7 +151,9 @@ export class GridManager extends Base {
 
   protected getInstance() {
     if (!this.instance) {
-      this.instance = new Registry.Grid()
+      const size = this.grid.size
+      const { x: sx, y: sy } = this.getScale()
+      this.instance = new Registry.Grid({ size, sx, sy })
     }
 
     return this.instance
