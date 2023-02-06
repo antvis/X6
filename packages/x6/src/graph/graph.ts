@@ -763,10 +763,14 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionRect(rect: Rectangle.RectangleLike, direction: Transform.Direction) {
+  positionRect(
+    rect: Rectangle.RectangleLike,
+    direction: Transform.Direction,
+    options?: { padding?: NumberExt.SideOptions },
+  ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.positionRect(rect, direction)
+      scroller.positionRect(rect, direction, options)
     } else {
       this.transform.positionRect(rect, direction)
     }
@@ -774,10 +778,14 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionCell(cell: Cell, direction: Transform.Direction) {
+  positionCell(
+    cell: Cell,
+    direction: Transform.Direction,
+    options?: { padding?: NumberExt.SideOptions },
+  ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.positionCell(cell, direction)
+      scroller.positionCell(cell, direction, options)
     } else {
       this.transform.positionCell(cell, direction)
     }
