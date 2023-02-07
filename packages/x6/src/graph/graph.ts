@@ -19,7 +19,6 @@ import { CoordManager as Coord } from './coord'
 import { HighlightManager as Highlight } from './highlight'
 import { SizeManager as Size } from './size'
 
-
 export class Graph extends Basecoat<EventArgs> {
   private installedPlugins: Set<Graph.Plugin> = new Set()
 
@@ -1198,8 +1197,10 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   use(plugins: Graph.Plugin[]) {
-    plugins.sort((pre, post) => this.getPluginPriority(post) - this.getPluginPriority(pre))
-    plugins.forEach(plugin => {
+    plugins.sort(
+      (pre, post) => this.getPluginPriority(post) - this.getPluginPriority(pre),
+    )
+    plugins.forEach((plugin) => {
       if (!this.installedPlugins.has(plugin)) {
         this.installedPlugins.add(plugin)
         plugin.init(this)
@@ -1207,7 +1208,6 @@ export class Graph extends Basecoat<EventArgs> {
     })
     return this
   }
-
 
   getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
     return Array.from(this.installedPlugins).find(
@@ -1412,6 +1412,6 @@ export namespace Graph {
     isEnabled?: () => boolean
   }
   export const PluginPriority: Record<string, number> = {
-      scroller: 1 << 10
+    scroller: 1 << 10,
   }
 }
