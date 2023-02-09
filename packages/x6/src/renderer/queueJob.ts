@@ -7,7 +7,7 @@ export class JobQueue {
   private initialTime = Date.now()
 
   queueJob(job: Job) {
-    if (job.priority === JOB_PRIORITY.PRIOR) {
+    if (job.priority & JOB_PRIORITY.PRIOR) {
       job.cb()
     } else {
       const index = this.findInsertionIndex(job)
@@ -81,10 +81,21 @@ export class JobQueue {
   }
 
   private findInsertionIndex(job: Job) {
-    let start = 0
-    while (this.queue[start] && this.queue[start].priority >= job.priority) {
-      start += 1
+    let left = 0
+    let start = this.queue.length
+    let right = start - 1
+    const priority = job.priority
+
+    while (left <= right) {
+      const mid = ((right - left) >> 1) + left
+      if (priority >= this.queue[mid].priority) {
+        left = mid + 1
+      } else {
+        start = mid
+        right = mid - 1
+      }
     }
+
     return start
   }
 
@@ -135,10 +146,10 @@ export interface Job {
 }
 
 export enum JOB_PRIORITY {
-  RenderEdge = 1,
-  RenderNode = 2,
-  Update = 3,
-  PRIOR = 100,
+  RenderEdge = /**/ 0b000000000000000000001,
+  RenderNode = /**/ 0b000000000000000000011,
+  Update = /*    */ 0b000000000000000000111,
+  PRIOR = /*     */ 0b000000011111111111111,
 }
 
 // function findInsertionIndex(job: Job) {
