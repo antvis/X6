@@ -146,10 +146,10 @@ export interface Job {
 }
 
 export enum JOB_PRIORITY {
-  RenderEdge = /**/ 0b000000000000000000001,
-  RenderNode = /**/ 0b000000000000000000011,
-  Update = /*    */ 0b000000000000000000111,
-  PRIOR = /*     */ 0b000000011111111111111,
+  RenderEdge = /**/ 1 << 1,
+  RenderNode = /**/ 1 << 2,
+  Update = /*    */ 1 << 3,
+  PRIOR = /*     */ 1 << 20,
 }
 
 // function findInsertionIndex(job: Job) {
