@@ -702,8 +702,8 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center() {
-    return this.centerPoint()
+  center(options?: Transform.CenterOptions) {
+    return this.centerPoint(options)
   }
 
   /**
@@ -712,13 +712,25 @@ export class Graph extends Basecoat<EventArgs> {
    * only center along the specified dimension and keep the other coordinate
    * unchanged.
    */
-  centerPoint(x: number, y: null | number): this
-  centerPoint(x: null | number, y: number): this
-  centerPoint(): this
-  centerPoint(x?: number | null, y?: number | null) {
+  centerPoint(
+    x: number,
+    y: null | number,
+    options?: Transform.CenterOptions,
+  ): this
+  centerPoint(
+    x: null | number,
+    y: number,
+    options?: Transform.CenterOptions,
+  ): this
+  centerPoint(optons?: Transform.CenterOptions): this
+  centerPoint(
+    x?: number | null | Transform.CenterOptions,
+    y?: number | null,
+    options?: Transform.CenterOptions,
+  ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.centerPoint(x as number, y as number)
+      scroller.centerPoint(x as number, y as number, options)
     } else {
       this.transform.centerPoint(x as number, y as number)
     }
@@ -737,10 +749,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  centerCell(cell: Cell) {
+  centerCell(cell: Cell, options?: Transform.PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.centerCell(cell)
+      scroller.centerCell(cell, options)
     } else {
       this.transform.centerCell(cell)
     }
@@ -752,10 +764,11 @@ export class Graph extends Basecoat<EventArgs> {
     point: Point.PointLike,
     x: number | string,
     y: number | string,
+    options: Transform.CenterOptions = {},
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
-      scroller.positionPoint(point, x, y)
+      scroller.positionPoint(point, x, y, options)
     } else {
       this.transform.positionPoint(point, x, y)
     }
@@ -766,7 +779,7 @@ export class Graph extends Basecoat<EventArgs> {
   positionRect(
     rect: Rectangle.RectangleLike,
     direction: Transform.Direction,
-    options?: { padding?: NumberExt.SideOptions },
+    options?: Transform.CenterOptions,
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -781,7 +794,7 @@ export class Graph extends Basecoat<EventArgs> {
   positionCell(
     cell: Cell,
     direction: Transform.Direction,
-    options?: { padding?: NumberExt.SideOptions },
+    options?: Transform.CenterOptions,
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
