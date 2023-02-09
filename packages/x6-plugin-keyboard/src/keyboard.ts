@@ -102,7 +102,7 @@ export class KeyboardImpl extends Disposable implements IDisablable {
 
   protected formatkey(key: string) {
     const formated = key
-      .toLowerCase()
+      .toLocaleLowerCase()
       .replace(/\s/g, '')
       .replace('delete', 'del')
       .replace('cmd', 'command')
