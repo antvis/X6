@@ -82,21 +82,19 @@ export class JobQueue {
 
   private findInsertionIndex(job: Job) {
     let left = 0
-    let start = this.queue.length
-    let right = start - 1
+    let ins = this.queue.length
+    let right = ins - 1
     const priority = job.priority
-
     while (left <= right) {
       const mid = ((right - left) >> 1) + left
-      if (priority >= this.queue[mid].priority) {
+      if (priority <= this.queue[mid].priority) {
         left = mid + 1
       } else {
-        start = mid
+        ins = mid
         right = mid - 1
       }
     }
-
-    return start
+    return ins
   }
 
   private scheduleJob() {
