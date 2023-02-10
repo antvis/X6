@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-scroller",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "scroller plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
