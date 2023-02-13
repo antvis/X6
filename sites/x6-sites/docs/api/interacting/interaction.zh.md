@@ -342,7 +342,7 @@ new Graph({
 
 上面 `magnetAvailable.name` 其实是高亮器的名称，X6 内置了 `stroke` 和 `className` 两种高亮器，详细信息参考 [Highlighter](/zh/docs/api/registry/highlighter)
 
-## trasnlating
+## translating
 
 可以在全局配置 `translating` 来限制节点的移动范围。
 
