@@ -36,8 +36,10 @@
     "coveralls": "rss",
     "pretest": "rss"
   },
+  "peerDependencies": {
+    "lodash-es": "^4.17.15"
+  },
   "dependencies": {
-    "lodash-es": "^4.17.15",
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
