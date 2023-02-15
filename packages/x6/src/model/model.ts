@@ -315,9 +315,10 @@ export class Model extends Basecoat<Model.EventArgs> {
       return this.batchUpdate(
         'update',
         () => {
-          return !!Object.keys(prop).map((key) =>
+          Object.keys(prop).forEach((key) =>
             existing.setProp(key, prop[key], options),
           )
+          return true
         },
         prop,
       )
