@@ -312,7 +312,15 @@ export class Model extends Basecoat<Model.EventArgs> {
   updateCell(prop: Cell.Properties, options: Model.SetOptions = {}): boolean {
     const existing = prop.id && this.getCell(prop.id)
     if (existing) {
-      return !!existing.setProp(prop, options)
+      return this.batchUpdate(
+        'update',
+        () => {
+          return !!Object.keys(prop).map((key) =>
+            existing.setProp(key, prop[key], options),
+          )
+        },
+        prop,
+      )
     }
     return false
   }
