@@ -37,6 +37,7 @@ export default class Example extends React.Component<
       width: 600,
       height: 400,
       grid: { visible: true },
+      virtual: true,
       connecting: {
         connectionPoint: 'anchor',
       },

@@ -66,9 +66,9 @@ export class Graph extends Basecoat<EventArgs> {
     }
 
     this.renderer = new ViewRenderer(this)
+    this.virtualRender = new VirtualRender(this)
     this.panning = new Panning(this)
     this.mousewheel = new Wheel(this)
-    this.virtualRender = new VirtualRender(this)
     this.size = new Size(this)
   }
 

@@ -102,7 +102,7 @@ function createNodes(graph: Graph) {
     }),
     graph.createNode({
       shape: 'path',
-      position: { x: 450, y: 200 },
+      position: { x: 650, y: 200 },
       size: { width: 100, height: 40 },
       attrs: {
         label: { text: 'groupBy' },
