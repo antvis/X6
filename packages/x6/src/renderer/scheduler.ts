@@ -118,10 +118,10 @@ export class Scheduler extends Disposable {
       },
     })
 
-    // const effectedEdges = this.getEffectedEdges(view)
-    // effectedEdges.forEach((edge) => {
-    //   this.requestViewUpdate(edge.view, edge.flag, options, priority, false)
-    // })
+    const effectedEdges = this.getEffectedEdges(view)
+    effectedEdges.forEach((edge) => {
+      this.requestViewUpdate(edge.view, edge.flag, options, priority, false)
+    })
 
     if (flush) {
       this.flush()

@@ -111,7 +111,7 @@ export class EdgeView<
     // const graph = this.graph
     // const sourceView = this.sourceView
     // const targetView = this.targetView
-
+    // console.log(sourceView, targetView)
     // if (
     //   graph &&
     //   ((sourceView && !graph.renderer.isViewMounted(sourceView)) ||
@@ -120,8 +120,6 @@ export class EdgeView<
     //   // Wait for the sourceView and targetView to be rendered.
     //   return ref
     // }
-
-    // TODO:做一些渲染到对应连接点的逻辑
 
     if (this.hasAction(ref, 'render')) {
       this.render()
