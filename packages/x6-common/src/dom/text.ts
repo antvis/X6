@@ -198,7 +198,14 @@ export function text(
   const autoLineHeight = defaultLineHeight === 'auto'
   const lineHeight = autoLineHeight ? '1.5em' : defaultLineHeight || '1em'
 
-  empty(elem)
+  let needEmptyElem = true
+  const childs = elem.children
+  if (childs.length === 1 && childs[0].tagName.toUpperCase() === 'TITLE') {
+    needEmptyElem = false
+  }
+  if (needEmptyElem) {
+    empty(elem)
+  }
 
   attr(elem, {
     // Preserve spaces, do not consecutive spaces to get collapsed to one.
