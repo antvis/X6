@@ -1,9 +1,11 @@
-// import { FunctionExt } from '@antv/x6-common'
+import { FunctionExt } from '@antv/x6-common'
 import { Base } from './base'
 
 export class VirtualRenderManager extends Base {
   protected init() {
-    // this.resetRenderArea = FunctionExt.debounce(this.resetRenderArea, 0)
+    this.resetRenderArea = FunctionExt.throttle(this.resetRenderArea, 200, {
+      leading: true,
+    })
     this.resetRenderArea()
     this.startListening()
   }
