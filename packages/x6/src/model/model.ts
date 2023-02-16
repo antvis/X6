@@ -245,7 +245,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   updateNode(metadata: Node.Metadata, options: Model.SetOptions = {}) {
-    const node = this.createEdge(metadata)
+    const node = this.createNode(metadata)
     const prop = node.getProp()
     node.dispose()
     return this.updateCell(prop, options)
