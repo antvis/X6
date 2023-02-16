@@ -121,6 +121,8 @@ export class EdgeView<
     //   return ref
     // }
 
+    // TODO:做一些渲染到对应连接点的逻辑
+
     if (this.hasAction(ref, 'render')) {
       this.render()
       ref = this.removeAction(ref, ['render', 'update', 'labels', 'tools'])
