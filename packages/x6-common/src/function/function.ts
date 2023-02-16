@@ -1,5 +1,4 @@
-export { debounce } from 'lodash-es'
-export { throttle } from 'lodash-es'
+export { debounce, throttle } from 'lodash-es'
 
 type Fn = (...args: any[]) => any
 

@@ -68,6 +68,8 @@ export default class Example extends React.Component<
       return attrs as Example.State['attrs']
     }
 
+    console.log(this.graph)
+
     this.graph
       .on('scale', ({ sx, sy }) => {
         this.effect.hideAll()

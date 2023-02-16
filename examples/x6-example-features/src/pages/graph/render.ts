@@ -23,6 +23,7 @@ export function render(graph: Graph) {
   terminals.forEach((item) => {
     graph.addEdge({
       zIndex: -1,
+      id: `${item.source}-${item.target}`,
       source: nodes[item.source],
       target: nodes[item.target],
       attrs: {
