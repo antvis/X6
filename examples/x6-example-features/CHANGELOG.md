@@ -1,3 +1,10 @@
+# @antv/x6-example-features [2.1.0](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.0.3...@antv/x6-example-features@2.1.0) (2023-02-17)
+
+
+### Features
+
+* history add max stack size ([#3253](https://github.com/antvis/X6/issues/3253)) ([fba5310](https://github.com/antvis/X6/commit/fba531064ad8027c451a81b60d5efd7f7314a0fa))
+
 ## @antv/x6-example-features [2.0.2](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.0.1...@antv/x6-example-features@2.0.2) (2023-01-17)
 
 
