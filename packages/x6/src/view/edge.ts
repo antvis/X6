@@ -118,7 +118,7 @@ export class EdgeView<
       !graph.renderer.isViewMounted(sourceView)
       // (targetView && !graph.renderer.isViewMounted(targetView)))
     ) {
-      // Wait for the sourceView and targetView to be rendered.
+      // Wait for the sourceView to be rendered.
       return ref
     }
 
