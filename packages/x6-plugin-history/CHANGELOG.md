@@ -1,3 +1,10 @@
+# @antv/x6-plugin-history [2.2.0](https://github.com/antvis/x6/compare/@antv/x6-plugin-history@2.1.3...@antv/x6-plugin-history@2.2.0) (2023-02-17)
+
+
+### Features
+
+* history add max stack size ([#3253](https://github.com/antvis/x6/issues/3253)) ([fba5310](https://github.com/antvis/x6/commit/fba531064ad8027c451a81b60d5efd7f7314a0fa))
+
 ## @antv/x6-plugin-history [2.1.3](https://github.com/antvis/x6/compare/@antv/x6-plugin-history@2.1.2...@antv/x6-plugin-history@2.1.3) (2022-11-25)
 
 
