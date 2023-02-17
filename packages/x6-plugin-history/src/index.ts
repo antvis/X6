@@ -25,7 +25,7 @@ export class History
   protected batchLevel = 0
   protected lastBatchIndex = -1
   protected freezed = false
-  protected stackSize = 30 // defalt stack size is 30
+  protected stackSize = 0 // 0: not limit
 
   protected readonly handlers: (<T extends History.ModelEvents>(
     event: T,
@@ -104,7 +104,7 @@ export class History
       const cmd = this.redoStack.pop()
       if (cmd) {
         this.applyCommand(cmd, options)
-        this.stackPush(cmd)
+        this.undoStackPush(cmd)
         this.notify('redo', cmd, options)
       }
     }
@@ -427,7 +427,7 @@ export class History
       const cmds = this.filterBatchCommand(this.batchCommands)
       if (cmds.length > 0) {
         this.redoStack = []
-        this.stackPush(cmds)
+        this.undoStackPush(cmds)
         this.consolidateCommands()
         this.notify('add', cmds, options)
       }
@@ -501,7 +501,7 @@ export class History
       this.lastBatchIndex = Math.max(this.lastBatchIndex, 0)
       this.emit('batch', { cmd, options })
     } else {
-      this.stackPush(cmd)
+      this.undoStackPush(cmd)
       this.consolidateCommands()
       this.notify('add', cmd, options)
     }
@@ -563,8 +563,9 @@ export class History
     this.undoStack.pop()
   }
 
-  protected stackPush(cmd: History.Commands) {
+  protected undoStackPush(cmd: History.Commands) {
     if (this.stackSize === 0) {
+      this.undoStack.push(cmd)
       return
     }
     if (this.undoStack.length >= this.stackSize) {
