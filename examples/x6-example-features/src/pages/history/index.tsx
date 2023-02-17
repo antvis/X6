@@ -57,10 +57,10 @@ export default class Example extends React.Component<
       graph.removeCells(selection.getSelectedCells())
     })
     keyboard.bindKey('command+z', () => {
-      history.undo()
+      this.undo()
     })
     keyboard.bindKey('command+shift+z', () => {
-      history.redo()
+      this.redo()
     })
   }
 
@@ -78,12 +78,26 @@ export default class Example extends React.Component<
     graph?.disablePlugins('keyboard')
   }
 
+  undo = () => {
+    const { graph } = this.state
+    const history = graph?.disablePlugins('history')
+    history?.undo()
+  }
+
+  redo = () => {
+    const { graph } = this.state
+    const history = graph?.disablePlugins('history')
+    history?.redo()
+  }
+
   render() {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
         <button onClick={this.enablePlugins}>enable</button>
         <button onClick={this.disablePlugins}>disable</button>
+        <button onClick={this.undo}>undo</button>
+        <button onClick={this.redo}>redo</button>
       </div>
     )
   }
