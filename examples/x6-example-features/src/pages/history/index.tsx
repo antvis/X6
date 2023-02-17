@@ -80,13 +80,13 @@ export default class Example extends React.Component<
 
   undo = () => {
     const { graph } = this.state
-    const history = graph?.disablePlugins('history')
+    const history = graph?.getPlugin('history') as History
     history?.undo()
   }
 
   redo = () => {
     const { graph } = this.state
-    const history = graph?.disablePlugins('history')
+    const history = graph?.getPlugin('history') as History
     history?.redo()
   }
 
