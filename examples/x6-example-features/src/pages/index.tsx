@@ -179,6 +179,10 @@ const dataSource = [
     example: 'animation/transition',
     description: '动画',
   },
+  {
+    example: 'history',
+    description: '时光回溯',
+  },
 ].map((item, index) => ({ key: index, ...item }))
 
 const columns = [
