@@ -108,18 +108,19 @@ export class EdgeView<
       ref = this.removeAction(ref, 'target')
     }
 
-    // const graph = this.graph
-    // const sourceView = this.sourceView
+    const graph = this.graph
+    const sourceView = this.sourceView
     // const targetView = this.targetView
-    // console.log(sourceView, targetView)
-    // if (
-    //   graph &&
-    //   ((sourceView && !graph.renderer.isViewMounted(sourceView)) ||
-    //     (targetView && !graph.renderer.isViewMounted(targetView)))
-    // ) {
-    //   // Wait for the sourceView and targetView to be rendered.
-    //   return ref
-    // }
+
+    if (
+      graph &&
+      sourceView &&
+      !graph.renderer.isViewMounted(sourceView)
+      // (targetView && !graph.renderer.isViewMounted(targetView)))
+    ) {
+      // Wait for the sourceView and targetView to be rendered.
+      return ref
+    }
 
     if (this.hasAction(ref, 'render')) {
       this.render()
