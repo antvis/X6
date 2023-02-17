@@ -23,7 +23,7 @@ export default class Example extends React.Component<
 
     const selection = new Selection({ enabled: true })
     const keyboard = new Keyboard({ enabled: true })
-    const history = new History({ enabled: true })
+    const history = new History({ enabled: true, stackSize: 5 })
 
     graph.use(selection)
     graph.use(keyboard)
