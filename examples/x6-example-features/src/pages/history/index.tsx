@@ -23,7 +23,7 @@ export default class Example extends React.Component<
 
     const selection = new Selection({ enabled: true })
     const keyboard = new Keyboard({ enabled: true })
-    const history = new History({})
+    const history = new History({ enabled: true })
 
     graph.use(selection)
     graph.use(keyboard)
@@ -58,6 +58,9 @@ export default class Example extends React.Component<
     })
     keyboard.bindKey('command+z', () => {
       history.undo()
+    })
+    keyboard.bindKey('command+shift+z', () => {
+      history.redo()
     })
   }
 
