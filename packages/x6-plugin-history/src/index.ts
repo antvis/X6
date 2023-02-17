@@ -25,6 +25,7 @@ export class History
   protected batchLevel = 0
   protected lastBatchIndex = -1
   protected freezed = false
+  protected stackSize = 0
 
   protected readonly handlers: (<T extends History.ModelEvents>(
     event: T,
@@ -33,6 +34,8 @@ export class History
 
   constructor(options: History.Options) {
     super()
+    const { stackSize = 0 } = options
+    this.stackSize = stackSize
     this.options = Util.getOptions(options)
     this.validator = new History.Validator({
       history: this,
@@ -614,7 +617,9 @@ export namespace History {
     cancelInvalid?: boolean
   }
 
-  export interface Options extends Partial<CommonOptions> {}
+  export interface Options extends Partial<CommonOptions> {
+    stackSize?: number
+  }
 
   interface Data {
     id?: string
