@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-features",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
