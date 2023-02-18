@@ -1,3 +1,10 @@
+## @antv/x6-example-features [2.1.1](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.1.0...@antv/x6-example-features@2.1.1) (2023-02-18)
+
+
+### Bug Fixes
+
+* mindmap demo duplicate node id, close [#3256](https://github.com/antvis/X6/issues/3256) ([#3257](https://github.com/antvis/X6/issues/3257)) ([c510756](https://github.com/antvis/X6/commit/c510756fe4e96c8e7471c2fb558e6019ec69b057))
+
 # @antv/x6-example-features [2.1.0](https://github.com/antvis/X6/compare/@antv/x6-example-features@2.0.3...@antv/x6-example-features@2.1.0) (2023-02-17)
 
 
