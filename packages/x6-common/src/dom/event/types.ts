@@ -729,7 +729,7 @@ type TypeEventHandlersBase<TDelegateTarget, TData, TCurrentTarget, TTarget> = {
     TCurrentTarget,
     TTarget
   >]?:
-    | TypeEventHandler<TDelegateTarget, TData, TCurrentTarget, TTarget, TType>
+    | TypeEventHandler<TDelegateTarget, TData, TCurrentTarget, TTarget, string>
     | false
     | Record<string, unknown>
 }
