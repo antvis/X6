@@ -1,3 +1,10 @@
+## @antv/x6-common [2.0.8](https://github.com/antvis/x6/compare/@antv/x6-common@2.0.7...@antv/x6-common@2.0.8) (2023-02-18)
+
+
+### Bug Fixes
+
+* fix typo for dom event handlers ([#3255](https://github.com/antvis/x6/issues/3255)) ([9b4fa86](https://github.com/antvis/x6/commit/9b4fa86daa587fe8818f3615bc1e40738a0f2319))
+
 ## @antv/x6-common [2.0.6](https://github.com/antvis/x6/compare/@antv/x6-common@2.0.5...@antv/x6-common@2.0.6) (2023-01-31)
 
 
