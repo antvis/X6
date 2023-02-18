@@ -183,6 +183,10 @@ const dataSource = [
     example: 'history',
     description: '时光回溯',
   },
+  {
+    example: 'dataTransform',
+    description: '数据转换插件',
+  },
 ].map((item, index) => ({ key: index, ...item }))
 
 const columns = [

@@ -1,34 +1,42 @@
-import { Disposable, Graph } from '@antv/x6'
+import { Cell, Disposable, Graph, Model } from '@antv/x6'
 
-export class DataTransform extends Disposable {
+export class DataTransform<T> extends Disposable {
+  public name = 'dataTransform'
+  public options: DataTransform.DataTransformPluginOptions<T>
+  private disabled = true
   private graph: Graph
-  public options: DataTransform.DataTransformPluginOptions
-  private disabled: boolean
 
-  constructor(options: DataTransform.DataTransformPluginOptions) {
+  public constructor(options: DataTransform.DataTransformPluginOptions<T>) {
     super()
+    const { enabled } = options
+    if (enabled) {
+      this.disabled = false
+    }
     this.options = options
   }
 
-  init(graph: Graph) {
+  public init(graph: Graph) {
     this.graph = graph
   }
 
-  getGraph() {
-    return this.graph
+  public toJsonTransform(JSONData: DataTransform.JSONData): T {
+    const { toJsonTransform } = this.options
+    return toJsonTransform(JSONData)
   }
 
-  // #region api
+  public toJSON(options: Model.ToJSONOptions = {}): T {
+    return this.toJsonTransform(this.graph.toJSON(options))
+  }
 
-  isEnabled() {
+  public isEnabled() {
     return !this.disabled
   }
 
-  enable() {
+  public enable() {
     this.disabled = false
   }
 
-  disable() {
+  public disable() {
     this.disabled = true
   }
 
@@ -39,7 +47,12 @@ export class DataTransform extends Disposable {
 }
 
 export namespace DataTransform {
-  export interface DataTransformPluginOptions {
-    transformFn: () => void
+  export interface DataTransformPluginOptions<T> {
+    toJsonTransform: (JSONData: DataTransform.JSONData) => T
+    enabled: boolean
+  }
+
+  export interface JSONData {
+    cells: Cell.Properties[]
   }
 }
