@@ -93,10 +93,6 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   toJSON(options: Model.ToJSONOptions = {}) {
-    const dataTransform = this.getPlugin<any>('dataTransform')
-    if (dataTransform && dataTransform.isEnabled()) {
-      return dataTransform.toJsonTransform(this.model.toJSON(options))
-    }
     return this.model.toJSON(options)
   }
 

@@ -1,10 +1,71 @@
 import React from 'react'
-import { Cell, Graph } from '@antv/x6'
+import { Cell, Graph, Model } from '@antv/x6'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Selection } from '@antv/x6-plugin-selection'
-import { History } from '@antv/x6-plugin-history'
 import { DataTransform } from '@antv/x6-plugin-dataTransform'
 import '../index.less'
+
+const fromDsl: Model.FromJSONData = {
+  cells: [
+    {
+      position: {
+        x: 50,
+        y: 50,
+      },
+      size: {
+        width: 100,
+        height: 40,
+      },
+      attrs: {
+        label: {
+          text: 'AAA',
+        },
+      },
+      shape: 'rect',
+      id: 'a4f84953-14d6-43f2-9a34-df62adbb3994',
+      zIndex: 1,
+      trans: true,
+    },
+    {
+      position: {
+        x: 250,
+        y: 50,
+      },
+      size: {
+        width: 100,
+        height: 40,
+      },
+      attrs: {
+        label: {
+          text: 'BBB',
+        },
+      },
+      shape: 'rect',
+      id: '5bb86bd9-ad85-4945-a914-8c4f78ec178f',
+      zIndex: 2,
+      trans: true,
+    },
+    {
+      position: {
+        x: 350,
+        y: 150,
+      },
+      size: {
+        width: 100,
+        height: 40,
+      },
+      attrs: {
+        label: {
+          text: 'CCC',
+        },
+      },
+      shape: 'rect',
+      id: '716d4e97-721b-45fd-9f70-983f3a858442',
+      zIndex: 3,
+      trans: true,
+    },
+  ],
+}
 
 export default class Example extends React.Component<
   {},
@@ -24,19 +85,24 @@ export default class Example extends React.Component<
 
     const selection = new Selection({ enabled: true })
     const keyboard = new Keyboard({ enabled: true })
-    const history = new History({ enabled: true, stackSize: 5 })
-    const dataTransform = new DataTransform<{
-      cells: Array<Cell.Properties & { trans: boolean }>
-    }>({
+    const dataTransform = new DataTransform<
+      {
+        cells: Array<Cell.Properties & { trans: boolean }>
+      },
+      Model.FromJSONData,
+      Model.FromJSONData
+    >({
       enabled: true,
       toJsonTransform(JSONData) {
         return { cells: JSONData?.cells?.map((i) => ({ ...i, trans: true })) }
+      },
+      fromJSONTransform(a) {
+        return a
       },
     })
 
     graph.use(selection)
     graph.use(keyboard)
-    graph.use(history)
     graph.use(dataTransform)
 
     graph.addNode({
@@ -95,9 +161,12 @@ export default class Example extends React.Component<
         DataTransform<{ cells: Array<Cell.Properties & { trans: boolean }> }>
       >('dataTransform')
     const json = transform?.toJSON()
-    json?.cells?.forEach((cell) => {
-      console.log(cell.trans)
-    })
+    console.log(json)
+  }
+
+  fromJSON = () => {
+    const { graph } = this.state
+    graph?.fromJSONTransform?.(fromDsl)
   }
 
   render() {
@@ -105,6 +174,7 @@ export default class Example extends React.Component<
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
         <button onClick={this.toJSON}>to JSON</button>
+        <button onClick={this.fromJSON}>from JSON</button>
         <button onClick={this.toJSONWithDiff}>to JSON with diff</button>
         <button onClick={this.toJSONWithPlugin}>
           to JSON with transform plugin
