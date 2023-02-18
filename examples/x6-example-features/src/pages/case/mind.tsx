@@ -309,9 +309,14 @@ export default class Example extends React.Component {
       if (dataItem) {
         let item: MindMapData | null = null
         const length = dataItem.children ? dataItem.children.length : 0
+        let nid = `${id}-${length + 1}`
+        if (graph.hasCell(nid)) {
+          // 如果通过length + 1拼接出来的节点id在画布中存在了，就在id后面加上随机数
+          nid = nid + Math.random()
+        }
         if (type === 'topic') {
           item = {
-            id: `${id}-${length + 1}`,
+            id: nid,
             type: 'topic-branch',
             label: `分支主题${length + 1}`,
             width: 100,
@@ -319,7 +324,7 @@ export default class Example extends React.Component {
           }
         } else if (type === 'topic-branch') {
           item = {
-            id: `${id}-${length + 1}`,
+            id: nid,
             type: 'topic-child',
             label: `子主题${length + 1}`,
             width: 60,
