@@ -24,6 +24,7 @@ export class DataTransform<T = any, F = any> extends Disposable {
     data: F | Model.FromJSONData,
     options: Model.FromJSONOptions = {},
   ) {
+    if (this.disabled) return this
     const { fromJSONTransform } = this.options
     if (fromJSONTransform) {
       this.graph.fromJSON(fromJSONTransform(data))
@@ -34,6 +35,7 @@ export class DataTransform<T = any, F = any> extends Disposable {
 
   public toJSON(options: Model.ToJSONOptions = {}): T | DataTransform.JSONData {
     const JSONData = this.graph.toJSON(options)
+    if (this.disabled) return JSONData
     const { toJsonTransform } = this.options
     if (toJsonTransform) return toJsonTransform(JSONData)
     return JSONData
