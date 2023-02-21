@@ -97,7 +97,7 @@ export interface Group {
   graphWidth?: number; // 模板画布宽度
   graphHeight?: number; // 模板画布高度
   graphPadding?: number; // 模板画布边距
-  graphOptions?: Graph.Options; // 模板画布线下
+  graphOptions?: Graph.Options; // 模板画布选项
   layout?: (this: Stencil, model: Model, group?: Group | null) => any;
   layoutOptions?: any; // 布局选项
 }
