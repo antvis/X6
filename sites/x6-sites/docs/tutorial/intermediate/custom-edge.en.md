@@ -29,7 +29,7 @@ class Edge extends BaseEdge {
 
 #### 第二步：配置
 
-调用继承的静态方法 `config(options)` 来配置[边选项](/en/docs/tutorial/basic/edge/#选项)的默认值、[自定义选项](/en/docs/tutorial/basic/cell#自定义选项)和[自定义属性]()，例如通过 [markup](/en/docs/tutorial/basic/cell#markup) 来指定边默认的 SVG/HTML 结构，通过 [attrs](/en/docs/tutorial/basic/cell#attrs-1) 来指定边的默认属性样式，通过 [defaultlabel](/en/docs/tutorial/basic/edge#defaultlabel) 来指定边的默认标签样式。
+调用继承的静态方法 `config(options)` 来配置[边选项](/en/docs/tutorial/basic/edge/#选项)的默认值、[自定义选项](/en/docs/tutorial/basic/cell#自定义选项)和[自定义属性]()，例如通过 [markup](/en/docs/tutorial/basic/cell#markup) 来指定边默认的 SVG/HTML 结构，通过 [attrs](/en/docs/tutorial/basic/cell#attrs-1) 来指定边的默认属性样式，通过 [defaultLabel](/en/docs/tutorial/basic/edge#defaultlabel) 来指定边的默认标签样式。
 
 | 名称      | 类型                             | 是否必选 | 默认值    | 说明                                        |
 |-----------|----------------------------------|----------|-----------|-------------------------------------------|

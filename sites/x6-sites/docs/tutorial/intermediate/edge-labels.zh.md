@@ -494,7 +494,7 @@ function parseStringLabel(label: string): Label {
 
 ```ts
 Edge.config({
-  defaultlabel: {
+  defaultLabel: {
     markup: [
       {
         tagName: 'rect',
