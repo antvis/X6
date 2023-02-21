@@ -110,15 +110,16 @@ export class EdgeView<
 
     const graph = this.graph
     const sourceView = this.sourceView
-    // const targetView = this.targetView
+    const targetView = this.targetView
+    const { virtual } = graph.options
 
     if (
       graph &&
-      sourceView &&
-      !graph.renderer.isViewMounted(sourceView)
-      // (targetView && !graph.renderer.isViewMounted(targetView)))
+      !virtual &&
+      ((sourceView && !graph.renderer.isViewMounted(sourceView)) ||
+        (targetView && !graph.renderer.isViewMounted(targetView)))
     ) {
-      // Wait for the sourceView to be rendered.
+      // Wait for the sourceView and targetView to be rendered.
       return ref
     }
 
