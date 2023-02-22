@@ -48,7 +48,7 @@
     "vue-demi": "latest"
   },
   "peerDependencies": {
-    "@antv/x6": ">=1.0.0",
+    "@antv/x6": "^1.x",
     "@vue/composition-api": "^1.0.0-rc.6",
     "vue": "^2.6.12 || ^3.0.0"
   },

@@ -49,7 +49,7 @@
     "@angular/cdk": ">=10.2.3",
     "@angular/common": "^10.2.3",
     "@angular/core": ">=10.2.3",
-    "@antv/x6": ">=1.0.0"
+    "@antv/x6": "^1.x"
   },
   "devDependencies": {
     "@angular/cdk": "^10.2.3",
