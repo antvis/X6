@@ -450,10 +450,12 @@ export class Scheduler extends Disposable {
     for (let i = 0, n = edges.length; i < n; i += 1) {
       const edge = edges[i]
       const viewItem = this.views[edge.id]
-      if (!viewItem) {
+      const edgeView = viewItem.view
+
+      if (!viewItem || !this.isViewMounted(edgeView)) {
         continue
       }
-      const edgeView = viewItem.view
+
       const flagLabels: FlagManager.Action[] = ['update']
       if (edge.getTargetCell() === cell) {
         flagLabels.push('target')
@@ -472,10 +474,33 @@ export class Scheduler extends Disposable {
   }
 
   protected isInRenderArea(view: CellView) {
-    return (
-      !this.renderArea ||
-      this.renderArea.isIntersectWithRect(view.cell.getBBox())
-    )
+    if (!this.renderArea) {
+      return true
+    }
+    if (view.isNodeView()) {
+      const node = view.cell
+      return this.renderArea.isIntersectWithRect(node.getBBox())
+    }
+    if (view.isEdgeView()) {
+      const edge = view.cell
+      const sourceCell = edge.getSourceCell()
+      const targetCell = edge.getTargetCell()
+      if (sourceCell) {
+        const sourceViewItem = this.views[sourceCell.id]
+        if (sourceViewItem && !this.isViewMounted(sourceViewItem.view)) {
+          return false
+        }
+      }
+
+      if (targetCell) {
+        const targetViewItem = this.views[targetCell.id]
+        if (targetViewItem && !this.isViewMounted(targetViewItem.view)) {
+          return false
+        }
+      }
+    }
+
+    return true
   }
 
   protected getRenderPriority(view: CellView) {
