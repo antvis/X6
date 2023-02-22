@@ -1,4 +1,17 @@
-# @antv/x6-angular-shape
+---
+title: Angular 节点
+order: 4
+redirect_from:
+  - /zh/docs
+  - /zh/docs/tutorial
+  - /zh/docs/tutorial/inermediate
+---
+
+:::info{title=在本章节中，你可以了解到：}
+
+- 如何使用 HTML 来渲染节点内容
+- 如何更新节点内容
+  :::
 
 ## 渲染节点
 
