@@ -47,7 +47,7 @@
     "@antv/x6-package-json/rollup.json"
   ],
   "peerDependencies": {
-    "@antv/x6": ">=1.0.0",
+    "@antv/x6": "^1.x",
     "react": ">=16.8.6 || >=17.0.0",
     "react-dom": ">=16.8.6 || >=17.0.0"
   },
