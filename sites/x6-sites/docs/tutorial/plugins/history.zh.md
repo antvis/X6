@@ -132,6 +132,20 @@ cleanHistory(options?: KeyValue): this
 
 清空历史队列。`options` 将被传递到事件回调中。
 
+### graph.getHistoryStackSize(...)
+```sign
+getHistoryStackSize(): number
+```
+
+获取history栈的尺寸。
+
+### graph.setHistoryStackSize(...)
+```sign
+setHistoryStackSize(size: number): this
+```
+
+设置history栈的尺寸。
+
 ### graph.isHistoryEnabled()
 
 ```sign
@@ -155,18 +169,6 @@ disableHistory(): this
 ```
 
 禁用历史状态。
-
-```sign
-getSize(): number
-```
-
-获取history栈的尺寸。
-
-```sign
-setSize(size: number): this
-```
-
-设置history栈的尺寸。
 
 ### graph.toggleHistory(...)
 
