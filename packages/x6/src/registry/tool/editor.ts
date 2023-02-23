@@ -223,6 +223,7 @@ export namespace CellEditor {
       return cell.prop(`labels/${index}/attrs/label/text`)
     },
     setText({ cell, value, index, distance }) {
+      if (!value) return
       const edge = cell as Edge
       if (index === -1) {
         edge.appendLabel({
