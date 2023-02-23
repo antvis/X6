@@ -156,6 +156,12 @@ disableHistory(): this
 
 禁用历史状态。
 
+```sign
+getSize(): number
+```
+
+获取history栈的尺寸。
+
 ### graph.toggleHistory(...)
 
 ```sign
