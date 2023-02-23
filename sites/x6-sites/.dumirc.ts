@@ -288,8 +288,10 @@ export default defineConfig({
       },
     ],
     docsearchOptions: {
-      apiKey: 'fe8bee8366e56a9463229c3c81200866',
-      indexName: 'antv_x6',
+      appId: '7J0MWEOGMO',
+      apiKey: 'e0d8089bb224298dfd4415b3e98bb700',
+      indexName: 'x6_sites_2.0',
+      versionV3: true,
     },
     playground: {
       extraLib: '',
