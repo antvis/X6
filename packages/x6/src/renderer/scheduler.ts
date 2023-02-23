@@ -450,9 +450,13 @@ export class Scheduler extends Disposable {
     for (let i = 0, n = edges.length; i < n; i += 1) {
       const edge = edges[i]
       const viewItem = this.views[edge.id]
-      const edgeView = viewItem.view
 
-      if (!viewItem || !this.isViewMounted(edgeView)) {
+      if (!viewItem) {
+        continue
+      }
+
+      const edgeView = viewItem.view
+      if (!this.isViewMounted(edgeView)) {
         continue
       }
 
