@@ -162,6 +162,12 @@ getSize(): number
 
 获取history栈的尺寸。
 
+```sign
+setSize(size: number): this
+```
+
+设置history栈的尺寸。
+
 ### graph.toggleHistory(...)
 
 ```sign

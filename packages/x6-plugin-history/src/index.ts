@@ -131,6 +131,10 @@ export class History
     return this.stackSize
   }
 
+  setSize(size: number) {
+    this.stackSize = size
+  }
+
   canUndo() {
     return !this.disabled && this.undoStack.length > 0
   }
