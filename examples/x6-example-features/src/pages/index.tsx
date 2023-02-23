@@ -104,6 +104,10 @@ const dataSource = [
     example: 'tools/clean',
     description: '常用工具',
   },
+  {
+    example: 'tools/node-editor',
+    description: '文本编辑工具',
+  },
   // case
   {
     example: 'case/bpmn',

@@ -57,6 +57,9 @@ export class CellEditor extends ToolsView.ToolItem<
         const { translation } = Dom.parseTransformString(matrix)
         pos = new Point(translation.tx, translation.ty)
         minWidth = Util.getBBox(target).width
+        // hide display value when editing state because of character ghosting.
+        cell.setPropByPath(`labels/${index}/attrs/rect/visibility`, 'hidden')
+        cell.setPropByPath(`labels/${index}/attrs/text/visibility`, 'hidden')
       } else {
         if (!this.options.labelAddable) {
           return this
@@ -95,7 +98,9 @@ export class CellEditor extends ToolsView.ToolItem<
     editor.innerText = text || ''
 
     // clear display value when edit status because char ghosting.
-    this.setCellText('')
+    if (cell.isNode()) {
+      this.setCellText('')
+    }
 
     return this
   }
@@ -223,7 +228,6 @@ export namespace CellEditor {
       return cell.prop(`labels/${index}/attrs/label/text`)
     },
     setText({ cell, value, index, distance }) {
-      if (!value) return
       const edge = cell as Edge
       if (index === -1) {
         edge.appendLabel({
@@ -239,6 +243,9 @@ export namespace CellEditor {
       } else {
         if (value) {
           edge.prop(`labels/${index}/attrs/label/text`, value)
+          // display the label after the modification is complete.
+          cell.removeProp(`labels/${index}/attrs/rect/visibility`)
+          cell.removeProp(`labels/${index}/attrs/text/visibility`)
         } else if (typeof index === 'number') {
           edge.removeLabelAt(index)
         }
