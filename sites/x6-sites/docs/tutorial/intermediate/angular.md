@@ -9,8 +9,9 @@ redirect_from:
 
 :::info{title=在本章节中，你可以了解到：}
 
-- 如何使用 HTML 来渲染节点内容
+- 如何使用 Angular 来渲染节点内容
 - 如何更新节点内容
+- FAQ
   :::
 
 ## 渲染节点
