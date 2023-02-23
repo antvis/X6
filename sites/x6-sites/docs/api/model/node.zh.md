@@ -247,8 +247,9 @@ getBBox(options: { deep?: boolean }): Rectangle
 
 获取节点的包围盒。
 
-[[warning]]
+:::warning{title=注意：}
 | 需要注意的是，该方法通过节点的大小和位置计算包围盒，并不是渲染到画布后的包围盒，涉及的计算只是一些算数运算。
+:::
 
 <span class="tag-param">参数<span>
 
