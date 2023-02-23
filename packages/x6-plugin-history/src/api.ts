@@ -12,6 +12,7 @@ declare module '@antv/x6/lib/graph/graph' {
     undoAndCancel: (options?: KeyValue) => Graph
     canUndo: () => boolean
     canRedo: () => boolean
+    getHistoryStackSize: () => number
     cleanHistory: (options?: KeyValue) => Graph
   }
 }
@@ -106,4 +107,9 @@ Graph.prototype.cleanHistory = function (options?: KeyValue) {
     history.clean(options)
   }
   return this
+}
+
+Graph.prototype.getHistoryStackSize = function () {
+  const history = this.getPlugin('history') as History
+  return history.getSize()
 }
