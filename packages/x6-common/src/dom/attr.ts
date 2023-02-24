@@ -6,6 +6,8 @@ export const CASE_SENSITIVE_ATTR = [
   'attributeName',
   'attributeType',
   'repeatCount',
+  'textLength',
+  'lengthAdjust',
 ]
 
 export type Attributes = { [key: string]: string | number | null | undefined }
