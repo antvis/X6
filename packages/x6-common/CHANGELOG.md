@@ -1,3 +1,10 @@
+## @antv/x6-common [2.0.10](https://github.com/antvis/x6/compare/@antv/x6-common@2.0.9...@antv/x6-common@2.0.10) (2023-02-24)
+
+
+### Bug Fixes
+
+* add textLength & lengthAdjust to CASE_SENSITIVE_ATTR ([#3281](https://github.com/antvis/x6/issues/3281)) ([76fb1ac](https://github.com/antvis/x6/commit/76fb1acf74b0f1c308f7c824d02c12244b7ac8f3))
+
 ## @antv/x6-common [2.0.8](https://github.com/antvis/x6/compare/@antv/x6-common@2.0.7...@antv/x6-common@2.0.8) (2023-02-18)
 
 
