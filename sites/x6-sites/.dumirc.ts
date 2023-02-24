@@ -1,5 +1,5 @@
 import { defineConfig } from 'dumi'
-import { repository, version } from './package.json'
+import { repository } from './package.json'
 
 export default defineConfig({
   locales: [
@@ -22,7 +22,7 @@ export default defineConfig({
     showChartResize: true, // 是否在 demo 页展示图表视图切换
     showAPIDoc: false, // 是否在 demo 页展示API文档
     versions: {
-      [version]: 'https://x6.antv.antgroup.com',
+      '2.x': 'https://x6.antv.antgroup.com',
       '1.x': 'https://x6.antv.vision',
     },
     navs: [
