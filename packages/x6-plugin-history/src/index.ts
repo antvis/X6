@@ -132,6 +132,10 @@ export class History
   }
 
   setSize(size: number) {
+    const ul = this.undoStack.length
+    if (ul > size) {
+      this.undoStack.splice(0, ul - size)
+    }
     this.stackSize = size
   }
 
