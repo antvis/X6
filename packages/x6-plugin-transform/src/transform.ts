@@ -493,7 +493,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     Dom.removeClass(this.container, `${this.containerClassName}-active`)
 
     if (this.handle) {
-      Dom.removeClass(this.handle, `${this.containerClassName}-active`)
+      Dom.removeClass(this.handle, `${this.containerClassName}-active-handle`)
 
       const pos = this.handle.getAttribute(
         'data-position',
