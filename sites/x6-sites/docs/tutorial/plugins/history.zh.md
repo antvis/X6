@@ -139,6 +139,17 @@ getHistoryStackSize(): number
 
 获取history栈的尺寸。
 
+
+### graph.getHistoryUndoStackRemainSize(...)
+```sign
+getHistoryUndoStackRemainSize(): number
+```
+
+获取history undo栈的剩余尺寸。
+
+
+
+
 ### graph.setHistoryStackSize(...)
 ```sign
 setHistoryStackSize(size: number): this

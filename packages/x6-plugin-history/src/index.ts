@@ -131,6 +131,11 @@ export class History
     return this.stackSize
   }
 
+  getUndoRemainSize() {
+    const ul = this.undoStack.length
+    return this.stackSize - ul
+  }
+
   setSize(size: number) {
     const ul = this.undoStack.length
     if (ul > size) {
