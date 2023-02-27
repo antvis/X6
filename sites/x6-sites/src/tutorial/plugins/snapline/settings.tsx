@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox, Slider, Card, Row, Col } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 export interface Props {
   onChange: (res: State) => void
@@ -74,7 +74,7 @@ export class Settings extends React.Component<Props, State> {
         <Row align="middle">
           <Col span={6}>Tolerance</Col>
           <Col span={2} offset={1}>
-            <div className={styles['slider-value']}>{this.state.tolerance}</div>
+            <div className="slider-value">{this.state.tolerance}</div>
           </Col>
         </Row>
         <Row align="middle">

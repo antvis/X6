@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, Row, Col, Slider } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 export interface Props {
   onChange: (res: State) => void
@@ -47,7 +47,7 @@ export class Settings extends React.Component<Props, State> {
             />
           </Col>
           <Col span={1} offset={1}>
-            <div className={styles['slider-value']}>{this.state.padding}</div>
+            <div className="slider-value">{this.state.padding}</div>
           </Col>
         </Row>
         <Row align="middle" style={{ borderTop: '1px solid #f0f0f0' }}>

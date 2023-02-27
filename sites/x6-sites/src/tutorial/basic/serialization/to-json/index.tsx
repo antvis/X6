@@ -3,7 +3,7 @@ import { Graph } from '@antv/x6'
 import hljs from 'highlight.js/lib/core'
 import json from 'highlight.js/lib/languages/json'
 import 'highlight.js/styles/github.css'
-import styles from './index.less'
+import './index.less'
 
 hljs.registerLanguage('json', json)
 
@@ -86,13 +86,13 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-side']}>
+      <div className="to-json-app">
+        <div className="app-side">
           <pre>
             <code className="language-json" ref={this.refCode} />
           </pre>
         </div>
-        <div className={styles['app-content']} ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }

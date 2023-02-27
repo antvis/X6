@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import { register, Portal } from '@antv/x6-react-shape'
 import { Progress, Button } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 const X6ReactPortalProvider = Portal.getProvider() // 注意，一个 graph 只能申明一个 portal provider
 const ProgressContext = React.createContext(30)
@@ -10,7 +10,7 @@ const ProgressContext = React.createContext(30)
 const NodeComponent = () => {
   const progress = React.useContext(ProgressContext)
   return (
-    <div className={styles['react-node']}>
+    <div className="react-node">
       <Progress type="circle" percent={progress} width={80} />
     </div>
   )
@@ -59,14 +59,14 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
+      <div className="react-portal-app">
         <ProgressContext.Provider value={this.state.progress}>
           <X6ReactPortalProvider />
         </ProgressContext.Provider>
-        <div className={styles['app-btns']}>
+        <div className="app-btns">
           <Button onClick={this.changeProgress}>Add</Button>
         </div>
-        <div className={styles['app-content']} ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }

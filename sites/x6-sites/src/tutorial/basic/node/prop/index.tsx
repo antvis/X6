@@ -1,7 +1,7 @@
 import React from 'react'
 import { Graph, Color } from '@antv/x6'
 import { Button } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 Graph.registerNode(
   'custom-node',
@@ -123,8 +123,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-btns']}>
+      <div className="node-prop-app ">
+        <div className="app-btns">
           <Button.Group>
             {commands.map((item) => (
               <Button onClick={() => this.change(item.key)} key={item.key}>
@@ -133,7 +133,7 @@ export default class Example extends React.Component {
             ))}
           </Button.Group>
         </div>
-        <div className={styles['app-content']} ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }
