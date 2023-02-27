@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "jsx": "react",
-    "target": "es5",
+    "target": "es6",
     "lib": ["DOM", "ES2020"]
   }
 }
