@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
 import { History } from '@antv/x6-plugin-history'
-import styles from './index.less'
+import './index.less'
 
 interface Props {}
 
@@ -75,8 +75,8 @@ export default class App extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-btns']}>
+      <div className="history-app">
+        <div className="app-btns">
           <Button.Group>
             <Button onClick={this.onUndo} disabled={!this.state.canUndo}>
               Undo
@@ -86,7 +86,7 @@ export default class App extends React.Component<Props, State> {
             </Button>
           </Button.Group>
         </div>
-        <div ref={this.refContainer} className={styles['app-content']} />
+        <div ref={this.refContainer} className="app-content" />
       </div>
     )
   }
