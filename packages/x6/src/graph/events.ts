@@ -1,6 +1,7 @@
 import { Dom } from '@antv/x6-common'
 import { Model } from '../model'
 import { CellView } from '../view'
+import { Scheduler } from '../renderer/scheduler'
 
 interface CommonEventArgs<E> {
   e: E
@@ -13,7 +14,8 @@ interface PositionEventArgs<E> extends CommonEventArgs<E> {
 
 export interface EventArgs
   extends Omit<Model.EventArgs, 'sorted' | 'updated' | 'reseted'>,
-    CellView.EventArgs {
+    CellView.EventArgs,
+    Scheduler.EventArgs {
   'model:sorted'?: Model.EventArgs['sorted']
   'model:updated': Model.EventArgs['updated']
   'model:reseted': Model.EventArgs['reseted']

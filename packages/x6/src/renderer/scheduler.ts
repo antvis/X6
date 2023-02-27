@@ -313,6 +313,7 @@ export class Scheduler extends Disposable {
       }
 
       viewItem.state = Scheduler.ViewState.MOUNTED
+      this.graph.trigger('view:mounted', { view })
     }
   }
 
@@ -334,6 +335,7 @@ export class Scheduler extends Disposable {
     if (view) {
       viewItem.view.remove()
       delete this.willRemoveViews[cell.id]
+      this.graph.trigger('view:unmounted', { view })
     }
   }
 
@@ -535,5 +537,10 @@ export namespace Scheduler {
     flag: number
     options: any
     state: ViewState
+  }
+
+  export interface EventArgs {
+    'view:mounted': { view: CellView }
+    'view:unmounted': { view: CellView }
   }
 }
