@@ -41,6 +41,9 @@
     "@antv/x6": "^2.x",
     "@angular/core": ">= 14"
   },
+  "devDependencies": {
+    "@antv/x6": "^2.x"
+  },
   "author": {
     "name": "Eve-Sama",
     "email": "948832626@qq.com"

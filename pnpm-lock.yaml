@@ -195,8 +195,8 @@ importers:
       umi-types: ^0.3.0
     dependencies:
       '@antv/hierarchy': 0.6.8
-      '@antv/x6': link:../../packages/x6
-      '@antv/x6-plugin-clipboard': 2.1.4_@antv+x6@packages+x6
+      '@antv/x6': 2.5.1
+      '@antv/x6-plugin-clipboard': 2.1.4_@antv+x6@2.5.1
       '@antv/x6-plugin-dnd': link:../../packages/x6-plugin-dnd
       '@antv/x6-plugin-export': link:../../packages/x6-plugin-export
       '@antv/x6-plugin-history': link:../../packages/x6-plugin-history
@@ -206,7 +206,7 @@ importers:
       '@antv/x6-plugin-selection': link:../../packages/x6-plugin-selection
       '@antv/x6-plugin-snapline': link:../../packages/x6-plugin-snapline
       '@antv/x6-plugin-stencil': link:../../packages/x6-plugin-stencil
-      '@antv/x6-plugin-transform': link:../../packages/x6-plugin-transform
+      '@antv/x6-plugin-transform': 2.1.6_@antv+x6@2.5.1
       '@antv/x6-react-components': link:../../packages/x6-react-components
       '@antv/x6-react-shape': link:../../packages/x6-react-shape
       antd: 4.24.5_biqbaboplfbrettd7655fr4n2y
@@ -241,12 +241,15 @@ importers:
       '@antv/x6-geometry': ^2.0.x
       utility-types: ^3.10.0
     dependencies:
-      '@antv/x6-common': link:../x6-common
+      '@antv/x6-common': 2.0.10
       '@antv/x6-geometry': link:../x6-geometry
       utility-types: 3.10.0
 
   packages/x6-angular-shape:
-    specifiers: {}
+    specifiers:
+      '@antv/x6': ^2.x
+    devDependencies:
+      '@antv/x6': 2.5.1
 
   packages/x6-common:
     specifiers:
@@ -266,25 +269,25 @@ importers:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-dnd:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-export:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-history:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-keyboard:
     specifiers:
@@ -294,46 +297,46 @@ importers:
     dependencies:
       mousetrap: 1.6.5
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
       '@types/mousetrap': 1.6.11
 
   packages/x6-plugin-minimap:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-scroller:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-selection:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-snapline:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-plugin-stencil:
     specifiers:
       '@antv/x6': ^2.x
       '@antv/x6-plugin-dnd': ^2.0.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
       '@antv/x6-plugin-dnd': link:../x6-plugin-dnd
 
   packages/x6-plugin-transform:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
 
   packages/x6-react-components:
     specifiers:
@@ -378,7 +381,7 @@ importers:
       react: ^18.0.0
       react-dom: ^18.0.0
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.9
       react: 18.2.0
@@ -392,7 +395,7 @@ importers:
     dependencies:
       vue-demi: 0.13.11_vue@3.2.45
     devDependencies:
-      '@antv/x6': link:../x6
+      '@antv/x6': 2.5.1
       vue: 3.2.45
 
   sites/x6-sites:
@@ -427,8 +430,8 @@ importers:
       '@antv/dumi-theme-antv': 0.3.5_25uwydwmdtmhs6eoiohll67jua
       '@antv/hierarchy': 0.6.8
       '@antv/layout': 0.3.12_dagre@0.8.5
-      '@antv/x6': link:../../packages/x6
-      '@antv/x6-plugin-clipboard': 2.1.4_@antv+x6@packages+x6
+      '@antv/x6': 2.5.1
+      '@antv/x6-plugin-clipboard': 2.1.4_@antv+x6@2.5.1
       '@antv/x6-plugin-dnd': link:../../packages/x6-plugin-dnd
       '@antv/x6-plugin-export': link:../../packages/x6-plugin-export
       '@antv/x6-plugin-history': link:../../packages/x6-plugin-history
@@ -438,7 +441,7 @@ importers:
       '@antv/x6-plugin-selection': link:../../packages/x6-plugin-selection
       '@antv/x6-plugin-snapline': link:../../packages/x6-plugin-snapline
       '@antv/x6-plugin-stencil': link:../../packages/x6-plugin-stencil
-      '@antv/x6-plugin-transform': link:../../packages/x6-plugin-transform
+      '@antv/x6-plugin-transform': 2.1.6_@antv+x6@2.5.1
       '@antv/x6-react-components': link:../../packages/x6-react-components
       '@antv/x6-react-shape': link:../../packages/x6-react-shape
       antd: 4.24.5_biqbaboplfbrettd7655fr4n2y
@@ -905,7 +908,22 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /@antv/x6-plugin-clipboard/2.1.4_@antv+x6@packages+x6:
+  /@antv/x6-common/2.0.10:
+    resolution:
+      {
+        integrity: sha512-edm1v1PGub2hYald3SVbEeZafUTqgt2WOwAhmH/xLw8av1pRG4rmNBXY2EfxQbpN6J/Q9C0ZBPK+KLtpgXWjZg==,
+      }
+    dependencies:
+      lodash-es: 4.17.21
+      utility-types: 3.10.0
+
+  /@antv/x6-geometry/2.0.4:
+    resolution:
+      {
+        integrity: sha512-dlsLNRRTiCw8TsJ/03j3y5IbbbK4Npf6zBH6kAx8nnW+edNT/TAOChvPRzizwD+vA7wY9Rp2AiRnp/vCdIYC5w==,
+      }
+
+  /@antv/x6-plugin-clipboard/2.1.4_@antv+x6@2.5.1:
     resolution:
       {
         integrity: sha512-iP3dA/Cl4Rf5sQuA8sOaja2nU+ziDhc78FCMJTatJGxWjKX7BdL67RZPWXuOSCUHwZd1TJJ7/wUgMR390Q2ZHg==,
@@ -913,8 +931,29 @@ packages:
     peerDependencies:
       '@antv/x6': ^2.x
     dependencies:
-      '@antv/x6': link:packages/x6
+      '@antv/x6': 2.5.1
     dev: false
+
+  /@antv/x6-plugin-transform/2.1.6_@antv+x6@2.5.1:
+    resolution:
+      {
+        integrity: sha512-wU1C7NSJJG+9uBVXALEO3H33t2hNneOKth7AUWcwb+PyM5mBzJlbltQmTRBsd/91M5b5tFsnWMabgzxdzQrTFw==,
+      }
+    peerDependencies:
+      '@antv/x6': ^2.x
+    dependencies:
+      '@antv/x6': 2.5.1
+    dev: false
+
+  /@antv/x6/2.5.1:
+    resolution:
+      {
+        integrity: sha512-e7IPfskna95yYonzwKJwW6WOJV5sVEP9wb6S+MySwQBAKX2b4GWDM8dFz0Wcx02bEVpkmHqDVTDX8zsUtFatFA==,
+      }
+    dependencies:
+      '@antv/x6-common': 2.0.10
+      '@antv/x6-geometry': 2.0.4
+      utility-types: 3.10.0
 
   /@babel/code-frame/7.0.0:
     resolution:
@@ -24271,7 +24310,6 @@ packages:
       {
         integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==,
       }
-    dev: false
 
   /lodash._reinterpolate/3.0.0:
     resolution:
@@ -36456,10 +36494,7 @@ packages:
     engines: { node: '>=0.10.0' }
 
   /source-map/0.6.1:
-    resolution:
-      {
-        integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==,
-      }
+    resolution: { integrity: sha1-dHIq8y6WFOnCh6jQu95IteLxomM= }
     engines: { node: '>=0.10.0' }
 
   /source-map/0.7.4:
@@ -40359,7 +40394,6 @@ packages:
         integrity: sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==,
       }
     engines: { node: '>= 4' }
-    dev: false
 
   /utils-merge/1.0.1:
     resolution:
