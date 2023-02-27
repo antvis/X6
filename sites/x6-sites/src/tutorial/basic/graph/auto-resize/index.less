@@ -1,29 +1,26 @@
-.app {
+.auto-resize-app {
   display: flex;
   width: 600px;
   height: 400px;
   padding: 0;
-  padding: 16px 8px;
   font-family: sans-serif;
-}
 
-.app-content {
-  flex: 1;
-  height: 280px;
-  margin-right: 8px;
-  margin-left: 8px;
-  border-radius: 5px;
-  box-shadow: 0 12px 5px -10px rgb(0 0 0 / 10%), 0 0 4px 0 rgb(0 0 0 / 10%);
-}
-
-.full {
-  width: 100%;
-  height: 100%;
-}
-
-:global {
-  .x6-split-box-horizontal > .x6-split-box-resizer,
-  .x6-split-box-vertical > .x6-split-box-resizer {
-    background: #e3e6e9;
+  .app-content {
+    flex: 1;
+    height: 280px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border-radius: 5px;
+    box-shadow: 0 12px 5px -10px rgb(0 0 0 / 10%), 0 0 4px 0 rgb(0 0 0 / 10%);
   }
+
+  .full {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.x6-split-box-horizontal > .x6-split-box-resizer,
+.x6-split-box-vertical > .x6-split-box-resizer {
+  background: #e3e6e9;
 }
