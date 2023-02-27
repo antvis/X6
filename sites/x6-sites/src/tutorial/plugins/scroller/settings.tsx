@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox, Slider, Card, Row, Col } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 export interface Props {
   onChange: (res: State) => void
@@ -127,9 +127,7 @@ export class Settings extends React.Component<Props, State> {
             Min Visible Width
           </Col>
           <Col span={2} offset={1}>
-            <div className={styles['slider-value']}>
-              {this.state.minVisibleWidth}
-            </div>
+            <div className="slider-value">{this.state.minVisibleWidth}</div>
           </Col>
         </Row>
         <Row align="middle" style={{ marginTop: 0 }}>
@@ -155,9 +153,7 @@ export class Settings extends React.Component<Props, State> {
             Min Visible Height
           </Col>
           <Col span={2} offset={1}>
-            <div className={styles['slider-value']}>
-              {this.state.minVisibleHeight}
-            </div>
+            <div className="slider-value">{this.state.minVisibleHeight}</div>
           </Col>
         </Row>
         <Row align="middle" style={{ marginTop: 0 }}>
