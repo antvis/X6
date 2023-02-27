@@ -92,6 +92,7 @@ export class CellEditor extends ToolsView.ToolItem<
         index: this.labelIndex,
       })
     }
+
     editor.innerText = text || ''
 
     // clear display value when edit status because char ghosting.
@@ -105,7 +106,8 @@ export class CellEditor extends ToolsView.ToolItem<
       const cell = this.cell
       const value = this.editor.innerText.replace(/\n$/, '') || ''
       // set value
-      this.setCellText(value)
+      // when value is null, we will remove label in edge
+      this.setCellText(value !== '' ? value : null)
       // remove tool
       cell.removeTool(cell.isEdge() ? 'edge-editor' : 'node-editor')
       this.undelegateDocumentEvents()
@@ -137,7 +139,7 @@ export class CellEditor extends ToolsView.ToolItem<
     }
   }
 
-  setCellText(value: string) {
+  setCellText(value: string | null) {
     const setText = this.options.setText
     if (typeof setText === 'function') {
       FunctionExt.call(setText, this.cellView, {
@@ -170,7 +172,7 @@ export namespace CellEditor {
       this: CellView,
       args: {
         cell: Cell
-        value: string
+        value: string | null
         index?: number
         distance?: number
       },
@@ -204,7 +206,9 @@ export namespace CellEditor {
       return cell.attr('text/text')
     },
     setText({ cell, value }) {
-      cell.attr('text/text', value)
+      if (value !== null) {
+        cell.attr('text/text', value)
+      }
     },
   })
 
@@ -225,18 +229,20 @@ export namespace CellEditor {
     setText({ cell, value, index, distance }) {
       const edge = cell as Edge
       if (index === -1) {
-        edge.appendLabel({
-          position: {
-            distance: distance!,
-          },
-          attrs: {
-            label: {
-              text: value,
-            },
-          },
-        })
-      } else {
         if (value) {
+          edge.appendLabel({
+            position: {
+              distance: distance!,
+            },
+            attrs: {
+              label: {
+                text: value,
+              },
+            },
+          })
+        }
+      } else {
+        if (value !== null) {
           edge.prop(`labels/${index}/attrs/label/text`, value)
         } else if (typeof index === 'number') {
           edge.removeLabelAt(index)
