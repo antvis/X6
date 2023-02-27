@@ -51,7 +51,7 @@
       "prettier --write --ignore-unknown"
     ],
     "*.less": [
-      "stylelint --syntax less --fix"
+      "stylelint --customSyntax postcss-less --fix"
     ],
     "*.js": [
       "prettier --write"
