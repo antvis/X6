@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Graph } from '@antv/x6'
 import { MiniMap } from '@antv/x6-plugin-minimap'
 import { Scroller } from '@antv/x6-plugin-scroller'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -109,9 +109,9 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-content']} ref={this.refContainer} />
-        <div className={styles['app-minimap']} ref={this.refMiniMapContainer} />
+      <div className="minimap-app">
+        <div className="app-content" ref={this.refContainer} />
+        <div className="app-minimap" ref={this.refMiniMapContainer} />
       </div>
     )
   }

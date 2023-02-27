@@ -2,11 +2,11 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Progress } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 const NodeComponent = () => {
   return (
-    <div className={styles['react-node']}>
+    <div className="react-node">
       <Progress type="circle" percent={30} width={80} />
     </div>
   )
@@ -45,8 +45,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-content']} ref={this.refContainer} />
+      <div className="react-basic-app">
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }
