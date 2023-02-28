@@ -3,7 +3,7 @@ import { Button } from 'antd'
 import { Graph } from '@antv/x6'
 import { Scroller } from '@antv/x6-plugin-scroller'
 import { Settings, State } from './settings'
-import styles from './index.less'
+import './index.less'
 
 const data = {
   hello: {
@@ -131,17 +131,17 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-side']}>
+      <div className="scroller-app">
+        <div className="app-side">
           <Settings onChange={this.onSettingsChanged} />
         </div>
-        <div className={styles['app-main']}>
-          <div className={styles['app-btns']}>
+        <div className="app-main">
+          <div className="app-btns">
             <Button onClick={this.onCenter}>Center Graph</Button>
             <Button onClick={this.onCenterContent}>Center Whole Content</Button>
             <Button onClick={this.onCenterCircle}>Center The Circle</Button>
           </div>
-          <div className={styles['app-content']} ref={this.refContainer} />
+          <div className="app-content" ref={this.refContainer} />
         </div>
       </div>
     )

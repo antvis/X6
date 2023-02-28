@@ -4,7 +4,7 @@ import { Graph } from '@antv/x6'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { Selection } from '@antv/x6-plugin-selection'
 import { Settings, State } from './settings'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -126,10 +126,10 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-side']}>
+      <div className="clipboard-app">
+        <div className="app-side">
           <Settings onChange={this.onSettingsChanged} />
-          <div className={styles['app-btns']}>
+          <div className="app-btns">
             <Button onClick={this.onCopy} type="primary">
               Copy Selected Cells
             </Button>
@@ -138,7 +138,7 @@ export default class Example extends React.Component {
             </Button>
           </div>
         </div>
-        <div className={styles['app-content']} ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }
