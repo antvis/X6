@@ -89,6 +89,7 @@ graph.addEdge({
 - [更新日志](https://www.yuque.com/antv/x6/bbfu6r)
 - [常见问题](https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy)
 - [CodeSanbox 模板](https://codesandbox.io/s/mo-ban-wchooy?file=/src/App.tsx)
+- [awesome-x6](https://github.com/lloydzhou/awesome-x6)
 
 ## 本地开发
 
