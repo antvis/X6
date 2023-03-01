@@ -136,12 +136,12 @@ export class History
     return this.stackSize - ul
   }
 
-  setSize(size: number) {
-    const ul = this.undoStack.length
-    if (ul > size) {
-      this.undoStack.splice(0, ul - size)
-    }
-    this.stackSize = size
+  getUndoSize() {
+    return this.undoStack.length
+  }
+
+  getRedoSize() {
+    return this.redoStack.length
   }
 
   canUndo() {
