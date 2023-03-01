@@ -13,8 +13,8 @@ declare module '@antv/x6/lib/graph/graph' {
     canUndo: () => boolean
     canRedo: () => boolean
     getHistoryStackSize: () => number
-    getUndoSize: () => number
-    getRedoSize: () => number
+    getUndoStackSize: () => number
+    getRedoStackSize: () => number
     getUndoRemainSize: () => number
     cleanHistory: (options?: KeyValue) => Graph
   }
@@ -117,12 +117,12 @@ Graph.prototype.getHistoryStackSize = function () {
   return history.getSize()
 }
 
-Graph.prototype.getUndoSize = function () {
+Graph.prototype.getUndoStackSize = function () {
   const history = this.getPlugin('history') as History
   return history.getUndoSize()
 }
 
-Graph.prototype.getRedoSize = function () {
+Graph.prototype.getRedoStackSize = function () {
   const history = this.getPlugin('history') as History
   return history.getRedoSize()
 }
