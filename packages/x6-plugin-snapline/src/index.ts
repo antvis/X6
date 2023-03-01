@@ -8,7 +8,7 @@ export class Snapline extends Disposable {
   public options: Snapline.Options
   public name = 'snapline'
 
-  constructor(options: Snapline.Options) {
+  constructor(options: Snapline.Options = { enabled: true }) {
     super()
     this.options = { tolerance: 10, ...options }
     CssLoader.ensure(this.name, content)

@@ -36,7 +36,7 @@ export class Selection extends Basecoat<SelectionImpl.EventArgs> {
     return this.selectionImpl.cells
   }
 
-  constructor(options: Selection.Options) {
+  constructor(options: Selection.Options = { enabled: true }) {
     super()
     this.options = ObjectExt.merge({}, Selection.defaultOptions, options)
     CssLoader.ensure(this.name, content)
