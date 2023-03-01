@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import styles from './index.less'
+import './index.less'
 
 Graph.registerEdge('double-edge', {
   inherit: 'edge',
@@ -134,8 +134,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-content']} ref={this.refContainer} />
+      <div className="registry-app">
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }

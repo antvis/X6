@@ -1,6 +1,6 @@
 ---
 title: HTML 节点
-order: 4
+order: 7
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial

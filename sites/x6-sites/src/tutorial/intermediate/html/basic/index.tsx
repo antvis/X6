@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph, Shape } from '@antv/x6'
-import styles from './index.less'
+import './index.less'
 
 Shape.HTML.register({
   shape: 'custom-html',
@@ -9,7 +9,7 @@ Shape.HTML.register({
   effect: ['data'],
   html() {
     const div = document.createElement('div')
-    div.className = styles['custom-html']
+    div.className = 'custom-html'
     return div
   },
 })
@@ -40,8 +40,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-content']} ref={this.refContainer} />
+      <div className="html-basic-app">
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }

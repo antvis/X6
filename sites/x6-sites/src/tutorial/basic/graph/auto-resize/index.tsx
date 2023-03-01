@@ -3,7 +3,7 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import { SplitBox } from '@antv/x6-react-components'
 import '@antv/x6-react-components/es/split-box/style/index.css'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private container1: HTMLDivElement
@@ -50,16 +50,16 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
+      <div className="auto-resize-app">
         <SplitBox split="horizontal">
-          <div className={styles.full}>
+          <div className="full">
             <div ref={this.refContainer1} />
           </div>
           <SplitBox split="vertical">
-            <div className={styles.full}>
+            <div className="full">
               <div ref={this.refContainer2} />
             </div>
-            <div className={styles.full}>
+            <div className="full">
               <div ref={this.refContainer3} />
             </div>
           </SplitBox>

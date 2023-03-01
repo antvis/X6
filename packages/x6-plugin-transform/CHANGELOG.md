@@ -1,3 +1,10 @@
+## @antv/x6-plugin-transform [2.1.6](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.5...@antv/x6-plugin-transform@2.1.6) (2023-02-24)
+
+
+### Bug Fixes
+
+* transform active-handle class should remove when active removed ([#3298](https://github.com/antvis/x6/issues/3298)) ([709a141](https://github.com/antvis/x6/commit/709a141e28e9f25d54ece0ade353bd343ac0e55f))
+
 ## @antv/x6-plugin-transform [2.1.5](https://github.com/antvis/x6/compare/@antv/x6-plugin-transform@2.1.4...@antv/x6-plugin-transform@2.1.5) (2022-12-24)
 
 

@@ -3,8 +3,7 @@ import { Graph, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Dropdown } from 'antd'
 import { Snapline } from '@antv/x6-plugin-snapline'
-
-import styles from './index.less'
+import './index.less'
 
 const CustomComponent = ({ node }: { node: Node }) => {
   const label = node.prop('label')
@@ -28,7 +27,7 @@ const CustomComponent = ({ node }: { node: Node }) => {
       }}
       trigger={['contextMenu']}
     >
-      <div className={styles['custom-react-node']}>{label}</div>
+      <div className="custom-react-node">{label}</div>
     </Dropdown>
   )
 }
@@ -99,8 +98,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-content']} ref={this.refContainer} />
+      <div className="use-plugin-app">
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }

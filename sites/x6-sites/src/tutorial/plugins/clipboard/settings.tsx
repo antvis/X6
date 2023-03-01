@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox, Slider, Card, Row, Col } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 export interface Props {
   onChange: (res: State) => void
@@ -50,7 +50,7 @@ export class Settings extends React.Component<Props, State> {
         <Row align="middle">
           <Col span={8}>Paste Offset</Col>
           <Col span={2} offset={1}>
-            <div className={styles['slider-value']}>{this.state.offset}</div>
+            <div className="slider-value">{this.state.offset}</div>
           </Col>
         </Row>
         <Row align="middle">

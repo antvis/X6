@@ -3,7 +3,7 @@ import { Graph } from '@antv/x6'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { Selection } from '@antv/x6-plugin-selection'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -120,14 +120,14 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['app-info']}>
+      <div className="keyboard-app">
+        <div className="app-info">
           <p>
             <span>Ctrl + C</span>Copy Cell
             <span style={{ marginLeft: 24 }}>Ctrl + V</span>Paste Cell
           </p>
         </div>
-        <div className={styles['app-content']} ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }

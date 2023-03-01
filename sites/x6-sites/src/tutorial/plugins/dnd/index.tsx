@@ -3,7 +3,7 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import { Dnd } from '@antv/x6-plugin-dnd'
 import { Snapline } from '@antv/x6-plugin-snapline'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private graph: Graph
@@ -130,25 +130,25 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className={styles.app}>
-        <div className={styles['dnd-wrap']} ref={this.dndContainerRef}>
+      <div className="dnd-app">
+        <div className="dnd-wrap" ref={this.dndContainerRef}>
           <div
             data-type="rect"
-            className={styles['dnd-rect']}
+            className="dnd-rect"
             onMouseDown={this.startDrag}
           >
             Rect
           </div>
           <div
             data-type="circle"
-            className={styles['dnd-circle']}
+            className="dnd-circle"
             onMouseDown={this.startDrag}
           >
             Circle
           </div>
         </div>
 
-        <div className={styles['app-content']} ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }
