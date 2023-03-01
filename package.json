@@ -163,5 +163,8 @@
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.2.0"
+  },
+  "engines": {
+    "pnpm": ">=7"
   }
 }
