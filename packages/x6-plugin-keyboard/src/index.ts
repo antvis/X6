@@ -7,7 +7,7 @@ export class Keyboard extends Disposable {
   public name = 'keyboard'
   public options: KeyboardImpl.Options
 
-  constructor(options: KeyboardImpl.Options) {
+  constructor(options: KeyboardImpl.Options = { enabled: true }) {
     super()
     this.options = options
   }
@@ -68,7 +68,6 @@ export class Keyboard extends Disposable {
     this.keyboardImpl.clear()
     return this
   }
-
 
   unbindKey(keys: string | string[], action?: KeyboardImpl.Action) {
     this.keyboardImpl.off(keys, action)
