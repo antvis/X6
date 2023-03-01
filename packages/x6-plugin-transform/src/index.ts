@@ -9,7 +9,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
   public name = 'transform'
   private disabled = false
 
-  constructor(public readonly options: Transform.Options) {
+  constructor(public readonly options: Transform.Options = {}) {
     super()
     CssLoader.ensure(this.name, content)
   }

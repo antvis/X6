@@ -11,7 +11,7 @@ export class Clipboard
   public options: Clipboard.Options
   public name = 'clipboard'
 
-  constructor(options: Clipboard.Options) {
+  constructor(options: Clipboard.Options = { enabled: true }) {
     super()
     this.options = options
   }
