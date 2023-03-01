@@ -147,16 +147,16 @@ getUndoRemainSize(): number
 
 获取history undo栈的剩余尺寸。
 
-### graph.getUndoSize(...)
+### graph.getUndoStackSize(...)
 ```sign
-getUndoSize(): number
+getUndoStackSize(): number
 ```
 
 获取history undo栈的尺寸。
 
-### graph.getRedoSize(...)
+### graph.getRedoStackSize(...)
 ```sign
-getRedoSize(): number
+getRedoStackSize(): number
 ```
 
 获取history redo栈的尺寸。
