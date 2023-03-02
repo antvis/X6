@@ -46,11 +46,7 @@ export class JobQueue {
 
     let job
     while ((job = this.queue.shift())) {
-      try {
-        job.cb()
-      } catch (error) {
-        // pass
-      }
+      job.cb()
       if (this.getCurrentTime() - startTime >= this.frameInterval) {
         break
       }
