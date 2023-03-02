@@ -9,6 +9,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*PJn8T5hMua8AAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "cylinder.ts",
+      "title": {
+        "zh": "Cylinder",
+        "en": "Cylinder"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MkDMTaYuFAUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "custom-icon-with-svg.ts",
       "title": {
         "zh": "使用 SVG 自定义图标",
