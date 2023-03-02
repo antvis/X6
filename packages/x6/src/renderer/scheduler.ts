@@ -202,7 +202,7 @@ export class Scheduler extends Disposable {
     }
 
     let result = 0
-    if (this.isInRenderArea(view)) {
+    if (this.isUpdateable(view)) {
       result = this.updateView(view, flag, options)
       viewItem.flag = result
     } else {
@@ -479,11 +479,11 @@ export class Scheduler extends Disposable {
     return effectedEdges
   }
 
-  protected isInRenderArea(view: CellView) {
-    if (!this.renderArea) {
-      return true
-    }
+  protected isUpdateable(view: CellView) {
     if (view.isNodeView()) {
+      if (!this.renderArea) {
+        return true
+      }
       const node = view.cell
       return this.renderArea.isIntersectWithRect(node.getBBox())
     }
