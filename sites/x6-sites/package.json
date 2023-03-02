@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites",
-  "version": "1.6.3",
+  "version": "1.6.5",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "start": "dumi dev",
