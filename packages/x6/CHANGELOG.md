@@ -1,3 +1,10 @@
+## @antv/x6 [2.5.2](https://github.com/antvis/x6/compare/@antv/x6@2.5.1...@antv/x6@2.5.2) (2023-03-02)
+
+
+### Bug Fixes
+
+* add excludeShapes options for manhattan router ([#3334](https://github.com/antvis/x6/issues/3334)) ([c76a23b](https://github.com/antvis/x6/commit/c76a23b53425f5cbb7f767c0fe5510f3f81c417c))
+
 # @antv/x6 [2.3.0](https://github.com/antvis/x6/compare/@antv/x6@2.2.1...@antv/x6@2.3.0) (2023-02-06)
 
 
