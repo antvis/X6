@@ -4,7 +4,7 @@
   "version": "1.6.2",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
-    "dev": "dumi dev",
+    "start": "dumi dev",
     "build": "dumi build",
     "clean": ""
   },
