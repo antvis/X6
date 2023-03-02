@@ -10,7 +10,8 @@
   "files": [
     "dist",
     "es",
-    "lib"
+    "lib",
+    "src"
   ],
   "keywords": [
     "geometry",
