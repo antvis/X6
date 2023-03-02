@@ -199,14 +199,12 @@ function setup() {
       'New Employee',
       Math.random() < 0.5 ? male : female,
     )
-    graph.freeze()
     graph.addCell([member, createEdge(node, member)])
     layout()
   })
 
   graph.on('node:delete', ({ e, node }) => {
     e.stopPropagation()
-    graph.freeze()
     graph.removeCell(node)
     layout()
   })
@@ -247,8 +245,6 @@ function layout() {
     const target = edge.getTargetNode()!
     const sourceBBox = source.getBBox()
     const targetBBox = target.getBBox()
-
-    console.log(sourceBBox, targetBBox)
 
     if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
       const gap =
