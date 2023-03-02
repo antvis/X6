@@ -129,7 +129,7 @@ export class Scheduler extends Disposable {
     }
   }
 
-  setRenderArea(area?: Rectangle, buffer?: Renderer.BufferSize | number) {
+  setRenderArea(area?: Rectangle, buffer: Renderer.BufferSize | number = 100) {
     if (buffer && area) {
       if (typeof buffer === 'number') {
         area.update({
