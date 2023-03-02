@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-common",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Basic toolkit for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
