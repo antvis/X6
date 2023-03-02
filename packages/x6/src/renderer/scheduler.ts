@@ -5,6 +5,7 @@ import { View, CellView, NodeView, EdgeView } from '../view'
 import { JobQueue, JOB_PRIORITY } from './queueJob'
 import { FlagManager } from '../view/flag'
 import { Graph } from '../graph'
+import { Renderer } from './renderer'
 
 export class Scheduler extends Disposable {
   public views: KeyValue<Scheduler.View> = {}
@@ -128,8 +129,28 @@ export class Scheduler extends Disposable {
     }
   }
 
-  setRenderArea(area?: Rectangle) {
-    this.renderArea = area
+  setRenderArea(area?: Rectangle, buffer?: Renderer.BufferSize | number) {
+    if (buffer && area) {
+      if (typeof buffer === 'number') {
+        area.update({
+          x: area.x - buffer,
+          y: area.y - buffer,
+          width: area.width + 2 * buffer,
+          height: area.height + 2 * buffer,
+        })
+      } else {
+        const { top, left, bottom, right } = buffer
+        area.update({
+          x: area.x - left,
+          y: area.y - top,
+          width: area.width + left + right,
+          height: area.height + top + bottom,
+        })
+      }
+      this.renderArea = area
+    } else {
+      this.renderArea = area
+    }
     this.flushWaittingViews()
   }
 

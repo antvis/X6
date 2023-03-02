@@ -17,8 +17,8 @@ export class Renderer extends Base {
     return this.schedule.isViewMounted(view)
   }
 
-  setRenderArea(area?: Rectangle) {
-    this.schedule.setRenderArea(area)
+  setRenderArea(area?: Rectangle, buffer?: Renderer.BufferSize | number) {
+    this.schedule.setRenderArea(area, buffer)
   }
 
   findViewByElem(elem: string | Element | undefined | null) {
@@ -134,5 +134,11 @@ export class Renderer extends Base {
 export namespace Renderer {
   export interface FindViewsInAreaOptions {
     strict?: boolean
+  }
+  export interface BufferSize {
+    top: number
+    left: number
+    bottom: number
+    right: number
   }
 }
