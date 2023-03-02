@@ -74,6 +74,9 @@ export class ObstacleMap {
       const excludedTerminal = excludedTerminals.some(
         (cell) => cell.id === node.id,
       )
+      const excludedShape = node.shape
+        ? options.excludeShapes.includes(node.shape)
+        : false
       const excludedNode = options.excludeNodes.some((item) => {
         if (typeof item === 'string') {
           return node.id === item
@@ -81,7 +84,8 @@ export class ObstacleMap {
         return item === node
       })
       const excludedAncestor = excludedAncestors.includes(node.id)
-      const excluded = excludedTerminal || excludedNode || excludedAncestor
+      const excluded =
+        excludedShape || excludedTerminal || excludedNode || excludedAncestor
 
       if (!excluded) {
         const bbox = node.getBBox().moveAndExpand(options.paddingBox)
