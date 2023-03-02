@@ -132,6 +132,37 @@ cleanHistory(options?: KeyValue): this
 
 清空历史队列。`options` 将被传递到事件回调中。
 
+### graph.getHistoryStackSize(...)
+```sign
+getHistoryStackSize(): number
+```
+
+获取history栈的尺寸。
+
+
+### graph.getUndoRemainSize(...)
+```sign
+getUndoRemainSize(): number
+```
+
+获取history undo栈的剩余尺寸。
+
+### graph.getUndoStackSize(...)
+```sign
+getUndoStackSize(): number
+```
+
+获取history undo栈的尺寸。
+
+### graph.getRedoStackSize(...)
+```sign
+getRedoStackSize(): number
+```
+
+获取history redo栈的尺寸。
+
+
+
 ### graph.isHistoryEnabled()
 
 ```sign

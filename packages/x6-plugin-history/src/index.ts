@@ -127,6 +127,23 @@ export class History
     return this
   }
 
+  getSize() {
+    return this.stackSize
+  }
+
+  getUndoRemainSize() {
+    const ul = this.undoStack.length
+    return this.stackSize - ul
+  }
+
+  getUndoSize() {
+    return this.undoStack.length
+  }
+
+  getRedoSize() {
+    return this.redoStack.length
+  }
+
   canUndo() {
     return !this.disabled && this.undoStack.length > 0
   }
