@@ -55,6 +55,17 @@ graph.use(
 
 ## 配置
 
+
+## API
+
+### graph.createWidget(node: Node)
+
+给节点创建widget
+
+### graph.clearWidget()
+
+清除所有widget
+
 ### 调整尺寸
 
 | 属性名              | 类型    | 默认值     | 必选 | 描述                                         |

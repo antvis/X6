@@ -66,7 +66,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     this.clearWidgets()
   }
 
-  protected createTransform(node: Node) {
+  createTransform(node: Node) {
     const options = this.getTransformOptions(node)
     if (options.resizable || options.rotatable) {
       return new TransformImpl(options, node, this.graph)
@@ -135,7 +135,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     return options
   }
 
-  protected clearWidgets() {
+  clearWidgets() {
     this.widgets.forEach((widget, node) => {
       if (this.graph.getCellById(node.id)) {
         widget.dispose()
