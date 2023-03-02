@@ -5,7 +5,7 @@ import { Transform } from './index'
 declare module '@antv/x6/lib/graph/graph' {
   interface Graph {
     createWidget: (node: Node) => Graph
-    clearWidget: () => Graph
+    clearWidgets: () => Graph
   }
 }
 
@@ -21,7 +21,7 @@ Graph.prototype.createWidget = function (node) {
   return this
 }
 
-Graph.prototype.clearWidget = function () {
+Graph.prototype.clearWidgets = function () {
   const transform = this.getPlugin('transform') as Transform
   if (transform) {
     transform.clearWidgets()

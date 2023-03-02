@@ -62,7 +62,7 @@ graph.use(
 
 给节点创建widget
 
-### graph.clearWidget()
+### graph.clearWidgets()
 
 清除所有widget
 
