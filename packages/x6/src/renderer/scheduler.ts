@@ -318,9 +318,9 @@ export class Scheduler extends Disposable {
   }
 
   protected resetViews() {
-    this.willRemoveViews = { ...this.views }
-    Object.keys(this.willRemoveViews).forEach((id) => {
-      const viewItem = this.willRemoveViews[id]
+    const willRemoveViews = { ...this.views, ...this.willRemoveViews }
+    Object.keys(willRemoveViews).forEach((id) => {
+      const viewItem = willRemoveViews[id]
       if (viewItem) {
         this.removeView(viewItem.view)
       }
