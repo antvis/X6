@@ -43,7 +43,8 @@
     "@angular/core": ">= 14"
   },
   "devDependencies": {
-    "@antv/x6": "^2.x"
+    "@antv/x6": "^2.x",
+    "@angular/core": ">= 14"
   },
   "author": {
     "name": "Eve-Sama",
