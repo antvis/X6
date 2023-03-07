@@ -45,8 +45,7 @@ export class Cell<
       } else if (typeof propHooks === 'function') {
         this.propHooks.push(propHooks)
       } else {
-        Object.keys(propHooks).forEach((name) => {
-          const hook = propHooks[name]
+        Object.values(propHooks).forEach((hook) => {
           if (typeof hook === 'function') {
             this.propHooks.push(hook)
           }
@@ -1292,8 +1291,7 @@ export class Cell<
     const defaultAttrs = defaults.attrs || {}
     const finalAttrs: Attr.CellAttrs = {}
 
-    Object.keys(props).forEach((key) => {
-      const val = props[key]
+    Object.entries(props).forEach(([key, val]) => {
       if (
         val != null &&
         !Array.isArray(val) &&

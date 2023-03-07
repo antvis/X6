@@ -213,8 +213,7 @@ export class NodeView<
   }
 
   protected removePorts() {
-    Object.keys(this.portsCache).forEach((portId) => {
-      const cached = this.portsCache[portId]
+    Object.values(this.portsCache).forEach((cached) => {
       Dom.remove(cached.portElement)
     })
   }
