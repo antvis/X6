@@ -331,7 +331,7 @@ export class Scheduler extends Disposable {
   protected removeView(view: CellView) {
     const cell = view.cell
     const viewItem = this.willRemoveViews[cell.id]
-    if (view) {
+    if (viewItem && view) {
       viewItem.view.remove()
       delete this.willRemoveViews[cell.id]
       this.graph.trigger('view:unmounted', { view })
