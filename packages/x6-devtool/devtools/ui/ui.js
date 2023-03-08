@@ -40353,11 +40353,7 @@
                   size: 'small',
                   defaultValue: 0,
                   options: e.map(function (n, t) {
-                    return {
-                      label: 'Graph '.concat(t, ' ').concat(n.hash),
-                      value: n.hash,
-                      info: n,
-                    }
+                    return { label: 'Graph '.concat(t), value: n.hash, info: n }
                   }),
                   value: l,
                   onChange: function (n) {
@@ -40450,7 +40446,6 @@
           f = p[0],
           m = p[1]
         return (
-          console.log('initData', a, 'data', f),
           (0, n.useEffect)(
             function () {
               return function () {

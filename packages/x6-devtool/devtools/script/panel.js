@@ -85,20 +85,17 @@ function getGlobalInstances() {
 
   if (instances && instances.length) {
     gInfo = instances.map(function (instance) {
+      const hash = instance.hash || Math.random().toString(16).slice(-8)
       var ga = {
         type: 'svg',
         name: 'Graph',
         nodeName: 'graph',
+        hash,
         children: getGraphRootGroup(instance).map((e) => getX6Instance(e)),
         memory: window.performance.memory.usedJSHeapSize,
         fps: window.__x6_fps_value,
       }
-      if (!instance.hash) {
-        ga.hash = instance.view.cid || Math.random().toString(16).slice(-8)
-        instance.hash = ga.hash
-      } else {
-        ga.hash = instance.hash
-      }
+      instance.hash = ga.hash
       gmap[ga.hash] = instance
       return ga
     })

@@ -95,7 +95,7 @@ const HeadBar = (props) => {
           size="small"
           defaultValue={0}
           options={data.map((e, i) => ({
-            label: `Graph ${i} ${e.hash}`,
+            label: `Graph ${i}`,
             value: e.hash,
             info: e,
           }))}
@@ -145,7 +145,6 @@ const Devtool = (props) => {
   const [selectedData, setSelectedData] = useState(initData[0])
   const [selectedHash, setSelectedHash] = useState(initData[0].hash)
   const [data, setData] = useState(initData)
-  console.log('initData', initData, 'data', data)
 
   useEffect(() => {
     return () => {
