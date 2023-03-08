@@ -14,4 +14,4 @@ dist/
 coverage/
 sites/public
 csstype.ts
-devtool/ui/
+ui.js
