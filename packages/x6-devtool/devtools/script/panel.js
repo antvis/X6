@@ -79,7 +79,7 @@ function getGlobalInstances() {
     gmap[ga.hash] = instance
     ga.id = instance.id
     ga.name = instance.name || instance.prop('shape') || instance.prop('label')
-    ga.type = instance.prop('shape')
+    ga.type = instance.isEdge() ? 'edge' : 'node'
     return ga
   }
 

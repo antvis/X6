@@ -12,6 +12,7 @@ const iconMap = {
   group: <BlockOutlined />,
   svg: <PartitionOutlined />,
   shape: <AppstoreOutlined />,
+  node: <AppstoreOutlined />,
   edge: <NodeIndexOutlined />,
 }
 
@@ -53,8 +54,8 @@ const AttrsDrawer = ({ hash, getAttrs, onCancel, updateAttrs }) => {
 
 const buildTreeData = (data = {}, isRoot) => {
   const node = {
-    title: data.type,
-    type: data.router ? 'edge' : 'shape',
+    title: data.name || data.shape || data.type,
+    type: data.type,
     key: data.hash,
     name: data.name,
     id: data.id,
