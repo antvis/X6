@@ -7,6 +7,7 @@ var executeScriptInInspectWindow = function (script) {
   return new Promise(function (resolve, reject) {
     chrome.devtools.inspectedWindow.eval(script, function (result, exception) {
       if (exception) {
+        console.error('eval error', script)
         reject(exception)
       } else {
         resolve(result)
@@ -164,7 +165,11 @@ function getElementAttrByHash(hash) {
 }
 
 function setElementAttrByHash(hash, name, value) {
-  // return window.__x6_instances__.globalMap[hash].attr(name, value);
+  const instance = window.__x6_instances__.globalMap[hash]
+  // graph can not set prop
+  if (instance && instance.prop) {
+    instance.prop(name, value)
+  }
 }
 
 function setGElementByHash(hash) {
