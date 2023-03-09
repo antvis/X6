@@ -143,9 +143,12 @@ function removeAllBox() {
 function getElemetBBoxByHash(hash) {
   var targetEl = window.__x6_instances__.globalMap[hash]
   if (targetEl) {
-    return targetEl.getContentBBox
-      ? targetEl.getContentBBox()
+    const bbox = targetEl.getGraphArea
+      ? targetEl.getGraphArea()
       : targetEl.getBBox()
+    const pageBBox = targetEl.model.graph.localToPage(bbox)
+    const { width, height, x, y, left, top } = pageBBox
+    return { width, height, x, y, left, top }
   }
   return {}
 }
