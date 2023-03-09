@@ -67,8 +67,7 @@ export class CellView<
     }
 
     if (actions) {
-      Object.keys(actions).forEach((key) => {
-        const val = actions[key]
+      Object.entries(actions).forEach(([key, val]) => {
         const raw = ret.actions[key]
         if (val && raw) {
           ret.actions[key] = mergeActions(raw, val)

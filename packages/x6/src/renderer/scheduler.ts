@@ -259,9 +259,7 @@ export class Scheduler extends Disposable {
   }
 
   protected flushWaittingViews() {
-    const ids = Object.keys(this.views)
-    for (let i = 0, len = ids.length; i < len; i += 1) {
-      const viewItem = this.views[ids[i]]
+    Object.values(this.views).forEach((viewItem) => {
       if (viewItem && viewItem.state === Scheduler.ViewState.WAITTING) {
         const { view, flag, options } = viewItem
         this.requestViewUpdate(
@@ -272,7 +270,7 @@ export class Scheduler extends Disposable {
           false,
         )
       }
-    }
+    })
 
     this.flush()
   }
@@ -402,8 +400,7 @@ export class Scheduler extends Disposable {
 
   protected removeZPivots() {
     if (this.zPivots) {
-      Object.keys(this.zPivots).forEach((z) => {
-        const elem = this.zPivots[z]
+      Object.values(this.zPivots).forEach((elem) => {
         if (elem && elem.parentNode) {
           elem.parentNode.removeChild(elem)
         }
