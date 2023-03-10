@@ -185,7 +185,7 @@ export const MyComponent = memo(
     return // ...
   },
   (prev, next) => {
-    return Boolean(next.node?.hasChanged('data'))
+    return !next.node?.hasChanged('data')
   },
 )
 ```
