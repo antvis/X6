@@ -153,15 +153,17 @@ function removeAllBox() {
 }
 
 function getElemetBBoxByHash(hash) {
-  var targetEl = window.__x6_instances__.globalMap[hash]
-  if (targetEl) {
-    const bbox = targetEl.getGraphArea
-      ? targetEl.getGraphArea()
-      : targetEl.getBBox()
-    const pageBBox = targetEl.model.graph.localToPage(bbox)
-    const { width, height, x, y, left, top } = pageBBox
-    return { width, height, x, y, left, top }
-  }
+  try {
+    var targetEl = window.__x6_instances__.globalMap[hash]
+    if (targetEl) {
+      const bbox = targetEl.getGraphArea
+        ? targetEl.getGraphArea()
+        : targetEl.getBBox()
+      const pageBBox = targetEl.model.graph.localToPage(bbox)
+      const { width, height, x, y, left, top } = pageBBox
+      return { width, height, x, y, left, top }
+    }
+  } catch (e) {}
   return {}
 }
 
