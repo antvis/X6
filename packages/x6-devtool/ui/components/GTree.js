@@ -6,6 +6,7 @@ import {
   PartitionOutlined,
   AppstoreOutlined,
   NodeIndexOutlined,
+  ToolOutlined,
 } from '@ant-design/icons'
 
 const iconMap = {
@@ -14,6 +15,7 @@ const iconMap = {
   shape: <AppstoreOutlined />,
   node: <AppstoreOutlined />,
   edge: <NodeIndexOutlined />,
+  plugin: <ToolOutlined />,
 }
 
 const AttrsDrawer = ({ hash, getAttrs, onCancel, updateAttrs }) => {

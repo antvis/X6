@@ -93,6 +93,7 @@ function getGlobalInstances() {
         const ga = {
           name: plugin.name,
           hash,
+          type: 'plugin',
         }
         plugin.hash = ga.hash
         gmap[ga.hash] = plugin
