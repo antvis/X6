@@ -4,8 +4,8 @@ import { Transform } from './index'
 
 declare module '@antv/x6/lib/graph/graph' {
   interface Graph {
-    createWidget: (node: Node) => Graph
-    clearWidgets: () => Graph
+    createTransformWidget: (node: Node) => Graph
+    clearTransformWidgets: () => Graph
   }
 }
 
@@ -13,15 +13,23 @@ declare module '@antv/x6/lib/graph/events' {
   interface EventArgs extends TransformImpl.EventArgs {}
 }
 
-Graph.prototype.createWidget = function (node) {
+Graph.prototype.createTransformWidget = function (node) {
   const transform = this.getPlugin('transform') as Transform
   if (transform) {
-    transform.createTransform(node)
+    transform.clearWidgets()
+    const widget = transform.createTransform(node)
+    if (widget) {
+      this.widgets.set(node, widget)
+      widget.on('*', (name, args) => {
+        this.trigger(name, args)
+        this.graph.trigger(name, args)
+      })
+    }
   }
   return this
 }
 
-Graph.prototype.clearWidgets = function () {
+Graph.prototype.clearTransformWidgets = function () {
   const transform = this.getPlugin('transform') as Transform
   if (transform) {
     transform.clearWidgets()

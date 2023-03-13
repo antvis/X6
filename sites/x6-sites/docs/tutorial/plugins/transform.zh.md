@@ -58,11 +58,11 @@ graph.use(
 
 ## API
 
-### graph.createWidget(node: Node)
+### graph.createTransformWidget(node: Node)
 
 给节点创建widget
 
-### graph.clearWidgets()
+### graph.clearTransformWidgets()
 
 清除所有widget
 

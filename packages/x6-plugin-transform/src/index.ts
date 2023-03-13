@@ -50,7 +50,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     return !this.disabled
   }
 
-  protected onNodeClick({ node }: EventArgs['node:click']) {
+  onNodeClick({ node }: EventArgs['node:click']) {
     this.clearWidgets()
     const widget = this.createTransform(node)
     if (widget) {
