@@ -315,8 +315,8 @@ export class Model extends Basecoat<Model.EventArgs> {
       return this.batchUpdate(
         'update',
         () => {
-          Object.keys(prop).forEach((key) =>
-            existing.setProp(key, prop[key], options),
+          Object.entries(prop).forEach(([key, val]) =>
+            existing.setProp(key, val, options),
           )
           return true
         },

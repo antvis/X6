@@ -259,9 +259,7 @@ export class Scheduler extends Disposable {
   }
 
   protected flushWaittingViews() {
-    const ids = Object.keys(this.views)
-    for (let i = 0, len = ids.length; i < len; i += 1) {
-      const viewItem = this.views[ids[i]]
+    Object.values(this.views).forEach((viewItem) => {
       if (viewItem && viewItem.state === Scheduler.ViewState.WAITTING) {
         const { view, flag, options } = viewItem
         this.requestViewUpdate(
@@ -272,7 +270,7 @@ export class Scheduler extends Disposable {
           false,
         )
       }
-    }
+    })
 
     this.flush()
   }
@@ -318,9 +316,8 @@ export class Scheduler extends Disposable {
   }
 
   protected resetViews() {
-    this.willRemoveViews = { ...this.views }
-    Object.keys(this.willRemoveViews).forEach((id) => {
-      const viewItem = this.willRemoveViews[id]
+    this.willRemoveViews = { ...this.views, ...this.willRemoveViews }
+    Object.values(this.willRemoveViews).forEach((viewItem) => {
       if (viewItem) {
         this.removeView(viewItem.view)
       }
@@ -332,7 +329,7 @@ export class Scheduler extends Disposable {
   protected removeView(view: CellView) {
     const cell = view.cell
     const viewItem = this.willRemoveViews[cell.id]
-    if (view) {
+    if (viewItem && view) {
       viewItem.view.remove()
       delete this.willRemoveViews[cell.id]
       this.graph.trigger('view:unmounted', { view })
@@ -403,8 +400,7 @@ export class Scheduler extends Disposable {
 
   protected removeZPivots() {
     if (this.zPivots) {
-      Object.keys(this.zPivots).forEach((z) => {
-        const elem = this.zPivots[z]
+      Object.values(this.zPivots).forEach((elem) => {
         if (elem && elem.parentNode) {
           elem.parentNode.removeChild(elem)
         }

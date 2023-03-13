@@ -35,8 +35,8 @@ export class Registry<
     force = false,
   ) {
     if (typeof name === 'object') {
-      Object.keys(name).forEach((key) => {
-        this.register(key, name[key], options)
+      Object.entries(name).forEach(([key, val]) => {
+        this.register(key, val, options)
       })
       return
     }
