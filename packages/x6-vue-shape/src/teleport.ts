@@ -1,9 +1,11 @@
-import { defineComponent, h, reactive, isVue3, Vue } from 'vue-demi'
+import { defineComponent, h, reactive, isVue3, Vue, PropType } from 'vue-demi'
 import { Graph } from '@antv/x6'
 import { VueShape } from './node'
 
 let active = false
-const items = reactive<{ [key: string]: any }>({})
+const items = reactive<{
+  [viewId: string]: { cid: string; component: any }
+}>({})
 
 export function connect(
   id: string,
@@ -14,15 +16,17 @@ export function connect(
 ) {
   if (active) {
     const { Teleport, markRaw } = Vue as any
-    items[id] = markRaw(
-      defineComponent({
+
+    items[id] = markRaw({
+      cid: graph.view.cid,
+      component: defineComponent({
         render: () => h(Teleport, { to: container } as any, [h(component)]),
         provide: () => ({
           getNode: () => node,
           getGraph: () => graph,
         }),
       }),
-    )
+    })
   }
 }
 
@@ -44,13 +48,20 @@ export function getTeleport(): any {
   const { Fragment } = Vue as any
 
   return defineComponent({
-    setup() {
-      return () =>
-        h(
+    props: { graph: { type: Object as PropType<Graph> } },
+
+    setup(props) {
+      return () => {
+        return h(
           Fragment,
           {},
-          Object.keys(items).map((id) => h(items[id])),
+          Object.keys(items).map((id) =>
+            !props.graph || items[id].cid === props.graph.view.cid
+              ? h(items[id].component)
+              : null,
+          ),
         )
+      }
     },
   })
 }
