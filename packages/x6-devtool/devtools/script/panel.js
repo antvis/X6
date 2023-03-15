@@ -55,7 +55,7 @@ function doFPSThings() {
 function getGlobalInstances() {
   var instances = window.__x6_instances__
   var gmap = {}
-  var getGraphRootGroup = function (graph) {
+  var getGraphCells = function (graph) {
     // 使用model中的引用直接获取元素
     return graph.model.collection.cells
   }
@@ -87,12 +87,24 @@ function getGlobalInstances() {
   if (instances && instances.length) {
     gInfo = instances.map(function (instance) {
       const hash = instance.hash || Math.random().toString(16).slice(-8)
+      const cells = getGraphCells(instance).map((e) => getX6Instance(e))
+      const plugins = Array.from(instance.installedPlugins).map((plugin) => {
+        const hash = plugin.hash || Math.random().toString(16).slice(-8)
+        const ga = {
+          name: plugin.name,
+          hash,
+          type: 'plugin',
+        }
+        plugin.hash = ga.hash
+        gmap[ga.hash] = plugin
+        return ga
+      })
       var ga = {
         type: 'svg',
         name: 'Graph',
         nodeName: 'graph',
         hash,
-        children: getGraphRootGroup(instance).map((e) => getX6Instance(e)),
+        children: cells.concat(plugins),
         memory: window.performance.memory.usedJSHeapSize,
         fps: window.__x6_fps_value,
       }
@@ -142,24 +154,31 @@ function removeAllBox() {
 }
 
 function getElemetBBoxByHash(hash) {
-  var targetEl = window.__x6_instances__.globalMap[hash]
-  if (targetEl) {
-    const bbox = targetEl.getGraphArea
-      ? targetEl.getGraphArea()
-      : targetEl.getBBox()
-    const pageBBox = targetEl.model.graph.localToPage(bbox)
-    const { width, height, x, y, left, top } = pageBBox
-    return { width, height, x, y, left, top }
-  }
+  try {
+    var targetEl = window.__x6_instances__.globalMap[hash]
+    if (targetEl) {
+      const bbox = targetEl.getGraphArea
+        ? targetEl.getGraphArea()
+        : targetEl.getBBox()
+      const pageBBox = targetEl.model.graph.localToPage(bbox)
+      const { width, height, x, y, left, top } = pageBBox
+      return { width, height, x, y, left, top }
+    }
+  } catch (e) {}
   return {}
 }
 
 function getElementAttrByHash(hash) {
   const instance = window.__x6_instances__.globalMap[hash]
   if (instance) {
-    return instance.coord
-      ? { ...instance.options, container: undefined }
-      : instance.prop()
+    return instance.prop
+      ? instance.prop()
+      : instance.options
+      ? {
+          ...instance.options,
+          container: undefined,
+        }
+      : {}
   }
   return {}
 }
