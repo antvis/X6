@@ -70,7 +70,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     this.clearWidgets()
   }
 
-  createTransform(node: Node) {
+  protected createTransform(node: Node) {
     const options = this.getTransformOptions(node)
     if (options.resizable || options.rotatable) {
       return new TransformImpl(options, node, this.graph)
