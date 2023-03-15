@@ -50,7 +50,7 @@ export class Transform extends Basecoat<Transform.EventArgs> {
     return !this.disabled
   }
 
-  onNodeClick({ node }: EventArgs['node:click']) {
+  createWidget(node: Node) {
     this.clearWidgets()
     const widget = this.createTransform(node)
     if (widget) {
@@ -60,6 +60,10 @@ export class Transform extends Basecoat<Transform.EventArgs> {
         this.graph.trigger(name, args)
       })
     }
+  }
+
+  protected onNodeClick({ node }: EventArgs['node:click']) {
+    this.createWidget(node)
   }
 
   protected onBlankMouseDown() {

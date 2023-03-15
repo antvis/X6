@@ -16,15 +16,7 @@ declare module '@antv/x6/lib/graph/events' {
 Graph.prototype.createTransformWidget = function (node) {
   const transform = this.getPlugin('transform') as Transform
   if (transform) {
-    transform.clearWidgets()
-    const widget = transform.createTransform(node)
-    if (widget) {
-      this.widgets.set(node, widget)
-      widget.on('*', (name, args) => {
-        this.trigger(name, args)
-        this.graph.trigger(name, args)
-      })
-    }
+    transform.createWidget(node)
   }
   return this
 }
