@@ -389,3 +389,18 @@ graph.on("edge:transition:complete", (args: Animation.CallbackArgs) => {});
 graph.on("edge:transition:stop", (args: Animation.StopArgs) => {});
 graph.on("edge:transition:finish", (args: Animation.CallbackArgs) => {});
 ```
+
+
+## 视图
+
+由于X6实现了异步的渲染调度算法，所以节点的添加不一定意味着挂载到画布上。节点在被挂载到画布时以及从画布上卸载时会分别触发单独的事件。
+
+| 事件名           | 回调参数                    | 说明                          |
+| ---------------- | ----------------------- | ------------------------------ |
+| `view:mounted` | `{ view: CellView }` | 节点被挂载到画布上时触发。    |
+| `view:unmounted` | `{ view: CellView }` | 节点从画布上卸载时触发。  |
+
+```ts
+graph.on("view:mounted", ({ view }) => {});
+graph.on("view:unmounted", ({ view }) => {});
+```
