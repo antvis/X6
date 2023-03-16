@@ -18,7 +18,7 @@ redirect_from:
 我们提供了一个独立的包 `@antv/x6-react-shape` 来使用 React 渲染节点。
 
 :::warning{title=注意：}
-需要注意的是，x6@1.x 需要搭配使用 x6-react-shape@1.x，x6@2.x 需要搭配使用 x6-react-shape@2.x。
+需要注意的是，x6 的版本要和 x6-react-shape 的版本匹配，也就是两个包需要用同一个大版本。
 :::
 
 
