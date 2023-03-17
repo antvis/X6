@@ -17,15 +17,15 @@ function setupUpdating(view: EdgeView) {
   if (updateList == null) {
     updateList = (view.graph as any)._jumpOverUpdateList = []
 
-    /**
-     * Handler for a batch:stop event to force
-     * update of all registered links with jump over connector
-     */
     view.graph.on('cell:mouseup', () => {
       const list = (view.graph as any)._jumpOverUpdateList
-      for (let i = 0; i < list.length; i += 1) {
-        list[i].update()
-      }
+      // add timeout to wait for the target node to be connected
+      // fix https://github.com/antvis/X6/issues/3387
+      setTimeout(() => {
+        for (let i = 0; i < list.length; i += 1) {
+          list[i].update()
+        }
+      })
     })
 
     view.graph.on('model:reseted', () => {
