@@ -23,7 +23,7 @@ export namespace Marker {
 }
 
 export namespace Marker {
-  export type Presets = typeof Marker['presets']
+  export type Presets = (typeof Marker)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[0]

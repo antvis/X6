@@ -53,7 +53,7 @@ export namespace NodeTool {
 }
 
 export namespace NodeTool {
-  export type Presets = typeof NodeTool['presets']
+  export type Presets = (typeof NodeTool)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: ConstructorParameters<Presets[K]>[0]
@@ -122,7 +122,7 @@ export namespace EdgeTool {
 }
 
 export namespace EdgeTool {
-  export type Presets = typeof EdgeTool['presets']
+  export type Presets = (typeof EdgeTool)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: ConstructorParameters<Presets[K]>[0]

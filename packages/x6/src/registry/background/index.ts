@@ -32,7 +32,7 @@ export namespace Background {
 }
 
 export namespace Background {
-  export type Presets = typeof Background['presets']
+  export type Presets = (typeof Background)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[1] & {

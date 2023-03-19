@@ -32,7 +32,7 @@ export namespace Highlighter {
 }
 
 export namespace Highlighter {
-  export type Presets = typeof Highlighter['presets']
+  export type Presets = (typeof Highlighter)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]['highlight']>[2]

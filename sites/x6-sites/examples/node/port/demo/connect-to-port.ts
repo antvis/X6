@@ -1,9 +1,9 @@
-import { Graph } from "@antv/x6";
+import { Graph } from '@antv/x6'
 
 const graph = new Graph({
-  container: document.getElementById("container"),
+  container: document.getElementById('container'),
   grid: true,
-});
+})
 
 // 文档：https://x6.antv.vision/zh/docs/tutorial/basic/port
 
@@ -14,8 +14,8 @@ const rect = graph.addNode({
   height: 180,
   attrs: {
     body: {
-      fill: "#f5f5f5",
-      stroke: "#d9d9d9",
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
       strokeWidth: 1,
     },
   },
@@ -26,50 +26,50 @@ const rect = graph.addNode({
           circle: {
             r: 6,
             magnet: true,
-            stroke: "#31d0c6",
-            fill: "#fff",
+            stroke: '#31d0c6',
+            fill: '#fff',
             strokeWidth: 2,
           },
         },
       },
     },
     items: [
-      { id: "port1", group: "group1" },
-      { id: "port2", group: "group1" },
-      { id: "port3", group: "group1" },
+      { id: 'port1', group: 'group1' },
+      { id: 'port2', group: 'group1' },
+      { id: 'port3', group: 'group1' },
     ],
   },
-});
+})
 
 graph.addEdge({
   source: { x: 40, y: 150 },
   target: {
     cell: rect,
-    port: "port1", // 连接桩 ID
+    port: 'port1', // 连接桩 ID
   },
   attrs: {
-    line: { stroke: "#d9d9d9" },
+    line: { stroke: '#d9d9d9' },
   },
-});
+})
 
 graph.addEdge({
   source: { x: 40, y: 150 },
   target: {
     cell: rect,
-    port: "port2", // 连接桩 ID
+    port: 'port2', // 连接桩 ID
   },
   attrs: {
-    line: { stroke: "#d9d9d9" },
+    line: { stroke: '#d9d9d9' },
   },
-});
+})
 
 graph.addEdge({
   source: { x: 40, y: 150 },
   target: {
     cell: rect,
-    port: "port3", // 连接桩 ID
+    port: 'port3', // 连接桩 ID
   },
   attrs: {
-    line: { stroke: "#d9d9d9" },
+    line: { stroke: '#d9d9d9' },
   },
-});
+})

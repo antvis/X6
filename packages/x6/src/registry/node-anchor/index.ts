@@ -42,7 +42,7 @@ export namespace NodeAnchor {
 }
 
 export namespace NodeAnchor {
-  export type Presets = typeof NodeAnchor['presets']
+  export type Presets = (typeof NodeAnchor)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]

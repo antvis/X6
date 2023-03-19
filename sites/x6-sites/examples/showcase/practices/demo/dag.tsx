@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Path, Cell } from '@antv/x6'
+import { Graph, Path, Cell } from '@antv/x6'
 import { Selection } from '@antv/x6-plugin-selection'
 import insertCss from 'insert-css'
 import { register } from '@antv/x6-react-shape'
@@ -27,12 +27,12 @@ const AlgoNode = (props) => {
 
   return (
     <div className={`node ${status}`}>
-      <img src={image.logo} />
+      <img src={image.logo} alt="logo" />
       <span className="label">{label}</span>
       <span className="status">
-        {status === 'success' && <img src={image.success} />}
-        {status === 'failed' && <img src={image.failed} />}
-        {status === 'running' && <img src={image.running} />}
+        {status === 'success' && <img src={image.success} alt="success" />}
+        {status === 'failed' && <img src={image.failed} alt="failed" />}
+        {status === 'running' && <img src={image.running} alt="running" />}
       </span>
     </div>
   )
@@ -71,8 +71,7 @@ register({
       },
     },
   },
-},
-)
+})
 
 Graph.registerEdge(
   'dag-edge',
@@ -234,14 +233,16 @@ const graph: Graph = new Graph({
     },
   },
 })
-graph.use(new Selection({
-  enabled: true,
-  multiple: true,
-  rubberEdge: true,
-  rubberNode: true,
-  modifiers: 'shift',
-  rubberband: true,
-}))
+graph.use(
+  new Selection({
+    enabled: true,
+    multiple: true,
+    rubberEdge: true,
+    rubberNode: true,
+    modifiers: 'shift',
+    rubberband: true,
+  }),
+)
 
 graph.on('edge:connected', ({ edge }) => {
   edge.attr({
@@ -287,7 +288,7 @@ const showNodeStatus = async (statusList: NodeStatus[][]) => {
     const data = node.getData() as NodeStatus
     node.setData({
       ...data,
-      status: status,
+      status,
     })
   })
   setTimeout(() => {

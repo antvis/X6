@@ -20,7 +20,7 @@ export namespace Connector {
 }
 
 export namespace Connector {
-  export type Presets = typeof Connector['presets']
+  export type Presets = (typeof Connector)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]

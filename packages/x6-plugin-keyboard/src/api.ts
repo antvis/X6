@@ -74,17 +74,20 @@ Graph.prototype.unbindKey = function (
   return this
 }
 
-Graph.prototype.clearKeys = function() {
+Graph.prototype.clearKeys = function () {
   const keyboard = this.getPlugin('keyboard') as Keyboard
-  if(keyboard) {
+  if (keyboard) {
     keyboard.clear()
   }
   return this
 }
 
-Graph.prototype.triggerKey = function(key: string, action: KeyboardImpl.Action) {
+Graph.prototype.triggerKey = function (
+  key: string,
+  action: KeyboardImpl.Action,
+) {
   const keyboard = this.getPlugin('keyboard') as Keyboard
-  if(keyboard) {
+  if (keyboard) {
     keyboard.trigger(key, action)
   }
   return this
