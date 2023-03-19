@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell, Node } from '@antv/x6'
+import { Graph, Node } from '@antv/x6'
 import { connectors } from '../connector/xmind-definitions'
 import Hierarchy from '@antv/hierarchy'
 import { Selection } from '@antv/x6-plugin-selection'
@@ -220,7 +220,7 @@ export default class Example extends React.Component {
             const node = graph.getCellById(data.id)
             node.prop('position', { x: hierarchyItem.x, y: hierarchyItem.y })
           } else {
-            const node = graph.addNode({
+            graph.addNode({
               id: data.id,
               shape: data.type === 'topic-child' ? 'topic-child' : 'topic',
               x: hierarchyItem.x,

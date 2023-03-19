@@ -9,7 +9,7 @@ export namespace Filter {
 }
 
 export namespace Filter {
-  export type Presets = typeof Filter['presets']
+  export type Presets = (typeof Filter)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: NonUndefined<Parameters<Presets[K]>[0]>

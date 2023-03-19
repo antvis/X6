@@ -116,7 +116,7 @@ export namespace Attr {
 }
 
 export namespace Attr {
-  export type Presets = typeof Attr['presets']
+  export type Presets = (typeof Attr)['presets']
   export type NativeNames = keyof Presets
 }
 

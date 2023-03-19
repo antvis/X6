@@ -28,7 +28,7 @@ export namespace PortLabelLayout {
 }
 
 export namespace PortLabelLayout {
-  export type Presets = typeof PortLabelLayout['presets']
+  export type Presets = (typeof PortLabelLayout)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[2]
