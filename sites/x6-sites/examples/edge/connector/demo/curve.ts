@@ -48,11 +48,13 @@ const graph = new Graph({
     connectionPoint: 'anchor',
   },
 })
-graph.use(new Transform({
-  rotating: {
-    enabled: true,
-  }
-}))
+graph.use(
+  new Transform({
+    rotating: {
+      enabled: true,
+    },
+  }),
+)
 
 Graph.registerConnector(
   'curve',
