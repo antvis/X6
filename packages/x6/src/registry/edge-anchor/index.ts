@@ -27,7 +27,7 @@ export namespace EdgeAnchor {
 }
 
 export namespace EdgeAnchor {
-  export type Presets = typeof EdgeAnchor['presets']
+  export type Presets = (typeof EdgeAnchor)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]

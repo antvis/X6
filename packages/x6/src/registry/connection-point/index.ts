@@ -38,7 +38,7 @@ export namespace ConnectionPoint {
 }
 
 export namespace ConnectionPoint {
-  export type Presets = typeof ConnectionPoint['presets']
+  export type Presets = (typeof ConnectionPoint)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]

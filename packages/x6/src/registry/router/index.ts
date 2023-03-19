@@ -15,7 +15,7 @@ export namespace Router {
 }
 
 export namespace Router {
-  export type Presets = typeof Router['presets']
+  export type Presets = (typeof Router)['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[1]

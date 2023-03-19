@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Color } from '@antv/x6'
+import { Graph, Color } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 
 const MyComponent = ({ node }) => {
@@ -26,7 +26,7 @@ register({
   width: 120,
   height: 50,
   effect: ['color'],
-  component: MyComponent
+  component: MyComponent,
 })
 
 const graph = new Graph({

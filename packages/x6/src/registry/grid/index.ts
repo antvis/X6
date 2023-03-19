@@ -79,7 +79,7 @@ export namespace Grid {
 }
 
 export namespace Grid {
-  export type Presets = typeof Grid['presets']
+  export type Presets = (typeof Grid)['presets']
 
   export type OptionsMap = {
     dot: patterns.DotOptions
