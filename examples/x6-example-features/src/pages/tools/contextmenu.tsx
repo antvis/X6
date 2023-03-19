@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React from 'react'
 import ReactDom from 'react-dom'
 import { Menu, Dropdown } from 'antd'

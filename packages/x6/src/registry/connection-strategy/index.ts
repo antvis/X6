@@ -20,7 +20,7 @@ export namespace ConnectionStrategy {
 }
 
 export namespace ConnectionStrategy {
-  export type Presets = typeof ConnectionStrategy['presets']
+  export type Presets = (typeof ConnectionStrategy)['presets']
 
   export type NativeNames = keyof Presets
 
