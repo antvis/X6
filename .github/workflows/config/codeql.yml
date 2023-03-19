@@ -1,7 +1,0 @@
-paths-ignore:
-  - sites/public
-query-filters:
-  - exclude:
-      id: js/use-before-declaration
-  - exclude:
-      id: js/polynomial-redos
