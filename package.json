@@ -21,7 +21,8 @@
     "update:deps": "pnpm update --interactive --latest --recursive",
     "setup:husky": "husky install .husky",
     "prepare": "is-ci || run-p setup:husky build:dev",
-    "start": "cd ./examples/x6-example-features && pnpm start"
+    "start:demo": "cd ./examples/x6-example-features && pnpm start",
+    "start:site": "cd ./sites/x6-sites && pnpm start"
   },
   "rss": {
     "clean:turbo": "rimraf .turbo",
