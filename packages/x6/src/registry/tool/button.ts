@@ -135,9 +135,9 @@ export class Button extends ToolsView.ToolItem<
 
 export namespace Button {
   export interface Options extends ToolsView.ToolItem.Options {
-    x?: number
-    y?: number
-    distance?: number
+    x?: number | string
+    y?: number | string
+    distance?: number | string
     offset?: number | Point.PointLike
     rotate?: boolean
     useCellGeometry?: boolean
