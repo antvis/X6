@@ -207,7 +207,7 @@ graph.addEdge({
 
 | 参数名   | 类型                                                                 | 默认值      | 说明                           |
 | -------- | -------------------------------------------------------------------- | ----------- | ------------------------------ |
-| distance | number                                                               | `undefined` | 偏离起点的距离或比例。         |
+| distance | number \| string                                                     | `undefined` | 偏离起点的距离或比例。         |
 | offset   | number \| Point.PointLike                                            | `0`         | 在 `distance` 基础上的偏移量。 |
 | rotate   | boolean                                                              | `undefined` | 是否跟随边旋转。               |
 | markup   | Markup.JSONMarkup                                                    | `undefined` | 渲染按钮的 Markup 定义。       |
