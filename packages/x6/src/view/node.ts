@@ -58,7 +58,7 @@ export class NodeView<
     return true
   }
 
-  confirmUpdate(flag: number) {
+  confirmUpdate(flag: number, options: any = {}) {
     let ret = flag
     if (this.hasAction(ret, 'ports')) {
       this.removePorts()
@@ -95,7 +95,13 @@ export class NodeView<
       ret = this.handleAction(ret, 'translate', () => this.translate())
       ret = this.handleAction(ret, 'rotate', () => this.rotate())
       ret = this.handleAction(ret, 'ports', () => this.renderPorts())
-      ret = this.handleAction(ret, 'tools', () => this.renderTools())
+      ret = this.handleAction(ret, 'tools', () => {
+        if (this.getFlag('tools') === flag) {
+          this.renderTools()
+        } else {
+          this.updateTools(options)
+        }
+      })
     }
 
     return ret
