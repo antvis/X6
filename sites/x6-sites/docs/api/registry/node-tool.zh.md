@@ -1,6 +1,6 @@
 ---
-title: NodeTool
-order: 24
+title: 节点工具
+order: 3
 redirect_from:
   - /zh/docs
   - /zh/docs/api
@@ -45,7 +45,7 @@ graph.on("node:mouseleave", ({ node }) => {
 - [boundary](#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
 - [node-editor](#node-editor) 提供节点文本编辑功能。
 
-## 节点工具
+## 内置工具
 
 ### button
 
@@ -83,7 +83,7 @@ graph.on('node:mouseleave', ({ node }) => {
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/node-tool/button"></iframe> -->
+<code id="api-node-tool-button" src="@/src/api/node-tool/button/index.tsx"></code>
 
 ### button-remove
 
@@ -106,7 +106,7 @@ const source = graph.addNode({
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/node-tool/button-remove"></iframe> -->
+<code id="api-node-tool-button-remove" src="@/src/api/node-tool/button-remove/index.tsx"></code>
 
 ### boundary
 
@@ -168,7 +168,7 @@ const source = graph.addNode({
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/node-tool/boundary"></iframe> -->
+<code id="api-node-tool-boundary" src="@/src/api/node-tool/boundary/index.tsx"></code>
 
 ### node-editor
 
@@ -176,7 +176,8 @@ const source = graph.addNode({
 
 | 参数名                | 类型                                                        | 默认值                         | 说明                                                           |
 |-----------------------|-------------------------------------------------------------|--------------------------------|--------------------------------------------------------------|
-| event                 | Dom.EventObject                                             | -                              | 触发文本编辑的事件参数                                         |
+| x                     | number \| string                                            | -                              | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置         |
+| y                     | number \| string                                            | -                              | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置         |
 | attrs/fontSize        | string                                                      | `14`                           | 编辑文本字体大小                                               |
 | attrs/color           | string                                                      | `#000`                         | 编辑文本字体颜色                                               |
 | attrs/fontFamily      | string                                                      | `Arial, helvetica, sans-serif` | 编辑文本的字体                                                 |
@@ -184,10 +185,12 @@ const source = graph.addNode({
 | getText               | (this: CellView, args: {cell: Cell}) => string              | -                              | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
 | setText               | (this: CellView, args: {cell: Cell, value: string}) => void | -                              | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法     |
 
-工具使用方式如下：
+:::warning{title=注意：}
+需要注意的是，2.8.0 版本后不需要在双击事件中去动态添加工具，也就不需要传入事件参数。
+:::
 
 ```ts
-// 双击进入编辑模式
+// 2.8.0 版本之前使用方式
 graph.on("node:dblclick", ({ node, e }) => {
   node.addTools({
     name: "node-editor",
@@ -196,13 +199,18 @@ graph.on("node:dblclick", ({ node, e }) => {
     },
   });
 });
+
+// 2.8.0 版本之后使用方式
+node.addTools({
+  name: "node-editor"
+});
 ```
 
-<!-- <iframe src="/demos/api/registry/node-tool/editor"></iframe> -->
+<code id="api-node-tool-editor" src="@/src/api/node-tool/node-editor/index.tsx"></code>
 
 ## 自定义工具
 
-## 方式一
+### 方式一
 
 继承 `ToolItem` 实现一个工具类，难度较高，要求对 [ToolItem](https://github.com/antvis/X6/blob/master/packages/x6/src/view/tool.ts) 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
 
@@ -210,13 +218,13 @@ graph.on("node:dblclick", ({ node, e }) => {
 Graph.registerNodeTool("button", Button);
 ```
 
-## 方式二
+### 方式二
 
 继承已经注册的工具，在继承基础上修改配置。我们在 `ToolItem` 基类上提供了一个静态方法 `define` 来快速实现继承并修改配置。
 
 ```ts
 const MyButton = Button.define<Button.Options>({
-  name: 'my-btn', // 工具名称，可省略，指定后其大驼峰形式同时作为继承的类的类名。
+  name: 'my-btn',
   markup: ...,
   onClick({ view }) { ... },
 })
@@ -234,4 +242,4 @@ Graph.registerNodeTool('my-btn', {
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/node-tool/custom-button"></iframe> -->
+<code id="api-node-tool-custom-button" src="@/src/api/node-tool/custom-button/index.tsx"></code>
