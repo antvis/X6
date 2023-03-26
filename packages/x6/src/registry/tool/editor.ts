@@ -1,5 +1,5 @@
 import { Point } from '@antv/x6-geometry'
-import { Dom, FunctionExt } from '@antv/x6-common'
+import { Dom, FunctionExt, NumberExt } from '@antv/x6-common'
 import { ToolsView } from '../../view/tool'
 import { Cell, Edge } from '../../model'
 import { CellView, NodeView, EdgeView } from '../../view'
@@ -12,20 +12,21 @@ export class CellEditor extends ToolsView.ToolItem<
   private editor: HTMLDivElement
   private labelIndex = -1
   private distance = 0.5
+  private event: Dom.DoubleClickEvent
 
-  render() {
-    this.createElement()
-    this.updateEditor()
-    this.autoFocus()
-    this.delegateDocumentEvents(this.options.documentEvents!)
-
-    return this
+  onRender() {
+    this.graph.on('cell:dblclick', ({ e, cell }) => {
+      if (cell === this.cell) {
+        this.onCellDblClick(e)
+      }
+    })
   }
 
   createElement() {
-    const { cell } = this
     const classNames = [
-      this.prefixClassName(`${cell.isEdge() ? 'edge' : 'node'}-tool-editor`),
+      this.prefixClassName(
+        `${this.cell.isEdge() ? 'edge' : 'node'}-tool-editor`,
+      ),
       this.prefixClassName('cell-tool-editor'),
     ]
     this.editor = ToolsView.createElement('div', false) as HTMLDivElement
@@ -34,88 +35,132 @@ export class CellEditor extends ToolsView.ToolItem<
     this.container.appendChild(this.editor)
   }
 
-  updateEditor() {
-    const { graph, cell, editor } = this
-    const style = editor.style
-
-    // set tool position
-    let pos = new Point()
-    let minWidth = 20
-    if (cell.isNode()) {
-      pos = cell.getBBox().center
-      minWidth = cell.size().width - 4
-    } else if (cell.isEdge()) {
-      const e = this.options.event
-      const target = e.target
-      const parent = target.parentElement
-      const isEdgeLabel =
-        parent && Dom.hasClass(parent, this.prefixClassName('edge-label'))
-      if (isEdgeLabel) {
-        const index = parent.getAttribute('data-index') || '0'
-        this.labelIndex = parseInt(index, 10)
-        const matrix = parent.getAttribute('transform')
-        const { translation } = Dom.parseTransformString(matrix)
-        pos = new Point(translation.tx, translation.ty)
-        minWidth = Util.getBBox(target).width
-      } else {
-        if (!this.options.labelAddable) {
-          return this
-        }
-        pos = graph.clientToLocal(Point.create(e.clientX, e.clientY))
-        const view = this.cellView as EdgeView
-        const d = view.path.closestPointLength(pos)
-        this.distance = d
-      }
+  removeElement() {
+    this.undelegateDocumentEvents()
+    if (this.editor) {
+      this.container.removeChild(this.editor)
     }
-    pos = graph.localToGraph(pos)
-    style.left = `${pos.x}px`
-    style.top = `${pos.y}px`
-    style.minWidth = `${minWidth}px`
+  }
 
-    // set tool transform
-    const scale = graph.scale()
-    style.transform = `scale(${scale.sx}, ${scale.sy}) translate(-50%, -50%)`
+  updateEditor() {
+    const { cell, editor } = this
+    const { style } = editor
+
+    if (cell.isNode()) {
+      this.updateNodeEditorTransform()
+    } else if (cell.isEdge()) {
+      this.updateEdgeEditorTransform()
+    }
 
     // set font style
-    const attrs = this.options.attrs
+    const { attrs } = this.options
     style.fontSize = `${attrs.fontSize}px`
     style.fontFamily = attrs.fontFamily
     style.color = attrs.color
     style.backgroundColor = attrs.backgroundColor
 
     // set init value
-    const getText = this.options.getText
     let text
+    const { getText } = this.options
     if (typeof getText === 'function') {
       text = FunctionExt.call(getText, this.cellView, {
         cell: this.cell,
         index: this.labelIndex,
       })
     }
-
     editor.innerText = text || ''
-
-    // clear display value when edit status because char ghosting.
-    this.setCellText('')
+    this.setCellText('') // clear display value when edit status because char ghosting.
 
     return this
   }
 
+  updateNodeEditorTransform() {
+    const { graph, cell, editor } = this
+    let pos = Point.create()
+    let minWidth = 20
+    let translate = ''
+    let { x, y } = this.options
+
+    if (typeof x !== 'undefined' && typeof y !== 'undefined') {
+      const bbox = cell.getBBox()
+      x = NumberExt.normalizePercentage(x, bbox.width)
+      y = NumberExt.normalizePercentage(y, bbox.height)
+      pos = bbox.topLeft.translate(x, y)
+      minWidth = bbox.width - x * 2
+    } else {
+      const bbox = cell.getBBox()
+      pos = bbox.center
+      minWidth = bbox.width - 4
+      translate = 'translate(-50%, -50%)'
+    }
+
+    const scale = graph.scale()
+    const { style } = editor
+    pos = graph.localToGraph(pos)
+    style.left = `${pos.x}px`
+    style.top = `${pos.y}px`
+    style.transform = `scale(${scale.sx}, ${scale.sy}) ${translate}`
+    style.minWidth = `${minWidth}px`
+  }
+
+  updateEdgeEditorTransform() {
+    if (!this.event) {
+      return
+    }
+
+    let pos = Point.create()
+    let minWidth = 20
+    const { graph, editor } = this
+    const { style } = editor
+    const target = this.event.target
+    const parent = target.parentElement
+    const isEdgeLabel =
+      parent && Dom.hasClass(parent, this.prefixClassName('edge-label'))
+    if (isEdgeLabel) {
+      const index = parent.getAttribute('data-index') || '0'
+      this.labelIndex = parseInt(index, 10)
+      const matrix = parent.getAttribute('transform')
+      const { translation } = Dom.parseTransformString(matrix)
+      pos = new Point(translation.tx, translation.ty)
+      minWidth = Util.getBBox(target).width
+    } else {
+      if (!this.options.labelAddable) {
+        return this
+      }
+      pos = graph.clientToLocal(
+        Point.create(this.event.clientX, this.event.clientY),
+      )
+      const view = this.cellView as EdgeView
+      const d = view.path.closestPointLength(pos)
+      this.distance = d
+      this.labelIndex = -1
+    }
+
+    pos = graph.localToGraph(pos)
+    const scale = graph.scale()
+    style.left = `${pos.x}px`
+    style.top = `${pos.y}px`
+    style.minWidth = `${minWidth}px`
+    style.transform = `scale(${scale.sx}, ${scale.sy}) translate(-50%, -50%)`
+  }
+
   onDocumentMouseDown(e: Dom.MouseDownEvent) {
     if (e.target !== this.editor) {
-      const cell = this.cell
       const value = this.editor.innerText.replace(/\n$/, '') || ''
-      // set value
-      // when value is null, we will remove label in edge
+      // set value, when value is null, we will remove label in edge
       this.setCellText(value !== '' ? value : null)
       // remove tool
-      cell.removeTool(cell.isEdge() ? 'edge-editor' : 'node-editor')
-      this.undelegateDocumentEvents()
+      this.removeElement()
     }
   }
 
-  onDblClick(e: Dom.DoubleClickEvent) {
+  onCellDblClick(e: Dom.DoubleClickEvent) {
     e.stopPropagation()
+    this.event = e
+    this.createElement()
+    this.updateEditor()
+    this.autoFocus()
+    this.delegateDocumentEvents(this.options.documentEvents!)
   }
 
   onMouseDown(e: Dom.MouseDownEvent) {
@@ -150,10 +195,16 @@ export class CellEditor extends ToolsView.ToolItem<
       })
     }
   }
+
+  protected onRemove() {
+    this.removeElement()
+  }
 }
 
 export namespace CellEditor {
   export interface CellEditorOptions extends ToolsView.ToolItem.Options {
+    x?: number | string
+    y?: number | string
     attrs: {
       fontSize: number
       fontFamily: string
@@ -185,7 +236,6 @@ export namespace CellEditor {
     tagName: 'div',
     isSVGElement: false,
     events: {
-      dblclick: 'onDblClick',
       mousedown: 'onMouseDown',
     },
     documentEvents: {

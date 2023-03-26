@@ -1,6 +1,6 @@
 ---
 title: Background
-order: 28
+order: 2
 redirect_from:
   - /zh/docs
   - /zh/docs/api
@@ -148,8 +148,8 @@ export type Definition<T extends CommonOptions = CommonOptions> = (
 ) => HTMLCanvasElement
 ```
 
-| 参数名  | 参数类型         | 参数说明                               |
-| ------- | ---------------- | -------------------------------------- |
+| 参数名  | 参数类型         | 参数说明                              |
+|---------|------------------|-----------------------------------|
 | img     | HTMLImageElement | 由 options.image 作为 src 的图片元素。 |
 | options | CommonOptions    | 背景选项。                             |
 

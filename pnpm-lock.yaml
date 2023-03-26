@@ -158,20 +158,20 @@ importers:
     specifiers:
       '@ant-design/icons': ^4.2.2
       '@antv/hierarchy': ^0.6.8
-      '@antv/x6': ^2.x
-      '@antv/x6-plugin-clipboard': ^2.x
-      '@antv/x6-plugin-dnd': ^2.x
-      '@antv/x6-plugin-export': ^2.x
-      '@antv/x6-plugin-history': ^2.x
-      '@antv/x6-plugin-keyboard': ^2.x
-      '@antv/x6-plugin-minimap': ^2.x
-      '@antv/x6-plugin-scroller': ^2.x
-      '@antv/x6-plugin-selection': ^2.x
-      '@antv/x6-plugin-snapline': ^2.x
-      '@antv/x6-plugin-stencil': ^2.x
-      '@antv/x6-plugin-transform': ^2.x
-      '@antv/x6-react-components': ^2.x
-      '@antv/x6-react-shape': ^2.x
+      '@antv/x6': workspace:latest
+      '@antv/x6-plugin-clipboard': workspace:latest
+      '@antv/x6-plugin-dnd': workspace:latest
+      '@antv/x6-plugin-export': workspace:latest
+      '@antv/x6-plugin-history': workspace:latest
+      '@antv/x6-plugin-keyboard': workspace:latest
+      '@antv/x6-plugin-minimap': workspace:latest
+      '@antv/x6-plugin-scroller': workspace:latest
+      '@antv/x6-plugin-selection': workspace:latest
+      '@antv/x6-plugin-snapline': workspace:latest
+      '@antv/x6-plugin-stencil': workspace:latest
+      '@antv/x6-plugin-transform': workspace:latest
+      '@antv/x6-react-components': workspace:latest
+      '@antv/x6-react-shape': workspace:latest
       '@types/jest': ^29.2.4
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
@@ -197,8 +197,8 @@ importers:
       umi-types: ^0.3.0
     dependencies:
       '@antv/hierarchy': registry.npmmirror.com/@antv/hierarchy/0.6.11
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
-      '@antv/x6-plugin-clipboard': registry.npmmirror.com/@antv/x6-plugin-clipboard/2.1.4_@antv+x6@2.7.1
+      '@antv/x6': link:../../packages/x6
+      '@antv/x6-plugin-clipboard': link:../../packages/x6-plugin-clipboard
       '@antv/x6-plugin-dnd': link:../../packages/x6-plugin-dnd
       '@antv/x6-plugin-export': link:../../packages/x6-plugin-export
       '@antv/x6-plugin-history': link:../../packages/x6-plugin-history
@@ -253,7 +253,7 @@ importers:
       '@antv/x6': ^2.x
     devDependencies:
       '@angular/core': registry.npmmirror.com/@angular/core/15.2.3
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-common:
     specifiers:
@@ -304,25 +304,25 @@ importers:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-dnd:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-export:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-history:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-keyboard:
     specifiers:
@@ -332,46 +332,46 @@ importers:
     dependencies:
       mousetrap: registry.npmmirror.com/mousetrap/1.6.5
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
       '@types/mousetrap': registry.npmmirror.com/@types/mousetrap/1.6.11
 
   packages/x6-plugin-minimap:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-scroller:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-selection:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-snapline:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-plugin-stencil:
     specifiers:
       '@antv/x6': ^2.x
       '@antv/x6-plugin-dnd': ^2.0.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
       '@antv/x6-plugin-dnd': link:../x6-plugin-dnd
 
   packages/x6-plugin-transform:
     specifiers:
       '@antv/x6': ^2.x
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
 
   packages/x6-react-components:
     specifiers:
@@ -416,7 +416,7 @@ importers:
       react: ^18.0.0
       react-dom: ^18.0.0
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
       '@types/react': registry.npmmirror.com/@types/react/18.0.28
       '@types/react-dom': registry.npmmirror.com/@types/react-dom/18.0.11
       react: registry.npmmirror.com/react/18.2.0
@@ -430,7 +430,7 @@ importers:
     dependencies:
       vue-demi: registry.npmmirror.com/vue-demi/0.13.11_vue@3.2.47
     devDependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
+      '@antv/x6': link:../x6
       vue: registry.npmmirror.com/vue/3.2.47
 
   sites/x6-sites:
@@ -465,8 +465,8 @@ importers:
       '@antv/dumi-theme-antv': registry.npmmirror.com/@antv/dumi-theme-antv/0.3.6_hh6dadpnnnqjhukvwyylxw5dly
       '@antv/hierarchy': registry.npmmirror.com/@antv/hierarchy/0.6.11
       '@antv/layout': registry.npmmirror.com/@antv/layout/0.3.17_dagre@0.8.5
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
-      '@antv/x6-plugin-clipboard': registry.npmmirror.com/@antv/x6-plugin-clipboard/2.1.4_@antv+x6@2.7.1
+      '@antv/x6': link:../../packages/x6
+      '@antv/x6-plugin-clipboard': link:../../packages/x6-plugin-clipboard
       '@antv/x6-plugin-dnd': link:../../packages/x6-plugin-dnd
       '@antv/x6-plugin-export': link:../../packages/x6-plugin-export
       '@antv/x6-plugin-history': link:../../packages/x6-plugin-history
@@ -1271,59 +1271,6 @@ packages:
       csstype: registry.npmmirror.com/csstype/3.1.1
       tslib: registry.npmmirror.com/tslib/2.5.0
     dev: false
-
-  registry.npmmirror.com/@antv/x6-common/2.0.11:
-    resolution:
-      {
-        integrity: sha512-tSs1fa+xAE1Ty0ecu3GtvQh482CbeuTaHJjuXXfKHjaUoAjI7I5qOe/h4BFF0SnjQSxqHj+HyBT4aXsgNmJ8lg==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npmmirror.com/@antv/x6-common/-/x6-common-2.0.11.tgz,
-      }
-    name: '@antv/x6-common'
-    version: 2.0.11
-    dependencies:
-      lodash-es: registry.npmmirror.com/lodash-es/4.17.21
-      utility-types: registry.npmmirror.com/utility-types/3.10.0
-
-  registry.npmmirror.com/@antv/x6-geometry/2.0.4:
-    resolution:
-      {
-        integrity: sha512-dlsLNRRTiCw8TsJ/03j3y5IbbbK4Npf6zBH6kAx8nnW+edNT/TAOChvPRzizwD+vA7wY9Rp2AiRnp/vCdIYC5w==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npmmirror.com/@antv/x6-geometry/-/x6-geometry-2.0.4.tgz,
-      }
-    name: '@antv/x6-geometry'
-    version: 2.0.4
-
-  registry.npmmirror.com/@antv/x6-plugin-clipboard/2.1.4_@antv+x6@2.7.1:
-    resolution:
-      {
-        integrity: sha512-iP3dA/Cl4Rf5sQuA8sOaja2nU+ziDhc78FCMJTatJGxWjKX7BdL67RZPWXuOSCUHwZd1TJJ7/wUgMR390Q2ZHg==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npmmirror.com/@antv/x6-plugin-clipboard/-/x6-plugin-clipboard-2.1.4.tgz,
-      }
-    id: registry.npmmirror.com/@antv/x6-plugin-clipboard/2.1.4
-    name: '@antv/x6-plugin-clipboard'
-    version: 2.1.4
-    peerDependencies:
-      '@antv/x6': ^2.x
-    dependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6/2.7.1
-    dev: false
-
-  registry.npmmirror.com/@antv/x6/2.7.1:
-    resolution:
-      {
-        integrity: sha512-2fwx9Yh3/Et7fosPnkBTimOdiHlHpj8srEvChhlmU/mpa7dwlf68acGxMwbiD3gd5KyIlxlLr5PpdmIbuqytIA==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npmmirror.com/@antv/x6/-/x6-2.7.1.tgz,
-      }
-    name: '@antv/x6'
-    version: 2.7.1
-    dependencies:
-      '@antv/x6-common': registry.npmmirror.com/@antv/x6-common/2.0.11
-      '@antv/x6-geometry': registry.npmmirror.com/@antv/x6-geometry/2.0.4
-      utility-types: registry.npmmirror.com/utility-types/3.10.0
 
   registry.npmmirror.com/@babel/code-frame/7.0.0:
     resolution:
@@ -35033,6 +34980,7 @@ packages:
       }
     name: lodash-es
     version: 4.17.21
+    dev: false
 
   registry.npmmirror.com/lodash._reinterpolate/3.0.0:
     resolution:
@@ -59449,6 +59397,7 @@ packages:
     name: utility-types
     version: 3.10.0
     engines: { node: '>= 4' }
+    dev: false
 
   registry.npmmirror.com/utils-merge/1.0.1:
     resolution:

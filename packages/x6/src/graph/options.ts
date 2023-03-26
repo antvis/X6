@@ -440,6 +440,8 @@ export namespace Options {
       allowNode: true,
       allowEdge: false,
       allowPort: true,
+      allowBlank: true,
+      allowMulti: true,
       highlight: false,
 
       anchor: 'center',
