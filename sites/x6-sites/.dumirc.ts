@@ -288,9 +288,9 @@ export default defineConfig({
       },
     ],
     docsearchOptions: {
-      appId: '7J0MWEOGMO',
-      apiKey: 'e0d8089bb224298dfd4415b3e98bb700',
-      indexName: 'x6_sites_2.0',
+      appId: 'XFVM2O0U6B',
+      apiKey: 'bfcb6154d9e7ee9c70baee42fd37bebb',
+      indexName: 'x6-antv-antgroup',
       versionV3: true,
     },
     playground: {
