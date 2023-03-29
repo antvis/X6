@@ -48,7 +48,7 @@ X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和
 - 邮件：[antv@antfin.com](mailto:antv@antfin.com)
 - 语雀专栏：[https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*nFa5TaWsSOoAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群4" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*AY2PSL5s0N4AAAAAAAAAAAAADtOHAQ/original" alt="X6 图编辑交流群" width="375" />
 
 ## 🤝 参与贡献
 
