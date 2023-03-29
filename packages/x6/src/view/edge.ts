@@ -1979,18 +1979,19 @@ export class EdgeView<
     const { snap, allowEdge } = graph.options.connecting
     const radius = (typeof snap === 'object' && snap.radius) || 50
 
-    const findViewsOption = {
-      x: x - radius,
-      y: y - radius,
-      width: 2 * radius,
-      height: 2 * radius,
-    }
-
-    const views = graph.renderer.findViewsInArea(findViewsOption)
+    const views = graph.renderer.findViewsInArea(
+      {
+        x: x - radius,
+        y: y - radius,
+        width: 2 * radius,
+        height: 2 * radius,
+      },
+      { nodeOnly: true },
+    )
 
     if (allowEdge) {
       const edgeViews = graph.renderer
-        .findEdgeViewsInArea(findViewsOption)
+        .findEdgeViewsFromPoint({ x, y }, radius)
         .filter((view) => {
           return view !== this
         })
@@ -2003,15 +2004,23 @@ export class EdgeView<
     data.closestView = null
     data.closestMagnet = null
 
-    let distance
+    let distance: number
     let minDistance = Number.MAX_SAFE_INTEGER
     const pos = new Point(x, y)
 
     views.forEach((view) => {
       if (view.container.getAttribute('magnet') !== 'false') {
-        // Find distance from the center of the cell to pointer coordinates
-        distance = view.cell.getBBox().getCenter().distance(pos)
-        // the connection is looked up in a circle area by `distance < r`
+        if (view.isNodeView()) {
+          distance = view.cell.getBBox().getCenter().distance(pos)
+        } else if (view.isEdgeView()) {
+          const point = view.getClosestPoint(pos)
+          if (point) {
+            distance = point.distance(pos)
+          } else {
+            distance = Number.MAX_SAFE_INTEGER
+          }
+        }
+
         if (distance < radius && distance < minDistance) {
           if (
             prevMagnet === view.container ||
