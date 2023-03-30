@@ -923,14 +923,24 @@ export namespace Edge {
       | ConnectionPoint.ManaualItem
   }
 
+  export type NodeAnchorItem =
+    | string
+    | NodeAnchor.NativeItem
+    | NodeAnchor.ManaualItem
+
+  export type EdgeAnchorItem =
+    | string
+    | EdgeAnchor.NativeItem
+    | EdgeAnchor.ManaualItem
+
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string
     priority?: boolean
-    anchor?: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
+    anchor?: NodeAnchorItem
   }
 
   export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
-    anchor?: string | EdgeAnchor.NativeItem | EdgeAnchor.ManaualItem
+    anchor?: EdgeAnchorItem
   }
 
   export interface TerminalPointData
