@@ -7,6 +7,7 @@ import {
   FunctionExt,
   Nilable,
   KeyValue,
+  PointLike,
 } from '@antv/x6-common'
 import { Registry } from '../registry/registry'
 import { View } from './view'
@@ -480,6 +481,10 @@ export class CellView<
 
   // #endregion
 
+  geConnectionTerminalAnchor(
+    connectionPoint: PointLike,
+  ): Edge.NodeAnchorItem | Edge.EdgeAnchorItem | void {}
+
   getEdgeTerminal(
     magnet: Element,
     x: number,
@@ -506,6 +511,11 @@ export class CellView<
       }
     } else if (selector == null && this.container !== magnet) {
       terminal.selector = this.getSelector(magnet)
+    } else if (type === 'target') {
+      const anchor = this.geConnectionTerminalAnchor({ x, y })
+      if (anchor) {
+        terminal.anchor = anchor
+      }
     }
 
     return terminal
