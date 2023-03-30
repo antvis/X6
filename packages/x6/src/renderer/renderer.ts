@@ -3,7 +3,7 @@ import { Point, Rectangle } from '@antv/x6-geometry'
 import { Base } from '../graph/base'
 import { Cell } from '../model'
 import { Scheduler } from './scheduler'
-import { CellView } from '../view'
+import { CellView, EdgeView } from '../view'
 import { Util } from '../util'
 
 export class Renderer extends Base {
@@ -78,37 +78,35 @@ export class Renderer extends Base {
       }) as CellView[]
   }
 
-  findViewsInArea(
-    rect: Rectangle.RectangleLike,
-    options: { strict?: boolean } = {},
-  ) {
-    const area = Rectangle.create(rect)
-    return this.model
-      .getNodes()
-      .map((node) => this.findViewByCell(node))
-      .filter((view) => {
-        if (view) {
-          const bbox = Util.getBBox(view.container as SVGElement, {
-            target: this.graph.view.stage,
-          })
-          return options.strict
-            ? area.containsRect(bbox)
-            : area.isIntersectWithRect(bbox)
-        }
-        return false
-      }) as CellView[]
-  }
-
-  findEdgeViewsInArea(
-    rect: Rectangle.RectangleLike,
-    options: Renderer.FindViewsInAreaOptions = {},
-  ) {
-    const area = Rectangle.create(rect)
+  findEdgeViewsFromPoint(p: Point.PointLike, threshold = 5) {
     return this.model
       .getEdges()
       .map((edge) => this.findViewByCell(edge))
+      .filter((view: EdgeView) => {
+        if (view != null) {
+          const point = view.getClosestPoint(p)
+          if (point) {
+            return point.distance(p) <= threshold
+          }
+        }
+        return false
+      }) as EdgeView[]
+  }
+
+  findViewsInArea(
+    rect: Rectangle.RectangleLike,
+    options: { strict?: boolean; nodeOnly?: boolean } = {},
+  ) {
+    const area = Rectangle.create(rect)
+    return this.model
+      .getCells()
+      .map((cell) => this.findViewByCell(cell))
       .filter((view) => {
         if (view) {
+          if (options.nodeOnly && !view.isNodeView()) {
+            return false
+          }
+
           const bbox = Util.getBBox(view.container as SVGElement, {
             target: this.view.stage,
           })
