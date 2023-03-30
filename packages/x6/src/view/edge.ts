@@ -2358,6 +2358,26 @@ export class EdgeView<
   stopLabelDragging(e: Dom.MouseUpEvent, x: number, y: number) {}
 
   // #endregion
+
+  // #region connection strategy
+
+  geConnectionTerminalAnchor(
+    connectionPoint: Point.PointLike,
+  ): Edge.EdgeAnchorItem | void {
+    const strategy = this.graph.options.connecting.connectEdgeStrategy
+    if (strategy === 'closest') {
+      const length = this.getClosestPointLength(connectionPoint)
+      if (length !== null) {
+        return {
+          name: 'length',
+          args: {
+            length,
+          },
+        }
+      }
+    }
+  }
+
   // #endregion
 }
 
