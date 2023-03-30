@@ -483,7 +483,7 @@ export class CellView<
 
   geConnectionTerminalAnchor(
     connectionPoint: PointLike,
-  ): Edge.NodeAnchor | Edge.EdgeAnchor | void {}
+  ): Edge.NodeAnchorItem | Edge.EdgeAnchorItem | void {}
 
   getEdgeTerminal(
     magnet: Element,
