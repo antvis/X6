@@ -114,7 +114,7 @@ export namespace Options {
     /**
      * Specify whether connect to point on the graph is allowed.
      */
-    allowBlank?:
+    allowBlank:
       | boolean
       | ((this: Graph, args: ValidateConnectionArgs) => boolean)
 
@@ -151,7 +151,7 @@ export namespace Options {
      * Specify whether more than one edge connected to the same source and
      * target node is allowed.
      */
-    allowMulti?:
+    allowMulti:
       | boolean
       | 'withPort'
       | ((this: Graph, args: ValidateConnectionArgs) => boolean)
@@ -181,6 +181,15 @@ export namespace Options {
     router: string | Router.NativeItem | Router.ManaualItem
     connector: string | Connector.NativeItem | Connector.ManaualItem
 
+    createEdge?: (
+      this: Graph,
+      args: {
+        sourceCell: Cell
+        sourceView: CellView
+        sourceMagnet: Element
+      },
+    ) => Nilable<Edge> | void
+
     /**
      * Check whether to add a new edge to the graph when user clicks
      * on an a magnet.
@@ -194,15 +203,6 @@ export namespace Options {
         e: Dom.MouseDownEvent | Dom.MouseEnterEvent
       },
     ) => boolean
-
-    createEdge?: (
-      this: Graph,
-      args: {
-        sourceCell: Cell
-        sourceView: CellView
-        sourceMagnet: Element
-      },
-    ) => Nilable<Edge> | void
 
     /**
      * Custom validation on stop draggin the edge arrowhead(source/target).
