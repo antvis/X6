@@ -37,7 +37,7 @@ export namespace Options {
       max?: number
     }
 
-    moveThreshold: 0
+    moveThreshold: number
     clickThreshold: number
     magnetThreshold: number | 'onleave'
     preventDefaultDblClick: boolean
