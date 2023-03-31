@@ -715,7 +715,9 @@ export class NodeView<
     if (options.frontOnly) {
       if (candidates.length > 0) {
         const zIndexMap = ArrayExt.groupBy(candidates, 'zIndex')
-        const maxZIndex = ArrayExt.max(Object.keys(zIndexMap).map(parseInt))
+        const maxZIndex = ArrayExt.max(
+          Object.keys(zIndexMap).map((z) => parseInt(z, 10)),
+        )
         if (maxZIndex) {
           candidates = zIndexMap[maxZIndex]
         }
