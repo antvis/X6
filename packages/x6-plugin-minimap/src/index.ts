@@ -1,4 +1,12 @@
-import { FunctionExt, CssLoader, Dom, View, Graph, EventArgs } from '@antv/x6'
+import {
+  FunctionExt,
+  CssLoader,
+  Dom,
+  View,
+  Graph,
+  EventArgs,
+  Model,
+} from '@antv/x6'
 import { content } from './style/raw'
 
 export class MiniMap extends View {
@@ -129,8 +137,8 @@ export class MiniMap extends View {
   }
 
   protected onRemove() {
-    this.targetGraph.view.remove()
     this.stopListening()
+    this.targetGraph.model = new Model()
     this.targetGraph.dispose()
   }
 
