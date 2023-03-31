@@ -2,7 +2,14 @@ import * as React from 'react'
 import { Graph } from '@antv/x6'
 import { MiniMap } from '@antv/x6-plugin-minimap'
 import { Scroller } from '@antv/x6-plugin-scroller'
+import { Radio } from 'antd'
+import { SimpleNodeView } from './simple-view'
 import './index.less'
+
+const options = [
+  { label: '简单视图', value: 'simple' },
+  { label: '详细视图', value: 'detailed' },
+]
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -12,7 +19,8 @@ export default class Example extends React.Component {
   componentDidMount() {
     this.graph = new Graph({
       container: this.container,
-      width: 400,
+      width: 600,
+      height: 320,
       background: {
         color: '#F2F7FA',
       },
@@ -95,8 +103,43 @@ export default class Example extends React.Component {
         },
       },
     })
+  }
 
-    // this.graph.zoomTo(1.8)
+  onMinimapViewChange = (val: string) => {
+    this.graph.disposePlugins('minimap')
+    if (val === 'simple') {
+      this.graph.use(
+        new MiniMap({
+          container: this.minimapContainer,
+          width: 200,
+          height: 160,
+          padding: 10,
+          graphOptions: {
+            createCellView(cell) {
+              // 可以返回三种类型数据
+              // 1. null: 不渲染
+              // 2. undefined: 使用 X6 默认渲染方式
+              // 3. CellView: 自定义渲染
+              if (cell.isEdge()) {
+                return null
+              }
+              if (cell.isNode()) {
+                return SimpleNodeView
+              }
+            },
+          },
+        }),
+      )
+    } else {
+      this.graph.use(
+        new MiniMap({
+          container: this.minimapContainer,
+          width: 200,
+          height: 160,
+          padding: 10,
+        }),
+      )
+    }
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -110,6 +153,14 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="minimap-app">
+        <div className="app-btns">
+          <Radio.Group
+            options={options}
+            onChange={(e) => this.onMinimapViewChange(e.target.value)}
+            defaultValue={'detailed'}
+            optionType="button"
+          />
+        </div>
         <div className="app-content" ref={this.refContainer} />
         <div className="app-minimap" ref={this.refMiniMapContainer} />
       </div>

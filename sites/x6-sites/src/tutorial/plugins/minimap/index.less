@@ -1,19 +1,18 @@
 .minimap-app {
-  display: flex;
-  height: 320px;
+  position: relative;
   padding: 0;
   font-family: sans-serif;
 
-  .app-content {
-    flex: 1;
-    width: 400px;
-    box-shadow: 0 0 10px 1px #e9e9e9;
+  .app-btns {
+    margin-bottom: 8px;
   }
 
   .app-minimap {
+    position: absolute;
+    bottom: 0;
+    left: 620px;
     width: 200px;
     height: 150px;
-    margin-top: -10px;
   }
 
   .x6-widget-minimap-viewport {
@@ -22,11 +21,5 @@
 
   .x6-widget-minimap-viewport-zoom {
     border: 2px solid #8f8f8f;
-  }
-
-  .x6-graph-scroller {
-    margin-right: 8px;
-    margin-left: 8px;
-    box-shadow: 0 0 10px 1px #e9e9e9;
   }
 }
