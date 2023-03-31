@@ -410,16 +410,21 @@ export class Scheduler extends Disposable {
   }
 
   protected createCellView(cell: Cell) {
+    const options = { graph: this.graph }
+
     const createViewHook = this.graph.options.createCellView
     if (createViewHook) {
       const ret = FunctionExt.call(createViewHook, this.graph, cell)
-      if (ret || ret === null) {
-        return ret
+      if (ret) {
+        return new ret(cell, options) // eslint-disable-line new-cap
+      }
+      if (ret === null) {
+        // null means not render
+        return null
       }
     }
 
     const view = cell.view
-    const options = { graph: this.graph }
 
     if (view != null && typeof view === 'string') {
       const def = CellView.registry.get(view)
