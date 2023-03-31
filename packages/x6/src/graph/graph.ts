@@ -21,10 +21,10 @@ import { SizeManager as Size } from './size'
 
 export class Graph extends Basecoat<EventArgs> {
   private installedPlugins: Set<Graph.Plugin> = new Set()
+  public model: Model
 
   public readonly options: GraphOptions.Definition
   public readonly css: Css
-  public readonly model: Model
   public readonly view: GraphView
   public readonly grid: Grid
   public readonly defs: Defs
@@ -1225,18 +1225,6 @@ export class Graph extends Basecoat<EventArgs> {
     ) as T
   }
 
-  disablePlugins(plugins: string[] | string) {
-    let postPlugins = plugins
-    if (!Array.isArray(postPlugins)) {
-      postPlugins = [postPlugins]
-    }
-    const aboutToChangePlugins = this.getPlugins(postPlugins)
-    aboutToChangePlugins?.forEach((plugin) => {
-      plugin?.disable?.()
-    })
-    return this
-  }
-
   enablePlugins(plugins: string[] | string) {
     let postPlugins = plugins
     if (!Array.isArray(postPlugins)) {
@@ -1249,6 +1237,23 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  disablePlugins(plugins: string[] | string) {
+    let postPlugins = plugins
+    if (!Array.isArray(postPlugins)) {
+      postPlugins = [postPlugins]
+    }
+    const aboutToChangePlugins = this.getPlugins(postPlugins)
+    aboutToChangePlugins?.forEach((plugin) => {
+      plugin?.disable?.()
+    })
+    return this
+  }
+
+  isPluginEnabled(pluginName: string) {
+    const pluginIns = this.getPlugin(pluginName)
+    return pluginIns?.isEnabled?.()
+  }
+
   disposePlugins(plugins: string[] | string) {
     let postPlugins = plugins
     if (!Array.isArray(postPlugins)) {
@@ -1259,11 +1264,6 @@ export class Graph extends Basecoat<EventArgs> {
       plugin.dispose()
     })
     return this
-  }
-
-  isPluginEnabled(pluginName: string) {
-    const pluginIns = this.getPlugin(pluginName)
-    return pluginIns?.isEnabled?.()
   }
 
   // #endregion
