@@ -31,6 +31,7 @@ export class Scheduler extends Disposable {
 
   protected init() {
     this.startListening()
+    this.renderViews(this.model.getCells())
   }
 
   protected startListening() {
