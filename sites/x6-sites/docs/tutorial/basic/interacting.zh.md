@@ -100,12 +100,6 @@ new Graph({
 
 <code id="interacting-validate" src="@/src/tutorial/basic/interacting/validate/index.tsx"></code>
 
-### 连接策略 <Badge>2.9.1</Badge>
-
-连接到目标元素的时候, 连线终端会吸附到目标锚点，在一些场景中，目标锚点不能提前预设，需要在连接过程中确定，比如连接到离鼠标最近的点，这时候可以用 `connectNodeStrategy` 或者 `connectEdgeStrategy`。
-
-<code id="interacting-connect-strategy" src="@/src/tutorial/basic/interacting/connect-strategy/index.tsx"></code>
-
 ## 组合
 
 有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/zh/docs/api/interacting/interacting#组合)。
