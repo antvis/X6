@@ -162,22 +162,6 @@ targetEdgeAnchor?: EdgeAnchorOptions
 
 当连接到边时，通过 `targetEdgeAnchor` 来指定目标边的锚点。
 
-### connectNodeStrategy
-
-```typescript
-connectNodeStrategy?: 'closest'
-```
-
-连接到目标节点的策略，例如 `closest` 策略连线终端就会自动吸附到最近的节点边缘（默认是中心）。
-
-### connectEdgeStrategy
-
-```typescript
-connectEdgeStrategy?: 'closest'
-```
-
-连接到目标边的策略，例如 `closest` 策略连线终端就会自动吸附到边上最近的点（默认是中心）。
-
 ### connectionPoint
 
 ```typescript

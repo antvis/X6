@@ -105,9 +105,6 @@ export namespace Options {
     | ConnectionPoint.NativeItem
     | ConnectionPoint.ManaualItem
 
-  type ConnectNodeStrategy = 'closest'
-  type ConnectEdgeStrategy = 'closest'
-
   export interface Connecting {
     /**
      * Snap edge to the closest node/port in the given radius on dragging.
@@ -173,9 +170,6 @@ export namespace Options {
     edgeAnchor: EdgeAnchorOptions
     sourceEdgeAnchor?: EdgeAnchorOptions
     targetEdgeAnchor?: EdgeAnchorOptions
-
-    connectNodeStrategy?: ConnectNodeStrategy // take effect in 2.9.1
-    connectEdgeStrategy?: ConnectEdgeStrategy // take effect in 2.9.1
 
     connectionPoint: ConnectionPointOptions
     sourceConnectionPoint?: ConnectionPointOptions
