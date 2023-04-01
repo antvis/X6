@@ -1,4 +1,4 @@
-import { ArrayExt, FunctionExt, Dom, PointLike } from '@antv/x6-common'
+import { ArrayExt, FunctionExt, Dom } from '@antv/x6-common'
 import { Rectangle, Point, GeometryUtil } from '@antv/x6-geometry'
 import { Config } from '../config'
 import { Attr, PortLayout } from '../registry'
@@ -1113,27 +1113,6 @@ export class NodeView<
     const scroller = this.graph.getPlugin<any>('scroller')
     if (scroller) {
       scroller.autoScroll(x, y)
-    }
-  }
-
-  // #endregion
-
-  // #region connection strategy
-
-  geConnectionTerminalAnchor(
-    connectionPoint: PointLike,
-  ): Edge.NodeAnchorItem | void {
-    const strategy = this.graph.options.connecting.connectNodeStrategy
-    if (strategy === 'closest') {
-      const bbox = this.cell.getBBox()
-      const point = bbox.getNearestPointToPoint(connectionPoint)
-      return {
-        name: 'topLeft',
-        args: {
-          dx: point.x - bbox.topLeft.x,
-          dy: point.y - bbox.topLeft.y,
-        },
-      }
     }
   }
 
