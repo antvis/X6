@@ -7,7 +7,6 @@ import {
   FunctionExt,
   Nilable,
   KeyValue,
-  PointLike,
 } from '@antv/x6-common'
 import { Registry } from '../registry/registry'
 import { View } from './view'
