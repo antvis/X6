@@ -14,18 +14,18 @@ redirect_from:
 
 我们在 `Registry.NodeAnchor.presets` 命名空间中提供了以下几种锚点定义。
 
-- [`center`](#center) 边链接的元素的中心点（默认值）。
-- [`top`](#top) 边链接的元素的顶部中心点。
-- [`bottom`](#bottom) 边链接的元素的底部中心点。
-- [`left`](#left) 边链接的元素的左侧中心点。
-- [`right`](#right) 边链接的元素的右侧中心点。
-- [`midSide`](#midside) 边链接的元素的最近侧中心点。
-- [`topLeft`](#topleft) 边链接的元素的左上角。
-- [`topRight`](#topright) 边链接的元素的右上角。
-- [`bottomLeft`](#bottomleft) 边链接的元素的左下角。
-- [`bottomRight`](#bottomright) 边链接的元素的右下角。
-- [`orth`](#orth) 正交点。
-- [`nodeCenter`](#nodecenter) 节点的中心点。
+- [center](#center) 边链接的元素的中心点（默认值）。
+- [top](#top) 边链接的元素的顶部中心点。
+- [bottom](#bottom) 边链接的元素的底部中心点。
+- [left](#left) 边链接的元素的左侧中心点。
+- [right](#right) 边链接的元素的右侧中心点。
+- [midSide](#midside) 边链接的元素的最近侧中心点。
+- [topLeft](#topleft) 边链接的元素的左上角。
+- [topRight](#topright) 边链接的元素的右上角。
+- [bottomLeft](#bottomleft) 边链接的元素的左下角。
+- [bottomRight](#bottomright) 边链接的元素的右下角。
+- [orth](#orth) 正交点。
+- [nodeCenter](#nodecenter) 节点的中心点。
 
 <!-- <iframe src="/demos/api/registry/node-anchor/playground"></iframe> -->
 
