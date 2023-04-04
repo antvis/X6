@@ -14,10 +14,10 @@ redirect_from:
 
 我们在 `Registry.ConnectionPoint.presets` 命名空间中提供了以下几种连接点计算方法。
 
-- [`'boundary'`](#boundary) 默认值，与链接图形的边框的交点。
-- [`'bbox'`](#bbox) 与链接元素的包围盒的交点。
-- [`'rect'`](#rect) 与链接元素的旋转后的矩形区域的交点。
-- [`'anchor'`](#anchor) 使用锚点作为连接点。
+- [boundary](#boundary) 默认值，与链接图形的边框的交点。
+- [bbox](#bbox) 与链接元素的包围盒的交点。
+- [rect](#rect) 与链接元素的旋转后的矩形区域的交点。
+- [anchor](#anchor) 使用锚点作为连接点。
 
 <!-- <iframe src="/demos/api/registry/connection-point/playground"></iframe> -->
 
