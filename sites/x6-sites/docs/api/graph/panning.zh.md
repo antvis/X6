@@ -50,7 +50,7 @@ interface Options {
 
 ### isPannable()
 
-```sign
+```ts
 isPannable(): boolean
 ```
 
@@ -58,7 +58,7 @@ isPannable(): boolean
 
 ### enablePanning()
 
-```sign
+```ts
 enablePanning(): this
 ```
 
@@ -66,7 +66,7 @@ enablePanning(): this
 
 ### disablePanning()
 
-```sign
+```ts
 disablePanning(): this
 ```
 
@@ -74,12 +74,12 @@ disablePanning(): this
 
 ### togglePanning(...)
 
-```sign
+```ts
 togglePanning(enabled?: boolean): this
 ```
 
 切换画布平移启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                                 |
-| ------- | ------- | :--: | ------ | ---------------------------------------------------- |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                               |
+|---------|---------|:----:|--------|--------------------------------------------------|
 | enabled | boolean |      | -      | 是否启用画布平移功能，缺省时切换画布平移的启用状态。 |

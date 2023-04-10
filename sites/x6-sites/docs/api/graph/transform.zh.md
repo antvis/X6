@@ -25,7 +25,7 @@ new Graph({
 
 ### resize(...)
 
-```sign
+```ts
 resize(width?: number, height?: number): this
 ```
 
@@ -33,14 +33,14 @@ resize(width?: number, height?: number): this
 
 <span class="tag-param">参数<span>
 
-| 名称   | 类型   | 必选 | 默认值 | 描述                           |
-| ------ | ------ | :--: | ------ | ------------------------------ |
+| 名称   | 类型   | 必选 | 默认值 | 描述                         |
+|--------|--------|:----:|--------|----------------------------|
 | width  | number |      |        | 画布宽度，缺省时宽度保持不变。 |
 | height | number |      |        | 画布高度，缺省时高度保持不变。 |
 
 ### scale(...) <tag color="#ff4d4f" text="Deprecated"></tag>
 
-```sign
+```ts
 scale(): {
   sx: number
   sy: number
@@ -49,7 +49,7 @@ scale(): {
 
 获取画布的缩放比例。
 
-```sign
+```ts
 scale(sx: number, sy?: number, cx?: number, cy?: number): this
 ```
 
@@ -57,22 +57,22 @@ scale(sx: number, sy?: number, cx?: number, cy?: number): this
 
 <span class="tag-param">参数<span>
 
-| 名称 | 类型   | 必选 | 默认值 | 描述                                |
-| ---- | ------ | :--: | ------ | ----------------------------------- |
-| sx   | number |  ✓   |        | X 轴方向缩放比例。                  |
+| 名称 | 类型   | 必选 | 默认值 | 描述                              |
+|------|--------|:----:|--------|---------------------------------|
+| sx   | number |  ✓   |        | X 轴方向缩放比例。                 |
 | sy   | number |      | `sx`   | Y 轴方向缩放比例，缺省时使用 `sx`。 |
-| cx   | number |      | `0`    | 缩放中心 x 坐标。                   |
-| cy   | number |      | `0`    | 缩放中心 y 坐标。                   |
+| cx   | number |      | `0`    | 缩放中心 x 坐标。                  |
+| cy   | number |      | `0`    | 缩放中心 y 坐标。                  |
 
 ### zoom(...)
 
-```sign
+```ts
 zoom(): number
 ```
 
 获取画布缩放比例。
 
-```sign
+```ts
 zoom(factor: number, options?: ZoomOptions): this
 ```
 
@@ -80,8 +80,8 @@ zoom(factor: number, options?: ZoomOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型            | 必选 | 默认值  | 描述                                  |
-| ----------------- | --------------- | :--: | ------- | ------------------------------------- |
+| 名称              | 类型            | 必选 | 默认值  | 描述                                 |
+|-------------------|-----------------|:----:|---------|------------------------------------|
 | factor            | number          |  ✓   |         | 缩放比例。                            |
 | options.absolute  | boolean         |      | `false` | 是否为绝对缩放，                      |
 | options.minScale  | number          |      | -       | 最小缩放比例。                        |
@@ -93,7 +93,7 @@ zoom(factor: number, options?: ZoomOptions): this
 
 ### zoomTo(...)
 
-```sign
+```ts
 zoomTo(factor: number, options?: ZoomOptions): this
 ```
 
@@ -101,8 +101,8 @@ zoomTo(factor: number, options?: ZoomOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型            | 必选 | 默认值 | 描述                                  |
-| ----------------- | --------------- | :--: | ------ | ------------------------------------- |
+| 名称              | 类型            | 必选 | 默认值 | 描述                                 |
+|-------------------|-----------------|:----:|--------|------------------------------------|
 | factor            | number          |  ✓   |        | 缩放比例。                            |
 | options.minScale  | number          |      | -      | 最小缩放比例。                        |
 | options.maxScale  | number          |      | -      | 最大缩放比例。                        |
@@ -111,7 +111,7 @@ zoomTo(factor: number, options?: ZoomOptions): this
 
 ### zoomToRect(...)
 
-```sign
+```ts
 zoomToRect(rect: Rectangle.RectangleLike, options?: Options): this
 ```
 
@@ -119,25 +119,25 @@ zoomToRect(rect: Rectangle.RectangleLike, options?: Options): this
 
 <span class="tag-param">参数<span>
 
-| 名称                        | 类型                                                                   | 必选 | 默认值  | 描述                                                                                            |
-| --------------------------- | ---------------------------------------------------------------------- | :--: | ------- | ----------------------------------------------------------------------------------------------- |
-| rect                        | Rectangle.RectangleLike                                                |  ✓   |         | 矩形区域。                                                                                      |
-| options.padding             | number \| { left: number, top: number, right: number, bottom: number } |      | -       | 边距。                                                                                          |
+| 名称                        | 类型                                                                   | 必选 | 默认值  | 描述                                                                                          |
+|-----------------------------|------------------------------------------------------------------------|:----:|---------|---------------------------------------------------------------------------------------------|
+| rect                        | Rectangle.RectangleLike                                                |  ✓   |         | 矩形区域。                                                                                     |
+| options.padding             | number \| { left: number, top: number, right: number, bottom: number } |      | -       | 边距。                                                                                         |
 | options.contentArea         | Rectangle.RectangleLike                                                |      | -       | 内容区域，默认获取画布内容区域。                                                                |
 | options.viewportArea        | Rectangle.RectangleLike                                                |      | -       | 视口区域，默认获取画布视口。                                                                    |
-| options.scaleGrid           | number                                                                 |      | -       | 修正缩放比例为 `scaleGrid` 的整倍数。                                                           |
-| options.minScale            | number                                                                 |      | -       | 最小缩放比例。                                                                                  |
-| options.maxScale            | number                                                                 |      | -       | 最大缩放比例。                                                                                  |
-| options.minScaleX           | number                                                                 |      | -       | X 轴方向的最小缩放比例。                                                                        |
-| options.maxScaleX           | number                                                                 |      | -       | X 轴方向的最大缩放比例。                                                                        |
-| options.minScaleY           | number                                                                 |      | -       | Y 轴方向的最小缩放比例。                                                                        |
-| options.maxScaleY           | number                                                                 |      | -       | Y 轴方向的最大缩放比例。                                                                        |
-| options.preserveAspectRatio | boolean                                                                |      | `false` | 是否保持长宽比。                                                                                |
+| options.scaleGrid           | number                                                                 |      | -       | 修正缩放比例为 `scaleGrid` 的整倍数。                                                          |
+| options.minScale            | number                                                                 |      | -       | 最小缩放比例。                                                                                 |
+| options.maxScale            | number                                                                 |      | -       | 最大缩放比例。                                                                                 |
+| options.minScaleX           | number                                                                 |      | -       | X 轴方向的最小缩放比例。                                                                       |
+| options.maxScaleX           | number                                                                 |      | -       | X 轴方向的最大缩放比例。                                                                       |
+| options.minScaleY           | number                                                                 |      | -       | Y 轴方向的最小缩放比例。                                                                       |
+| options.maxScaleY           | number                                                                 |      | -       | Y 轴方向的最大缩放比例。                                                                       |
+| options.preserveAspectRatio | boolean                                                                |      | `false` | 是否保持长宽比。                                                                               |
 | options.useCellGeometry     | boolean                                                                |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 ### zoomToFit(...)
 
-```sign
+```ts
 zoomToFit(options?: Options): this
 ```
 
@@ -145,7 +145,7 @@ zoomToFit(options?: Options): this
 
 ### rotate(...)
 
-```sign
+```ts
 rotate(): {
   angle: number
   cx?: number
@@ -155,7 +155,7 @@ rotate(): {
 
 获取画布的旋转角度和旋转中心。
 
-```sign
+```ts
 rotate(angle: number, cx?: number, cy?: number): this
 ```
 
@@ -163,15 +163,15 @@ rotate(angle: number, cx?: number, cy?: number): this
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型   | 必选 | 默认值 | 描述                                |
-| ----- | ------ | :--: | ------ | ----------------------------------- |
-| angle | number |  ✓   |        | 旋转角度。                          |
+| 名称  | 类型   | 必选 | 默认值 | 描述                              |
+|-------|--------|:----:|--------|---------------------------------|
+| angle | number |  ✓   |        | 旋转角度。                         |
 | cx    | number |      | -      | 旋转中心 x 坐标，默认使用画布中心。 |
 | cy    | number |      | -      | 旋转中心 y 坐标，默认使用画布中心。 |
 
 ### translate(...)
 
-```sign
+```ts
 translate(): {
   tx: number
   ty: number
@@ -180,7 +180,7 @@ translate(): {
 
 获取画布的平移量。
 
-```sign
+```ts
 translate(tx: number, ty: number): this
 ```
 
@@ -188,14 +188,14 @@ translate(tx: number, ty: number): this
 
 <span class="tag-param">参数<span>
 
-| 名称 | 类型   | 必选 | 默认值 | 描述         |
-| ---- | ------ | :--: | ------ | ------------ |
+| 名称 | 类型   | 必选 | 默认值 | 描述        |
+|------|--------|:----:|--------|-----------|
 | tx   | number |  ✓   |        | X 轴平移量。 |
 | ty   | number |  ✓   |        | Y 轴平移量。 |
 
 ### fitToContent(...)
 
-```sign
+```ts
 fitToContent(
   gridWidth?: number,
   gridHeight?: number,
@@ -209,22 +209,22 @@ fitToContent(options?: Transform.FitToContentFullOptions): Rectangle
 
 <span class="tag-param">参数<span>
 
-| 名称                    | 类型                                    | 必选 | 默认值  | 描述                                                                                            |
-| ----------------------- | --------------------------------------- | :--: | ------- | ----------------------------------------------------------------------------------------------- |
-| options.gridWidth       | number                                  |      | -       | 使宽度是 `gridWidth` 的整倍数。                                                                 |
-| options.gridHeight      | number                                  |      | -       | 使高度是 `gridHeight` 的整倍数。                                                                |
-| options.minWidth        | number                                  |      | -       | 画布最小宽度。                                                                                  |
-| options.minHeight       | number                                  |      | -       | 画布最小高度。                                                                                  |
-| options.maxWidth        | number                                  |      | -       | 画布最大宽度。                                                                                  |
-| options.maxHeight       | number                                  |      | -       | 画布最大高度。                                                                                  |
-| options.padding         | number \| Padding                       |      | `0`     | 边距。                                                                                          |
+| 名称                    | 类型                                    | 必选 | 默认值  | 描述                                                                                          |
+|-------------------------|-----------------------------------------|:----:|---------|---------------------------------------------------------------------------------------------|
+| options.gridWidth       | number                                  |      | -       | 使宽度是 `gridWidth` 的整倍数。                                                                |
+| options.gridHeight      | number                                  |      | -       | 使高度是 `gridHeight` 的整倍数。                                                               |
+| options.minWidth        | number                                  |      | -       | 画布最小宽度。                                                                                 |
+| options.minHeight       | number                                  |      | -       | 画布最小高度。                                                                                 |
+| options.maxWidth        | number                                  |      | -       | 画布最大宽度。                                                                                 |
+| options.maxHeight       | number                                  |      | -       | 画布最大高度。                                                                                 |
+| options.padding         | number \| Padding                       |      | `0`     | 边距。                                                                                         |
 | options.contentArea     | Rectangle.RectangleLike                 |      | -       | 内容区域，默认获取画布内容区域。                                                                |
 | options.useCellGeometry | boolean                                 |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
-| options.allowNewOrigin  | `'negative'` \| `'positive'` \| `'any'` |      | -       | 画布左上角位置选项。                                                                            |
+| options.allowNewOrigin  | `'negative'` \| `'positive'` \| `'any'` |      | -       | 画布左上角位置选项。                                                                           |
 
 ### scaleContentToFit(...)
 
-```sign
+```ts
 scaleContentToFit(options?: Transform.ScaleContentToFitOptions): this
 ```
 
@@ -232,24 +232,24 @@ scaleContentToFit(options?: Transform.ScaleContentToFitOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称                        | 类型                    | 必选 | 默认值  | 描述                                                                                            |
-| --------------------------- | ----------------------- | :--: | ------- | ----------------------------------------------------------------------------------------------- |
-| options.padding             | number                  |      | -       | 边距。                                                                                          |
+| 名称                        | 类型                    | 必选 | 默认值  | 描述                                                                                          |
+|-----------------------------|-------------------------|:----:|---------|---------------------------------------------------------------------------------------------|
+| options.padding             | number                  |      | -       | 边距。                                                                                         |
 | options.contentArea         | Rectangle.RectangleLike |      | -       | 内容区域，默认获取画布内容区域。                                                                |
 | options.viewportArea        | Rectangle.RectangleLike |      | -       | 视口区域，默认获取画布视口。                                                                    |
-| options.scaleGrid           | number                  |      | -       | 修正缩放比例为 `scaleGrid` 的整倍数。                                                           |
-| options.minScale            | number                  |      | -       | 最小缩放比例。                                                                                  |
-| options.maxScale            | number                  |      | -       | 最大缩放比例。                                                                                  |
-| options.minScaleX           | number                  |      | -       | X 轴方向的最小缩放比例。                                                                        |
-| options.maxScaleX           | number                  |      | -       | X 轴方向的最大缩放比例。                                                                        |
-| options.minScaleY           | number                  |      | -       | Y 轴方向的最小缩放比例。                                                                        |
-| options.maxScaleY           | number                  |      | -       | Y 轴方向的最大缩放比例。                                                                        |
-| options.preserveAspectRatio | boolean                 |      | `true`  | 是否保持长宽比。                                                                                |
+| options.scaleGrid           | number                  |      | -       | 修正缩放比例为 `scaleGrid` 的整倍数。                                                          |
+| options.minScale            | number                  |      | -       | 最小缩放比例。                                                                                 |
+| options.maxScale            | number                  |      | -       | 最大缩放比例。                                                                                 |
+| options.minScaleX           | number                  |      | -       | X 轴方向的最小缩放比例。                                                                       |
+| options.maxScaleX           | number                  |      | -       | X 轴方向的最大缩放比例。                                                                       |
+| options.minScaleY           | number                  |      | -       | Y 轴方向的最小缩放比例。                                                                       |
+| options.maxScaleY           | number                  |      | -       | Y 轴方向的最大缩放比例。                                                                       |
+| options.preserveAspectRatio | boolean                 |      | `true`  | 是否保持长宽比。                                                                               |
 | options.useCellGeometry     | boolean                 |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 ### getContentArea(...)
 
-```sign
+```ts
 getContentArea(options?: Transform.GetContentAreaOptions): Rectangle
 ```
 
@@ -257,13 +257,13 @@ getContentArea(options?: Transform.GetContentAreaOptions): Rectangle
 
 <span class="tag-param">参数<span>
 
-| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                    |
-| ----------------------- | ------- | :--: | ------- | ------------------------------------------------------------------------------------------------------- |
+| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                  |
+|-------------------------|---------|:----:|---------|-----------------------------------------------------------------------------------------------------|
 | options.useCellGeometry | boolean |      | `false` | 是否使用节点/边的几何信息(Model)来计算画布内容大小，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 ### getContentBBox(...)
 
-```sign
+```ts
 getContentBBox(options?: Transform.GetContentAreaOptions): Rectangle
 ```
 
@@ -271,13 +271,13 @@ getContentBBox(options?: Transform.GetContentAreaOptions): Rectangle
 
 <span class="tag-param">参数<span>
 
-| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                    |
-| ----------------------- | ------- | :--: | ------- | ------------------------------------------------------------------------------------------------------- |
+| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                  |
+|-------------------------|---------|:----:|---------|-----------------------------------------------------------------------------------------------------|
 | options.useCellGeometry | boolean |      | `false` | 是否使用节点/边的几何信息(Model)来计算画布内容大小，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 ### center(...)
 
-```sign
+```ts
 center(options?: CenterOptions): this
 ```
 
@@ -285,14 +285,14 @@ center(options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                             |
-| ----------------- | ----------------- | :--: | ------ | -------------------------------- |
+| 名称              | 类型              | 必选 | 默认值 | 描述                            |
+|-------------------|-------------------|:----:|--------|-------------------------------|
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效     |
 | options.animation | object            |      | -      | 动画选项，在 scroller 画布中生效 |
 
 ### centerPoint(...)
 
-```sign
+```ts
 centerPoint(x?: number | null, y?: number | null, options?: CenterOptions): this
 ```
 
@@ -300,8 +300,8 @@ centerPoint(x?: number | null, y?: number | null, options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                             |
-| ----------------- | ----------------- | :--: | ------ | -------------------------------- |
+| 名称              | 类型              | 必选 | 默认值 | 描述                            |
+|-------------------|-------------------|:----:|--------|-------------------------------|
 | x                 | number            |      | -      | 相对一画布的 x 轴坐标。          |
 | y                 | number            |      | -      | 相对一画布的 y 轴坐标。          |
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效     |
@@ -317,7 +317,7 @@ graph.centerPoint(null, 200, { padding: { left: 100 } });
 
 ### centerContent(...)
 
-```sign
+```ts
 centerContent(options?: PositionContentOptions): this
 ```
 
@@ -325,10 +325,10 @@ centerContent(options?: PositionContentOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称                    | 类型              | 必选 | 默认值  | 描述                                                                                              |
-| ----------------------- | ----------------- | :--: | ------- | ------------------------------------------------------------------------------------------------- |
-| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                      |
-| options.animation       | object            |      | -       | 动画选项，在 scroller 画布中生效                                                                  |
+| 名称                    | 类型              | 必选 | 默认值  | 描述                                                                                            |
+|-------------------------|-------------------|:----:|---------|-----------------------------------------------------------------------------------------------|
+| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                     |
+| options.animation       | object            |      | -       | 动画选项，在 scroller 画布中生效                                                                 |
 | options.useCellGeometry | boolean           |      | `false` | 是否通过节点/边的几何信息(Model)计算内容区域，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 <span class="tag-example">例如<span>
@@ -340,7 +340,7 @@ graph.centerContent({ padding: { left: 100 } });
 
 ### centerCell(...)
 
-```sign
+```ts
 centerCell(options?: CenterOptions): this
 ```
 
@@ -348,8 +348,8 @@ centerCell(options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                             |
-| ----------------- | ----------------- | :--: | ------ | -------------------------------- |
+| 名称              | 类型              | 必选 | 默认值 | 描述                            |
+|-------------------|-------------------|:----:|--------|-------------------------------|
 | cell              | Cell              |  ✓   |        | 节点/边。                        |
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效     |
 | options.animation | object            |      | -      | 动画选项，在 scroller 画布中生效 |
@@ -363,7 +363,7 @@ graph.centerCell(cell, { padding: { left: 100 } });
 
 ### positionContent(...)
 
-```sign
+```ts
 positionContent(pos: Position, options?: PositionContentOptions): this
 ```
 
@@ -371,11 +371,11 @@ positionContent(pos: Position, options?: PositionContentOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称                    | 类型              | 必选 | 默认值  | 描述                                                                                                |
-| ----------------------- | ----------------- | :--: | ------- | --------------------------------------------------------------------------------------------------- |
-| pos                     | Position          |  ✓   |         | 对齐位置。                                                                                          |
-| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                        |
-| options.animation       | object            |      | -       | 动画选项，在 scroller 画布中生效                                                                    |
+| 名称                    | 类型              | 必选 | 默认值  | 描述                                                                                             |
+|-------------------------|-------------------|:----:|---------|------------------------------------------------------------------------------------------------|
+| pos                     | Position          |  ✓   |         | 对齐位置。                                                                                        |
+| options.padding         | number \| Padding |      | -       | 边距，在 scroller 画布中生效                                                                      |
+| options.animation       | object            |      | -       | 动画选项，在 scroller 画布中生效                                                                  |
 | options.useCellGeometry | boolean           |      | `false` | 是否通过节点/边的几何信息(Model)计算内容区域，默认使用浏览器 API 获取每个节点和边(View)的包围盒。。 |
 
 支持的对齐位置有：
@@ -395,7 +395,7 @@ type Position =
 
 ### positionCell(...)
 
-```sign
+```ts
 positionCell(cell: Cell, pos: Direction, options?: CenterOptions): this
 ```
 
@@ -403,8 +403,8 @@ positionCell(cell: Cell, pos: Direction, options?: CenterOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                             |
-| ----------------- | ----------------- | :--: | ------ | -------------------------------- |
+| 名称              | 类型              | 必选 | 默认值 | 描述                            |
+|-------------------|-------------------|:----:|--------|-------------------------------|
 | cell              | Cell              |  ✓   |        | 节点/边。                        |
 | pos               | Position          |  ✓   |        | 对齐位置。                       |
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效     |
@@ -425,7 +425,7 @@ type Position =
 
 ### positionRect(...)
 
-```sign
+```ts
 positionRect(rect: Rectangle.RectangleLike, pos: Direction, options?: CenterOptions): this
 ```
 
@@ -433,8 +433,8 @@ positionRect(rect: Rectangle.RectangleLike, pos: Direction, options?: CenterOpti
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型                    | 必选 | 默认值 | 描述                             |
-| ----------------- | ----------------------- | :--: | ------ | -------------------------------- |
+| 名称              | 类型                    | 必选 | 默认值 | 描述                            |
+|-------------------|-------------------------|:----:|--------|-------------------------------|
 | rect              | Rectangle.RectangleLike |  ✓   |        | 矩形区域。                       |
 | pos               | Position                |  ✓   |        | 对齐位置。                       |
 | options.padding   | number \| Padding       |      | -      | 边距，在 scroller 画布中生效     |
@@ -455,7 +455,7 @@ type Position =
 
 ### positionPoint(...)
 
-```sign
+```ts
 positionPoint(point: Point.PointLike, x: number | string, y: number | string options?: CenterOptions): this
 ```
 
@@ -463,11 +463,11 @@ positionPoint(point: Point.PointLike, x: number | string, y: number | string opt
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型              | 必选 | 默认值 | 描述                             |
-| ----------------- | ----------------- | :--: | ------ | -------------------------------- |
+| 名称              | 类型              | 必选 | 默认值 | 描述                            |
+|-------------------|-------------------|:----:|--------|-------------------------------|
 | point             | Point.PointLike   |  ✓   |        | 被对齐的点。                     |
-| x                 | number \| string  |  ✓   |        | 视口 x 位置，支持百分比和负值。  |
-| y                 | number \| string  |  ✓   |        | 视口 y 位置，支持百分比和负值。  |
+| x                 | number \| string  |  ✓   |        | 视口 x 位置，支持百分比和负值。   |
+| y                 | number \| string  |  ✓   |        | 视口 y 位置，支持百分比和负值。   |
 | options.padding   | number \| Padding |      | -      | 边距，在 scroller 画布中生效     |
 | options.animation | object            |      | -      | 动画选项，在 scroller 画布中生效 |
 

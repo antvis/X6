@@ -3,7 +3,7 @@ import '../index.less'
 
 const container = document.getElementById('container')!
 const graph = new Graph({
-  container: container,
+  container,
   grid: true,
 })
 
@@ -19,6 +19,16 @@ const source = graph.addNode({
       strokeWidth: 1,
     },
   },
+  tools: [
+    {
+      name: 'node-editor',
+      args: {
+        attrs: {
+          backgroundColor: '#EFF4FF',
+        },
+      },
+    },
+  ],
 })
 
 const target = graph.addNode({
@@ -33,6 +43,16 @@ const target = graph.addNode({
       strokeWidth: 1,
     },
   },
+  tools: [
+    {
+      name: 'node-editor',
+      args: {
+        attrs: {
+          backgroundColor: '#EFF4FF',
+        },
+      },
+    },
+  ],
 })
 
 graph.addEdge({
@@ -44,19 +64,14 @@ graph.addEdge({
       strokeWidth: 2,
     },
   },
-})
-
-graph.on('cell:dblclick', ({ cell, e }) => {
-  const isNode = cell.isNode()
-  const name = cell.isNode() ? 'node-editor' : 'edge-editor'
-  cell.removeTool(name)
-  cell.addTools({
-    name,
-    args: {
-      event: e,
-      attrs: {
-        backgroundColor: isNode ? '#EFF4FF' : '#FFF',
+  tools: [
+    {
+      name: 'edge-editor',
+      args: {
+        attrs: {
+          backgroundColor: '#fff',
+        },
       },
     },
-  })
+  ],
 })

@@ -9,7 +9,7 @@ redirect_from:
 
 连接桩布局算法是一个函数具有如下签名的函数，返回连接桩相对于节点的相对位置。例如，某节点在画布的位置是 `{ x: 30, y: 40 }`，如果返回的某个连接桩的位置是 `{ x: 2, y: 4 }`，那么该连接桩渲染到画布后的位置是 `{ x: 32, y: 44 }`。
 
-```sign
+```ts
 type Definition<T> = (
   portsPositionArgs: T[],  // 连接桩中指定的布局算法参数
   elemBBox: Rectangle,     // 节点的包围盒
@@ -338,7 +338,7 @@ Array.from({ length: 36 }).forEach(function (_, index) {
 
 连接桩布局算法是一个函数具有如下签名的函数，返回每个连接桩相对于节点的相对位置。例如，某节点在画布的位置是 `{ x: 30, y: 40 }`，如果返回的某个连接桩的位置是 `{ x: 2, y: 4 }`，那么该连接桩渲染到画布后的位置是 `{ x: 32, y: 44 }`。
 
-```sign
+```ts
 type Definition<T> = (
   portsPositionArgs: T[],  // 连接桩中指定的布局算法参数
   elemBBox: Rectangle,     // 节点的包围盒
@@ -373,7 +373,7 @@ function sin(portsPositionArgs, elemBBox) {
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -382,7 +382,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 

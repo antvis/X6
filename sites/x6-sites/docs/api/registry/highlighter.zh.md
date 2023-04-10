@@ -71,7 +71,7 @@ new Graph({
 
 高亮器是一个具有如下签名的对象，该对象中包含 `highlight` 和 `unhighlight` 两个方法，分别用于高亮和取消高亮元素。
 
-```sign
+```ts
 export interface Definition<T> {
   highlight: (cellView: CellView, magnet: Element, options: T) => void
   unhighlight: (cellView: CellView, magnet: Element, options: T) => void
@@ -90,7 +90,7 @@ export interface Definition<T> {
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -99,7 +99,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 

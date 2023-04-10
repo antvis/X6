@@ -9,7 +9,7 @@ redirect_from:
 
 ## 配置
 
-```sign
+```ts
 new Graph(options: Options)
 ```
 

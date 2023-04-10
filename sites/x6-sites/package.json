@@ -31,7 +31,7 @@
     "@antv/x6-plugin-transform": "^2.x",
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
-    "antd": "^5.0.0",
+    "antd": "^4.4.2",
     "dagre": "^0.8.5",
     "dumi": "^2.1.14",
     "elkjs": "^0.8.2",

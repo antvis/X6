@@ -9,7 +9,7 @@ redirect_from:
 
 连接桩标签布局算法是一个具有如下签名的函数，返回标签相对于连接桩的位置和旋转角度。
 
-```sign
+```ts
 type Definition<T> = (
   portPosition: Point,  // 连接桩的位置
   elemBBox: Rectangle,  // 节点的包围盒
@@ -198,7 +198,7 @@ label: {
 
 连接桩标签定位是一个具有如下签名的函数，返回标签相对于连接桩的位置和旋转角度。
 
-```sign
+```ts
 type Definition<T> = (
   portPosition: Point,  // 连接桩的位置
   elemBBox: Rectangle,  // 节点的包围盒
@@ -232,7 +232,7 @@ function bottomRight(portPosition, elemBBox, args) {
 
 ### register
 
-```sign
+```ts
 /**
  *
  */
@@ -244,7 +244,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 

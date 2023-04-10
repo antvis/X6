@@ -47,12 +47,12 @@ graph.use(
 
 ## 配置
 
-| 属性名  | 类型                                      | 默认值  | 必选 | 描述                                                                                                                                           |
-| ------- | ----------------------------------------- | ------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| enabled | boolean                                   | `false` |      | 是否开启快捷键功能                                                                                                                             |
+| 属性名  | 类型                                      | 默认值  | 必选 | 描述                                                                                                                                       |
+|---------|-------------------------------------------|---------|------|------------------------------------------------------------------------------------------------------------------------------------------|
+| enabled | boolean                                   | `false` |      | 是否开启快捷键功能                                                                                                                         |
 | global  | boolean                                   | `false` |      | 是否为全局键盘事件，设置为 `true` 时键盘事件绑定在 `document` 上，否则绑定在画布容器上。当绑定在画布容器上时，需要容器获得焦点才能触发键盘事件 |
-| format  | `(this:Graph, key: string) => string`     | -       |      | 绑定或解绑键盘事件时，格式化按键字符串                                                                                                         |
-| guard   | `(this:Graph,e:KeyboardEvent) => boolean` | -       |      | 判断一个键盘事件是否应该被处理，返回 `false` 时对应的键盘事件被忽略                                                                            |
+| format  | `(this:Graph, key: string) => string`     | -       |      | 绑定或解绑键盘事件时，格式化按键字符串                                                                                                      |
+| guard   | `(this:Graph,e:KeyboardEvent) => boolean` | -       |      | 判断一个键盘事件是否应该被处理，返回 `false` 时对应的键盘事件被忽略                                                                         |
 
 `format` 和 `guard` 配置使用如下：
 
@@ -86,7 +86,7 @@ graph.use(
 
 ### graph.bindKey(...)
 
-```sign
+```ts
 bindKey(
   keys: string | string[],
   callback: (e: KeyboardEvent) => void,
@@ -98,7 +98,7 @@ bindKey(
 
 ### graph.unbindKey(...)
 
-```sign
+```ts
 unbindKey(
   keys: string | string[],
   action?: 'keypress' | 'keydown' | 'keyup',
@@ -109,7 +109,7 @@ unbindKey(
 
 ### graph.clearKeys()
 
-```sign
+```ts
 clearKeys(): this
 ```
 
@@ -117,7 +117,7 @@ clearKeys(): this
 
 ### graph.triggerKey()
 
-```sign
+```ts
 triggerKey(
   keys: string,
   action?: 'keypress' | 'keydown' | 'keyup',
@@ -128,7 +128,7 @@ triggerKey(
 
 ### graph.isKeyboardEnabled()
 
-```sign
+```ts
 isKeyboardEnabled(): boolean
 ```
 
@@ -136,7 +136,7 @@ isKeyboardEnabled(): boolean
 
 ### graph.enableKeyboard()
 
-```sign
+```ts
 enableKeyboard(): this
 ```
 
@@ -144,7 +144,7 @@ enableKeyboard(): this
 
 ### graph.disableKeyboard()
 
-```sign
+```ts
 disableKeyboard(): this
 ```
 
@@ -152,12 +152,12 @@ disableKeyboard(): this
 
 ### graph.toggleKeyboard(...)
 
-```sign
+```ts
 toggleKeyboard(enabled?: boolean): this
 ```
 
 切换键盘事件的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                             |
-| ------- | ------- | :--: | ------ | ------------------------------------------------ |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                           |
+|---------|---------|:----:|--------|----------------------------------------------|
 | enabled | boolean |      | -      | 是否启用键盘事件，缺省时切换键盘事件的启用状态。 |

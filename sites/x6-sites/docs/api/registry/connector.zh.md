@@ -166,7 +166,7 @@ graph.addEdge({
 
 连接器是一个具有如下签名的函数，返回 `Path` 对象或序列化后的字符串。
 
-```sign
+```ts
 export type Definition<T> = (
   this: EdgeView,                 // 边的视图
   sourcePoint: Point.PointLike,   // 起点
@@ -190,7 +190,7 @@ export type Definition<T> = (
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -199,7 +199,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 
