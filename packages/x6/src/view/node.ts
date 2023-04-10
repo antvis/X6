@@ -506,7 +506,14 @@ export class NodeView<
   ) {
     const port = this.findAttr('port', e.target)
     if (port) {
+      const originType = e.type
+      if (name === 'node:port:mouseenter') {
+        e.type = 'mouseenter'
+      } else if (name === 'node:port:mouseleave') {
+        e.type = 'mouseleave'
+      }
       this.notify(name, this.getPortEventArgs(e, port, pos))
+      e.type = originType
     }
   }
 
@@ -589,12 +596,18 @@ export class NodeView<
   onMouseOver(e: Dom.MouseOverEvent) {
     super.onMouseOver(e)
     this.notify('node:mouseover', this.getEventArgs(e))
+    // mock mouseenter event,so we can get correct trigger time when move mouse from node to port
+    // wo also need to change e.type for use get correct event args
+    this.notifyPortEvent('node:port:mouseenter', e)
     this.notifyPortEvent('node:port:mouseover', e)
   }
 
   onMouseOut(e: Dom.MouseOutEvent) {
     super.onMouseOut(e)
     this.notify('node:mouseout', this.getEventArgs(e))
+    // mock mouseleave event,so we can get correct trigger time when move mouse from port to node
+    // wo also need to change e.type for use get correct event args
+    this.notifyPortEvent('node:port:mouseleave', e)
     this.notifyPortEvent('node:port:mouseout', e)
   }
 
@@ -602,13 +615,11 @@ export class NodeView<
     this.updateClassName(e)
     super.onMouseEnter(e)
     this.notify('node:mouseenter', this.getEventArgs(e))
-    this.notifyPortEvent('node:port:mouseenter', e)
   }
 
   onMouseLeave(e: Dom.MouseLeaveEvent) {
     super.onMouseLeave(e)
     this.notify('node:mouseleave', this.getEventArgs(e))
-    this.notifyPortEvent('node:port:mouseleave', e)
   }
 
   onMouseWheel(e: Dom.EventObject, x: number, y: number, delta: number) {
