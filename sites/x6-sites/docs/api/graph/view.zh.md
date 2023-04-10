@@ -40,7 +40,7 @@ redirect_from:
 
 ### onPortRendered
 
-```sign
+```ts
 (
   this: Graph,
   args: {
@@ -58,8 +58,8 @@ redirect_from:
 
 当某个连接桩渲染完成时触发的回调,参数如下：
 
-| 名称             | 类型             | 非空 | 描述                                     |
-| ---------------- | ---------------- | :--: | ---------------------------------------- |
+| 名称             | 类型             | 非空 | 描述                                    |
+|------------------|------------------|:----:|---------------------------------------|
 | node             | Node             |  ✓   | 节点实例。                               |
 | port             | Port             |  ✓   | 连接桩选项。                             |
 | container        | Element          |  ✓   | 连接桩的容器元素。                       |
@@ -94,7 +94,7 @@ const graph = new Graph({
 
 ### onEdgeLabelRendered
 
-```sign
+```ts
 (
   this: Graph,
   args: {
@@ -109,8 +109,8 @@ const graph = new Graph({
 当边的文本标签渲染完成时触发的回调，参数如下：
 
 
-| 名称      | 类型             | 非空 | 描述                                   |
-| --------- | ---------------- | :--: | -------------------------------------- |
+| 名称      | 类型             | 非空 | 描述                                  |
+|-----------|------------------|:----:|-------------------------------------|
 | edge      | Edge             |  ✓   | 边实例。                               |
 | label     | Edge.Label       |  ✓   | 文本标签选项。                         |
 | container | Element          |  ✓   | 文本标签容器。                         |
@@ -180,7 +180,7 @@ const graph = new Graph({
 
 ### createCellView
 
-```sign
+```ts
 (
   this: Graph,
   cell: Cell,
@@ -193,7 +193,7 @@ const graph = new Graph({
 
 ### findView(...)
 
-```sign
+```ts
 findView(ref: Cell | Element): CellView | null
 ```
 
@@ -201,7 +201,7 @@ findView(ref: Cell | Element): CellView | null
 
 ### findViewByCell(...)
 
-```sign
+```ts
 findViewByCell(cellId: string | number): CellView | null
 findViewByCell(cell: Cell | null): CellView | null
 ```
@@ -210,7 +210,7 @@ findViewByCell(cell: Cell | null): CellView | null
 
 ### findViewByElem(...)
 
-```sign
+```ts
 findViewByElem(elem: string | Element | undefined | null): CellView | null
 ```
 
@@ -218,7 +218,7 @@ findViewByElem(elem: string | Element | undefined | null): CellView | null
 
 ### findViewsFromPoint(...)
 
-```sign
+```ts
 findViewsFromPoint(x: number, y: number): CellView[]
 findViewsFromPoint(p: Point.PointLike): CellView[]
 ```
@@ -227,7 +227,7 @@ findViewsFromPoint(p: Point.PointLike): CellView[]
 
 ### findViewsInArea(...)
 
-```sign
+```ts
 findViewsInArea(
   x: number,
   y: number,
@@ -245,7 +245,7 @@ findViewsInArea(
 
 ### findViews(...)
 
-```sign
+```ts
 findViews(ref: Point.PointLike | Rectangle.RectangleLike): CellView[]
 ```
 

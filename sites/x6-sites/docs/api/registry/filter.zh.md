@@ -232,7 +232,7 @@ export function blur(args: BlurArgs = {}) {
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -247,7 +247,7 @@ Graph.registerFilter("blur", blur);
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 

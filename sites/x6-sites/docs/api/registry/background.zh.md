@@ -122,7 +122,7 @@ const graph = new Graph({
 
 背景重复方式的定义是一个具有如下签名的函数，返回一个 Canvas 对象。
 
-```sign
+```ts
 export interface Options {
   color?: string
   image?: string
@@ -157,7 +157,7 @@ export type Definition<T extends CommonOptions = CommonOptions> = (
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -166,7 +166,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 

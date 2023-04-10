@@ -13,7 +13,7 @@ redirect_from:
 
 我们可以调用 [`cell.transition(...)`](/zh/docs/api/model/cell#transition) 方法，来将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值，并返回 `stop` 方法，调用该方法时立即停止该动画。
 
-```sign
+```ts
 transition(
   path: string | string[],
   target: Animation.TargetValue,
@@ -95,7 +95,7 @@ transition(
 
 动画开始后可以调用 [`cell.stopTransition(...)`](/zh/docs/api/model/cell#stoptransition) 方法来停止指定路径上的动画。
 
-```sign
+```ts
 stopTransition(
   path: string | string[],
   options?: Animation.StopOptions<T>,
@@ -156,7 +156,7 @@ graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
 
 可以通过 `CellView` 上的 `animate()` 方法指定元素的某个属性动画变化过程，我们需要制定动画的持续时间，以及属性值的初始值和变化后的值。返回停止该动画的方法。
 
-```sign
+```ts
 view.animate(
   elem: SVGElement | string,
   options: Dom.AnimationOptions,
@@ -202,7 +202,7 @@ if (view) {
 
 通过 `CellView` 上的 `animateTransform()` 方法对元素的运动和变换有更多的控制，它可以指定图形的变换、缩放、旋转和扭曲等。返回停止该动画的方法。
 
-```sign
+```ts
 view.animateTransform(
   elem: SVGElement | string,
   options: Dom.AnimationOptions,
@@ -253,7 +253,7 @@ if (view) {
 
 我们在 `Dom` 命名空间中提供了一个工具方法 `Dom.animateAlongPath()` 来触发一个沿 SVGPathElement 路径元素运动的动画。
 
-```sign
+```ts
 Dom.animateAlongPath(
   elem: SVGElement,
   options: { [name: string]: string },
@@ -271,7 +271,7 @@ Dom.animateAlongPath(
 
 也可以使用 `Vector.create(...)` 方法创建一个 Vector 对象，然后调用该对象上的 `animateAlongPath` 方法来使该 Vector 对象沿指定的路径运动。
 
-```sign
+```ts
 Vector.prototype.animateAlongPath(
   options: { [name: string]: string }, 
   path: SVGPathElement
@@ -303,7 +303,7 @@ if (view) {
 
 我们可以调用 EdgeView 上的 [`sendToken(...)`](/zh/docs/api/view/edgeview#sendtoken) 方法来触发一个沿边运动的动画，同时返回一个停止该动画的方法。
 
-```sign
+```ts
 sendToken(
   token: SVGElement | string,
   options?:
