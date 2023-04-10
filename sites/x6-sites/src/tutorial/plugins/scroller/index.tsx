@@ -67,9 +67,7 @@ export default class Example extends React.Component {
   }
 
   renderGraph(options: State | null = null) {
-    let offset
     if (this.graph) {
-      offset = this.graph.getScrollbarPosition()
       this.graph.dispose()
     }
 
@@ -97,12 +95,7 @@ export default class Example extends React.Component {
       item.y = current!.y
     })
 
-    if (offset) {
-      graph.setScrollbarPosition(offset.left, offset.top)
-    } else {
-      graph.center()
-    }
-
+    graph.centerContent()
     this.graph = graph
   }
 

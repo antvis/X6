@@ -92,7 +92,7 @@ const graph = new Graph({
 
 ### isMouseWheelEnabled()
 
-```sign
+```ts
 isMouseWheelEnabled(): boolean
 ```
 
@@ -100,7 +100,7 @@ isMouseWheelEnabled(): boolean
 
 ### enableMouseWheel()
 
-```sign
+```ts
 enableMouseWheel(): this
 ```
 
@@ -108,7 +108,7 @@ enableMouseWheel(): this
 
 ### disableMouseWheel()
 
-```sign
+```ts
 disableMouseWheel(): this
 ```
 
@@ -116,7 +116,7 @@ disableMouseWheel(): this
 
 ### toggleMouseWheel(...)
 
-```sign
+```ts
 toggleMouseWheel(enabled?: boolean): this
 ```
 
@@ -124,6 +124,6 @@ toggleMouseWheel(enabled?: boolean): this
 
 <span class="tag-param">参数<span>
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                                             |
-| ------- | ------- | :--: | ------ | ---------------------------------------------------------------- |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                                           |
+|---------|---------|:----:|--------|--------------------------------------------------------------|
 | enabled | boolean |      | -      | 是否启用鼠标滚轮缩放画布，缺省时切换鼠标滚轮缩放画布的启用状态。 |

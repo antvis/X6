@@ -11,21 +11,21 @@ Edge 是边的基类，继承自 [Cell](/zh/docs/api/model/cell)，并定义了�
 
 ## constructor
 
-```sign
+```ts
 constructor(metadata?: Edge.Metadata)
 ```
 
 其中 `Edge.Metadata` 是创建节点的选项，除了从 Cell [继承](/zh/docs/api/model/cell#constructor)的 [`markup`](/zh/docs/api/model/cell#markup)、[`attrs`](/zh/docs/api/model/cell#attrs-1)、[`zIndex`](/zh/docs/api/model/cell#zindex) 等选项外，还支持以下选项。
 
-| 选项         | 类型                | 默认值 | 必选 | 描述                         |
-| ------------ | ------------------- | ------ | :--: | ---------------------------- |
+| 选项         | 类型                | 默认值 | 必选 | 描述                       |
+|--------------|---------------------|--------|:----:|--------------------------|
 | source       | TerminalData        |        |      | 起点或起始节点、连接桩信息。 |
 | target       | TerminalData        |        |      | 终点或终止节点、连接桩信息。 |
-| vertices     | Point.PointLike[]   |        |      | 路径点。                     |
-| router       | RouterData          |        |      | 路由。                       |
-| connector    | ConnectorData       |        |      | 连接器。                     |
-| labels       | Label[] \| string[] |        |      | 标签。                       |
-| defaultLabel | Label               |        |      | 默认标签。                   |
+| vertices     | Point.PointLike[]   |        |      | 路径点。                    |
+| router       | RouterData          |        |      | 路由。                      |
+| connector    | ConnectorData       |        |      | 连接器。                    |
+| labels       | Label[] \| string[] |        |      | 标签。                      |
+| defaultLabel | Label               |        |      | 默认标签。                  |
 
 ### source 和 target
 
@@ -125,14 +125,14 @@ const edge = new Shape.Edge({
 
 我们默认提供了以下几种路由。
 
-| 路由名称  | 说明                                                                                                                                             |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| normal    | [默认路由](/zh/docs/api/registry/router#normal)，原样返回路径点。                                                                                |
-| orth      | [正交路由](/zh/docs/api/registry/router#orth)，由水平或垂直的正交线段组成。                                                                      |
-| oneSide   | [受限正交路由](/zh/docs/api/registry/router#oneside)，由受限的三段水平或垂直的正交线段组成。                                                     |
-| manhattan | [智能正交路由](/zh/docs/api/registry/router#manhattan)，由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。                         |
+| 路由名称  | 说明                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------|
+| normal    | [默认路由](/zh/docs/api/registry/router#normal)，原样返回路径点。                                                                            |
+| orth      | [正交路由](/zh/docs/api/registry/router#orth)，由水平或垂直的正交线段组成。                                                                  |
+| oneSide   | [受限正交路由](/zh/docs/api/registry/router#oneside)，由受限的三段水平或垂直的正交线段组成。                                                 |
+| manhattan | [智能正交路由](/zh/docs/api/registry/router#manhattan)，由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。                        |
 | metro     | [智能地铁线路由](/zh/docs/api/registry/router#metro)，由水平或垂直的正交线段和斜角线段组成，类似地铁轨道图，并自动避开路径上的其他节点（障碍）。 |
-| er        | [实体关系路由](/zh/docs/api/registry/router#er)，由 `Z` 字形的斜角线段组成。                                                                     |
+| er        | [实体关系路由](/zh/docs/api/registry/router#er)，由 `Z` 字形的斜角线段组成。                                                                 |
 
 可以这样指定路由名称 `name` 和路由参数 `args`：
 
@@ -175,12 +175,12 @@ const edge = new Shape.Edge({
 
 我们默认提供了以下几种连接器。
 
-| 连接器名称 | 说明                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| normal     | [简单连接器](/zh/docs/api/registry/connector#normal)，用直线连接起点、路由点和终点。                                      |
-| smooth     | [平滑连接器](/zh/docs/api/registry/connector#smooth)，用三次贝塞尔曲线线连接起点、路由点和终点。                          |
-| rounded    | [圆角连接器](/zh/docs/api/registry/connector#rounded)，用直线连接起点、路由点和终点，并在线段连接处用圆弧链接（倒圆角）。 |
-| jumpover   | [跳线连接器](/zh/docs/api/registry/connector#jumpover)，用直线连接起点、路由点和终点，并在边与边的交叉处用跳线符号链接。  |
+| 连接器名称 | 说明                                                                                                                 |
+|------------|--------------------------------------------------------------------------------------------------------------------|
+| normal     | [简单连接器](/zh/docs/api/registry/connector#normal)，用直线连接起点、路由点和终点。                                    |
+| smooth     | [平滑连接器](/zh/docs/api/registry/connector#smooth)，用三次贝塞尔曲线线连接起点、路由点和终点。                        |
+| rounded    | [圆角连接器](/zh/docs/api/registry/connector#rounded)，用直线连接起点、路由点和终点，并在线段连接处用圆弧链接（倒圆角）。  |
+| jumpover   | [跳线连接器](/zh/docs/api/registry/connector#jumpover)，用直线连接起点、路由点和终点，并在边与边的交叉处用跳线符号链接。 |
 
 可以这样指定连接器名称 `name` 和路由参数 `args`：
 
@@ -227,7 +227,7 @@ const edge = new Shape.Edge({
 
 #### isEdge()
 
-```sign
+```ts
 isEdge(): true
 ```
 
@@ -235,7 +235,7 @@ isEdge(): true
 
 #### getBBox()
 
-```sign
+```ts
 getBBox(): Rectangle
 ```
 
@@ -247,7 +247,7 @@ getBBox(): Rectangle
 
 #### getPolyline()
 
-```sign
+```ts
 getPolyline(): Polyline
 ```
 
@@ -255,7 +255,7 @@ getPolyline(): Polyline
 
 #### hasLoop(...)
 
-```sign
+```ts
 hasLoop(options: { deep?: boolean }): boolean
 ```
 
@@ -263,8 +263,8 @@ hasLoop(options: { deep?: boolean }): boolean
 
 <span class="tag-param">参数<span>
 
-| 名称         | 类型    | 必选 | 默认值  | 描述               |
-| ------------ | ------- | :--: | ------- | ------------------ |
+| 名称         | 类型    | 必选 | 默认值  | 描述              |
+|--------------|---------|:----:|---------|-----------------|
 | options.deep | boolean |      | `false` | 是否进行嵌套检查。 |
 
 - 当 `options.deep` 为 `false` 时，表示仅当起始节点和终止节点为同一节点时才是循环连接。
@@ -274,7 +274,7 @@ hasLoop(options: { deep?: boolean }): boolean
 
 #### getSource()
 
-```sign
+```ts
 getSource(): Edge.TerminalData
 ```
 
@@ -282,7 +282,7 @@ getSource(): Edge.TerminalData
 
 #### getSourceCell()
 
-```sign
+```ts
 getSourceCell(): Cell | null
 ```
 
@@ -290,7 +290,7 @@ getSourceCell(): Cell | null
 
 #### getSourceNode()
 
-```sign
+```ts
 getSourceNode(): Node | null
 ```
 
@@ -298,7 +298,7 @@ getSourceNode(): Node | null
 
 #### getSourceCellId()
 
-```sign
+```ts
 getSourceCellId(): string | null
 ```
 
@@ -306,7 +306,7 @@ getSourceCellId(): string | null
 
 #### getSourcePortId()
 
-```sign
+```ts
 getSourcePortId(): string | null
 ```
 
@@ -314,7 +314,7 @@ getSourcePortId(): string | null
 
 #### getSourcePoint()
 
-```sign
+```ts
 getSourcePoint(): Point.PointLike | null
 ```
 
@@ -322,7 +322,7 @@ getSourcePoint(): Point.PointLike | null
 
 #### setSource(...)
 
-```sign
+```ts
 /**
  * 链接到节点。
  */
@@ -358,7 +358,7 @@ setSource(args: Edge.TerminalData, options?: Edge.SetOptions): this
 
 #### getTarget()
 
-```sign
+```ts
 getTarget(): Edge.TerminalData
 ```
 
@@ -366,7 +366,7 @@ getTarget(): Edge.TerminalData
 
 #### getTargetCell()
 
-```sign
+```ts
 getTargetCell(): Cell | null
 ```
 
@@ -374,7 +374,7 @@ getTargetCell(): Cell | null
 
 #### getTargetNode()
 
-```sign
+```ts
 getTargetNode(): Node | null
 ```
 
@@ -382,7 +382,7 @@ getTargetNode(): Node | null
 
 #### getTargetCellId()
 
-```sign
+```ts
 getTargetCellId(): string | null
 ```
 
@@ -390,7 +390,7 @@ getTargetCellId(): string | null
 
 #### getTargetPortId()
 
-```sign
+```ts
 getTargetPortId(): string | null
 ```
 
@@ -398,7 +398,7 @@ getTargetPortId(): string | null
 
 #### getTargetPoint()
 
-```sign
+```ts
 getTargetPoint(): Point.PointLike | null
 ```
 
@@ -406,7 +406,7 @@ getTargetPoint(): Point.PointLike | null
 
 #### setTarget()
 
-```sign
+```ts
 /**
  * 链接到节点。
  */
@@ -442,7 +442,7 @@ setTarget(args: Edge.TerminalData, options?: Edge.SetOptions): this
 
 #### disconnect(...)
 
-```sign
+```ts
 disconnect(options?: Edge.SetOptions)
 ```
 
@@ -450,16 +450,16 @@ disconnect(options?: Edge.SetOptions)
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                                       |
-| ---------------- | ------- | :--: | ------- | -------------------------------------------------------------------------- |
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                                      |
+|------------------|---------|:----:|---------|-------------------------------------------------------------------------|
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:source'` 和 `'change:target'` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                   |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                    |
 
 ### 路径点 Vertice
 
 #### getVertices()
 
-```sign
+```ts
 getVertices(): Point.PointLike[]
 ```
 
@@ -467,7 +467,7 @@ getVertices(): Point.PointLike[]
 
 #### setVertices(...)
 
-```sign
+```ts
 setVertices(
   vertices: Point.PointLike | Point.PointLike[],
   options?: Edge.SetOptions,
@@ -478,15 +478,15 @@ setVertices(
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                                 | 必选 | 默认值  | 描述                                                    |
-| ---------------- | ------------------------------------ | :--: | ------- | ------------------------------------------------------- |
+| 名称             | 类型                                 | 必选 | 默认值  | 描述                                                   |
+|------------------|--------------------------------------|:----:|---------|------------------------------------------------------|
 | vertices         | Point.PointLike \| Point.PointLike[] |  ✓   |         | 路径点。                                                |
 | options.silent   | boolean                              |      | `false` | 为 `true` 时不触发 `'change:vertices'` 事件和画布重绘。 |
-| options...others | object                               |      |         | 其他自定义键值对，可以在事件回调中使用。                |
+| options...others | object                               |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 #### insertVertex(...)
 
-```sign
+```ts
 insertVertex(
   vertice: Point.PointLike,
   index?: number,
@@ -498,16 +498,16 @@ insertVertex(
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型            | 必选 | 默认值  | 描述                                                    |
-| ---------------- | --------------- | :--: | ------- | ------------------------------------------------------- |
+| 名称             | 类型            | 必选 | 默认值  | 描述                                                   |
+|------------------|-----------------|:----:|---------|------------------------------------------------------|
 | vertice          | Point.PointLike |  ✓   |         | 路径点。                                                |
-| index            | number          |      |         | 插入位置，默认插入到路径点数组的末尾。                  |
+| index            | number          |      |         | 插入位置，默认插入到路径点数组的末尾。                   |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触发 `'change:vertices'` 事件和画布重绘。 |
-| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                |
+| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 #### appendVertex(...)
 
-```sign
+```ts
 appendVertex(vertex: Point.PointLike, options?: Edge.SetOptions): this
 ```
 
@@ -515,15 +515,15 @@ appendVertex(vertex: Point.PointLike, options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型            | 必选 | 默认值  | 描述                                                    |
-| ---------------- | --------------- | :--: | ------- | ------------------------------------------------------- |
+| 名称             | 类型            | 必选 | 默认值  | 描述                                                   |
+|------------------|-----------------|:----:|---------|------------------------------------------------------|
 | vertex           | Point.PointLike |  ✓   |         | 路径点。                                                |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触发 `'change:vertices'` 事件和画布重绘。 |
-| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                |
+| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 #### getVertexAt(...)
 
-```sign
+```ts
 getVertexAt(index: number): Point.PointLike | null
 ```
 
@@ -531,13 +531,13 @@ getVertexAt(index: number): Point.PointLike | null
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型   | 必选 | 默认值 | 描述       |
-| ----- | ------ | :--: | ------ | ---------- |
+| 名称  | 类型   | 必选 | 默认值 | 描述      |
+|-------|--------|:----:|--------|---------|
 | index | number |  ✓   |        | 索引位置。 |
 
 #### setVertexAt(...)
 
-```sign
+```ts
 setVertexAt(
   index: number,
   vertice: Point.PointLike,
@@ -549,16 +549,16 @@ setVertexAt(
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型            | 必选 | 默认值  | 描述                                                    |
-| ---------------- | --------------- | :--: | ------- | ------------------------------------------------------- |
+| 名称             | 类型            | 必选 | 默认值  | 描述                                                   |
+|------------------|-----------------|:----:|---------|------------------------------------------------------|
 | index            | number          |  ✓   |         | 索引位置。                                              |
 | vertice          | Point.PointLike |  ✓   |         | 路径点。                                                |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触发 `'change:vertices'` 事件和画布重绘。 |
-| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                |
+| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 #### removeVertexAt(...)
 
-```sign
+```ts
 removeVertexAt(index: number, options?: Edge.SetOptions): this
 ```
 
@@ -566,17 +566,17 @@ removeVertexAt(index: number, options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                    |
-| ---------------- | ------- | :--: | ------- | ------------------------------------------------------- |
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
+|------------------|---------|:----:|---------|------------------------------------------------------|
 | index            | number  |  ✓   |         | 索引位置。                                              |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:vertices'` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
 ### 路由 Router
 
 #### getRouter()
 
-```sign
+```ts
 getRouter(): Edge.RouterData
 ```
 
@@ -584,7 +584,7 @@ getRouter(): Edge.RouterData
 
 #### setRouter(...)
 
-```sign
+```ts
 setRouter(name: string, args?: KeyValue, options?: Edge.SetOptions): this
 setRouter(router: Edge.RouterData, options?: Edge.SetOptions): this
 ```
@@ -593,17 +593,17 @@ setRouter(router: Edge.RouterData, options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型            | 必选 | 默认值  | 描述                                                  |
-| ---------------- | --------------- | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型            | 必选 | 默认值  | 描述                                                 |
+|------------------|-----------------|:----:|---------|----------------------------------------------------|
 | name             | string          |  ✓   |         | 路由名称。                                            |
 | args             | KeyValue        |      |         | 路由参数。                                            |
 | router           | Edge.RouterData |  ✓   |         | 路由。                                                |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触发 `'change:router'` 事件和画布重绘。 |
-| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。               |
 
 #### removeRouter(...)
 
-```sign
+```ts
 removeRouter(options?: Edge.SetOptions): this
 ```
 
@@ -611,16 +611,16 @@ removeRouter(options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                  |
-| ---------------- | ------- | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                 |
+|------------------|---------|:----:|---------|----------------------------------------------------|
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:router'` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。               |
 
 ### 连接器 Connector
 
 #### getConnector()
 
-```sign
+```ts
 getConnector(): Edge.ConnectorData
 ```
 
@@ -628,7 +628,7 @@ getConnector(): Edge.ConnectorData
 
 #### setConnector(...)
 
-```sign
+```ts
 setConnector(name: string, args?: KeyValue, options?: Edge.SetOptions): this
 setConnector(connector: Edge.ConnectorData, options?: Edge.SetOptions): this
 ```
@@ -637,17 +637,17 @@ setConnector(connector: Edge.ConnectorData, options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型               | 必选 | 默认值  | 描述                                                     |
-| ---------------- | ------------------ | :--: | ------- | -------------------------------------------------------- |
+| 名称             | 类型               | 必选 | 默认值  | 描述                                                    |
+|------------------|--------------------|:----:|---------|-------------------------------------------------------|
 | name             | string             |  ✓   |         | 连接器名称。                                             |
 | args             | KeyValue           |      |         | 连接器参数。                                             |
 | connector        | Edge.ConnectorData |  ✓   |         | 连接器。                                                 |
 | options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `'change:connector'` 事件和画布重绘。 |
-| options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
+| options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                  |
 
 #### removeConnector(...)
 
-```sign
+```ts
 removeConnector(options?: Edge.SetOptions): this
 ```
 
@@ -655,16 +655,16 @@ removeConnector(options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                     |
-| ---------------- | ------- | :--: | ------- | -------------------------------------------------------- |
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                    |
+|------------------|---------|:----:|---------|-------------------------------------------------------|
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:connector'` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                  |
 
 ### 标签 Label
 
 #### getDefaultLabel()
 
-```sign
+```ts
 getDefaultLabel(): Edge.Label
 ```
 
@@ -672,7 +672,7 @@ getDefaultLabel(): Edge.Label
 
 #### getLabels()
 
-```sign
+```ts
 getLabels(): Edge.Label[]
 ```
 
@@ -680,7 +680,7 @@ getLabels(): Edge.Label[]
 
 #### setLabels(...)
 
-```sign
+```ts
 setLabels(
   labels: Edge.Label | Edge.Label[] | string | string[],
   options?: Edge.SetOptions,
@@ -691,15 +691,15 @@ setLabels(
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                                             | 必选 | 默认值  | 描述                                                  |
-| ---------------- | ------------------------------------------------ | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型                                             | 必选 | 默认值  | 描述                                                 |
+|------------------|--------------------------------------------------|:----:|---------|----------------------------------------------------|
 | labels           | Edge.Label \| Edge.Label[] \| string \| string[] |  ✓   |         | 标签或标签数组。                                      |
 | options.silent   | boolean                                          |      | `false` | 为 `true` 时不触发 `'change:labels'` 事件和画布重绘。 |
-| options...others | object                                           |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object                                           |      |         | 其他自定义键值对，可以在事件回调中使用。               |
 
 #### insertLabel(...)
 
-```sign
+```ts
 insertLabel(
   label: Edge.Label | string,
   index?: number,
@@ -711,16 +711,16 @@ insertLabel(
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                 | 必选 | 默认值  | 描述                                                  |
-| ---------------- | -------------------- | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型                 | 必选 | 默认值  | 描述                                                 |
+|------------------|----------------------|:----:|---------|----------------------------------------------------|
 | label            | Edge.Label \| string |  ✓   |         | 标签。                                                |
-| index            | number               |      |         | 插入的位置，缺省时插入到标签数组的末尾。              |
+| index            | number               |      |         | 插入的位置，缺省时插入到标签数组的末尾。               |
 | options.silent   | boolean              |      | `false` | 为 `true` 时不触发 `'change:labels'` 事件和画布重绘。 |
-| options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。               |
 
 #### appendLabel(...)
 
-```sign
+```ts
 appendLabel(label: Edge.Label | string, options?: Edge.SetOptions): this
 ```
 
@@ -728,15 +728,15 @@ appendLabel(label: Edge.Label | string, options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                 | 必选 | 默认值  | 描述                                                  |
-| ---------------- | -------------------- | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型                 | 必选 | 默认值  | 描述                                                 |
+|------------------|----------------------|:----:|---------|----------------------------------------------------|
 | label            | Edge.Label \| string |  ✓   |         | 标签。                                                |
 | options.silent   | boolean              |      | `false` | 为 `true` 时不触发 `'change:labels'` 事件和画布重绘。 |
-| options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。               |
 
 #### getLabelAt(...)
 
-```sign
+```ts
 getLabelAt(index: number): Edge.Label | null
 ```
 
@@ -744,13 +744,13 @@ getLabelAt(index: number): Edge.Label | null
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型   | 必选 | 默认值 | 描述       |
-| ----- | ------ | :--: | ------ | ---------- |
+| 名称  | 类型   | 必选 | 默认值 | 描述      |
+|-------|--------|:----:|--------|---------|
 | index | number |  ✓   |        | 索引位置。 |
 
 #### setLabelAt(...)
 
-```sign
+```ts
 setLabelAt(
   index: number,
   label: Edge.Label | string,
@@ -762,16 +762,16 @@ setLabelAt(
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                 | 必选 | 默认值  | 描述                                                  |
-| ---------------- | -------------------- | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型                 | 必选 | 默认值  | 描述                                                 |
+|------------------|----------------------|:----:|---------|----------------------------------------------------|
 | index            | number               |  ✓   |         | 索引位置。                                            |
 | label            | Edge.Label \| string |  ✓   |         | 标签。                                                |
 | options.silent   | boolean              |      | `false` | 为 `true` 时不触发 `'change:labels'` 事件和画布重绘。 |
-| options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。               |
 
 #### removeLabelAt(...)
 
-```sign
+```ts
 removeLabelAt(index: number, options?: Edge.SetOptions): this
 ```
 
@@ -779,8 +779,8 @@ removeLabelAt(index: number, options?: Edge.SetOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                  |
-| ---------------- | ------- | :--: | ------- | ----------------------------------------------------- |
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                 |
+|------------------|---------|:----:|---------|----------------------------------------------------|
 | index            | number  |  ✓   |         | 索引位置。                                            |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:labels'` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。               |

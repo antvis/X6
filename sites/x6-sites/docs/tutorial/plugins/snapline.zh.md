@@ -47,15 +47,15 @@ graph.use(
 
 ## 配置
 
-| 属性名    | 类型    | 默认值  | 必选 | 描述                                                                                                |
-| --------- | ------- | ------- | ---- | --------------------------------------------------------------------------------------------------- |
-| enabled   | boolean | `false` |      | 是否开启对齐线功能                                                                                  |
-| className | string  | -       |      | 附加样式名，用于定制对齐线样式                                                                      |
-| tolerance | number  | 10      |      | 对齐精度，即移动节点时与目标位置的距离小于 `tolerance` 时触发显示对齐线                             |
-| sharp     | boolean | `false` |      | 是否显示截断的对齐线                                                                                |
-| resizing  | boolean | `false` |      | 改变节点大小时是否触发对齐线                                                                        |
+| 属性名    | 类型    | 默认值  | 必选 | 描述                                                                                           |
+|-----------|---------|---------|------|----------------------------------------------------------------------------------------------|
+| enabled   | boolean | `false` |      | 是否开启对齐线功能                                                                             |
+| className | string  | -       |      | 附加样式名，用于定制对齐线样式                                                                  |
+| tolerance | number  | 10      |      | 对齐精度，即移动节点时与目标位置的距离小于 `tolerance` 时触发显示对齐线                         |
+| sharp     | boolean | `false` |      | 是否显示截断的对齐线                                                                           |
+| resizing  | boolean | `false` |      | 改变节点大小时是否触发对齐线                                                                   |
 | clean     | boolean | `true`  |      | 如果为 `true`，则在 3s 后清除对齐线，为 `false`，不会清除，如果为数字(ms)，则在指定时间后清除对齐线 |
-| filter    | Filter  | -       |      | 节点过滤器                                                                                          |
+| filter    | Filter  | -       |      | 节点过滤器                                                                                     |
 
 上面的 Filter 类型比较复杂，支持以下三种类型：
 
@@ -67,7 +67,7 @@ graph.use(
 
 ### graph.isSnaplineEnabled()
 
-```sign
+```ts
 isSnaplineEnabled(): boolean
 ```
 
@@ -75,7 +75,7 @@ isSnaplineEnabled(): boolean
 
 ### graph.enableSnapline()
 
-```sign
+```ts
 enableSnapline(): this
 ```
 
@@ -83,7 +83,7 @@ enableSnapline(): this
 
 ### graph.disableSnapline()
 
-```sign
+```ts
 disableSnapline(): this
 ```
 
@@ -91,19 +91,19 @@ disableSnapline(): this
 
 ### graph.toggleSnapline(...)
 
-```sign
+```ts
 toggleSnapline(enabled?: boolean): this
 ```
 
 切换对齐线的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                         |
-| ------- | ------- | :--: | ------ | -------------------------------------------- |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
 | enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
 
 ### graph.hideSnapline()
 
-```sign
+```ts
 hideSnapline(): this
 ```
 
@@ -111,7 +111,7 @@ hideSnapline(): this
 
 ### graph.isSnaplineOnResizingEnabled()
 
-```sign
+```ts
 isSnaplineOnResizingEnabled(): boolean
 ```
 
@@ -119,7 +119,7 @@ isSnaplineOnResizingEnabled(): boolean
 
 ### graph.enableSnaplineOnResizing()
 
-```sign
+```ts
 enableSnaplineOnResizing(): this
 ```
 
@@ -127,7 +127,7 @@ enableSnaplineOnResizing(): this
 
 ### graph.disableSnaplineOnResizing()
 
-```sign
+```ts
 disableSnaplineOnResizing(): this
 ```
 
@@ -135,19 +135,19 @@ disableSnaplineOnResizing(): this
 
 ### graph.toggleSnaplineOnResizing(...)
 
-```sign
+```ts
 toggleSnaplineOnResizing(enabled?: boolean): this
 ```
 
 切换调整节点大小过程中是否触发对齐线。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                         |
-| ------- | ------- | :--: | ------ | -------------------------------------------- |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
 | enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
 
 ### graph.isSharpSnapline()
 
-```sign
+```ts
 isSharpSnapline(): boolean
 ```
 
@@ -155,7 +155,7 @@ isSharpSnapline(): boolean
 
 ### graph.enableSharpSnapline()
 
-```sign
+```ts
 enableSharpSnapline(): this
 ```
 
@@ -163,7 +163,7 @@ enableSharpSnapline(): this
 
 ### graph.disableSharpSnapline()
 
-```sign
+```ts
 disableSharpSnapline(): this
 ```
 
@@ -171,19 +171,19 @@ disableSharpSnapline(): this
 
 ### graph.toggleSharpSnapline()
 
-```sign
+```ts
 toggleSharpSnapline(enabled?: boolean): this
 ```
 
 切换短款对齐线的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                                 |
-| ------- | ------- | :--: | ------ | ---------------------------------------------------- |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                               |
+|---------|---------|:----:|--------|--------------------------------------------------|
 | enabled | boolean |      | -      | 是否启用短款对齐线，缺省时切换短款对齐线的启用状态。 |
 
 ### graph.getSnaplineTolerance()
 
-```sign
+```ts
 getSnaplineTolerance(): number
 ```
 
@@ -191,7 +191,7 @@ getSnaplineTolerance(): number
 
 ### graph.setSnaplineTolerance(...)
 
-```sign
+```ts
 setSnaplineTolerance(tolerance: number): this
 ```
 
@@ -199,7 +199,7 @@ setSnaplineTolerance(tolerance: number): this
 
 ### graph.setSnaplineFilter(...)
 
-```sign
+```ts
 setSnaplineFilter(
   filter?:
    | null

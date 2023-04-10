@@ -128,7 +128,7 @@ new Graph({
 
 连接点定义是一个具有如下签名的函数，返回连接点。
 
-```sign
+```ts
 export type Definition<T> = (
   line: Line,
   view: NodeView,
@@ -148,7 +148,7 @@ export type Definition<T> = (
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -157,7 +157,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 

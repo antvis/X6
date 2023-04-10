@@ -113,7 +113,7 @@ graph.drawGrid({
 
 ### getGridSize()
 
-```sign
+```ts
 getGridSize(): number
 ```
 
@@ -121,7 +121,7 @@ getGridSize(): number
 
 ### setGridSize()
 
-```sign
+```ts
 setGridSize(gridSize: number): this
 ```
 
@@ -129,7 +129,7 @@ setGridSize(gridSize: number): this
 
 ### showGrid()
 
-```sign
+```ts
 showGrid(): this
 ```
 
@@ -137,7 +137,7 @@ showGrid(): this
 
 ### hideGrid()
 
-```sign
+```ts
 hideGrid(): this
 ```
 
@@ -145,7 +145,7 @@ hideGrid(): this
 
 ### clearGrid()
 
-```sign
+```ts
 clearGrid(): this
 ```
 
@@ -153,7 +153,7 @@ clearGrid(): this
 
 ### drawGrid(...)
 
-```sign
+```ts
 drawGrid(options?: DrawGridOptions): this
 ```
 
@@ -161,7 +161,7 @@ drawGrid(options?: DrawGridOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称         | 类型   | 必选 | 默认值  | 描述                                                     |
-| ------------ | ------ | :--: | ------- | -------------------------------------------------------- |
+| 名称         | 类型   | 必选 | 默认值  | 描述                                                   |
+|--------------|--------|:----:|---------|------------------------------------------------------|
 | options.type | string |      | `'dot'` | 网格类型。详情请[参考这里](/zh/docs/api/registry/grid)。 |
-| options.args | object |      | -       | 与网格类型对应的网格参数。                               |
+| options.args | object |      | -       | 与网格类型对应的网格参数。                              |
