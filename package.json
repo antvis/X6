@@ -22,7 +22,8 @@
     "setup:husky": "husky install .husky",
     "prepare": "is-ci || run-p setup:husky build:dev",
     "start:demo": "cd ./examples/x6-example-features && pnpm start",
-    "start:site": "cd ./sites/x6-sites && pnpm start"
+    "start:site": "cd ./sites/x6-sites && pnpm start",
+    "publish-packages": "turbo run build test --filter=./packages/* && changeset version && changeset publish"
   },
   "rss": {
     "clean:turbo": "rimraf .turbo",
@@ -97,9 +98,11 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^10.0.1",
+    "@rollup/plugin-terser": "^0.2.0",
     "@semantic-release-monorepo/cli": "^2.1.2",
     "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/git": "^10.0.1",
+    "@changesets/cli": "^2.26.1",
     "@types/jasmine": "^4.3.0",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.15",
@@ -109,6 +112,7 @@
     "boxen": "^7.0.0",
     "colors": "^1.4.0",
     "coveralls": "^3.1.1",
+    "cross-spawn": "^7.0.3",
     "eslint": "^8.29.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
@@ -160,11 +164,7 @@
     "ts-node": "^10.2.1",
     "tslib": "^2.4.1",
     "turbo": "^1.6.3",
-    "typescript": "^4.9.3",
-    "cross-spawn": "^7.0.3"
-  },
-  "devDependencies": {
-    "@rollup/plugin-terser": "^0.2.0"
+    "typescript": "^4.9.3"
   },
   "engines": {
     "pnpm": ">=7"
