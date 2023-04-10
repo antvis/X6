@@ -22,8 +22,7 @@
     "setup:husky": "husky install .husky",
     "prepare": "is-ci || run-p setup:husky build:dev",
     "start:demo": "cd ./examples/x6-example-features && pnpm start",
-    "start:site": "cd ./sites/x6-sites && pnpm start",
-    "publish-packages": "turbo run build test --filter=./packages/* && changeset version && changeset publish"
+    "start:site": "cd ./sites/x6-sites && pnpm start"
   },
   "rss": {
     "clean:turbo": "rimraf .turbo",
@@ -102,7 +101,6 @@
     "@semantic-release-monorepo/cli": "^2.1.2",
     "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/git": "^10.0.1",
-    "@changesets/cli": "^2.26.1",
     "@types/jasmine": "^4.3.0",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.15",
