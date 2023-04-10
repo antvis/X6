@@ -656,7 +656,7 @@ node.attr({
 
 ### register
 
-```sign
+```ts
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -665,7 +665,7 @@ register(name: string, entity: Definition, force?: boolean): Definition
 
 ### unregister
 
-```sign
+```ts
 unregister(name: string): Definition | null
 ```
 
@@ -695,7 +695,7 @@ node.attr({
 
 继续介绍属性定义前，我们先了解一下属性限定 `qualify` 函数，只有通过限定函数判定的属性值才会被特殊属性处理。例如，仅当 [`stroke`](#stroke) 属性值为 `Object` 类型时，才会被当做特殊属性处理（使用渐变色填充边框）。看下面限定函数的定义。
 
-```sign
+```ts
 type QualifyFucntion = (
   this: CellView,         // 节点/边的视图
   val: ComplexAttrValue,  // 当前属性的属性值
@@ -726,7 +726,7 @@ export const stroke: Attr.Definition = {
 
 设置属性定义，适用于大部分场景。
 
-```sign
+```ts
 export interface SetDefinition {
   qualify?: QualifyFucntion // 限定函数
   set: (
@@ -792,7 +792,7 @@ export const html: Attr.Definition = {
 
 偏移量属性定义。
 
-```sign
+```ts
 export interface OffsetDefinition {
   qualify?: QualifyFucntion // 限定函数
   offset: (
@@ -825,7 +825,7 @@ export const xAlign: Attr.OffsetDefinition = {
 
 定位属性定义。
 
-```sign
+```ts
 export interface PositionDefinition {
   qualify?: QualifyFucntion // 限定函数
   offset: (

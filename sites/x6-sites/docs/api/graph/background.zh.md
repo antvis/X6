@@ -30,7 +30,7 @@ graph.drawBackground({
 
 支持的选项如下：
 
-```sign
+```ts
 interface BackgroundOptions {
   color?: string
   image?: string
@@ -98,7 +98,7 @@ interface BackgroundOptions {
 
 ### drawBackground(...)
 
-```sign
+```ts
 drawBackground(options?: Options): this
 ```
 
@@ -106,8 +106,8 @@ drawBackground(options?: Options): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型   | 必选 | 默认值 | 描述               |
-| ---------------- | ------ | :--: | ------ | ------------------ |
+| 名称             | 类型   | 必选 | 默认值 | 描述              |
+|------------------|--------|:----:|--------|-----------------|
 | options.color    | string |      | -      | 背景颜色。         |
 | options.image    | string |      | -      | 背景图片地址。     |
 | options.position | string |      | -      | 背景图片位置。     |
@@ -117,7 +117,7 @@ drawBackground(options?: Options): this
 
 ### updateBackground()
 
-```sign
+```ts
 updateBackground(): this
 ```
 
@@ -125,7 +125,7 @@ updateBackground(): this
 
 ### clearBackground()
 
-```sign
+```ts
 clearBackground(): this
 ```
 

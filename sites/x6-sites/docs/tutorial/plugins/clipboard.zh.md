@@ -51,60 +51,60 @@ graph.use(
 
 ## 配置
 
-| 属性名          | 类型    | 默认值  | 必选 | 描述                                                                                                     |
-| --------------- | ------- | ------- | ---- | -------------------------------------------------------------------------------------------------------- |
-| enabled         | boolean | `false` |      | 是否开启剪切板功能                                                                                       |
+| 属性名          | 类型    | 默认值  | 必选 | 描述                                                                                                   |
+|-----------------|---------|---------|------|------------------------------------------------------------------------------------------------------|
+| enabled         | boolean | `false` |      | 是否开启剪切板功能                                                                                     |
 | useLocalStorage | boolean | `false` |      | 开启后被复制的节点/边同时被保存到 `localStorage` 中，浏览器刷新或者关闭后重新打开，复制/粘贴也能正常工作 |
 
 ## API
 
 ### graph.copy(...)
 
-```sign
+```ts
 copy(cells: Cell[], options: CopyOptions = {}): this
 ```
 
 复制节点/边。参数如下：
 
-| 名称                    | 类型    | 必选 | 默认值 | 描述                                          |
-| ----------------------- | ------- | :--: | ------ | --------------------------------------------- |
+| 名称                    | 类型    | 必选 | 默认值 | 描述                                         |
+|-------------------------|---------|:----:|--------|--------------------------------------------|
 | cells                   | Cell[]  |  ✓   |        | 被复制的节点/边。                             |
 | options.deep            | boolean |      | -      | 是否递归复制所有子节点/边。                   |
 | options.useLocalStorage | boolean |      | -      | 是否将复制的节点/边保存在 `localStorage` 中。 |
 
 ### graph.cut(...)
 
-```sign
+```ts
 cut(cells: Cell[], options: CopyOptions = {}): this
 ```
 
 剪切节点/边。参数如下：
 
-| 名称                    | 类型    | 必选 | 默认值 | 描述                                          |
-| ----------------------- | ------- | :--: | ------ | --------------------------------------------- |
+| 名称                    | 类型    | 必选 | 默认值 | 描述                                         |
+|-------------------------|---------|:----:|--------|--------------------------------------------|
 | cells                   | Cell[]  |  ✓   |        | 被剪切的节点/边。                             |
 | options.deep            | boolean |      | -      | 是否递归复制所有子节点/边。                   |
 | options.useLocalStorage | boolean |      | -      | 是否将复制的节点/边保存在 `localStorage` 中。 |
 
 ### graph.paste(...)
 
-```sign
+```ts
 paste(options?: PasteOptions, graph?: Graph): Cell[]
 ```
 
 粘贴，返回粘贴到画布的节点/边。参数如下：
 
-| 名称                    | 类型                                   | 必选 | 默认值 | 描述                                  |
-| ----------------------- | -------------------------------------- | :--: | ------ | ------------------------------------- |
+| 名称                    | 类型                                   | 必选 | 默认值 | 描述                                 |
+|-------------------------|----------------------------------------|:----:|--------|------------------------------------|
 | options.useLocalStorage | boolean                                |      | -      | 是否使用 `localStorage` 中的节点/边。 |
 | options.offset          | number \| `{ dx: number; dy: number }` |      | `20`   | 粘贴到画布的节点/边的偏移量。         |
 | options.nodeProps       | Node.Properties                        |      | -      | 粘贴到画布的节点的额外属性。          |
 | options.edgeProps       | Edge.Properties                        |      | -      | 粘贴到画布的边的额外属性。            |
-| graph                   | Graph                                  |      | `this` | 粘贴的目标画布，默认粘贴到当前画布。  |
+| graph                   | Graph                                  |      | `this` | 粘贴的目标画布，默认粘贴到当前画布。   |
 
 ### graph.getCellsInClipboard()
 
-```sign
+```ts
 getCellsInClipboard: Cell[]
 ```
 
@@ -112,7 +112,7 @@ getCellsInClipboard: Cell[]
 
 ### graph.cleanClipboard()
 
-```sign
+```ts
 cleanClipboard(): this
 ```
 
@@ -120,7 +120,7 @@ cleanClipboard(): this
 
 ### graph.isClipboardEmpty()
 
-```sign
+```ts
 isClipboardEmpty(): boolean
 ```
 
@@ -128,7 +128,7 @@ isClipboardEmpty(): boolean
 
 ### graph.isClipboardEnabled()
 
-```sign
+```ts
 isClipboardEnabled(): boolean
 ```
 
@@ -136,7 +136,7 @@ isClipboardEnabled(): boolean
 
 ### graph.enableClipboard()
 
-```sign
+```ts
 enableClipboard(): this
 ```
 
@@ -144,7 +144,7 @@ enableClipboard(): this
 
 ### graph.disableClipboard()
 
-```sign
+```ts
 disableClipboard(): this
 ```
 
@@ -152,20 +152,20 @@ disableClipboard(): this
 
 ### graph.toggleClipboard(...)
 
-```sign
+```ts
 toggleClipboard(enabled?: boolean): this
 ```
 
 切换剪切板的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                         |
-| ------- | ------- | :--: | ------ | -------------------------------------------- |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
 | enabled | boolean |      | -      | 是否启用剪切板，缺省时切换剪切板的启用状态。 |
 
 ## 事件
 
-| 事件名称            | 参数类型          | 描述                         |
-| ------------------- | ----------------- | ---------------------------- |
+| 事件名称            | 参数类型          | 描述                       |
+|---------------------|-------------------|--------------------------|
 | `clipboard:changed` | { cells: Cell[] } | 复制、剪切、清空剪切板时触发 |
 
 ```ts

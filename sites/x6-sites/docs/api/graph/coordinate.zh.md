@@ -10,7 +10,7 @@ redirect_from:
 
 ### pageToLocal(...)
 
-```sign
+```ts
 pageToLocal(rect: Rectangle.RectangleLike): Rectangle
 pageToLocal(x: number, y: number, width: number, height: number): Rectangle
 pageToLocal(p: Point.PointLike): Point
@@ -27,7 +27,7 @@ pageToLocal(x: number, y: number): Point
 
 ### localToPage(...)
 
-```sign
+```ts
 localToPage(rect: Rectangle.RectangleLike): Rectangle
 localToPage(x: number, y: number, width: number, height: number): Rectangle
 localToPage(p: Point.PointLike): Point
@@ -44,7 +44,7 @@ localToPage(x: number, y: number): Point
 
 ### clientToLocal(...)
 
-```sign
+```ts
 clientToLocal(rect: Rectangle.RectangleLike): Rectangle
 clientToLocal(x: number, y: number, width: number, height: number): Rectangle
 clientToLocal(p: Point.PointLike): Point
@@ -61,7 +61,7 @@ clientToLocal(x: number, y: number): Point
 
 ### localToClient(...)
 
-```sign
+```ts
 localToClient(rect: Rectangle.RectangleLike): Rectangle
 localToClient(x: number, y: number, width: number, height: number): Rectangle
 localToClient(p: Point.PointLike): Point
@@ -78,7 +78,7 @@ localToClient(x: number, y: number): Point
 
 ### localToGraph(...)
 
-```sign
+```ts
 localToGraph(rect: Rectangle.RectangleLike): Rectangle
 localToGraph(x: number, y: number, width: number, height: number): Rectangle
 localToGraphPoint(p: Point.PointLike): Point
@@ -95,7 +95,7 @@ localToGraphPoint(x: number, y: number): Point
 
 ### graphToLocal(...)
 
-```sign
+```ts
 graphToLocal(rect: Rectangle.RectangleLike): Rectangle
 graphToLocal(x: number, y: number, width: number, height: number): Rectangle
 graphToLocal(p: Point.PointLike): Point
@@ -112,7 +112,7 @@ graphToLocal(x: number, y: number): Point
 
 ### snapToGrid(...)
 
-```sign
+```ts
 snapToGrid(p: Point.PointLike): Point
 snapToGrid(x: number, y: number): Point
 ```
