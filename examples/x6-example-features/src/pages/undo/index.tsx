@@ -24,9 +24,7 @@ export default class Example extends React.Component<
       grid: true,
     })
 
-    this.history = new History({
-      enabled: true,
-    })
+    this.history = new History()
     this.history.on('change', () => {
       this.setState({
         canRedo: this.history.canRedo(),

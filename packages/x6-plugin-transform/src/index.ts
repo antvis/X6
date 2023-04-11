@@ -3,14 +3,19 @@ import { TransformImpl } from './transform'
 import { content } from './style/raw'
 import './api'
 
-export class Transform extends Basecoat<Transform.EventArgs> {
+export class Transform
+  extends Basecoat<Transform.EventArgs>
+  implements Graph.Plugin
+{
+  public name = 'transform'
+  public options: Transform.Options
   private graph: Graph
   protected widgets: Map<Node, TransformImpl> = new Map()
-  public name = 'transform'
   private disabled = false
 
-  constructor(public readonly options: Transform.Options = {}) {
+  constructor(options: Transform.Options = {}) {
     super()
+    this.options = options
     CssLoader.ensure(this.name, content)
   }
 

@@ -13,13 +13,13 @@ import { Dnd } from '@antv/x6-plugin-dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
 
-export class Stencil extends View {
+export class Stencil extends View implements Graph.Plugin {
   public name = 'stencil'
-  public readonly options: Stencil.Options
-  public readonly dnd: Dnd
-  protected readonly graphs: { [groupName: string]: Graph }
-  protected readonly groups: { [groupName: string]: HTMLElement }
-  protected readonly content: HTMLDivElement
+  public options: Stencil.Options
+  public dnd: Dnd
+  protected graphs: { [groupName: string]: Graph }
+  protected groups: { [groupName: string]: HTMLElement }
+  protected content: HTMLDivElement
 
   protected get targetScroller() {
     const target = this.options.target
@@ -35,7 +35,7 @@ export class Stencil extends View {
     return this.targetGraph.model
   }
 
-  constructor(options: Partial<Stencil.Options>) {
+  constructor(options: Partial<Stencil.Options> = {}) {
     super()
 
     CssLoader.ensure(this.name, content)
@@ -46,7 +46,10 @@ export class Stencil extends View {
       ...Stencil.defaultOptions,
       ...options,
     } as Stencil.Options
+    this.init()
+  }
 
+  init() {
     this.dnd = new Dnd(this.options)
     this.onSearch = FunctionExt.debounce(this.onSearch, 200)
     this.container = document.createElement('div')
@@ -58,15 +61,15 @@ export class Stencil extends View {
     )
 
     this.options.collapsable =
-      options.collapsable &&
-      options.groups &&
-      options.groups.some((group) => group.collapsable !== false)
+      this.options.collapsable &&
+      this.options.groups &&
+      this.options.groups.some((group) => group.collapsable !== false)
 
     if (this.options.collapsable) {
       Dom.addClass(this.container, 'collapsable')
       const collapsed =
-        options.groups &&
-        options.groups.every(
+        this.options.groups &&
+        this.options.groups.every(
           (group) => group.collapsed || group.collapsable === false,
         )
       if (collapsed) {
@@ -79,7 +82,7 @@ export class Stencil extends View {
     title.innerHTML = this.options.title
     Dom.appendTo(title, this.container)
 
-    if (options.search) {
+    if (this.options.search) {
       Dom.addClass(this.container, 'searchable')
       Dom.append(this.container, this.renderSearch())
     }
@@ -88,16 +91,16 @@ export class Stencil extends View {
     Dom.addClass(this.content, this.prefixClassName(ClassNames.content))
     Dom.appendTo(this.content, this.container)
 
-    const globalGraphOptions = options.stencilGraphOptions || {}
+    const globalGraphOptions = this.options.stencilGraphOptions || {}
 
-    if (options.groups && options.groups.length) {
-      options.groups.forEach((group) => {
+    if (this.options.groups && this.options.groups.length) {
+      this.options.groups.forEach((group) => {
         const groupElem = document.createElement('div')
         Dom.addClass(groupElem, this.prefixClassName(ClassNames.group))
         Dom.attr(groupElem, 'data-name', group.name)
 
         if (
-          (group.collapsable == null && options.collapsable) ||
+          (group.collapsable == null && this.options.collapsable) ||
           group.collapsable !== false
         ) {
           Dom.addClass(groupElem, 'collapsable')
@@ -118,8 +121,8 @@ export class Stencil extends View {
           ...graphOptionsInGroup,
           container: document.createElement('div'),
           model: globalGraphOptions.model || new Model(),
-          width: group.graphWidth || options.stencilGraphWidth,
-          height: group.graphHeight || options.stencilGraphHeight,
+          width: group.graphWidth || this.options.stencilGraphWidth,
+          height: group.graphHeight || this.options.stencilGraphHeight,
           interacting: false,
           preventDefaultBlankAction: false,
         })
@@ -136,8 +139,8 @@ export class Stencil extends View {
         ...globalGraphOptions,
         container: document.createElement('div'),
         model: globalGraphOptions.model || new Model(),
-        width: options.stencilGraphWidth,
-        height: options.stencilGraphHeight,
+        width: this.options.stencilGraphWidth,
+        height: this.options.stencilGraphHeight,
         interacting: false,
         preventDefaultBlankAction: false,
       })

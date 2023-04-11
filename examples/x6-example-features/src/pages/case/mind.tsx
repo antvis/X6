@@ -184,13 +184,9 @@ export default class Example extends React.Component {
         connectionPoint: 'anchor',
       },
     })
-    const selection = new Selection({
-      enabled: true,
-    })
+    const selection = new Selection()
     graph.use(selection)
-    const keyboard = new Keyboard({
-      enabled: true,
-    })
+    const keyboard = new Keyboard()
     graph.use(keyboard)
 
     const render = () => {

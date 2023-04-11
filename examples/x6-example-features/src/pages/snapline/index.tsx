@@ -15,7 +15,6 @@ export default class Example extends React.Component {
     })
 
     const snapline = new Snapline({
-      enabled: true,
       sharp: true,
     })
     graph.use(snapline)

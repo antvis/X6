@@ -80,31 +80,14 @@ graph
   )
   .use(
     new Selection({
-      enabled: true,
       rubberband: true,
       showNodeSelectionBox: true,
     }),
   )
-  .use(
-    new Snapline({
-      enabled: true,
-    }),
-  )
-  .use(
-    new Keyboard({
-      enabled: true,
-    }),
-  )
-  .use(
-    new Clipboard({
-      enabled: true,
-    }),
-  )
-  .use(
-    new History({
-      enabled: true,
-    }),
-  )
+  .use(new Snapline())
+  .use(new Keyboard())
+  .use(new Clipboard())
+  .use(new History())
 // #endregion
 
 // #region 初始化 stencil

@@ -1411,8 +1411,9 @@ export namespace Graph {
     name: string
     init: (graph: Graph, ...options: any[]) => any
     dispose: () => void
-    disable?: () => void
+
     enable?: () => void
+    disable?: () => void
     isEnabled?: () => boolean
   }
 }
