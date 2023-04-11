@@ -15,12 +15,16 @@ import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 import './api'
 
-export class Scroller extends Basecoat<Scroller.EventArgs> {
+export class Scroller
+  extends Basecoat<Scroller.EventArgs>
+  implements Graph.Plugin
+{
+  public name = 'scroller'
+  public options: Scroller.Options
   private graph: Graph
   private scrollerImpl: ScrollerImpl
-  public name = 'scroller'
 
-  public get pannable() {
+  get pannable() {
     if (this.options) {
       if (typeof this.options.pannable === 'object') {
         return this.options.pannable.enabled
@@ -31,18 +35,23 @@ export class Scroller extends Basecoat<Scroller.EventArgs> {
     return false
   }
 
-  public get container() {
+  get container() {
     return this.scrollerImpl.container
   }
 
-  constructor(public options: Scroller.Options) {
+  constructor(options: Scroller.Options = {}) {
     super()
+    this.options = options
     CssLoader.ensure(this.name, content)
   }
 
   public init(graph: Graph) {
     this.graph = graph
-    const options = ScrollerImpl.getOptions({ ...this.options, graph })
+    const options = ScrollerImpl.getOptions({
+      enabled: true,
+      ...this.options,
+      graph,
+    })
     this.options = options
     this.scrollerImpl = new ScrollerImpl(options)
     this.setup()

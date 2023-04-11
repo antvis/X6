@@ -3,14 +3,14 @@ import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
 import './api'
 
-export class Snapline extends Disposable {
+export class Snapline extends Disposable implements Graph.Plugin {
+  public name = 'snapline'
   private snaplineImpl: SnaplineImpl
   public options: Snapline.Options
-  public name = 'snapline'
 
-  constructor(options: Snapline.Options = { enabled: true }) {
+  constructor(options: Snapline.Options = {}) {
     super()
-    this.options = { tolerance: 10, ...options }
+    this.options = { enabled: true, tolerance: 10, ...options }
     CssLoader.ensure(this.name, content)
   }
 

@@ -14,7 +14,9 @@ import {
 } from '@antv/x6'
 import { content } from './style/raw'
 
-export class Dnd extends View {
+export class Dnd extends View implements Graph.Plugin {
+  public name = 'dnd'
+
   protected sourceNode: Node | null
   protected draggingNode: Node | null
   protected draggingView: NodeView | null
@@ -26,9 +28,8 @@ export class Dnd extends View {
   protected snapOffset: Point.PointLike | null
   protected originOffset: null | { left: number; top: number }
 
-  public name = 'dnd'
-  public readonly options: Dnd.Options
-  public readonly draggingGraph: Graph
+  public options: Dnd.Options
+  public draggingGraph: Graph
 
   protected get targetScroller() {
     const target = this.options.target
@@ -52,13 +53,15 @@ export class Dnd extends View {
 
   constructor(options: Partial<Dnd.Options> & { target: Graph }) {
     super()
-
-    CssLoader.ensure(this.name, content)
-
     this.options = {
       ...Dnd.defaults,
       ...options,
     } as Dnd.Options
+    this.init()
+  }
+
+  init() {
+    CssLoader.ensure(this.name, content)
 
     this.container = document.createElement('div')
     Dom.addClass(this.container, this.prefixClassName('widget-dnd'))

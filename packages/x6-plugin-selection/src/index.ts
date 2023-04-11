@@ -12,33 +12,41 @@ import { SelectionImpl } from './selection'
 import { content } from './style/raw'
 import './api'
 
-export class Selection extends Basecoat<SelectionImpl.EventArgs> {
+export class Selection
+  extends Basecoat<SelectionImpl.EventArgs>
+  implements Graph.Plugin
+{
+  public name = 'selection'
+
   private graph: Graph
   private selectionImpl: SelectionImpl
   private readonly options: Selection.Options
   private movedMap = new WeakMap<Cell, boolean>()
   private unselectMap = new WeakMap<Cell, boolean>()
-  public name = 'selection'
 
-  private get rubberbandDisabled() {
+  get rubberbandDisabled() {
     return this.options.enabled !== true || this.options.rubberband !== true
   }
 
-  public get disabled() {
+  get disabled() {
     return this.options.enabled !== true
   }
 
-  public get length() {
+  get length() {
     return this.selectionImpl.length
   }
 
-  public get cells() {
+  get cells() {
     return this.selectionImpl.cells
   }
 
-  constructor(options: Selection.Options = { enabled: true }) {
+  constructor(options: Selection.Options = {}) {
     super()
-    this.options = ObjectExt.merge({}, Selection.defaultOptions, options)
+    this.options = ObjectExt.merge(
+      { enabled: true },
+      Selection.defaultOptions,
+      options,
+    )
     CssLoader.ensure(this.name, content)
   }
 
