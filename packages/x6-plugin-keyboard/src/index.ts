@@ -2,14 +2,14 @@ import { Disposable, Graph } from '@antv/x6'
 import { KeyboardImpl } from './keyboard'
 import './api'
 
-export class Keyboard extends Disposable {
-  private keyboardImpl: KeyboardImpl
+export class Keyboard extends Disposable implements Graph.Plugin {
   public name = 'keyboard'
+  private keyboardImpl: KeyboardImpl
   public options: KeyboardImpl.Options
 
-  constructor(options: KeyboardImpl.Options = { enabled: true }) {
+  constructor(options: KeyboardImpl.Options = {}) {
     super()
-    this.options = options
+    this.options = { enabled: true, ...options }
   }
 
   init(graph: Graph) {

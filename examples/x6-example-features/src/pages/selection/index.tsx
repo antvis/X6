@@ -15,11 +15,8 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    const keyboard = new Keyboard({
-      enabled: true,
-    })
+    const keyboard = new Keyboard()
     const selection = new Selection({
-      enabled: true,
       rubberband: true,
       multiple: true,
       strict: true,

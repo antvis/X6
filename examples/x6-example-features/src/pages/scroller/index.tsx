@@ -36,7 +36,6 @@ export default class Example extends React.Component {
     })
 
     this.scroller = new Scroller({
-      enabled: true,
       pageVisible: true,
       pageBreak: true,
       pannable: {
@@ -45,7 +44,6 @@ export default class Example extends React.Component {
       },
     })
     this.selection = new Selection({
-      enabled: true,
       rubberband: true,
       modifiers: 'shift',
     })

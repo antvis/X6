@@ -26,7 +26,7 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    this.scroller = new Scroller({ enabled: true })
+    this.scroller = new Scroller()
     this.graph2.use(this.scroller)
 
     const data = [

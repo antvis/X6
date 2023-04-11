@@ -1,4 +1,6 @@
 import { Graph, Cell, Node, Path } from '@antv/x6'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { Selection } from '@antv/x6-plugin-selection'
 import Hierarchy from '@antv/hierarchy'
 import insertCss from 'insert-css'
 
@@ -190,13 +192,10 @@ const graph = new Graph({
   connecting: {
     connectionPoint: 'anchor',
   },
-  selecting: {
-    enabled: true,
-  },
-  keyboard: {
-    enabled: true,
-  },
 })
+
+graph.use(new Selection())
+graph.use(new Keyboard())
 
 const render = () => {
   const result: HierarchyResult = Hierarchy.mindmap(data, {
@@ -289,7 +288,7 @@ const findItem = (
   }
   const { children } = obj
   if (children) {
-    for (let i = 0, len = children.length; i < len; i++) {
+    for (let i = 0, len = children.length; i < len; i += 1) {
       const res = findItem(children[i], id)
       if (res) {
         return {
