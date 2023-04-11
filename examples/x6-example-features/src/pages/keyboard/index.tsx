@@ -2,13 +2,12 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Selection } from '@antv/x6-plugin-selection'
+import { Button } from 'antd'
 import '../index.less'
 
-export default class Example extends React.Component<
-  {},
-  { graph: Graph | undefined }
-> {
+export default class Example extends React.Component {
   private container: HTMLDivElement
+  private graph: Graph
 
   componentDidMount() {
     const graph = new Graph({
@@ -18,10 +17,8 @@ export default class Example extends React.Component<
       grid: true,
     })
 
-    this.setState({ graph })
-
-    const selection = new Selection({ enabled: true })
-    const keyboard = new Keyboard({ enabled: true })
+    const selection = new Selection()
+    const keyboard = new Keyboard()
     graph.use(selection)
     graph.use(keyboard)
 
@@ -52,6 +49,8 @@ export default class Example extends React.Component<
     keyboard.bindKey('backspace', () => {
       graph.removeCells(selection.getSelectedCells())
     })
+
+    this.graph = graph
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -59,21 +58,19 @@ export default class Example extends React.Component<
   }
 
   enablePlugins = () => {
-    const { graph } = this.state
-    graph.enablePlugins('keyboard')
+    this.graph.enablePlugins('keyboard')
   }
 
   disablePlugins = () => {
-    const { graph } = this.state
-    graph.disablePlugins('keyboard')
+    this.graph.disablePlugins('keyboard')
   }
 
   render() {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
-        <button onClick={this.enablePlugins}>enable</button>
-        <button onClick={this.disablePlugins}>disable</button>
+        <Button onClick={this.enablePlugins}>enable</Button>
+        <Button onClick={this.disablePlugins}>disable</Button>
       </div>
     )
   }

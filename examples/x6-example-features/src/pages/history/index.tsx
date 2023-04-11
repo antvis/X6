@@ -3,13 +3,12 @@ import { Graph } from '@antv/x6'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Selection } from '@antv/x6-plugin-selection'
 import { History } from '@antv/x6-plugin-history'
+import { Button } from 'antd'
 import '../index.less'
 
-export default class Example extends React.Component<
-  {},
-  { graph: Graph | undefined }
-> {
+export default class Example extends React.Component {
   private container: HTMLDivElement
+  private graph: Graph
 
   componentDidMount() {
     const graph = new Graph({
@@ -19,11 +18,9 @@ export default class Example extends React.Component<
       grid: true,
     })
 
-    this.setState({ graph })
-
-    const selection = new Selection({ enabled: true })
-    const keyboard = new Keyboard({ enabled: true })
-    const history = new History({ enabled: true, stackSize: 5 })
+    const selection = new Selection()
+    const keyboard = new Keyboard()
+    const history = new History({ stackSize: 5 })
 
     graph.use(selection)
     graph.use(keyboard)
@@ -62,6 +59,8 @@ export default class Example extends React.Component<
     keyboard.bindKey('command+shift+z', () => {
       this.redo()
     })
+
+    this.graph = graph
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -69,35 +68,31 @@ export default class Example extends React.Component<
   }
 
   enablePlugins = () => {
-    const { graph } = this.state
-    graph?.enablePlugins('keyboard')
+    this.graph.enablePlugins('history')
   }
 
   disablePlugins = () => {
-    const { graph } = this.state
-    graph?.disablePlugins('keyboard')
+    this.graph.disablePlugins('history')
   }
 
   undo = () => {
-    const { graph } = this.state
-    const history = graph?.getPlugin('history') as History
-    history?.undo()
+    const history = this.graph.getPlugin('history') as History
+    history.undo()
   }
 
   redo = () => {
-    const { graph } = this.state
-    const history = graph?.getPlugin('history') as History
-    history?.redo()
+    const history = this.graph.getPlugin('history') as History
+    history.redo()
   }
 
   render() {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
-        <button onClick={this.enablePlugins}>enable</button>
-        <button onClick={this.disablePlugins}>disable</button>
-        <button onClick={this.undo}>undo</button>
-        <button onClick={this.redo}>redo</button>
+        <Button onClick={this.enablePlugins}>enable</Button>
+        <Button onClick={this.disablePlugins}>disable</Button>
+        <Button onClick={this.undo}>undo</Button>
+        <Button onClick={this.redo}>redo</Button>
       </div>
     )
   }

@@ -3,7 +3,6 @@ import {
   ObjectExt,
   FunctionExt,
   Basecoat,
-  IDisablable,
   Cell,
   Model,
   Graph,
@@ -12,7 +11,7 @@ import './api'
 
 export class History
   extends Basecoat<History.EventArgs>
-  implements IDisablable
+  implements Graph.Plugin
 {
   public name = 'history'
   public graph: Graph
@@ -32,7 +31,7 @@ export class History
     args: Model.EventArgs[T],
   ) => any)[] = []
 
-  constructor(options: History.Options) {
+  constructor(options: History.Options = {}) {
     super()
     const { stackSize = 0 } = options
     this.stackSize = stackSize
@@ -863,6 +862,7 @@ namespace Util {
       : reservedNames
 
     return {
+      enabled: true,
       ...options,
       eventNames,
       applyOptionsList: options.applyOptionsList || ['propertyPath'],

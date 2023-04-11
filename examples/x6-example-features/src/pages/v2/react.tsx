@@ -1,6 +1,7 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
 import data from './data'
+import { Button } from 'antd'
 import './index.less'
 import { register } from '@antv/x6-react-shape'
 
@@ -138,7 +139,7 @@ export default class Canvas extends React.Component {
     return (
       <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
-        <button id="add-btn">add</button>
+        <Button id="add-btn">add</Button>
       </div>
     )
   }

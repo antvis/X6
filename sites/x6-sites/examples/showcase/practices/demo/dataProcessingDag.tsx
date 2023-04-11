@@ -563,7 +563,6 @@ const graph: Graph = new Graph({
 
 graph.use(
   new Selection({
-    enabled: true,
     multiple: true,
     rubberEdge: true,
     rubberNode: true,

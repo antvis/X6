@@ -18,19 +18,13 @@ export default class Example extends React.Component {
       height: 600,
       grid: true,
     })
-    const clipboard = new Clipboard({
-      enabled: true,
-      useLocalStorage: true,
-    })
+    const clipboard = new Clipboard()
     const selection = new Selection({
-      enabled: true,
       rubberband: true,
       multiple: true,
       strict: true,
     })
-    const keyboard = new Keyboard({
-      enabled: true,
-    })
+    const keyboard = new Keyboard()
 
     graph.use(clipboard)
     graph.use(selection)

@@ -374,7 +374,6 @@ export default class Example extends React.Component {
     })
 
     const selection = new Selection({
-      enabled: true,
       multiple: true,
       rubberEdge: true,
       rubberNode: true,
@@ -382,7 +381,7 @@ export default class Example extends React.Component {
       rubberband: true,
     })
     graph.use(selection)
-    graph.use(new Snapline({ enabled: true }))
+    graph.use(new Snapline())
 
     graph.on('edge:connected', ({ edge }) => {
       edge.attr({

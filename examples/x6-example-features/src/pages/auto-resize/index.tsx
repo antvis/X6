@@ -35,11 +35,7 @@ export default class Example extends React.Component {
       },
       autoResize: true,
     })
-    graph.use(
-      new Scroller({
-        enabled: true,
-      }),
-    )
+    graph.use(new Scroller())
   }
 
   refContainer1 = (container: HTMLDivElement) => {

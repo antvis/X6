@@ -12,20 +12,20 @@ import {
 } from '@antv/x6'
 import './api'
 
-export class Export extends Basecoat<Export.EventArgs> {
-  private graph: Graph
+export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
   public name = 'export'
+  private graph: Graph
 
   constructor() {
     super()
   }
 
-  init(graph: Graph) {
-    this.graph = graph
-  }
-
   get view() {
     return this.graph.view
+  }
+
+  init(graph: Graph) {
+    this.graph = graph
   }
 
   exportPNG(fileName = 'chart', options: Export.ToImageOptions = {}) {
@@ -327,6 +327,11 @@ export class Export extends Basecoat<Export.EventArgs> {
   ) {
     this.trigger(name, args)
     this.graph.trigger(name, args)
+  }
+
+  @Basecoat.dispose()
+  dispose(): void {
+    this.off()
   }
 }
 
