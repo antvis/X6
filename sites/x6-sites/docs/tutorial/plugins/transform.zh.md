@@ -69,14 +69,14 @@ graph.use(
 ### 调整尺寸
 
 | 属性名              | 类型    | 默认值     | 必选 | 描述                                         |
-| ------------------- | ------- | ---------- | ---- | -------------------------------------------- |
+|---------------------|---------|------------|------|--------------------------------------------|
 | enabled             | boolean | `false`    |      | 是否支持调整节点大小                         |
 | minWidth            | number  | 0          |      | 最小的调整宽度                               |
 | minHeight           | number  | 0          |      | 最小的调整高度                               |
 | maxWidth            | number  | `Infinity` |      | 最大的调整宽度                               |
 | maxHeight           | number  | `Infinity` |      | 最大的调整高度                               |
 | orthogonal          | boolean | `true`     |      | 是否显示中间调整点                           |
-| restricted          | boolean | `false`    |      | 调整大小边界是否可以超出画布边缘             |
+| restrict            | boolean | `false`    |      | 调整大小边界是否可以超出画布边缘             |
 | autoScroll          | boolean | `true`     |      | 拖动位置超过画布时是否自动滚动画布           |
 | preserveAspectRatio | boolean | `false`    |      | 调整大小过程中是否保持节点的宽高比例         |
 | allowReverse        | boolean | `true`     |      | 到达最小宽度或者高度时是否允许控制点反向拖动 |
@@ -98,7 +98,7 @@ new Transform({
 ### 调整角度
 
 | 属性名  | 类型    | 默认值  | 必选 | 描述                 |
-| ------- | ------- | ------- | ---- | -------------------- |
+|---------|---------|---------|------|--------------------|
 | enabled | boolean | `false` |      | 是否支持调整节点角度 |
 | grid    | number  | 15      |      | 每次旋转的角度       |
 
@@ -118,7 +118,7 @@ new Transform({
 ## 事件
 
 | 事件名称        | 参数类型                                                                      | 描述                   |
-| --------------- | ----------------------------------------------------------------------------- | ---------------------- |
+|-----------------|-------------------------------------------------------------------------------|----------------------|
 | `node:resize`   | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始调整节点大小时触发 |
 | `node:resizing` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 调整节点大小时触发     |
 | `node:resized`  | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 调整节点大小后触发     |

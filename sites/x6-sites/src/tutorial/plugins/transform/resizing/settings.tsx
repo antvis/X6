@@ -13,7 +13,7 @@ export interface State {
   minHeight?: number
   maxHeight?: number
   orthogonal?: boolean
-  restricted?: boolean
+  restrict?: boolean
   preserveAspectRatio?: boolean
 }
 
@@ -25,7 +25,7 @@ export class Settings extends React.Component<Props, State> {
     minHeight: 1,
     maxHeight: 150,
     orthogonal: false,
-    restricted: false,
+    restrict: false,
     preserveAspectRatio: false,
   }
 
@@ -72,7 +72,7 @@ export class Settings extends React.Component<Props, State> {
   }
 
   onRestrictedChanged = (e: any) => {
-    this.setState({ restricted: e.target.checked }, () => {
+    this.setState({ restrict: e.target.checked }, () => {
       this.notifyChange()
     })
   }
@@ -174,10 +174,10 @@ export class Settings extends React.Component<Props, State> {
         <Row align="middle">
           <Col span={24}>
             <Checkbox
-              checked={this.state.restricted}
+              checked={this.state.restrict}
               onChange={this.onRestrictedChanged}
             >
-              Restricted
+              Restrict
             </Checkbox>
           </Col>
         </Row>
