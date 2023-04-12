@@ -16,7 +16,7 @@ export default class Example extends React.Component {
       minHeight: 1,
       maxHeight: 150,
       orthogonal: false,
-      restricted: false,
+      restrict: false,
       preserveAspectRatio: false,
     })
   }
@@ -31,6 +31,7 @@ export default class Example extends React.Component {
         color: '#F2F7FA',
       },
     })
+
     this.graph.use(
       new Transform({
         resizing: options,
