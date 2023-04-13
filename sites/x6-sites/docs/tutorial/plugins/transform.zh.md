@@ -87,7 +87,7 @@ graph.use(
 new Transform({
   resizing: {
     enabled: true,
-    orthogonal(ndoe: Node) {
+    orthogonal(node: Node) {
       const { enableOrthogonal } = node.getData();
       return enableOrthogonal;
     },
