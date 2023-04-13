@@ -9,7 +9,7 @@ export class CellEditor extends ToolsView.ToolItem<
   NodeView | EdgeView,
   CellEditor.CellEditorOptions & { event: Dom.EventObject }
 > {
-  private editor: HTMLDivElement
+  private editor: HTMLDivElement | null
   private labelIndex = -1
   private distance = 0.5
   private event: Dom.DoubleClickEvent
@@ -39,11 +39,17 @@ export class CellEditor extends ToolsView.ToolItem<
     this.undelegateDocumentEvents()
     if (this.editor) {
       this.container.removeChild(this.editor)
+      this.editor = null
     }
   }
 
   updateEditor() {
     const { cell, editor } = this
+
+    if (!editor) {
+      return
+    }
+
     const { style } = editor
 
     if (cell.isNode()) {
@@ -76,6 +82,11 @@ export class CellEditor extends ToolsView.ToolItem<
 
   updateNodeEditorTransform() {
     const { graph, cell, editor } = this
+
+    if (!editor) {
+      return
+    }
+
     let pos = Point.create()
     let minWidth = 20
     let translate = ''
@@ -108,9 +119,13 @@ export class CellEditor extends ToolsView.ToolItem<
       return
     }
 
+    const { graph, editor } = this
+    if (!editor) {
+      return
+    }
+
     let pos = Point.create()
     let minWidth = 20
-    const { graph, editor } = this
     const { style } = editor
     const target = this.event.target
     const parent = target.parentElement
@@ -145,7 +160,7 @@ export class CellEditor extends ToolsView.ToolItem<
   }
 
   onDocumentMouseDown(e: Dom.MouseDownEvent) {
-    if (e.target !== this.editor) {
+    if (this.editor && e.target !== this.editor) {
       const value = this.editor.innerText.replace(/\n$/, '') || ''
       // set value, when value is null, we will remove label in edge
       this.setCellText(value !== '' ? value : null)
@@ -156,6 +171,7 @@ export class CellEditor extends ToolsView.ToolItem<
 
   onCellDblClick(e: Dom.DoubleClickEvent) {
     e.stopPropagation()
+    this.removeElement()
     this.event = e
     this.createElement()
     this.updateEditor()
@@ -169,13 +185,15 @@ export class CellEditor extends ToolsView.ToolItem<
 
   autoFocus() {
     setTimeout(() => {
-      this.editor.focus()
-      this.selectText()
+      if (this.editor) {
+        this.editor.focus()
+        this.selectText()
+      }
     })
   }
 
   selectText() {
-    if (window.getSelection) {
+    if (window.getSelection && this.editor) {
       const range = document.createRange()
       const selection = window.getSelection()!
       range.selectNodeContents(this.editor)
