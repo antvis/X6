@@ -20,6 +20,7 @@ export default class Example extends React.Component {
       width: 160,
       height: 60,
       label: 'source',
+      tools: ['node-editor'],
     })
 
     const target = graph.addNode({
