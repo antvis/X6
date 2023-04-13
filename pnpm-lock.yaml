@@ -238,8 +238,8 @@ importers:
 
   packages/x6:
     specifiers:
-      '@antv/x6-common': ^2.0.11
-      '@antv/x6-geometry': ^2.0.4
+      '@antv/x6-common': ^2.0.12
+      '@antv/x6-geometry': ^2.0.5
       utility-types: ^3.10.0
     dependencies:
       '@antv/x6-common': link:../x6-common
