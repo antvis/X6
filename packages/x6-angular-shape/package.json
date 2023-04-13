@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-angular-shape",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "X6 shape for rendering angular components.",
   "main": "lib/index.js",
   "module": "es/index.js",
