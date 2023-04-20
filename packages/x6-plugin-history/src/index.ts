@@ -266,6 +266,14 @@ export class History
       const key = data.key
       if (key && cell) {
         const value = revert ? data.prev[key] : data.next[key]
+
+        if (data.key === 'attrs') {
+          this.ensureUndefinedAttrs(
+            value,
+            revert ? data.next[key] : data.prev[key],
+          )
+        }
+
         cell.prop(key, value, options)
       }
     } else {
@@ -588,6 +596,25 @@ export class History
       this.undoStack.shift()
     }
     this.undoStack.push(cmd)
+  }
+
+  protected ensureUndefinedAttrs(
+    newAttrs: Record<string, any>,
+    oldAttrs: Record<string, any>,
+  ) {
+    if (typeof newAttrs === 'object' && typeof oldAttrs === 'object') {
+      Object.keys(oldAttrs).forEach((key) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!newAttrs.hasOwnProperty(key)) {
+          newAttrs[key] = undefined
+        } else if (
+          typeof newAttrs[key] === 'object' &&
+          typeof oldAttrs[key] === 'object'
+        ) {
+          this.ensureUndefinedAttrs(newAttrs[key], oldAttrs[key])
+        }
+      })
+    }
   }
 
   @Basecoat.dispose()
