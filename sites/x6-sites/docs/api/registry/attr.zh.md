@@ -553,7 +553,7 @@ edge.attr("rectSelector", {
 
 ### sourceMarker
 
-适用于所有 `<path>` 元素，在路径的起点添加一个 SVG 元素（如起始箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](/zh/docs/tutorial/intermediate/marker)。
+适用于所有 `<path>` 元素，在路径的起点添加一个 SVG 元素（如起始箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](/api/model/marker)。
 
 ```ts
 edge.attr("connection/sourceMarker", {
@@ -567,7 +567,7 @@ edge.attr("connection/sourceMarker", {
 
 ### targetMarker
 
-适用于所有 `<path>` 元素，在路径的终点添加一个 SVG 元素（如终点箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](/zh/docs/tutorial/intermediate/marker)。
+适用于所有 `<path>` 元素，在路径的终点添加一个 SVG 元素（如终点箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](/api/model/marker)。
 
 :::warning{title=注意：}
 需要注意的是，该元素初始时就被旋转了 `180` 度，在此基础上再自动调整旋转角度，并与路径的方向保持一致。例如，对于一个水平的直线，我们为其起点指定了一个向左的箭头，我们也可以为其重点指定相同的箭头，这个箭头会自动指向右侧（自动旋转了 `180` 度）。
