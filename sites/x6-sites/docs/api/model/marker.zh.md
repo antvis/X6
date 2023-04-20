@@ -40,8 +40,8 @@ edge.attr({
 **方法签名**
 
 ```ts
-Util.normalizeMarker(d: string, offset: { x?: number; y?: number }): string
-Util.normalizeMarker(d: string, offsetX?: number, offsetY?: number): string
+Registry.Marker.normalize(d: string, offset: { x?: number; y?: number }): string
+Registry.Marker.normalize(d: string, offsetX?: number, offsetY?: number): string
 ```
 
 <span class="tag-param">参数<span>
