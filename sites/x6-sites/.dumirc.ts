@@ -27,7 +27,7 @@ export default defineConfig({
     },
     navs: [
       {
-        slug: 'docs/tutorial/about',
+        slug: 'tutorial/about',
         title: {
           zh: '文档',
           en: 'Tutorials',
@@ -35,7 +35,7 @@ export default defineConfig({
         order: 0,
       },
       {
-        slug: 'docs/api/graph',
+        slug: 'api/graph/graph',
         title: {
           zh: 'API',
           en: 'API',
