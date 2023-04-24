@@ -100,9 +100,6 @@
     <loc>https://x6.antv.antgroup.com/api/graph/coordinate</loc>
   </url>
   <url>
-    <loc>https://x6.antv.antgroup.com/api/graph/view</loc>
-  </url>
-  <url>
     <loc>https://x6.antv.antgroup.com/api/graph/grid</loc>
   </url>
   <url>
@@ -127,13 +124,10 @@
     <loc>https://x6.antv.antgroup.com/api/model/model</loc>
   </url>
   <url>
+    <loc>https://x6.antv.antgroup.com/api/model/view</loc>
+  </url>
+  <url>
     <loc>https://x6.antv.antgroup.com/api/interacting/interaction</loc>
-  </url>
-  <url>
-    <loc>https://x6.antv.antgroup.com/api/registry/grid</loc>
-  </url>
-  <url>
-    <loc>https://x6.antv.antgroup.com/api/registry/background</loc>
   </url>
   <url>
     <loc>https://x6.antv.antgroup.com/api/registry/node-tool</loc>
