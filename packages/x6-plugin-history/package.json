@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-history",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "history plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
