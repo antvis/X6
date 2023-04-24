@@ -1,6 +1,6 @@
 ---
-title: Panning
-order: 1
+title: 画布平移
+order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/api
@@ -9,7 +9,7 @@ redirect_from:
 
 ## 配置
 
-普通画布(未使用 `scroller` 插件)通过开启 panning 选项来支持拖拽平移。。
+普通画布(未使用 `scroller` 插件)通过开启 panning 选项来支持拖拽平移。
 
 ```ts
 const graph = new Graph({

@@ -1,6 +1,6 @@
 ---
-title: MouseWheel
-order: 2
+title: 画布缩放
+order: 5
 redirect_from:
   - /zh/docs
   - /zh/docs/api
