@@ -57,6 +57,8 @@ export default class Example extends React.Component {
         },
       },
     })
+
+    this.graph.centerContent()
   }
 
   onBackgroundChanged = (options: Graph.BackgroundManager.Options) => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Settings } from './settings'
+import { Settings, State } from './settings'
 import './index.less'
 
 export default class Example extends React.Component {
@@ -8,20 +8,47 @@ export default class Example extends React.Component {
   private graph: Graph
 
   componentDidMount() {
+    this.initGraph({
+      enabled: true,
+      modifiers: [],
+      eventTypes: ['leftMouseDown'],
+    })
+  }
+
+  initGraph(options: any) {
+    if (this.graph) {
+      this.graph.dispose()
+    }
     this.graph = new Graph({
       container: this.container,
-      grid: {
-        visible: true,
-      },
       background: {
         color: '#F2F7FA',
       },
-      mousewheel: true,
+      panning: {
+        ...options,
+      },
+    })
+
+    this.graph.addNode({
+      x: 320,
+      y: 100,
+      width: 100,
+      height: 40,
+      label: 'Rect',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
     })
 
     const source = this.graph.addNode({
-      x: 40,
-      y: 40,
+      x: 80,
+      y: 50,
       width: 100,
       height: 40,
       label: 'Hello',
@@ -37,18 +64,17 @@ export default class Example extends React.Component {
     })
 
     const target = this.graph.addNode({
-      x: 200,
-      y: 180,
-      width: 100,
-      height: 40,
-      label: 'Grid',
+      shape: 'circle',
+      x: 240,
+      y: 200,
+      width: 60,
+      height: 60,
+      label: 'World',
       attrs: {
         body: {
           stroke: '#8f8f8f',
           strokeWidth: 1,
           fill: '#fff',
-          rx: 6,
-          ry: 6,
         },
       },
     })
@@ -67,12 +93,8 @@ export default class Example extends React.Component {
     this.graph.centerContent()
   }
 
-  onGridChanged = (options: any) => {
-    this.graph.drawGrid(options)
-  }
-
-  onGridSizeChanged = (size: number) => {
-    this.graph.setGridSize(size)
+  onSettingChanged = (options: State) => {
+    this.initGraph(options)
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -81,12 +103,9 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className="grid-app">
+      <div className="panning-app">
         <div className="app-side">
-          <Settings
-            onChange={this.onGridChanged}
-            onGridSizeChange={this.onGridSizeChanged}
-          />
+          <Settings onChange={this.onSettingChanged} />
         </div>
         <div className="app-content" ref={this.refContainer} />
       </div>
