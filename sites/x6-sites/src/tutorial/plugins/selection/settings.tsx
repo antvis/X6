@@ -1,5 +1,6 @@
 import React from 'react'
 import { Checkbox, Switch, Card, Row, Col } from 'antd'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 export interface Props {
   onChange: (res: State) => void
@@ -55,13 +56,13 @@ export class Settings extends React.Component<Props, State> {
     })
   }
 
-  onModifiersChange = (modifiers: any) => {
+  onModifiersChange = (modifiers: string[]) => {
     this.setState({ modifiers }, () => {
       this.notifyChange()
     })
   }
 
-  onFilterChanged = (e: any) => {
+  onFilterChanged = (e: CheckboxChangeEvent) => {
     this.setState(
       {
         filter: e.target.checked ? ['circle'] : undefined,
@@ -72,7 +73,7 @@ export class Settings extends React.Component<Props, State> {
     )
   }
 
-  onContentChanged = (e: any) => {
+  onContentChanged = (e: CheckboxChangeEvent) => {
     this.setState({ content: e.target.checked }, () => {
       this.notifyChange()
     })
