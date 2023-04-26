@@ -63,6 +63,8 @@ export default class Example extends React.Component {
         },
       },
     })
+
+    this.graph.centerContent()
   }
 
   onGridChanged = (options: any) => {

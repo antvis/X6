@@ -75,6 +75,14 @@ type Padding = { top: number; right: number; bottom: number; left: number };
 type ModifierKey = string | ("alt" | "ctrl" | "meta" | "shift")[] | null;
 ```
 
+支持以下几种形式：
+
+- `alt` 表示按下 `alt`。
+- `[alt, ctrl]`,  表示按下 `alt` 或 `ctrl`。
+- `alt|ctrl` 表示按下 `alt` 或 `ctrl`。
+- `alt&ctrl` 表示同时按下 `alt` 和 `ctrl`。
+- `alt|ctrl&shift` 表示同时按下 `alt` 和 `shift` 或者同时按下 `ctrl` 和 `shift`。
+
 ## API
 
 ### graph.lockScroller()
