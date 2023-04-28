@@ -7,28 +7,24 @@ redirect_from:
   - /zh/docs/api/graph
 ---
 
+## 演示
+
+> 按住 `Command` 键通过滚轮缩放画布。
+
+<code id="api-graph-mousewheel" src="@/src/api/mousewheel/playground/index.tsx"></code>
+
 ## 配置
 
-鼠标滚轮的默认行为是滚动页面，启用 [Scroller](/zh/docs/api/graph/scroller) 后用于滚动画布，但在某些场景下我们需要用滚轮来缩放画布，所为了避免交互冲突，通常配合修饰键来实现滚轮缩放画布，参考下面配置。
+可以使用 `mousewheel` 配置来对画布进行缩放，经常和修饰键配合使用，使用方式如下。
 
 ```ts
 const graph = new Graph({
-  scroller: {
-    enabled: true,
-    pannable: true,
-    pageVisible: true,
-    pageBreak: false,
-  },
   mousewheel: {
     enabled: true,
     modifiers: ["ctrl", "meta"],
   },
 });
 ```
-
-<!-- > 按住 `Command` 键通过滚轮缩放画布。
-
-<iframe src="/demos/tutorial/basic/mousewheel/playground"></iframe> -->
 
 支持的选项如下：
 
@@ -61,20 +57,20 @@ interface MouseWheelOptions {
 
 ### modifiers
 
-修饰键(`'alt'`、`'ctrl'`、`'meta'`、`'shift'`)，设置修饰键后需要按下修饰键并滚动鼠标滚轮时才触发画布缩放。通过设置修饰键可以解决默认滚动行为与画布缩放冲突问题。
+修饰键(`alt`、`ctrl`、`meta`、`shift`)，设置修饰键后需要按下修饰键并滚动鼠标滚轮时才触发画布缩放。通过设置修饰键可以解决默认滚动行为与画布缩放冲突问题。修饰键支持以下几种形式：
 
-支持配置单个（如 `'alt'`）或多个（如 `['alt', 'ctrl']`）修饰键，通过数组形式配置的多个修饰键是*或关系*，比如刚刚配置的修饰键表示按下 `'alt'` 或 `'ctrl'`，如果需要更加灵活的配置，可以使用如下这些形式：
-
-- `'alt|ctrl'` 表示按下 `'alt'` 或 `'ctrl'`。
-- `'alt&ctrl'` 表示同时按下 `'alt'` 和 `'ctrl'`。
-- `'alt|ctrl&shift'` 表示同时按下 `'alt'` 和 `'shift'` 或者同时按下 `'ctrl'` 和 `'shift'`。
+- `alt` 表示按下 `alt`。
+- `[alt, ctrl]` 表示按下 `alt` 或 `ctrl`。
+- `alt|ctrl` 表示按下 `alt` 或 `ctrl`。
+- `alt&ctrl` 表示同时按下 `alt` 和 `ctrl`。
+- `alt|ctrl&shift` 表示同时按下 `alt` 和 `shift` 或者同时按下 `ctrl` 和 `shift`。
 
 ### guard
 
 判断一个滚轮事件是否应该被处理，返回 `false` 时对应的事件被忽略。
 
 ```ts
-const graph = new Graph({
+new Graph({
   mousewheel: {
     enabled: true,
     guard(this: Graph, e: WheelEvent) {
@@ -122,7 +118,6 @@ toggleMouseWheel(enabled?: boolean): this
 
 切换鼠标滚轮缩放画布的启用状态。
 
-<span class="tag-param">参数<span>
 
 | 名称    | 类型    | 必选 | 默认值 | 描述                                                           |
 |---------|---------|:----:|--------|--------------------------------------------------------------|
