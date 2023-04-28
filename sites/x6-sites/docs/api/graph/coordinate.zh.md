@@ -4,7 +4,19 @@ order: 7
 redirect_from:
   - /zh/docs
   - /zh/docs/api
+  - /zh/docs/api/graph
 ---
+
+## 演示
+
+<code id="api-graph-coord" src="@/src/api/coord/playground/index.tsx"></code>
+
+在位置计算中，我们经常需要做坐标转换，在 X6 中，存在两个坐标系，一个是画布本地坐标系 `local`，一个是画布坐标系 `graph`，有时候还要涉及到浏览器坐标系，这里统一做一个解释：
+
+- `local`：画布本地坐标系，默认情况下和 `graph` 坐标系一致，但是会随着画布的缩放和平移发生改变。画布中所有节点的坐标都是以 `local` 坐标系为准。
+- `graph`：画布坐标系，也就是我们看到的画布视口，它不会随着画布缩放和平移而改变。
+- `client`：浏览器坐标系，鼠标事件中的 `e.clinetX`、`e.clientY` 就是相对于浏览器坐标系。
+- `page`：页面坐标系，与 `client` 相比，`page` 会考虑页面水平和垂直方向滚动。鼠标事件中的 `e.pageX`、`e.pageY` 就是相对于页面坐标系。
 
 ## 方法
 
@@ -19,12 +31,6 @@ pageToLocal(x: number, y: number): Point
 
 将页面坐标转换为画布本地坐标。
 
-画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
-
-页面坐标指鼠标事件的 [`pageX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX) 和 [`pageY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageY) 属性。这两个属性基于文档边缘，考虑页面水平和垂直方向滚动，例如，如果页面向右滚动 `200px` 并出现了滚动条，这部分在窗口之外，然后鼠标点击距离窗口左边 `100px` 的位置，`pageX` 所返回的值将是 `300`。
-
-<!-- <iframe src="/demos/api/graph/coord"></iframe> -->
-
 ### localToPage(...)
 
 ```ts
@@ -36,12 +42,6 @@ localToPage(x: number, y: number): Point
 
 将画布本地坐标转换为页面坐标。
 
-画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
-
-页面坐标指鼠标事件的 [`pageX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX) 和 [`pageY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageY) 属性。这两个属性基于文档边缘，考虑页面水平和垂直方向滚动，例如，如果页面向右滚动 `200px` 并出现了滚动条，这部分在窗口之外，然后鼠标点击距离窗口左边 `100px` 的位置，`pageX` 所返回的值将是 `300`。
-
-<!-- <iframe src="/demos/api/graph/coord"></iframe> -->
-
 ### clientToLocal(...)
 
 ```ts
@@ -51,13 +51,7 @@ clientToLocal(p: Point.PointLike): Point
 clientToLocal(x: number, y: number): Point
 ```
 
-将页面的客户端坐标转换画布本地坐标。
-
-画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
-
-客户端坐标指鼠标事件的 [`clientX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX) 和 [`clientY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientY) 属性。例如，不论页面是否有水平滚动，当你点击客户端区域的左上角时，鼠标事件的 `clientX` 值都将为 `0`。
-
-<!-- <iframe src="/demos/api/graph/coord"></iframe> -->
+将页面的浏览器坐标转换画布本地坐标。
 
 ### localToClient(...)
 
@@ -68,13 +62,8 @@ localToClient(p: Point.PointLike): Point
 localToClient(x: number, y: number): Point
 ```
 
-将画布本地坐标转换为页面的客户端坐标。
+将画布本地坐标转换为浏览器坐标。
 
-画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
-
-客户端坐标指鼠标事件的 [`clientX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX) 和 [`clientY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientY) 属性。例如，不论页面是否有水平滚动，当你点击客户端区域的左上角时，鼠标事件的 `clientX` 值都将为 `0`。
-
-<!-- <iframe src="/demos/api/graph/coord"></iframe> -->
 
 ### localToGraph(...)
 
@@ -87,12 +76,6 @@ localToGraphPoint(x: number, y: number): Point
 
 将画布本地坐标转换为画布坐标。
 
-画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
-
-画布坐标指相对于画布左上角的坐标，不考虑画布的缩放、平移和旋转。
-
-<!-- <iframe src="/demos/api/graph/coord"></iframe> -->
-
 ### graphToLocal(...)
 
 ```ts
@@ -104,11 +87,6 @@ graphToLocal(x: number, y: number): Point
 
 将画布坐标转换为画布本地坐标。
 
-画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
-
-画布坐标指相对于画布左上角的坐标，不考虑画布的缩放、平移和旋转。
-
-<!-- <iframe src="/demos/api/graph/coord"></iframe> -->
 
 ### snapToGrid(...)
 
@@ -117,4 +95,4 @@ snapToGrid(p: Point.PointLike): Point
 snapToGrid(x: number, y: number): Point
 ```
 
-将页面客户端坐标转换为画布[本地坐标](#clienttolocal)并对齐到画布网格。
+将浏览器坐标转换为画布[本地坐标](#clienttolocal)并对齐到画布网格。
