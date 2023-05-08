@@ -602,7 +602,7 @@ export class History
     newAttrs: Record<string, any>,
     oldAttrs: Record<string, any>,
   ) {
-    if (typeof newAttrs === 'object' && typeof oldAttrs === 'object') {
+    if (newAttrs !== null && oldAttrs !== null && typeof newAttrs === 'object' && typeof oldAttrs === 'object') {
       Object.keys(oldAttrs).forEach((key) => {
         // eslint-disable-next-line no-prototype-builtins
         if (!newAttrs.hasOwnProperty(key)) {
