@@ -13,13 +13,13 @@ export class CellEditor extends ToolsView.ToolItem<
   private labelIndex = -1
   private distance = 0.5
   private event: Dom.DoubleClickEvent
+  private dblClick = this.onCellDblClick.bind(this)
 
   onRender() {
-    this.graph.on('cell:dblclick', ({ e, cell }) => {
-      if (cell === this.cell) {
-        this.onCellDblClick(e)
-      }
-    })
+    const cellView = this.cellView as CellView
+    if (cellView) {
+      cellView.on('cell:dblclick', this.dblClick)
+    }
   }
 
   createElement() {
@@ -169,7 +169,7 @@ export class CellEditor extends ToolsView.ToolItem<
     }
   }
 
-  onCellDblClick(e: Dom.DoubleClickEvent) {
+  onCellDblClick({ e }: { e: Dom.DoubleClickEvent }) {
     e.stopPropagation()
     this.removeElement()
     this.event = e
@@ -215,6 +215,10 @@ export class CellEditor extends ToolsView.ToolItem<
   }
 
   protected onRemove() {
+    const cellView = this.cellView as CellView
+    if (cellView) {
+      cellView.off('cell:dblclick', this.dblClick)
+    }
     this.removeElement()
   }
 }
