@@ -35,13 +35,13 @@ React/Vue/HTML 渲染方式也存在一些限制，因为浏览器的兼容性�
 
 节点和边都有共同的基类 [Cell](/zh/docs/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
 
-| 属性名 | 类型   | 默认值 | 描述                         |
-| ------ | ------ | ------ | ---------------------------- |
+| 属性名 | 类型   | 默认值 | 描述                       |
+|--------|--------|--------|--------------------------|
 | x      | number | 0      | 节点位置 x 坐标，单位为 px。 |
 | y      | number | 0      | 节点位置 y 坐标，单位为 px。 |
 | width  | number | 1      | 节点宽度，单位为 px。        |
 | height | number | 1      | 节点高度，单位为 px。        |
-| angle  | number | 0      | 节点旋转角度。               |
+| angle  | number | 0      | 节点旋转角度。              |
 
 ```ts
 graph.addNode({
@@ -57,15 +57,15 @@ graph.addNode({
 
 上面使用 `shape` 来指定了节点的图形，`shape` 的默认值为 `rect`。X6 内置节点与 `shape` 名称对应关系如下表。
 
-| 构造函数       | shape 名称 | 描述                                             |
-| -------------- | ---------- | ------------------------------------------------ |
-| Shape.Rect     | rect       | 矩形。                                           |
-| Shape.Circle   | circle     | 圆形。                                           |
-| Shape.Ellipse  | ellipse    | 椭圆。                                           |
-| Shape.Polygon  | polygon    | 多边形。                                         |
-| Shape.Polyline | polyline   | 折线。                                           |
-| Shape.Path     | path       | 路径。                                           |
-| Shape.Image    | image      | 图片。                                           |
+| 构造函数       | shape 名称 | 描述                                           |
+|----------------|------------|----------------------------------------------|
+| Shape.Rect     | rect       | 矩形。                                          |
+| Shape.Circle   | circle     | 圆形。                                          |
+| Shape.Ellipse  | ellipse    | 椭圆。                                          |
+| Shape.Polygon  | polygon    | 多边形。                                        |
+| Shape.Polyline | polyline   | 折线。                                          |
+| Shape.Path     | path       | 路径。                                          |
+| Shape.Image    | image      | 图片。                                          |
 | Shape.HTML     | html       | HTML 节点，使用 `foreignObject` 渲染 HTML 片段。 |
 
 <code id="node-shapes" src="@/src/tutorial/basic/node/shapes/index.tsx"></code>
@@ -145,3 +145,5 @@ source.attr("rect/fill", "#ccc"); // 修改填充色，等价于 source.prop('at
 ```
 
 <code id="node-prop" src="@/src/tutorial/basic/node/prop/index.tsx"></code>
+
+在上面 json 数中，我们可以看到有一些属性 `refWidth`、`refHeight` 并不是 SVG 的原生属性，它们其实是 X6 内置的特殊属性，比如 `refWidth` 就是相对宽度。更多详细的特殊属性参考 [attrs](/zh/docs/api/model/attrs)。
