@@ -84,7 +84,7 @@ graph.fromJSON([
 ]);
 ```
 
-或者提供一个包含 `nodes`、`edges` 的对象，按照 `[...nodes, ...edges]` 顺序渲染。
+或者提供一个包含 `cells`、`nodes`、`edges` 的对象，按照 `[...cells, ...nodes, ...edges]` 顺序渲染。
 
 ```ts
 graph.fromJSON({
@@ -93,7 +93,7 @@ graph.fromJSON({
 });
 ```
 
-通常，我们通过 `graph.fromJSON({ cells: [...] })` 来渲染 `graph.toJSON()` 导出的数据。
+通常，我们通过 `graph.fromJSON(...)` 来渲染 `graph.toJSON()` 导出的数据。
 
 :::info{title=提示：}
 当数据中没有提供 `zIndex` 时，则按照节点/边在数组中的顺序渲染，也就是说越靠前的节点/边，其 `zIndex` 越小，在画布中的层级就越低。
