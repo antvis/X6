@@ -3,6 +3,11 @@
 
 ## Quick Start
 
+### Install from chrome web store
+
+![image](https://user-images.githubusercontent.com/1826685/238003455-d341f598-1b35-4d8c-bb7c-0320cad6a4cb.png)
+
+
 ### Import unpacked plugin
 ![image](https://user-images.githubusercontent.com/15213473/150081309-61f9c451-c35e-4dab-a23c-ed5e425e7ec5.png)
 
