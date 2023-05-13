@@ -3,6 +3,11 @@
 
 ## Quick Start
 
+### Install from chrome web store
+
+![image](https://user-images.githubusercontent.com/1826685/238003455-d341f598-1b35-4d8c-bb7c-0320cad6a4cb.png)
+
+
 ### Import unpacked plugin
 ![image](https://user-images.githubusercontent.com/15213473/150081309-61f9c451-c35e-4dab-a23c-ed5e425e7ec5.png)
 
@@ -28,22 +33,17 @@ window.__x6_instances__.push(graph);
 
 After these steps, the tab 'AntV X6' should show in devtools' tab, select it and choose a canvas
 
-![image](https://user-images.githubusercontent.com/1826685/223881189-bf99f2ad-5158-4c39-8d16-018a287ac2fe.png)
+![image](https://user-images.githubusercontent.com/1826685/238013980-2d6018f8-7d85-473c-a043-98b1f03b6674.png)
 
 
 ## Features
 
 ### Inspect Element in Graph
 
-![image](https://user-images.githubusercontent.com/1826685/223881189-bf99f2ad-5158-4c39-8d16-018a287ac2fe.png)
+![image](https://user-images.githubusercontent.com/1826685/238014156-e65ec2b0-f719-410e-9a10-89cdb836acde.png)
 
 ### View and Modify Attributes of Element
 
-![image](https://user-images.githubusercontent.com/1826685/223881189-bf99f2ad-5158-4c39-8d16-018a287ac2fe.png)
-
-### Using select element directly in graph
-
-![image](https://user-images.githubusercontent.com/1826685/223881189-bf99f2ad-5158-4c39-8d16-018a287ac2fe.png)
-
+![image](https://user-images.githubusercontent.com/1826685/238014353-124feb8e-2049-499d-a13d-3d26f485bab6.png)
 
 
