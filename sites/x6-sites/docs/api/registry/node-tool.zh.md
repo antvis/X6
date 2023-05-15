@@ -174,16 +174,16 @@ const source = graph.addNode({
 
 提供节点上文本编辑功能。配置如下：
 
-| 参数名                | 类型                                                        | 默认值                         | 说明                                                           |
-|-----------------------|-------------------------------------------------------------|--------------------------------|--------------------------------------------------------------|
-| x                     | number \| string                                            | -                              | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置         |
-| y                     | number \| string                                            | -                              | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置         |
-| attrs/fontSize        | string                                                      | `14`                           | 编辑文本字体大小                                               |
-| attrs/color           | string                                                      | `#000`                         | 编辑文本字体颜色                                               |
-| attrs/fontFamily      | string                                                      | `Arial, helvetica, sans-serif` | 编辑文本的字体                                                 |
-| attrs/backgroundColor | string                                                      | `#fff`                         | 编辑区域的背景色                                               |
-| getText               | (this: CellView, args: {cell: Cell}) => string              | -                              | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
-| setText               | (this: CellView, args: {cell: Cell, value: string}) => void | -                              | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法     |
+| 参数名                | 类型                                                                  | 默认值                         | 说明                                                           |
+|-----------------------|-----------------------------------------------------------------------|--------------------------------|--------------------------------------------------------------|
+| x                     | number \| string                                                      | -                              | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置         |
+| y                     | number \| string                                                      | -                              | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置         |
+| attrs/fontSize        | string                                                                | `14`                           | 编辑文本字体大小                                               |
+| attrs/color           | string                                                                | `#000`                         | 编辑文本字体颜色                                               |
+| attrs/fontFamily      | string                                                                | `Arial, helvetica, sans-serif` | 编辑文本的字体                                                 |
+| attrs/backgroundColor | string                                                                | `#fff`                         | 编辑区域的背景色                                               |
+| getText               | string \| (this: CellView, args: {cell: Cell}) => string              | -                              | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+| setText               | string \| (this: CellView, args: {cell: Cell, value: string}) => void | -                              | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法     |
 
 :::warning{title=注意：}
 需要注意的是，2.8.0 版本后不需要在双击事件中去动态添加工具，也就不需要传入事件参数。
@@ -205,6 +205,24 @@ node.addTools({
   name: "node-editor"
 });
 ```
+
+还需要注意的是，如果在节点中自定义了 `markup`，往往需要自定义 `getText` 和 `setText` 方法来正确获取和设置编辑文本，这两个配置都支持函数和字符串两种形式，函数比较好理解，字符串其实就是要获取或者设置的文本的属性路径，一般情况下建议使用字符串形式，这样图数据可以完全序列化(因为函数无法序列化)，否则可能会出现渲染画布后文本编辑功能异常，比如：
+
+```typescript
+node.addTools({
+  name: "node-editor",
+  args: {
+    getText: 'a/b',
+    setText: 'c/d'
+  }
+});
+```
+
+上面配置表示：
+
+- 获取编辑文本：`node.attr('a/b')`
+- 设置编辑文本：`node.attr('c/d', value)`
+
 
 <code id="api-node-tool-editor" src="@/src/api/node-tool/node-editor/index.tsx"></code>
 
