@@ -1,5 +1,5 @@
 import { Point } from '@antv/x6-geometry'
-import { Dom, FunctionExt, NumberExt } from '@antv/x6-common'
+import { Dom, FunctionExt, NumberExt, ObjectExt } from '@antv/x6-common'
 import { ToolsView } from '../../view/tool'
 import { Cell, Edge } from '../../model'
 import { CellView, NodeView, EdgeView } from '../../view'
@@ -66,15 +66,8 @@ export class CellEditor extends ToolsView.ToolItem<
     style.backgroundColor = attrs.backgroundColor
 
     // set init value
-    let text
-    const { getText } = this.options
-    if (typeof getText === 'function') {
-      text = FunctionExt.call(getText, this.cellView, {
-        cell: this.cell,
-        index: this.labelIndex,
-      })
-    }
-    editor.innerText = text || ''
+    const text = this.getCellText() || ''
+    editor.innerText = text
     this.setCellText('') // clear display value when edit status because char ghosting.
 
     return this
@@ -202,6 +195,26 @@ export class CellEditor extends ToolsView.ToolItem<
     }
   }
 
+  getCellText() {
+    const { getText } = this.options
+    if (typeof getText === 'function') {
+      return FunctionExt.call(getText, this.cellView, {
+        cell: this.cell,
+        index: this.labelIndex,
+      })
+    }
+    if (typeof getText === 'string') {
+      if (this.cell.isNode()) {
+        return this.cell.attr(getText)
+      }
+      if (this.cell.isEdge()) {
+        if (this.labelIndex !== -1) {
+          return this.cell.prop(`labels/${this.labelIndex}/attrs/${getText}`)
+        }
+      }
+    }
+  }
+
   setCellText(value: string | null) {
     const setText = this.options.setText
     if (typeof setText === 'function') {
@@ -211,6 +224,36 @@ export class CellEditor extends ToolsView.ToolItem<
         index: this.labelIndex,
         distance: this.distance,
       })
+      return
+    }
+    if (typeof setText === 'string') {
+      if (this.cell.isNode()) {
+        if (value !== null) {
+          this.cell.attr(setText, value)
+        }
+        return
+      }
+      if (this.cell.isEdge()) {
+        const edge = this.cell as Edge
+        if (this.labelIndex === -1) {
+          if (value) {
+            const newLabel = {
+              position: {
+                distance: this.distance,
+              },
+              attrs: {},
+            }
+            ObjectExt.setByPath(newLabel, `attrs/${setText}`, value)
+            edge.appendLabel(newLabel)
+          }
+        } else {
+          if (value !== null) {
+            edge.prop(`labels/${this.labelIndex}/attrs/${setText}`, value)
+          } else if (typeof this.labelIndex === 'number') {
+            edge.removeLabelAt(this.labelIndex)
+          }
+        }
+      }
     }
   }
 
@@ -234,22 +277,26 @@ export namespace CellEditor {
       backgroundColor: string
     }
     labelAddable?: boolean
-    getText: (
-      this: CellView,
-      args: {
-        cell: Cell
-        index?: number
-      },
-    ) => string
-    setText: (
-      this: CellView,
-      args: {
-        cell: Cell
-        value: string | null
-        index?: number
-        distance?: number
-      },
-    ) => void
+    getText:
+      | ((
+          this: CellView,
+          args: {
+            cell: Cell
+            index?: number
+          },
+        ) => string)
+      | string
+    setText:
+      | ((
+          this: CellView,
+          args: {
+            cell: Cell
+            value: string | null
+            index?: number
+            distance?: number
+          },
+        ) => void)
+      | string
   }
 }
 
@@ -274,14 +321,8 @@ export namespace CellEditor {
       color: '#000',
       backgroundColor: '#fff',
     },
-    getText({ cell }) {
-      return cell.attr('text/text')
-    },
-    setText({ cell, value }) {
-      if (value !== null) {
-        cell.attr('text/text', value)
-      }
-    },
+    getText: 'text/text',
+    setText: 'text/text',
   })
 
   export const EdgeEditor = CellEditor.define<CellEditorOptions>({
@@ -292,34 +333,7 @@ export namespace CellEditor {
       backgroundColor: '#fff',
     },
     labelAddable: true,
-    getText({ cell, index }) {
-      if (index === -1) {
-        return ''
-      }
-      return cell.prop(`labels/${index}/attrs/label/text`)
-    },
-    setText({ cell, value, index, distance }) {
-      const edge = cell as Edge
-      if (index === -1) {
-        if (value) {
-          edge.appendLabel({
-            position: {
-              distance: distance!,
-            },
-            attrs: {
-              label: {
-                text: value,
-              },
-            },
-          })
-        }
-      } else {
-        if (value !== null) {
-          edge.prop(`labels/${index}/attrs/label/text`, value)
-        } else if (typeof index === 'number') {
-          edge.removeLabelAt(index)
-        }
-      }
-    },
+    getText: 'label/text',
+    setText: 'label/text',
   })
 }
