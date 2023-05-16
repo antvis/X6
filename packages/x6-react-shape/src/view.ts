@@ -9,6 +9,10 @@ import { Wrap } from './wrap'
 export class ReactShapeView extends NodeView<ReactShape> {
   root?: Root
 
+  protected targetId() {
+    return `${this.graph.view.cid}:${this.cell.id}`
+  }
+
   getComponentContainer() {
     return this.selectors && (this.selectors.foContent as HTMLDivElement)
   }
@@ -29,7 +33,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
       const elem = React.createElement(Wrap, { node, graph: this.graph })
       if (Portal.isActive()) {
         const portal = createPortal(elem, container) as ReactPortal
-        Portal.connect(this.cell.id, portal)
+        Portal.connect(this.targetId(), portal)
       } else {
         this.root = createRoot(container)
         this.root.render(elem)
@@ -71,7 +75,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
 
   unmount() {
     if (Portal.isActive()) {
-      Portal.disconnect(this.cell.id)
+      Portal.disconnect(this.targetId())
     }
     this.unmountReactComponent()
     super.unmount()
