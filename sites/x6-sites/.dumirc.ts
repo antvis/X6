@@ -96,20 +96,6 @@ export default defineConfig({
         },
       ],
     },
-    news: [
-      {
-        type: {
-          zh: 'News',
-          en: 'News',
-        },
-        title: {
-          zh: 'X6 2.0 发布了！',
-          en: 'XX6 2.0 发布了！',
-        },
-        date: '2022.11.22',
-        link: 'https://www.yuque.com/antv/blog/kt8nugz3kdg32h7v',
-      },
-    ],
     features: [
       {
         icon: 'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aiSwSLVyR14AAAAAAAAAAAAAARQnAQ',
