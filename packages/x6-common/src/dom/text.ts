@@ -198,12 +198,16 @@ export function text(
   const autoLineHeight = defaultLineHeight === 'auto'
   const lineHeight = autoLineHeight ? '1.5em' : defaultLineHeight || '1em'
 
-  let needEmptyElem = true
-  const childs = elem.children
-  if (childs.length === 1 && childs[0].tagName.toUpperCase() === 'TITLE') {
-    needEmptyElem = false
+  let needEmpty = true
+  const childNodes = elem.childNodes
+  if (childNodes.length === 1) {
+    const node = childNodes[0] as any
+    if (node && node.tagName.toUpperCase() === 'TITLE') {
+      needEmpty = false
+    }
   }
-  if (needEmptyElem) {
+
+  if (needEmpty) {
     empty(elem)
   }
 
