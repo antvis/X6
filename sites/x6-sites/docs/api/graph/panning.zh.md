@@ -68,8 +68,8 @@ type ModifierKey = string | ("alt" | "ctrl" | "meta" | "shift")[] | null;
 
 触发画布平移的交互方式。支持三种形式或者他们之间的组合：
 
-- `leftMouseDown`: 按下鼠标左键逸东进行拖拽
-- `rightMouseDown`: 按下鼠标右键逸东进行拖拽
+- `leftMouseDown`: 按下鼠标左键移动进行拖拽
+- `rightMouseDown`: 按下鼠标右键移动进行拖拽
 - `mouseWheel`: 使用鼠标滚轮拖拽
 
 ## 方法
