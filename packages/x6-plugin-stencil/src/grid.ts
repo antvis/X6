@@ -124,7 +124,10 @@ namespace GridLayout {
   }
 
   export function getMaxDim(nodes: Node[], name: 'width' | 'height') {
-    return nodes.reduce((memo, node) => Math.max(node.getSize()[name], memo), 0)
+    return nodes.reduce(
+      (memo, node) => Math.max(node?.getSize()[name], memo),
+      0,
+    )
   }
 
   export function getNodesInRow(
@@ -134,7 +137,7 @@ namespace GridLayout {
   ) {
     const res: Node[] = []
     for (let i = columnCount * rowIndex, ii = i + columnCount; i < ii; i += 1) {
-      res.push(nodes[i])
+      if (nodes[i]) res.push(nodes[i])
     }
     return res
   }
@@ -146,7 +149,7 @@ namespace GridLayout {
   ) {
     const res: Node[] = []
     for (let i = columnIndex, ii = nodes.length; i < ii; i += columnCount) {
-      res.push(nodes[i])
+      if (nodes[i]) res.push(nodes[i])
     }
     return res
   }
