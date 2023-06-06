@@ -1,5 +1,5 @@
 ---
-title: Node
+title: 节点
 order: 1
 redirect_from:
   - /zh/docs
@@ -9,13 +9,9 @@ redirect_from:
 
 Node 是所有节点的基类，继承自 [Cell](/zh/docs/api/model/cell)，并定义了节点的通用属性和方法。
 
-## constructor
+## 属性
 
-```ts
-constructor(metadata?: Node.Metadata)
-```
-
-其中 `Node.Metadata` 是创建节点的选项，除了从 Cell [继承](/zh/docs/api/model/cell#constructor)的 [`markup`](/zh/docs/api/model/cell#markup)、[`attrs`](/zh/docs/api/model/cell#attrs-1)、[`zIndex`](/zh/docs/api/model/cell#zindex) 等选项外，还支持以下选项。
+除了从 Cell 继承[属性](/zh/docs/api/model/cell#属性)外，还支持以下属性。
 
 | 选项            | 类型                              | 默认值                    | 必选 | 描述                   |
 |-----------------|-----------------------------------|---------------------------|:----:|----------------------|
@@ -227,7 +223,7 @@ const node = new Node({
 }
 ```
 
-## prototype
+## 方法
 
 ### 通用
 
@@ -247,17 +243,10 @@ getBBox(options: { deep?: boolean }): Rectangle
 
 获取节点的包围盒。
 
-:::warning{title=注意：}
-需要注意的是，该方法通过节点的大小和位置计算包围盒，并不是渲染到画布后的包围盒，涉及的计算只是一些算数运算。
-:::
-
-<span class="tag-param">参数<span>
-
 | 名称         | 类型    | 必选 | 默认值  | 描述                                                        |
 |--------------|---------|:----:|---------|-----------------------------------------------------------|
 | options.deep | boolean |      | `false` | 为 `true` 时表示包含所有子节点和边的包围盒，默认为 `false `。 |
 
-<span class="tag-example">用法</span>
 
 ```ts
 const rect1 = node.getBBox();
@@ -285,8 +274,6 @@ size(size: Size, options?: Node.ResizeOptions): this
 size(width: number, height: number, options?: Node.ResizeOptions): this
 ```
 
-<span class="tag-example">用法</span>
-
 获取节点大小。
 
 ```ts
@@ -298,11 +285,8 @@ console.log(size.width, size.height);
 
 #### resize(...)
 
-改变节点大小。
+改变节点大小。根据旋转角度和 `options.direction` 的不同，节点位置和大小都可能发生改变。
 
-根据旋转角度和 `options.direction` 的不同，节点位置和大小都可能发生改变。
-
-<span class="tag-param">参数<span>
 
 | 名称              | 类型      | 必选 | 默认值           | 描述                                                                          |
 |-------------------|-----------|:----:|------------------|-----------------------------------------------------------------------------|
@@ -323,7 +307,6 @@ console.log(size.width, size.height);
 - bottom-left
 - bottom-right
 
-<span class="tag-example">用法</span>
 
 ```ts
 node.resize(100, 40);
@@ -346,11 +329,8 @@ scale(
 ): this
 ```
 
-缩放节点。
+缩放节点。根据缩放中心和缩放比例不同，节点的大小和位置都可能发生改变。
 
-根据缩放中心和缩放比例不同，节点的大小和位置都可能发生改变。
-
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                    | 必选 | 默认值  | 描述                                                                          |
 |------------------|-------------------------|:----:|---------|-----------------------------------------------------------------------------|
@@ -360,7 +340,6 @@ scale(
 | options.silent   | boolean                 |      | `false` | 为 `true` 时不触不触发 `'change:size'` 和 `'change:position'` 事件和画布重绘。 |
 | options...others | object                  |      |         | 其他自定义键值对，可以在事件回调中使用。                                        |
 
-<span class="tag-example">用法</span>
 
 ```ts
 node.scale(1.5, 1.5);
@@ -380,7 +359,6 @@ fit(options?: Node.FitEmbedsOptions): this
 
 根据子节点和边的大小位置，自动调整节点的大小和位置，使所有子节点和边都位于节点的包围盒内。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                                                                   | 必选 | 默认值  | 描述                                               |
 |------------------|------------------------------------------------------------------------|:----:|---------|--------------------------------------------------|
@@ -389,7 +367,6 @@ fit(options?: Node.FitEmbedsOptions): this
 | options.silent   | boolean                                                                |      | `false` | 为 `true` 时不触不触发事件和画布重绘。              |
 | options...others | object                                                                 |      |         | 其他自定义键值对，可以在事件回调中使用。             |
 
-<span class="tag-example">用法</span>
 
 ```ts
 node.fit();
@@ -415,13 +392,11 @@ position(x: number, y: number, options?: Node.SetPositionOptions): this
 
 获取节点位置。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                                            |
 |------------------|---------|:----:|---------|-------------------------------------------------------------------------------|
 | options.relative | boolean |      | `false` | 是否返回相对于父节点的相对位置，默认为 `false` 表示返回节点相对于画布的绝对位置。 |
 
-<span class="tag-example">用法</span>
 
 ```ts
 const pos = rect.position();
@@ -433,8 +408,6 @@ console.log(relativePos.x, relativePos.y);
 
 设置节点位置。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                                                                                             |
 |------------------|---------|:----:|---------|--------------------------------------------------------------------------------------------------------------------------------|
 | x                | number  |  ✓   |         | 节点绝对或相对 X 轴坐标。                                                                                                         |
@@ -444,7 +417,6 @@ console.log(relativePos.x, relativePos.y);
 | options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。                                                                       |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                           |
 
-<span class="tag-example">用法</span>
 
 默认使用绝对坐标，当 `options.relative` 为 `true` 时表示使用相对坐标。
 
@@ -459,7 +431,7 @@ child.position(30, 30, { relative: true });
 当 `options.deep` 为 `true` 时将同时移动子节点和边。
 
 ```ts
-parent.position(30, 30);
+parent.position(30, 30, { deep: true });
 ```
 
 当 `options.silent` 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。
@@ -482,8 +454,6 @@ translate(tx?: number, ty?: number, options?: Node.TranslateOptions): this
 
 平移节点以及节点包含的子节点和边。
 
-<span class="tag-param">参数<span>
-
 | 名称               | 类型                         | 必选 | 默认值      | 描述                                                                  |
 |--------------------|------------------------------|:----:|-------------|---------------------------------------------------------------------|
 | tx                 | number                       |      | `0`         | 节点在 X 轴的偏移量。                                                  |
@@ -493,7 +463,6 @@ translate(tx?: number, ty?: number, options?: Node.TranslateOptions): this
 | options.silent     | boolean                      |      | `false`     | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。            |
 | options...others   | object                       |      |             | 其他自定义键值对，可以在事件回调中使用。                                |
 
-<span class="tag-example">用法</span>
 
 当指定的 `tx` 和 `ty` 为 `undefined` 时，表示对应方向的平移量为 `0`。
 
@@ -551,8 +520,6 @@ getAngle(): number
 
 获取节点的旋转角度。
 
-<span class="tag-example">用法</span>
-
 ```ts
 if (node.getAngle() !== 0) {
   // do something
@@ -572,8 +539,6 @@ rotate(
 
 旋转节点。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型            | 必选 | 默认值      | 描述                                                                                                            |
 |------------------|-----------------|:----:|-------------|---------------------------------------------------------------------------------------------------------------|
 | deg              | number          |  ✓   |             | 旋转度数。                                                                                                       |
@@ -582,7 +547,6 @@ rotate(
 | options.silent   | boolean         |      | `false`     | 为 `true` 时不触不触发 `'change:angle'` 事件和画布重绘。                                                         |
 | options...others | object          |      |             | 其他自定义键值对，可以在事件回调中使用。                                                                          |
 
-<span class="tag-example">用法</span>
 
 默认为相对旋转，即在当前旋转角度的基础上在旋转给定的度数，当 `options.absolute` 为 `true` 时表示绝对旋转，即给定的度数为节点旋转后的度数。
 
@@ -626,7 +590,6 @@ addPort(port: PortMetadata, options?: Node.SetOptions): this
 
 添加单个连接桩。连接桩被添加到连接桩数组末尾。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                   | 必选 | 默认值  | 描述                                                |
 |------------------|------------------------|:----:|---------|---------------------------------------------------|
@@ -642,7 +605,6 @@ addPorts(ports: PortMetadata[], options?: Node.SetOptions)
 
 添加多个连接桩。连接桩被添加到连接桩数组末尾。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                     | 必选 | 默认值  | 描述                                                |
 |------------------|--------------------------|:----:|---------|---------------------------------------------------|
@@ -658,7 +620,6 @@ insertPort(index: number, port: PortMetadata, options?: Node.SetOptions): this
 
 在指定位置添加连接桩。注意 `port` 参数需要带上 `id` 属性。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                   | 必选 | 默认值  | 描述                                                |
 |------------------|------------------------|:----:|---------|---------------------------------------------------|
@@ -675,13 +636,11 @@ hasPort(portId: string): boolean
 
 检查指定的连接桩是否存在。
 
-<span class="tag-param">参数<span>
 
 | 名称   | 类型   | 必选 | 默认值 | 描述       |
 |--------|--------|:----:|--------|----------|
 | portId | string |  ✓   |        | 连接桩 ID。 |
 
-<span class="tag-example">用法</span>
 
 ```ts
 if (node.hasPort("port1")) {
@@ -697,7 +656,6 @@ hasPorts(): boolean
 
 检查节点是否包含连接桩。
 
-<span class="tag-example">用法</span>
 
 ```ts
 if (node.hasPorts()) {
@@ -713,7 +671,6 @@ getPort(portId: string): PortMetadata
 
 根据连接桩 ID 获取连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称   | 类型   | 必选 | 默认值 | 描述       |
 |--------|--------|:----:|--------|----------|
@@ -727,7 +684,6 @@ getPortAt(index: number): PortMetadata | null
 
 获取指定索引位置的连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称  | 类型   | 必选 | 默认值 | 描述        |
 |-------|--------|:----:|--------|-----------|
@@ -749,7 +705,6 @@ getPortsByGroup(groupName: string): PortMetadata[]
 
 获取群组下的所有连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称      | 类型   | 必选 | 默认值 | 描述      |
 |-----------|--------|:----:|--------|---------|
@@ -771,7 +726,6 @@ removePort(portId: string, options?: Node.SetOptions): this
 
 删除指定的连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型         | 必选 | 默认值  | 描述                                                |
 |------------------|--------------|:----:|---------|---------------------------------------------------|
@@ -781,7 +735,6 @@ removePort(portId: string, options?: Node.SetOptions): this
 
 删除指定 ID 的连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                |
 |------------------|---------|:----:|---------|---------------------------------------------------|
@@ -797,7 +750,6 @@ removePortAt(index: number, options?: Node.SetOptions): this
 
 删除指定索引位置的连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                |
 |------------------|---------|:----:|---------|---------------------------------------------------|
@@ -819,9 +771,8 @@ removePorts(options?: Node.SetOptions): this
 removePorts(ports: (PortMetadata | string)[], options?: Node.SetOptions): this
 ```
 
-删除指定的多个连接桩，当指定的连接桩为 `null` 时，删除所有连接桩。
+删除指定的多个连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                       | 必选 | 默认值  | 描述                                                |
 |------------------|----------------------------|:----:|---------|---------------------------------------------------|
@@ -845,14 +796,12 @@ getPortProp<T>(portId: string, path?: string | string[]): any
 
 获取连接桩指定路径上的属性值。当路径为空时，返回完整的连接桩。
 
-<span class="tag-param">参数<span>
 
 | 名称   | 类型               | 必选 | 默认值 | 描述                                                                                                                                                  |
 |--------|--------------------|:----:|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | portId | string             |  ✓   |        | 连接桩 ID。                                                                                                                                            |
-| path   | string \| string[] |      |        | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是连接桩对象路径上的 Key 构成的数组。 |
+| path   | string \| string[] |      |        | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'/'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是连接桩对象路径上的 Key 构成的数组。 |
 
-<span class="tag-example">用法</span>
 
 ```ts
 node.getPortProp("port1");
@@ -873,17 +822,15 @@ setPortProp(
 
 根据路径设置连接桩的属性。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                                                                                                                  |
 |------------------|--------------------|:----:|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | portId           | string             |  ✓   |         | 连接桩 ID。                                                                                                                                            |
-| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是连接桩对象路径上的 Key 构成的数组。 |
+| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'/'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是连接桩对象路径上的 Key 构成的数组。 |
 | value            | any                |  ✓   |         | 属性值。                                                                                                                                               |
 | options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。                                                                                                   |
 | options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                                |
 
-<span class="tag-example">用法</span>
 
 ```ts
 node.setPortProp("port1", "attrs/circle", {
@@ -906,7 +853,6 @@ setPortProp(
 
 设置连接桩的属性，提供的属性选项与当前值进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                        | 必选 | 默认值  | 描述                                                |
 |------------------|-----------------------------|:----:|---------|---------------------------------------------------|
@@ -915,7 +861,6 @@ setPortProp(
 | options.silent   | boolean                     |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object                      |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
-<span class="tag-example">用法</span>
 
 ```ts
 node.getPortProp("port1", {
@@ -936,7 +881,6 @@ removePortProp(portId: string, options?: Node.SetOptions): this
 
 删除指定连接桩的选项。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                |
 |------------------|---------|:----:|---------|---------------------------------------------------|
@@ -950,12 +894,11 @@ removePortProp(portId: string, path: string | string[], options?: Node.SetOption
 
 删除指定连接桩和指定路径的选项。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                                                                                                                  |
 |------------------|--------------------|:----:|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | portId           | string             |  ✓   |         | 连接桩 ID。                                                                                                                                            |
-| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是连接桩对象路径上的 Key 构成的数组。 |
+| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'/'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是连接桩对象路径上的 Key 构成的数组。 |
 | options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。                                                                                                   |
 | options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                                |
 
