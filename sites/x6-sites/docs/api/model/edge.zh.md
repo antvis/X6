@@ -1,5 +1,5 @@
 ---
-title: Edge
+title: 边
 order: 2
 redirect_from:
   - /zh/docs
@@ -9,13 +9,9 @@ redirect_from:
 
 Edge 是边的基类，继承自 [Cell](/zh/docs/api/model/cell)，并定义了边的通用属性和方法。
 
-## constructor
+## 属性
 
-```ts
-constructor(metadata?: Edge.Metadata)
-```
-
-其中 `Edge.Metadata` 是创建节点的选项，除了从 Cell [继承](/zh/docs/api/model/cell#constructor)的 [`markup`](/zh/docs/api/model/cell#markup)、[`attrs`](/zh/docs/api/model/cell#attrs-1)、[`zIndex`](/zh/docs/api/model/cell#zindex) 等选项外，还支持以下选项。
+除了从 Cell 继承[属性](/zh/docs/api/model/cell#属性)外，还支持以下属性。
 
 | 选项         | 类型                | 默认值 | 必选 | 描述                       |
 |--------------|---------------------|--------|:----:|--------------------------|
@@ -33,28 +29,28 @@ constructor(metadata?: Edge.Metadata)
 
 - **连接到画布上的点**
   ```ts
-  const edge = new Shape.Edge({
+  const edge = graph.addEdge({
     source: { x: 40, y: 40 },
     target: { x: 180, y: 80 },
   });
   ```
 - **连接到节点/边**
   ```ts
-  const edge = new Shape.Edge({
+  const edge = graph.addEdge({
     source: { cell: "source-cell-id" },
     target: { cell: "target-cell-id" },
   });
   ```
 - **连接到节点上的连接桩**
   ```ts
-  const edge = new Shape.Edge({
+  const edge = graph.addEdge({
     source: { cell: "source-cell-id", port: "port-id" },
     target: { cell: "target-cell-id", port: "port-id" },
   });
   ```
 - **连接到节点上的某个元素**
   ```ts
-  const edge = new Shape.Edge({
+  const edge = graph.addEdge({
     source: { cell: "source-cell-id", selector: "some-selector" },
     target: { cell: "target-cell-id", selector: "some-selector" },
   });
@@ -69,7 +65,7 @@ constructor(metadata?: Edge.Metadata)
 
 - **指定锚点**
   ```ts
-  const edge = new Shape.Edge({
+  const edge = graph.addEdge({
     source: {
       cell: "source-id",
       anchor: {
@@ -87,7 +83,7 @@ constructor(metadata?: Edge.Metadata)
   ```
 - **指定连接点**
   ```ts
-  const edge = new Shape.Edge({
+  const edge = graph.addEdge({
     source: {
       cell: "source-id",
       connectionPoint: {
@@ -109,7 +105,7 @@ constructor(metadata?: Edge.Metadata)
 路径点 `vertices` 是一个点的数组。边从起点开始，按顺序经过路径点，最后到达终点。
 
 ```ts
-const edge = new Shape.Edge({
+const edge = graph.addEdge({
   source,
   target,
   vertices: [
@@ -137,7 +133,7 @@ const edge = new Shape.Edge({
 可以这样指定路由名称 `name` 和路由参数 `args`：
 
 ```ts
-const edge = new Shape.Edge({
+const edge = graph.addEdge({
   source,
   target,
   vertices: [
@@ -156,7 +152,7 @@ const edge = new Shape.Edge({
 当没有路由参数 `args` 时，也可以简化为：
 
 ```ts
-const edge = new Shape.Edge({
+const edge = graph.addEdge({
   source,
   target,
   vertices: [
@@ -185,7 +181,7 @@ const edge = new Shape.Edge({
 可以这样指定连接器名称 `name` 和路由参数 `args`：
 
 ```ts
-const edge = new Shape.Edge({
+const edge = graph.addEdge({
   source,
   target,
   vertices: [
@@ -204,7 +200,7 @@ const edge = new Shape.Edge({
 当没有连接器参数 `args` 时，也可以简化为：
 
 ```ts
-const edge = new Shape.Edge({
+const edge = graph.addEdge({
   source,
   target,
   vertices: [
@@ -221,7 +217,7 @@ const edge = new Shape.Edge({
 
 由于标签配置非常灵活，所以我们提供了单独的教程来介绍如何使用标签，详情请参考[使用标签](/zh/docs/api/model/labels)教程。
 
-## prototype
+## 方法
 
 ### 通用
 
@@ -241,10 +237,6 @@ getBBox(): Rectangle
 
 返回边的包围盒。
 
-:::warning{title=注意：}
-需要注意的是，该方法通过边的端点和路径点计算包围盒，并不是渲染到画布后的包围盒，涉及的计算只是一些算数运算。
-:::
-
 #### getPolyline()
 
 ```ts
@@ -261,7 +253,6 @@ hasLoop(options: { deep?: boolean }): boolean
 
 是否包含循环链接。
 
-<span class="tag-param">参数<span>
 
 | 名称         | 类型    | 必选 | 默认值  | 描述              |
 |--------------|---------|:----:|---------|-----------------|
@@ -448,7 +439,6 @@ disconnect(options?: Edge.SetOptions)
 
 删除边的链接信息，即将边的起点和终点都设置为画布的原点 `{ x:0, y:0 }`。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                                      |
 |------------------|---------|:----:|---------|-------------------------------------------------------------------------|
@@ -476,7 +466,6 @@ setVertices(
 
 设置路径点。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型                                 | 必选 | 默认值  | 描述                                                   |
 |------------------|--------------------------------------|:----:|---------|------------------------------------------------------|
@@ -496,7 +485,6 @@ insertVertex(
 
 在指定位置插入一个路径点。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                   |
 |------------------|-----------------|:----:|---------|------------------------------------------------------|
@@ -513,7 +501,6 @@ appendVertex(vertex: Point.PointLike, options?: Edge.SetOptions): this
 
 在路径点数组的末尾插入一个路径点。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                   |
 |------------------|-----------------|:----:|---------|------------------------------------------------------|
@@ -529,7 +516,6 @@ getVertexAt(index: number): Point.PointLike | null
 
 获取指定索引位置的路径点。
 
-<span class="tag-param">参数<span>
 
 | 名称  | 类型   | 必选 | 默认值 | 描述      |
 |-------|--------|:----:|--------|---------|
@@ -547,7 +533,6 @@ setVertexAt(
 
 设置指定索引位置的路径点。
 
-<span class="tag-param">参数<span>
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                   |
 |------------------|-----------------|:----:|---------|------------------------------------------------------|
@@ -563,8 +548,6 @@ removeVertexAt(index: number, options?: Edge.SetOptions): this
 ```
 
 删除指定索引位置的路径点。
-
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
 |------------------|---------|:----:|---------|------------------------------------------------------|
@@ -591,8 +574,6 @@ setRouter(router: Edge.RouterData, options?: Edge.SetOptions): this
 
 设置路由。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                 |
 |------------------|-----------------|:----:|---------|----------------------------------------------------|
 | name             | string          |  ✓   |         | 路由名称。                                            |
@@ -608,8 +589,6 @@ removeRouter(options?: Edge.SetOptions): this
 ```
 
 删除路由。
-
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                 |
 |------------------|---------|:----:|---------|----------------------------------------------------|
@@ -635,8 +614,6 @@ setConnector(connector: Edge.ConnectorData, options?: Edge.SetOptions): this
 
 设置连接器。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                    |
 |------------------|--------------------|:----:|---------|-------------------------------------------------------|
 | name             | string             |  ✓   |         | 连接器名称。                                             |
@@ -652,8 +629,6 @@ removeConnector(options?: Edge.SetOptions): this
 ```
 
 删除连接器。
-
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                    |
 |------------------|---------|:----:|---------|-------------------------------------------------------|
@@ -689,8 +664,6 @@ setLabels(
 
 设置标签。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型                                             | 必选 | 默认值  | 描述                                                 |
 |------------------|--------------------------------------------------|:----:|---------|----------------------------------------------------|
 | labels           | Edge.Label \| Edge.Label[] \| string \| string[] |  ✓   |         | 标签或标签数组。                                      |
@@ -709,8 +682,6 @@ insertLabel(
 
 在指定位置插入标签。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型                 | 必选 | 默认值  | 描述                                                 |
 |------------------|----------------------|:----:|---------|----------------------------------------------------|
 | label            | Edge.Label \| string |  ✓   |         | 标签。                                                |
@@ -726,8 +697,6 @@ appendLabel(label: Edge.Label | string, options?: Edge.SetOptions): this
 
 在标签数组末尾插入标签。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型                 | 必选 | 默认值  | 描述                                                 |
 |------------------|----------------------|:----:|---------|----------------------------------------------------|
 | label            | Edge.Label \| string |  ✓   |         | 标签。                                                |
@@ -741,8 +710,6 @@ getLabelAt(index: number): Edge.Label | null
 ```
 
 获取指定位置的标签。
-
-<span class="tag-param">参数<span>
 
 | 名称  | 类型   | 必选 | 默认值 | 描述      |
 |-------|--------|:----:|--------|---------|
@@ -760,8 +727,6 @@ setLabelAt(
 
 设置指定位置的标签。
 
-<span class="tag-param">参数<span>
-
 | 名称             | 类型                 | 必选 | 默认值  | 描述                                                 |
 |------------------|----------------------|:----:|---------|----------------------------------------------------|
 | index            | number               |  ✓   |         | 索引位置。                                            |
@@ -776,8 +741,6 @@ removeLabelAt(index: number, options?: Edge.SetOptions): this
 ```
 
 删除指定位置的标签。
-
-<span class="tag-param">参数<span>
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                 |
 |------------------|---------|:----:|---------|----------------------------------------------------|
