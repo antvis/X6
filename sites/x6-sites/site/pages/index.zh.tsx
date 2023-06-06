@@ -79,7 +79,7 @@ const IndexPage = () => {
       type: 'News',
       title: 'X6 2.0 来了！',
       date: '2022.11.22',
-      link: 'https://www.yuque.com/antv/operation/bgo171',
+      link: 'https://www.yuque.com/antv/blog/kt8nugz3kdg32h7v',
     },
   ]
 
