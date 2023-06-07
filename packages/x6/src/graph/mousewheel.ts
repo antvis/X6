@@ -81,6 +81,9 @@ export class MouseWheel extends Base {
           // webkit and to avoid rounding errors for zoom steps
           this.cumulatedFactor =
             Math.round(this.currentScale * factor * 20) / 20 / this.currentScale
+          if (this.cumulatedFactor === 1) {
+            this.cumulatedFactor = 1.05
+          }
         }
       } else {
         // zoomout
@@ -95,6 +98,9 @@ export class MouseWheel extends Base {
             Math.round(this.currentScale * (1 / factor) * 20) /
             20 /
             this.currentScale
+          if (this.cumulatedFactor === 1) {
+            this.cumulatedFactor = 0.95
+          }
         }
       }
 
