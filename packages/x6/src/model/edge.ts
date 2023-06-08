@@ -797,7 +797,8 @@ export class Edge<
       prevParent.unembed(this, options)
     }
 
-    if (newParent) {
+    // Embeds the edge if source and target are not same
+    if (newParent && (!prevParent || prevParent.id !== newParent.id)) {
       newParent.embed(this, options)
     }
 
