@@ -100,7 +100,7 @@ paste(options?: PasteOptions, graph?: Graph): Cell[]
 | options.offset          | number \| `{ dx: number; dy: number }` |      | `20`   | 粘贴到画布的节点/边的偏移量。         |
 | options.nodeProps       | Node.Properties                        |      | -      | 粘贴到画布的节点的额外属性。          |
 | options.edgeProps       | Edge.Properties                        |      | -      | 粘贴到画布的边的额外属性。            |
-| options.keepCopy        | boolean                                |      | -      | 粘贴到画布时是否继续保持复制/剪切状态。|
+| options.keepCopy        | boolean                                |      | true   | 粘贴到画布时是否继续保持复制/剪切状态。|
 | graph                   | Graph                                  |      | `this` | 粘贴的目标画布，默认粘贴到当前画布。   |
 
 ### graph.getCellsInClipboard()
