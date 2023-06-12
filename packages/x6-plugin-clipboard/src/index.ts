@@ -106,10 +106,15 @@ export class Clipboard
 
   paste(options: Clipboard.PasteOptions = {}, graph: Graph = this.graph) {
     if (!this.disabled) {
-      return this.clipboardImpl.paste(graph, {
+      const cells = this.clipboardImpl.paste(graph, {
         ...this.commonOptions,
         ...options,
       })
+      // keepCopy=false, 执行 clean 操作行为,需要补发changed事件
+      if (this.clipboardImpl.currentAction === 'none') {
+        this.notify('clipboard:changed', { cells: [] })
+      }
+      return cells
     }
     return []
   }
@@ -146,6 +151,8 @@ export namespace Clipboard {
   export interface Options extends ClipboardImpl.Options {
     enabled?: boolean
   }
+
+  export type Action = ClipboardImpl.Action
 
   export interface CopyOptions extends ClipboardImpl.CopyOptions {}
   export interface PasteOptions extends ClipboardImpl.PasteOptions {}

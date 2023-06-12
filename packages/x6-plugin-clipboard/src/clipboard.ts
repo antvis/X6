@@ -1,15 +1,41 @@
 import { Config, Graph, Cell, Node, Edge, Model, ArrayExt } from '@antv/x6'
 
 export class ClipboardImpl {
-  protected options: ClipboardImpl.Options
+  protected options: ClipboardImpl.Options & { action: ClipboardImpl.Action }
   public cells: Cell[] = []
+
+  // current action
+  get currentAction() {
+    return this.options.action || 'none'
+  }
 
   copy(
     cells: Cell[],
     graph: Graph | Model,
     options: ClipboardImpl.CopyOptions = {},
   ) {
-    this.options = { ...options }
+    this.addToClipboard('copy', cells, graph, options)
+  }
+
+  cut(
+    cells: Cell[],
+    graph: Graph | Model,
+    options: ClipboardImpl.CopyOptions = {},
+  ) {
+    this.addToClipboard('cut', cells, graph, options)
+    const model = Graph.isGraph(graph) ? graph.model : graph
+    model.batchUpdate('cut', () => {
+      cells.forEach((cell) => cell.remove())
+    })
+  }
+
+  private addToClipboard(
+    action: ClipboardImpl.Action,
+    cells: Cell[],
+    graph: Graph | Model,
+    options: ClipboardImpl.CopyOptions = {},
+  ) {
+    this.options = { ...options, action }
     const model = Model.isModel(graph) ? graph : graph.model
     const cloned = model.cloneSubGraph(cells, options)
 
@@ -22,21 +48,16 @@ export class ClipboardImpl {
     this.serialize(options)
   }
 
-  cut(
-    cells: Cell[],
-    graph: Graph | Model,
-    options: ClipboardImpl.CopyOptions = {},
-  ) {
-    this.copy(cells, graph, options)
-    const model = Graph.isGraph(graph) ? graph.model : graph
-    model.batchUpdate('cut', () => {
-      cells.forEach((cell) => cell.remove())
-    })
-  }
-
   paste(graph: Graph | Model, options: ClipboardImpl.PasteOptions = {}) {
     const localOptions = { ...this.options, ...options }
-    const { offset, edgeProps, nodeProps } = localOptions
+    if (typeof localOptions.keepCopy !== 'boolean') {
+      if (localOptions.action === 'cut' && localOptions.cutOnce) {
+        localOptions.keepCopy = false
+      } else {
+        localOptions.keepCopy = true
+      }
+    }
+    const { offset, edgeProps, nodeProps, keepCopy } = localOptions
 
     let dx = 20
     let dy = 20
@@ -66,10 +87,14 @@ export class ClipboardImpl {
 
     const model = Graph.isGraph(graph) ? graph.model : graph
     model.batchUpdate('paste', () => {
-      model.addCells(this.cells)
+      model.addCells(this.cells, { origin: `clipboard:${this.options.action}` })
     })
 
-    this.copy(cells, graph, options)
+    if (keepCopy) {
+      this.addToClipboard(this.options.action, cells, graph, localOptions)
+    } else {
+      this.clean()
+    }
 
     return cells
   }
@@ -99,15 +124,19 @@ export class ClipboardImpl {
   }
 
   clean() {
-    this.options = {}
+    this.options = { action: 'none' }
     this.cells = []
     Storage.clean()
   }
 }
 
 export namespace ClipboardImpl {
+  export type Action = 'copy' | 'cut' | 'none'
+
   export interface Options {
     useLocalStorage?: boolean
+
+    cutOnce?: boolean
   }
 
   export interface CopyOptions extends Options {
@@ -132,6 +161,8 @@ export namespace ClipboardImpl {
      * and `dy` attributes. It defaults to `{ dx: 20, dy: 20 }`.
      */
     offset?: number | { dx: number; dy: number }
+
+    keepCopy?: boolean
   }
 }
 

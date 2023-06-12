@@ -54,6 +54,7 @@ graph.use(
 | 属性名          | 类型    | 默认值  | 必选 | 描述                                                                                                   |
 |-----------------|---------|---------|------|------------------------------------------------------------------------------------------------------|
 | useLocalStorage | boolean | `false` |      | 开启后被复制的节点/边同时被保存到 `localStorage` 中，浏览器刷新或者关闭后重新打开，复制/粘贴也能正常工作 |
+| cutOnce         | boolean | `false` |      | 开启后只能执行一次剪切粘贴操作，即执行完剪切粘贴操作会清空剪贴板 |
 
 ## API
 
@@ -99,6 +100,7 @@ paste(options?: PasteOptions, graph?: Graph): Cell[]
 | options.offset          | number \| `{ dx: number; dy: number }` |      | `20`   | 粘贴到画布的节点/边的偏移量。         |
 | options.nodeProps       | Node.Properties                        |      | -      | 粘贴到画布的节点的额外属性。          |
 | options.edgeProps       | Edge.Properties                        |      | -      | 粘贴到画布的边的额外属性。            |
+| options.keepCopy        | boolean                                |      | -      | 粘贴到画布时是否继续保持复制/剪切状态。|
 | graph                   | Graph                                  |      | `this` | 粘贴的目标画布，默认粘贴到当前画布。   |
 
 ### graph.getCellsInClipboard()
