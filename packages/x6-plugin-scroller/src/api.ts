@@ -1,5 +1,6 @@
 import { Graph } from '@antv/x6'
 import { Scroller } from './index'
+import { ScrollerImpl } from './scroller'
 
 declare module '@antv/x6/lib/graph/graph' {
   interface Graph {
@@ -13,7 +14,7 @@ declare module '@antv/x6/lib/graph/graph' {
 
 declare module '@antv/x6/lib/graph/events' {
   interface EventArgs {
-    'graph:scroll': { container: HTMLDivElement }
+    'graph:scroll': { e: ScrollerImpl.ScrollEvent }
   }
 }
 

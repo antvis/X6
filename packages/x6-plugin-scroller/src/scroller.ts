@@ -129,8 +129,13 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     model.on('cell:removed', this.onUpdate, this)
     model.on('cell:changed', this.onUpdate, this)
 
-    this.container.addEventListener('scroll', () => {
-      this.trigger('graph:scroll', { container: this.container })
+    Dom.Event.on(this.container, 'scroll', () => {
+      this.trigger('graph:scroll', {
+        e: {
+          scrollLeft: this.container.scrollLeft,
+          scrollTop: this.container.scrollTop,
+        },
+      })
     })
 
     this.delegateBackgroundEvents()
@@ -1139,7 +1144,12 @@ export namespace ScrollerImpl {
     'pan:start': { e: Dom.MouseDownEvent }
     panning: { e: Dom.MouseMoveEvent }
     'pan:stop': { e: Dom.MouseUpEvent }
-    'graph:scroll': { container: HTMLDivElement }
+    'graph:scroll': { e: ScrollEvent }
+  }
+
+  export interface ScrollEvent {
+    scrollLeft: number
+    scrollTop: number
   }
   export interface Options {
     graph: Graph
