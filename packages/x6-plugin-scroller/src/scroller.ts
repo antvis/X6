@@ -130,12 +130,11 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     model.on('cell:changed', this.onUpdate, this)
 
     Dom.Event.on(this.container, 'scroll', () => {
-      this.trigger('graph:scroll', {
-        e: {
-          scrollLeft: this.container.scrollLeft,
-          scrollTop: this.container.scrollTop,
-        },
-      })
+      const e = {
+        scrollLeft: this.container.scrollLeft,
+        scrollTop: this.container.scrollTop,
+      }
+      this.notify('graph:scroll', { e })
     })
 
     this.delegateBackgroundEvents()
