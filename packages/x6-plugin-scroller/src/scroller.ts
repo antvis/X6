@@ -129,6 +129,10 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     model.on('cell:removed', this.onUpdate, this)
     model.on('cell:changed', this.onUpdate, this)
 
+    this.container.addEventListener('scroll', () => {
+      this.trigger('graph:scroll', { container: this.container })
+    })
+
     this.delegateBackgroundEvents()
   }
 
@@ -249,10 +253,6 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
   protected storeScrollPosition() {
     this.cachedScrollLeft = this.container.scrollLeft
     this.cachedScrollTop = this.container.scrollTop
-    this.trigger('graph:scroll', {
-      scrollLeft: this.container.scrollLeft,
-      scrollTop: this.container.scrollTop,
-    })
   }
 
   protected restoreScrollPosition() {
@@ -1119,6 +1119,14 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     this.stopListening()
   }
 
+  protected notify<K extends keyof ScrollerImpl.EventArgs>(
+    name: K,
+    args: ScrollerImpl.EventArgs[K],
+  ) {
+    this.trigger(name, args)
+    this.graph.trigger(name, args)
+  }
+
   @View.dispose()
   dispose() {
     Dom.before(this.container, this.graph.container)
@@ -1131,7 +1139,7 @@ export namespace ScrollerImpl {
     'pan:start': { e: Dom.MouseDownEvent }
     panning: { e: Dom.MouseMoveEvent }
     'pan:stop': { e: Dom.MouseUpEvent }
-    'graph:scroll': { e: { scrollLeft: number; scrollTop: number } }
+    'graph:scroll': { container: HTMLDivElement }
   }
   export interface Options {
     graph: Graph

@@ -9,8 +9,11 @@ declare module '@antv/x6/lib/graph/graph' {
     getScrollbarPosition: () => { left: number; top: number }
     setScrollbarPosition: (left?: number, top?: number) => Graph
   }
+}
+
+declare module '@antv/x6/lib/graph/events' {
   interface EventArgs {
-    'graph:scroll': { scrollLeft: number; scrollTop: number }
+    'graph:scroll': { container: HTMLDivElement }
   }
 }
 
