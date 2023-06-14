@@ -9,6 +9,9 @@ declare module '@antv/x6/lib/graph/graph' {
     getScrollbarPosition: () => { left: number; top: number }
     setScrollbarPosition: (left?: number, top?: number) => Graph
   }
+  interface EventArgs {
+    'graph:scroll': { scrollLeft: number; scrollTop: number }
+  }
 }
 
 Graph.prototype.lockScroller = function () {

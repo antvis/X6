@@ -249,6 +249,10 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
   protected storeScrollPosition() {
     this.cachedScrollLeft = this.container.scrollLeft
     this.cachedScrollTop = this.container.scrollTop
+    this.trigger('graph:scroll', {
+      scrollLeft: this.container.scrollLeft,
+      scrollTop: this.container.scrollTop,
+    })
   }
 
   protected restoreScrollPosition() {
@@ -1127,6 +1131,7 @@ export namespace ScrollerImpl {
     'pan:start': { e: Dom.MouseDownEvent }
     panning: { e: Dom.MouseMoveEvent }
     'pan:stop': { e: Dom.MouseUpEvent }
+    'graph:scroll': { e: { scrollLeft: number; scrollTop: number } }
   }
   export interface Options {
     graph: Graph
