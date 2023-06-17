@@ -15,8 +15,7 @@ redirect_from:
 import { Menu, Menubar } from '@antv/x6-react-components'
 import '@antv/x6-react-components/es/menu/style/index.css'
 import '@antv/x6-react-components/es/menubar/style/index.css'
-
- <Menubar extra={<div>Extra Component</div>}>
+;<Menubar extra={<div>Extra Component</div>}>
   <Menubar.Item text="File">
     <Menu>...</Menu>
   </Menubar.Item>
@@ -35,13 +34,13 @@ import '@antv/x6-react-components/es/menubar/style/index.css'
 ## Menubar
 
 | 参数      | 说明                 | 类型      | 默认值 |
-|-----------|--------------------|-----------|--------|
+| --------- | -------------------- | --------- | ------ |
 | className | 自定义样式名         | string    | -      |
 | extra     | 菜单栏右侧的额外组件 | ReactNode | -      |
 
 ## Menubar.Item
 
 | 参数   | 说明       | 类型    | 默认值 |
-|--------|----------|---------|--------|
+| ------ | ---------- | ------- | ------ |
 | text   | 菜单项文本 | string  | -      |
 | hidden | 是否隐藏   | boolean | -      |

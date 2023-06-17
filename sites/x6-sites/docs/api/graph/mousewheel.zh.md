@@ -21,21 +21,21 @@ redirect_from:
 const graph = new Graph({
   mousewheel: {
     enabled: true,
-    modifiers: ["ctrl", "meta"],
+    modifiers: ['ctrl', 'meta'],
   },
-});
+})
 ```
 
 支持的选项如下：
 
 ```ts
 interface MouseWheelOptions {
-  enabled?: boolean;
-  global?: boolean;
-  factor?: number;
-  zoomAtMousePosition?: boolean;
-  modifiers?: string | ("alt" | "ctrl" | "meta" | "shift")[] | null;
-  guard?: (this: Graph, e: WheelEvent) => boolean;
+  enabled?: boolean
+  global?: boolean
+  factor?: number
+  zoomAtMousePosition?: boolean
+  modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+  guard?: (this: Graph, e: WheelEvent) => boolean
 }
 ```
 
@@ -76,12 +76,12 @@ new Graph({
     guard(this: Graph, e: WheelEvent) {
       if (e.altKey) {
         // 当按下 alt 键时，忽略所有滚动事件
-        return false;
+        return false
       }
-      return true;
+      return true
     },
   },
-});
+})
 ```
 
 ## 方法
@@ -118,7 +118,6 @@ toggleMouseWheel(enabled?: boolean): this
 
 切换鼠标滚轮缩放画布的启用状态。
 
-
-| 名称    | 类型    | 必选 | 默认值 | 描述                                                           |
-|---------|---------|:----:|--------|--------------------------------------------------------------|
-| enabled | boolean |      | -      | 是否启用鼠标滚轮缩放画布，缺省时切换鼠标滚轮缩放画布的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用鼠标滚轮缩放画布，缺省时切换鼠标滚轮缩放画布的启用状态。 |

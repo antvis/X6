@@ -9,7 +9,6 @@ redirect_from:
 
 节点小工具是一些渲染在节点上的一些小组件，这些小工具通常都附带一些交互功能，如删除按钮，点击按钮时删除对应的节点。我们可以根据下面的一些场景来添加或删除小工具。
 
-
 ```ts
 // 创建节点时添加小工具
 graph.addNode({
@@ -51,16 +50,15 @@ graph.on("node:mouseleave", ({ node }) => {
 
 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。配置如下：
 
-| 参数名          | 类型                                                                 | 默认值 | 说明                                                                                                     |
-|-----------------|----------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------|
-| x               | number \| string                                                     | `0`    | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。                                                  |
-| y               | number \| string                                                     | `0`    | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。                                                  |
-| offset          | number \| { x: number, y: number }                                   | `0`    | 在 `x` 和 `y` 基础上的偏移量。                                                                            |
-| rotate          | boolean                                                              | -      | 是否跟随节点旋转。                                                                                        |
-| useCellGeometry | boolean                                                              | `true` | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
-| markup          | Markup.JSONMarkup                                                    | -      | 渲染按钮的 Markup 定义。                                                                                  |
-| onClick         | (args: {e: Dom.MouseDownEvent, cell: Cell, view: CellView }) => void | -      | 点击按钮的回调函数。                                                                                      |
-
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| x | number \| string | `0` | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。 |
+| y | number \| string | `0` | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。 |
+| offset | number \| `{ x: number, y: number }` | `0` | 在 `x` 和 `y` 基础上的偏移量。 |
+| rotate | boolean | - | 是否跟随节点旋转。 |
+| useCellGeometry | boolean | `true` | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
+| markup | Markup.JSONMarkup | - | 渲染按钮的 Markup 定义。 |
+| onClick | `(args: {e: Dom.MouseDownEvent, cell: Cell, view: CellView }) => void` | - | 点击按钮的回调函数。 |
 
 ```ts
 // 鼠标 Hover 时添加按钮
@@ -112,14 +110,13 @@ const source = graph.addNode({
 
 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。配置如下：
 
-
-| 参数名          | 类型        | 默认值   | 说明                                                                                                     |
-|-----------------|-------------|----------|--------------------------------------------------------------------------------------------------------|
-| tagName         | string      | `rect`   | 使用何种图形渲染。                                                                                        |
-| rotate          | boolean     | -        | 图形是否跟随节点旋转。                                                                                    |
-| padding         | SideOptions | `10`     | 边距。                                                                                                    |
-| attrs           | KeyValue    | `object` | 图形属性。                                                                                                |
-| useCellGeometry | boolean     | `true`   | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| tagName | string | `rect` | 使用何种图形渲染。 |
+| rotate | boolean | - | 图形是否跟随节点旋转。 |
+| padding | SideOptions | `10` | 边距。 |
+| attrs | KeyValue | `object` | 图形属性。 |
+| useCellGeometry | boolean | `true` | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
 
 其中 `attrs` 的默认值(默认样式)为：
 
@@ -136,14 +133,16 @@ const source = graph.addNode({
 `SideOptions` 的类型定义如下：
 
 ```typescript
-type SideOptions = number | {
-  vertical?: number;
-  horizontal?: number;
-  left?: number;
-  top?: number;
-  right?: number;
-  bottom?: number;
-};
+type SideOptions =
+  | number
+  | {
+      vertical?: number
+      horizontal?: number
+      left?: number
+      top?: number
+      right?: number
+      bottom?: number
+    }
 ```
 
 工具使用方式如下：
@@ -174,55 +173,52 @@ const source = graph.addNode({
 
 提供节点上文本编辑功能。配置如下：
 
-| 参数名                | 类型                                                                  | 默认值                         | 说明                                                           |
-|-----------------------|-----------------------------------------------------------------------|--------------------------------|--------------------------------------------------------------|
-| x                     | number \| string                                                      | -                              | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置         |
-| y                     | number \| string                                                      | -                              | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置         |
-| attrs/fontSize        | string                                                                | `14`                           | 编辑文本字体大小                                               |
-| attrs/color           | string                                                                | `#000`                         | 编辑文本字体颜色                                               |
-| attrs/fontFamily      | string                                                                | `Arial, helvetica, sans-serif` | 编辑文本的字体                                                 |
-| attrs/backgroundColor | string                                                                | `#fff`                         | 编辑区域的背景色                                               |
-| getText               | string \| (this: CellView, args: {cell: Cell}) => string              | -                              | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
-| setText               | string \| (this: CellView, args: {cell: Cell, value: string}) => void | -                              | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法     |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| x | number \| string | - | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置 |
+| y | number \| string | - | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置 |
+| attrs/fontSize | string | `14` | 编辑文本字体大小 |
+| attrs/color | string | `#000` | 编辑文本字体颜色 |
+| attrs/fontFamily | string | `Arial, helvetica, sans-serif` | 编辑文本的字体 |
+| attrs/backgroundColor | string | `#fff` | 编辑区域的背景色 |
+| getText | string \| `(this: CellView, args: {cell: Cell}) => string` | - | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+| setText | string \| `(this: CellView, args: {cell: Cell, value: string}) => void` | - | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法 |
 
-:::warning{title=注意：}
-需要注意的是，2.8.0 版本后不需要在双击事件中去动态添加工具，也就不需要传入事件参数。
-:::
+:::warning{title=注意} 需要注意的是，2.8.0 版本后不需要在双击事件中去动态添加工具，也就不需要传入事件参数。 :::
 
 ```ts
 // 2.8.0 版本之前使用方式
-graph.on("node:dblclick", ({ node, e }) => {
+graph.on('node:dblclick', ({ node, e }) => {
   node.addTools({
-    name: "node-editor",
+    name: 'node-editor',
     args: {
       event: e,
     },
-  });
-});
+  })
+})
 
 // 2.8.0 版本之后使用方式
 node.addTools({
-  name: "node-editor"
-});
+  name: 'node-editor',
+})
 ```
 
 还需要注意的是，如果在节点中自定义了 `markup`，往往需要自定义 `getText` 和 `setText` 方法来正确获取和设置编辑文本，这两个配置都支持函数和字符串两种形式，函数比较好理解，字符串其实就是要获取或者设置的文本的属性路径，一般情况下建议使用字符串形式，这样图数据可以完全序列化(因为函数无法序列化)，否则可能会出现渲染画布后文本编辑功能异常，比如：
 
 ```typescript
 node.addTools({
-  name: "node-editor",
+  name: 'node-editor',
   args: {
     getText: 'a/b',
-    setText: 'c/d'
-  }
-});
+    setText: 'c/d',
+  },
+})
 ```
 
 上面配置表示：
 
 - 获取编辑文本：`node.attr('a/b')`
 - 设置编辑文本：`node.attr('c/d', value)`
-
 
 <code id="api-node-tool-editor" src="@/src/api/node-tool/node-editor/index.tsx"></code>
 
@@ -233,7 +229,7 @@ node.addTools({
 继承 `ToolItem` 实现一个工具类，难度较高，要求对 [ToolItem](https://github.com/antvis/X6/blob/master/packages/x6/src/view/tool.ts) 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
 
 ```ts
-Graph.registerNodeTool("button", Button);
+Graph.registerNodeTool('button', Button)
 ```
 
 ### 方式二

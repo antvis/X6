@@ -17,18 +17,18 @@ redirect_from:
 edge.attr({
   line: {
     sourceMarker: {
-      tagName: "path",
-      d: "M 20 -10 0 0 20 10 Z",
+      tagName: 'path',
+      d: 'M 20 -10 0 0 20 10 Z',
     },
     targetMarker: {
-      tagName: "path",
-      fill: "yellow", // 使用自定义填充色
-      stroke: "green", // 使用自定义边框色
+      tagName: 'path',
+      fill: 'yellow', // 使用自定义填充色
+      stroke: 'green', // 使用自定义边框色
       strokeWidth: 2,
-      d: "M 20 -10 0 0 20 10 Z",
+      d: 'M 20 -10 0 0 20 10 Z',
     },
   },
-});
+})
 ```
 
 看上面代码，值得注意的是，我们的起始箭头和终止箭头使用了相同的 `'d'` 属性值，这是因为我们会自动计算箭头方向，简单来说，我们只需要定义**向左指向坐标原点**的箭头即可。
@@ -47,7 +47,7 @@ Registry.Marker.normalize(d: string, offsetX?: number, offsetY?: number): string
 <span class="tag-param">参数<span>
 
 | 参数名  | 类型                       | 说明                        |
-|---------|----------------------------|-----------------------------|
+| ------- | -------------------------- | --------------------------- |
 | d       | string                     |                             |
 | offset  | { x?: number; y?: number } | 相对于坐标原点的偏移量      |
 | offsetX | number                     | 相对于坐标原点的 x 轴偏移量 |
@@ -57,25 +57,25 @@ Registry.Marker.normalize(d: string, offsetX?: number, offsetY?: number): string
 
 ```ts
 const d =
-  "M4.834,4.834L4.833,4.833c-5.889,5.892-5.89,15.443,0.001,21.334s15.44,5.888,21.33-0.002c5.891-5.891,5.893-15.44,0.002-21.33C20.275-1.056,10.725-1.056,4.834,4.834zM25.459,5.542c0.833,0.836,1.523,1.757,2.104,2.726l-4.08,4.08c-0.418-1.062-1.053-2.06-1.912-2.918c-0.859-0.859-1.857-1.494-2.92-1.913l4.08-4.08C23.7,4.018,24.622,4.709,25.459,5.542zM10.139,20.862c-2.958-2.968-2.959-7.758-0.001-10.725c2.966-2.957,7.756-2.957,10.725,0c2.954,2.965,2.955,7.757-0.001,10.724C17.896,23.819,13.104,23.817,10.139,20.862zM5.542,25.459c-0.833-0.837-1.524-1.759-2.105-2.728l4.081-4.081c0.418,1.063,1.055,2.06,1.914,2.919c0.858,0.859,1.855,1.494,2.917,1.913l-4.081,4.081C7.299,26.982,6.379,26.292,5.542,25.459zM8.268,3.435l4.082,4.082C11.288,7.935,10.29,8.571,9.43,9.43c-0.858,0.859-1.494,1.855-1.912,2.918L3.436,8.267c0.58-0.969,1.271-1.89,2.105-2.727C6.377,4.707,7.299,4.016,8.268,3.435zM22.732,27.563l-4.082-4.082c1.062-0.418,2.061-1.053,2.919-1.912c0.859-0.859,1.495-1.857,1.913-2.92l4.082,4.082c-0.58,0.969-1.271,1.891-2.105,2.728C24.623,26.292,23.701,26.983,22.732,27.563z";
+  'M4.834,4.834L4.833,4.833c-5.889,5.892-5.89,15.443,0.001,21.334s15.44,5.888,21.33-0.002c5.891-5.891,5.893-15.44,0.002-21.33C20.275-1.056,10.725-1.056,4.834,4.834zM25.459,5.542c0.833,0.836,1.523,1.757,2.104,2.726l-4.08,4.08c-0.418-1.062-1.053-2.06-1.912-2.918c-0.859-0.859-1.857-1.494-2.92-1.913l4.08-4.08C23.7,4.018,24.622,4.709,25.459,5.542zM10.139,20.862c-2.958-2.968-2.959-7.758-0.001-10.725c2.966-2.957,7.756-2.957,10.725,0c2.954,2.965,2.955,7.757-0.001,10.724C17.896,23.819,13.104,23.817,10.139,20.862zM5.542,25.459c-0.833-0.837-1.524-1.759-2.105-2.728l4.081-4.081c0.418,1.063,1.055,2.06,1.914,2.919c0.858,0.859,1.855,1.494,2.917,1.913l-4.081,4.081C7.299,26.982,6.379,26.292,5.542,25.459zM8.268,3.435l4.082,4.082C11.288,7.935,10.29,8.571,9.43,9.43c-0.858,0.859-1.494,1.855-1.912,2.918L3.436,8.267c0.58-0.969,1.271-1.89,2.105-2.727C6.377,4.707,7.299,4.016,8.268,3.435zM22.732,27.563l-4.082-4.082c1.062-0.418,2.061-1.053,2.919-1.912c0.859-0.859,1.495-1.857,1.913-2.92l4.082,4.082c-0.58,0.969-1.271,1.891-2.105,2.728C24.623,26.292,23.701,26.983,22.732,27.563z'
 
 graph.addEdge({
   source: { x: 160, y: 40 },
   target: { x: 420, y: 40 },
   attrs: {
     line: {
-      stroke: "#31d0c6",
+      stroke: '#31d0c6',
       sourceMarker: {
         d,
-        tagName: "path",
+        tagName: 'path',
       },
       targetMarker: {
-        tagName: "path",
+        tagName: 'path',
         d: Util.normalizeMarker(d),
       },
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/marker/normalize-path"></iframe> -->
@@ -86,23 +86,23 @@ graph.addEdge({
 edge.attr({
   line: {
     sourceMarker: {
-      tagName: "image",
-      "xlink:href":
-        "http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png",
+      tagName: 'image',
+      'xlink:href':
+        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
       width: 24,
       height: 24,
       y: -12,
     },
     targetMarker: {
-      tagName: "image",
-      "xlink:href":
-        "http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png",
+      tagName: 'image',
+      'xlink:href':
+        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
       width: 24,
       height: 24,
       y: -12,
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/marker/image"></iframe> -->
@@ -113,20 +113,20 @@ edge.attr({
 edge.attr({
   line: {
     sourceMarker: {
-      tagName: "ellipse",
+      tagName: 'ellipse',
       rx: 20,
       ry: 10,
       cx: 20,
-      fill: "rgba(255,0,0,0.3)",
+      fill: 'rgba(255,0,0,0.3)',
     },
     targetMarker: {
-      tagName: "circle",
+      tagName: 'circle',
       r: 12,
       cx: 12,
-      fill: "rgba(0,255,0,0.3)",
+      fill: 'rgba(0,255,0,0.3)',
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/marker/tagname"></iframe> -->
@@ -138,14 +138,14 @@ edge.attr({
 ```ts
 edge.attr({
   line: {
-    sourceMarker: "block",
+    sourceMarker: 'block',
     targetMarker: {
-      name: "ellipse",
+      name: 'ellipse',
       rx: 10, // 椭圆箭头的 x 半径
       ry: 6, // 椭圆箭头的 y 半径
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/marker/native"></iframe> -->
@@ -158,14 +158,14 @@ edge.attr({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型    | 默认值 | 说明                                                                                 |
-|----------|---------|--------|------------------------------------------------------------------------------------|
-| size     | Number  | 10     | 箭头大小。                                                                            |
-| width    | Number  | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| height   | Number  | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| offset   | Number  | 0      | 沿边方向的绝对偏移量。                                                                |
-| open     | Boolean | false  | 非封闭箭头。                                                                          |
-| ...attrs | Object  | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| size | Number | 10 | 箭头大小。 |
+| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
+| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
+| offset | Number | 0 | 沿边方向的绝对偏移量。 |
+| open | Boolean | false | 非封闭箭头。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### classic
 
@@ -173,13 +173,13 @@ edge.attr({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值 | 说明                                                                                 |
-|----------|--------|--------|------------------------------------------------------------------------------------|
-| size     | Number | 10     | 箭头大小。                                                                            |
-| width    | Number | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| height   | Number | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| offset   | Number | 0      | 沿边方向的绝对偏移量。                                                                |
-| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| size | Number | 10 | 箭头大小。 |
+| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
+| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
+| offset | Number | 0 | 沿边方向的绝对偏移量。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### diamond
 
@@ -187,13 +187,13 @@ edge.attr({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值 | 说明                                                                                 |
-|----------|--------|--------|------------------------------------------------------------------------------------|
-| size     | Number | 10     | 箭头大小。                                                                            |
-| width    | Number | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| height   | Number | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| offset   | Number | 0      | 沿边方向的绝对偏移量。                                                                |
-| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| size | Number | 10 | 箭头大小。 |
+| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
+| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
+| offset | Number | 0 | 沿边方向的绝对偏移量。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### cross
 
@@ -201,24 +201,24 @@ edge.attr({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值 | 说明                                                                                 |
-|----------|--------|--------|------------------------------------------------------------------------------------|
-| size     | Number | 10     | 箭头大小。                                                                            |
-| width    | Number | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| height   | Number | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
-| offset   | Number | 0      | 沿边方向的绝对偏移量。                                                                |
-| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| size | Number | 10 | 箭头大小。 |
+| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
+| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
+| offset | Number | 0 | 沿边方向的绝对偏移量。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### async
 
-| 参数名   | 类型    | 默认值 | 说明                                                                                 |
-|----------|---------|--------|------------------------------------------------------------------------------------|
-| width    | Number  | 10     | 箭头宽度。                                                                            |
-| height   | Number  | 6      | 箭头高度。                                                                            |
-| offset   | Number  | 0      | 沿边方向的绝对偏移量。                                                                |
-| open     | Boolean | false  | 非封闭箭头。                                                                          |
-| flip     | Boolean | false  | 是否翻转箭头。                                                                        |
-| ...attrs | Object  | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| width | Number | 10 | 箭头宽度。 |
+| height | Number | 6 | 箭头高度。 |
+| offset | Number | 0 | 沿边方向的绝对偏移量。 |
+| open | Boolean | false | 非封闭箭头。 |
+| flip | Boolean | false | 是否翻转箭头。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### path
 
@@ -226,12 +226,12 @@ edge.attr({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值    | 说明                                                                                                                                               |
-|----------|--------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| d        | string | undefined | `<path>` 元素的 [d 属性值](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)，被 `Util.normalizeMarker` 标准化后应用到 `<path>` 元素上。 |
-| offsetX  | Number | 0         | x 方向偏移量。                                                                                                                                      |
-| offsetY  | Number | 0         | y 方向偏移量。                                                                                                                                      |
-| ...attrs | Object | { }       | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。                                                               |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| d | string | undefined | `<path>` 元素的 [d 属性值](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)，被 `Util.normalizeMarker` 标准化后应用到 `<path>` 元素上。 |
+| offsetX | Number | 0 | x 方向偏移量。 |
+| offsetY | Number | 0 | y 方向偏移量。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ```ts
 graph.addEdge({
@@ -239,19 +239,19 @@ graph.addEdge({
   target: { x: 400, y: 40 },
   attrs: {
     line: {
-      stroke: "#31d0c6",
+      stroke: '#31d0c6',
       sourceMarker: {
-        name: "path",
-        d: "M5.5,15.499,15.8,21.447,15.8,15.846,25.5,21.447,25.5,9.552,15.8,15.152,15.8,9.552z",
+        name: 'path',
+        d: 'M5.5,15.499,15.8,21.447,15.8,15.846,25.5,21.447,25.5,9.552,15.8,15.152,15.8,9.552z',
       },
       targetMarker: {
-        name: "path",
+        name: 'path',
         offsetX: 10,
-        d: "M4.834,4.834L4.833,4.833c-5.889,5.892-5.89,15.443,0.001,21.334s15.44,5.888,21.33-0.002c5.891-5.891,5.893-15.44,0.002-21.33C20.275-1.056,10.725-1.056,4.834,4.834zM25.459,5.542c0.833,0.836,1.523,1.757,2.104,2.726l-4.08,4.08c-0.418-1.062-1.053-2.06-1.912-2.918c-0.859-0.859-1.857-1.494-2.92-1.913l4.08-4.08C23.7,4.018,24.622,4.709,25.459,5.542zM10.139,20.862c-2.958-2.968-2.959-7.758-0.001-10.725c2.966-2.957,7.756-2.957,10.725,0c2.954,2.965,2.955,7.757-0.001,10.724C17.896,23.819,13.104,23.817,10.139,20.862zM5.542,25.459c-0.833-0.837-1.524-1.759-2.105-2.728l4.081-4.081c0.418,1.063,1.055,2.06,1.914,2.919c0.858,0.859,1.855,1.494,2.917,1.913l-4.081,4.081C7.299,26.982,6.379,26.292,5.542,25.459zM8.268,3.435l4.082,4.082C11.288,7.935,10.29,8.571,9.43,9.43c-0.858,0.859-1.494,1.855-1.912,2.918L3.436,8.267c0.58-0.969,1.271-1.89,2.105-2.727C6.377,4.707,7.299,4.016,8.268,3.435zM22.732,27.563l-4.082-4.082c1.062-0.418,2.061-1.053,2.919-1.912c0.859-0.859,1.495-1.857,1.913-2.92l4.082,4.082c-0.58,0.969-1.271,1.891-2.105,2.728C24.623,26.292,23.701,26.983,22.732,27.563z",
+        d: 'M4.834,4.834L4.833,4.833c-5.889,5.892-5.89,15.443,0.001,21.334s15.44,5.888,21.33-0.002c5.891-5.891,5.893-15.44,0.002-21.33C20.275-1.056,10.725-1.056,4.834,4.834zM25.459,5.542c0.833,0.836,1.523,1.757,2.104,2.726l-4.08,4.08c-0.418-1.062-1.053-2.06-1.912-2.918c-0.859-0.859-1.857-1.494-2.92-1.913l4.08-4.08C23.7,4.018,24.622,4.709,25.459,5.542zM10.139,20.862c-2.958-2.968-2.959-7.758-0.001-10.725c2.966-2.957,7.756-2.957,10.725,0c2.954,2.965,2.955,7.757-0.001,10.724C17.896,23.819,13.104,23.817,10.139,20.862zM5.542,25.459c-0.833-0.837-1.524-1.759-2.105-2.728l4.081-4.081c0.418,1.063,1.055,2.06,1.914,2.919c0.858,0.859,1.855,1.494,2.917,1.913l-4.081,4.081C7.299,26.982,6.379,26.292,5.542,25.459zM8.268,3.435l4.082,4.082C11.288,7.935,10.29,8.571,9.43,9.43c-0.858,0.859-1.494,1.855-1.912,2.918L3.436,8.267c0.58-0.969,1.271-1.89,2.105-2.727C6.377,4.707,7.299,4.016,8.268,3.435zM22.732,27.563l-4.082-4.082c1.062-0.418,2.061-1.053,2.919-1.912c0.859-0.859,1.495-1.857,1.913-2.92l4.082,4.082c-0.58,0.969-1.271,1.891-2.105,2.728C24.623,26.292,23.701,26.983,22.732,27.563z',
       },
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/marker/path"></iframe> -->
@@ -262,10 +262,10 @@ graph.addEdge({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值 | 说明                                                                                   |
-|----------|--------|--------|--------------------------------------------------------------------------------------|
-| r        | Number | 5      | 圆半径。                                                                                |
-| ...attrs | Object | { }    | 其他参数都将作为箭头 `<circle>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| r | Number | 5 | 圆半径。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<circle>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### circlePlus
 
@@ -273,10 +273,10 @@ graph.addEdge({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值 | 说明                                                                                       |
-|----------|--------|--------|------------------------------------------------------------------------------------------|
-| r        | Number | 5      | 圆半径。                                                                                    |
-| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素（加号）的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| r | Number | 5 | 圆半径。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素（加号）的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### ellipse
 
@@ -284,11 +284,11 @@ graph.addEdge({
 
 <span class="tag-param">参数<span>
 
-| 参数名   | 类型   | 默认值 | 说明                                                                                    |
-|----------|--------|--------|---------------------------------------------------------------------------------------|
-| rx       | Number | 5      | 椭圆 x 轴半径。                                                                          |
-| ry       | Number | 5      | 椭圆 y 轴半径。                                                                          |
-| ...attrs | Object | { }    | 其他参数都将作为箭头 `<ellipse>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| rx | Number | 5 | 椭圆 x 轴半径。 |
+| ry | Number | 5 | 椭圆 y 轴半径。 |
+| ...attrs | Object | { } | 其他参数都将作为箭头 `<ellipse>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ## 注册箭头
 
@@ -317,20 +317,20 @@ type Result = Attr.SimpleAttrs & {
 ```ts
 edge.attr({
   line: {
-    sourceMarker: "block",
+    sourceMarker: 'block',
     targetMarker: {
-      name: "ellipse",
+      name: 'ellipse',
       rx: 10,
       ry: 6,
     },
   },
-});
+})
 ```
 
 上面的配置被解析后，分别得到起始和终止箭头的箭头名称和箭头参数。
 
 | 箭头类型     | 箭头名称 name | 箭头参数 args     |
-|--------------|---------------|-------------------|
+| ------------ | ------------- | ----------------- |
 | sourceMarker | block         | { }               |
 | targetMarker | ellipse       | { rx: 10, ry: 6 } |
 
@@ -342,11 +342,11 @@ edge.attr({
 Graph.registerMarker(name: string, factory: Factory, overwrite?: boolean)
 ```
 
-| 参数名    | 参数类型 | 默认值 | 说明                                                        |
-|-----------|----------|--------|-----------------------------------------------------------|
-| name      | String   |        | 箭头名。                                                     |
-| factory   | Factory  |        | 箭头工厂方法。                                               |
-| overwrite | Boolean  | false  | 遇到重名时是否覆盖旧工厂方法，设置为 `true` 时覆盖，否则报错。 |
+| 参数名 | 参数类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| name | String |  | 箭头名。 |
+| factory | Factory |  | 箭头工厂方法。 |
+| overwrite | Boolean | false | 遇到重名时是否覆盖旧工厂方法，设置为 `true` 时覆盖，否则报错。 |
 
 最后，我们来注册一个 image 箭头。
 
@@ -355,21 +355,21 @@ Graph.registerMarker(name: string, factory: Factory, overwrite?: boolean)
  * 参数定义
  */
 interface ImageMarkerArgs extends Attr.SimpleAttrs {
-  imageUrl: string;
-  imageWidth?: number;
-  imageHeight?: number;
+  imageUrl: string
+  imageWidth?: number
+  imageHeight?: number
 }
 
-Graph.registerMarker("image", (args: ImageMarkerArgs) => {
-  const { imageUrl, imageWidth, imageHeight, ...attrs } = args;
+Graph.registerMarker('image', (args: ImageMarkerArgs) => {
+  const { imageUrl, imageWidth, imageHeight, ...attrs } = args
   return {
     ...attrs, // 原样返回非特殊涵义的参数
-    tagName: "image", // 使用 <image> 标签渲染箭头，其余键值对都将作为该元素的属性。
+    tagName: 'image', // 使用 <image> 标签渲染箭头，其余键值对都将作为该元素的属性。
     width: imageWidth,
     height: imageHeight,
-    "xlink:href": imageUrl,
-  };
-});
+    'xlink:href': imageUrl,
+  }
+})
 ```
 
 注册之后，我们可以这样来使用 image 箭头。
@@ -378,21 +378,21 @@ Graph.registerMarker("image", (args: ImageMarkerArgs) => {
 edge.attr({
   line: {
     sourceMarker: {
-      name: "image",
+      name: 'image',
       imageUrl:
-        "http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png",
+        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
       imageWidth: 24,
       imageHeight: 24,
       y: -12,
     },
     targetMarker: {
-      name: "image",
+      name: 'image',
       imageUrl:
-        "http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png",
+        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
       imageWidth: 24,
       imageHeight: 24,
       y: -12,
     },
   },
-});
+})
 ```

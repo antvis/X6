@@ -22,10 +22,10 @@
 
 ## Features
 
-- 🌱　Easy-to-customize: based on well known SVG/HTML/CSS or React/Vue/Angular to custom nodes and edges
-- 🚀　Out-of-the-box: built-in 10+ plugins, such as selection, dnd, redo/undo, snapline, minimap, etc.
-- 🧲　Data-driven: base on MVC architecture, you can focus on data logic and business logic
-- 💯　Highly-event-driven: you can react on any event that happens inside the graph
+- 🌱 　 Easy-to-customize: based on well known SVG/HTML/CSS or React/Vue/Angular to custom nodes and edges
+- 🚀 　 Out-of-the-box: built-in 10+ plugins, such as selection, dnd, redo/undo, snapline, minimap, etc.
+- 🧲 　 Data-driven: base on MVC architecture, you can focus on data logic and business logic
+- 💯 　 Highly-event-driven: you can react on any event that happens inside the graph
 
 ## Environment Support
 
@@ -33,8 +33,8 @@
 - Server-side Rendering
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| IE11, Edge                                                                                                                                                                                                     | last 2 versions                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                              |
+| --- | --- | --- | --- |
+| IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
 
 ## Installation
 
@@ -57,7 +57,7 @@ import { Graph } from '@antv/x6'
 
 const graph = new Graph({
   container: document.getElementById('container'),
-  grid: true
+  grid: true,
 })
 
 const source = graph.addNode({
@@ -89,7 +89,7 @@ graph.addEdge({
 - [Blog](https://www.yuque.com/antv/x6/gcinvi)
 - [Versioning Release Note](https://www.yuque.com/antv/x6/bbfu6r)
 - [FAQ](https://www.yuque.com/antv/x6/be9pfx)
-- [CodeSanbox Template](https://codesandbox.io/s/qosj0?file=/src/app.tsx)
+- [Template](https://codesandbox.io/s/qosj0?file=/src/app.tsx)
 - [awesome-x6](https://github.com/lloydzhou/awesome-x6)
 
 ## Development

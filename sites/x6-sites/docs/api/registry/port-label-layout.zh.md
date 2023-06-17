@@ -11,15 +11,15 @@ redirect_from:
 
 ```ts
 type Definition<T> = (
-  portPosition: Point,  // 连接桩的位置
-  elemBBox: Rectangle,  // 节点的包围盒
-  args: T,              // 标签位置参数
+  portPosition: Point, // 连接桩的位置
+  elemBBox: Rectangle, // 节点的包围盒
+  args: T, // 标签位置参数
 ) => Result
 
 interface Result {
   position: Point.PointLike // 标签相对于位置
-  angle: number             // 标签的旋转角度
-  attrs: Attr.CellAttrs     // 标签的属性
+  angle: number // 标签的旋转角度
+  attrs: Attr.CellAttrs // 标签的属性
 }
 ```
 
@@ -76,21 +76,21 @@ graph.addNode(
 
 ```ts
 interface SideArgs {
-  x?: number;
-  y?: number;
-  angle?: number;
-  attrs?: Attr.CellAttrs;
+  x?: number
+  y?: number
+  angle?: number
+  attrs?: Attr.CellAttrs
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型           | 必选 | 默认值 | 描述                                      |
-|-------|----------------|:----:|--------|-----------------------------------------|
-| x     | number         |      | -      | 用指定的 X 坐标替换计算结果中的 X 坐标。   |
-| y     | number         |      | -      | 用指定的 Y 坐标替换计算结果中的 Y 坐标。   |
-| angle | number         |      | -      | 用指定的旋转角度替换计算结果中的旋转角度。 |
-| attrs | Attr.CellAttrs |      | -      | 标签属性。                                 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| x | number |  | - | 用指定的 X 坐标替换计算结果中的 X 坐标。 |
+| y | number |  | - | 用指定的 Y 坐标替换计算结果中的 Y 坐标。 |
+| angle | number |  | - | 用指定的旋转角度替换计算结果中的旋转角度。 |
+| attrs | Attr.CellAttrs |  | - | 标签属性。 |
 
 <span class="tag-example">用法</span>
 
@@ -125,23 +125,23 @@ label: {
 
 ```ts
 interface InOutArgs {
-  offset?: number;
-  x?: number;
-  y?: number;
-  angle?: number;
-  attrs?: Attr.CellAttrs;
+  offset?: number
+  x?: number
+  y?: number
+  angle?: number
+  attrs?: Attr.CellAttrs
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称   | 类型           | 必选 | 默认值 | 描述                                      |
-|--------|----------------|:----:|--------|-----------------------------------------|
-| offset | number         |      | `15`   | 从节点中心到标签位置的方向上的偏移量。     |
-| x      | number         |      | -      | 用指定的 X 坐标替换计算结果中的 X 坐标。   |
-| y      | number         |      | -      | 用指定的 Y 坐标替换计算结果中的 Y 坐标。   |
-| angle  | number         |      | -      | 用指定的旋转角度替换计算结果中的旋转角度。 |
-| attrs  | Attr.CellAttrs |      | -      | 标签属性。                                 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| offset | number |  | `15` | 从节点中心到标签位置的方向上的偏移量。 |
+| x | number |  | - | 用指定的 X 坐标替换计算结果中的 X 坐标。 |
+| y | number |  | - | 用指定的 Y 坐标替换计算结果中的 Y 坐标。 |
+| angle | number |  | - | 用指定的旋转角度替换计算结果中的旋转角度。 |
+| attrs | Attr.CellAttrs |  | - | 标签属性。 |
 
 <span class="tag-example">用法</span>
 
@@ -164,23 +164,23 @@ label: {
 
 ```ts
 interface RadialArgs {
-  offset?: number;
-  x?: number;
-  y?: number;
-  angle?: number;
-  attrs?: Attr.CellAttrs;
+  offset?: number
+  x?: number
+  y?: number
+  angle?: number
+  attrs?: Attr.CellAttrs
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称   | 类型           | 必选 | 默认值 | 描述                                      |
-|--------|----------------|:----:|--------|-----------------------------------------|
-| offset | number         |      | `20`   | 从节点中心到标签位置的方向上的偏移量。     |
-| x      | number         |      | -      | 用指定的 X 坐标替换计算结果中的 X 坐标。   |
-| y      | number         |      | -      | 用指定的 Y 坐标替换计算结果中的 Y 坐标。   |
-| angle  | number         |      | -      | 用指定的旋转角度替换计算结果中的旋转角度。 |
-| attrs  | Attr.CellAttrs |      | -      | 标签属性。                                 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| offset | number |  | `20` | 从节点中心到标签位置的方向上的偏移量。 |
+| x | number |  | - | 用指定的 X 坐标替换计算结果中的 X 坐标。 |
+| y | number |  | - | 用指定的 Y 坐标替换计算结果中的 Y 坐标。 |
+| angle | number |  | - | 用指定的旋转角度替换计算结果中的旋转角度。 |
+| attrs | Attr.CellAttrs |  | - | 标签属性。 |
 
 <span class="tag-example">用法</span>
 
@@ -200,15 +200,15 @@ label: {
 
 ```ts
 type Definition<T> = (
-  portPosition: Point,  // 连接桩的位置
-  elemBBox: Rectangle,  // 节点的包围盒
-  args: T,              // 标签位置参数
+  portPosition: Point, // 连接桩的位置
+  elemBBox: Rectangle, // 节点的包围盒
+  args: T, // 标签位置参数
 ) => Result
 
 interface Result {
   position: Point.PointLike // 标签相对于位置
-  angle: number             // 标签的旋转角度
-  attrs: Attr.CellAttrs     // 标签的属性
+  angle: number // 标签的旋转角度
+  attrs: Attr.CellAttrs // 标签的属性
 }
 ```
 
@@ -253,7 +253,7 @@ unregister(name: string): Definition | null
 实际上，我们将该命名空间的中 `register` 和 `unregister` 两个方法分别挂载为 Graph 的两个静态方法 `Graph.registerPortLabelLayout` 和 `Graph.unregisterPortLabelLayout`，所以我们可以像下面这样来注册刚刚定义的布局算法：
 
 ```ts
-Graph.registerPortLabelLayout("bottomRight", bottomRight);
+Graph.registerPortLabelLayout('bottomRight', bottomRight)
 ```
 
 或者：
@@ -280,20 +280,20 @@ const rect = graph.addNode({
     groups: {
       group1: {
         position: {
-          name: "top",
+          name: 'top',
         },
         label: {
           position: {
-            name: "bottomRight",
+            name: 'bottomRight',
           },
         },
       },
     },
 
     items: [
-      { id: "port1", group: "group1" },
-      { id: "port2", label: { position: "bottomRight" } },
+      { id: 'port1', group: 'group1' },
+      { id: 'port2', label: { position: 'bottomRight' } },
     ],
   },
-});
+})
 ```

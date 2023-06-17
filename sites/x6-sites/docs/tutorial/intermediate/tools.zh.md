@@ -7,11 +7,10 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-:::info{title=在本章节中，主要介绍工具相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍工具相关的知识,通过阅读,你可以了解到}
 
 - 如何为节点或边增加工具
-- X6 默认内置哪些常用工具
-  :::
+- X6 默认内置哪些常用工具 :::
 
 ## 使用工具
 
@@ -21,7 +20,7 @@ redirect_from:
 graph.addNode({
   tools: [
     {
-      name: "button-remove", // 工具名称
+      name: 'button-remove', // 工具名称
       args: {
         // 工具对应的参数
         x: 10,
@@ -29,12 +28,12 @@ graph.addNode({
       },
     },
   ],
-});
+})
 
 // 如果参数为空，可以简写为：
 graph.addNode({
-  tools: ["button-remove"],
-});
+  tools: ['button-remove'],
+})
 
 graph.addEdge({
   source,
@@ -49,8 +48,8 @@ graph.addEdge({
       y: 160,
     },
   ],
-  tools: ["vertices", "segments"],
-});
+  tools: ['vertices', 'segments'],
+})
 ```
 
 <code id="tools-basic" src="@/src/tutorial/intermediate/tools/basic/index.tsx"></code>

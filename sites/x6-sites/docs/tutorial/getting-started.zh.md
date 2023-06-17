@@ -37,16 +37,16 @@ $ yarn add @antv/x6
 ```
 
 ```ts
-import { Graph } from "@antv/x6";
+import { Graph } from '@antv/x6'
 
 const graph = new Graph({
-  container: document.getElementById("container"),
+  container: document.getElementById('container'),
   width: 800,
   height: 600,
   background: {
-    color: "#F2F7FA",
+    color: '#F2F7FA',
   },
-});
+})
 ```
 
 ### 2. 渲染节点和边
@@ -71,13 +71,13 @@ X6 支持使用 `SVG`、`HTML` 来渲染节点内容，在此基础上，我们�
 除了基本的元素渲染能力，X6 还内置了大量的图编辑配套插件，使用这些成熟的插件，能很大程度上降低开发成本。下面为画布增加对齐线功能，当移动的节点与其他节点对齐时，会自动出现对齐线，可以方便用户进行位置排版。
 
 ```ts
-import { Snapline } from "@antv/x6-plugin-snapline";
+import { Snapline } from '@antv/x6-plugin-snapline'
 
 graph.use(
   new Snapline({
     enabled: true,
-  })
-);
+  }),
+)
 ```
 
 <code id="use-plugin" src="@/src/tutorial/getting-started/use-plugin/index.tsx"></code>
@@ -87,7 +87,7 @@ graph.use(
 在上面的步骤 2 `渲染节点和边` 中可以看到，可以使用 `fromJSON` 将 `JSON` 数据渲染到画布中，当然，也支持将画布中的数据导出成 `JSON`，这样我们就可以将画布数据序列化后存储到服务端。
 
 ```ts
-graph.toJSON();
+graph.toJSON()
 ```
 
 我们的演示 demo 就到这里了，想继续了解 X6 的一些能力，可以从[基础教程](/zh/docs/tutorial/basic/graph)开始阅读。

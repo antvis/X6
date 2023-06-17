@@ -75,7 +75,7 @@ body:
       value: |
         - OS: [e.g. macOS, Windows, Linux]
         - Browser: [e.g. Chrome, Safari, Firefox]
-        - Version: [e.g. 91.1]
+        - Version: [e.g. 2.11.1]
     validations:
       required: true
   - type: textarea

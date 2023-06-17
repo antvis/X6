@@ -1,7 +1,6 @@
 # Contribution Guide
 
-If you have any comment or advice, please report your [issue](https://github.com/antvis/x6/issues),
-or make any change as you wish and submit a [PR](https://github.com/antvis/x6/pulls).
+If you have any comment or advice, please report your [issue](https://github.com/antvis/x6/issues), or make any change as you wish and submit a [PR](https://github.com/antvis/x6/pulls).
 
 ## Reporting New Issues
 

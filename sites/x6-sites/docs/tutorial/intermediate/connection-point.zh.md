@@ -7,11 +7,10 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-:::info{title=在本章节中，主要介绍连接点相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍连接点相关的知识,通过阅读,你可以了解到}
 
 - 锚点和连接点的概念
-- 如何使用锚点和连接点定制一些特殊连线
-  :::
+- 如何使用锚点和连接点定制一些特殊连线 :::
 
 我们从一个例子出发：
 
@@ -34,44 +33,44 @@ redirect_from:
 const graph = new Graph({
   connecting: {
     sourceAnchor: {
-      name: "right", // 锚点会在节点右侧中心往上偏移 10px
+      name: 'right', // 锚点会在节点右侧中心往上偏移 10px
       args: {
         dy: -10,
       },
     },
     targetAnchor: {
-      name: "right", // 锚点会在节点右侧中心往上偏移 10px
+      name: 'right', // 锚点会在节点右侧中心往上偏移 10px
       args: {
         dy: -10,
       },
     },
-    connectionPoint: "anchor",
+    connectionPoint: 'anchor',
   },
-});
+})
 
 // 也可以在创建连线的时候配置，优先级更高
 graph.addEdge({
   source: {
     cell: source,
     anchor: {
-      name: "right",
+      name: 'right',
       args: {
         dy: -10,
       },
     },
-    connectionPoint: "anchor",
+    connectionPoint: 'anchor',
   },
   target: {
     cell: target,
     anchor: {
-      name: "left",
+      name: 'left',
       args: {
         dy: -10,
       },
     },
-    connectionPoint: "anchor",
+    connectionPoint: 'anchor',
   },
-});
+})
 ```
 
 当然，X6 还支持非常多的锚点和连接点类型，如果要定制特殊的连接边，可以参考 [NodeAnchor](/zh/docs/api/registry/node-anchor) 和 [ConnectionPoint](/zh/docs/api/registry/connection-point)。
