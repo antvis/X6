@@ -19,8 +19,8 @@ if (npmPathIsJs) {
 const cmd = fs.existsSync(karmaConf)
   ? ['karma', 'start']
   : fs.existsSync(jestConf)
-    ? ['jest']
-    : null
+  ? ['jest']
+  : null
 
 if (cmd) {
   spawn(execPath, [...spawnArgs, ...cmd], { stdio: 'inherit' })
