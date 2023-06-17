@@ -44,14 +44,13 @@ const menu = (
 
 ## ContextMenu
 
-
-| 参数              | 说明                                                                                            | 类型                                  | 默认值  |
-|-------------------|-----------------------------------------------------------------------------------------------|---------------------------------------|---------|
-| className         | 自定义的样式名                                                                                  | string                                | -       |
-| menu              | 菜单 [Menu](/en/docs/api/ui/menu) 组件                                                                        | Menu                                  | -       |
-| overlayClassName  | 下拉根元素的类名称                                                                              | string                                | -       |
-| overlayStyle      | 下拉根元素的样式                                                                                | CSSProperties                         | -       |
-| disabled          | 菜单是否禁用                                                                                    | boolean                               | `false` |
-| visible           | 菜单是否显示                                                                                    | boolean                               | `false` |
-| getPopupContainer | 菜单渲染父节点。默认渲染到 body 上，如果你遇到菜单滚动定位问题，试试修改为滚动的区域，并相对其定位。 | (triggerNode: Element) => HTMLElement | -       |
-| onVisibleChange   | 菜单显示状态改变时调用                                                                          | (visible?: boolean) => void           | -       |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| className | 自定义的样式名 | string | - |
+| menu | 菜单 [Menu](/en/docs/api/ui/menu) 组件 | Menu | - |
+| overlayClassName | 下拉根元素的类名称 | string | - |
+| overlayStyle | 下拉根元素的样式 | CSSProperties | - |
+| disabled | 菜单是否禁用 | boolean | `false` |
+| visible | 菜单是否显示 | boolean | `false` |
+| getPopupContainer | 菜单渲染父节点。默认渲染到 body 上，如果你遇到菜单滚动定位问题，试试修改为滚动的区域，并相对其定位。 | (triggerNode: Element) => HTMLElement | - |
+| onVisibleChange | 菜单显示状态改变时调用 | (visible?: boolean) => void | - |

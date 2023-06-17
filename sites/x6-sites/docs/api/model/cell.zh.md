@@ -11,20 +11,19 @@ Cell 是 [Node](/zh/docs/api/model/node) 和 [Edge](/zh/docs/api/model/edge) 的
 
 ## 属性
 
-
-| 选项     | 类型                            | 默认值 | 必选 | 描述                                                                 |
-|----------|---------------------------------|--------|:----:|--------------------------------------------------------------------|
-| id       | string                          |        |      | 节点/边的唯一标识，推荐使用具备业务意义的 ID，默认使用自动生成的 UUID。 |
-| markup   | Markup                          |        |      | 节点/边的 SVG/HTML 片段。                                             |
-| attrs    | Attr.CellAttrs                  |        |      | 节点/边属性样式。                                                     |
-| shape    | string                          |        |      | 渲染节点/边的图形。节点对应的默认值为 `rect`，边对应的默认值为 `edge`。 |
-| view     | string                          |        |      | 渲染节点/边的视图。                                                   |
-| zIndex   | number                          |        |      | 节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。               |
-| visible  | boolean                         | `true` |      | 节点/边是否可见。                                                     |
-| parent   | string                          |        |      | 父节点。                                                              |
-| children | string[]                        |        |      | 子节点/边。                                                           |
-| tools    | ToolItem \| ToolItem[] \| Tools |        |      | 工具选项。                                                            |
-| data     | any                             |        |      | 节点/边关联的业务数据。                                               |
+| 选项 | 类型 | 默认值 | 必选 | 描述 |
+| --- | --- | --- | :-: | --- |
+| id | string |  |  | 节点/边的唯一标识，推荐使用具备业务意义的 ID，默认使用自动生成的 UUID。 |
+| markup | Markup |  |  | 节点/边的 SVG/HTML 片段。 |
+| attrs | Attr.CellAttrs |  |  | 节点/边属性样式。 |
+| shape | string |  |  | 渲染节点/边的图形。节点对应的默认值为 `rect`，边对应的默认值为 `edge`。 |
+| view | string |  |  | 渲染节点/边的视图。 |
+| zIndex | number |  |  | 节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。 |
+| visible | boolean | `true` |  | 节点/边是否可见。 |
+| parent | string |  |  | 父节点。 |
+| children | string[] |  |  | 子节点/边。 |
+| tools | ToolItem \| ToolItem[] \| Tools |  |  | 工具选项。 |
+| data | any |  |  | 节点/边关联的业务数据。 |
 
 ### id
 
@@ -82,29 +81,29 @@ Cell 是 [Node](/zh/docs/api/model/node) 和 [Edge](/zh/docs/api/model/edge) 的
 
 ```ts
 interface Markup {
-  tagName: string;
-  ns?: string;
-  selector?: string;
-  groupSelector?: string | string[];
-  attrs?: { [key: string]: string | number };
-  style?: { [key: string]: string | number };
-  className?: string | string[];
-  textContent?: string;
-  children?: Markup[];
+  tagName: string
+  ns?: string
+  selector?: string
+  groupSelector?: string | string[]
+  attrs?: { [key: string]: string | number }
+  style?: { [key: string]: string | number }
+  className?: string | string[]
+  textContent?: string
+  children?: Markup[]
 }
 ```
 
-| 选项          | 类型             | 默认值                         | 必选 | 描述                                                               |
-|---------------|------------------|--------------------------------|:----:|------------------------------------------------------------------|
-| tagName       | string           |                                |  ✓   | SVG/HTML 元素标签名。                                               |
-| ns            | string           | `"http://www.w3.org/2000/svg"` |      | SVG/HTML 元素命名空间。                                             |
-| selector      | string           | -                              |      | 该元素的选择器（唯一），通过选择器来定位该元素或为该元素指定属性样式。 |
-| groupSelector | string           | -                              |      | 该元素的群组选择器，可以同时为该群组对应的多个元素指定样式。         |
-| attrs         | Attr.SimpleAttrs | -                              |      | 该元素的默认属性键值对。                                            |
-| style         | KeyValue         | -                              |      | 该元素的行内样式键值对。                                            |
-| className     | string           | -                              |      | 该元素的 CSS 样式名。                                               |
-| textContent   | string           | -                              |      | 该元素的文本内容。                                                  |
-| children      | Markup[]         | -                              |      | 嵌套的子元素。                                                      |
+| 选项 | 类型 | 默认值 | 必选 | 描述 |
+| --- | --- | --- | :-: | --- |
+| tagName | string |  | ✓ | SVG/HTML 元素标签名。 |
+| ns | string | `"http://www.w3.org/2000/svg"` |  | SVG/HTML 元素命名空间。 |
+| selector | string | - |  | 该元素的选择器（唯一），通过选择器来定位该元素或为该元素指定属性样式。 |
+| groupSelector | string | - |  | 该元素的群组选择器，可以同时为该群组对应的多个元素指定样式。 |
+| attrs | Attr.SimpleAttrs | - |  | 该元素的默认属性键值对。 |
+| style | KeyValue | - |  | 该元素的行内样式键值对。 |
+| className | string | - |  | 该元素的 CSS 样式名。 |
+| textContent | string | - |  | 该元素的文本内容。 |
+| children | Markup[] | - |  | 嵌套的子元素。 |
 
 #### tagName
 
@@ -130,16 +129,16 @@ const rect = new Shape.Rect({
   attrs: {
     // 指定 rect 元素的样式
     body: {
-      stroke: "#000", // 边框颜色
-      fill: "#fff", // 填充颜色
+      stroke: '#000', // 边框颜色
+      fill: '#fff', // 填充颜色
     },
     // 指定 text 元素的样式
     label: {
-      text: "rect", // 文字
-      fill: "#333", // 文字颜色
+      text: 'rect', // 文字
+      fill: '#333', // 文字颜色
     },
   },
-});
+})
 ```
 
 #### groupSelector
@@ -173,10 +172,10 @@ const rect = new Shape.Rect({
 new SomeNode({
   attrs: {
     group1: {
-      fill: "#2ECC71",
+      fill: '#2ECC71',
     },
   },
-});
+})
 ```
 
 #### attrs
@@ -240,16 +239,16 @@ const rect = new Shape.Rect({
   height: 40,
   attrs: {
     body: {
-      fill: "#2ECC71",
-      stroke: "#000",
+      fill: '#2ECC71',
+      stroke: '#000',
     },
     label: {
-      text: "rect",
-      fill: "#333",
+      text: 'rect',
+      fill: '#333',
       fontSize: 13,
     },
   },
-});
+})
 ```
 
 节点渲染到画布后的 DOM 结构看起来像下面这样：
@@ -291,17 +290,17 @@ const rect = new Shape.Rect({
   attrs: {
     rect: {
       // 使用 rect 这个 css 选择器替代预定义的 body 选择器
-      fill: "#2ECC71",
-      stroke: "#000",
+      fill: '#2ECC71',
+      stroke: '#000',
     },
     text: {
       // 使用 text 这个 css 选择器替代预定义的 label 选择器
-      text: "rect",
-      fill: "#333",
+      text: 'rect',
+      fill: '#333',
       fontSize: 13,
     },
   },
-});
+})
 ```
 
 值得一提的是，支持使用[小驼峰(camelCase)格式](https://zh.wikipedia.org/zh-cn/%E9%A7%9D%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%AF%AB)的属性名，如 `fontSize`，这就避免了 `font-size` 这种属性名作为对象 Key 时需要加引号的麻烦。
@@ -318,25 +317,25 @@ const rect = new Shape.Rect({
 创建节点/边后，我们可以调用实例上的 `attr()` 方法来修改节点属性样式。看下面代码，通过 `/` 分割的路径修改样式，`label` 选择器对应到 `<text>` 元素，`text` 则是该元素的属性名，`hello` 是新的属性值。
 
 ```ts
-rect.attr("label/text", "hello");
+rect.attr('label/text', 'hello')
 
 // 等同于
-rect.attr("label", {
-  text: "hello",
-});
+rect.attr('label', {
+  text: 'hello',
+})
 
 // 等同于
 rect.attr({
   label: {
-    text: "hello",
+    text: 'hello',
   },
-});
+})
 ```
 
 当传入的属性值为 `null` 时可以移除该属性。
 
 ```ts
-rect.attr("label/text", null);
+rect.attr('label/text', null)
 ```
 
 ### shape
@@ -345,28 +344,28 @@ rect.attr("label/text", null);
 
 ```ts
 const rect = graph.addNode({
-  shape: "rect",
+  shape: 'rect',
   x: 100,
   y: 200,
   width: 80,
   height: 40,
-  label: "rect",
-});
+  label: 'rect',
+})
 
 const circle = graph.addNode({
-  shape: "circle",
+  shape: 'circle',
   x: 280,
   y: 200,
   width: 60,
   height: 60,
-  label: "circle",
-});
+  label: 'circle',
+})
 
 const edge = graph.addEdge({
-  shape: "edge",
+  shape: 'edge',
   source: rect,
   target: circle,
-});
+})
 ```
 
 在 X6 内部实现中，我们通过 `shape` 指定的图形找到对应的构造函数来初始化节点/边，并将其添加到画布。
@@ -378,17 +377,16 @@ const edge = graph.addEdge({
 
 同时，我们在 X6 中内置了一系列节点和边。
 
-| 构造函数       | shape 名称 | 描述                                           |
-|----------------|------------|----------------------------------------------|
-| Shape.Rect     | rect       | 矩形。                                          |
-| Shape.Circle   | circle     | 圆形。                                          |
-| Shape.Ellipse  | ellipse    | 椭圆。                                          |
-| Shape.Polygon  | polygon    | 多边形。                                        |
-| Shape.Polyline | polyline   | 多段线。                                        |
-| Shape.Path     | path       | 路径。                                          |
-| Shape.Image    | image      | 图片。                                          |
-| Shape.HTML     | html       | HTML 节点，使用 `foreignObject` 渲染 HTML 片段。 |
-
+| 构造函数 | shape 名称 | 描述 |
+| --- | --- | --- |
+| Shape.Rect | rect | 矩形。 |
+| Shape.Circle | circle | 圆形。 |
+| Shape.Ellipse | ellipse | 椭圆。 |
+| Shape.Polygon | polygon | 多边形。 |
+| Shape.Polyline | polyline | 多段线。 |
+| Shape.Path | path | 路径。 |
+| Shape.Image | image | 图片。 |
+| Shape.HTML | html | HTML 节点，使用 `foreignObject` 渲染 HTML 片段。 |
 
 ### view
 
@@ -439,8 +437,8 @@ graph.addNode({
   y: 40,
   width: 100,
   height: 40,
-  tools: "button-remove", // or { name: 'button-remove' }
-});
+  tools: 'button-remove', // or { name: 'button-remove' }
+})
 ```
 
 同时，可以像下面这样指定工具的参数选项：
@@ -452,13 +450,13 @@ graph.addNode({
   width: 100,
   height: 40,
   tools: {
-    name: "button-remove",
+    name: 'button-remove',
     args: {
       x: 10, // 按钮的 x 坐标，相对于节点的左上角
       y: 10, // 按钮的 y 坐标，相对于节点的左上角
     },
   },
-});
+})
 ```
 
 也可以同时指定多个小工具：
@@ -470,15 +468,15 @@ graph.addNode({
   width: 100,
   height: 40,
   tools: [
-    "button-remove",
+    'button-remove',
     {
-      name: "boundary",
+      name: 'boundary',
       args: {
         padding: 5,
       },
     },
   ],
-});
+})
 ```
 
 ### data
@@ -493,10 +491,10 @@ const rect = new Shape.Rect({
   height: 40,
   data: {
     bizID: 125,
-    date: "20200630",
+    date: '20200630',
     price: 89.0,
   },
-});
+})
 ```
 
 ## 方法
@@ -508,7 +506,7 @@ const rect = new Shape.Rect({
 获取节点/边的图形，返回注册到 X6 的图形的名称。
 
 ```ts
-if (node.shape === "rect") {
+if (node.shape === 'rect') {
   // do something if the node is a 'rect' node.
 }
 ```
@@ -518,7 +516,7 @@ if (node.shape === "rect") {
 获取节点/边的视图，返回注册到 X6 的视图的名称。
 
 ```ts
-if (node.view === "rect") {
+if (node.view === 'rect') {
   // do something if the node is a 'rect' view.
 }
 ```
@@ -559,10 +557,9 @@ toJSON(options?: Cell.ToJSONOptions): Object
 
 将节点/边的结构化数据转换为 JSON 数据，以便做持久化存储（通常我们通过调用 `graph.toJSON` 来导出整个画布的数据）。
 
-
-| 选项         | 类型    | 默认值  | 必选 | 描述                                    |
-|--------------|---------|---------|:----:|---------------------------------------|
-| options.diff | boolean | `false` |      | 是否返回与默认值相比具有差异的那些数据。 |
+| 选项 | 类型 | 默认值 | 必选 | 描述 |
+| --- | --- | --- | :-: | --- |
+| options.diff | boolean | `false` |  | 是否返回与默认值相比具有差异的那些数据。 |
 
 - 当 `options.diff` 为 `false` 时，返回完整数据。
 - 当 `options.diff` 为 `true` 时，返回差异数据。
@@ -575,10 +572,9 @@ clone(options?: Cell.CloneOptions): Cell | Node | Edge | { [id:string]: Node | E
 
 克隆节点/边。
 
-| 选项         | 类型    | 默认值  | 必选 | 描述                                                |
-|--------------|---------|---------|:----:|---------------------------------------------------|
-| options.deep | boolean | `false` |      | 是否克隆子孙节点和边，默认为 `false` 表示只克隆自身。 |
-
+| 选项 | 类型 | 默认值 | 必选 | 描述 |
+| --- | --- | --- | :-: | --- |
+| options.deep | boolean | `false` |  | 是否克隆子孙节点和边，默认为 `false` 表示只克隆自身。 |
 
 - 当 `options.deep` 为 `false` 时，返回通克隆创建的新节点/边。
 - 当 `options.deep` 为 `true` 时，返回一个对象，对象的 Key 是被克隆节点/边的 ID，对象的 Value 是克隆出来的节点/边。
@@ -591,9 +587,8 @@ on(name: string, handler: Events.Handler, context?: any): this
 
 监听事件。
 
-
-| 选项    | 类型           | 默认值 | 必选 | 描述                  |
-|---------|----------------|--------|:----:|---------------------|
+| 选项    | 类型           | 默认值 | 必选 | 描述                   |
+| ------- | -------------- | ------ | :--: | ---------------------- |
 | name    | string         |        |  ✓   | 事件名称。             |
 | handler | Events.Handler |        |  ✓   | 回调函数。             |
 | context | any            |        |      | 回调函数的调用上下文。 |
@@ -606,8 +601,8 @@ once(name: string, handler: Events.Handler, context?: any): this
 
 监听一次事件，当事件被触发后自动删除该监听。
 
-| 选项    | 类型           | 默认值 | 必选 | 描述                  |
-|---------|----------------|--------|:----:|---------------------|
+| 选项    | 类型           | 默认值 | 必选 | 描述                   |
+| ------- | -------------- | ------ | :--: | ---------------------- |
 | name    | string         |        |  ✓   | 事件名称。             |
 | handler | Events.Handler |        |  ✓   | 回调函数。             |
 | context | any            |        |      | 回调函数的调用上下文。 |
@@ -646,12 +641,10 @@ trigger(name: string, ...args?: any[]): boolean | Promise<boolean>
 
 触发事件。
 
-
-| 选项    | 类型   | 默认值 | 必选 | 描述                |
-|---------|--------|--------|:----:|-------------------|
+| 选项    | 类型   | 默认值 | 必选 | 描述                 |
+| ------- | ------ | ------ | :--: | -------------------- |
 | name    | string |        |  ✓   | 事件名称。           |
 | ...args | any[]  |        |      | 传给回调函数的参数。 |
-
 
 - 当回调函数都是同步函数时，只要某个回调函数返回 `false` 时就返回 `false`，否则返回 `true`。
 - 当回调函数中存在异步函数时，按照同步回调的判断逻辑，返回 `Promise<boolean>`。
@@ -673,7 +666,7 @@ dispose(): void
 获取 `markup`。
 
 ```ts
-const markup = cell.markup;
+const markup = cell.markup
 ```
 
 #### set markup
@@ -681,7 +674,7 @@ const markup = cell.markup;
 设置 `markup`，并触发 `change:markup` 事件和画布重绘。
 
 ```ts
-cell.markup = markup;
+cell.markup = markup
 ```
 
 #### getMarkup()
@@ -693,7 +686,7 @@ getMarkup(): Markup
 获取 `markup`。
 
 ```ts
-const markup = cell.getMarkup();
+const markup = cell.getMarkup()
 ```
 
 #### setMarkup(...)
@@ -704,12 +697,11 @@ setMarkup(markup: Markup, options?: Cell.SetOptions): this
 
 设置 `markup`。默认情况触发 `change:markup` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:markup` 事件和画布重绘。
 
-
-| 名称             | 类型              | 必选 | 默认值  | 描述                                               |
-|------------------|-------------------|:----:|---------|----------------------------------------------------|
-| markup           | [Markup](#markup) |  ✓   |         |                                                    |
-| options.silent   | boolean           |      | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
-| options...others | object            |      |         | 其他自定义键值对，可以在事件回调中使用。             |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| markup | [Markup](#markup) | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### removeMarkup(...)
 
@@ -719,12 +711,10 @@ removeMarkup(options?: Cell.SetOptions): this
 
 删除 `markup`。默认情况触发 `change:markup` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:markup` 事件和画布重绘。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                               |
-|------------------|---------|------|---------|--------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。             |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ### 元素属性 attrs
 
@@ -735,7 +725,7 @@ removeMarkup(options?: Cell.SetOptions): this
 获取属性。
 
 ```ts
-const atts = cell.attrs;
+const atts = cell.attrs
 ```
 
 #### set attrs
@@ -743,7 +733,7 @@ const atts = cell.attrs;
 设置属性，并触发 `change:attrs` 事件和画布重绘。
 
 ```ts
-cell.atts = attrs;
+cell.atts = attrs
 ```
 
 #### getAttrs()
@@ -755,7 +745,7 @@ getAttrs(): Attr.CellAttrs
 获取属性。
 
 ```ts
-const atts = cell.getAttrs();
+const atts = cell.getAttrs()
 ```
 
 #### setAttrs(...)
@@ -766,31 +756,29 @@ setAttrs(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
 
 设置属性，默认情况触发 `change:attrs` 事件和画布重绘。
 
-
-| 名称              | 类型                                | 必选 | 默认值  | 描述                                                                                   |
-|-------------------|-------------------------------------|:----:|---------|----------------------------------------------------------------------------------------|
-| attrs             | Attr.CellAttrs \| null \| undefined |  ✓   |         |                                                                                        |
-| options.overwrite | boolean                             |      | `false` | 为 `true` 时替换现有属性，否则根据 `options.deep` 选项进行深度或浅度 merge。             |
-| options.deep      | boolean                             |      | `true`  | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
-| options.silent    | boolean                             |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。                                      |
-| options...others  | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| attrs | Attr.CellAttrs \| null \| undefined | ✓ |  |  |
+| options.overwrite | boolean |  | `false` | 为 `true` 时替换现有属性，否则根据 `options.deep` 选项进行深度或浅度 merge。 |
+| options.deep | boolean |  | `true` | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 默认情况，指定的属性将与旧属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)：
 
 ```ts
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
 // }
 
 cell.setAttrs({
-  body: { fill: "#f5f5f5" },
-  label: { text: "My Label" },
-});
+  body: { fill: '#f5f5f5' },
+  label: { text: 'My Label' },
+})
 
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#f5f5f5' },
 //   label: { fill: '#333333', text: 'My Label' },
@@ -800,15 +788,15 @@ console.log(cell.getAttrs());
 当 `options.deep` 为 `false` 时，进行浅 merge：
 
 ```ts
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
 // }
 
-cell.setAttrs({ label: { text: "My Label" } }, { deep: false });
+cell.setAttrs({ label: { text: 'My Label' } }, { deep: false })
 
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { text: 'My Label' },
@@ -818,15 +806,15 @@ console.log(cell.getAttrs());
 当 `options.overwrite` 为 `true` 时，直接替换旧属性：
 
 ```ts
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
 // }
 
-cell.setAttrs({ label: { text: "My Label" } }, { overwrite: true });
+cell.setAttrs({ label: { text: 'My Label' } }, { overwrite: true })
 
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   label: { text: 'My Label' },
 // }
@@ -840,12 +828,11 @@ replaceAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}): this
 
 用给定的属性替换原有属性，相当于调用 `setAttrs(attrs, { ...options, overwrite: true })`。
 
-
-| 名称             | 类型                                | 必选 | 默认值  | 描述                                              |
-|------------------|-------------------------------------|:----:|---------|---------------------------------------------------|
-| attrs            | Attr.CellAttrs \| null \| undefined |  ✓   |         |                                                   |
-| options.silent   | boolean                             |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
-| options...others | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。            |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| attrs | Attr.CellAttrs \| null \| undefined | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### updateAttrs(...)
 
@@ -855,12 +842,11 @@ updateAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}): this
 
 使用浅 merge 更新属性，相当于调用 `setAttrs(attrs, { ...options, deep: false })`。
 
-
-| 名称             | 类型                                | 必选 | 默认值  | 描述                                              |
-|------------------|-------------------------------------|:----:|---------|---------------------------------------------------|
-| attrs            | Attr.CellAttrs \| null \| undefined |  ✓   |         |                                                   |
-| options.silent   | boolean                             |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
-| options...others | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。            |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| attrs | Attr.CellAttrs \| null \| undefined | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### removeAttrs(...)
 
@@ -870,11 +856,10 @@ removeAttrs(options?: Cell.SetOptions): this
 
 删除属性。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                              |
-|------------------|---------|:----:|---------|-------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。            |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### getAttrByPath(...)
 
@@ -884,16 +869,14 @@ getAttrByPath<T>(path?: string | string[]): T
 
 根据属性路径获取属性值。
 
-
-| 名称 | 类型               | 必选 | 默认值 | 描述                                                                                                                                              |
-|------|--------------------|:----:|--------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| path | string \| string[] |      |        | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `\` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| path | string \| string[] |  |  | 属性路径。当 `path` 为 `string` 类型时，路径是以 `\` 分割的字符串。 当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
 
 某节点的属性值如下：
 
 ```ts
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
@@ -903,7 +886,7 @@ console.log(cell.getAttrs());
 当路径为空时返回全部属性：
 
 ```ts
-console.log(cell.getAttrByPath());
+console.log(cell.getAttrByPath())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
@@ -913,32 +896,32 @@ console.log(cell.getAttrByPath());
 通过字符串路径获取属性值：
 
 ```ts
-console.log(cell.getAttrByPath("body"));
+console.log(cell.getAttrByPath('body'))
 // { fill: '#ffffff' }
 
-console.log(cell.getAttrByPath("body/fill"));
+console.log(cell.getAttrByPath('body/fill'))
 // '#ffffff'
 
-console.log(cell.getAttrByPath("unkonwn"));
+console.log(cell.getAttrByPath('unkonwn'))
 // undefined
 
-console.log(cell.getAttrByPath("body/unkonwn"));
+console.log(cell.getAttrByPath('body/unkonwn'))
 // undefined
 ```
 
 通过属性对象的 Key 数组构成的路径获取属性值：
 
 ```ts
-console.log(cell.getAttrByPath(["body"]));
+console.log(cell.getAttrByPath(['body']))
 // { fill: '#ffffff' }
 
-console.log(cell.getAttrByPath(["body", "fill"]));
+console.log(cell.getAttrByPath(['body', 'fill']))
 // '#ffffff'
 
-console.log(cell.getAttrByPath(["unkonwn"]));
+console.log(cell.getAttrByPath(['unkonwn']))
 // undefined
 
-console.log(cell.getAttrByPath(["body", "unkonwn"]));
+console.log(cell.getAttrByPath(['body', 'unkonwn']))
 // undefined
 ```
 
@@ -950,19 +933,17 @@ setAttrByPath(path: string | string[], value: Attr.ComplexAttrValue, options?: C
 
 根据属性路径设置属性值。
 
-
-| 名称             | 类型                  | 必选 | 默认值  | 描述                                                                                                                                              |
-|------------------|-----------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| path             | string \| string[]    |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `\` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
-| value            | Attr.ComplexAttrValue |  ✓   |         | 新属性值。                                                                                                                                         |
-| options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。                                                                                                 |
-| options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                            |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| path | string \| string[] | ✓ |  | 属性路径。 当 `path` 为 `string` 类型时，路径是以 `\` 分割的字符串。当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
+| value | Attr.ComplexAttrValue | ✓ |  | 新属性值。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 某节点的初始属性值如下：
 
 ```ts
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
@@ -972,15 +953,15 @@ console.log(cell.getAttrs());
 通过字符串路径设置属性值：
 
 ```ts
-cell.setAttrByPath("body", { stroke: "#000000" }); // 替换 body 属性值
-console.log(cell.getAttrs());
+cell.setAttrByPath('body', { stroke: '#000000' }) // 替换 body 属性值
+console.log(cell.getAttrs())
 // {
 //   body: { stroke: '#000000' },
 //   label: { fill: '#333333' },
 // }
 
-cell.setAttrByPath("body/fill", "#f5f5f5"); // 设置 body.fill 属性值
-console.log(cell.getAttrs());
+cell.setAttrByPath('body/fill', '#f5f5f5') // 设置 body.fill 属性值
+console.log(cell.getAttrs())
 // {
 //   body: { stroke: '#000000', fill: '#f5f5f5' },
 //   label: { fill: '#333333' },
@@ -990,15 +971,15 @@ console.log(cell.getAttrs());
 或者通过属性对象的 Key 数组构成的路径设置属性值：
 
 ```ts
-cell.setAttrByPath(["body"], { stroke: "#000000" }); // 替换 body 属性值
-console.log(cell.getAttrs());
+cell.setAttrByPath(['body'], { stroke: '#000000' }) // 替换 body 属性值
+console.log(cell.getAttrs())
 // {
 //   body: { stroke: '#000000' },
 //   label: { fill: '#333333' },
 // }
 
-cell.setAttrByPath(["body", "fill"], "#f5f5f5"); // 设置 body.fill 属性值
-console.log(cell.getAttrs());
+cell.setAttrByPath(['body', 'fill'], '#f5f5f5') // 设置 body.fill 属性值
+console.log(cell.getAttrs())
 // {
 //   body: { stroke: '#000000', fill: '#f5f5f5' },
 //   label: { fill: '#333333' },
@@ -1013,18 +994,16 @@ removeAttrByPath(path: string | string[], options?: Cell.SetOption ): this
 
 删除指定路径的属性值。
 
-
-| 名称             | 类型               | 必选 | 默认值  | 描述                                                                                                                                              |
-|------------------|--------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `\` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
-| options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。                                                                                                 |
-| options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                            |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| path | string \| string[] | ✓ |  | 属性路径。 当 `path` 为 `string` 类型时，路径是以 `\` 分割的字符串。 当 `path` 为 `string[]` 类型时，路径是属性对象路径上的 Key 构成的数组。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 某节点的初始属性值如下：
 
 ```ts
-console.log(cell.getAttrs());
+console.log(cell.getAttrs())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
@@ -1034,15 +1013,15 @@ console.log(cell.getAttrs());
 通过字符串路径删除属性值：
 
 ```ts
-cell.removeAttrByPath("body/fill");
-console.log(cell.getAttrs());
+cell.removeAttrByPath('body/fill')
+console.log(cell.getAttrs())
 // {
 //   body: { },
 //   label: { fill: '#333333' },
 // }
 
-cell.removeAttrByPath("body");
-console.log(cell.getAttrs());
+cell.removeAttrByPath('body')
+console.log(cell.getAttrs())
 // {
 //   label: { fill: '#333333' },
 // }
@@ -1051,15 +1030,15 @@ console.log(cell.getAttrs());
 或者通过属性对象的 Key 数组构成的路径删除属性值：
 
 ```ts
-cell.removeAttrByPath(["body", "fill"]);
-console.log(cell.getAttrs());
+cell.removeAttrByPath(['body', 'fill'])
+console.log(cell.getAttrs())
 // {
 //   body: { },
 //   label: { fill: '#333333' },
 // }
 
-cell.removeAttrByPath(["body"]);
-console.log(cell.getAttrs());
+cell.removeAttrByPath(['body'])
+console.log(cell.getAttrs())
 // {
 //   label: { fill: '#333333' },
 // }
@@ -1091,11 +1070,10 @@ attr(attrs: Attr.CellAttrs, options?: Cell.SetOptions): this
 
 该方法是 [`getAttrByPath`](#getattrbypath)、[`setAttrByPath`](#setattrbypath) 和 [`setAttrs`](#setattrs) 三个方法的整合，提供了上面四种函数签名，是一个非常实用的方法。
 
-
 获取全部属性值：
 
 ```ts
-console.log(cell.attr());
+console.log(cell.attr())
 // {
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
@@ -1105,15 +1083,15 @@ console.log(cell.attr());
 获取指定路径上的属性值：
 
 ```ts
-console.log(cell.attr("body/fill"));
+console.log(cell.attr('body/fill'))
 // '#ffffff'
 ```
 
 设置指定路径上的属性值：
 
 ```ts
-cell.attr("body/fill", "#f5f5f5");
-console.log(cell.attr());
+cell.attr('body/fill', '#f5f5f5')
+console.log(cell.attr())
 // {
 //   body: { fill: '#f5f5f5' },
 //   label: { fill: '#333333' },
@@ -1124,10 +1102,10 @@ console.log(cell.attr());
 
 ```ts
 cell.attr({
-  body: { stroke: "#000000" },
-  label: { fill: "blue", text: "my lable" },
-});
-console.log(cell.attr());
+  body: { stroke: '#000000' },
+  label: { fill: 'blue', text: 'my lable' },
+})
+console.log(cell.attr())
 // {
 //   body: { fill: '#f5f5f5', stroke: '#000000' },
 //   label: { fill: 'blue', text: 'my lable' },
@@ -1143,7 +1121,7 @@ console.log(cell.attr());
 获取 `zIndex`。
 
 ```ts
-const z = cell.zIndex;
+const z = cell.zIndex
 ```
 
 #### set zIndex
@@ -1151,7 +1129,7 @@ const z = cell.zIndex;
 设置 `zIndex`，触发 `change:zIndex` 事件和画布重绘。
 
 ```ts
-cell.zIndex = 2;
+cell.zIndex = 2
 ```
 
 #### getZIndex()
@@ -1163,7 +1141,7 @@ getZIndex(): number
 获取 `zIndex`。
 
 ```ts
-const z = cell.getZIndex();
+const z = cell.getZIndex()
 ```
 
 #### setZIndex(...)
@@ -1174,13 +1152,11 @@ setZIndex(zIndex: number, options?: Cell.SetOptions): this
 
 设置 `zIndex`。默认情况触发 `change:zIndex` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                               |
-|------------------|---------|:----:|---------|----------------------------------------------------|
-| zIndex           | number  |  ✓   |         |                                                    |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。             |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| zIndex | number | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### removeZIndex(...)
 
@@ -1190,12 +1166,10 @@ removeZIndex(options?: Cell.SetOptions): this
 
 删除 `zIndex`。默认情况触发 `change:zIndex` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                               |
-|------------------|---------|------|---------|--------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。             |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### toFront(...)
 
@@ -1205,13 +1179,11 @@ toFront(options?: Cell.ToFrontOptions): this
 
 将节点/边移到最顶层。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                               |
-|------------------|---------|------|---------|--------------------------------------------------|
-| options.deep     | boolean |      | `false` | 为 `true` 时同时更新所有子节点/边的层级。           |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。             |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| options.deep | boolean |  | `false` | 为 `true` 时同时更新所有子节点/边的层级。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### toBack(...)
 
@@ -1221,24 +1193,22 @@ toBack(options?: Cell.ToBackOptions): this
 
 将节点/边移到最底层。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                               |
-|------------------|---------|------|---------|--------------------------------------------------|
-| options.deep     | boolean |      | `false` | 为 `true` 时同时更新所有子节点/边的层级。           |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。             |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| options.deep | boolean |  | `false` | 为 `true` 时同时更新所有子节点/边的层级。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:zIndex` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 默认情况，更新 `zIndex` 时，触发 `change:zIndex` 事件和画布重绘：
 
 ```ts
-cell.toBack();
+cell.toBack()
 ```
 
 当 `options.deep` 为 `true` 时，同时更新所有子节点/边的层级。：
 
 ```ts
-cell.toBack({ deep: true });
+cell.toBack({ deep: true })
 ```
 
 ### 可见性 Visible
@@ -1265,11 +1235,10 @@ show(options?: Cell.SetOptions): this
 
 显示节点/边。
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                |
-|------------------|---------|:----:|---------|---------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### hide(...)
 
@@ -1279,15 +1248,12 @@ hide(options?: Cell.SetOptions): this
 
 隐藏节点/边。
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                |
-|------------------|---------|:----:|---------|---------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
-
-:::info{title=提示：}
-X6 2.x 是通过在节点标签上增加 `display: none` 来实现元素隐藏。
-:::
+:::info{title=提示} X6 2.x 是通过在节点标签上增加 `display: none` 来实现元素隐藏。 :::
 
 #### isVisible()
 
@@ -1305,13 +1271,11 @@ setVisible(visible: boolean, options?: Cell.SetOptions): this
 
 设置节点/边的可见性。默认情况触发 `change:visible` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:visible` 事件和画布重绘。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                |
-|------------------|---------|:----:|---------|-----------------------------------------------------|
-| visible          | boolean |  ✓   |         |                                                     |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| visible | boolean | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### toggleVisible(...)
 
@@ -1321,11 +1285,10 @@ toggleVisible(options?: Cell.SetOptions): this
 
 切换节点/边的可见性。默认情况触发 `change:visible` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:visible` 事件和画布重绘。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                |
-|------------------|---------|:----:|---------|---------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:visible` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ### 业务数据 Data
 
@@ -1339,10 +1302,10 @@ const rect = new Shape.Rect({
   height: 40,
   data: {
     bizID: 125,
-    date: "20200630",
+    date: '20200630',
     price: 89.0,
   },
-});
+})
 ```
 
 #### get data
@@ -1369,42 +1332,39 @@ setData(data: any, options?: Cell.SetDataOptions): this
 
 设置关联的业务数据。默认情况触发 `change:data` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:data` 事件和画布重绘。
 
-
-| 名称              | 类型    | 必选 | 默认值  | 描述                                                                                   |
-|-------------------|---------|:----:|---------|----------------------------------------------------------------------------------------|
-| data              | any     |  ✓   |         |                                                                                        |
-| options.overwrite | boolean |      | `false` | 为 `true` 时替换现有值，否则根据 `options.deep` 选项进行深度或浅度 merge。               |
-| options.deep      | boolean |      | `true`  | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
-| options.silent    | boolean |      | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。                                       |
-| options...others  | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| data | any | ✓ |  |  |
+| options.overwrite | boolean |  | `false` | 为 `true` 时替换现有值，否则根据 `options.deep` 选项进行深度或浅度 merge。 |
+| options.deep | boolean |  | `true` | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 默认与原数据进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，并触发 `change:data` 事件和画布重绘：
 
 ```ts
-cell.setData(data);
+cell.setData(data)
 ```
 
 当 `options.overwrite` 为 `true` 时，替换旧数据：
 
 ```ts
-cell.setData(data, { overwrite: true });
+cell.setData(data, { overwrite: true })
 ```
 
 当 `options.deep` 为 `false` 时，与原数据进行浅 merge：
 
 ```ts
-cell.setData(data, { overwrite: true });
+cell.setData(data, { overwrite: true })
 ```
 
-:::info{title=提示：}
-`setData` 方法是通过浅比较来判断数据是否有更新，从而决定是否触发节点重绘。
-:::
+:::info{title=提示} `setData` 方法是通过浅比较来判断数据是否有更新，从而决定是否触发节点重绘。 :::
 
 ```ts
 const obj = { name: 'x6', star: true }
 node.setData(obj) // 此时会触发节点重绘
 
-obj.star = false;
+obj.star = false
 node.setData(obj) // 注意，此时不会进行深比较，判定对象未发生修改，不会触发节点重绘
 
 node.setData({
@@ -1421,12 +1381,11 @@ replaceData(data: any, options: Cell.SetOptions = {}): this
 
 用指定的数据替换原数据，相当于调用 `setData(data, { ...options, overwrite: true })`。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                             |
-|------------------|---------|:----:|---------|--------------------------------------------------|
-| data             | any     |  ✓   |         |                                                  |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。           |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| data | any | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### updateData(...)
 
@@ -1436,12 +1395,11 @@ updateData(data: any, options: Cell.SetOptions = {}): this
 
 通过浅 merge 来更新数据，相当于调用 `setData(data, { ...options, deep: false })`。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                             |
-|------------------|---------|:----:|---------|--------------------------------------------------|
-| data             | any     |  ✓   |         |                                                  |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。           |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| data | any | ✓ |  |  |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### removeData(...)
 
@@ -1451,12 +1409,10 @@ removeData(options: Cell.SetOptions): this
 
 删除数据。默认情况触发 `change:data` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `change:data` 事件和画布重绘。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                             |
-|------------------|---------|------|---------|------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。           |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ### 父子关系 Parent/Children
 
@@ -1480,12 +1436,11 @@ setParent(parent: Cell | null, options?: Cell.SetOptions): this
 
 设置父节点。
 
-| 名称             | 类型         | 必选 | 默认值  | 描述                                                |
-|------------------|--------------|:----:|---------|---------------------------------------------------|
-| parent           | Cell \| null |  ✓   |         | 父节点或 `null`，当 `parent` 为 `null` 时删除父节点。 |
-| options.silent   | boolean      |      | `false` | 为 `true` 时不触发 `change:parent` 事件和画布重绘。  |
-| options...others | object       |      |         | 其他自定义键值对，可以在事件回调中使用。              |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| parent | Cell \| null | ✓ |  | 父节点或 `null`，当 `parent` 为 `null` 时删除父节点。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:parent` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### getParentId()
 
@@ -1523,12 +1478,11 @@ setChildren(children: Cell[] | null, options?: Cell.SetOptions)
 
 设置子节点/边。
 
-| 名称             | 类型           | 必选 | 默认值  | 描述                                                            |
-|------------------|----------------|:----:|---------|---------------------------------------------------------------|
-| children         | Cell[] \| null |  ✓   |         | 子节点/边数组或 `null`，当 `children` 为 `null` 时清空子节点/边。 |
-| options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `change:children` 事件和画布重绘。            |
-| options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                          |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| children | Cell[] \| null | ✓ |  | 子节点/边数组或 `null`，当 `children` 为 `null` 时清空子节点/边。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:children` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### isParentOf(...)
 
@@ -1538,9 +1492,8 @@ isParentOf(child: Cell | null): boolean
 
 返回当前节点是否是指定 Cell 的父节点。
 
-
 | 名称  | 类型         | 必选 | 默认值 | 描述 |
-|-------|--------------|:----:|--------|------|
+| ----- | ------------ | :--: | ------ | ---- |
 | child | Cell \| null |  ✓   |        |      |
 
 #### isChildOf(...)
@@ -1551,9 +1504,8 @@ isChildOf(parent: Cell | null): boolean
 
 返回当前节点/边是否是指定节点的的子节点/边。
 
-
 | 名称   | 类型         | 必选 | 默认值 | 描述 |
-|--------|--------------|:----:|--------|------|
+| ------ | ------------ | :--: | ------ | ---- |
 | parent | Cell \| null |  ✓   |        |      |
 
 #### eachChild(...)
@@ -1564,10 +1516,10 @@ eachChild(iterator: (child: Cell, index: number, children: Cell[]) => void, cont
 
 遍历子节点。
 
-| 名称     | 类型                                                   | 必选 | 默认值 | 描述                    |
-|----------|--------------------------------------------------------|:----:|--------|-----------------------|
-| iterator | (child: Cell, index: number, children: Cell[]) => void |  ✓   |        | 迭代器函数。             |
-| context  | any                                                    |      |        | 迭代器函数的执行上下文。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| iterator | (child: Cell, index: number, children: Cell[]) => void | ✓ |  | 迭代器函数。 |
+| context | any |  |  | 迭代器函数的执行上下文。 |
 
 #### filterChild(...)
 
@@ -1577,12 +1529,10 @@ filterChild(iterator: (child: Cell, index: number, children: Cell[]) => boolean,
 
 过滤子节点。
 
-
-| 名称     | 类型                                                      | 必选 | 默认值 | 描述                    |
-|----------|-----------------------------------------------------------|:----:|--------|-----------------------|
-| iterator | (child: Cell, index: number, children: Cell[]) => boolean |  ✓   |        | 过滤器函数。             |
-| context  | any                                                       |      |        | 过滤器函数的执行上下文。 |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| iterator | (child: Cell, index: number, children: Cell[]) => boolean | ✓ |  | 过滤器函数。 |
+| context | any |  |  | 过滤器函数的执行上下文。 |
 
 #### getChildCount()
 
@@ -1600,9 +1550,8 @@ getChildIndex(child: Cell): number
 
 获取子节点/边的索引。
 
-
 | 名称  | 类型 | 必选 | 默认值 | 描述 |
-|-------|------|:----:|--------|------|
+| ----- | ---- | :--: | ------ | ---- |
 | child | Cell |  ✓   |        |      |
 
 #### getChildAt(...)
@@ -1613,9 +1562,8 @@ getChildAt(index: number): Cell | null
 
 获取指定索引位置的子节点/边。
 
-
-| 名称  | 类型   | 必选 | 默认值 | 描述      |
-|-------|--------|:----:|--------|---------|
+| 名称  | 类型   | 必选 | 默认值 | 描述       |
+| ----- | ------ | :--: | ------ | ---------- |
 | index | number |  ✓   |        | 索引位置。 |
 
 #### getAncestors(...)
@@ -1626,10 +1574,9 @@ getAncestors(options?: { deep?: boolean }): Cell[]
 
 获取所有祖先节点。
 
-| 名称         | 类型    | 必选 | 默认值 | 描述                                                                 |
-|--------------|---------|:----:|--------|--------------------------------------------------------------------|
-| options.deep | boolean |      | `true` | 默认递归获取所有祖先节点，设置为 `false` 时只返回当前节点/边的父节点。 |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.deep | boolean |  | `true` | 默认递归获取所有祖先节点，设置为 `false` 时只返回当前节点/边的父节点。 |
 
 #### getDescendants(...)
 
@@ -1639,12 +1586,10 @@ getDescendants(options?: Cell.GetDescendantsOptions): Cell[]
 
 获取所有子孙节点。
 
-
-| 名称                 | 类型    | 必选 | 默认值  | 描述                                                                 |
-|----------------------|---------|:----:|---------|--------------------------------------------------------------------|
-| options.deep         | boolean |      | `true`  | 默认递归获取所有子孙节点，设置为 `false` 时只返回当前节点孩子节点/边。 |
-| options.breadthFirst | boolean |      | `false` | 默认使用深度优先算法，设置为 `true` 时使用广度优先搜索算法。           |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.deep | boolean |  | `true` | 默认递归获取所有子孙节点，设置为 `false` 时只返回当前节点孩子节点/边。 |
+| options.breadthFirst | boolean |  | `false` | 默认使用深度优先算法，设置为 `true` 时使用广度优先搜索算法。 |
 
 返回子孙节点/边的数组。
 
@@ -1656,11 +1601,10 @@ isDescendantOf(ancestor: Cell | null, options?: { deep?: boolean }): boolean
 
 返回当前节点/边是否是指定节点的子孙节点/边。
 
-
-| 名称         | 类型         | 必选 | 默认值 | 描述                                                                      |
-|--------------|--------------|:----:|--------|-------------------------------------------------------------------------|
-| ancestor     | Cell \| null |  ✓   |        | 指定节点。                                                                 |
-| options.deep | boolean      |      | `true` | 默认递归判断指定节点的所有子孙节点/边，设置为 `false` 时只判断孩子节点/边。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| ancestor | Cell \| null | ✓ |  | 指定节点。 |
+| options.deep | boolean |  | `true` | 默认递归判断指定节点的所有子孙节点/边，设置为 `false` 时只判断孩子节点/边。 |
 
 #### isAncestorOf(...)
 
@@ -1670,11 +1614,10 @@ isAncestorOf(descendant: Cell | null, options?: { deep?: boolean }): boolean
 
 返回当前节点是否是指定节点/边的祖先节点。
 
-
-| 名称         | 类型         | 必选 | 默认值 | 描述                                                                      |
-|--------------|--------------|:----:|--------|-------------------------------------------------------------------------|
-| descendant   | Cell \| null |  ✓   |        | 指定节点/边。                                                              |
-| options.deep | boolean      |      | `true` | 默认递归判断指定节点的所有子孙节点/边，设置为 `false` 时只判断孩子节点/边。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| descendant | Cell \| null | ✓ |  | 指定节点/边。 |
+| options.deep | boolean |  | `true` | 默认递归判断指定节点的所有子孙节点/边，设置为 `false` 时只判断孩子节点/边。 |
 
 #### getCommonAncestor(...)
 
@@ -1684,10 +1627,9 @@ getCommonAncestor(...cells: (Cell | null | undefined)[]): Cell | null
 
 获取给定节点/边的共同祖先节点。
 
-| 名称     | 类型                          | 必选 | 默认值 | 描述         |
-|----------|-------------------------------|:----:|--------|------------|
+| 名称     | 类型                          | 必选 | 默认值 | 描述          |
+| -------- | ----------------------------- | :--: | ------ | ------------- |
 | ...cells | (Cell \| null \| undefined)[] |  ✓   |        | 指定节点/边。 |
-
 
 #### addChild(...)
 
@@ -1697,12 +1639,11 @@ addChild(child: Cell, options?: Cell.SetOptions): this
 
 将指定的节点/边添加到当前节点的子节点的末尾。
 
-
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                 |
-|------------------|---------|:----:|---------|----------------------------------------------------|
-| child            | Cell    |  ✓   |         | 指定的节点/边。                                       |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:children` 事件和画布重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。               |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| child | Cell | ✓ |  | 指定的节点/边。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:children` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### removeChild(...)
 
@@ -1712,13 +1653,12 @@ removeChild(child: Cell, options?: Cell.RemoveOptions): Cell | null
 
 移除指定的子节点/边。
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                          |
-|------------------|---------|:----:|---------|-------------------------------------------------------------|
-| child            | Cell    |  ✓   |         | 指定的节点/边。                                                |
-| options.deep     | boolean |      | `true`  | 默认递归移除所有子节点/边，设置为 `false` 时只移除当前节点/边。 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:children` 事件和画布重绘。          |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                        |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| child | Cell | ✓ |  | 指定的节点/边。 |
+| options.deep | boolean |  | `true` | 默认递归移除所有子节点/边，设置为 `false` 时只移除当前节点/边。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:children` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### remove(...)
 
@@ -1762,19 +1702,18 @@ const rect = new Shape.Rect({
 getProp<T>(key: string, defaultValue?: T): T
 ```
 
-| 名称         | 类型   | 必选 | 默认值 | 描述                                     |
-|--------------|--------|:----:|--------|----------------------------------------|
-| key          | string |  ✓   |        | 属性名称。                                |
-| defaultValue | T      |      | -      | 默认值，当指定的属性不存在时返回该默认值。 |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| key | string | ✓ |  | 属性名称。 |
+| defaultValue | T |  | - | 默认值，当指定的属性不存在时返回该默认值。 |
 
 ```ts
 // 获取标准属性
-const zIndex = rect.getProp<number>("zIndex");
-const position = rect.getProp<{ x: number; y: number }>("position");
+const zIndex = rect.getProp<number>('zIndex')
+const position = rect.getProp<{ x: number; y: number }>('position')
 
 // 获取非标准属性
-const product = rect.getProp("product");
+const product = rect.getProp('product')
 ```
 
 #### setProp(...)
@@ -1788,19 +1727,18 @@ setProp(key: string, value: any, options?: Cell.SetOptions): this
 setProp(props: Partial<Properties>, options?: Cell.SetOptions): this
 ```
 
-| 名称             | 类型                  | 必选 | 默认值  | 描述                                                                                                |
-|------------------|-----------------------|:----:|---------|---------------------------------------------------------------------------------------------------|
-| key              | string                |  ✓   |         | 属性名称。                                                                                           |
-| value            | any                   |  ✓   |         | 属性值。                                                                                             |
-| props            | `Partial<Properties>` |  ✓   |         | 属性键值对，将与现有属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。 |
-| options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。                                                  |
-| options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                                                              |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| key | string | ✓ |  | 属性名称。 |
+| value | any | ✓ |  | 属性值。 |
+| props | `Partial<Properties>` | ✓ |  | 属性键值对，将与现有属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ```ts
 // 设置单个属性：
-rect.setProp("size", { width: 100, height: 30 });
-rect.setProp("zIndex", 10);
+rect.setProp('size', { width: 100, height: 30 })
+rect.setProp('zIndex', 10)
 
 // 同时设置多个属性
 rect.setProp({
@@ -1809,7 +1747,7 @@ rect.setProp({
     height: 30,
   },
   zIndex: 10,
-});
+})
 ```
 
 #### removeProp(...)
@@ -1820,17 +1758,17 @@ rect.setProp({
 removeProp(path: string | string[], options?: Cell.SetOptions): this
 ```
 
-| 名称             | 类型               | 必选 | 默认值  | 描述                                               |
-|------------------|--------------------|:----:|---------|--------------------------------------------------|
-| path             | string \| string[] |  ✓   |         | 属性路径。                                          |
-| options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
-| options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。             |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| path | string \| string[] | ✓ |  | 属性路径。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ```ts
-rect.removeProp("zIndex");
-rect.removeProp("product/id");
+rect.removeProp('zIndex')
+rect.removeProp('product/id')
 ```
+
 #### prop(...)
 
 该方法是上面几个方法的整合，提供了上面四种函数签名，是一个非常实用的方法。
@@ -1842,24 +1780,22 @@ prop(path: string | string[], value: any, options?: Cell.SetOptions): this // �
 prop(props: Partial<Properties>, options?: Cell.SetOptions): this // 设置属性，与现有属性进行深度 merge。
 ```
 
-
-
 ```ts
 // 获取属性：
-rect.prop();
-rect.prop("zIndex");
-rect.prop("product/price");
+rect.prop()
+rect.prop('zIndex')
+rect.prop('product/price')
 
 // 设置属性：
-rect.prop("zIndex", 10);
-rect.prop("product/price", 5.99);
+rect.prop('zIndex', 10)
+rect.prop('product/price', 5.99)
 rect.prop({
   product: {
-    id: "234",
-    name: "banana",
+    id: '234',
+    name: 'banana',
     price: 3.99,
   },
-});
+})
 ```
 
 #### hasChanged(...)
@@ -1870,11 +1806,9 @@ hasChanged(key: string | undefined | null): boolean
 
 返回指定的属性或所有属性是否已经改变。
 
-
-| 名称 | 类型                        | 必选 | 默认值 | 描述                           |
-|------|-----------------------------|:----:|--------|------------------------------|
-| key  | string \| undefined \| null |      |        | 属性名。缺省时表示检查所有属性。 |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| key | string \| undefined \| null |  |  | 属性名。缺省时表示检查所有属性。 |
 
 #### previous(...)
 
@@ -1884,10 +1818,9 @@ previous<T>(name: string): T | undefined
 
 当指定的属性发生改变后，获取改变前的属性值。
 
-| 名称 | 类型   | 必选 | 默认值 | 描述    |
-|------|--------|:----:|--------|-------|
+| 名称 | 类型   | 必选 | 默认值 | 描述     |
+| ---- | ------ | :--: | ------ | -------- |
 | key  | string |  ✓   |        | 属性名。 |
-
 
 ### 工具集 Tools
 
@@ -1907,14 +1840,14 @@ addTools(
 
 添加小工具。
 
-| 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                                  |
-|------------------|----------------------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------|
-| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具。            |
-| name             | string                           |      | `null`  | 定义该组工具的别称，可以作为`hasTools(name)`的参数                                                                                     |
-| options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                                |
-| options.local    | boolean                          |      | `false` | 工具是否渲染到节点/边的容器中，默认为 `false`，所有工具会渲染在 `x6-graph-svg-decorator` 下面，只有在 `options.reset` 为 `true` 为时生效 |
-| options.silent   | boolean                          |      | `false` | 为 `true` 时不触发 `change:tools` 事件和小工具重绘。                                                                                   |
-| options...others | object                           |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| items | Cell.ToolItem \| Cell.ToolItem[] |  |  | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具。 |
+| name | string |  | `null` | 定义该组工具的别称，可以作为`hasTools(name)`的参数 |
+| options.reset | boolean |  | `false` | 是否清空工具集，默认向工具集追加小工具。 |
+| options.local | boolean |  | `false` | 工具是否渲染到节点/边的容器中，默认为 `false`，所有工具会渲染在 `x6-graph-svg-decorator` 下面，只有在 `options.reset` 为 `true` 为时生效 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:tools` 事件和小工具重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### getTools()
 
@@ -1932,10 +1865,10 @@ removeTools(options?: Cell.SetOptions): this
 
 删除所有工具。
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                |
-|------------------|---------|:----:|---------|---------------------------------------------------|
-| options.silent   | boolean |      | `false` | 为 `true` 时不触发 `change:tools` 事件和小工具重绘。 |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:tools` 事件和小工具重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 #### hasTool(...)
 
@@ -1954,11 +1887,11 @@ removeTool(index: number, options?: Cell.SetOptions): this
 
 删除指定名称的工具。
 
-| 名称             | 类型             | 必选 | 默认值  | 描述                                                |
-|------------------|------------------|:----:|---------|---------------------------------------------------|
-| nameOrIndex      | string \| number |  ✓   |         | 工具名称或索引。                                     |
-| options.silent   | boolean          |      | `false` | 为 `true` 时不触发 `change:tools` 事件和小工具重绘。 |
-| options...others | object           |      |         | 其他自定义键值对，可以在事件回调中使用。              |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| nameOrIndex | string \| number | ✓ |  | 工具名称或索引。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `change:tools` 事件和小工具重绘。 |
+| options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ### 动画 Transition
 
@@ -1975,21 +1908,21 @@ transition(
 
 将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值，并返回 `stop` 方法，调用该方法时立即停止该动画。
 
-| 名称                | 类型                                         | 必选 | 默认值  | 描述                               |
-|---------------------|----------------------------------------------|:----:|---------|----------------------------------|
-| path                | string \| string[]                           |  ✓   |         | 路径。                              |
-| target              | any                                          |  ✓   |         | 目标属性值。                        |
-| options.delay       | number                                       |      | `10`    | 动画延迟多久后开始，单位毫秒。       |
-| options.duration    | number                                       |      | `100`   | 动画时长，单位毫秒。                 |
-| options.timing      | Timing.Names \| (t: number) => number        |      |         | 定时函数。                          |
-| options.interp      | \<T\>(from: T, to: T) => (time: number) => T |      |         | 插值函数。                          |
-| options.start       | (args: Animation.CallbackArgs) => void       |      |         | 动画开始执行时的回调函数。          |
-| options.progress    | (args: Animation.ProgressArgs) => void       |      |         | 动画执行过程中的回调函数。          |
-| options.complete    | (args: Animation.CallbackArgs) => void       |      |         | 动画执行完成时的回调函数。          |
-| options.stop        | (args: Animation.CallbackArgs) => void       |      |         | 动画被停止时的回调函数。            |
-| options.finish      | (args: Animation.CallbackArgs) => void       |      |         | 动画执行完成或被停止时的回调函数。  |
-| options.jumpedToEnd | boolean                                      |      | `false` | 手动停止动画时，是否立即将动画完成。 |
-| delim               | string                                       |      | `/`     | 字符串路径分隔符。                  |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| path | string \| string[] | ✓ |  | 路径。 |
+| target | any | ✓ |  | 目标属性值。 |
+| options.delay | number |  | `10` | 动画延迟多久后开始，单位毫秒。 |
+| options.duration | number |  | `100` | 动画时长，单位毫秒。 |
+| options.timing | Timing.Names \| (t: number) => number |  |  | 定时函数。 |
+| options.interp | \<T\>(from: T, to: T) => (time: number) => T |  |  | 插值函数。 |
+| options.start | (args: Animation.CallbackArgs) => void |  |  | 动画开始执行时的回调函数。 |
+| options.progress | (args: Animation.ProgressArgs) => void |  |  | 动画执行过程中的回调函数。 |
+| options.complete | (args: Animation.CallbackArgs) => void |  |  | 动画执行完成时的回调函数。 |
+| options.stop | (args: Animation.CallbackArgs) => void |  |  | 动画被停止时的回调函数。 |
+| options.finish | (args: Animation.CallbackArgs) => void |  |  | 动画执行完成或被停止时的回调函数。 |
+| options.jumpedToEnd | boolean |  | `false` | 手动停止动画时，是否立即将动画完成。 |
+| delim | string |  | `/` | 字符串路径分隔符。 |
 
 我们在 `Timing` 命名空间中提供了一些定时函数。可以使用内置的定时函数名，或提供一个具有 `(t: number) => number` 签名的函数。内置的定时函数如下：
 
@@ -2037,15 +1970,13 @@ transition(
 - unit - 数字+单位字符串插值函数，如 `10px`。支持的单位有：`px, em, cm, mm, in, pt, pc, %`。
 - color - 16 进制颜色插值函数。
 
-<span class="tag-example">用法</span>
-
 ```ts
-import { Timing, Interp } from "@antv/x6";
+import { Timing, Interp } from '@antv/x6'
 
-rect.transition("attrs/label/font-size", "1em", {
+rect.transition('attrs/label/font-size', '1em', {
   interp: Interp.unit,
-  timing: "bounce", // Timing.bounce
-});
+  timing: 'bounce', // Timing.bounce
+})
 ```
 
 #### stopTransition(...)
@@ -2060,18 +1991,17 @@ stopTransition(
 
 停止与指定路径 `path` 对应的动画。
 
-| 名称                | 类型                                   | 必选 | 默认值  | 描述                               |
-|---------------------|----------------------------------------|:----:|---------|----------------------------------|
-| path                | string \| string[]                     |  ✓   |         | 路径。                              |
-| options.jumpedToEnd | boolean                                |      | `false` | 手动停止动画时，是否立即将动画完成。 |
-| options.complete    | (args: Animation.CallbackArgs) => void |      |         | 动画执行完成时的回调函数。          |
-| options.stop        | (args: Animation.CallbackArgs) => void |      |         | 动画被停止时的回调函数。            |
-| options.finish      | (args: Animation.CallbackArgs) => void |      |         | 动画执行完成或被停止时的回调函数。  |
-| delim               | string                                 |      | `/`     | 字符串路径分隔符。                  |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| path | string \| string[] | ✓ |  | 路径。 |
+| options.jumpedToEnd | boolean |  | `false` | 手动停止动画时，是否立即将动画完成。 |
+| options.complete | (args: Animation.CallbackArgs) => void |  |  | 动画执行完成时的回调函数。 |
+| options.stop | (args: Animation.CallbackArgs) => void |  |  | 动画被停止时的回调函数。 |
+| options.finish | (args: Animation.CallbackArgs) => void |  |  | 动画执行完成或被停止时的回调函数。 |
+| delim | string |  | `/` | 字符串路径分隔符。 |
 
 ```ts
-rect.stopTransition("attrs/label/font-size");
+rect.stopTransition('attrs/label/font-size')
 ```
 
 #### getTransitions()
@@ -2084,7 +2014,7 @@ getTransitions(): string[]
 
 ```ts
 // 停止所有动画
-rect.getTransitions().forEach((path) => rect.stopTransition(path));
+rect.getTransitions().forEach((path) => rect.stopTransition(path))
 ```
 
 ## config(...)
@@ -2095,14 +2025,11 @@ config<C extends Cell.Config = Cell.Config>(presets: C): void
 
 设置节点/边的选项默认值。
 
-<span class="tag-param">参数<span>
-
-| 名称              | 类型                   | 必选 | 默认值 | 描述                                                                                               |
-|-------------------|------------------------|:----:|--------|--------------------------------------------------------------------------------------------------|
-| options.propHooks | Cell.PropHooks\<M, C\> |      |        | 自定义选项。                                                                                        |
-| options.attrHooks | Attr.Definitions       |      |        | 自定义属性键值对。<br>Key 是自定义属性的属性名，Value 是自定义属性对象（包含属性检查、应用属性等方法）。 |
-| options...others  | object                 |      |        | 其他选项，节点/边的属性（Properties）。                                                                |
-
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| options.propHooks | Cell.PropHooks\<M, C\> |  |  | 自定义选项。 |
+| options.attrHooks | Attr.Definitions |  |  | 自定义属性键值对。Key 是自定义属性的属性名，Value 是自定义属性对象（包含属性检查、应用属性等方法）。 |
+| options...others | object |  |  | 其他选项，节点/边的属性（Properties）。 |
 
 ### 选项默认值
 
@@ -2125,10 +2052,10 @@ const rect = graph.addNode({
   y: 100,
   attrs: {
     label: {
-      text: "rect",
+      text: 'rect',
     },
   },
-});
+})
 ```
 
 每次调用 `config(presets)` 都是与当前预设值进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，例如下面代码分别将矩形的边框默认颜色修改为红色和将默认文本颜色修改为蓝色，最终效果是两者的叠加：
@@ -2138,21 +2065,21 @@ const rect = graph.addNode({
 Shape.Rect.config({
   attrs: {
     body: {
-      stroke: "red",
+      stroke: 'red',
     },
   },
-});
+})
 
 // 只修改默认文本颜色
 Shape.Rect.config({
   attrs: {
     label: {
-      fill: "blue",
+      fill: 'blue',
       // 覆盖上面定义的 red
-      stroke: "#000",
+      stroke: '#000',
     },
   },
-});
+})
 ```
 
 ### 自定义选项
@@ -2163,8 +2090,8 @@ Shape.Rect.config({
 const rect = graph.addNode({
   x: 100,
   y: 100,
-  label: "rect",
-});
+  label: 'rect',
+})
 ```
 
 而我们并没有为矩形定义 `label` 这个选项，那这个 `label` 是怎么应用到 `attrs/label/text` 上的呢？这就用到了 `propHooks` 钩子，我们可以定义 `propHooks` 钩子来消费这些非标准的选项。
@@ -2175,13 +2102,13 @@ const rect = graph.addNode({
 Shape.Rect.config({
   // 通过钩子将 label 应用到 'attrs/text/text' 属性上
   propHooks(metadata) {
-    const { label, ...others } = metadata;
+    const { label, ...others } = metadata
     if (label) {
-      ObjectExt.setByPath(others, "attrs/text/text", label);
+      ObjectExt.setByPath(others, 'attrs/text/text', label)
     }
-    return others;
+    return others
   },
-});
+})
 ```
 
 通过 `propHooks` 钩子，我们很容易就扩展出一些自定义的选项。例如，我们可以将某些样式定义为节点的选项，这样不仅可以减少嵌套，而且使创建节点的代码语义性更强。
@@ -2192,21 +2119,21 @@ Shape.Rect.config({
 Shape.Rect.config({
   propHooks: {
     rx(metadata) {
-      const { rx, ...others } = metadata;
+      const { rx, ...others } = metadata
       if (rx != null) {
-        ObjectExt.setByPath(others, "attrs/body/rx", rx);
+        ObjectExt.setByPath(others, 'attrs/body/rx', rx)
       }
-      return others;
+      return others
     },
     ry(metadata) {
-      const { ry, ...others } = metadata;
+      const { ry, ...others } = metadata
       if (ry != null) {
-        ObjectExt.setByPath(others, "attrs/body/ry", ry);
+        ObjectExt.setByPath(others, 'attrs/body/ry', ry)
       }
-      return others;
+      return others
     },
   },
-});
+})
 ```
 
 这样，我们就可以很方便添加圆角矩形：
@@ -2217,8 +2144,8 @@ const rect = graph.addNode({
   y: 100,
   rx: 5,
   ry: 10,
-  label: "rect",
-});
+  label: 'rect',
+})
 ```
 
 ### 自定义属性
@@ -2228,13 +2155,13 @@ const rect = graph.addNode({
 例如：
 
 ```ts
-import { Shape, Color } from "@antv/x6";
+import { Shape, Color } from '@antv/x6'
 
 Shape.Rect.config({
   attrHooks: {
     fill: {
       set(val) {
-        return Color.invert(val); // 自动反转填充色
+        return Color.invert(val) // 自动反转填充色
       },
     },
     theme: {
@@ -2243,11 +2170,11 @@ Shape.Rect.config({
         return {
           fill: val,
           stroke: Color.invert(val),
-        };
+        }
       },
     },
   },
-});
+})
 ```
 
 我们可以这样来使用上面定义的 `fill` 和 `theme` 属性：
@@ -2258,14 +2185,14 @@ const rect = graph.addNode({
   y: 100,
   rx: 5,
   ry: 10,
-  label: "rect",
+  label: 'rect',
   attrs: {
     body: {
-      theme: "#f5f5f5",
+      theme: '#f5f5f5',
     },
     label: {
-      fill: "#fff",
+      fill: '#fff',
     },
   },
-});
+})
 ```

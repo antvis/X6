@@ -21,14 +21,14 @@ redirect_from:
 ```ts
 const graph = new Graph({
   grid: 10,
-});
+})
 
 // 等同于
 const graph = new Graph({
   grid: {
     size: 10,
   },
-});
+})
 ```
 
 ### type
@@ -38,7 +38,7 @@ const graph = new Graph({
 ```ts
 const graph = new Graph({
   grid: true, // 网格大小 10px，并绘制网格
-});
+})
 
 // 等同于
 const graph = new Graph({
@@ -46,7 +46,7 @@ const graph = new Graph({
     size: 10, // 网格大小 10px
     visible: true, // 绘制网格，默认绘制 dot 类型网格
   },
-});
+})
 ```
 
 同时，我们内置了以下四种网格类型，通过 `type` 选项来指定网格类型，默认值为 `dot`，并支持通过 `args` 选项来配置网格样式。
@@ -60,13 +60,13 @@ new Graph({
   container: this.container,
   grid: {
     visible: true,
-    type: "dot",
+    type: 'dot',
     args: {
-      color: "#a0a0a0", // 网点颜色
+      color: '#a0a0a0', // 网点颜色
       thickness: 1, // 网点大小
     },
   },
-});
+})
 ```
 
 #### fixedDot
@@ -79,15 +79,15 @@ new Graph({
   grid: {
     visible: true,
     size: 10,
-    type: "fixedDot",
+    type: 'fixedDot',
     args: {
-      color: "#a0a0a0", // 网点颜色
+      color: '#a0a0a0', // 网点颜色
       thickness: 2, // 网点大小
     },
   },
-});
+})
 
-graph.scale(10, 10);
+graph.scale(10, 10)
 ```
 
 #### mesh
@@ -99,13 +99,13 @@ new Graph({
   container: this.container,
   grid: {
     visible: true,
-    type: "mesh",
+    type: 'mesh',
     args: {
-      color: "#ddd", // 网格线颜色
+      color: '#ddd', // 网格线颜色
       thickness: 1, // 网格线宽度
     },
   },
-});
+})
 ```
 
 #### doubleMesh
@@ -117,20 +117,20 @@ const graph = new Graph({
   grid: {
     size: 10,
     visible: true,
-    type: "doubleMesh",
+    type: 'doubleMesh',
     args: [
       {
-        color: "#eee", // 主网格线颜色
+        color: '#eee', // 主网格线颜色
         thickness: 1, // 主网格线宽度
       },
       {
-        color: "#ddd", // 次网格线颜色
+        color: '#ddd', // 次网格线颜色
         thickness: 1, // 次网格线宽度
         factor: 4, // 主次网格线间隔
       },
     ],
   },
-});
+})
 ```
 
 ## 方法
@@ -183,36 +183,36 @@ drawGrid(options?: DrawGridOptions): this
 
 重绘网格。
 
-| 名称 | 类型   | 必选 | 默认值 | 描述                                                   |
-|------|--------|:----:|--------|------------------------------------------------------|
-| type | string |      | `dot`  | 网格类型。详情请[参考这里](/zh/docs/api/registry/grid)。 |
-| args | object |      | -      | 与网格类型对应的网格参数。                              |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| type | string |  | `dot` | 网格类型。详情请[参考这里](/zh/docs/api/registry/grid)。 |
+| args | object |  | - | 与网格类型对应的网格参数。 |
 
 ## 自定义网格
 
 这里以注册一个红色点状网格为例：
 
 ```ts
-Graph.registerGrid("red-dot", {
-  color: "red",
+Graph.registerGrid('red-dot', {
+  color: 'red',
   thickness: 1,
-  markup: "rect",
+  markup: 'rect',
   update(elem, options) {
-    const width = options.thickness * options.sx;
-    const height = options.thickness * options.sy;
+    const width = options.thickness * options.sx
+    const height = options.thickness * options.sy
     Dom.attr(elem, {
       width,
       height,
       rx: width,
       ry: height,
       fill: options.color,
-    });
+    })
   },
-});
+})
 
 const graph = new Graph({
   grid: {
-    type: "red-dot",
+    type: 'red-dot',
   },
-});
+})
 ```

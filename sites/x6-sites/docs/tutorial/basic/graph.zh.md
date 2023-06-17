@@ -7,13 +7,12 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中，主要介绍画布相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍画布相关的知识,通过阅读,你可以了解到}
 
 - 画布大小如何做到自适应
 - 通过设置背景和网格优化画布样式
 - 怎样才能使画布可拖拽可缩放
-- 常用的画布尺寸和位置操作 API
-  :::
+- 常用的画布尺寸和位置操作 API :::
 
 ## 画布大小
 
@@ -35,9 +34,9 @@ redirect_from:
 
 ```ts
 const graph = new Graph({
-  container: document.getElementById("container"),
+  container: document.getElementById('container'),
   autoResize: true,
-});
+})
 ```
 
 在下面的示例中，我们可以用鼠标拖动灰色的区域，来改变容器大小，可以通过背景颜色看到，三块画布的大小是自适应的。
@@ -50,9 +49,7 @@ const graph = new Graph({
 
 <code id="background-grid" src="@/src/tutorial/basic/graph/background-grid/index.tsx"></code>
 
-:::info{title=提示：}
-在 X6 中，网格是渲染/移动节点的最小单位，默认是 10px ，也就是说位置为 { x: 24, y: 38 } 的节点渲染到画布后的实际位置为 { x: 20, y: 40 }
-:::
+:::info{title=提示} 在 X6 中，网格是渲染/移动节点的最小单位，默认是 10px ，也就是说位置为 `{ x: 24, y: 38 }` 的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }` :::
 
 背景不仅支持颜色，还支持背景图片，详细的配置与方法参考 [API](/zh/docs/api/graph/background)。同时，网格支持四种不同类型，并且能配置网格线的颜色以及宽度，详细的配置与方法参考 [API](/zh/docs/api/graph/grid)。
 
@@ -79,14 +76,14 @@ const graph = new Graph({
 除了上述的一些配置，X6 还有丰富的 API 对画布尺寸、位置进行操作，下面列举一些常用的 API，更详细的内容见 [API](/zh/docs/api/graph/transform)。
 
 ```ts
-graph.resize(800, 600); // resize 画布大小
-graph.translate(20, 20); // 在 x、y 方向上平移画布
-graph.zoom(0.2); // 将画布缩放级别增加 0.2（默认为1）
-graph.zoom(-0.2); // 将画布缩放级别减少 0.2
-graph.zoomTo(1.2); // 将画布缩放级别设置为 1.2
+graph.resize(800, 600) // resize 画布大小
+graph.translate(20, 20) // 在 x、y 方向上平移画布
+graph.zoom(0.2) // 将画布缩放级别增加 0.2（默认为1）
+graph.zoom(-0.2) // 将画布缩放级别减少 0.2
+graph.zoomTo(1.2) // 将画布缩放级别设置为 1.2
 // 将画布中元素缩小或者放大一定级别，让画布正好容纳所有元素，可以通过 maxScale 配置最大缩放级别
-graph.zoomToFit({ maxScale: 1 });
-graph.centerContent(); // 将画布中元素居中展示
+graph.zoomToFit({ maxScale: 1 })
+graph.centerContent() // 将画布中元素居中展示
 ```
 
 <code id="transform" src="@/src/tutorial/basic/graph/transform/index.tsx"></code>

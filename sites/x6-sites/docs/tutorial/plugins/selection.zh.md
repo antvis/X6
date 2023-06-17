@@ -7,10 +7,9 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中，主要介绍框选插件相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍框选插件相关的知识,通过阅读你可以了解到}
 
-- 如何开启选择交互
-  :::
+- 如何开启选择交互 :::
 
 ## 使用
 
@@ -27,18 +26,18 @@ $ yarn add @antv/x6-plugin-selection
 然后我们在代码中这样使用：
 
 ```ts
-import { Selection } from "@antv/x6-plugin-selection";
+import { Selection } from '@antv/x6-plugin-selection'
 
 const graph = new Graph({
   background: {
-    color: "#F2F7FA",
+    color: '#F2F7FA',
   },
-});
+})
 graph.use(
   new Selection({
     enabled: true,
-  })
-);
+  }),
+)
 ```
 
 ## 演示
@@ -56,20 +55,20 @@ graph.use(
 
 ## 配置
 
-| 属性名                     | 类型           | 默认值             | 必选 | 描述                                                                                                                                       |
-|----------------------------|----------------|--------------------|------|------------------------------------------------------------------------------------------------------------------------------------------|
-| className                  | string         | -                  |      | 附加样式名，用于定制样式                                                                                                                    |
-| multiple                   | boolean        | `true`             |      | 是否启用点击多选，启用后按住 `ctrl` 或 `command` 键点击节点实现多选                                                                         |
-| multipleSelectionModifiers | ModifierKey    | `['ctrl', 'meta']` |      | 用于设置上面点击多选配套的修饰键                                                                                                           |
-| rubberband                 | boolean        | `false`            |      | 是否启用框选节点功能                                                                                                                       |
-| modifiers                  | ModifierKey    | -                  |      | 用于设置上面框选配套的修饰键                                                                                                               |
-| strict                     | boolean        | `false`            |      | 选框是否需要完全包围节点时才选中节点                                                                                                       |
-| movable                    | boolean        | `true`             |      | 拖动选框时框选的节点是否一起移动                                                                                                           |
-| content                    | string         | -                  |      | 设置附加显示的内容                                                                                                                         |
-| filter                     | Filter         | -                  |      | 节点过滤器                                                                                                                                 |
-| showNodeSelectionBox       | boolean        | `false`            |      | 是否显示节点的选择框                                                                                                                       |
-| showEdgeSelectionBox       | boolean        | `false`            |      | 是否显示边的选择框                                                                                                                         |
-| pointerEvents              | `node \| auto` | `auto`             |      | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
+| 属性名 | 类型 | 默认值 | 必选 | 描述 |
+| --- | --- | --- | --- | --- |
+| className | string | - |  | 附加样式名，用于定制样式 |
+| multiple | boolean | `true` |  | 是否启用点击多选，启用后按住 `ctrl` 或 `command` 键点击节点实现多选 |
+| multipleSelectionModifiers | ModifierKey | `['ctrl', 'meta']` |  | 用于设置上面点击多选配套的修饰键 |
+| rubberband | boolean | `false` |  | 是否启用框选节点功能 |
+| modifiers | ModifierKey | - |  | 用于设置上面框选配套的修饰键 |
+| strict | boolean | `false` |  | 选框是否需要完全包围节点时才选中节点 |
+| movable | boolean | `true` |  | 拖动选框时框选的节点是否一起移动 |
+| content | string | - |  | 设置附加显示的内容 |
+| filter | Filter | - |  | 节点过滤器 |
+| showNodeSelectionBox | boolean | `false` |  | 是否显示节点的选择框 |
+| showEdgeSelectionBox | boolean | `false` |  | 是否显示边的选择框 |
+| pointerEvents | `node \| auto` | `auto` |  | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
 
 `Filter` 的类型定义如下：
 
@@ -77,20 +76,20 @@ graph.use(
 type Filter = string[] | { id: string }[] | (this: Graph, cell: Cell) => boolean
 ```
 
-- string[]： 节点 shape 数组，指定的节点/边 shape 才能被选中
-- ({ id: string })[]： 节点 ID 数组，指定的节点/边才能被选中
-- (this: Graph, cell: Cell) => boolean： 返回 true 的节点/边才能被选中
+- `string[]`： 节点 shape 数组，指定的节点/边 shape 才能被选中
+- `({ id: string })[]`： 节点 ID 数组，指定的节点/边才能被选中
+- `(this: Graph, cell: Cell) => boolean`： 返回 true 的节点/边才能被选中
 
 `ModifierKey` 的类型定义如下：
 
 ```ts
-type ModifierKey = string | ("alt" | "ctrl" | "meta" | "shift")[] | null;
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
 ```
 
 X6 中修饰键包括 `alt`、`ctrl`、`meta`、`shift` 四个，设置修饰键后需要点击鼠标并按下修饰键才能触发相应的行为。修饰键在某些场景下非常有用，比如同时开始框选和拖拽画布时，而框选和拖拽画布的触发时机都是鼠标左键在画布空白位置按下，这时可以为框选和拖拽画布设置不一样的修饰键，达到同时开启又不冲突的效果。支持配置单个（如 `alt`）或多个（如 `['alt', 'ctrl']`）修饰键，通过数组形式配置的多个修饰键是或关系，比如刚刚配置的修饰键表示按下 `alt` 或 `ctrl`，如果需要更加灵活的配置，可以使用如下这些形式：
 
 - `alt` 表示按下 `alt`。
-- `[alt, ctrl]`,  表示按下 `alt` 或 `ctrl`。
+- `[alt, ctrl]`, 表示按下 `alt` 或 `ctrl`。
 - `alt|ctrl` 表示按下 `alt` 或 `ctrl`。
 - `alt&ctrl` 表示同时按下 `alt` 和 `ctrl`。
 - `alt|ctrl&shift` 表示同时按下 `alt` 和 `shift` 或者同时按下 `ctrl` 和 `shift`。
@@ -185,9 +184,9 @@ toggleSelection(enabled?: boolean): this
 
 切换选择的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
-|---------|---------|:----:|--------|------------------------------------------|
-| enabled | boolean |      | -      | 是否启用选择能力，缺省时切换选择的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用选择能力，缺省时切换选择的启用状态。 |
 
 ### graph.isMultipleSelection()
 
@@ -221,9 +220,9 @@ toggleMultipleSelection(multiple?: boolean): this
 
 切换多选的启用状态。参数如下：
 
-| 名称     | 类型    | 必选 | 默认值 | 描述                                   |
-|----------|---------|:----:|--------|--------------------------------------|
-| multiple | boolean |      | -      | 是否启用多选，缺省时切换多选的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| multiple | boolean |  | - | 是否启用多选，缺省时切换多选的启用状态。 |
 
 ### graph.isSelectionMovable()
 
@@ -257,9 +256,9 @@ toggleSelectionMovable(enabled?: boolean): this
 
 切换选中节点/边是否可以被移动。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                            |
-|---------|---------|:----:|--------|-----------------------------------------------|
-| enabled | boolean |      | -      | 是否启用选中的节点/边的移动，缺省时切换启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用选中的节点/边的移动，缺省时切换启用状态。 |
 
 ### graph.isRubberbandEnabled()
 
@@ -293,8 +292,8 @@ toggleRubberband(enabled?: boolean): this
 
 切换框选的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                             |
-|---------|---------|:----:|--------|--------------------------------|
+| 名称    | 类型    | 必选 | 默认值 | 描述                               |
+| ------- | ------- | :--: | ------ | ---------------------------------- |
 | enabled | boolean |      | -      | 是否启用框选，缺省时切换启用状态。 |
 
 ### graph.isStrictRubberband()
@@ -329,8 +328,8 @@ toggleStrictRubberband(enabled?: boolean): this
 
 切换严格框选的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                 |
-|---------|---------|:----:|--------|------------------------------------|
+| 名称    | 类型    | 必选 | 默认值 | 描述                                   |
+| ------- | ------- | :--: | ------ | -------------------------------------- |
 | enabled | boolean |      | -      | 是否启用严格框选，缺省时切换启用状态。 |
 
 ### graph.setSelectionFilter(...)
@@ -370,23 +369,23 @@ setSelectionDisplayContent(
 
 ## 事件
 
-| 事件名称            | 参数类型                                                                        | 描述                              |
-|---------------------|---------------------------------------------------------------------------------|---------------------------------|
-| `cell:selected`     | `{ cell: Cell; options: Model.SetOptions }`                                     | 节点/边被选中时触发               |
-| `node:selected`     | `{ node: Node; options: Model.SetOptions }`                                     | 节点被选中时触发                  |
-| `edge:selected`     | `{ edge: Edge; options: Model.SetOptions }`                                     | 边被选中时触发                    |
-| `cell:unselected`   | `{ cell: Cell; options: Model.SetOptions }`                                     | 节点/边被取消选中时触发           |
-| `node:unselected`   | `{ node: Node; options: Model.SetOptions }`                                     | 节点被取消选中时触发              |
-| `edge:unselected`   | `{ edge: Edge; options: Model.SetOptions }`                                     | 边被取消选中时触发                |
+| 事件名称 | 参数类型 | 描述 |
+| --- | --- | --- |
+| `cell:selected` | `{ cell: Cell; options: Model.SetOptions }` | 节点/边被选中时触发 |
+| `node:selected` | `{ node: Node; options: Model.SetOptions }` | 节点被选中时触发 |
+| `edge:selected` | `{ edge: Edge; options: Model.SetOptions }` | 边被选中时触发 |
+| `cell:unselected` | `{ cell: Cell; options: Model.SetOptions }` | 节点/边被取消选中时触发 |
+| `node:unselected` | `{ node: Node; options: Model.SetOptions }` | 节点被取消选中时触发 |
+| `edge:unselected` | `{ edge: Edge; options: Model.SetOptions }` | 边被取消选中时触发 |
 | `selection:changed` | `{added: Cell[]; removed: Cell[]; selected: Cell[]; options: Model.SetOptions}` | 选中的节点/边发生改变(增删)时触发 |
 
 ```ts
-graph.on("node:selected", ({ node }) => {
-  console.log(node);
-});
+graph.on('node:selected', ({ node }) => {
+  console.log(node)
+})
 
 // 我们也可以在插件实例上监听事件
-selection.on("node:selected", ({ node }) => {
-  console.log(node);
-});
+selection.on('node:selected', ({ node }) => {
+  console.log(node)
+})
 ```

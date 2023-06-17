@@ -7,34 +7,33 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中，主要介绍连接桩相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍连接桩相关的知识,通过阅读,你可以了解到}
 
 - 如何在节点中配置连接桩
 - 连接桩的增、删、改
 - 如何配置连接桩的位置
-- 如何配置连接桩上标签的位置
-  :::
+- 如何配置连接桩上标签的位置 :::
 
 ## 配置连接桩
 
-首先我们将具有相同行为和外观的连接桩归为同一组，并通过 `groups` 选项来设置分组，该选项是一个对象 { [groupName: string]: PortGroupMetadata }，组名为键，值为每组连接桩的默认选项，支持的选项如下：
+首先我们将具有相同行为和外观的连接桩归为同一组，并通过 `groups` 选项来设置分组，该选项是一个对象 `{ [groupName: string]: PortGroupMetadata }`，组名为键，值为每组连接桩的默认选项，支持的选项如下：
 
 ```ts
 interface PortGroupMetadata {
-  markup?: Markup; // 连接桩 DOM 结构定义。
-  attrs?: Attr.CellAttrs; // 属性和样式。
-  zIndex?: number | "auto"; // 连接桩的 DOM 层级，值越大层级越高。
+  markup?: Markup // 连接桩 DOM 结构定义。
+  attrs?: Attr.CellAttrs // 属性和样式。
+  zIndex?: number | 'auto' // 连接桩的 DOM 层级，值越大层级越高。
   // 群组中连接桩的布局。
-  position?: [number, number] | string | { name: string; args?: object };
+  position?: [number, number] | string | { name: string; args?: object }
   label?: {
     // 连接桩标签
-    markup?: Markup;
+    markup?: Markup
     position?: {
       // 连接桩标签布局
-      name: string; // 布局名称
-      args?: object; // 布局参数
-    };
-  };
+      name: string // 布局名称
+      args?: object // 布局参数
+    }
+  }
 }
 ```
 
@@ -42,21 +41,21 @@ interface PortGroupMetadata {
 
 ```ts
 interface PortMetadata {
-  id?: string; // 连接桩唯一 ID，默认自动生成。
-  group?: string; // 分组名称，指定分组后将继承分组中的连接桩选项。
-  args?: object; // 为群组中指定的连接桩布局算法提供参数, 我们不能为单个连接桩指定布局算法，但可以为群组中指定的布局算法提供不同的参数。
-  markup?: Markup; // 连接桩的 DOM 结构定义。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
-  attrs?: Attr.CellAttrs; // 元素的属性样式。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
-  zIndex?: number | "auto"; // 连接桩的 DOM 层级，值越大层级越高。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
+  id?: string // 连接桩唯一 ID，默认自动生成。
+  group?: string // 分组名称，指定分组后将继承分组中的连接桩选项。
+  args?: object // 为群组中指定的连接桩布局算法提供参数, 我们不能为单个连接桩指定布局算法，但可以为群组中指定的布局算法提供不同的参数。
+  markup?: Markup // 连接桩的 DOM 结构定义。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
+  attrs?: Attr.CellAttrs // 元素的属性样式。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
+  zIndex?: number | 'auto' // 连接桩的 DOM 层级，值越大层级越高。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
   label?: {
     // 连接桩的标签。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
-    markup?: Markup; // 标签 DOM 结构
+    markup?: Markup // 标签 DOM 结构
     position?: {
       // 标签位置
-      name: string; // 标签位置计算方法的名称
-      args?: object; // 标签位置计算方法的参数
-    };
-  };
+      name: string // 标签位置计算方法的名称
+      args?: object // 标签位置计算方法的参数
+    }
+  }
 }
 ```
 
@@ -71,19 +70,19 @@ interface PortMetadata {
 ```ts
 // 添加连接桩
 node.addPort({
-  group: "top",
+  group: 'top',
   attrs: {
     text: {
-      text: "xx",
+      text: 'xx',
     },
   },
-});
+})
 
 // 删除连接桩
-node.removePort(portId);
+node.removePort(portId)
 
 // 更新连接桩
-node.portProp(portId, "attrs/circle/stroke", color);
+node.portProp(portId, 'attrs/circle/stroke', color)
 ```
 
 <code id="port-prop" src="@/src/tutorial/basic/ports/dynamic/index.tsx"></code>

@@ -34,23 +34,23 @@ redirect_from:
 
 ### 配置修改
 
-| 属性名       | 修改                | 说明                                                                           |
-| ------------ | ------------------- | ------------------------------------------------------------------------------ |
-| virtual      | 增加                | 是否开启可视区域渲染能力，默认值为 `false`。                                   |
-| async        | 默认值修改为 `true` | 默认异步渲染，提升性能。                                                       |
-| sorting      | 删除                | 按照性能最优的方式进行排序，如果有特殊的排序需求，需要外部控制传入数据的顺序。 |
-| frozen       | 删除                | 新的异步渲染模式，不需要 `frozen`。                                            |
-| checkView    | 删除                | 内置可视区域渲染能力，使 `virtual` 配置打开。                                  |
-| transforming | 删除                | 默认用最优配置，无须外部配置。                                                 |
-| knob         | 删除                | 应用场景不多，在 2.0 版本删除。                                                |
-| resizing     | 删除                | 使用 transform 插件。                                                          |
-| rotating     | 删除                | 使用 transform 插件。                                                          |
-| selecting    | 删除                | 使用 selection 插件。                                                          |
-| clipboard    | 删除                | 使用 clipboard 插件。                                                          |
-| snapline     | 删除                | 使用 snapline 插件。                                                           |
-| history      | 删除                | 使用 history 插件。                                                            |
-| scroller     | 删除                | 使用 scroller 插件。                                                           |
-| keyboard     | 删除                | 使用 keyboard 插件。                                                           |
+| 属性名 | 修改 | 说明 |
+| --- | --- | --- |
+| virtual | 增加 | 是否开启可视区域渲染能力，默认值为 `false`。 |
+| async | 默认值修改为 `true` | 默认异步渲染，提升性能。 |
+| sorting | 删除 | 按照性能最优的方式进行排序，如果有特殊的排序需求，需要外部控制传入数据的顺序。 |
+| frozen | 删除 | 新的异步渲染模式，不需要 `frozen`。 |
+| checkView | 删除 | 内置可视区域渲染能力，使 `virtual` 配置打开。 |
+| transforming | 删除 | 默认用最优配置，无须外部配置。 |
+| knob | 删除 | 应用场景不多，在 2.0 版本删除。 |
+| resizing | 删除 | 使用 transform 插件。 |
+| rotating | 删除 | 使用 transform 插件。 |
+| selecting | 删除 | 使用 selection 插件。 |
+| clipboard | 删除 | 使用 clipboard 插件。 |
+| snapline | 删除 | 使用 snapline 插件。 |
+| history | 删除 | 使用 history 插件。 |
+| scroller | 删除 | 使用 scroller 插件。 |
+| keyboard | 删除 | 使用 keyboard 插件。 |
 
 ### API 修改
 

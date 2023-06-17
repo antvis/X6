@@ -7,35 +7,34 @@ redirect_from:
   - /zh/docs/tutorial/basic/basic
 ---
 
-:::info{title=在本章节中，主要介绍边相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍边相关的知识,通过阅读,你可以了解到}
 
 - 添加边的方法
 - 如何配置边的形状
 - 如何在边上增加箭头
 - 如何自定义边
-- 如何通过 API 修改边
-  :::
+- 如何通过 API 修改边 :::
 
 ## 添加边
 
 节点和边都有共同的基类 [Cell](/zh/docs/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
 
-| 属性名       | 类型              | 默认值                                         | 描述               |
-| ------------ | ----------------- | ---------------------------------------------- | ------------------ |
-| source       | TerminalData      | -                                              | 源节点或起始点。   |
-| target       | TerminalData      | -                                              | 目标节点或目标点。 |
-| vertices     | Point.PointLike[] | -                                              | 路径点。           |
-| router       | RouterData        | -                                              | 路由。             |
-| connector    | ConnectorData     | -                                              | 连接器。           |
-| labels       | Label[]           | -                                              | 标签。             |
-| defaultLabel | Label             | [默认标签](/zh/docs/api/model/labels#默认标签) | 默认标签。         |
+| 属性名 | 类型 | 默认值 | 描述 |
+| --- | --- | --- | --- |
+| source | TerminalData | - | 源节点或起始点。 |
+| target | TerminalData | - | 目标节点或目标点。 |
+| vertices | Point.PointLike[] | - | 路径点。 |
+| router | RouterData | - | 路由。 |
+| connector | ConnectorData | - | 连接器。 |
+| labels | Label[] | - | 标签。 |
+| defaultLabel | Label | [默认标签](/zh/docs/api/model/labels#默认标签) | 默认标签。 |
 
 ```ts
 graph.addEdge({
-  shape: "edge",
-  source: "node1",
-  target: "node2",
-});
+  shape: 'edge',
+  source: 'node1',
+  target: 'node2',
+})
 ```
 
 ## 配置边
@@ -50,22 +49,22 @@ graph.addEdge({
 graph.addEdge({
   source: rect1, // 源节点
   target: rect2, // 目标节点
-});
+})
 
 graph.addEdge({
-  source: "rect1", // 源节点 ID
-  target: "rect2", // 目标节点 ID
-});
+  source: 'rect1', // 源节点 ID
+  target: 'rect2', // 目标节点 ID
+})
 
 graph.addEdge({
-  source: { cell: rect1, port: "out-port-1" }, // 源节点和连接桩 ID
-  target: { cell: "rect2", port: "in-port-1" }, // 目标节点 ID 和连接桩 ID
-});
+  source: { cell: rect1, port: 'out-port-1' }, // 源节点和连接桩 ID
+  target: { cell: 'rect2', port: 'in-port-1' }, // 目标节点 ID 和连接桩 ID
+})
 
 graph.addEdge({
-  source: "rect1", // 源节点 ID
+  source: 'rect1', // 源节点 ID
   target: { x: 100, y: 120 }, // 目标点
-});
+})
 ```
 
 ### vertices
@@ -80,7 +79,7 @@ graph.addEdge({
     { x: 100, y: 200 },
     { x: 300, y: 120 },
   ],
-});
+})
 ```
 
 <code id="edge-vertices" src="@/src/tutorial/basic/edge/vertices/index.tsx"></code>
@@ -99,10 +98,10 @@ graph.addEdge({
   ],
   // 如果没有 args 参数，可以简写为 router: 'orth'
   router: {
-    name: "orth",
+    name: 'orth',
     args: {},
   },
-});
+})
 ```
 
 <code id="edge-router" src="@/src/tutorial/basic/edge/router/index.tsx"></code>
@@ -130,13 +129,13 @@ graph.addEdge({
     { x: 100, y: 200 },
     { x: 300, y: 120 },
   ],
-  router: "orth",
+  router: 'orth',
   // 如果没有 args 参数，可以简写写 connector: 'rounded'
   connector: {
-    name: "rounded",
+    name: 'rounded',
     args: {},
   },
-});
+})
 ```
 
 <code id="edge-connector" src="@/src/tutorial/basic/edge/connector/index.tsx"></code>
@@ -162,24 +161,24 @@ const edge = graph.addEdge({
     {
       attrs: {
         label: {
-          text: "edge",
+          text: 'edge',
         },
       },
     },
   ],
-});
+})
 // 或
 const edge = graph.addEdge({
   source: rect1,
   target: rect2,
-  labels: ["edge"], // 通过 labels 可以设置多个标签，当只设置标签文本是可以简化为此写法
-});
+  labels: ['edge'], // 通过 labels 可以设置多个标签，当只设置标签文本是可以简化为此写法
+})
 // 或
 const edge = graph.addEdge({
   source: rect1,
   target: rect2,
-  label: "edge", // 通过 label 设置单个标签，当只设置标签文本是可以简化为此写法
-});
+  label: 'edge', // 通过 label 设置单个标签，当只设置标签文本是可以简化为此写法
+})
 ```
 
 <code id="edge-labels" src="@/src/tutorial/basic/edge/labels/index.tsx"></code>
@@ -210,27 +209,25 @@ X6 提供了以下几种内置箭头，使用时只需要指定箭头名和参�
 
 ```ts
 graph.addEdge({
-  shape: "edge",
+  shape: 'edge',
   sourece: [100, 100],
   target: [500, 500],
   attrs: {
     line: {
-      sourceMarker: "block", // 实心箭头
+      sourceMarker: 'block', // 实心箭头
       targetMarker: {
-        name: "ellipse", // 椭圆
+        name: 'ellipse', // 椭圆
         rx: 10, // 椭圆箭头的 x 半径
         ry: 6, // 椭圆箭头的 y 半径
       },
     },
   },
-});
+})
 ```
 
 <code id="edge-native-marker" src="@/src/tutorial/basic/edge/native-marker/index.tsx"></code>
 
-:::info{title=提示：}
-X6 中边默认自带 `classic` 箭头，如果要去掉，可以将 `targetMarker` 设置为 `null`。
-:::
+:::info{title=提示} X6 中边默认自带 `classic` 箭头，如果要去掉，可以将 `targetMarker` 设置为 `null`。 :::
 
 ### 自定义箭头
 
@@ -238,30 +235,28 @@ X6 中边默认自带 `classic` 箭头，如果要去掉，可以将 `targetMark
 
 ```ts
 graph.addEdge({
-  shape: "edge",
+  shape: 'edge',
   sourece: [100, 100],
   target: [500, 500],
   attrs: {
     line: {
       sourceMarker: {
-        tagName: "path",
-        d: "M 20 -10 0 0 20 10 Z",
+        tagName: 'path',
+        d: 'M 20 -10 0 0 20 10 Z',
       },
       targetMarker: {
-        tagName: "path",
-        fill: "yellow", // 使用自定义填充色
-        stroke: "green", // 使用自定义边框色
+        tagName: 'path',
+        fill: 'yellow', // 使用自定义填充色
+        stroke: 'green', // 使用自定义边框色
         strokeWidth: 2,
-        d: "M 20 -10 0 0 20 10 Z",
+        d: 'M 20 -10 0 0 20 10 Z',
       },
     },
   },
-});
+})
 ```
 
-:::info{title=提示：}
-我们的起始箭头和终止箭头使用了相同的 `d` 属性，这是因为我们会自动计算箭头方向，简单来说，我们在定义箭头时，只需要定义一个**向左指向坐标原点**的箭头即可。
-:::
+:::info{title=提示} 我们的起始箭头和终止箭头使用了相同的 `d` 属性，这是因为我们会自动计算箭头方向，简单来说，我们在定义箭头时，只需要定义一个**向左指向坐标原点**的箭头即可。 :::
 
 <code id="edge-custom-marker" src="@/src/tutorial/basic/edge/custom-marker/index.tsx"></code>
 
@@ -330,8 +325,8 @@ console.log(edge.prop())
 从上面结果可以看到，`prop` 是处理后的一份新的配置，它的值可以通过方法进行更新，更新之后，边会立即刷新到最新状态。为了更快捷的修改边的 `attrs`，X6 提供了 `attr` 方法。
 
 ```ts
-edge.prop("target", { x: 300, y: 300 }); // 修改终点
-edge.attr("line/stroke", "#ccc"); // 修改边颜色，等价于 edge.prop('attrs/line/stroke', '#ccc')
+edge.prop('target', { x: 300, y: 300 }) // 修改终点
+edge.attr('line/stroke', '#ccc') // 修改边颜色，等价于 edge.prop('attrs/line/stroke', '#ccc')
 ```
 
 <code id="edge-prop" src="@/src/tutorial/basic/edge/prop/index.tsx"></code>

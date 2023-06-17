@@ -7,11 +7,10 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中，主要介绍画布数据序列化相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍画布数据序列化相关的知识,通过阅读,你可以了解到}
 
 - 如何导入数据
-- 如何导出数据
-  :::
+- 如何导出数据 :::
 
 ## 导出
 
@@ -58,30 +57,30 @@ redirect_from:
 ```ts
 graph.fromJSON([
   {
-    id: "node1",
+    id: 'node1',
     x: 40,
     y: 40,
     width: 100,
     height: 40,
-    label: "Hello",
-    shape: "rect",
+    label: 'Hello',
+    shape: 'rect',
   },
   {
-    id: "node2",
+    id: 'node2',
     x: 40,
     y: 40,
     width: 100,
     height: 40,
-    label: "Hello",
-    shape: "ellipse",
+    label: 'Hello',
+    shape: 'ellipse',
   },
   {
-    id: "edge1",
-    source: "node1",
-    target: "node2",
-    shape: "edge",
+    id: 'edge1',
+    source: 'node1',
+    target: 'node2',
+    shape: 'edge',
   },
-]);
+])
 ```
 
 或者提供一个包含 `cells`、`nodes`、`edges` 的对象，按照 `[...cells, ...nodes, ...edges]` 顺序渲染。
@@ -90,11 +89,9 @@ graph.fromJSON([
 graph.fromJSON({
   nodes: [],
   edges: [],
-});
+})
 ```
 
 通常，我们通过 `graph.fromJSON(...)` 来渲染 `graph.toJSON()` 导出的数据。
 
-:::info{title=提示：}
-当数据中没有提供 `zIndex` 时，则按照节点/边在数组中的顺序渲染，也就是说越靠前的节点/边，其 `zIndex` 越小，在画布中的层级就越低。
-:::
+:::info{title=提示} 当数据中没有提供 `zIndex` 时，则按照节点/边在数组中的顺序渲染，也就是说越靠前的节点/边，其 `zIndex` 越小，在画布中的层级就越低。 :::

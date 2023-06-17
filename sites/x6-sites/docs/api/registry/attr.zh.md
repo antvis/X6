@@ -78,9 +78,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的宽度是参照宽度百分之多少。例如 `refWidth: 0.75` 表示元素的宽度是参照宽度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的宽度在参照宽度的基础上减少或增加多少。例如 `refWidth: 20` 表示元素比相对元素宽 `20px`。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。 :::
 
 ### refWidth2
 
@@ -102,9 +100,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的高度是参照高度百分之多少。例如 `refHeight: 0.75` 表示元素的高度是参照高度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的高度在参照高度的基础上减少或增加多少。例如 `refHeight: 20` 表示元素比相对元素高 `20px`。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。 :::
 
 ### refHeight2
 
@@ -126,9 +122,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `cx` 是参照宽度百分之多少。例如 `refCx: 0.75` 表示元素中心 `x` 坐标位于参照宽度的 `75%` 处。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `cx` 是在参照宽度的基础上减少或增加多少。例如 `refCx: 20` 表示元素中心 `x` 坐标位于参照宽度加 `20px` 处。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。 :::
 
 ### refCy
 
@@ -137,9 +131,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `cy` 是参照高度百分之多少。例如 `refCy: 0.75` 表示元素中心 `y` 坐标位于参照高度的 `75%` 处。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `cy` 是在参照宽度的基础上减少或增加多少。例如 `refCy: 20` 表示元素中心 `y` 坐标位于参照高度加 `20px` 处。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。 :::
 
 ### refRx
 
@@ -148,9 +140,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `rx` 是参照宽度百分之多少。例如 `refRx: 0.75` 表示元素的 `rx` 是参照宽度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `rx` 是在参照宽度的基础上减少或增加多少。例如 `refRx: 20` 表示元素的 `rx` 是参照宽度加 `20px`。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。 :::
 
 ### refRy
 
@@ -159,9 +149,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `ry` 是参照高度百分之多少。例如 `refRy: 0.75` 表示元素的 `ry` 是参照高度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `ry` 是在参照宽度的基础上减少或增加多少。例如 `refRy: 20` 表示元素的 `ry` 是参照高度加 `20px`。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。 :::
 
 ### refRCircumscribed
 
@@ -170,9 +158,7 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示 `r` 是参照长度百分之多少。例如 `refRCircumscribed: 0.75` 表示 `r` 是参照长度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示 `r` 是在参照长度的基础上减少或增加多少。例如 `refRCircumscribed: 20` 表示 `r` 是参照长度加 `20px`。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。 :::
 
 ### refRInscribed
 
@@ -183,9 +169,7 @@ _简称_：**`refR`**
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示 `r` 是参照长度百分之多少。例如 `refRInscribed: 0.75` 表示 `r` 是参照长度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示 `r` 是在参照长度的基础上减少或增加多少。例如 `refRInscribed: 20` 表示 `r` 是参照长度加 `20px`。
 
-:::warning{title=注意：}
-需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。
-:::
+:::warning{title=注意：} 需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。 :::
 
 ### refDKeepOffset
 
@@ -194,30 +178,30 @@ _简称_：**`refR`**
 同时，提供的 pathData 的偏移量将被保留，这意味着如果提供的 pathData 的左上角不在坐标原点 `0, 0`，当 `<path>` 元素被渲染到画布后这个偏移量将被保留。
 
 ```ts
-import { Graph, Node } from "@antv/x6";
+import { Graph, Node } from '@antv/x6'
 
 const Path = Node.define({
-  markup: [{ tagName: "path" }],
+  markup: [{ tagName: 'path' }],
   attrs: {
     path: {
-      refDKeepOffset: "M 10 10 30 10 30 30 z", // path offset is 10,10
-      fill: "red",
-      stroke: "black",
+      refDKeepOffset: 'M 10 10 30 10 30 30 z', // path offset is 10,10
+      fill: 'red',
+      stroke: 'black',
     },
   },
-});
+})
 
-const container = document.getElementById("container")!;
+const container = document.getElementById('container')!
 const graph = new Graph({
   container,
   width: 800,
   height: 80,
   grid: true,
-});
+})
 
-const path = new Path().resize(40, 40).addTo(graph);
-const view = graph.findView(path);
-console.log(view.findOne("path").getAttribute("d"));
+const path = new Path().resize(40, 40).addTo(graph)
+const view = graph.findView(path)
+console.log(view.findOne('path').getAttribute('d'))
 // 'M 10 10 50 10 50 50 z'
 ```
 
@@ -230,30 +214,30 @@ _简称_：**`refD`**
 同时，提供的 pathData 的偏移量将被移除，这意味着如果提供的 pathData 的左上角不在坐标原点 `0, 0`，将同时通过平移使其位于原点，当 `<path>` 元素被渲染到画布后将于参照元素严格对齐。
 
 ```ts
-import { Graph, Node } from "@antv/x6";
+import { Graph, Node } from '@antv/x6'
 
 const Path = Node.define({
-  markup: [{ tagName: "path" }],
+  markup: [{ tagName: 'path' }],
   attrs: {
     path: {
-      refDResetOffset: "M 10 10 30 10 30 30 z", // path offset is 10,10
-      fill: "red",
-      stroke: "black",
+      refDResetOffset: 'M 10 10 30 10 30 30 z', // path offset is 10,10
+      fill: 'red',
+      stroke: 'black',
     },
   },
-});
+})
 
-const container = document.getElementById("container")!;
+const container = document.getElementById('container')!
 const graph = new Graph({
   container,
   width: 800,
   height: 80,
   grid: true,
-});
+})
 
-const path = new Path().resize(40, 40).addTo(graph);
-const view = graph.findView(path);
-console.log(view.findOne("path").getAttribute("d"));
+const path = new Path().resize(40, 40).addTo(graph)
+const view = graph.findView(path)
+console.log(view.findOne('path').getAttribute('d'))
 // 'M 0 0 40 0 40 40 z'
 ```
 
@@ -264,10 +248,10 @@ console.log(view.findOne("path").getAttribute("d"));
 ```ts
 path.attr({
   path: {
-    d: "M 10 10 20 20",
+    d: 'M 10 10 20 20',
     resetOffset: true, // 平移后的 d 属性值为 "M 0 0 10 10"
   },
-});
+})
 ```
 
 ### refPointsKeepOffset
@@ -277,30 +261,30 @@ path.attr({
 同时，点阵的偏移量将被保留，这意味着如果点阵的左上角不在坐标原点 `0, 0`，当元素被渲染到画布后这个偏移量将被保留。
 
 ```ts
-import { Graph, Node } from "@antv/x6";
+import { Graph, Node } from '@antv/x6'
 
 const Polygon = Node.define({
-  markup: [{ tagName: "polygon" }],
+  markup: [{ tagName: 'polygon' }],
   attrs: {
     polygon: {
-      refPointsKeepOffset: "10,10 30,10 30,30", // points offset is 10,10
-      fill: "red",
-      stroke: "black",
+      refPointsKeepOffset: '10,10 30,10 30,30', // points offset is 10,10
+      fill: 'red',
+      stroke: 'black',
     },
   },
-});
+})
 
-const container = document.getElementById("container")!;
+const container = document.getElementById('container')!
 const graph = new Graph({
   container,
   width: 800,
   height: 80,
   grid: true,
-});
+})
 
-const polygon = new Polygon().resize(40, 40).addTo(graph);
-const view = graph.findView(polygon);
-console.log(view.findOne("polygon").getAttribute("points"));
+const polygon = new Polygon().resize(40, 40).addTo(graph)
+const view = graph.findView(polygon)
+console.log(view.findOne('polygon').getAttribute('points'))
 // '10,10 50,10 50,50'
 ```
 
@@ -313,30 +297,30 @@ _简称_：**`refPoints`**
 同时，点阵的偏移量将被移除，这意味着如果点阵的左上角不在坐标原点 `0, 0`，将同时通过平移使其位于原点，当 `<path>` 元素被渲染到画布后将于参照元素严格对齐。
 
 ```ts
-import { Graph, Node } from "@antv/x6";
+import { Graph, Node } from '@antv/x6'
 
 const Polygon = Node.define({
-  markup: [{ tagName: "polygon" }],
+  markup: [{ tagName: 'polygon' }],
   attrs: {
     polygon: {
-      refPointsResetOffset: "10,10 30,10 30,30", // points offset is 10,10
-      fill: "red",
-      stroke: "black",
+      refPointsResetOffset: '10,10 30,10 30,30', // points offset is 10,10
+      fill: 'red',
+      stroke: 'black',
     },
   },
-});
+})
 
-const container = document.getElementById("container")!;
+const container = document.getElementById('container')!
 const graph = new Graph({
   container,
   width: 800,
   height: 80,
   grid: true,
-});
+})
 
-const polygon = new Polygon().resize(40, 40).addTo(graph);
-const view = graph.findView(polygon);
-console.log(view.findOne("polygon").getAttribute("points"));
+const polygon = new Polygon().resize(40, 40).addTo(graph)
+const view = graph.findView(polygon)
+console.log(view.findOne('polygon').getAttribute('points'))
 // '100,0 40,0 40,40'
 ```
 
@@ -363,16 +347,16 @@ console.log(view.findOne("polygon").getAttribute("points"));
 当提供的 `fill` 属性值为对象时，表示使用渐变色填充，否则使用字符串颜色填充。
 
 ```ts
-rect.attr("body/fill", {
-  type: "linearGradient",
+rect.attr('body/fill', {
+  type: 'linearGradient',
   stops: [
-    { offset: "0%", color: "#E67E22" },
-    { offset: "20%", color: "#D35400" },
-    { offset: "40%", color: "#E74C3C" },
-    { offset: "60%", color: "#C0392B" },
-    { offset: "80%", color: "#F39C12" },
+    { offset: '0%', color: '#E67E22' },
+    { offset: '20%', color: '#D35400' },
+    { offset: '40%', color: '#E74C3C' },
+    { offset: '60%', color: '#C0392B' },
+    { offset: '80%', color: '#F39C12' },
   ],
-});
+})
 ```
 
 ### filter
@@ -380,14 +364,14 @@ rect.attr("body/fill", {
 当提供的 `filter` 属性值为对象时，表示使用自定义滤镜填充，否则使用原生字符串形式（如 `"url(#myfilter)"`）。
 
 ```ts
-rect.attr("body/filter", {
-  name: "dropShadow",
+rect.attr('body/filter', {
+  name: 'dropShadow',
   args: {
     dx: 2,
     dy: 2,
     blur: 3,
   },
-});
+})
 ```
 
 ### stroke
@@ -407,7 +391,7 @@ rect.attr("body/filter", {
 为指定的元素添加一个 `<title>` 子元素，`<title>` 元素并不影响渲染结果，而只是添加一个描述性说明。
 
 ```ts
-rect.attr("body/title", "Description of the rectangle");
+rect.attr('body/title', 'Description of the rectangle')
 ```
 
 ### text
@@ -463,11 +447,11 @@ textWrap: {
 仅适用于边的 `<path>` 元素，当该属性为 `true` 时，表示将在该元素上渲染边，即设置该元素的 [`d`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) 为边的 pathData。
 
 ```ts
-edge.attr("pathSelector", {
+edge.attr('pathSelector', {
   connection: true,
-  stroke: "red",
-  fill: "none",
-});
+  stroke: 'red',
+  fill: 'none',
+})
 ```
 
 也支持包含 `stubs` 和 `reserve` 选项的对象。
@@ -482,9 +466,9 @@ edge.attr("pathSelector", {
   - 当 `stubs` 为负数时，表示中间部分的长度。例如 `connection: { stubs: -20 }` 表示只渲染中间 `20px`。
 
 ```ts
-edge.attr("pathSelector", {
+edge.attr('pathSelector', {
   connection: { stubs: -20, reverse: true },
-});
+})
 ```
 
 ### atConnectionLengthKeepGradient
@@ -497,13 +481,13 @@ _简称_：**`atConnectionLength`**
 - 为负数时，表示距离边终点的偏移量。
 
 ```ts
-edge.attr("rectSelector", {
+edge.attr('rectSelector', {
   atConnectionLengthKeepGradient: 30,
   // atConnectionLength: 30,
   width: 10,
   height: 10,
-  fill: "red",
-});
+  fill: 'red',
+})
 ```
 
 ### atConnectionLengthIgnoreGradient
@@ -514,12 +498,12 @@ edge.attr("rectSelector", {
 - 为负数时，表示距离边终点的偏移量。
 
 ```ts
-edge.attr("rectSelector", {
+edge.attr('rectSelector', {
   atConnectionLengthIgnoreGradient: 30,
   width: 10,
   height: 10,
-  fill: "red",
-});
+  fill: 'red',
+})
 ```
 
 ### atConnectionRatioKeepGradient
@@ -529,13 +513,13 @@ _简称_：**`atConnectionRatio`**
 将边中的指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
 
 ```ts
-edge.attr("rectSelector", {
+edge.attr('rectSelector', {
   atConnectionRatioKeepGradient: 0.5,
   // atConnectionRatio: 0.5,
   width: 10,
   height: 10,
-  fill: "red",
-});
+  fill: 'red',
+})
 ```
 
 ### atConnectionRatioIgnoreGradient
@@ -543,12 +527,12 @@ edge.attr("rectSelector", {
 将边中的指定元素移动到指定比例 `[0, 1]` 位置处，忽略边的方向，即不会像 [`atConnectionRatioKeepGradient`](#atconnectionratiokeepgradient) 属性那样自动旋转元素。
 
 ```ts
-edge.attr("rectSelector", {
+edge.attr('rectSelector', {
   atConnectionRatioIgnoreGradient: 0.5,
   width: 10,
   height: 10,
-  fill: "red",
-});
+  fill: 'red',
+})
 ```
 
 ### sourceMarker
@@ -556,22 +540,20 @@ edge.attr("rectSelector", {
 适用于所有 `<path>` 元素，在路径的起点添加一个 SVG 元素（如起始箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](/api/model/marker)。
 
 ```ts
-edge.attr("connection/sourceMarker", {
-  tagName: "circle",
-  fill: "#666",
-  stroke: "#333",
+edge.attr('connection/sourceMarker', {
+  tagName: 'circle',
+  fill: '#666',
+  stroke: '#333',
   r: 5,
   cx: 5,
-});
+})
 ```
 
 ### targetMarker
 
 适用于所有 `<path>` 元素，在路径的终点添加一个 SVG 元素（如终点箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](/api/model/marker)。
 
-:::warning{title=注意：}
-需要注意的是，该元素初始时就被旋转了 `180` 度，在此基础上再自动调整旋转角度，并与路径的方向保持一致。例如，对于一个水平的直线，我们为其起点指定了一个向左的箭头，我们也可以为其重点指定相同的箭头，这个箭头会自动指向右侧（自动旋转了 `180` 度）。
-:::
+:::warning{title=注意：} 需要注意的是，该元素初始时就被旋转了 `180` 度，在此基础上再自动调整旋转角度，并与路径的方向保持一致。例如，对于一个水平的直线，我们为其起点指定了一个向左的箭头，我们也可以为其重点指定相同的箭头，这个箭头会自动指向右侧（自动旋转了 `180` 度）。 :::
 
 ### vertexMarker
 
@@ -596,18 +578,18 @@ edge.attr("connection/sourceMarker", {
 node.attr({
   // 表示一个删除按钮，点击时删除该节点
   image: {
-    event: "node:delete",
-    xlinkHref: "trash.png",
+    event: 'node:delete',
+    xlinkHref: 'trash.png',
     width: 20,
     height: 20,
   },
-});
+})
 
 // 绑定事件回调，触发时删除节点
-graph.on("node:delete", ({ view, e }) => {
-  e.stopPropagation();
-  view.cell.remove();
-});
+graph.on('node:delete', ({ view, e }) => {
+  e.stopPropagation()
+  view.cell.remove()
+})
 ```
 
 ### xlinkHref
@@ -617,9 +599,9 @@ graph.on("node:delete", ({ view, e }) => {
 ```ts
 node.attr({
   image: {
-    xlinkHref: "xxx.png",
+    xlinkHref: 'xxx.png',
   },
-});
+})
 ```
 
 ### xlinkShow
@@ -683,29 +665,29 @@ unregister(name: string): Definition | null
 
 ```ts
 // 定义
-Graph.registerAttr("xlinkHref", "xlink:href");
+Graph.registerAttr('xlinkHref', 'xlink:href')
 
 // 使用
 node.attr({
   image: {
-    xlinkHref: "xxx.png",
+    xlinkHref: 'xxx.png',
   },
-});
+})
 ```
 
 继续介绍属性定义前，我们先了解一下属性限定 `qualify` 函数，只有通过限定函数判定的属性值才会被特殊属性处理。例如，仅当 [`stroke`](#stroke) 属性值为 `Object` 类型时，才会被当做特殊属性处理（使用渐变色填充边框）。看下面限定函数的定义。
 
 ```ts
 type QualifyFucntion = (
-  this: CellView,         // 节点/边的视图
-  val: ComplexAttrValue,  // 当前属性的属性值
+  this: CellView, // 节点/边的视图
+  val: ComplexAttrValue, // 当前属性的属性值
   options: {
-    elem: Element         // 当前属性应用的元素
-    attrs: ComplexAttrs   // 应用到该元素的属性键值对
-    cell: Cell            // 节点/边
-    view: CellView        // 节点/边的视图
+    elem: Element // 当前属性应用的元素
+    attrs: ComplexAttrs // 应用到该元素的属性键值对
+    cell: Cell // 节点/边
+    view: CellView // 节点/边的视图
   },
-) => boolean              // 返回 true 时表示通过限定函数的判定
+) => boolean // 返回 true 时表示通过限定函数的判定
 ```
 
 例如 [`stroke`](#stroke) 属性的定义如下：
@@ -714,12 +696,12 @@ type QualifyFucntion = (
 export const stroke: Attr.Definition = {
   qualify(val) {
     // 仅当属性值为对象时，才触发特殊属性加工逻辑。
-    return ObjectExt.isPlainObject(val);
+    return ObjectExt.isPlainObject(val)
   },
   set(stroke, { view }) {
-    return `url(#${view.graph.defineGradient(stroke as any)})`;
+    return `url(#${view.graph.defineGradient(stroke as any)})`
   },
-};
+}
 ```
 
 #### set
@@ -730,14 +712,14 @@ export const stroke: Attr.Definition = {
 export interface SetDefinition {
   qualify?: QualifyFucntion // 限定函数
   set: (
-    this: CellView,         // 节点/边的视图
-    val: ComplexAttrValue,  // 当前属性的属性值
+    this: CellView, // 节点/边的视图
+    val: ComplexAttrValue, // 当前属性的属性值
     options: {
-      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
-      elem: Element         // 当前属性应用的元素
-      attrs: ComplexAttrs   // 应用到该元素的属性键值对
-      cell: Cell            // 节点/边
-      view: CellView        // 节点/边的视图
+      refBBox: Rectangle // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element // 当前属性应用的元素
+      attrs: ComplexAttrs // 应用到该元素的属性键值对
+      cell: Cell // 节点/边
+      view: CellView // 节点/边的视图
     },
   ) => SimpleAttrValue | SimpleAttrs | void
 }
@@ -783,9 +765,9 @@ export const sourceMarker: Attr.SetDefinition = {
 export const html: Attr.Definition = {
   set(html, { view, elem }) {
     // 没有返回值，在方法内部完成属性赋值
-    view.$(elem).html(`${html}`);
+    view.$(elem).html(`${html}`)
   },
-};
+}
 ```
 
 #### offset
@@ -796,16 +778,16 @@ export const html: Attr.Definition = {
 export interface OffsetDefinition {
   qualify?: QualifyFucntion // 限定函数
   offset: (
-    this: CellView,         // 节点/边的视图
-    val: ComplexAttrValue,  // 当前属性的属性值
+    this: CellView, // 节点/边的视图
+    val: ComplexAttrValue, // 当前属性的属性值
     options: {
-      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
-      elem: Element         // 当前属性应用的元素
-      attrs: ComplexAttrs   // 应用到该元素的属性键值对
-      cell: Cell            // 节点/边
-      view: CellView        // 节点/边的视图
+      refBBox: Rectangle // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element // 当前属性应用的元素
+      attrs: ComplexAttrs // 应用到该元素的属性键值对
+      cell: Cell // 节点/边
+      view: CellView // 节点/边的视图
     },
-  ) => Point.PointLike  // 返回绝对偏移量
+  ) => Point.PointLike // 返回绝对偏移量
 }
 ```
 
@@ -829,16 +811,16 @@ export const xAlign: Attr.OffsetDefinition = {
 export interface PositionDefinition {
   qualify?: QualifyFucntion // 限定函数
   offset: (
-    this: CellView,         // 节点/边的视图
-    val: ComplexAttrValue,  // 当前属性的属性值
+    this: CellView, // 节点/边的视图
+    val: ComplexAttrValue, // 当前属性的属性值
     options: {
-      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
-      elem: Element         // 当前属性应用的元素
-      attrs: ComplexAttrs   // 应用到该元素的属性键值对
-      cell: Cell            // 节点/边
-      view: CellView        // 节点/边的视图
+      refBBox: Rectangle // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element // 当前属性应用的元素
+      attrs: ComplexAttrs // 应用到该元素的属性键值对
+      cell: Cell // 节点/边
+      view: CellView // 节点/边的视图
     },
-  ) => Point.PointLike  // 返回绝对定位坐标
+  ) => Point.PointLike // 返回绝对定位坐标
 }
 ```
 
