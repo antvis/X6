@@ -51,8 +51,8 @@ body:
       label: 平台
       value: |
         - 操作系统: [macOS, Windows, Linux, React Native ...]
-        - 网页浏览器: [Google Chrome, Safari, Firefox]
-        - X6 版本: [1.28.2 ... ]
+        - 网页浏览器: [Google Chrome, Safari, Firefox ...]
+        - X6 版本: [2.11.1 ...]
     validations:
       required: true
   - type: textarea
