@@ -64,7 +64,6 @@ localToClient(x: number, y: number): Point
 
 将画布本地坐标转换为浏览器坐标。
 
-
 ### localToGraph(...)
 
 ```ts
@@ -86,7 +85,6 @@ graphToLocal(x: number, y: number): Point
 ```
 
 将画布坐标转换为画布本地坐标。
-
 
 ### snapToGrid(...)
 

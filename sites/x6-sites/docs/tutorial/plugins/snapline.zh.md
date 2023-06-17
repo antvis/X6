@@ -7,10 +7,9 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中，主要介绍对齐线插件相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍对齐线插件相关的知识,通过阅读你可以了解到}
 
-- 如何在画布中使用对齐线
-  :::
+- 如何在画布中使用对齐线 :::
 
 ## 使用
 
@@ -27,18 +26,18 @@ $ yarn add @antv/x6-plugin-snapline
 然后我们在代码中这样使用：
 
 ```ts
-import { Snapline } from "@antv/x6-plugin-snapline";
+import { Snapline } from '@antv/x6-plugin-snapline'
 
 const graph = new Graph({
   background: {
-    color: "#F2F7FA",
+    color: '#F2F7FA',
   },
-});
+})
 graph.use(
   new Snapline({
     enabled: true,
-  })
-);
+  }),
+)
 ```
 
 ## 演示
@@ -47,14 +46,14 @@ graph.use(
 
 ## 配置
 
-| 属性名    | 类型    | 默认值  | 必选 | 描述                                                                                           |
-|-----------|---------|---------|------|----------------------------------------------------------------------------------------------|
-| className | string  | -       |      | 附加样式名，用于定制对齐线样式                                                                  |
-| tolerance | number  | 10      |      | 对齐精度，即移动节点时与目标位置的距离小于 `tolerance` 时触发显示对齐线                         |
-| sharp     | boolean | `false` |      | 是否显示截断的对齐线                                                                           |
-| resizing  | boolean | `false` |      | 改变节点大小时是否触发对齐线                                                                   |
-| clean     | boolean | `true`  |      | 如果为 `true`，则在 3s 后清除对齐线，为 `false`，不会清除，如果为数字(ms)，则在指定时间后清除对齐线 |
-| filter    | Filter  | -       |      | 节点过滤器                                                                                     |
+| 属性名 | 类型 | 默认值 | 必选 | 描述 |
+| --- | --- | --- | --- | --- |
+| className | string | - |  | 附加样式名，用于定制对齐线样式 |
+| tolerance | number | 10 |  | 对齐精度，即移动节点时与目标位置的距离小于 `tolerance` 时触发显示对齐线 |
+| sharp | boolean | `false` |  | 是否显示截断的对齐线 |
+| resizing | boolean | `false` |  | 改变节点大小时是否触发对齐线 |
+| clean | boolean | `true` |  | 如果为 `true`，则在 3s 后清除对齐线，为 `false`，不会清除，如果为数字(ms)，则在指定时间后清除对齐线 |
+| filter | Filter | - |  | 节点过滤器 |
 
 上面的 Filter 类型比较复杂，支持以下三种类型：
 
@@ -96,9 +95,9 @@ toggleSnapline(enabled?: boolean): this
 
 切换对齐线的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
-|---------|---------|:----:|--------|------------------------------------------|
-| enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
 
 ### graph.hideSnapline()
 
@@ -140,9 +139,9 @@ toggleSnaplineOnResizing(enabled?: boolean): this
 
 切换调整节点大小过程中是否触发对齐线。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
-|---------|---------|:----:|--------|------------------------------------------|
-| enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
 
 ### graph.isSharpSnapline()
 
@@ -176,9 +175,9 @@ toggleSharpSnapline(enabled?: boolean): this
 
 切换短款对齐线的启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                               |
-|---------|---------|:----:|--------|--------------------------------------------------|
-| enabled | boolean |      | -      | 是否启用短款对齐线，缺省时切换短款对齐线的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用短款对齐线，缺省时切换短款对齐线的启用状态。 |
 
 ### graph.getSnaplineTolerance()
 

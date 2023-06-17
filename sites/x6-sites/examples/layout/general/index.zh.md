@@ -4,4 +4,3 @@ order: 10
 redirect_from:
   - /zh/examples/layout
 ---
-

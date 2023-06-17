@@ -35,17 +35,17 @@ graph.addNode({
       refRx: '50%', // 椭圆 x 轴半径为宽度的一半
       refRy: '25%', // 椭圆 y 轴半径为高度的 1/4
       refCx: '50%', // 椭圆中心 x 坐标为宽度一半，即位于节点宽度的中心
-      refCy: 0,     // 椭圆中心 y 坐标为 0
+      refCy: 0, // 椭圆中心 y 坐标为 0
       refX: '-50%', // 向左偏移宽度一半
-      refY: '25%',  // 向下偏移高度的 1/4
+      refY: '25%', // 向下偏移高度的 1/4
     },
     r: {
-      refX: '100%',     // 矩形 x 轴坐标位于节点右下角
-      refY: '100%',     // 矩形 y 轴坐标位于节点右下角
-      refWidth: '50%',  // 矩形宽度为节点宽的一半
+      refX: '100%', // 矩形 x 轴坐标位于节点右下角
+      refY: '100%', // 矩形 y 轴坐标位于节点右下角
+      refWidth: '50%', // 矩形宽度为节点宽的一半
       refHeight: '50%', // 矩形高度为节点高度的一半
-      x: -10,           // 向左偏移 10px
-      y: -10,           // 向上偏移 10px
+      x: -10, // 向左偏移 10px
+      y: -10, // 向上偏移 10px
     },
     c: {
       refRCircumscribed: '50%', // 圆半径为节点宽度/高度中较大的那个值的一半
@@ -62,9 +62,7 @@ graph.addNode({
 
 上面这些属性默认相对于节点的大小进行计算，另外我们可以通过 `ref` 属性来提供一个子元素选择器，这时所有的计算都相对于 `ref` 指代的元素，从而实现相对于子元素的大小和位置。
 
-:::warning{title=注意：}
-需要注意的是，设置 `ref` 后，所有计算都依赖子元素在浏览器中的 bbox 测量，所以性能会比相对于节点的方式要慢。
-:::
+:::warning{title=注意：} 需要注意的是，设置 `ref` 后，所有计算都依赖子元素在浏览器中的 bbox 测量，所以性能会比相对于节点的方式要慢。 :::
 
 ```ts
 graph.addNode({
@@ -156,7 +154,7 @@ graph.addEdge({
     absoluteLabelBody: {
       atConnectionLength: 150,
     },
-    
+
     absoluteReverseLabel: {
       text: '-100',
       atConnectionLength: -100,
@@ -164,7 +162,7 @@ graph.addEdge({
     absoluteReverseLabelBody: {
       atConnectionLength: -100,
     },
-    
+
     offsetLabelPositive: {
       y: 40,
       text: 'keepGradient: 0,40',
@@ -172,7 +170,7 @@ graph.addEdge({
     },
     offsetLabelPositiveBody: {
       x: -60, // 0 + -60
-      y: 30,  // 40 + -10
+      y: 30, // 40 + -10
       atConnectionRatio: 0.66,
     },
 
@@ -186,7 +184,7 @@ graph.addEdge({
       y: -50, // -40 + -10
       atConnectionRatio: 0.66,
     },
-    
+
     offsetLabelAbsolute: {
       x: -40,
       y: 80,
@@ -195,7 +193,7 @@ graph.addEdge({
     },
     offsetLabelAbsoluteBody: {
       x: -110, // -40 + -70
-      y: 70,   // 80 + -10
+      y: 70, // 80 + -10
       atConnectionRatioIgnoreGradient: 0.66,
     },
   },

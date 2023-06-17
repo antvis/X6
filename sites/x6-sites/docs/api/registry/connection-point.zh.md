@@ -26,33 +26,33 @@ redirect_from:
 ```ts
 const edge = graph.addEdge({
   source: {
-    cell: "source-id",
+    cell: 'source-id',
     connectionPoint: {
-      name: "boundary",
+      name: 'boundary',
       args: {
         sticky: true,
       },
     },
   },
   target: {
-    cell: "target-id",
-    connectionPoint: "boundary", // 没有参数时可以简化写法
+    cell: 'target-id',
+    connectionPoint: 'boundary', // 没有参数时可以简化写法
   },
-});
+})
 ```
 
 创建之后可以调用 `edge.setSource` 和 `edge.setTarget` 方法来修改连接点：
 
 ```ts
 edge.setSource({
-  cell: "source-id",
+  cell: 'source-id',
   connectionPoint: {
-    name: "boundary",
+    name: 'boundary',
     args: {
       sticky: true,
     },
   },
-});
+})
 ```
 
 在创建画布时，可以通过 `connecting` 选项来设置全局默认的连接点：
@@ -61,13 +61,13 @@ edge.setSource({
 new Graph({
   connecting: {
     connectionPoint: {
-      name: "boundary",
+      name: 'boundary',
       args: {
         sticky: true,
       },
     },
   },
-});
+})
 ```
 
 没有参数时可以简化为：
@@ -75,9 +75,9 @@ new Graph({
 ```ts
 new Graph({
   connecting: {
-    connectionPoint: "boundary",
+    connectionPoint: 'boundary',
   },
-});
+})
 ```
 
 ## presets
@@ -88,41 +88,41 @@ new Graph({
 
 支持的参数如下表：
 
-| 参数名      | 参数类型                  | 是否必选 | 默认值      | 参数说明                                                                                                               |
-|-------------|---------------------------|:-------:|-------------|--------------------------------------------------------------------------------------------------------------------|
-| offset      | number \| Point.PointLike |    否    | `0`         | 连接点的偏移量。                                                                                                        |
-| stroked     | boolean                   |    否    | `true`      | 是否考虑图形的边框宽度。                                                                                                |
-| insideout   | boolean                   |    否    | `true`      | 当参考线位于图形内部且没有交点时，是否延长参考线求交点，默认为 `true`。                                                   |
-| extrapolate | boolean                   |    否    | `false`     | 当参考线位于图形外部且没有交点时，是否延长参考线求交点，延长后也可能没有交点，默认为 `false`。此参数的优先级高于 `sticky`。 |
-| sticky      | boolean                   |    否    | `false`     | 当参考线位于图形外部且没有交点时，是否使用边框上离参考线最最近的点作为交点，默认为 `false`。                              |
-| precision   | number                    |    否    | `2`         | 交点计算的精度。                                                                                                        |
-| selector    | string                    |    否    | `undefined` | 选择器，用于标识一个元素，使用该元素的边框来计算交点。默认使用节点中第一个不在 `<g>` 元素内的子元素。                      |
+| 参数名 | 参数类型 | 是否必选 | 默认值 | 参数说明 |
+| --- | --- | :-: | --- | --- |
+| offset | number \| Point.PointLike | 否 | `0` | 连接点的偏移量。 |
+| stroked | boolean | 否 | `true` | 是否考虑图形的边框宽度。 |
+| insideout | boolean | 否 | `true` | 当参考线位于图形内部且没有交点时，是否延长参考线求交点，默认为 `true`。 |
+| extrapolate | boolean | 否 | `false` | 当参考线位于图形外部且没有交点时，是否延长参考线求交点，延长后也可能没有交点，默认为 `false`。此参数的优先级高于 `sticky`。 |
+| sticky | boolean | 否 | `false` | 当参考线位于图形外部且没有交点时，是否使用边框上离参考线最最近的点作为交点，默认为 `false`。 |
+| precision | number | 否 | `2` | 交点计算的精度。 |
+| selector | string | 否 | `undefined` | 选择器，用于标识一个元素，使用该元素的边框来计算交点。默认使用节点中第一个不在 `<g>` 元素内的子元素。 |
 
 ### anchor
 
 将锚点作为连接点，支持如下参数：
 
-| 参数名 | 参数类型                  | 是否必选 | 默认值 | 参数说明        |
-|--------|---------------------------|:-------:|--------|-------------|
+| 参数名 | 参数类型                  | 是否必选 | 默认值 | 参数说明         |
+| ------ | ------------------------- | :------: | ------ | ---------------- |
 | offset | number \| Point.PointLike |    否    | `0`    | 连接点的偏移量。 |
 
 ### bbox
 
 图形的包围盒与参考线的交点，支持如下参数：
 
-| 参数名  | 参数类型                  | 是否必选 | 默认值  | 参数说明                |
-|---------|---------------------------|:-------:|---------|---------------------|
-| offset  | number \| Point.PointLike |    否    | `0`     | 连接点的偏移量。         |
-| stroked | boolean                   |    否    | `false` | 是否考虑图形的边框宽度。 |
+| 参数名 | 参数类型 | 是否必选 | 默认值 | 参数说明 |
+| --- | --- | :-: | --- | --- |
+| offset | number \| Point.PointLike | 否 | `0` | 连接点的偏移量。 |
+| stroked | boolean | 否 | `false` | 是否考虑图形的边框宽度。 |
 
 ### rect
 
 图形旋转后的矩形区域与参考线的交点，支持如下参数：
 
-| 参数名  | 参数类型                  | 是否必选 | 默认值  | 参数说明                |
-|---------|---------------------------|:-------:|---------|---------------------|
-| offset  | number \| Point.PointLike |    否    | `0`     | 连接点的偏移量。         |
-| stroked | boolean                   |    否    | `false` | 是否考虑图形的边框宽度。 |
+| 参数名 | 参数类型 | 是否必选 | 默认值 | 参数说明 |
+| --- | --- | :-: | --- | --- |
+| offset | number \| Point.PointLike | 否 | `0` | 连接点的偏移量。 |
+| stroked | boolean | 否 | `false` | 是否考虑图形的边框宽度。 |
 
 ## registry
 
@@ -137,8 +137,8 @@ export type Definition<T> = (
 ) => Point
 ```
 
-| 参数名   | 参数类型   | 参数说明            |
-|----------|------------|-------------------|
+| 参数名   | 参数类型   | 参数说明             |
+| -------- | ---------- | -------------------- |
 | line     | Line       | 参考线。             |
 | nodeView | NodeView   | 连接的节点视图。     |
 | magnet   | SVGElement | 连接的节点上的元素。 |

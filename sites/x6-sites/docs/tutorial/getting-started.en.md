@@ -37,16 +37,16 @@ Creating a graph container on the page and then initializing the graph object, t
 ```
 
 ```ts
-import { Graph } from "@antv/x6";
+import { Graph } from '@antv/x6'
 
 const graph = new Graph({
-  container: document.getElementById("container"),
+  container: document.getElementById('container'),
   width: 800,
   height: 600,
   background: {
-    color: "#F2F7FA",
+    color: '#F2F7FA',
   },
-});
+})
 ```
 
 ### 2. Render nodes and edges
@@ -68,13 +68,13 @@ For example, we have a new requirement: add a right-click menu to the node. It w
 In addition to the basic element rendering capabilities, X6 also comes with a large number of built-in plugins for graph editing. Using these mature plugins, we can improve the development efficiency. For example, we add a snapline plugin to the graph, when a moving node is aligned with other nodes, the snapline will automatically appear.
 
 ```ts
-import { Snapline } from "@antv/x6-plugin-snapline";
+import { Snapline } from '@antv/x6-plugin-snapline'
 
 graph.use(
   new Snapline({
     enabled: true,
-  })
-);
+  }),
+)
 ```
 
 <code id="use-plugin" src="@/src/tutorial/getting-started/use-plugin/index.tsx"></code>
@@ -84,5 +84,5 @@ graph.use(
 In addition to using `fromJSON` to render JSON data to the graph, of course, there is also support for exporting the data from the graph width `toJSON`, so that we can serialize the graph data and store it to the server.
 
 ```ts
-graph.toJSON();
+graph.toJSON()
 ```

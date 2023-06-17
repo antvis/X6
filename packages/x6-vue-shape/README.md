@@ -35,8 +35,7 @@ graph.addNode({
     },
     components: {
       HelloWorld,
-    }
+    },
   },
 })
 ```
-

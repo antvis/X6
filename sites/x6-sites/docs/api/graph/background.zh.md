@@ -70,8 +70,8 @@ drawBackground(options?: Options): this
 
 重绘背景。
 
-| 名称             | 类型   | 必选 | 默认值 | 描述              |
-|------------------|--------|:----:|--------|-----------------|
+| 名称             | 类型   | 必选 | 默认值 | 描述               |
+| ---------------- | ------ | :--: | ------ | ------------------ |
 | options.color    | string |      | -      | 背景颜色。         |
 | options.image    | string |      | -      | 背景图片地址。     |
 | options.position | string |      | -      | 背景图片位置。     |
@@ -101,31 +101,31 @@ clearBackground(): this
 
 ```ts
 function watermark(img, options) {
-  const width = img.width;
-  const height = img.height;
-  const canvas = document.createElement("canvas");
+  const width = img.width
+  const height = img.height
+  const canvas = document.createElement('canvas')
 
-  canvas.width = width * 3;
-  canvas.height = height * 3;
+  canvas.width = width * 3
+  canvas.height = height * 3
 
-  const ctx = canvas.getContext("2d")!;
-  const angle = options.angle != null ? -options.angle : -20;
-  const radians = Angle.toRad(angle);
-  const stepX = canvas.width / 4;
-  const stepY = canvas.height / 4;
+  const ctx = canvas.getContext('2d')!
+  const angle = options.angle != null ? -options.angle : -20
+  const radians = Angle.toRad(angle)
+  const stepX = canvas.width / 4
+  const stepY = canvas.height / 4
 
   for (let i = 0; i < 4; i += 1) {
     for (let j = 0; j < 4; j += 1) {
       if ((i + j) % 2 > 0) {
-        ctx.setTransform(1, 0, 0, 1, (2 * i - 1) * stepX, (2 * j - 1) * stepY);
-        ctx.rotate(radians);
-        ctx.drawImage(img, -width / 2, -height / 2, width, height);
+        ctx.setTransform(1, 0, 0, 1, (2 * i - 1) * stepX, (2 * j - 1) * stepY)
+        ctx.rotate(radians)
+        ctx.drawImage(img, -width / 2, -height / 2, width, height)
       }
     }
   }
 
-  return canvas;
+  return canvas
 }
 
-Graph.registerBackground("watermark", watermark);
+Graph.registerBackground('watermark', watermark)
 ```

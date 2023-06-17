@@ -3,7 +3,7 @@
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 user="$(git config user.name)"
-whitelist=("bubkoo" "NewByVector")
+whitelist=("bubkoo" "newbyvector")
 
 if [[ ! " ${whitelist[@]} " =~ " ${user} " ]]; then
   if [ "$branch" = "master" ]; then

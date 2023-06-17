@@ -11,14 +11,14 @@ X6 中边的标签配置非常灵活，所以这里用单独的篇幅来详细�
 
 开始之前，我们先简单了解一下 Edge 实例上操作标签的几个方法。
 
-| 方法签名                                                         | 说明                 |
-| ---------------------------------------------------------------- | -------------------- |
-| [edge.getLabels()](/zh/docs/api/model/edge#getlabels)            | 获取所有标签。       |
-| [edge.setLabels(...)](/zh/docs/api/model/edge#setlabels)         | 设置标签。           |
-| [edge.insertLabel(...)](/zh/docs/api/model/edge#insertlabel)     | 在指定位置插入标签。 |
-| [edge.appendLabel(...)](/zh/docs/api/model/edge#appendlabel)     | 在末尾追加标签。     |
-| [edge.setLabelAt(...)](/zh/docs/api/model/edge#setlabelat)       | 设置指定位置的标签。 |
-| [edge.getLabelAt(...)](/zh/docs/api/model/edge#getlabelat)       | 获取指定位置的标签。 |
+| 方法签名 | 说明 |
+| --- | --- |
+| [edge.getLabels()](/zh/docs/api/model/edge#getlabels) | 获取所有标签。 |
+| [edge.setLabels(...)](/zh/docs/api/model/edge#setlabels) | 设置标签。 |
+| [edge.insertLabel(...)](/zh/docs/api/model/edge#insertlabel) | 在指定位置插入标签。 |
+| [edge.appendLabel(...)](/zh/docs/api/model/edge#appendlabel) | 在末尾追加标签。 |
+| [edge.setLabelAt(...)](/zh/docs/api/model/edge#setlabelat) | 设置指定位置的标签。 |
+| [edge.getLabelAt(...)](/zh/docs/api/model/edge#getlabelat) | 获取指定位置的标签。 |
 | [edge.removeLabelAt(...)](/zh/docs/api/model/edge#removelabelat) | 删除指定位置的标签。 |
 
 ## 标签定义
@@ -27,27 +27,27 @@ X6 中边的标签配置非常灵活，所以这里用单独的篇幅来详细�
 
 ```ts
 interface Label {
-  markup?: Markup;
-  attrs?: Attr.CellAttrs;
+  markup?: Markup
+  attrs?: Attr.CellAttrs
   position?:
     | number
     | {
-        distance: number;
+        distance: number
         offset?:
           | number
           | {
-              x?: number;
-              y?: number;
-            };
-        angle?: number;
+              x?: number
+              y?: number
+            }
+        angle?: number
         options?: {
-          absoluteDistance?: boolean;
-          reverseDistance?: boolean;
-          absoluteOffset?: boolean;
-          keepGradient?: boolean;
-          ensureLegibility?: boolean;
-        };
-      };
+          absoluteDistance?: boolean
+          reverseDistance?: boolean
+          absoluteOffset?: boolean
+          keepGradient?: boolean
+          ensureLegibility?: boolean
+        }
+      }
 }
 ```
 
@@ -105,10 +105,10 @@ interface Label {
 edge.appendLabel({
   attrs: {
     text: {
-      text: "Hello Label",
+      text: 'Hello Label',
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/edge-labels/append-label"></iframe> -->
@@ -127,35 +127,35 @@ edge.appendLabel({
 edge.appendLabel({
   attrs: {
     text: {
-      text: "0.25",
+      text: '0.25',
     },
   },
   position: {
     distance: 0.25,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "150",
+      text: '150',
     },
   },
   position: {
     distance: 150,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "-100",
+      text: '-100',
     },
   },
   position: {
     distance: -100,
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-position"></iframe> -->
@@ -172,31 +172,31 @@ edge.appendLabel({
 edge.appendLabel({
   attrs: {
     text: {
-      text: "offset: 40",
+      text: 'offset: 40',
     },
   },
   position: {
     distance: 0.66,
     offset: 40,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "offset: -40",
+      text: 'offset: -40',
     },
   },
   position: {
     distance: 0.66,
     offset: -40,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "offset: { x: -40, y: 80 }",
+      text: 'offset: { x: -40, y: 80 }',
     },
   },
   position: {
@@ -206,7 +206,7 @@ edge.appendLabel({
       y: 80,
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-offset"></iframe> -->
@@ -224,7 +224,7 @@ edge.appendLabel({
 edge.appendLabel({
   attrs: {
     text: {
-      text: "70°\nkeepGradient",
+      text: '70°\nkeepGradient',
     },
   },
   position: {
@@ -234,12 +234,12 @@ edge.appendLabel({
       keepGradient: true,
     },
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "0°\nkeepGradient",
+      text: '0°\nkeepGradient',
     },
   },
   position: {
@@ -248,36 +248,36 @@ edge.appendLabel({
       keepGradient: true,
     },
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "45°",
+      text: '45°',
     },
   },
   position: {
     distance: 0.8,
     angle: 45,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "135°",
+      text: '135°',
     },
   },
   position: {
     distance: 0.9,
     angle: 135,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "270°\nkeepGradient",
+      text: '270°\nkeepGradient',
     },
   },
   position: {
@@ -288,12 +288,12 @@ edge.appendLabel({
       keepGradient: true,
     },
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     text: {
-      text: "270°\nkeepGradient\nensureLegibility",
+      text: '270°\nkeepGradient\nensureLegibility',
     },
   },
   position: {
@@ -305,7 +305,7 @@ edge.appendLabel({
       ensureLegibility: true,
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-rotate"></iframe> -->
@@ -323,53 +323,53 @@ const edge = graph.addEdge({
   defaultLabel: {
     markup: [
       {
-        tagName: "ellipse",
-        selector: "bg",
+        tagName: 'ellipse',
+        selector: 'bg',
       },
       {
-        tagName: "text",
-        selector: "txt",
+        tagName: 'text',
+        selector: 'txt',
       },
     ],
     attrs: {
       txt: {
-        fill: "#7c68fc",
-        textAnchor: "middle",
-        textVerticalAnchor: "middle",
+        fill: '#7c68fc',
+        textAnchor: 'middle',
+        textVerticalAnchor: 'middle',
       },
       bg: {
-        ref: "txt",
-        refRx: "70%",
-        refRy: "80%",
-        stroke: "#7c68fc",
-        fill: "white",
+        ref: 'txt',
+        refRx: '70%',
+        refRy: '80%',
+        stroke: '#7c68fc',
+        fill: 'white',
         strokeWidth: 2,
       },
     },
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     txt: {
-      text: "First",
+      text: 'First',
     },
   },
   position: {
     distance: 0.3,
   },
-});
+})
 
 edge.appendLabel({
   attrs: {
     txt: {
-      text: "Second",
+      text: 'Second',
     },
   },
   position: {
     distance: 0.7,
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-markup"></iframe> -->
@@ -380,64 +380,64 @@ edge.appendLabel({
 edge.appendLabel({
   markup: [
     {
-      tagName: "circle",
-      selector: "body",
+      tagName: 'circle',
+      selector: 'body',
     },
     {
-      tagName: "text",
-      selector: "label",
+      tagName: 'text',
+      selector: 'label',
     },
     {
-      tagName: "circle",
-      selector: "asteriskBody",
+      tagName: 'circle',
+      selector: 'asteriskBody',
     },
     {
-      tagName: "text",
-      selector: "asterisk",
+      tagName: 'text',
+      selector: 'asterisk',
     },
   ],
   attrs: {
     label: {
-      text: "½",
-      fill: "#000",
+      text: '½',
+      fill: '#000',
       fontSize: 12,
-      textAnchor: "middle",
-      textVerticalAnchor: "middle",
-      pointerEvents: "none",
+      textAnchor: 'middle',
+      textVerticalAnchor: 'middle',
+      pointerEvents: 'none',
     },
     body: {
-      ref: "label",
-      fill: "#fff",
-      stroke: "#000",
+      ref: 'label',
+      fill: '#fff',
+      stroke: '#000',
       strokeWidth: 1,
       refR: 1,
       refCx: 0,
       refCy: 0,
     },
     asterisk: {
-      ref: "label",
-      text: "＊",
-      fill: "#ff0000",
+      ref: 'label',
+      text: '＊',
+      fill: '#ff0000',
       fontSize: 8,
-      textAnchor: "middle",
-      textVerticalAnchor: "middle",
-      pointerEvents: "none",
+      textAnchor: 'middle',
+      textVerticalAnchor: 'middle',
+      pointerEvents: 'none',
       refX: 16.5,
       refY: -2,
     },
     asteriskBody: {
-      ref: "asterisk",
-      fill: "#fff",
-      stroke: "#000",
+      ref: 'asterisk',
+      fill: '#fff',
+      stroke: '#000',
       strokeWidth: 1,
       refR: 1,
-      refCx: "50%",
-      refCy: "50%",
+      refCx: '50%',
+      refCy: '50%',
       refX: 0,
       refY: 0,
     },
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-attrs"></iframe> -->
@@ -453,22 +453,22 @@ const edge = graph.addEdge({
   target,
   labels: [
     {
-      attrs: { label: { text: "edge label" } },
+      attrs: { label: { text: 'edge label' } },
     },
   ],
-});
+})
 
 // 重设标签
 edge.setLabels([
   {
-    attrs: { label: { text: "edge label" } },
+    attrs: { label: { text: 'edge label' } },
   },
-]);
+])
 
 // 追加标签
 edge.appendLabel({
-  attrs: { label: { text: "edge label" } },
-});
+  attrs: { label: { text: 'edge label' } },
+})
 ```
 
 上面代码其实仅仅设置了标签的文本，但代码看起来并不简单，我们不得不提供一个嵌套很深的对象 `{ attrs: { label: { text: 'edge' } } }`，为了解决这个问题，我们提供了一个语法糖，支持直接传入字符串标签，上面代码可以进一步简化为。
@@ -477,12 +477,12 @@ edge.appendLabel({
 const edge = graph.addEdge({
   source,
   target,
-  labels: ["edge label"],
-});
+  labels: ['edge label'],
+})
 
-edge.setLabels(["edge label"]);
+edge.setLabels(['edge label'])
 
-edge.appendLabel("edge label");
+edge.appendLabel('edge label')
 ```
 
 该语法糖在 `Edge` 上定义了一个静态方法 `parseStringLabel`，该方法将字符串标签转换成了 Label 对象。默认的实现如下。
@@ -491,7 +491,7 @@ edge.appendLabel("edge label");
 function parseStringLabel(label: string): Label {
   return {
     attrs: { label: { text: label } },
-  };
+  }
 }
 ```
 
@@ -502,23 +502,23 @@ Edge.config({
   defaultLabel: {
     markup: [
       {
-        tagName: "rect",
-        selector: "body",
+        tagName: 'rect',
+        selector: 'body',
       },
       {
-        tagName: "text",
-        selector: "my-label", // 这里修改了默认的 selector。
+        tagName: 'text',
+        selector: 'my-label', // 这里修改了默认的 selector。
       },
     ],
   },
-});
+})
 
 // 需要同时重新定义 parseStringLabel，来保证字符串标签的可用性。
 Edge.parseStringLabel = (label: string) => {
   return {
-    attrs: { "my-label": { text: label } },
-  };
-};
+    attrs: { 'my-label': { text: label } },
+  }
+}
 ```
 
 ## 单标签
@@ -530,9 +530,9 @@ graph.addEdge({
   source,
   target,
   label: {
-    attrs: { label: { text: "edge label" } },
+    attrs: { label: { text: 'edge label' } },
   },
-});
+})
 ```
 
 当只需要设置标签文本是，也可以使用单标签的字符串形式。
@@ -541,6 +541,6 @@ graph.addEdge({
 graph.addEdge({
   source,
   target,
-  label: "edge label",
-});
+  label: 'edge label',
+})
 ```

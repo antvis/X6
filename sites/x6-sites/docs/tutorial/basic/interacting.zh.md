@@ -7,13 +7,12 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中，主要介绍元素交互相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍元素交互相关的知识,通过阅读,你可以了解到}
 
 - 如何设置连线交互规则
 - 节点之间怎么嵌入
 - 怎么配置高亮样式
-- 怎么禁止、启用一些交互动作
-  :::
+- 怎么禁止、启用一些交互动作 :::
 
 ## 连线
 
@@ -37,21 +36,19 @@ new Graph({
   connecting: {
     allowNode: true, // boolean
   },
-});
+})
 
 // 函数形式，多用于动态控制连接限制
 new Graph({
   connecting: {
     allowNode(args) {
-      return true;
+      return true
     },
   },
-});
+})
 ```
 
-:::info{title=提示：}
-`allowMulti` 支持设置为字符串 `withPort`，代表在起始和终止节点的相同连接桩之间只允许创建一条边（即起始和终止节点之间可以创建多条边，但必须要连接在不同的连接桩上）。
-:::
+:::info{title=提示} `allowMulti` 支持设置为字符串 `withPort`，代表在起始和终止节点的相同连接桩之间只允许创建一条边（即起始和终止节点之间可以创建多条边，但必须要连接在不同的连接桩上）。 :::
 
 <code id="interacting-connection" src="@/src/tutorial/basic/interacting/connecting/index.tsx"></code>
 
@@ -62,10 +59,10 @@ new Graph({
 ```ts
 new Graph({
   connecting: {
-    router: "orth",
-    connector: "rounded",
+    router: 'orth',
+    connector: 'rounded',
   },
-});
+})
 ```
 
 ### createEdge
@@ -77,17 +74,17 @@ new Graph({
   connecting: {
     createEdge() {
       return this.createEdge({
-        shape: "edge",
+        shape: 'edge',
         attrs: {
           line: {
-            stroke: "#8f8f8f",
+            stroke: '#8f8f8f',
             strokeWidth: 1,
           },
         },
-      });
+      })
     },
   },
-});
+})
 ```
 
 ### validateXXX
@@ -110,19 +107,19 @@ const graph = new Graph({
     enabled: true,
     findParent({ node }) {
       // 获取移动节点的包围盒
-      const bbox = node.getBBox();
+      const bbox = node.getBBox()
       // 找到 data 中配置 { parent: true } 的节点，并且移动节点和找到的节点包围盒相交时，返回 true
       return this.getNodes().filter((node) => {
-        const data = node.getData<{ parent: boolean }>();
+        const data = node.getData<{ parent: boolean }>()
         if (data && data.parent) {
-          const targetBBox = node.getBBox();
-          return bbox.isIntersectWithRect(targetBBox);
+          const targetBBox = node.getBBox()
+          return bbox.isIntersectWithRect(targetBBox)
         }
-        return false;
-      });
+        return false
+      })
     },
   },
-});
+})
 ```
 
 <code id="interacting-embedding" src="@/src/tutorial/basic/interacting/embedding/index.tsx"></code>
@@ -136,28 +133,28 @@ new Graph({
   highlighting: {
     // 连接桩可以被连接时在连接桩外围围渲染一个包围框
     magnetAvailable: {
-      name: "stroke",
+      name: 'stroke',
       args: {
         attrs: {
-          fill: "#fff",
-          stroke: "#A4DEB1",
+          fill: '#fff',
+          stroke: '#A4DEB1',
           strokeWidth: 4,
         },
       },
     },
     // 连接桩吸附连线时在连接桩外围围渲染一个包围框
     magnetAdsorbed: {
-      name: "stroke",
+      name: 'stroke',
       args: {
         attrs: {
-          fill: "#fff",
-          stroke: "#31d0c6",
+          fill: '#fff',
+          stroke: '#31d0c6',
           strokeWidth: 4,
         },
       },
     },
   },
-});
+})
 ```
 
 支持的 `highlighting` 配置项有：
@@ -179,7 +176,7 @@ new Graph({
 ```ts
 new Graph({
   interacting: false,
-});
+})
 ```
 
 如果需要更细节的定义允许哪些交互、禁用哪些交互，我们可以针对不同的属性值进行配置，支持的属性包括：
@@ -202,18 +199,18 @@ new Graph({
     nodeMovable: false,
     edgeMovable: true,
   },
-});
+})
 
 // 函数形式，多用于动态控制交互行为
 new Graph({
   interacting: {
     nodeMovable(view) {
-      const node = view.cell;
-      const { enableMove } = node.getData();
-      return enableMove;
+      const node = view.cell
+      const { enableMove } = node.getData()
+      return enableMove
     },
   },
-});
+})
 ```
 
 <code id="interacting-interacting" src="@/src/tutorial/basic/interacting/interacting/index.tsx"></code>

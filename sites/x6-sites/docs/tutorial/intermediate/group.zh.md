@@ -7,14 +7,13 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中，主要介绍组合相关的知识，通过阅读，你可以了解到：}
+:::info{title=在本章节中主要介绍组合相关的知识,通过阅读你可以了解到}
 
 - 怎么组合节点
 - 怎么通过交互方式组合节点
 - 在群组内怎么限制子节点移动
 - 怎么实现自动扩展父节点的效果
-- 怎么实现展开、折叠父节点的效果
-  :::
+- 怎么实现展开、折叠父节点的效果 :::
 
 ## 组合节点
 
@@ -122,18 +121,18 @@ Group.config({
 然后，在 `graph` 上监听 `node:collapse` 事件，当父节点展开、折叠时显示、隐藏对应的子节点：
 
 ```ts
-graph.on("node:collapse", ({ node }: { node: Group }) => {
-  node.toggleCollapse();
-  const collapsed = node.isCollapsed();
-  const cells = node.getDescendants();
+graph.on('node:collapse', ({ node }: { node: Group }) => {
+  node.toggleCollapse()
+  const collapsed = node.isCollapsed()
+  const cells = node.getDescendants()
   cells.forEach((node) => {
     if (collapsed) {
-      node.hide();
+      node.hide()
     } else {
-      node.show();
+      node.show()
     }
-  });
-});
+  })
+})
 ```
 
 <code id="group-collapsable" src="@/src/tutorial/intermediate/group/collapsable/index.tsx"></code>

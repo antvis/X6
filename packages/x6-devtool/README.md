@@ -1,4 +1,5 @@
 # X6 Devtool
+
 > A devtool for @antv/x6 in chrome, it's still WIP, you can load it in unpack way;
 
 ## Quick Start
@@ -7,8 +8,8 @@
 
 ![image](https://user-images.githubusercontent.com/1826685/238003455-d341f598-1b35-4d8c-bb7c-0320cad6a4cb.png)
 
-
 ### Import unpacked plugin
+
 ![image](https://user-images.githubusercontent.com/15213473/150081309-61f9c451-c35e-4dab-a23c-ed5e425e7ec5.png)
 
 1. Open the Extension Management page by navigating to chrome://extensions.
@@ -21,12 +22,11 @@
 
 ```javascript
 // init window hook
-window.__x6_instances__ = [];
+window.__x6_instances__ = []
 
-var graph = new Graph({...blablabla});
+var graph = new Graph({ ...blablabla })
 
-window.__x6_instances__.push(graph);
-
+window.__x6_instances__.push(graph)
 ```
 
 ### Using devtool
@@ -34,7 +34,6 @@ window.__x6_instances__.push(graph);
 After these steps, the tab 'AntV X6' should show in devtools' tab, select it and choose a canvas
 
 ![image](https://user-images.githubusercontent.com/1826685/238013980-2d6018f8-7d85-473c-a043-98b1f03b6674.png)
-
 
 ## Features
 
@@ -45,5 +44,3 @@ After these steps, the tab 'AntV X6' should show in devtools' tab, select it and
 ### View and Modify Attributes of Element
 
 ![image](https://user-images.githubusercontent.com/1826685/238014353-124feb8e-2049-499d-a13d-3d26f485bab6.png)
-
-
