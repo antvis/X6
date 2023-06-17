@@ -45,8 +45,7 @@ $ git push origin branch-name
 
 ### Commit 提交规范
 
-根据 [angular 规范](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)提交 commit，
-这样 history 看起来更加清晰，还可以自动生成 changelog。
+根据 [angular 规范](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)提交 commit，这样 history 看起来更加清晰，还可以自动生成 changelog。
 
 ```xml
 <type>(<scope>): <subject>
@@ -121,7 +120,7 @@ X6 基于 [semver](http://semver.org/lang/zh-CN/) 语义化版本号进行发布
 
 ### 发布策略
 
-在每个大版本的发布中，都会有一个PM，他在发布的不同阶段负有以下职责：
+在每个大版本的发布中，都会有一个 PM，他在发布的不同阶段负有以下职责：
 
 #### 准备工作：
 

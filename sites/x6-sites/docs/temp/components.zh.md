@@ -31,7 +31,6 @@ $ yarn add @antv/x6-react-components
 - https://cdn.jsdelivr.net/npm/@antv/x6-react-components@1.8.15/dist/x6-react-components.js
 - https://cdnjs.cloudflare.com/ajax/libs/antv-x6-react-components/1.8.15/x6-react-components.js
 
-
 ## 使用
 
 引入需要的组件和对应的样式：
@@ -72,29 +71,33 @@ import { Menu } from '@antv/x6-react-components'
 
 ```html
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>X6-React-Components</title>
-  <link rel="stylesheet" href="https://unpkg.com/@antv/x6-react-components/dist/index.css">
-</head>
-<body>
-  <div id="container"></div>
-  <script src="babel.js"></script>
-  <script src="react.js"></script>
-  <script src="react-dom.js"></script>
-  <script src="https://unpkg.com/@antv/x6-react-components/dist/x6-react-components.js"></script>
-  <script type="text/babel">
-    const Menu = X6ReactComponents.Menu
-    const MenuItem = Menu.Item
-    ReactDOM.render((
-      <Menu >
-        <MenuItem name="undo"  hotkey="Cmd+Z" text="Undo" />
-        <MenuItem name="redo"  hotkey="Cmd+Shift+Z" text="Redo" />
-      </Menu>
-    ), document.getElementById('container'))
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X6-React-Components</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@antv/x6-react-components/dist/index.css"
+    />
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="babel.js"></script>
+    <script src="react.js"></script>
+    <script src="react-dom.js"></script>
+    <script src="https://unpkg.com/@antv/x6-react-components/dist/x6-react-components.js"></script>
+    <script type="text/babel">
+      const Menu = X6ReactComponents.Menu
+      const MenuItem = Menu.Item
+      ReactDOM.render(
+        <Menu>
+          <MenuItem name="undo" hotkey="Cmd+Z" text="Undo" />
+          <MenuItem name="redo" hotkey="Cmd+Shift+Z" text="Redo" />
+        </Menu>,
+        document.getElementById('container'),
+      )
+    </script>
+  </body>
 </html>
 ```
 

@@ -15,30 +15,28 @@ redirect_from:
 
 普通画布(未使用 `scroller` 插件)通过开启 `panning` 选项来支持拖拽平移。
 
-:::warning{title=注意：}
-不要同时使用 `scroller` 和 `panning`，因为两种形式在交互上有冲突。
-:::
+:::warning{title=注意} 不要同时使用 `scroller` 和 `panning`，因为两种形式在交互上有冲突。 :::
 
 ```ts
 const graph = new Graph({
   panning: true,
-});
+})
 
 // 等同于
 const graph = new Graph({
   panning: {
     enabled: true,
   },
-});
+})
 ```
 
 支持的选项如下：
 
 ```ts
 interface Options {
-  enabled?: boolean;
-  modifiers?: ModifierKey;
-  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel')[];
+  enabled?: boolean
+  modifiers?: ModifierKey
+  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel')[]
 }
 ```
 
@@ -53,7 +51,7 @@ interface Options {
 `ModifierKey` 的类型定义如下：
 
 ```ts
-type ModifierKey = string | ("alt" | "ctrl" | "meta" | "shift")[] | null;
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
 ```
 
 支持以下几种形式：
@@ -106,6 +104,6 @@ togglePanning(enabled?: boolean): this
 
 切换画布平移启用状态。参数如下：
 
-| 名称    | 类型    | 必选 | 默认值 | 描述                                               |
-|---------|---------|:----:|--------|--------------------------------------------------|
-| enabled | boolean |      | -      | 是否启用画布平移功能，缺省时切换画布平移的启用状态。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| enabled | boolean |  | - | 是否启用画布平移功能，缺省时切换画布平移的启用状态。 |

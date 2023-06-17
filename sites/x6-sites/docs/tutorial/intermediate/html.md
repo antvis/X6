@@ -7,35 +7,34 @@ redirect_from:
   - /zh/docs/tutorial/inermediate
 ---
 
-:::info{title=在本章节中，你可以了解到：}
+:::info{title=在本章节中你可以了解到}
 
 - 如何使用 HTML 来渲染节点内容
-- 如何更新节点内容
-  :::
+- 如何更新节点内容 :::
 
 ## 渲染节点
 
 X6 默认内置 `HTML` 渲染能力，使用方法也非常简单：
 
 ```ts
-import { Graph, Shape, Cell } from "@antv/x6";
+import { Graph, Shape, Cell } from '@antv/x6'
 
 Shape.HTML.register({
-  shape: "custom-html",
+  shape: 'custom-html',
   width: 160,
   height: 80,
   html() {
-    const div = document.createElement("div");
-    div.className = "custom-html";
-    return div;
+    const div = document.createElement('div')
+    div.className = 'custom-html'
+    return div
   },
-});
+})
 
 graph.addNode({
-  shape: "custom-html",
+  shape: 'custom-html',
   x: 60,
   y: 100,
-});
+})
 ```
 
 下面例子中，在 `HTML` 标签上加上悬浮动画效果，使用 `SVG` 实现起来会非常复杂。
@@ -48,18 +47,18 @@ graph.addNode({
 
 ```ts
 Shape.HTML.register({
-  shape: "custom-html",
+  shape: 'custom-html',
   width: 160,
   height: 80,
-  effect: ["data"],
+  effect: ['data'],
   html(cell) {
-    const { color } = cell.getData();
-    const div = document.createElement("div");
-    div.className = "custom-html";
-    div.style.background = color;
-    return div;
+    const { color } = cell.getData()
+    const div = document.createElement('div')
+    div.className = 'custom-html'
+    div.style.background = color
+    return div
   },
-});
+})
 ```
 
 <code id="html-update" src="@/src/tutorial/intermediate/html/update/index.tsx"></code>

@@ -11,14 +11,14 @@ redirect_from:
 
 ```ts
 type Definition<T> = (
-  portsPositionArgs: T[],  // 连接桩中指定的布局算法参数
-  elemBBox: Rectangle,     // 节点的包围盒
-  groupPositionArgs: T,    // group 中定义的默认布局算法参数
+  portsPositionArgs: T[], // 连接桩中指定的布局算法参数
+  elemBBox: Rectangle, // 节点的包围盒
+  groupPositionArgs: T, // group 中定义的默认布局算法参数
 ) => Result[]
 
 interface Result {
   position: Point.PointLike // 相对于节点的位置
-  angle?: number            // 旋转角度
+  angle?: number // 旋转角度
 }
 ```
 
@@ -61,16 +61,16 @@ graph.addNode(
 
 ```ts
 interface AbsoluteArgs {
-  x?: string | number;
-  y?: string | number;
-  angle?: number;
+  x?: string | number
+  y?: string | number
+  angle?: number
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型             | 必选 | 默认值 | 描述                   |
-|-------|------------------|:----:|--------|----------------------|
+| 名称  | 类型             | 必选 | 默认值 | 描述                    |
+| ----- | ---------------- | :--: | ------ | ----------------------- |
 | x     | string \| number |      | `0`    | 连接桩在 X 轴相对位置。 |
 | y     | string \| number |      | `0`    | 连接桩在 Y 轴相对位置。 |
 | angle | number           |      | `0`    | 连接桩旋转角度。        |
@@ -85,23 +85,23 @@ graph.addNode({
     groups: {
       group1: {
         position: {
-          name: "absolute",
+          name: 'absolute',
           args: { x: 0, y: 0 },
         },
       },
     },
     items: [
       {
-        group: "group1",
+        group: 'group1',
         args: {
-          x: "60%",
+          x: '60%',
           y: 32,
           angle: 45,
         },
       },
     ],
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/api/registry/port-layout/absolute"></iframe> -->
@@ -112,18 +112,18 @@ graph.addNode({
 
 ```ts
 interface SideArgs {
-  dx?: number;
-  dy?: number;
-  angle?: number;
-  x?: number;
-  y?: number;
+  dx?: number
+  dy?: number
+  angle?: number
+  x?: number
+  y?: number
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称   | 类型    | 必选 | 默认值  | 描述                                    |
-|--------|---------|:----:|---------|---------------------------------------|
+| 名称   | 类型    | 必选 | 默认值  | 描述                                     |
+| ------ | ------- | :--: | ------- | ---------------------------------------- |
 | strict | boolean |      | `false` | 是否严格等分均匀分布。                   |
 | dx     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
 | dy     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
@@ -138,19 +138,19 @@ graph.addNode({
   ports: {
     groups: {
       group1: {
-        position: "left",
+        position: 'left',
       },
     },
     items: [
       {
-        group: "group1",
+        group: 'group1',
         args: {
           dx: 2,
         },
       },
     ],
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/api/registry/port-layout/side"></iframe> -->
@@ -161,28 +161,28 @@ graph.addNode({
 
 ```ts
 interface LineArgs {
-  start?: Point.PointLike;
-  end?: Point.PointLike;
-  dx?: number;
-  dy?: number;
-  angle?: number;
-  x?: number;
-  y?: number;
+  start?: Point.PointLike
+  end?: Point.PointLike
+  dx?: number
+  dy?: number
+  angle?: number
+  x?: number
+  y?: number
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称   | 类型            | 必选 | 默认值  | 描述                                    |
-|--------|-----------------|:----:|---------|---------------------------------------|
-| start  | Point.PointLike |      |         | 线段起点。                               |
-| end    | Point.PointLike |      |         | 线段终点。                               |
-| strict | boolean         |      | `false` | 是否严格等分均匀分布。                   |
-| dx     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| angle  | number          |      | `0`     | 连接桩的旋转角度。                       |
-| x      | number          |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y      | number          |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| start | Point.PointLike |  |  | 线段起点。 |
+| end | Point.PointLike |  |  | 线段终点。 |
+| strict | boolean |  | `false` | 是否严格等分均匀分布。 |
+| dx | number |  | `0` | 沿 X 轴方向的偏移量。 |
+| dy | number |  | `0` | 沿 X 轴方向的偏移量。 |
+| angle | number |  | `0` | 连接桩的旋转角度。 |
+| x | number |  | - | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y | number |  | - | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 <span class="tag-example">用法</span>
 
@@ -192,7 +192,7 @@ graph.addNode({
     groups: {
       group1: {
         position: {
-          name: "line",
+          name: 'line',
           args: {
             start: { x: 10, y: 10 },
             end: { x: 210, y: 10 },
@@ -202,14 +202,14 @@ graph.addNode({
     },
     items: [
       {
-        group: "group1",
+        group: 'group1',
         args: {
           dx: 2,
         },
       },
     ],
   },
-});
+})
 ```
 
 <!-- <iframe src="/demos/api/registry/port-layout/line/"></iframe> -->
@@ -220,31 +220,31 @@ graph.addNode({
 
 ```ts
 interface EllipseArgs {
-  start?: number;
-  step?: number;
-  compensateRotate?: boolean;
-  dr?: number;
-  dx?: number;
-  dy?: number;
-  angle?: number;
-  x?: number;
-  y?: number;
+  start?: number
+  step?: number
+  compensateRotate?: boolean
+  dr?: number
+  dx?: number
+  dy?: number
+  angle?: number
+  x?: number
+  y?: number
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型   | 必选 | 默认值  | 描述                                    |
-|------------------|--------|:----:|---------|---------------------------------------|
-| start            | number |      |         | 起始角度。                               |
-| step             | number |      | `20`    | 步长。                                   |
-| compensateRotate | number |      | `false` | 是否沿圆弧修正连接桩的旋转角度。         |
-| dr               | number |      | `0`     | 沿半径方向的偏移量。                     |
-| dx               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| angle            | number |      | `0`     | 连接桩的旋转角度。                       |
-| x                | number |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y                | number |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| start | number |  |  | 起始角度。 |
+| step | number |  | `20` | 步长。 |
+| compensateRotate | number |  | `false` | 是否沿圆弧修正连接桩的旋转角度。 |
+| dr | number |  | `0` | 沿半径方向的偏移量。 |
+| dx | number |  | `0` | 沿 X 轴方向的偏移量。 |
+| dy | number |  | `0` | 沿 X 轴方向的偏移量。 |
+| angle | number |  | `0` | 连接桩的旋转角度。 |
+| x | number |  | - | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y | number |  | - | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 <span class="tag-example">用法</span>
 
@@ -254,7 +254,7 @@ const node = graph.addNode({
     groups: {
       group1: {
         position: {
-          name: "ellipse",
+          name: 'ellipse',
           args: {
             start: 45,
           },
@@ -262,15 +262,15 @@ const node = graph.addNode({
       },
     },
   },
-});
+})
 
 Array.from({ length: 10 }).forEach((_, index) => {
   node.addPort({
     id: `${index}`,
-    group: "group1",
+    group: 'group1',
     attrs: { text: { text: index } },
-  });
-});
+  })
+})
 ```
 
 <!-- <iframe src="/demos/api/registry/port-layout/ellipse"></iframe> -->
@@ -281,29 +281,29 @@ Array.from({ length: 10 }).forEach((_, index) => {
 
 ```ts
 interface EllipseSpreadArgs {
-  start?: number;
-  compensateRotate?: boolean;
-  dr?: number;
-  dx?: number;
-  dy?: number;
-  angle?: number;
-  x?: number;
-  y?: number;
+  start?: number
+  compensateRotate?: boolean
+  dr?: number
+  dx?: number
+  dy?: number
+  angle?: number
+  x?: number
+  y?: number
 }
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型   | 必选 | 默认值  | 描述                                    |
-|------------------|--------|:----:|---------|---------------------------------------|
-| start            | number |      |         | 起始角度。                               |
-| compensateRotate | number |      | `false` | 是否沿圆弧修正连接桩的旋转角度。         |
-| dr               | number |      | `0`     | 沿半径方向的偏移量。                     |
-| dx               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| angle            | number |      | `0`     | 连接桩的旋转角度。                       |
-| x                | number |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y                | number |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
+| 名称 | 类型 | 必选 | 默认值 | 描述 |
+| --- | --- | :-: | --- | --- |
+| start | number |  |  | 起始角度。 |
+| compensateRotate | number |  | `false` | 是否沿圆弧修正连接桩的旋转角度。 |
+| dr | number |  | `0` | 沿半径方向的偏移量。 |
+| dx | number |  | `0` | 沿 X 轴方向的偏移量。 |
+| dy | number |  | `0` | 沿 X 轴方向的偏移量。 |
+| angle | number |  | `0` | 连接桩的旋转角度。 |
+| x | number |  | - | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y | number |  | - | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 <span class="tag-example">用法</span>
 
@@ -313,7 +313,7 @@ const node = graph.addNode({
     groups: {
       group1: {
         position: {
-          name: "ellipseSpread",
+          name: 'ellipseSpread',
           args: {
             start: 45,
           },
@@ -321,15 +321,15 @@ const node = graph.addNode({
       },
     },
   },
-});
+})
 
 Array.from({ length: 36 }).forEach(function (_, index) {
   ellipse.addPort({
-    group: "group1",
+    group: 'group1',
     id: `${index}`,
     attrs: { text: { text: index } },
-  });
-});
+  })
+})
 ```
 
 <!-- <iframe src="/demos/api/registry/port-layout/ellipse-spread"></iframe> -->
@@ -340,14 +340,14 @@ Array.from({ length: 36 }).forEach(function (_, index) {
 
 ```ts
 type Definition<T> = (
-  portsPositionArgs: T[],  // 连接桩中指定的布局算法参数
-  elemBBox: Rectangle,     // 节点的包围盒
-  groupPositionArgs: T,    // group 中定义的默认布局算法参数
+  portsPositionArgs: T[], // 连接桩中指定的布局算法参数
+  elemBBox: Rectangle, // 节点的包围盒
+  groupPositionArgs: T, // group 中定义的默认布局算法参数
 ) => Result[]
 
 interface Result {
   position: Point.PointLike // 相对于节点的位置
-  angle?: number            // 旋转角度
+  angle?: number // 旋转角度
 }
 ```
 
@@ -356,16 +356,16 @@ interface Result {
 ```ts
 function sin(portsPositionArgs, elemBBox) {
   return portsPositionArgs.map((_, index) => {
-    const step = -Math.PI / 8;
-    const y = Math.sin(index * step) * 50;
+    const step = -Math.PI / 8
+    const y = Math.sin(index * step) * 50
     return {
       position: {
         x: index * 12,
         y: y + elemBBox.height,
       },
       angle: 0,
-    };
-  });
+    }
+  })
 }
 ```
 
@@ -391,25 +391,25 @@ unregister(name: string): Definition | null
 实际上，我们将 `registry` 的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `Graph.registerPortLayout` 和 `Graph.unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
 
 ```ts
-Graph.registerPortLayout("sin", sin);
+Graph.registerPortLayout('sin', sin)
 ```
 
 或者：
 
 ```ts
-Graph.registerPortLayout("sin", (portsPositionArgs, elemBBox) => {
+Graph.registerPortLayout('sin', (portsPositionArgs, elemBBox) => {
   return portsPositionArgs.map((_, index) => {
-    const step = -Math.PI / 8;
-    const y = Math.sin(index * step) * 50;
+    const step = -Math.PI / 8
+    const y = Math.sin(index * step) * 50
     return {
       position: {
         x: index * 12,
         y: y + elemBBox.height,
       },
       angle: 0,
-    };
-  });
-});
+    }
+  })
+})
 ```
 
 注册以后，我们就可以像内置布局算法那样来使用：
@@ -420,21 +420,21 @@ const rect = graph.addNode({
     groups: {
       sin: {
         position: {
-          name: "sin",
+          name: 'sin',
           args: {
             start: 45,
           },
         },
         attrs: {
           rect: {
-            fill: "#fe854f",
+            fill: '#fe854f',
             width: 11,
           },
           text: {
-            fill: "#fe854f",
+            fill: '#fe854f',
           },
           circle: {
-            fill: "#fe854f",
+            fill: '#fe854f',
             r: 5,
             magnet: true,
           },
@@ -442,11 +442,11 @@ const rect = graph.addNode({
       },
     },
   },
-});
+})
 
 Array.from({ length: 24 }).forEach(() => {
-  rect.addPort({ group: "sin" });
-});
+  rect.addPort({ group: 'sin' })
+})
 ```
 
 <!-- <iframe src="/demos/api/registry/port-layout/sin"></iframe> -->

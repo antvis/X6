@@ -36,7 +36,7 @@ const graph = new Graph({
   connecting: {
     snap: true,
   },
-});
+})
 // 等价于
 const graph = new Graph({
   connecting: {
@@ -44,7 +44,7 @@ const graph = new Graph({
       radius: 50,
     },
   },
-});
+})
 ```
 
 ### allowBlank
@@ -61,9 +61,9 @@ const graph = new Graph({
     allowBlank() {
       // 根据条件返回 true or false
       return true
-    }
+    },
   },
-});
+})
 ```
 
 ### allowLoop
@@ -101,7 +101,9 @@ allowPort: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
 ### allowMulti
 
 ```typescript
-allowMulti: boolean | 'withPort' | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+allowMulti: boolean |
+  'withPort' |
+  ((this: Graph, args: ValidateConnectionArgs) => boolean)
 ```
 
 是否允许在相同的起始节点和终止之间创建多条边，默认为 `true` 。当设置为 `false` 时，在起始和终止节点之间只允许创建一条边，当设置为 `'withPort'` 时，在起始和终止节点的相同连接桩之间只允许创建一条边（即，起始和终止节点之间可以创建多条边，但必须要要链接在不同的连接桩上）。
@@ -165,7 +167,7 @@ targetEdgeAnchor?: EdgeAnchorOptions
 ### connectionPoint
 
 ```typescript
- connectionPoint: ConnectionPointOptions
+connectionPoint: ConnectionPointOptions
 ```
 
 指定[连接点](/zh/docs/api/registry/connector)，默认值为 `boundary` 。
@@ -200,7 +202,7 @@ router: string | Router.NativeItem | Router.ManaualItem
 connector: string | Connector.NativeItem | Connector.ManaualItem
 ```
 
-[连接器](/zh/docs/api/registry/connector)将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal` 。
+[连接器](/zh/docs/api/registry/connector)将起点、路由返回的点、终点加工为 `path` 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal` 。
 
 ### createEdge
 
@@ -318,17 +320,17 @@ export type Interacting =
   | ((this: Graph, cellView: CellView) => InteractionMap | boolean)
 ```
 
-* `boolean` 节点或边是否可交互
-* `InteractionMap` 节点或边的交互细节，支持以下属性：
-  + `'nodeMovable'` 节点是否可以被移动。
-  + `'magnetConnectable'` 当在具有 `'magnet'` 属性的元素上按下鼠标开始拖动时，是否触发连线交互。
-  + `'edgeMovable'` 边是否可以被移动。
-  + `'edgeLabelMovable'` 边的标签是否可以被移动。
-  + `'arrowheadMovable'` 边的起始/终止箭头是否可以被移动。
-  + `'vertexMovable'` 边的路径点是否可以被移动。
-  + `'vertexAddable'` 是否可以添加边的路径点。
-  + `'vertexDeletable'` 边的路径点是否可以被删除。
-* `(this: Graph, cellView: CellView) => InteractionMap | boolean`
+- `boolean` 节点或边是否可交互
+- `InteractionMap` 节点或边的交互细节，支持以下属性：
+  - `'nodeMovable'` 节点是否可以被移动。
+  - `'magnetConnectable'` 当在具有 `'magnet'` 属性的元素上按下鼠标开始拖动时，是否触发连线交互。
+  - `'edgeMovable'` 边是否可以被移动。
+  - `'edgeLabelMovable'` 边的标签是否可以被移动。
+  - `'arrowheadMovable'` 边的起始/终止箭头是否可以被移动。
+  - `'vertexMovable'` 边的路径点是否可以被移动。
+  - `'vertexAddable'` 是否可以添加边的路径点。
+  - `'vertexDeletable'` 边的路径点是否可以被删除。
+- `(this: Graph, cellView: CellView) => InteractionMap | boolean`
 
 ```ts
 const graph = new Graph({
@@ -337,12 +339,12 @@ const graph = new Graph({
   height: 1400,
   grid: 10,
   interacting: function (cellView: CellView) {
-    if (cellView.cell.getProp("customLinkInteractions")) {
-      return { vertexAdd: false };
+    if (cellView.cell.getProp('customLinkInteractions')) {
+      return { vertexAdd: false }
     }
-    return true;
+    return true
   },
-});
+})
 ```
 
 ## 高亮
@@ -354,26 +356,26 @@ new Graph({
   highlighting: {
     // 当连接桩可以被链接时，在连接桩外围渲染一个 2px 宽的红色矩形框
     magnetAvailable: {
-      name: "stroke",
+      name: 'stroke',
       args: {
         padding: 4,
         attrs: {
-          "stroke-width": 2,
-          stroke: "red",
+          'stroke-width': 2,
+          stroke: 'red',
         },
       },
     },
   },
-});
+})
 ```
 
 支持的 `highlighting` 配置项有：
 
-* `'default'` 默认高亮选项，当以下几种高亮配置缺省时被使用。
-* `'embedding'` 拖动节点进行嵌入操作过程中，节点可以被嵌入时被使用。
-* `'nodeAvailable'` 连线过程中，节点可以被链接时被使用。
-* `'magnetAvailable'` 连线过程中，连接桩可以被链接时被使用。
-* `'magnetAdsorbed'` 连线过程中，自动吸附到连接桩时被使用。
+- `'default'` 默认高亮选项，当以下几种高亮配置缺省时被使用。
+- `'embedding'` 拖动节点进行嵌入操作过程中，节点可以被嵌入时被使用。
+- `'nodeAvailable'` 连线过程中，节点可以被链接时被使用。
+- `'magnetAvailable'` 连线过程中，连接桩可以被链接时被使用。
+- `'magnetAdsorbed'` 连线过程中，自动吸附到连接桩时被使用。
 
 上面 `magnetAvailable.name` 其实是高亮器的名称，X6 内置了 `stroke` 和 `className` 两种高亮器，详细信息参考 [Highlighter](/zh/docs/api/registry/highlighter)。
 
@@ -393,8 +395,8 @@ const graph = new Graph({
 
 节点的可移动范围。支持以下两种方式：
 
-* `boolean` 如果设置为 `true`, 节点不能移动超出画布区域
-* `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定一个节点的移动范围
+- `boolean` 如果设置为 `true`, 节点不能移动超出画布区域
+- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定一个节点的移动范围
 
 ```ts
 const graph = new Graph({
@@ -404,6 +406,7 @@ const graph = new Graph({
       y: 0,
       width: 100,
       height: 100,
-    }
-  }
+    },
+  },
 })
+```
