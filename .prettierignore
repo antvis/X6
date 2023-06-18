@@ -3,6 +3,7 @@
 *.svg
 *.gif
 *.log
+*.md
 .DS_Store
 CNAME
 AUTHORS

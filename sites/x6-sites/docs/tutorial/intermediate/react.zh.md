@@ -1,6 +1,6 @@
 ---
 title: React 节点
-order: 5
+order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
@@ -8,15 +8,17 @@ redirect_from:
 ---
 
 :::info{title=在本章节中你可以了解到}
-
 - 如何使用 React 组件来渲染节点内容
-- 如何更新节点内容 :::
+- 如何更新节点内容
+:::
 
 ## 渲染节点
 
 我们提供了一个独立的包 `@antv/x6-react-shape` 来使用 React 渲染节点。
 
-:::warning{title=注意} 需要注意的是，x6 的版本要和 x6-react-shape 的版本匹配，也就是两个包需要用同一个大版本。 :::
+:::warning{title=注意}
+需要注意的是，x6 的版本要和 x6-react-shape 的版本匹配，也就是两个包需要用同一个大版本。
+:::
 
 ```ts
 import { register } from '@antv/x6-react-shape'

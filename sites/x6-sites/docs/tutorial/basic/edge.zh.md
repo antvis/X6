@@ -13,21 +13,23 @@ redirect_from:
 - 如何配置边的形状
 - 如何在边上增加箭头
 - 如何自定义边
-- 如何通过 API 修改边 :::
+- 如何通过 API 修改边
+
+:::
 
 ## 添加边
 
 节点和边都有共同的基类 [Cell](/zh/docs/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
 
-| 属性名 | 类型 | 默认值 | 描述 |
-| --- | --- | --- | --- |
-| source | TerminalData | - | 源节点或起始点。 |
-| target | TerminalData | - | 目标节点或目标点。 |
-| vertices | Point.PointLike[] | - | 路径点。 |
-| router | RouterData | - | 路由。 |
-| connector | ConnectorData | - | 连接器。 |
-| labels | Label[] | - | 标签。 |
-| defaultLabel | Label | [默认标签](/zh/docs/api/model/labels#默认标签) | 默认标签。 |
+| 属性名       | 类型              | 默认值                                         | 描述              |
+|--------------|-------------------|------------------------------------------------|-----------------|
+| source       | TerminalData      | -                                              | 源节点或起始点。   |
+| target       | TerminalData      | -                                              | 目标节点或目标点。 |
+| vertices     | Point.PointLike[] | -                                              | 路径点。           |
+| router       | RouterData        | -                                              | 路由。             |
+| connector    | ConnectorData     | -                                              | 连接器。           |
+| labels       | Label[]           | -                                              | 标签。             |
+| defaultLabel | Label             | [默认标签](/zh/docs/api/model/labels#默认标签) | 默认标签。         |
 
 ```ts
 graph.addEdge({
@@ -227,7 +229,9 @@ graph.addEdge({
 
 <code id="edge-native-marker" src="@/src/tutorial/basic/edge/native-marker/index.tsx"></code>
 
-:::info{title=提示} X6 中边默认自带 `classic` 箭头，如果要去掉，可以将 `targetMarker` 设置为 `null`。 :::
+:::info{title=提示}
+ X6 中边默认自带 `classic` 箭头，如果要去掉，可以将 `targetMarker` 设置为 `null`。
+:::
 
 ### 自定义箭头
 
@@ -256,7 +260,9 @@ graph.addEdge({
 })
 ```
 
-:::info{title=提示} 我们的起始箭头和终止箭头使用了相同的 `d` 属性，这是因为我们会自动计算箭头方向，简单来说，我们在定义箭头时，只需要定义一个**向左指向坐标原点**的箭头即可。 :::
+:::info{title=提示}
+我们的起始箭头和终止箭头使用了相同的 `d` 属性，这是因为我们会自动计算箭头方向，简单来说，我们在定义箭头时，只需要定义一个**向左指向坐标原点**的箭头即可。
+:::
 
 <code id="edge-custom-marker" src="@/src/tutorial/basic/edge/custom-marker/index.tsx"></code>
 

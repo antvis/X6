@@ -10,14 +10,16 @@ redirect_from:
 :::info{title=在本章节中你可以了解到}
 
 - 如何使用 HTML 来渲染节点内容
-- 如何更新节点内容 :::
+- 如何更新节点内容
+
+:::
 
 ## 渲染节点
 
 X6 默认内置 `HTML` 渲染能力，使用方法也非常简单：
 
 ```ts
-import { Graph, Shape, Cell } from '@antv/x6'
+import {  Shape } from '@antv/x6'
 
 Shape.HTML.register({
   shape: 'custom-html',

@@ -67,17 +67,13 @@ interface AbsoluteArgs {
 }
 ```
 
-<span class="tag-param">参数<span>
-
-| 名称  | 类型             | 必选 | 默认值 | 描述                    |
-| ----- | ---------------- | :--: | ------ | ----------------------- |
+| 名称  | 类型             | 必选 | 默认值 | 描述                   |
+|-------|------------------|:----:|--------|----------------------|
 | x     | string \| number |      | `0`    | 连接桩在 X 轴相对位置。 |
 | y     | string \| number |      | `0`    | 连接桩在 Y 轴相对位置。 |
 | angle | number           |      | `0`    | 连接桩旋转角度。        |
 
 当 `x` 和 `y` 为百分比字符串或位于 `[0, 1]` 之间时，表示在宽度和高度方向的百分比偏移量，否则表示绝对偏移量。
-
-<span class="tag-example">用法</span>
 
 ```ts
 graph.addNode({
@@ -120,18 +116,14 @@ interface SideArgs {
 }
 ```
 
-<span class="tag-param">参数<span>
-
-| 名称   | 类型    | 必选 | 默认值  | 描述                                     |
-| ------ | ------- | :--: | ------- | ---------------------------------------- |
+| 名称   | 类型    | 必选 | 默认值  | 描述                                    |
+|--------|---------|:----:|---------|---------------------------------------|
 | strict | boolean |      | `false` | 是否严格等分均匀分布。                   |
 | dx     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
 | dy     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
 | angle  | number  |      | `0`     | 连接桩的旋转角度。                       |
 | x      | number  |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
 | y      | number  |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
-
-<span class="tag-example">用法</span>
 
 ```ts
 graph.addNode({
@@ -171,20 +163,16 @@ interface LineArgs {
 }
 ```
 
-<span class="tag-param">参数<span>
-
-| 名称 | 类型 | 必选 | 默认值 | 描述 |
-| --- | --- | :-: | --- | --- |
-| start | Point.PointLike |  |  | 线段起点。 |
-| end | Point.PointLike |  |  | 线段终点。 |
-| strict | boolean |  | `false` | 是否严格等分均匀分布。 |
-| dx | number |  | `0` | 沿 X 轴方向的偏移量。 |
-| dy | number |  | `0` | 沿 X 轴方向的偏移量。 |
-| angle | number |  | `0` | 连接桩的旋转角度。 |
-| x | number |  | - | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y | number |  | - | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
-
-<span class="tag-example">用法</span>
+| 名称   | 类型            | 必选 | 默认值  | 描述                                    |
+|--------|-----------------|:----:|---------|---------------------------------------|
+| start  | Point.PointLike |      |         | 线段起点。                               |
+| end    | Point.PointLike |      |         | 线段终点。                               |
+| strict | boolean         |      | `false` | 是否严格等分均匀分布。                   |
+| dx     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| angle  | number          |      | `0`     | 连接桩的旋转角度。                       |
+| x      | number          |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y      | number          |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 ```ts
 graph.addNode({
@@ -232,21 +220,17 @@ interface EllipseArgs {
 }
 ```
 
-<span class="tag-param">参数<span>
-
-| 名称 | 类型 | 必选 | 默认值 | 描述 |
-| --- | --- | :-: | --- | --- |
-| start | number |  |  | 起始角度。 |
-| step | number |  | `20` | 步长。 |
-| compensateRotate | number |  | `false` | 是否沿圆弧修正连接桩的旋转角度。 |
-| dr | number |  | `0` | 沿半径方向的偏移量。 |
-| dx | number |  | `0` | 沿 X 轴方向的偏移量。 |
-| dy | number |  | `0` | 沿 X 轴方向的偏移量。 |
-| angle | number |  | `0` | 连接桩的旋转角度。 |
-| x | number |  | - | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y | number |  | - | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
-
-<span class="tag-example">用法</span>
+| 名称             | 类型   | 必选 | 默认值  | 描述                                    |
+|------------------|--------|:----:|---------|---------------------------------------|
+| start            | number |      |         | 起始角度。                               |
+| step             | number |      | `20`    | 步长。                                   |
+| compensateRotate | number |      | `false` | 是否沿圆弧修正连接桩的旋转角度。         |
+| dr               | number |      | `0`     | 沿半径方向的偏移量。                     |
+| dx               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| angle            | number |      | `0`     | 连接桩的旋转角度。                       |
+| x                | number |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y                | number |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 ```ts
 const node = graph.addNode({
@@ -292,20 +276,16 @@ interface EllipseSpreadArgs {
 }
 ```
 
-<span class="tag-param">参数<span>
-
-| 名称 | 类型 | 必选 | 默认值 | 描述 |
-| --- | --- | :-: | --- | --- |
-| start | number |  |  | 起始角度。 |
-| compensateRotate | number |  | `false` | 是否沿圆弧修正连接桩的旋转角度。 |
-| dr | number |  | `0` | 沿半径方向的偏移量。 |
-| dx | number |  | `0` | 沿 X 轴方向的偏移量。 |
-| dy | number |  | `0` | 沿 X 轴方向的偏移量。 |
-| angle | number |  | `0` | 连接桩的旋转角度。 |
-| x | number |  | - | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y | number |  | - | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
-
-<span class="tag-example">用法</span>
+| 名称             | 类型   | 必选 | 默认值  | 描述                                    |
+|------------------|--------|:----:|---------|---------------------------------------|
+| start            | number |      |         | 起始角度。                               |
+| compensateRotate | number |      | `false` | 是否沿圆弧修正连接桩的旋转角度。         |
+| dr               | number |      | `0`     | 沿半径方向的偏移量。                     |
+| dx               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| angle            | number |      | `0`     | 连接桩的旋转角度。                       |
+| x                | number |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y                | number |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 ```ts
 const node = graph.addNode({
