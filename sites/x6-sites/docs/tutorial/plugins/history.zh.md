@@ -9,7 +9,9 @@ redirect_from:
 
 :::info{title=在本章节中主要介绍撤销重做相关的知识,通过阅读你可以了解到}
 
-- 如何实现元素操作的撤销与重做 :::
+- 如何实现元素操作的撤销与重做
+
+:::
 
 ## 使用
 
@@ -50,17 +52,19 @@ graph.use(
 
 ## 配置
 
-| 属性名 | 类型 | 默认值 | 必选 | 描述 |
-| --- | --- | --- | --- | --- |
-| stackSize | number | `0` |  | `stackSize` 为 0 表示不限制历史记录栈的长度，如果设置为其他数字表示最多只会记录该数字长度的历史记录 |
-| ignoreAdd | boolean | `false` |  | `ignoreAdd` 如果为 `true`，添加添加元素不会被记录到历史记录 |
-| ignoreRemove | boolean | `false` |  | `ignoreRemove` 如果为 `true`，删除元素不会被记录到历史记录 |
-| ignoreChange | boolean | `false` |  | `ignoreChange` 如果为 `true`，元素属性变化是否被记录到历史记录 |
-| beforeAddCommand | `(event, args) => any` | - |  | 当一个命令被添加到 Undo 队列前被调用，如果该方法返回 `false`，那么这个命令将不会被添加到 Undo 队列中 |
-| afterAddCommand | `(event, args, cmd) => any` | - |  | 当一个命令被添加到 Undo 队列后被调用 |
-| executeCommand | `(cmd, revert, options) => any` | - |  | 当命令被撤销或重做时被调用，`revert` 为 `true` 表示命令被撤销，否则表示命令被重做 |
+| 属性名           | 类型                            | 默认值  | 必选 | 描述                                                                                               |
+|------------------|---------------------------------|---------|------|--------------------------------------------------------------------------------------------------|
+| stackSize        | number                          | `0`     |      | `stackSize` 为 0 表示不限制历史记录栈的长度，如果设置为其他数字表示最多只会记录该数字长度的历史记录 |
+| ignoreAdd        | boolean                         | `false` |      | `ignoreAdd` 如果为 `true`，添加添加元素不会被记录到历史记录                                         |
+| ignoreRemove     | boolean                         | `false` |      | `ignoreRemove` 如果为 `true`，删除元素不会被记录到历史记录                                          |
+| ignoreChange     | boolean                         | `false` |      | `ignoreChange` 如果为 `true`，元素属性变化是否被记录到历史记录                                      |
+| beforeAddCommand | `(event, args) => any`          | -       |      | 当一个命令被添加到 Undo 队列前被调用，如果该方法返回 `false`，那么这个命令将不会被添加到 Undo 队列中 |
+| afterAddCommand  | `(event, args, cmd) => any`     | -       |      | 当一个命令被添加到 Undo 队列后被调用                                                               |
+| executeCommand   | `(cmd, revert, options) => any` | -       |      | 当命令被撤销或重做时被调用，`revert` 为 `true` 表示命令被撤销，否则表示命令被重做                    |
 
-:::info{title=提示} 在实际项目中，我们经常会需要将多个改变一次性撤销或者重做，X6 中提供 `batch` 的概念，可以将多个改变合并成一个历史记录。使用方式如下： :::
+:::info{title=提示}
+在实际项目中，我们经常会需要将多个改变一次性撤销或者重做，X6 中提供 `batch` 的概念，可以将多个改变合并成一个历史记录。使用方式如下：
+:::
 
 ```ts
 // 方式一
@@ -192,21 +196,21 @@ toggleHistory(enabled?: boolean): this
 
 切换历史的启用状态。参数如下：
 
-| 名称 | 类型 | 必选 | 默认值 | 描述 |
-| --- | --- | :-: | --- | --- |
-| enabled | boolean |  | - | 是否启用历史状态，缺省时切换历史的启用状态。 |
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
+| enabled | boolean |      | -      | 是否启用历史状态，缺省时切换历史的启用状态。 |
 
 ## 事件
 
-| 事件名称 | 参数类型 | 描述 |
-| --- | --- | --- |
-| `history:undo` | `{ cmds: Command[], options: KeyValue }` | 当命令被撤销时触发 |
-| `history:redo` | `{ cmds: Command[], options: KeyValue }` | 当命令被重做时触发 |
-| `history:cancel` | `{ cmds: Command[], options: KeyValue }` | 当命令被取消时触发 |
-| `history:add` | `{ cmds: Command[], options: KeyValue }` | 当命令被添加到队列时触发 |
-| `history:clean` | `{ cmds: Command[] \| null, options: KeyValue }` | 当历史队列被清空时触发 |
-| `history:change` | `{ cmds: Command[] \| null, options: KeyValue }` | 当历史队列改变时触发 |
-| `history:batch` | `{ cmds: Command, options: KeyValue }` | 当接收到 batch 命令时触发 |
+| 事件名称         | 参数类型                                         | 描述                      |
+|------------------|--------------------------------------------------|-------------------------|
+| `history:undo`   | `{ cmds: Command[], options: KeyValue }`         | 当命令被撤销时触发        |
+| `history:redo`   | `{ cmds: Command[], options: KeyValue }`         | 当命令被重做时触发        |
+| `history:cancel` | `{ cmds: Command[], options: KeyValue }`         | 当命令被取消时触发        |
+| `history:add`    | `{ cmds: Command[], options: KeyValue }`         | 当命令被添加到队列时触发  |
+| `history:clean`  | `{ cmds: Command[] \| null, options: KeyValue }` | 当历史队列被清空时触发    |
+| `history:change` | `{ cmds: Command[] \| null, options: KeyValue }` | 当历史队列改变时触发      |
+| `history:batch`  | `{ cmds: Command, options: KeyValue }`           | 当接收到 batch 命令时触发 |
 
 ```ts
 graph.on('history:undo', ({ cmds }) => {

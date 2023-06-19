@@ -64,10 +64,8 @@ rect.attr('body/filter', `#${filterId}`)
 
 阴影滤镜。参考 [CSS drop-shadow()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名  | 类型   | 默认值 | 说明                  |
-| ------- | ------ | ------ | --------------------- |
+| 参数名  | 类型   | 默认值 | 说明                 |
+|---------|--------|--------|--------------------|
 | dx      | number | `0`    | 阴影在 X 轴的偏移量。 |
 | dy      | number | `0`    | 阴影在 Y 轴的偏移量。 |
 | blur    | number | `0`    | 阴影的模糊半径。      |
@@ -79,11 +77,9 @@ rect.attr('body/filter', `#${filterId}`)
 
 高斯模糊滤镜。参考 [CSS blur()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/blur) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型   | 默认值 | 说明                                        |
-| ------ | ------ | ------ | ------------------------------------------- |
-| x      | number | `2`    | X 轴方向的模糊程度。                        |
+| 参数名 | 类型   | 默认值 | 说明                                      |
+|--------|--------|--------|-----------------------------------------|
+| x      | number | `2`    | X 轴方向的模糊程度。                       |
 | y      | number | -      | Y 轴方向的模糊程度，缺省时与 X 轴保持一致。 |
 
 <!-- <iframe src="/demos/api/registry/filter/blur"></iframe> -->
@@ -92,11 +88,9 @@ rect.attr('body/filter', `#${filterId}`)
 
 灰阶滤镜。参考 [CSS grayscale()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/grayscale) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| amount | number | `1` | 灰阶程度。取值从 `[0-1]`，`0` 表示没有灰度，`1` 表示全灰。 |
+| 参数名 | 类型   | 默认值 | 说明                                                   |
+|--------|--------|--------|------------------------------------------------------|
+| amount | number | `1`    | 灰阶程度。取值从 `[0-1]`，`0` 表示没有灰度，`1` 表示全灰。 |
 
 <!-- <iframe src="/demos/api/registry/filter/gray-scale"></iframe> -->
 
@@ -104,11 +98,9 @@ rect.attr('body/filter', `#${filterId}`)
 
 褐色滤镜。参考 [CSS sepia()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/sepia) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| amount | number | `1` | 褐色程度。取值从 `[0-1]`，`0` 表示褐色程度为 `0`，`1` 表示全褐色。 |
+| 参数名 | 类型   | 默认值 | 说明                                                           |
+|--------|--------|--------|--------------------------------------------------------------|
+| amount | number | `1`    | 褐色程度。取值从 `[0-1]`，`0` 表示褐色程度为 `0`，`1` 表示全褐色。 |
 
 <!-- <iframe src="/demos/api/registry/filter/sepia"></iframe> -->
 
@@ -116,10 +108,8 @@ rect.attr('body/filter', `#${filterId}`)
 
 饱和度滤镜。参考 [CSS saturate()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/saturate) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型   | 默认值 | 说明                     |
-| ------ | ------ | ------ | ------------------------ |
+| 参数名 | 类型   | 默认值 | 说明                   |
+|--------|--------|--------|----------------------|
 | amount | number | `1`    | 饱和度。取值从 `[0-1]`。 |
 
 <!-- <iframe src="/demos/api/registry/filter/saturate"></iframe> -->
@@ -128,21 +118,17 @@ rect.attr('body/filter', `#${filterId}`)
 
 色相旋转滤镜。参考 [CSS hue-rotate()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/hue-rotate) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型   | 默认值 | 说明           |
-| ------ | ------ | ------ | -------------- |
+| 参数名 | 类型   | 默认值 | 说明          |
+|--------|--------|--------|-------------|
 | angle  | number | `0`    | 色相旋转角度。 |
 
 ### invert
 
 反色滤镜。参考 [CSS invert()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/invert) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| amount | number | `1` | 反色度。取值从 `[0-1]`，`0` 表示没有反色，`1` 表示完全反色。 |
+| 参数名 | 类型   | 默认值 | 说明                                                     |
+|--------|--------|--------|--------------------------------------------------------|
+| amount | number | `1`    | 反色度。取值从 `[0-1]`，`0` 表示没有反色，`1` 表示完全反色。 |
 
 <!-- <iframe src="/demos/api/registry/filter/invert"></iframe> -->
 
@@ -150,11 +136,9 @@ rect.attr('body/filter', `#${filterId}`)
 
 明亮度滤镜。参考 [CSS brightness()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/brightness) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| amount | number | `1` | 明亮度。取值从 `[0-1]`，`0` 表示全暗，`1` 表示全亮。 |
+| 参数名 | 类型   | 默认值 | 说明                                             |
+|--------|--------|--------|------------------------------------------------|
+| amount | number | `1`    | 明亮度。取值从 `[0-1]`，`0` 表示全暗，`1` 表示全亮。 |
 
 <!-- <iframe src="/demos/api/registry/filter/brightness"></iframe> -->
 
@@ -162,11 +146,9 @@ rect.attr('body/filter', `#${filterId}`)
 
 对比度滤镜。参考 [CSS contrast()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/contrast) 滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| amount | number | `1` | 对比度。取值从 `[0-1]`，`0` 表示全暗，`1` 表示全亮。 |
+| 参数名 | 类型   | 默认值 | 说明                                             |
+|--------|--------|--------|------------------------------------------------|
+| amount | number | `1`    | 对比度。取值从 `[0-1]`，`0` 表示全暗，`1` 表示全亮。 |
 
 <!-- <iframe src="/demos/api/registry/filter/contrast"></iframe> -->
 
@@ -174,10 +156,8 @@ rect.attr('body/filter', `#${filterId}`)
 
 高亮滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名  | 类型   | 默认值 | 说明             |
-| ------- | ------ | ------ | ---------------- |
+| 参数名  | 类型   | 默认值 | 说明            |
+|---------|--------|--------|---------------|
 | color   | string | `red`  | 高亮颜色。       |
 | width   | number | `1`    | 高亮外框的宽度。 |
 | blur    | number | `0`    | 模糊半径。       |
@@ -189,10 +169,8 @@ rect.attr('body/filter', `#${filterId}`)
 
 边框滤镜。
 
-<span class="tag-param">参数<span>
-
-| 参数名  | 类型   | 默认值 | 说明       |
-| ------- | ------ | ------ | ---------- |
+| 参数名  | 类型   | 默认值 | 说明      |
+|---------|--------|--------|---------|
 | color   | string | `blue` | 边框颜色。 |
 | width   | number | `1`    | 边框宽度。 |
 | margin  | number | `2`    | 边距。     |

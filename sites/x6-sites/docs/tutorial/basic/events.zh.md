@@ -7,10 +7,12 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍事件相关的知识,通过阅读,你可以了解到}
+:::info{title=在本章节中主要介绍事件相关的知识,通过阅读你可以了解到}
 
 - 可以监听哪些类别事件
-- 如何监听事件 :::
+- 如何监听事件
+
+:::
 
 ## 视图交互事件
 
@@ -18,19 +20,21 @@ redirect_from:
 
 ### 鼠标事件
 
-| 事件 | cell 节点/边 | node 节点 | port 连接桩 | edge 边 | blank 画布空白区域 |
-| --- | --- | --- | --- | --- | --- |
-| 单击 | `cell:click` | `node:click` | `node:port:click` | `edge:click` | `blank:click` |
-| 双击 | `cell:dblclick` | `node:dblclick` | `node:port:dblclick` | `edge:dblclick` | `blank:dblclick` |
-| 右键 | `cell:contextmenu` | `node:contextmenu` | `node:port:contextmenu` | `edge:contextmenu` | `blank:contextmenu` |
-| 鼠标按下 | `cell:mousedown` | `node:mousedown` | `node:port:mousedown` | `edge:mousedown` | `blank:mousedown` |
-| 移动鼠标 | `cell:mousemove` | `node:mousemove` | `node:port:mousemove` | `edge:mousemove` | `blank:mousemove` |
-| 鼠标抬起 | `cell:mouseup` | `node:mouseup` | `node:port:mouseup` | `edge:mouseup` | `blank:mouseup` |
-| 鼠标滚轮 | `cell:mousewheel` | `node:mousewheel` | - | `edge:mousewheel` | `blank:mousewheel` |
-| 鼠标进入 | `cell:mouseenter` | `node:mouseenter` | `node:port:mouseenter` | `edge:mouseenter` | `graph:mouseenter` |
-| 鼠标离开 | `cell:mouseleave` | `node:mouseleave` | `node:port:mouseleave` | `edge:mouseleave` | `graph:mouseleave` |
+| 事件     | cell 节点/边       | node 节点          | port 连接桩             | edge 边            | blank 画布空白区域  |
+|--------|--------------------|--------------------|-------------------------|--------------------|---------------------|
+| 单击     | `cell:click`       | `node:click`       | `node:port:click`       | `edge:click`       | `blank:click`       |
+| 双击     | `cell:dblclick`    | `node:dblclick`    | `node:port:dblclick`    | `edge:dblclick`    | `blank:dblclick`    |
+| 右键     | `cell:contextmenu` | `node:contextmenu` | `node:port:contextmenu` | `edge:contextmenu` | `blank:contextmenu` |
+| 鼠标按下 | `cell:mousedown`   | `node:mousedown`   | `node:port:mousedown`   | `edge:mousedown`   | `blank:mousedown`   |
+| 移动鼠标 | `cell:mousemove`   | `node:mousemove`   | `node:port:mousemove`   | `edge:mousemove`   | `blank:mousemove`   |
+| 鼠标抬起 | `cell:mouseup`     | `node:mouseup`     | `node:port:mouseup`     | `edge:mouseup`     | `blank:mouseup`     |
+| 鼠标滚轮 | `cell:mousewheel`  | `node:mousewheel`  | -                       | `edge:mousewheel`  | `blank:mousewheel`  |
+| 鼠标进入 | `cell:mouseenter`  | `node:mouseenter`  | `node:port:mouseenter`  | `edge:mouseenter`  | `graph:mouseenter`  |
+| 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `node:port:mouseleave`  | `edge:mouseleave`  | `graph:mouseleave`  |
 
-:::warning{title=注意} 需要注意的是，这里的 `mousemove` 事件和通常的鼠标移动事件有所区别，它需要在鼠标按下后移动鼠标才能触发。 :::
+:::warning{title=注意}
+需要注意的是，这里的 `mousemove` 事件和通常的鼠标移动事件有所区别，它需要在鼠标按下后移动鼠标才能触发。
+:::
 
 除了 `mouseenter` 和 `mouseleave` 外，事件回调函数的参数都包含鼠标相对于画布的位置 `x`、`y` 和鼠标事件对象 `e` 等参数。
 
@@ -82,11 +86,11 @@ graph.on('node:customevent', ({ name, view, e }) => {
 
 ### 画布缩放/平移
 
-| 事件名 | 回调参数 | 说明 |
-| --- | --- | --- |
-| `scale` | `{ sx: number; sy: number; ox: number; oy: number }` | 缩放画布时触发，`sx` 和 `sy` 是缩放比例，`ox` 和 `oy` 是缩放中心。 |
-| `resize` | `{ width: number; height: number }` | 改变画布大小时触发，`width` 和 `height` 是画布大小。 |
-| `translate` | `{ tx: number; ty: number }` | 平移画布时触发，`tx` 和 `ty` 分别是 X 和 Y 轴的偏移量。 |
+| 事件名      | 回调参数                                             | 说明                                                            |
+|-------------|------------------------------------------------------|---------------------------------------------------------------|
+| `scale`     | `{ sx: number; sy: number; ox: number; oy: number }` | 缩放画布时触发，`sx` 和 `sy` 是缩放比例，`ox` 和 `oy` 是缩放中心。 |
+| `resize`    | `{ width: number; height: number }`                  | 改变画布大小时触发，`width` 和 `height` 是画布大小。              |
+| `translate` | `{ tx: number; ty: number }`                         | 平移画布时触发，`tx` 和 `ty` 分别是 X 和 Y 轴的偏移量。           |
 
 ```ts
 graph.on('scale', ({ sx, sy, ox, oy }) => {})
@@ -96,14 +100,14 @@ graph.on('translate', ({ tx, ty }) => {})
 
 ### 节点或边平移
 
-| 事件名 | 回调参数 | 说明 |
-| --- | --- | --- |
-| `node:move` | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始移动节点时触发。 |
-| `node:moving` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动节点时触发。 |
-| `node:moved` | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }` | 移动节点后触发。 |
-| `edge:move` | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始移动边时触发。 |
-| `edge:moving` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动边时触发。 |
-| `edge:moved` | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }` | 移动边后触发。 |
+| 事件名        | 回调参数                                                                      | 说明                |
+|---------------|-------------------------------------------------------------------------------|-------------------|
+| `node:move`   | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始移动节点时触发。 |
+| `node:moving` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动节点时触发。     |
+| `node:moved`  | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 移动节点后触发。     |
+| `edge:move`   | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始移动边时触发。   |
+| `edge:moving` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动边时触发。       |
+| `edge:moved`  | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 移动边后触发。       |
 
 参数中的 `x` 和 `y` 是鼠标相对于画布的坐标。
 
@@ -113,11 +117,11 @@ graph.on('node:moved', ({ e, x, y, node, view }) => {})
 
 ### 节点嵌入
 
-| 事件名 | 回调参数 | 说明 |
-| --- | --- | --- |
-| `node:embed` | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView, currentParent: Node }` | 开启嵌入，在开始拖动节点时触发。 |
-| `node:embedding` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView, currentParent: Node, candidateParent: Node }` | 寻找目标节点过程中触发。 |
-| `node:embedded` | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView, previousParent: Node, currentParent: Node }` | 完成节点嵌入后触发。 |
+| 事件名           | 回调参数                                                                                                                  | 说明                           |
+|------------------|---------------------------------------------------------------------------------------------------------------------------|------------------------------|
+| `node:embed`     | `{ e: Dom.MouseDownEvent; x: number; y: number; node: Node; view: NodeView, currentParent: Node }`                        | 开启嵌入，在开始拖动节点时触发。 |
+| `node:embedding` | `{ e: Dom.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView, currentParent: Node, candidateParent: Node }` | 寻找目标节点过程中触发。        |
+| `node:embedded`  | `{ e: Dom.MouseUpEvent; x: number; y: number; node: Node; view: NodeView, previousParent: Node, currentParent: Node }`    | 完成节点嵌入后触发。            |
 
 ### 边连接/取消连接
 
@@ -391,8 +395,8 @@ graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
 
 由于 X6 实现了异步的渲染调度算法，所以节点的添加不一定意味着挂载到画布上。节点在被挂载到画布时以及从画布上卸载时会分别触发单独的事件。
 
-| 事件名           | 回调参数             | 说明                       |
-| ---------------- | -------------------- | -------------------------- |
+| 事件名           | 回调参数             | 说明                      |
+|------------------|----------------------|-------------------------|
 | `view:mounted`   | `{ view: CellView }` | 节点被挂载到画布上时触发。 |
 | `view:unmounted` | `{ view: CellView }` | 节点从画布上卸载时触发。   |
 
