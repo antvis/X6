@@ -1,5 +1,5 @@
 ---
-title: Marker
+title: 箭头
 order: 4
 redirect_from:
   - /zh/docs
@@ -7,127 +7,7 @@ redirect_from:
   - /zh/docs/api/model
 ---
 
-在之前的[教程](/zh/docs/tutorial/basic/edge#使用箭头-marker)中，我们简单介绍了如何使用 [`sourceMarker`](/zh/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/zh/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，并演示了如何使用内置箭头和自定义箭头，接下来我们将详细介绍如何使用各种 SVG 元素来自定义箭头，并详细列举了每个内置箭头的参数项，最后介绍如何将自定义箭头注册为内置箭头。
-
-## 自定义箭头
-
-我们可以通过 `tagName` 来指定使用哪种 SVG 元素来渲染箭头，例如下面我们通过 `tagName` 来指定使用 `<path>` 元素来渲染箭头，除 `tagName` 外的其他选项都将作为属性被添加到创建出来的 `<path>` 元素上。箭头的填充颜色 `fill` 和边框颜色 `stroke` 默认继承自边，可以通过指定 `fill` 和 `stroke` 属性来覆盖。
-
-```ts
-edge.attr({
-  line: {
-    sourceMarker: {
-      tagName: 'path',
-      d: 'M 20 -10 0 0 20 10 Z',
-    },
-    targetMarker: {
-      tagName: 'path',
-      fill: 'yellow', // 使用自定义填充色
-      stroke: 'green', // 使用自定义边框色
-      strokeWidth: 2,
-      d: 'M 20 -10 0 0 20 10 Z',
-    },
-  },
-})
-```
-
-看上面代码，值得注意的是，我们的起始箭头和终止箭头使用了相同的 `'d'` 属性值，这是因为我们会自动计算箭头方向，简单来说，我们只需要定义**向左指向坐标原点**的箭头即可。
-
-<!-- <iframe src="/demos/tutorial/intermediate/marker/custom"></iframe> -->
-
-有时候，我们获取到的 path 元素的 `d` 的坐标可能并不标准，如果直接将其作为箭头来使用就可能出现位置偏离，所以我们在 `Util` 命名空间中提供了 `normalizeMarker` 这个工具方法来标准化 `d` 的坐标。
-
-**方法签名**
-
-```ts
-Registry.Marker.normalize(d: string, offset: { x?: number; y?: number }): string
-Registry.Marker.normalize(d: string, offsetX?: number, offsetY?: number): string
-```
-
-| 参数名  | 类型                       | 说明                        |
-|---------|----------------------------|-----------------------------|
-| d       | string                     |                             |
-| offset  | { x?: number; y?: number } | 相对于坐标原点的偏移量      |
-| offsetX | number                     | 相对于坐标原点的 x 轴偏移量 |
-| offsetY | number                     | 相对于坐标原点的 y 轴偏移量 |
-
-对比下面的起始和终止箭头，很明显起始箭头出现了一定的偏移，使用 `normalizeMarker` 处理后终止箭头的位置就正常了。
-
-```ts
-const d =
-  'M4.834,4.834L4.833,4.833c-5.889,5.892-5.89,15.443,0.001,21.334s15.44,5.888,21.33-0.002c5.891-5.891,5.893-15.44,0.002-21.33C20.275-1.056,10.725-1.056,4.834,4.834zM25.459,5.542c0.833,0.836,1.523,1.757,2.104,2.726l-4.08,4.08c-0.418-1.062-1.053-2.06-1.912-2.918c-0.859-0.859-1.857-1.494-2.92-1.913l4.08-4.08C23.7,4.018,24.622,4.709,25.459,5.542zM10.139,20.862c-2.958-2.968-2.959-7.758-0.001-10.725c2.966-2.957,7.756-2.957,10.725,0c2.954,2.965,2.955,7.757-0.001,10.724C17.896,23.819,13.104,23.817,10.139,20.862zM5.542,25.459c-0.833-0.837-1.524-1.759-2.105-2.728l4.081-4.081c0.418,1.063,1.055,2.06,1.914,2.919c0.858,0.859,1.855,1.494,2.917,1.913l-4.081,4.081C7.299,26.982,6.379,26.292,5.542,25.459zM8.268,3.435l4.082,4.082C11.288,7.935,10.29,8.571,9.43,9.43c-0.858,0.859-1.494,1.855-1.912,2.918L3.436,8.267c0.58-0.969,1.271-1.89,2.105-2.727C6.377,4.707,7.299,4.016,8.268,3.435zM22.732,27.563l-4.082-4.082c1.062-0.418,2.061-1.053,2.919-1.912c0.859-0.859,1.495-1.857,1.913-2.92l4.082,4.082c-0.58,0.969-1.271,1.891-2.105,2.728C24.623,26.292,23.701,26.983,22.732,27.563z'
-
-graph.addEdge({
-  source: { x: 160, y: 40 },
-  target: { x: 420, y: 40 },
-  attrs: {
-    line: {
-      stroke: '#31d0c6',
-      sourceMarker: {
-        d,
-        tagName: 'path',
-      },
-      targetMarker: {
-        tagName: 'path',
-        d: Util.normalizeMarker(d),
-      },
-    },
-  },
-})
-```
-
-<!-- <iframe src="/demos/tutorial/intermediate/marker/normalize-path"></iframe> -->
-
-除了 `<path>` 我们还可以使用 `<circle>`、`<image>`、`<ellipse>`、`<rect>`、`<polyline>`、`<polygon>` 等元素来定义箭头，只需要通过 `tagName` 指定标签名，并设置元素其他必要属性。例如，使用图片来定制箭头也很简单，首先我们把 `tagName` 设置为 `image`，并通过 `xlink:href` 属性指定图片的 URL，并通过 `width` 和 `height` 属性指定图片的大小，然后调节 `y` 属性来使图片居中对齐。
-
-```ts
-edge.attr({
-  line: {
-    sourceMarker: {
-      tagName: 'image',
-      'xlink:href':
-        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
-      width: 24,
-      height: 24,
-      y: -12,
-    },
-    targetMarker: {
-      tagName: 'image',
-      'xlink:href':
-        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
-      width: 24,
-      height: 24,
-      y: -12,
-    },
-  },
-})
-```
-
-<!-- <iframe src="/demos/tutorial/intermediate/marker/image"></iframe> -->
-
-需要注意的是，当使用 `<circle>` 和 `<ellipse>` 来定制箭头时，可以通过设置其 `cx` 属性为对应的轴半径，以避免箭头溢出边的边界；其他元素可以通过 `y` 属性来调节箭头的垂直位置，以便使其垂直居中。
-
-```ts
-edge.attr({
-  line: {
-    sourceMarker: {
-      tagName: 'ellipse',
-      rx: 20,
-      ry: 10,
-      cx: 20,
-      fill: 'rgba(255,0,0,0.3)',
-    },
-    targetMarker: {
-      tagName: 'circle',
-      r: 12,
-      cx: 12,
-      fill: 'rgba(0,255,0,0.3)',
-    },
-  },
-})
-```
-
-<!-- <iframe src="/demos/tutorial/intermediate/marker/tagname"></iframe> -->
+在之前的[教程](/zh/docs/tutorial/basic/edge#使用箭头)中，我们简单介绍了如何使用 [`sourceMarker`](/zh/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/zh/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，并演示了如何使用内置箭头和自定义箭头，接下来我们先列举了每个内置箭头的参数项，然后详细介绍如何使用各种 SVG 元素来自定义箭头，最后介绍如何将自定义箭头注册为内置箭头。
 
 ## 内置箭头
 
@@ -146,7 +26,7 @@ edge.attr({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/marker/native"></iframe> -->
+<code id="marker-native" src="@/src/api/marker/native/index.tsx"></code>
 
 每种内置箭头都有对应的参数，下面将分别介绍。
 
@@ -242,7 +122,7 @@ graph.addEdge({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/marker/path"></iframe> -->
+<code id="marker-path" src="@/src/api/marker/path/index.tsx"></code>
 
 ### circle
 
@@ -271,6 +151,127 @@ graph.addEdge({
 | rx       | Number | 5      | 椭圆 x 轴半径。                                                                          |
 | ry       | Number | 5      | 椭圆 y 轴半径。                                                                          |
 | ...attrs | Object | { }    | 其他参数都将作为箭头 `<ellipse>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+
+
+## 自定义箭头
+
+我们可以通过 `tagName` 来指定使用哪种 SVG 元素来渲染箭头，例如下面我们通过 `tagName` 来指定使用 `<path>` 元素来渲染箭头，除 `tagName` 外的其他选项都将作为属性被添加到创建出来的 `<path>` 元素上。箭头的填充颜色 `fill` 和边框颜色 `stroke` 默认继承自边，可以通过指定 `fill` 和 `stroke` 属性来覆盖。
+
+```ts
+edge.attr({
+  line: {
+    sourceMarker: {
+      tagName: 'path',
+      d: 'M 20 -10 0 0 20 10 Z',
+    },
+    targetMarker: {
+      tagName: 'path',
+      fill: 'yellow', // 使用自定义填充色
+      stroke: 'green', // 使用自定义边框色
+      strokeWidth: 2,
+      d: 'M 20 -10 0 0 20 10 Z',
+    },
+  },
+})
+```
+
+看上面代码，值得注意的是，我们的起始箭头和终止箭头使用了相同的 `'d'` 属性值，这是因为我们会自动计算箭头方向，简单来说，我们只需要定义**向左指向坐标原点**的箭头即可。
+
+<code id="marker-custom" src="@/src/api/marker/custom/index.tsx"></code>
+
+有时候，我们获取到的 path 元素的 `d` 的坐标可能并不标准，如果直接将其作为箭头来使用就可能出现位置偏离，所以我们在 `Util` 命名空间中提供了 `normalizeMarker` 这个工具方法来标准化 `d` 的坐标。
+
+**方法签名**
+
+```ts
+Registry.Marker.normalize(d: string, offset: { x?: number; y?: number }): string
+Registry.Marker.normalize(d: string, offsetX?: number, offsetY?: number): string
+```
+
+| 参数名  | 类型                       | 说明                        |
+|---------|----------------------------|-----------------------------|
+| d       | string                     |                             |
+| offset  | { x?: number; y?: number } | 相对于坐标原点的偏移量      |
+| offsetX | number                     | 相对于坐标原点的 x 轴偏移量 |
+| offsetY | number                     | 相对于坐标原点的 y 轴偏移量 |
+
+对比下面的起始和终止箭头，很明显起始箭头出现了一定的偏移，使用 `normalizeMarker` 处理后终止箭头的位置就正常了。
+
+```ts
+const d =
+  'M4.834,4.834L4.833,4.833c-5.889,5.892-5.89,15.443,0.001,21.334s15.44,5.888,21.33-0.002c5.891-5.891,5.893-15.44,0.002-21.33C20.275-1.056,10.725-1.056,4.834,4.834zM25.459,5.542c0.833,0.836,1.523,1.757,2.104,2.726l-4.08,4.08c-0.418-1.062-1.053-2.06-1.912-2.918c-0.859-0.859-1.857-1.494-2.92-1.913l4.08-4.08C23.7,4.018,24.622,4.709,25.459,5.542zM10.139,20.862c-2.958-2.968-2.959-7.758-0.001-10.725c2.966-2.957,7.756-2.957,10.725,0c2.954,2.965,2.955,7.757-0.001,10.724C17.896,23.819,13.104,23.817,10.139,20.862zM5.542,25.459c-0.833-0.837-1.524-1.759-2.105-2.728l4.081-4.081c0.418,1.063,1.055,2.06,1.914,2.919c0.858,0.859,1.855,1.494,2.917,1.913l-4.081,4.081C7.299,26.982,6.379,26.292,5.542,25.459zM8.268,3.435l4.082,4.082C11.288,7.935,10.29,8.571,9.43,9.43c-0.858,0.859-1.494,1.855-1.912,2.918L3.436,8.267c0.58-0.969,1.271-1.89,2.105-2.727C6.377,4.707,7.299,4.016,8.268,3.435zM22.732,27.563l-4.082-4.082c1.062-0.418,2.061-1.053,2.919-1.912c0.859-0.859,1.495-1.857,1.913-2.92l4.082,4.082c-0.58,0.969-1.271,1.891-2.105,2.728C24.623,26.292,23.701,26.983,22.732,27.563z'
+
+graph.addEdge({
+  source: { x: 160, y: 40 },
+  target: { x: 420, y: 40 },
+  attrs: {
+    line: {
+      stroke: '#31d0c6',
+      sourceMarker: {
+        d,
+        tagName: 'path',
+      },
+      targetMarker: {
+        tagName: 'path',
+        d: Util.normalizeMarker(d),
+      },
+    },
+  },
+})
+```
+
+<code id="marker-normalize-path" src="@/src/api/marker/normalize-path/index.tsx"></code>
+
+除了 `<path>` 我们还可以使用 `<circle>`、`<image>`、`<ellipse>`、`<rect>`、`<polyline>`、`<polygon>` 等元素来定义箭头，只需要通过 `tagName` 指定标签名，并设置元素其他必要属性。例如，使用图片来定制箭头也很简单，首先我们把 `tagName` 设置为 `image`，并通过 `xlink:href` 属性指定图片的 URL，并通过 `width` 和 `height` 属性指定图片的大小，然后调节 `y` 属性来使图片居中对齐。
+
+```ts
+edge.attr({
+  line: {
+    sourceMarker: {
+      tagName: 'image',
+      'xlink:href':
+        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
+      width: 24,
+      height: 24,
+      y: -12,
+    },
+    targetMarker: {
+      tagName: 'image',
+      'xlink:href':
+        'http://cdn3.iconfinder.com/data/icons/49handdrawing/24x24/left.png',
+      width: 24,
+      height: 24,
+      y: -12,
+    },
+  },
+})
+```
+
+<code id="marker-image" src="@/src/api/marker/image/index.tsx"></code>
+
+需要注意的是，当使用 `<circle>` 和 `<ellipse>` 来定制箭头时，可以通过设置其 `cx` 属性为对应的轴半径，以避免箭头溢出边的边界；其他元素可以通过 `y` 属性来调节箭头的垂直位置，以便使其垂直居中。
+
+```ts
+edge.attr({
+  line: {
+    sourceMarker: {
+      tagName: 'ellipse',
+      rx: 20,
+      ry: 10,
+      cx: 20,
+      fill: 'rgba(255,0,0,0.3)',
+    },
+    targetMarker: {
+      tagName: 'circle',
+      r: 12,
+      cx: 12,
+      fill: 'rgba(0,255,0,0.3)',
+    },
+  },
+})
+```
+
+<code id="marker-tagname" src="@/src/api/marker/tagname/index.tsx"></code>
 
 ## 注册箭头
 
