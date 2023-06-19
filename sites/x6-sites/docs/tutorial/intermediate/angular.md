@@ -1,6 +1,6 @@
 ---
 title: Angular 节点
-order: 4
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
@@ -11,13 +11,17 @@ redirect_from:
 
 - 如何使用 Angular 来渲染节点内容
 - 如何更新节点内容
-- FAQ :::
+- FAQ
+
+:::
 
 ## 渲染节点
 
 我们提供了一个独立的包 `@antv/x6-angular-shape` 以支持将 Angular 的组件/模板作为节点进行渲染。
 
-:::warning{title=注意} 需要注意的是，x6 的版本要和 x6-angular-shape 的版本匹配，也就是两个包需要用同一个大版本。 :::
+:::warning{title=注意}
+需要注意的是，x6 的版本要和 x6-angular-shape 的版本匹配，也就是两个包需要用同一个大版本。
+:::
 
 ### Component 渲染
 

@@ -97,16 +97,16 @@ export default class Example extends React.Component {
     const a = createGroup('a', 100, 40, 480, 280, '#91d5ff')
     const aa = createGroup('aa', 180, 100, 160, 140, '#47C769')
     const aaa = createGroup('aaa', 200, 160, 120, 40, '#0491e4')
-    const c = createNode('b', 450, 200, 50, 50)
+    const b = createNode('b', 450, 200, 50, 50)
 
     a.addChild(aa)
     aa.addChild(aaa)
-    a.addChild(c)
+    a.addChild(b)
 
-    createNode('d', 680, 80, 50, 50)
+    createNode('c', 680, 80, 50, 50)
 
-    createEdge('edge1', 'aa', 'c')
-    createEdge('edge3', 'c', 'd')
+    createEdge('edge1', 'aa', 'b')
+    createEdge('edge3', 'b', 'c')
     aa.addChild(
       createEdge('edge2', 'aa', 'aaa', [
         { x: 60, y: 140 },

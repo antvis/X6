@@ -16,7 +16,11 @@ export default class Example extends React.Component {
       background: {
         color: '#F2F7FA',
       },
-      mousewheel: true,
+      mousewheel: {
+        enabled: true,
+        minScale: 0.2,
+        maxScale: 4,
+      },
     })
 
     const source = this.graph.addNode({

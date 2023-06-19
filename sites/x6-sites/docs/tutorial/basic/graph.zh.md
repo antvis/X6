@@ -7,12 +7,14 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍画布相关的知识,通过阅读,你可以了解到}
+:::info{title=在本章节中主要介绍画布相关的知识,通过阅读你可以了解到}
 
 - 画布大小如何做到自适应
 - 通过设置背景和网格优化画布样式
 - 怎样才能使画布可拖拽可缩放
-- 常用的画布尺寸和位置操作 API :::
+- 常用的画布尺寸和位置操作 API
+
+:::
 
 ## 画布大小
 
@@ -49,7 +51,9 @@ const graph = new Graph({
 
 <code id="background-grid" src="@/src/tutorial/basic/graph/background-grid/index.tsx"></code>
 
-:::info{title=提示} 在 X6 中，网格是渲染/移动节点的最小单位，默认是 10px ，也就是说位置为 `{ x: 24, y: 38 }` 的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }` :::
+:::info{title=提示}
+在 X6 中，网格是渲染/移动节点的最小单位，默认是 10px ，也就是说位置为 `{ x: 24, y: 38 }` 的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }`
+:::
 
 背景不仅支持颜色，还支持背景图片，详细的配置与方法参考 [API](/zh/docs/api/graph/background)。同时，网格支持四种不同类型，并且能配置网格线的颜色以及宽度，详细的配置与方法参考 [API](/zh/docs/api/graph/grid)。
 

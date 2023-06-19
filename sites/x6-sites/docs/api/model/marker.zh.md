@@ -44,10 +44,8 @@ Registry.Marker.normalize(d: string, offset: { x?: number; y?: number }): string
 Registry.Marker.normalize(d: string, offsetX?: number, offsetY?: number): string
 ```
 
-<span class="tag-param">参数<span>
-
 | 参数名  | 类型                       | 说明                        |
-| ------- | -------------------------- | --------------------------- |
+|---------|----------------------------|-----------------------------|
 | d       | string                     |                             |
 | offset  | { x?: number; y?: number } | 相对于坐标原点的偏移量      |
 | offsetX | number                     | 相对于坐标原点的 x 轴偏移量 |
@@ -156,82 +154,72 @@ edge.attr({
 
 实心箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| size | Number | 10 | 箭头大小。 |
-| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
-| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
-| offset | Number | 0 | 沿边方向的绝对偏移量。 |
-| open | Boolean | false | 非封闭箭头。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型    | 默认值 | 说明                                                                                 |
+|----------|---------|--------|------------------------------------------------------------------------------------|
+| size     | Number  | 10     | 箭头大小。                                                                            |
+| width    | Number  | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| height   | Number  | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| offset   | Number  | 0      | 沿边方向的绝对偏移量。                                                                |
+| open     | Boolean | false  | 非封闭箭头。                                                                          |
+| ...attrs | Object  | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### classic
 
 经典箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| size | Number | 10 | 箭头大小。 |
-| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
-| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
-| offset | Number | 0 | 沿边方向的绝对偏移量。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值 | 说明                                                                                 |
+|----------|--------|--------|------------------------------------------------------------------------------------|
+| size     | Number | 10     | 箭头大小。                                                                            |
+| width    | Number | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| height   | Number | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| offset   | Number | 0      | 沿边方向的绝对偏移量。                                                                |
+| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### diamond
 
 菱形箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| size | Number | 10 | 箭头大小。 |
-| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
-| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
-| offset | Number | 0 | 沿边方向的绝对偏移量。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值 | 说明                                                                                 |
+|----------|--------|--------|------------------------------------------------------------------------------------|
+| size     | Number | 10     | 箭头大小。                                                                            |
+| width    | Number | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| height   | Number | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| offset   | Number | 0      | 沿边方向的绝对偏移量。                                                                |
+| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### cross
 
 交叉箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| size | Number | 10 | 箭头大小。 |
-| width | Number | size | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。 |
-| height | Number | size | 箭头高度，当宽高一样时可以直接使用 `size` 替代。 |
-| offset | Number | 0 | 沿边方向的绝对偏移量。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值 | 说明                                                                                 |
+|----------|--------|--------|------------------------------------------------------------------------------------|
+| size     | Number | 10     | 箭头大小。                                                                            |
+| width    | Number | size   | 箭头宽度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| height   | Number | size   | 箭头高度，当宽高一样时可以直接使用 `size` 替代。                                       |
+| offset   | Number | 0      | 沿边方向的绝对偏移量。                                                                |
+| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### async
 
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| width | Number | 10 | 箭头宽度。 |
-| height | Number | 6 | 箭头高度。 |
-| offset | Number | 0 | 沿边方向的绝对偏移量。 |
-| open | Boolean | false | 非封闭箭头。 |
-| flip | Boolean | false | 是否翻转箭头。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型    | 默认值 | 说明                                                                                 |
+|----------|---------|--------|------------------------------------------------------------------------------------|
+| width    | Number  | 10     | 箭头宽度。                                                                            |
+| height   | Number  | 6      | 箭头高度。                                                                            |
+| offset   | Number  | 0      | 沿边方向的绝对偏移量。                                                                |
+| open     | Boolean | false  | 非封闭箭头。                                                                          |
+| flip     | Boolean | false  | 是否翻转箭头。                                                                        |
+| ...attrs | Object  | { }    | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### path
 
 自定义 [pathData](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) 的箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| d | string | undefined | `<path>` 元素的 [d 属性值](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)，被 `Util.normalizeMarker` 标准化后应用到 `<path>` 元素上。 |
-| offsetX | Number | 0 | x 方向偏移量。 |
-| offsetY | Number | 0 | y 方向偏移量。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值    | 说明                                                                                                                                               |
+|----------|--------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| d        | string | undefined | `<path>` 元素的 [d 属性值](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)，被 `Util.normalizeMarker` 标准化后应用到 `<path>` 元素上。 |
+| offsetX  | Number | 0         | x 方向偏移量。                                                                                                                                      |
+| offsetY  | Number | 0         | y 方向偏移量。                                                                                                                                      |
+| ...attrs | Object | { }       | 其他参数都将作为箭头 `<path>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。                                                               |
 
 ```ts
 graph.addEdge({
@@ -260,35 +248,29 @@ graph.addEdge({
 
 圆形箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| r | Number | 5 | 圆半径。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<circle>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值 | 说明                                                                                   |
+|----------|--------|--------|--------------------------------------------------------------------------------------|
+| r        | Number | 5      | 圆半径。                                                                                |
+| ...attrs | Object | { }    | 其他参数都将作为箭头 `<circle>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### circlePlus
 
 圆形和加号箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| r | Number | 5 | 圆半径。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<path>` 元素（加号）的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值 | 说明                                                                                       |
+|----------|--------|--------|------------------------------------------------------------------------------------------|
+| r        | Number | 5      | 圆半径。                                                                                    |
+| ...attrs | Object | { }    | 其他参数都将作为箭头 `<path>` 元素（加号）的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ### ellipse
 
 椭圆箭头。
 
-<span class="tag-param">参数<span>
-
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| rx | Number | 5 | 椭圆 x 轴半径。 |
-| ry | Number | 5 | 椭圆 y 轴半径。 |
-| ...attrs | Object | { } | 其他参数都将作为箭头 `<ellipse>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
+| 参数名   | 类型   | 默认值 | 说明                                                                                    |
+|----------|--------|--------|---------------------------------------------------------------------------------------|
+| rx       | Number | 5      | 椭圆 x 轴半径。                                                                          |
+| ry       | Number | 5      | 椭圆 y 轴半径。                                                                          |
+| ...attrs | Object | { }    | 其他参数都将作为箭头 `<ellipse>` 元素的属性，例如可以指定 `‘fill’` 和 `'stroke'` 等属性。 |
 
 ## 注册箭头
 
@@ -330,7 +312,7 @@ edge.attr({
 上面的配置被解析后，分别得到起始和终止箭头的箭头名称和箭头参数。
 
 | 箭头类型     | 箭头名称 name | 箭头参数 args     |
-| ------------ | ------------- | ----------------- |
+|--------------|---------------|-------------------|
 | sourceMarker | block         | { }               |
 | targetMarker | ellipse       | { rx: 10, ry: 6 } |
 
@@ -342,11 +324,11 @@ edge.attr({
 Graph.registerMarker(name: string, factory: Factory, overwrite?: boolean)
 ```
 
-| 参数名 | 参数类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| name | String |  | 箭头名。 |
-| factory | Factory |  | 箭头工厂方法。 |
-| overwrite | Boolean | false | 遇到重名时是否覆盖旧工厂方法，设置为 `true` 时覆盖，否则报错。 |
+| 参数名    | 参数类型 | 默认值 | 说明                                                        |
+|-----------|----------|--------|-----------------------------------------------------------|
+| name      | String   |        | 箭头名。                                                     |
+| factory   | Factory  |        | 箭头工厂方法。                                               |
+| overwrite | Boolean  | false  | 遇到重名时是否覆盖旧工厂方法，设置为 `true` 时覆盖，否则报错。 |
 
 最后，我们来注册一个 image 箭头。
 

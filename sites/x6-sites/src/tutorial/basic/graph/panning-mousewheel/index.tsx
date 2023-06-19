@@ -85,6 +85,8 @@ export default class Example extends React.Component {
       mousewheel: {
         enabled: true,
         modifiers: 'Ctrl',
+        maxScale: 4,
+        minScale: 0.2,
       },
     })
 

@@ -1,5 +1,5 @@
 ---
-title: Label
+title: 标签
 order: 3
 redirect_from:
   - /zh/docs
@@ -11,14 +11,14 @@ X6 中边的标签配置非常灵活，所以这里用单独的篇幅来详细�
 
 开始之前，我们先简单了解一下 Edge 实例上操作标签的几个方法。
 
-| 方法签名 | 说明 |
-| --- | --- |
-| [edge.getLabels()](/zh/docs/api/model/edge#getlabels) | 获取所有标签。 |
-| [edge.setLabels(...)](/zh/docs/api/model/edge#setlabels) | 设置标签。 |
-| [edge.insertLabel(...)](/zh/docs/api/model/edge#insertlabel) | 在指定位置插入标签。 |
-| [edge.appendLabel(...)](/zh/docs/api/model/edge#appendlabel) | 在末尾追加标签。 |
-| [edge.setLabelAt(...)](/zh/docs/api/model/edge#setlabelat) | 设置指定位置的标签。 |
-| [edge.getLabelAt(...)](/zh/docs/api/model/edge#getlabelat) | 获取指定位置的标签。 |
+| 方法签名                                                         | 说明                |
+|------------------------------------------------------------------|-------------------|
+| [edge.getLabels()](/zh/docs/api/model/edge#getlabels)            | 获取所有标签。       |
+| [edge.setLabels(...)](/zh/docs/api/model/edge#setlabels)         | 设置标签。           |
+| [edge.insertLabel(...)](/zh/docs/api/model/edge#insertlabel)     | 在指定位置插入标签。 |
+| [edge.appendLabel(...)](/zh/docs/api/model/edge#appendlabel)     | 在末尾追加标签。     |
+| [edge.setLabelAt(...)](/zh/docs/api/model/edge#setlabelat)       | 设置指定位置的标签。 |
+| [edge.getLabelAt(...)](/zh/docs/api/model/edge#getlabelat)       | 获取指定位置的标签。 |
 | [edge.removeLabelAt(...)](/zh/docs/api/model/edge#removelabelat) | 删除指定位置的标签。 |
 
 ## 标签定义
@@ -111,7 +111,7 @@ edge.appendLabel({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/edge-labels/append-label"></iframe> -->
+<code id="append-label" src="@/src/api/label/append-label/index.tsx"></code>
 
 ## 标签位置
 
@@ -158,7 +158,7 @@ edge.appendLabel({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-position"></iframe> -->
+<code id="label-position" src="@/src/api/label/label-position/index.tsx"></code>
 
 ### 偏移
 
@@ -209,7 +209,7 @@ edge.appendLabel({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-offset"></iframe> -->
+<code id="label-offset" src="@/src/api/label/label-offset/index.tsx"></code>
 
 ### 旋转
 
@@ -308,13 +308,13 @@ edge.appendLabel({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-rotate"></iframe> -->
+<code id="label-rotate" src="@/src/api/label/label-rotate/index.tsx"></code>
 
 ## 标签样式
 
 我们可以通过 `markup` 和 `attrs` 两个选项来定制标签样式，并支持两个维度的定制。
 
-**方式一：**创建 Edge 时全局覆盖默认标签的定义，影响所有标签。
+**方式一**：创建 Edge 时全局覆盖默认标签的定义，影响所有标签。
 
 ```ts
 const edge = graph.addEdge({
@@ -372,9 +372,9 @@ edge.appendLabel({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-markup"></iframe> -->
+<code id="label-markup" src="@/src/api/label/label-markup/index.tsx"></code>
 
-**方式二：**创建单个标签时覆盖默认标签的定义，影响单个标签。
+**方式二**：创建单个标签时覆盖默认标签的定义，影响单个标签。
 
 ```ts
 edge.appendLabel({
@@ -440,7 +440,7 @@ edge.appendLabel({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/intermediate/edge-labels/label-attrs"></iframe> -->
+<code id="label-attrs" src="@/src/api/label/label-attrs/index.tsx"></code>
 
 ## 字符串标签
 
