@@ -50,15 +50,15 @@ graph.on("node:mouseleave", ({ node }) => {
 
 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。配置如下：
 
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| x | number \| string | `0` | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。 |
-| y | number \| string | `0` | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。 |
-| offset | number \| `{ x: number, y: number }` | `0` | 在 `x` 和 `y` 基础上的偏移量。 |
-| rotate | boolean | - | 是否跟随节点旋转。 |
-| useCellGeometry | boolean | `true` | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
-| markup | Markup.JSONMarkup | - | 渲染按钮的 Markup 定义。 |
-| onClick | `(args: {e: Dom.MouseDownEvent, cell: Cell, view: CellView }) => void` | - | 点击按钮的回调函数。 |
+| 参数名          | 类型                                                                   | 默认值 | 说明                                                                                                     |
+|-----------------|------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------|
+| x               | number \| string                                                       | `0`    | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置。                                                  |
+| y               | number \| string                                                       | `0`    | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置。                                                  |
+| offset          | number \| `{ x: number, y: number }`                                   | `0`    | 在 `x` 和 `y` 基础上的偏移量。                                                                            |
+| rotate          | boolean                                                                | -      | 是否跟随节点旋转。                                                                                        |
+| useCellGeometry | boolean                                                                | `true` | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
+| markup          | Markup.JSONMarkup                                                      | -      | 渲染按钮的 Markup 定义。                                                                                  |
+| onClick         | `(args: {e: Dom.MouseDownEvent, cell: Cell, view: CellView }) => void` | -      | 点击按钮的回调函数。                                                                                      |
 
 ```ts
 // 鼠标 Hover 时添加按钮
@@ -110,13 +110,13 @@ const source = graph.addNode({
 
 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。配置如下：
 
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| tagName | string | `rect` | 使用何种图形渲染。 |
-| rotate | boolean | - | 图形是否跟随节点旋转。 |
-| padding | SideOptions | `10` | 边距。 |
-| attrs | KeyValue | `object` | 图形属性。 |
-| useCellGeometry | boolean | `true` | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
+| 参数名          | 类型        | 默认值   | 说明                                                                                                     |
+|-----------------|-------------|----------|--------------------------------------------------------------------------------------------------------|
+| tagName         | string      | `rect`   | 使用何种图形渲染。                                                                                        |
+| rotate          | boolean     | -        | 图形是否跟随节点旋转。                                                                                    |
+| padding         | SideOptions | `10`     | 边距。                                                                                                    |
+| attrs           | KeyValue    | `object` | 图形属性。                                                                                                |
+| useCellGeometry | boolean     | `true`   | 是否使用几何计算的方式来计算元素包围盒，开启后会有性能上的提升，如果出现计算准度问题，请将它设置为 `false`。 |
 
 其中 `attrs` 的默认值(默认样式)为：
 
@@ -173,18 +173,20 @@ const source = graph.addNode({
 
 提供节点上文本编辑功能。配置如下：
 
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| x | number \| string | - | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置 |
-| y | number \| string | - | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置 |
-| attrs/fontSize | string | `14` | 编辑文本字体大小 |
-| attrs/color | string | `#000` | 编辑文本字体颜色 |
-| attrs/fontFamily | string | `Arial, helvetica, sans-serif` | 编辑文本的字体 |
-| attrs/backgroundColor | string | `#fff` | 编辑区域的背景色 |
-| getText | string \| `(this: CellView, args: {cell: Cell}) => string` | - | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
-| setText | string \| `(this: CellView, args: {cell: Cell, value: string}) => void` | - | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法 |
+| 参数名                | 类型                                                                    | 默认值                         | 说明                                                           |
+|-----------------------|-------------------------------------------------------------------------|--------------------------------|--------------------------------------------------------------|
+| x                     | number \| string                                                        | -                              | 相对于节点的左上角 X 轴的坐标，小数和百分比表示相对位置         |
+| y                     | number \| string                                                        | -                              | 相对于节点的左上角 Y 轴的坐标，小数和百分比表示相对位置         |
+| attrs/fontSize        | string                                                                  | `14`                           | 编辑文本字体大小                                               |
+| attrs/color           | string                                                                  | `#000`                         | 编辑文本字体颜色                                               |
+| attrs/fontFamily      | string                                                                  | `Arial, helvetica, sans-serif` | 编辑文本的字体                                                 |
+| attrs/backgroundColor | string                                                                  | `#fff`                         | 编辑区域的背景色                                               |
+| getText               | string \| `(this: CellView, args: {cell: Cell}) => string`              | -                              | 获取原文本方法，在自定义 `markup` 场景需要自定义 `getText` 方法 |
+| setText               | string \| `(this: CellView, args: {cell: Cell, value: string}) => void` | -                              | 设置新文本，在自定义 `markup` 场景需要自定义 `setText` 方法     |
 
-:::warning{title=注意} 需要注意的是，2.8.0 版本后不需要在双击事件中去动态添加工具，也就不需要传入事件参数。 :::
+:::warning{title=注意}
+需要注意的是，2.8.0 版本后不需要在双击事件中去动态添加工具，也就不需要传入事件参数。
+:::
 
 ```ts
 // 2.8.0 版本之前使用方式

@@ -1,6 +1,6 @@
 ---
 title: Vue 节点
-order: 6
+order: 5
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
@@ -10,13 +10,17 @@ redirect_from:
 :::info{title=在本章节中,你可以了解到}
 
 - 如何使用 Vue 组件来渲染节点内容
-- 如何更新节点内容 :::
+- 如何更新节点内容
+
+:::
 
 ## 渲染节点
 
 我们提供了一个独立的包 `@antv/x6-vue-shape` 来使用 Vue 组件渲染节点。
 
-:::warning{title=注意} 需要注意的是，x6 的版本要和 x6-vue-shape 的版本匹配，也就是两个包需要用同一个大版本。 :::
+:::warning{title=注意}
+需要注意的是，x6 的版本要和 x6-vue-shape 的版本匹配，也就是两个包需要用同一个大版本。
+:::
 
 ```html
 <template>
@@ -191,4 +195,6 @@ export default defineComponent({
 
 节点组件写法和上面的一致。
 
-:::warning{title=注意} 在 Vue2 中，节点组件内容有一些限制，比如无法使用 Vuex、i18n、element-ui 等。 :::
+:::warning{title=注意}
+在 Vue2 中，节点组件内容有一些限制，比如无法使用 Vuex、i18n、element-ui 等。
+:::

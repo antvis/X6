@@ -12,7 +12,9 @@ redirect_from:
 - 如何设置连线交互规则
 - 节点之间怎么嵌入
 - 怎么配置高亮样式
-- 怎么禁止、启用一些交互动作 :::
+- 怎么禁止、启用一些交互动作
+
+:::
 
 ## 连线
 
@@ -48,7 +50,9 @@ new Graph({
 })
 ```
 
-:::info{title=提示} `allowMulti` 支持设置为字符串 `withPort`，代表在起始和终止节点的相同连接桩之间只允许创建一条边（即起始和终止节点之间可以创建多条边，但必须要连接在不同的连接桩上）。 :::
+:::info{title=提示}
+`allowMulti` 支持设置为字符串 `withPort`，代表在起始和终止节点的相同连接桩之间只允许创建一条边（即起始和终止节点之间可以创建多条边，但必须要连接在不同的连接桩上）。
+:::
 
 <code id="interacting-connection" src="@/src/tutorial/basic/interacting/connecting/index.tsx"></code>
 
