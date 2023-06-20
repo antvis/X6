@@ -1,13 +1,11 @@
 ---
-title: Attrs
-order: 6
+title: 元素属性
+order: 5
 redirect_from:
   - /zh/docs
   - /zh/docs/api
   - /zh/docs/api/model
 ---
-
-在之前教程中我们介绍了[如何通过 `attrs` 定制样式](/zh/docs/tutorial/basic/cell#attrs-1)，同时在[使用箭头教程](/zh/docs/tutorial/basic/edge#使用箭头-marker)中看到了 `sourceMarker` 和 `targetMarker` 两个特殊属性的强大作用，并了解到 `attrs` 在[节点样式](/zh/docs/tutorial/basic/node#定制样式-attrs)、[边样式](/zh/docs/tutorial/basic/edge#定制样式-attrs)、[标签样式](/zh/docs/tutorial/intermediate/edge-labels#标签样式)等多处被广泛使用，所以有必要对属性相关概念作更详细的介绍。
 
 对于原生 SVG 属性，网上有很多教程可以参考，例如 MDN 提供的 [SVG 属性参考](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute)，这里我们将更多聚焦到如何定义和使用特殊属性。特殊属性提供了比[原生 SVG 属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute)更加灵活和强大的功能，在应用属性时，原生属性被直接传递给对应的元素，特殊属性则被进一步加工处理，转换为浏览器认识的原生属性后，再传递给对应的元素。
 
@@ -55,8 +53,7 @@ graph.addNode({
   },
 })
 ```
-
-<iframe src="/demos/tutorial/intermediate/attrs/ref-node"></iframe>
+<code id="attrs-ref-node" src="@/src/api/attrs/ref-node/index.tsx"></code>
 
 ## 相对子元素
 
@@ -102,8 +99,7 @@ graph.addNode({
   },
 })
 ```
-
-<iframe src="/demos/tutorial/intermediate/attrs/ref-elem"></iframe>
+<code id="attrs-ref-elem" src="@/src/api/attrs/ref-elem/index.tsx"></code>
 
 ## 沿边长度的相对位置
 
@@ -132,7 +128,7 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/attrs/edge-relative-position"></iframe>
+<code id="attrs-edge-relative-position" src="@/src/api/attrs/edge-relative-position/index.tsx"></code>
 
 ```ts
 graph.addEdge({
@@ -202,8 +198,8 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/attrs/edge-subelement-labels"></iframe>
+<code id="attrs-edge-subelement-labels" src="@/src/api/attrs/edge-subelement-labels/index.tsx"></code>
 
 ## 使用箭头
 
-我们可以使用 [`sourceMarker`](/zh/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/zh/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](/zh/docs/tutorial/intermediate/marker)。
+我们可以使用 [`sourceMarker`](/zh/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/zh/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](/zh/docs/api/model/marker)。
