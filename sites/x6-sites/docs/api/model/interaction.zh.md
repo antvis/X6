@@ -1,9 +1,10 @@
 ---
-title: 常见交互
-order: 1
+title: 交互
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/api
+  - /zh/docs/api/model
 ---
 
 X6 最吸引开发者的地方是具备非常完整的交互定制能力，在此基础上，我们可以实现非常多的复杂效果。下面列举常见的交互行为。
