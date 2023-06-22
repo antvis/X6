@@ -1,10 +1,10 @@
 ---
 title: View
-order: 5
+order: 7
 redirect_from:
   - /zh/docs
   - /zh/docs/api
-  - /zh/docs/api/model
+  - /zh/docs/api/mvc
 ---
 
 ## 配置
@@ -12,8 +12,6 @@ redirect_from:
 ### async
 
 是否是异步渲染的画布。异步渲染不会阻塞 UI，对需要添加大量节点和边时的性能提升非常明显。但需要注意的是，一些同步操作可能会出现意外结果，比如获取某个节点的视图、获取节点/边的包围盒等，因为这些同步操作触发时异步渲染可能并没有完成。
-
-<!-- <iframe src="/demos/api/graph/async"></iframe> -->
 
 ### virtual
 
@@ -59,16 +57,16 @@ redirect_from:
 
 当某个连接桩渲染完成时触发的回调,参数如下：
 
-| 名称 | 类型 | 非空 | 描述 |
-| --- | --- | :-: | --- |
-| node | Node | ✓ | 节点实例。 |
-| port | Port | ✓ | 连接桩选项。 |
-| container | Element | ✓ | 连接桩的容器元素。 |
-| selectors | Markup.Selectors |  | 连接桩 Markup 渲染后的选择器键值对。 |
-| labelContainer | Element | ✓ | 连接桩标签的容器元素。 |
-| labelSelectors | Markup.Selectors |  | 连接桩标签 Markup 渲染后的选择器键值对。 |
-| contentContainer | Element | ✓ | 连接桩内容的容器元素。 |
-| contentSelectors | Markup.Selectors |  | 连接桩内容 Markup 渲染后的选择器键值对。 |
+| 名称             | 类型             | 非空 | 描述                                    |
+|------------------|------------------|:----:|---------------------------------------|
+| node             | Node             |  ✓   | 节点实例。                               |
+| port             | Port             |  ✓   | 连接桩选项。                             |
+| container        | Element          |  ✓   | 连接桩的容器元素。                       |
+| selectors        | Markup.Selectors |      | 连接桩 Markup 渲染后的选择器键值对。     |
+| labelContainer   | Element          |  ✓   | 连接桩标签的容器元素。                   |
+| labelSelectors   | Markup.Selectors |      | 连接桩标签 Markup 渲染后的选择器键值对。 |
+| contentContainer | Element          |  ✓   | 连接桩内容的容器元素。                   |
+| contentSelectors | Markup.Selectors |      | 连接桩内容 Markup 渲染后的选择器键值对。 |
 
 例如，我们可以渲染一个 React 类型的连接桩。
 
@@ -90,8 +88,6 @@ const graph = new Graph({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/advanced/react/react-port"></iframe> -->
-
 ### onEdgeLabelRendered
 
 ```ts
@@ -108,8 +104,8 @@ const graph = new Graph({
 
 当边的文本标签渲染完成时触发的回调，参数如下：
 
-| 名称      | 类型             | 非空 | 描述                                   |
-| --------- | ---------------- | :--: | -------------------------------------- |
+| 名称      | 类型             | 非空 | 描述                                  |
+|-----------|------------------|:----:|-------------------------------------|
 | edge      | Edge             |  ✓   | 边实例。                               |
 | label     | Edge.Label       |  ✓   | 文本标签选项。                         |
 | container | Element          |  ✓   | 文本标签容器。                         |
@@ -153,8 +149,6 @@ const graph = new Graph({
 })
 ```
 
-<!-- <iframe src="/demos/tutorial/advanced/react/react-label-base"></iframe> -->
-
 我们也可以在定义 Label 的 Markup 时添加 `<foreignObject>` 元素来支持 HTML 和 React 的渲染能力。
 
 ```tsx
@@ -173,8 +167,6 @@ const graph = new Graph({
   },
 })
 ```
-
-<!-- <iframe src="/demos/tutorial/advanced/react/react-label-markup"></iframe> -->
 
 ### createCellView
 
