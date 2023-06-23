@@ -233,8 +233,8 @@ export default defineConfig({
       {
         slug: 'api/registry',
         title: {
-          zh: '注册',
-          en: 'Registry',
+          zh: '扩展',
+          en: 'Extension',
         },
         order: 4,
       },
