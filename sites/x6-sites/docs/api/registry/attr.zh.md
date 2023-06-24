@@ -382,7 +382,7 @@ console.log(view.findOne('polygon').getAttribute('points'))
 - `'middle'` 目标元素的中心与 `y` 对齐。
 - `'bottom'` 目标元素与的底部与 `y` 对齐。
 
-<!-- <iframe src="/demos/api/registry/attr/x-align"></iframe> -->
+<code id="attrs-x-align" src="@/src/api/attrs/x-align/index.tsx"></code>
 
 ### fill
 
@@ -460,7 +460,7 @@ textWrap: {
 }
 ```
 
-<!-- <iframe src="/demos/api/registry/attr/text-wrap"></iframe> -->
+<code id="attrs-text-wrap" src="@/src/api/attrs/text-wrap/index.tsx"></code>
 
 ### textPath
 
@@ -482,7 +482,7 @@ textWrap: {
 - `'middle'` 目标元素的中心与 `y` 对齐。
 - `'bottom'` 目标元素与的底部与 `y` 对齐。
 
-<!-- <iframe src="/demos/api/registry/attr/text-anchor"></iframe> -->
+<code id="attrs-text-anchor" src="@/src/api/attrs/text-anchor/index.tsx"></code>
 
 ### connection
 
