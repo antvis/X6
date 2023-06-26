@@ -1,5 +1,5 @@
 ---
-title: View
+title: 视图
 order: 7
 redirect_from:
   - /zh/docs
@@ -111,45 +111,7 @@ const graph = new Graph({
 | container | Element          |  ✓   | 文本标签容器。                         |
 | selectors | Markup.Selectors |  ✓   | 文本标签 Markup 渲染后的选择器键值对。 |
 
-例如，我们可以在标签上渲染任何想要的元素。
-
-```tsx
-const graph = new Graph({
-  container: this.container,
-  onEdgeLabelRendered(args) {
-    const { label, container, selectors } = args
-    const data = label.data
-
-    if (data) {
-      // 在 Label 容器中渲染一个 foreignObject 来承载 HTML 元素和 React 组件
-      const content = this.appendForeignObject(container)
-
-      if (data === 1) {
-        // 渲染一个 Div 元素
-        const txt = document.createTextNode('text node')
-        content.style.border = '1px solid #f0f0f0'
-        content.style.borderRadius = '4px'
-        content.appendChild(txt)
-      } else if (data === 2) {
-        // 渲染一个 HTML 按钮
-        const btn = document.createElement('button')
-        btn.appendChild(document.createTextNode('HTML Button'))
-        btn.style.height = '30px'
-        btn.style.lineHeight = '1'
-        btn.addEventListener('click', () => {
-          alert('clicked')
-        })
-        content.appendChild(btn)
-      } else if (data === 3) {
-        // 渲染一个 Atnd 的按钮
-        ReactDOM.render(<Button size="small">Antd Button</Button>, content)
-      }
-    }
-  },
-})
-```
-
-我们也可以在定义 Label 的 Markup 时添加 `<foreignObject>` 元素来支持 HTML 和 React 的渲染能力。
+我们可以在定义 Label 的 Markup 时添加 `<foreignObject>` 元素来支持 HTML 和 React 的渲染能力。
 
 ```tsx
 const graph = new Graph({
@@ -171,7 +133,7 @@ const graph = new Graph({
 ### createCellView
 
 ```ts
-;(this: Graph, cell: Cell) => CellView | null | undefined
+(this: Graph, cell: Cell) => CellView | null | undefined
 ```
 
 自定义元素的视图，可以返回一个 `CellView`，会替换默认的视图，如果返回 `null`，则不会渲染，如果返回 `undefined`，会按照默认方式渲染。

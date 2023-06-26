@@ -1,6 +1,6 @@
 ---
-title: PortLayout
-order: 13
+title: 连接桩布局
+order: 11
 redirect_from:
   - /zh/docs
   - /zh/docs/api
@@ -51,9 +51,7 @@ graph.addNode(
 
 下面我们一起来看看如何使用内置的连接桩布局算法，以及如何自定并注册自定义布局算法。
 
-## presets
-
-在 `Registry.PortLayout.presets` 命名空间下提供了以下几个内置的布局算法。
+## 内置布局
 
 ### absolute
 
@@ -100,7 +98,7 @@ graph.addNode({
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/port-layout/absolute"></iframe> -->
+<code id="port-layout-absolute" src="@/src/api/port-layout/absolute/index.tsx"></code>
 
 ### left, right, top, bottom
 
@@ -145,7 +143,7 @@ graph.addNode({
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/port-layout/side"></iframe> -->
+<code id="port-layout-side" src="@/src/api/port-layout/side/index.tsx"></code>
 
 ### line
 
@@ -200,7 +198,7 @@ graph.addNode({
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/port-layout/line/"></iframe> -->
+<code id="port-layout-line" src="@/src/api/port-layout/line/index.tsx"></code>
 
 ### ellipse
 
@@ -257,7 +255,7 @@ Array.from({ length: 10 }).forEach((_, index) => {
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/port-layout/ellipse"></iframe> -->
+<code id="port-layout-ellipse" src="@/src/api/port-layout/ellipse/index.tsx"></code>
 
 ### ellipseSpread
 
@@ -312,9 +310,9 @@ Array.from({ length: 36 }).forEach(function (_, index) {
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/port-layout/ellipse-spread"></iframe> -->
+<code id="port-layout-ellipse-spread" src="@/src/api/port-layout/ellipse-spread/index.tsx"></code>
 
-## registry
+## 自定义连接桩布局
 
 连接桩布局算法是一个函数具有如下签名的函数，返回每个连接桩相对于节点的相对位置。例如，某节点在画布的位置是 `{ x: 30, y: 40 }`，如果返回的某个连接桩的位置是 `{ x: 2, y: 4 }`，那么该连接桩渲染到画布后的位置是 `{ x: 32, y: 44 }`。
 
@@ -351,45 +349,9 @@ function sin(portsPositionArgs, elemBBox) {
 
 布局算法实现后，需要注册到系统，注册后就可以像内置布局算法那样来使用。
 
-### register
-
-```ts
-register(entities: { [name: string]: Definition }, force?: boolean): void
-register(name: string, entity: Definition, force?: boolean): Definition
-```
-
-注册自定义布局算法。
-
-### unregister
-
-```ts
-unregister(name: string): Definition | null
-```
-
-删除注册的自定义布局算法。
-
-实际上，我们将 `registry` 的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `Graph.registerPortLayout` 和 `Graph.unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
 
 ```ts
 Graph.registerPortLayout('sin', sin)
-```
-
-或者：
-
-```ts
-Graph.registerPortLayout('sin', (portsPositionArgs, elemBBox) => {
-  return portsPositionArgs.map((_, index) => {
-    const step = -Math.PI / 8
-    const y = Math.sin(index * step) * 50
-    return {
-      position: {
-        x: index * 12,
-        y: y + elemBBox.height,
-      },
-      angle: 0,
-    }
-  })
-})
 ```
 
 注册以后，我们就可以像内置布局算法那样来使用：
@@ -429,4 +391,4 @@ Array.from({ length: 24 }).forEach(() => {
 })
 ```
 
-<!-- <iframe src="/demos/api/registry/port-layout/sin"></iframe> -->
+<code id="port-layout-sin" src="@/src/api/port-layout/sin/index.tsx"></code>
