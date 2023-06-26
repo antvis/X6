@@ -1,6 +1,6 @@
 ---
 title: 高亮器
-order: 11
+order: 14
 redirect_from:
   - /zh/docs
   - /zh/docs/api

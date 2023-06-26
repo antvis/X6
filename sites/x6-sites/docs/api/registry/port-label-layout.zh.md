@@ -1,6 +1,6 @@
 ---
 title: PortLabelLayout
-order: 14
+order: 12
 redirect_from:
   - /zh/docs
   - /zh/docs/api

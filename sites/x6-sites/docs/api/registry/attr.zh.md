@@ -1,6 +1,6 @@
 ---
 title: 属性
-order: 11
+order: 13
 redirect_from:
   - /zh/docs
   - /zh/docs/api
