@@ -1,5 +1,5 @@
 ---
-title: Highlighter
+title: 高亮器
 order: 11
 redirect_from:
   - /zh/docs
@@ -7,10 +7,10 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-节点/边的高亮器，用于高亮指定的元素。我们在 `Registry.Highlighter.presets` 命名空间中提供了以下几种高亮器。
+节点/边的高亮器，用于高亮指定的元素。X6 内置了以下几种高亮器。
 
-| 名称      | 说明                                                         |
-| --------- | ------------------------------------------------------------ |
+| 名称      | 说明                                                       |
+|-----------|----------------------------------------------------------|
 | stroke    | [边框高亮器](#stroke)，沿元素的包围盒渲染一个高亮的边框。    |
 | className | [样式名高亮器](#classname)，通过添加额外的样式名来高亮元素。 |
 
@@ -42,28 +42,28 @@ new Graph({
 - `'magnetAvailable'` 连线过程中，连接桩可以被链接时被使用。
 - `'magnetAdsorbed'` 连线过程中，自动吸附到连接桩时被使用。
 
-## presets
+## 内置高亮器
 
 ### stroke
 
 边框高亮器，沿元素的包围盒渲染一个高亮的边框。
 
-| 参数名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| rx | number | `0` | 边框倒角。 |
-| ry | number | `0` | 边框倒角。 |
-| padding | number | `3` | 边距。 |
-| attrs | object | `{ 'stroke-width': 3, stroke: '#FEB663' }` | 边框元素属性。 |
+| 参数名  | 类型   | 默认值                                     | 说明          |
+|---------|--------|--------------------------------------------|-------------|
+| rx      | number | `0`                                        | 边框倒角。     |
+| ry      | number | `0`                                        | 边框倒角。     |
+| padding | number | `3`                                        | 边距。         |
+| attrs   | object | `{ 'stroke-width': 3, stroke: '#FEB663' }` | 边框元素属性。 |
 
 ### className
 
 样式名高亮器，通过添加额外的样式名来高亮元素。
 
-| 参数名    | 类型   | 默认值           | 说明     |
-| --------- | ------ | ---------------- | -------- |
+| 参数名    | 类型   | 默认值           | 说明    |
+|-----------|--------|------------------|-------|
 | className | string | `x6-highlighted` | 样式名。 |
 
-## registry
+## 自定义高亮器
 
 高亮器是一个具有如下签名的对象，该对象中包含 `highlight` 和 `unhighlight` 两个方法，分别用于高亮和取消高亮元素。
 
@@ -74,32 +74,12 @@ export interface Definition<T> {
 }
 ```
 
-| 参数名   | 类型     | 默认值 | 说明           |
-| -------- | -------- | ------ | -------------- |
+| 参数名   | 类型     | 默认值 | 说明          |
+|----------|----------|--------|-------------|
 | cellView | CellView |        | 视图。         |
 | magnet   | Element  |        | 被高亮的元素。 |
 | options  | T        |        | 高亮选项。     |
 
-同时我们在 `Registry.Highlighter.registry` 对象上提供了 [register](#register) 和 [unregister](#unregister) 两个方法来注册和取消注册高亮器。
-
-### register
-
-```ts
-register(entities: { [name: string]: Definition }, force?: boolean): void
-register(name: string, entity: Definition, force?: boolean): Definition
-```
-
-注册高亮器。
-
-### unregister
-
-```ts
-unregister(name: string): Definition | null
-```
-
-取消注册高亮器。
-
-### 自定义高亮器
 
 下面我们来定义一个名为 `opacity` 的高亮器，该高亮器为元素添加一个 `'highlight-opacity'` 样式名。
 
@@ -119,8 +99,20 @@ export const opacity: Highlighter.Definition<OpacityHighlighterOptions> = {
 }
 ```
 
-完成定义后就可以注册我们的高亮器，实际上，我们将 `Registry.Highlighter.registry` 对象的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `Graph.registerHighlighter` 和 `Graph.unregisterHighlighter`，所以我们可以像下面这样来注册高亮器：
+完成定义后就可以注册我们的高亮器：
 
 ```ts
 Graph.registerHighlighter('opacity', opacity, true)
+```
+
+然后我们就可以通过 `opacity` 字符串来使用该高亮器了：
+
+```ts
+new Graph({
+  highlighting: {
+    magnetAvailable: {
+      name: 'opacity',
+    },
+  },
+})
 ```
