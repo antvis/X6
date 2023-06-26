@@ -1,5 +1,5 @@
 ---
-title: Model
+title: 模型
 order: 1
 redirect_from:
   - /zh/docs
