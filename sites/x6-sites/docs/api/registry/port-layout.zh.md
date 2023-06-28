@@ -118,7 +118,7 @@ interface SideArgs {
 |--------|---------|:----:|---------|---------------------------------------|
 | strict | boolean |      | `false` | 是否严格等分均匀分布。                   |
 | dx     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy     | number  |      | `0`     | 沿 Y 轴方向的偏移量。                    |
 | angle  | number  |      | `0`     | 连接桩的旋转角度。                       |
 | x      | number  |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
 | y      | number  |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
@@ -167,7 +167,7 @@ interface LineArgs {
 | end    | Point.PointLike |      |         | 线段终点。                               |
 | strict | boolean         |      | `false` | 是否严格等分均匀分布。                   |
 | dx     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy     | number          |      | `0`     | 沿 Y 轴方向的偏移量。                    |
 | angle  | number          |      | `0`     | 连接桩的旋转角度。                       |
 | x      | number          |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
 | y      | number          |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
@@ -225,7 +225,7 @@ interface EllipseArgs {
 | compensateRotate | number |      | `false` | 是否沿圆弧修正连接桩的旋转角度。         |
 | dr               | number |      | `0`     | 沿半径方向的偏移量。                     |
 | dx               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy               | number |      | `0`     | 沿 Y 轴方向的偏移量。                    |
 | angle            | number |      | `0`     | 连接桩的旋转角度。                       |
 | x                | number |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
 | y                | number |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
@@ -280,7 +280,7 @@ interface EllipseSpreadArgs {
 | compensateRotate | number |      | `false` | 是否沿圆弧修正连接桩的旋转角度。         |
 | dr               | number |      | `0`     | 沿半径方向的偏移量。                     |
 | dx               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
-| dy               | number |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy               | number |      | `0`     | 沿 Y 轴方向的偏移量。                    |
 | angle            | number |      | `0`     | 连接桩的旋转角度。                       |
 | x                | number |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
 | y                | number |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
