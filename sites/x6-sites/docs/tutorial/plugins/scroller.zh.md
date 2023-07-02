@@ -13,6 +13,10 @@ redirect_from:
 
 :::
 
+:::warning{title=注意}
+当同时使用 `Scroller` 插件的时候请不要同时开启画布的 `panning` 配置，因为两种形式在交互上有冲突。 
+:::
+
 ## 使用
 
 我们提供了一个独立的插件包 `@antv/x6-plugin-scroller` 来使用滚动画布功能。
