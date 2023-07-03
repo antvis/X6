@@ -62,7 +62,7 @@ export class EventObject<
     }
   }
 
-  preventDefault() {
+  preventDefault = () => {
     const e = this.originalEvent
 
     this.isDefaultPrevented = Util.returnTrue
@@ -72,7 +72,7 @@ export class EventObject<
     }
   }
 
-  stopPropagation() {
+  stopPropagation = () => {
     const e = this.originalEvent
 
     this.isPropagationStopped = Util.returnTrue
@@ -82,7 +82,7 @@ export class EventObject<
     }
   }
 
-  stopImmediatePropagation() {
+  stopImmediatePropagation = () => {
     const e = this.originalEvent
 
     this.isImmediatePropagationStopped = Util.returnTrue
