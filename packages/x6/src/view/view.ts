@@ -418,22 +418,11 @@ export namespace View {
     if (touchEvt) {
       // eslint-disable-next-line no-restricted-syntax
       for (const key in evt) {
-        // copy all the properties from the input event that are not
-        // defined on the touch event (functions included).
         if (touchEvt[key] === undefined) {
           touchEvt[key] = (evt as any)[key]
         }
       }
       normalizedEvent = touchEvt
-    }
-
-    // IE: evt.target could be set to SVGElementInstance for SVGUseElement
-    const target = normalizedEvent.target
-    if (target) {
-      const useElement = target.correspondingUseElement
-      if (useElement) {
-        normalizedEvent.target = useElement
-      }
     }
 
     return normalizedEvent
