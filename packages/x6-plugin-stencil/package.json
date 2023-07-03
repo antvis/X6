@@ -38,9 +38,11 @@
     "coveralls": "rss",
     "pretest": "rss"
   },
-  "peerDependencies": {
-    "@antv/x6": "^2.x",
+  "dependencies": {
     "@antv/x6-plugin-dnd": "^2.x"
+  },
+  "peerDependencies": {
+    "@antv/x6": "^2.x"
   },
   "devDependencies": {
     "@antv/x6": "^2.x",
