@@ -29,7 +29,7 @@ redirect_from:
 
 ```html
 <!-- 注意，使用 autoResize 配置时，需要在画布容器外面再套一层宽高都是 100% 的外层容器，在外层容器上监听尺寸改变，当外层容器大小改变时，画布自动重新计算宽高以及元素位置。 -->
-<div style="width=100%; height=100%">
+<div style="width:100%; height:100%">
   <div id="container"></div>
 </div>
 ```
