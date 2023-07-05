@@ -131,7 +131,7 @@ export class Scheduler extends Disposable {
 
   setRenderArea(area?: Rectangle) {
     this.renderArea = area
-    this.flushWaittingViews()
+    this.flushWaitingViews()
   }
 
   isViewMounted(view: CellView) {
@@ -203,7 +203,7 @@ export class Scheduler extends Disposable {
     }
 
     let result = 0
-    if (this.isUpdateable(view)) {
+    if (this.isUpdatable(view)) {
       result = this.updateView(view, flag, options)
       viewItem.flag = result
     } else {
@@ -211,7 +211,7 @@ export class Scheduler extends Disposable {
         result = this.updateView(view, flag, options)
         viewItem.flag = result
       } else {
-        viewItem.state = Scheduler.ViewState.WAITTING
+        viewItem.state = Scheduler.ViewState.WAITING
       }
     }
 
@@ -259,9 +259,9 @@ export class Scheduler extends Disposable {
       : this.queue.queueFlushSync()
   }
 
-  protected flushWaittingViews() {
+  protected flushWaitingViews() {
     Object.values(this.views).forEach((viewItem) => {
-      if (viewItem && viewItem.state === Scheduler.ViewState.WAITTING) {
+      if (viewItem && viewItem.state === Scheduler.ViewState.WAITING) {
         const { view, flag, options } = viewItem
         this.requestViewUpdate(
           view,
@@ -481,30 +481,23 @@ export class Scheduler extends Disposable {
     return effectedEdges
   }
 
-  protected isUpdateable(view: CellView) {
+  protected isUpdatable(view: CellView) {
     if (view.isNodeView()) {
-      if (!this.renderArea) {
-        return true
+      if (this.renderArea) {
+        return this.renderArea.isIntersectWithRect(view.cell.getBBox())
       }
-      const node = view.cell
-      return this.renderArea.isIntersectWithRect(node.getBBox())
+      return true
     }
+
     if (view.isEdgeView()) {
       const edge = view.cell
       const sourceCell = edge.getSourceCell()
       const targetCell = edge.getTargetCell()
-      if (sourceCell) {
-        const sourceViewItem = this.views[sourceCell.id]
-        if (sourceViewItem && !this.isViewMounted(sourceViewItem.view)) {
-          return false
-        }
-      }
-
-      if (targetCell) {
-        const targetViewItem = this.views[targetCell.id]
-        if (targetViewItem && !this.isViewMounted(targetViewItem.view)) {
-          return false
-        }
+      if (this.renderArea && sourceCell && targetCell) {
+        return (
+          this.renderArea.isIntersectWithRect(sourceCell.getBBox()) ||
+          this.renderArea.isIntersectWithRect(targetCell.getBBox())
+        )
       }
     }
 
@@ -532,7 +525,7 @@ export namespace Scheduler {
   export enum ViewState {
     CREATED,
     MOUNTED,
-    WAITTING,
+    WAITING,
   }
   export interface View {
     view: CellView
