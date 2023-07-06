@@ -8,6 +8,7 @@ export const CASE_SENSITIVE_ATTR = [
   'repeatCount',
   'textLength',
   'lengthAdjust',
+  'gradientUnits',
 ]
 
 export type Attributes = { [key: string]: string | number | null | undefined }
