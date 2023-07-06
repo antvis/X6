@@ -140,9 +140,9 @@ export interface Job {
 }
 
 export enum JOB_PRIORITY {
-  RenderEdge = /**/ 1 << 1,
-  RenderNode = /**/ 1 << 2,
-  Update = /*    */ 1 << 3,
+  Update = /*    */ 1 << 1,
+  RenderEdge = /**/ 1 << 2,
+  RenderNode = /**/ 1 << 3,
   PRIOR = /*     */ 1 << 20,
 }
 
