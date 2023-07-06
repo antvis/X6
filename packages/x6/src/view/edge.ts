@@ -917,15 +917,18 @@ export class EdgeView<
 
     for (let i = 0, ii = labels.length; i < ii; i += 1) {
       const label = labels[i]
+      const labelNode = this.labelCache[i]
+
+      if (!labelNode) {
+        continue
+      }
+
       const labelPosition = this.normalizeLabelPosition(
         label.position as Edge.LabelPosition,
       )
       const pos = ObjectExt.merge({}, defaultPosition, labelPosition)
       const matrix = this.getLabelTransformationMatrix(pos)
-      this.labelCache[i].setAttribute(
-        'transform',
-        Dom.matrixToTransformString(matrix),
-      )
+      labelNode.setAttribute('transform', Dom.matrixToTransformString(matrix))
     }
 
     return this
