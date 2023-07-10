@@ -16,7 +16,7 @@ export function connect(
     const { Teleport, markRaw } = Vue as any
     items[id] = markRaw(
       defineComponent({
-        render: () => h(Teleport, { to: container } as any, [h(component)]),
+        render: () => h(Teleport, { to: container } as any, [h(component, { getNode: () => node, getGraph: () => graph })]),
         provide: () => ({
           getNode: () => node,
           getGraph: () => graph,
