@@ -865,8 +865,8 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
 
   protected removeTransition() {
     Dom.removeClass(this.container, ScrollerImpl.transitionClassName)
-    Dom.Event.off(this.container, ScrollerImpl.transitionEventName)
-    Dom.css(this.container, {
+    Dom.Event.off(this.content, ScrollerImpl.transitionEventName)
+    Dom.css(this.content, {
       transform: '',
       transformOrigin: '',
       transition: '',
