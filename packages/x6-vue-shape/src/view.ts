@@ -31,19 +31,17 @@ export class VueShapeView extends NodeView<VueShape> {
     if (root) {
       const { component } = shapeMaps[node.shape]
       if (component) {
-        const getNode = () => node
-        const getGraph = () => graph
         if (isVue2) {
           const Vue = Vue2 as any
           this.vm = new Vue({
             el: root,
             render(h: any) {
-              return h(component, { getNode, getGraph })
+              return h(component, { node, graph })
             },
             provide() {
               return {
-                getNode,
-                getGraph,
+                getNode: () => node,
+                getGraph: () => graph,
               }
             },
           })
@@ -53,12 +51,12 @@ export class VueShapeView extends NodeView<VueShape> {
           } else {
             this.vm = createApp({
               render() {
-                return h(component, { getNode, getGraph })
+                return h(component, { node, graph })
               },
               provide() {
                 return {
-                  getNode,
-                  getGraph,
+                  getNode: () => node,
+                  getGraph: () => graph,
                 }
               },
             })
