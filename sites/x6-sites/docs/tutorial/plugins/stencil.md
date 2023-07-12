@@ -95,6 +95,7 @@ export interface Group {
   title?: string // 分组标题，缺省时使用 `name`
   collapsable?: boolean // 分组是否可折叠，默认为 true
   collapsed?: boolean // 初始状态是否为折叠状态
+  nodeMovable?: boolean // 模板画布中的节点能否拖动
   graphWidth?: number // 模板画布宽度
   graphHeight?: number // 模板画布高度
   graphPadding?: number // 模板画布边距
@@ -149,3 +150,62 @@ const stencil = new Addon.Stencil({
   },
 })
 ```
+
+## API
+
+### stencil.load(...)
+
+```ts
+load(nodes: (Node | Node.Metadata)[], groupName?: string): this
+```
+
+加载节点。参数如下：
+
+| 名称      | 类型                        | 必选 | 默认值 | 描述                |
+|-----------|-----------------------------|:----:|--------|-------------------|
+| nodes     | `(Node \| Node.Metadata)[]` |  √   | -      | 加载的节点。         |
+| groupName | string                      |      | -      | 加载节点的分组名称。 |
+
+### stencil.unload(...)
+
+```ts
+unload(nodes: (Node | Node.Metadata)[], groupName?: string): this
+```
+
+卸载节点。参数如下：
+
+| 名称      | 类型                        | 必选 | 默认值 | 描述                |
+|-----------|-----------------------------|:----:|--------|-------------------|
+| nodes     | `(Node \| Node.Metadata)[]` |  √   | -      | 卸载的节点。         |
+| groupName | string                      |      | -      | 卸载节点的分组名称。 |
+
+### stencil.addGroup(...)
+
+```ts
+addGroup(group: Stencil.Group | Stencil.Group[])
+```
+
+新增分组。
+
+```ts
+stencil.addGroup({
+  name: 'group1',
+  graphHeight: 100,
+})
+```
+
+### stencil.removeGroup(...)
+
+```ts
+removeGroup(groupName: string | string[])
+```
+
+删除分组。
+
+### stencil.resizeGroup(...)
+
+```typescript
+resizeGroup(groupName: string, size: { width: number; height: number })
+```
+
+修改分组的尺寸。
