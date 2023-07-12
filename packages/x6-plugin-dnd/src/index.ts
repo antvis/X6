@@ -155,6 +155,7 @@ export class Dnd extends View implements Graph.Plugin {
     draggingGraph.fitToContent({
       padding,
       allowNewOrigin: 'any',
+      useCellGeometry: false,
     })
 
     const bbox = delegateView.getBBox()
