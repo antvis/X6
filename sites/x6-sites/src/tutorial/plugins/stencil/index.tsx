@@ -78,7 +78,7 @@ export default class Example extends React.Component {
     graph.centerContent()
 
     const stencil = new Stencil({
-      title: 'Components',
+      title: 'Stencil',
       target: graph,
       search(cell, keyword) {
         return cell.shape.indexOf(keyword) !== -1
@@ -86,8 +86,7 @@ export default class Example extends React.Component {
       placeholder: 'Search by shape name',
       notFoundText: 'Not Found',
       collapsable: true,
-      stencilGraphWidth: 200,
-      stencilGraphHeight: 100,
+      stencilGraphHeight: 0,
       groups: [
         {
           name: 'group1',
