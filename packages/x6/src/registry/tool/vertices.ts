@@ -165,6 +165,13 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     }
   }
 
+  protected stopBatch(vertexAdded: boolean) {
+    this.cell.stopBatch('move-vertex', { ui: true, toolId: this.cid })
+    if (vertexAdded) {
+      this.cell.stopBatch('add-vertex', { ui: true, toolId: this.cid })
+    }
+  }
+
   protected onHandleChanged({ e }: Vertices.Handle.EventArgs['changed']) {
     const options = this.options
     const edgeView = this.cellView
@@ -174,6 +181,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     }
 
     if (!options.removeRedundancies) {
+      this.stopBatch(this.eventData(e).vertexAdded)
       return
     }
 
@@ -188,11 +196,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 
     this.blur()
 
-    edgeView.cell.stopBatch('move-vertex', { ui: true, toolId: this.cid })
-
-    if (this.eventData(e).vertexAdded) {
-      edgeView.cell.stopBatch('add-vertex', { ui: true, toolId: this.cid })
-    }
+    this.stopBatch(this.eventData(e).vertexAdded)
 
     const { e: evt, x, y } = this.getMouseEventArgs(e)
 
