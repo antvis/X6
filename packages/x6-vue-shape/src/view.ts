@@ -36,7 +36,7 @@ export class VueShapeView extends NodeView<VueShape> {
           this.vm = new Vue({
             el: root,
             render(h: any) {
-              return h(component)
+              return h(component, { node, graph })
             },
             provide() {
               return {
@@ -51,7 +51,7 @@ export class VueShapeView extends NodeView<VueShape> {
           } else {
             this.vm = createApp({
               render() {
-                return h(component)
+                return h(component, { node, graph })
               },
               provide() {
                 return {
