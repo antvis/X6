@@ -1,5 +1,5 @@
 import { Point } from '@antv/x6-geometry'
-import { Dom } from '@antv/x6-common'
+import { Dom, ModifierKey } from '@antv/x6-common'
 import { Config } from '../../config'
 import { View } from '../../view/view'
 import { ToolsView } from '../../view/tool'
@@ -241,14 +241,19 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     }
   }
 
+  protected allowAddVertex(e: Dom.MouseDownEvent) {
+    const guard = this.guard(e)
+    const addable = this.options.addable && this.cellView.can('vertexAddable')
+    const matchModifiers = this.options.modifiers
+      ? ModifierKey.isMatch(e, this.options.modifiers)
+      : true
+    return !guard && addable && matchModifiers
+  }
+
   protected onPathMouseDown(evt: Dom.MouseDownEvent) {
     const edgeView = this.cellView
 
-    if (
-      this.guard(evt) ||
-      !this.options.addable ||
-      !edgeView.can('vertexAddable')
-    ) {
+    if (!this.allowAddVertex(evt)) {
       return
     }
 
@@ -282,6 +287,7 @@ export namespace Vertices {
     removable?: boolean
     removeRedundancies?: boolean
     stopPropagation?: boolean
+    modifiers?: string | ModifierKey[]
     attrs?: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
     createHandle?: (options: Handle.Options) => Handle
     processHandle?: (handle: Handle) => void
