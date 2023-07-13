@@ -405,6 +405,14 @@ export namespace Util {
     }
 
     const shape = toGeometryShape(node)
-    return shape.bbox() || Rectangle.create()
+    const bbox = shape.bbox() || Rectangle.create()
+    const transform = node.getAttribute('transform')
+
+    if (transform) {
+      const nodeMatrix = Dom.transformStringToMatrix(transform)
+      return transformRectangle(bbox, nodeMatrix)
+    }
+
+    return bbox
   }
 }
