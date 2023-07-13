@@ -73,7 +73,7 @@ interface MouseWheelOptions {
 new Graph({
   mousewheel: {
     enabled: true,
-    guard(this: Graph, e: WheelEvent) {
+    guard(e: WheelEvent) {
       if (e.altKey) {
         // 当按下 alt 键时，忽略所有滚动事件
         return false
