@@ -50,7 +50,7 @@ export class MouseWheel extends Base {
     const guard = this.widgetOptions.guard
 
     return (
-      (guard == null || guard.call(e)) &&
+      (guard == null || guard(e)) &&
       ModifierKey.isMatch(e, this.widgetOptions.modifiers)
     )
   }
@@ -59,7 +59,7 @@ export class MouseWheel extends Base {
     const guard = this.widgetOptions.guard
 
     if (
-      (guard == null || guard.call(e)) &&
+      (guard == null || guard(e)) &&
       ModifierKey.isMatch(e, this.widgetOptions.modifiers)
     ) {
       const factor = this.widgetOptions.factor || 1.2
