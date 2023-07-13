@@ -793,7 +793,7 @@ export class Edge<
 
     // Unembeds the edge if source and target has no common
     // ancestor or common ancestor changed
-    if (prevParent && (!newParent || newParent.id !== prevParent.id)) {
+    if (prevParent && newParent && newParent.id !== prevParent.id) {
       prevParent.unembed(this, options)
     }
 
