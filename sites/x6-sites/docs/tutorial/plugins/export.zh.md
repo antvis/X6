@@ -47,7 +47,7 @@ graph.use(new Export())
 exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
 ```
 
-`fileNmae` 为文件名称，缺省为 `chart`，`Export.ToSVGOptions` 描述如下：
+`fileName` 为文件名称，缺省为 `chart`，`Export.ToSVGOptions` 描述如下：
 
 | 属性名             | 类型                                       | 默认值 | 必选 | 描述                                                                                                                                                                            |
 |--------------------|--------------------------------------------|--------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -64,7 +64,7 @@ exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
 exportPNG(fileName?: string, options?: Export.ToImageOptions): void
 ```
 
-`fileNmae` 为文件名称，缺省为 `chart`，`Export.ToImageOptions` 除了继承上面 `Export.ToSVGOptions` 外，还有以下配置：
+`fileName` 为文件名称，缺省为 `chart`，`Export.ToImageOptions` 除了继承上面 `Export.ToSVGOptions` 外，还有以下配置：
 
 | 属性名          | 类型                  | 默认值 | 必选 | 描述                                                                               |
 |-----------------|-----------------------|--------|------|----------------------------------------------------------------------------------|
