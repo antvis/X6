@@ -197,7 +197,7 @@ export interface WobbleArgs {
 function wobble(
   sourcePoint: Point.PointLike,
   targetPoint: Point.PointLike,
-  routePoints: Point.PointLike[],
+  vertices: Point.PointLike[],
   args: WobbleArgs,
 ) {
   const spread = args.spread || 20
