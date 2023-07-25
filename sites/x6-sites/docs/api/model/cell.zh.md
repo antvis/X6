@@ -1357,7 +1357,7 @@ cell.setData(data, { overwrite: true })
 当 `options.deep` 为 `false` 时，与原数据进行浅 merge：
 
 ```ts
-cell.setData(data, { overwrite: true })
+cell.setData(data, { deep: false })
 ```
 
 :::info{title=提示}
