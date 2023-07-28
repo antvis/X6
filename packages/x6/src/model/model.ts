@@ -340,6 +340,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   updateCellId(cell: Cell, newId: string) {
+    if (cell.id === newId) return
     this.startBatch('update', { id: newId })
     cell.prop('id', newId)
     const newCell = cell.clone({ keepId: true })
