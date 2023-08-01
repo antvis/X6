@@ -69,6 +69,7 @@ export class AngularShapeView extends NodeView<AngularShape> {
         node.on('change:data', () =>
           this.setInstanceInput(content, componentRef),
         )
+        node.on('removed', () => componentRef.destroy())
       }
     }
   }
