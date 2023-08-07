@@ -84,6 +84,7 @@ export class CellEditor extends ToolsView.ToolItem<
     let minWidth = 20
     let translate = ''
     let { x, y } = this.options
+    const { width, height } = this.options
 
     if (typeof x !== 'undefined' && typeof y !== 'undefined') {
       const bbox = cell.getBBox()
@@ -105,6 +106,13 @@ export class CellEditor extends ToolsView.ToolItem<
     style.top = `${pos.y}px`
     style.transform = `scale(${scale.sx}, ${scale.sy}) ${translate}`
     style.minWidth = `${minWidth}px`
+
+    if (typeof width === 'number') {
+      style.width = `${width}px`
+    }
+    if (typeof height === 'number') {
+      style.height = `${height}px`
+    }
   }
 
   updateEdgeEditorTransform() {
@@ -270,6 +278,8 @@ export namespace CellEditor {
   export interface CellEditorOptions extends ToolsView.ToolItem.Options {
     x?: number | string
     y?: number | string
+    width?: number
+    height?: number
     attrs: {
       fontSize: number
       fontFamily: string
