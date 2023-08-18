@@ -55,7 +55,7 @@ graph.use(
 | 属性名           | 类型                            | 默认值  | 必选 | 描述                                                                                               |
 |------------------|---------------------------------|---------|------|--------------------------------------------------------------------------------------------------|
 | stackSize        | number                          | `0`     |      | `stackSize` 为 0 表示不限制历史记录栈的长度，如果设置为其他数字表示最多只会记录该数字长度的历史记录 |
-| ignoreAdd        | boolean                         | `false` |      | `ignoreAdd` 如果为 `true`，添加添加元素不会被记录到历史记录                                         |
+| ignoreAdd        | boolean                         | `false` |      | `ignoreAdd` 如果为 `true`，添加元素不会被记录到历史记录                                         |
 | ignoreRemove     | boolean                         | `false` |      | `ignoreRemove` 如果为 `true`，删除元素不会被记录到历史记录                                          |
 | ignoreChange     | boolean                         | `false` |      | `ignoreChange` 如果为 `true`，元素属性变化是否被记录到历史记录                                      |
 | beforeAddCommand | `(event, args) => any`          | -       |      | 当一个命令被添加到 Undo 队列前被调用，如果该方法返回 `false`，那么这个命令将不会被添加到 Undo 队列中 |
