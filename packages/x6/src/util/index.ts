@@ -406,12 +406,12 @@ export namespace Util {
 
     const shape = toGeometryShape(node)
     const bbox = shape.bbox() || Rectangle.create()
-    const transform = node.getAttribute('transform')
 
-    if (transform) {
-      const nodeMatrix = Dom.transformStringToMatrix(transform)
-      return transformRectangle(bbox, nodeMatrix)
-    }
+    // const transform = node.getAttribute('transform')
+    // if (transform) {
+    //   const nodeMatrix = Dom.transformStringToMatrix(transform)
+    //   return transformRectangle(bbox, nodeMatrix)
+    // }
 
     return bbox
   }
