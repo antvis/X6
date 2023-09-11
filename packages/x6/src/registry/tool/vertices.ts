@@ -145,6 +145,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     edgeView.cell.startBatch('move-vertex', { ui: true, toolId: this.cid })
     if (!this.options.stopPropagation) {
       const { e: evt, x, y } = this.getMouseEventArgs(e)
+      this.eventData(evt, { start: { x, y } })
       edgeView.notifyMouseDown(evt, x, y)
     }
   }
@@ -202,6 +203,13 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 
     if (!this.options.stopPropagation) {
       edgeView.notifyMouseUp(evt, x, y)
+      const { start } = this.eventData(evt)
+      if (start) {
+        const { x: startX, y: startY } = start
+        if (startX === x && startY === y) {
+          edgeView.onClick(evt as unknown as Dom.ClickEvent, x, y)
+        }
+      }
     }
 
     edgeView.checkMouseleave(evt)
