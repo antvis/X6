@@ -96,7 +96,8 @@ export const textWrap: Attr.Definition = {
     let wrappedText
     let txt = info.text
     if (txt == null) {
-      txt = attrs.text
+      // the edge of the label is assigned to txt
+      txt = attrs.text || elem?.textContent
     }
 
     if (txt != null) {
