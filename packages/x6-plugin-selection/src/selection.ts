@@ -846,10 +846,11 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   confirmUpdate() {
+    const { $boxes } = this
     if (this.boxCount) {
       this.hide()
-      for (let i = 0, len = this.$boxes.length; i < len; i += 1) {
-        const box = this.$boxes[i]
+      for (let i = 0, len = $boxes.length; i < len; i += 1) {
+        const box = $boxes[i]
         const cellId = Dom.attr(box, 'data-cell-id')
         Dom.remove(box)
         const cell = this.collection.get(cellId)
