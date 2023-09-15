@@ -171,11 +171,13 @@ export class Dnd extends View implements Graph.Plugin {
   protected updateGraphPosition(clientX: number, clientY: number) {
     const scrollTop =
       document.body.scrollTop || document.documentElement.scrollTop
+    const scrollLeft =
+      document.body.scrollLeft || document.documentElement.scrollLeft
     const delta = this.delta!
     const nodeBBox = this.geometryBBox
     const padding = this.padding || 5
     const offset = {
-      left: clientX - delta.x - nodeBBox.width / 2 - padding,
+      left: clientX - delta.x - nodeBBox.width / 2 - padding + scrollLeft,
       top: clientY - delta.y - nodeBBox.height / 2 - padding + scrollTop,
     }
 
