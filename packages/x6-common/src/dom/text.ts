@@ -1,6 +1,7 @@
 /* eslint-disable no-control-regex */
 
 import { Size } from '../types'
+import { StringExt } from '../string'
 import { Text } from '../text'
 import { attr } from './attr'
 import { Vector } from '../vector'
@@ -442,6 +443,27 @@ export function breakText(
   const width = size.width
   const height = size.height
   const eol = options.eol || '\n'
+  const fontSize = styles.fontSize || 14
+  const lineHeight = styles.lineHeight
+    ? parseFloat(styles.lineHeight)
+    : Math.ceil(fontSize * 1.4)
+  const maxLines = Math.floor(height / lineHeight)
+
+  if (text.indexOf(eol) > -1) {
+    const delimiter = StringExt.uuid()
+    const splitText: string[] = []
+
+    text.split(eol).map((line) => {
+      const part = breakText(line, { ...size, height: Number.MAX_SAFE_INTEGER }, styles, { ...options, eol: delimiter })
+
+      if (part) {
+        splitText.push(...part.split(delimiter))
+      }
+    })
+
+    return splitText.slice(0, maxLines).join(eol)
+  }
+
   const { width: textWidth } = measureText(text, styles)
 
   if (textWidth < width) {
@@ -449,11 +471,6 @@ export function breakText(
   }
 
   const lines = []
-  const fontSize = styles.fontSize || 14
-  const lineHeight = styles.lineHeight
-    ? parseFloat(styles.lineHeight)
-    : Math.ceil(fontSize * 1.4)
-  const maxLines = Math.floor(height / lineHeight)
 
   let remainText = text
   let remainWidth = textWidth
