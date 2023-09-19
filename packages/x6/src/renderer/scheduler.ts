@@ -54,7 +54,8 @@ export class Scheduler extends Disposable {
     this.queue.clearJobs()
     this.removeZPivots()
     this.resetViews()
-    this.renderViews(this.model.getCells(), options)
+    const cells = this.model.getCells()
+    this.renderViews(cells, { ...options, queue: cells.map((cell) => cell.id) })
   }
 
   protected onCellAdded({ cell, options }: Model.EventArgs['cell:added']) {
@@ -116,6 +117,16 @@ export class Scheduler extends Disposable {
       priority,
       cb: () => {
         this.renderViewInArea(view, flag, options)
+        const queue = options.queue
+        if (queue) {
+          const index = queue.indexOf(view.cell.id)
+          if (index >= 0) {
+            queue.splice(index, 1)
+          }
+          if (queue.length === 0) {
+            this.graph.trigger('render:done')
+          }
+        }
       },
     })
 
@@ -537,5 +548,6 @@ export namespace Scheduler {
   export interface EventArgs {
     'view:mounted': { view: CellView }
     'view:unmounted': { view: CellView }
+    'render:done': null
   }
 }
