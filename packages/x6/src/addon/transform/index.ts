@@ -521,6 +521,11 @@ export class Transform extends Widget<Transform.Options> {
       }
     }
   }
+
+  protected onRemove() {
+    this.stopListening()
+    super.onRemove()
+  }
 }
 
 export namespace Transform {
