@@ -77,7 +77,7 @@ export namespace HTML {
     }
 
     protected renderHTMLComponent() {
-      const container = this.selectors.foContent
+      const container = this.selectors && this.selectors.foContent
       if (container) {
         const $wrap = this.$(container).empty()
         const component = this.graph.hook.getHTMLComponent(this.cell)
