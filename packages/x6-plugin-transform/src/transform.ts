@@ -557,6 +557,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
 
   @View.dispose()
   dispose() {
+    this.stopListening()
     this.remove()
     this.off()
   }
