@@ -552,11 +552,11 @@ export class CellView<
   addTools(options: ToolsView.Options | null): this
   addTools(tools: ToolsView | null): this
   addTools(config: ToolsView | ToolsView.Options | null) {
-    if (!this.can('toolsAddable')) {
-      return this
-    }
     this.removeTools()
     if (config) {
+      if (!this.can('toolsAddable')) {
+        return this
+      }
       const tools = ToolsView.isToolsView(config)
         ? config
         : new ToolsView(config)
