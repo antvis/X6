@@ -1,58 +1,39 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-import { Menu, Dropdown } from 'antd'
+import { Dropdown } from 'antd'
 import { Graph, ToolsView, EdgeView } from '@antv/x6'
+import type { MenuProps } from 'antd'
+
+// 如果项目中使用的是 antd@4，使用方式参考：https://codesandbox.io/s/contextmenu-z8gpq3
 
 class ContextMenuTool extends ToolsView.ToolItem<
   EdgeView,
   ContextMenuToolOptions
 > {
-  private knob: HTMLDivElement
   private timer: number
 
-  render() {
-    if (!this.knob) {
-      this.knob = ToolsView.createElement('div', false) as HTMLDivElement
-      this.knob.style.position = 'absolute'
-      this.container.appendChild(this.knob)
-    }
-    return this
-  }
-
-  private toggleContextMenu(visible: boolean) {
-    ReactDom.unmountComponentAtNode(this.knob)
+  private toggleContextMenu(visible: boolean, pos?: { x: number; y: number }) {
+    ReactDom.unmountComponentAtNode(this.container)
     document.removeEventListener('mousedown', this.onMouseDown)
 
-    if (visible) {
+    if (visible && pos) {
       ReactDom.render(
         <Dropdown
-          visible={true}
+          open={true}
           trigger={['contextMenu']}
-          overlay={this.options.menu}
+          menu={{ items: this.options.menu }}
+          align={{ offset: [pos.x, pos.y] }}
         >
-          <a />
+          <span />
         </Dropdown>,
-        this.knob,
+        this.container,
       )
       document.addEventListener('mousedown', this.onMouseDown)
     }
   }
 
-  private updatePosition(e?: MouseEvent) {
-    const style = this.knob.style
-    if (e) {
-      const pos = this.graph.clientToGraph(e.clientX, e.clientY)
-      style.left = `${pos.x}px`
-      style.top = `${pos.y}px`
-    } else {
-      style.left = '-1000px'
-      style.top = '-1000px'
-    }
-  }
-
   private onMouseDown = () => {
     this.timer = window.setTimeout(() => {
-      this.updatePosition()
       this.toggleContextMenu(false)
     }, 200)
   }
@@ -62,8 +43,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
       clearTimeout(this.timer)
       this.timer = 0
     }
-    this.updatePosition(e)
-    this.toggleContextMenu(true)
+    this.toggleContextMenu(true, { x: e.clientX, y: e.clientY })
   }
 
   delegateEvents() {
@@ -82,24 +62,27 @@ ContextMenuTool.config({
 })
 
 export interface ContextMenuToolOptions extends ToolsView.ToolItem.Options {
-  menu: React.ReactElement
+  menu: MenuProps['items']
 }
 
 Graph.registerEdgeTool('contextmenu', ContextMenuTool, true)
 Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
 
-const menu = (
-  <Menu>
-    <Menu.Item>1st menu item</Menu.Item>
-    <Menu.Item>2nd menu item</Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-        3rd menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item danger>a danger item</Menu.Item>
-  </Menu>
-)
+const menu = [
+  {
+    key: 'copy',
+    label: '复制',
+  },
+  {
+    key: 'paste',
+    label: '粘贴',
+  },
+  {
+    key: 'delete',
+    label: '删除',
+    type: 'danger',
+  },
+]
 
 const graph = new Graph({
   container: document.getElementById('container'),

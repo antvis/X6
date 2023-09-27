@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
 import { Graph, ToolsView, EdgeView } from '@antv/x6'
+
 class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   private knob: HTMLDivElement
 
@@ -21,7 +22,9 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
         ReactDom.render(
           <Tooltip
             title={this.options.tooltip}
-            visible={true}
+            open={true}
+            arrow={false}
+            overlayStyle={{ padding: 0 }}
             destroyTooltipOnHide
           >
             <div />
