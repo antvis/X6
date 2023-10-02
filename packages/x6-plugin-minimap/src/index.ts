@@ -1,12 +1,4 @@
-import {
-  FunctionExt,
-  CssLoader,
-  Dom,
-  View,
-  Graph,
-  EventArgs,
-  Model,
-} from '@antv/x6'
+import { FunctionExt, CssLoader, Dom, View, Graph, EventArgs } from '@antv/x6'
 import { content } from './style/raw'
 
 export class MiniMap extends View implements Graph.Plugin {
@@ -138,8 +130,7 @@ export class MiniMap extends View implements Graph.Plugin {
 
   protected onRemove() {
     this.stopListening()
-    this.targetGraph.model = new Model()
-    this.targetGraph.dispose()
+    this.targetGraph.dispose(false)
   }
 
   protected onTransform(options: { ui: boolean }) {
