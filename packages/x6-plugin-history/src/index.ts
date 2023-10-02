@@ -268,10 +268,15 @@ export class History
         const value = revert ? data.prev[key] : data.next[key]
 
         if (data.key === 'attrs') {
-          this.ensureUndefinedAttrs(
+          const hasUndefinedAttr = this.ensureUndefinedAttrs(
             value,
             revert ? data.next[key] : data.prev[key],
           )
+          if (hasUndefinedAttr) {
+            // recognize a `dirty` flag and re-render itself in order to remove
+            // the attribute from SVGElement.
+            options.dirty = true
+          }
         }
 
         cell.prop(key, value, options)
@@ -602,6 +607,7 @@ export class History
     newAttrs: Record<string, any>,
     oldAttrs: Record<string, any>,
   ) {
+    let hasUndefinedAttr = false
     if (
       newAttrs !== null &&
       oldAttrs !== null &&
@@ -610,16 +616,21 @@ export class History
     ) {
       Object.keys(oldAttrs).forEach((key) => {
         // eslint-disable-next-line no-prototype-builtins
-        if (!newAttrs.hasOwnProperty(key)) {
+        if (newAttrs[key] === undefined && oldAttrs[key] !== undefined) {
           newAttrs[key] = undefined
+          hasUndefinedAttr = true
         } else if (
           typeof newAttrs[key] === 'object' &&
           typeof oldAttrs[key] === 'object'
         ) {
-          this.ensureUndefinedAttrs(newAttrs[key], oldAttrs[key])
+          hasUndefinedAttr = this.ensureUndefinedAttrs(
+            newAttrs[key],
+            oldAttrs[key],
+          )
         }
       })
     }
+    return hasUndefinedAttr
   }
 
   @Basecoat.dispose()
