@@ -1271,8 +1271,11 @@ export class Graph extends Basecoat<EventArgs> {
   // #region dispose
 
   @Basecoat.dispose()
-  dispose() {
-    this.clearCells()
+  dispose(clean = true) {
+    if (clean) {
+      this.clearCells()
+    }
+
     this.off()
 
     this.css.dispose()
