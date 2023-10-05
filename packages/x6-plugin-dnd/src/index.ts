@@ -182,10 +182,18 @@ export class Dnd extends View implements Graph.Plugin {
     }
 
     if (this.draggingGraph) {
-      Dom.css(this.container, {
-        left: `${offset.left}px`,
-        top: `${offset.top}px`,
-      })
+      if (this.options.draggingContainer) {
+        const { top, left } = Dom.offset(this.options.draggingContainer)
+        Dom.css(this.container, {
+          left: `${offset.left - left}px`,
+          top: `${offset.top - top}px`,
+        })
+      } else {
+        Dom.css(this.container, {
+          left: `${offset.left}px`,
+          top: `${offset.top}px`,
+        })
+      }
     }
 
     return offset
