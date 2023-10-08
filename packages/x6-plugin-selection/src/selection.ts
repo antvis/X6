@@ -76,6 +76,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
     graph.on('scale', this.onGraphTransformed, this)
     graph.on('translate', this.onGraphTransformed, this)
+    graph.on('node:moving', this.onNodeOrEdgeMove, this)
     graph.model.on('updated', this.onModelUpdated, this)
 
     collection.on('added', this.onCellAdded, this)
@@ -113,6 +114,10 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected onCellChanged() {
+    this.updateSelectionBoxes()
+  }
+
+  protected onNodeOrEdgeMove() {
     this.updateSelectionBoxes()
   }
 

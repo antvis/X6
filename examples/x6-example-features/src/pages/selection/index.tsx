@@ -21,6 +21,7 @@ export default class Example extends React.Component {
       multiple: true,
       strict: true,
       showNodeSelectionBox: true,
+      showEdgeSelectionBox: true,
       selectCellOnMoved: false,
       filter(cell) {
         return cell !== a
