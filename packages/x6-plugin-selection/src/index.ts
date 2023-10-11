@@ -47,6 +47,12 @@ export class Selection
       Selection.defaultOptions,
       options,
     )
+
+    if (!Array.isArray(this.options.eventTypes)) {
+      // a new option, compatible with the behavior of older versions
+      this.options.eventTypes = ['leftMouseDown', 'mouseWheelDown']
+    }
+
     CssLoader.ensure(this.name, content)
   }
 
@@ -304,7 +310,12 @@ export class Selection
   }
 
   protected startListening() {
-    this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
+    if (this.options.eventTypes?.includes('leftMouseDown')) {
+      this.graph.on('blank:mousedown', this.onBlankLeftMouseDown, this)
+    }
+    if (this.options.eventTypes?.includes('mouseWheelDown')) {
+      this.graph.on('blank:mousedown', this.onBlankMouseWheelDown, this)
+    }
     this.graph.on('blank:click', this.onBlankClick, this)
     this.graph.on('cell:mousemove', this.onCellMouseMove, this)
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
@@ -312,11 +323,32 @@ export class Selection
   }
 
   protected stopListening() {
-    this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
+    if (this.options.eventTypes?.includes('leftMouseDown')) {
+      this.graph.off('blank:mousedown', this.onBlankLeftMouseDown, this)
+    }
+    if (this.options.eventTypes?.includes('mouseWheelDown')) {
+      this.graph.off('blank:mousedown', this.onBlankMouseWheelDown, this)
+    }
     this.graph.off('blank:click', this.onBlankClick, this)
     this.graph.off('cell:mousemove', this.onCellMouseMove, this)
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
     this.selectionImpl.off('box:mousedown', this.onBoxMouseDown, this)
+  }
+
+  protected onBlankLeftMouseDown(mouseDownEvent: EventArgs['blank:mousedown']) {
+    if (mouseDownEvent.e.button !== 0) {
+      return
+    }
+    this.onBlankMouseDown(mouseDownEvent)
+  }
+
+  protected onBlankMouseWheelDown(
+    mouseDownEvent: EventArgs['blank:mousedown'],
+  ) {
+    if (mouseDownEvent.e.button !== 1) {
+      return
+    }
+    this.onBlankMouseDown(mouseDownEvent)
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
@@ -449,9 +481,11 @@ export class Selection
 }
 
 export namespace Selection {
+  type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown'
   export interface EventArgs extends SelectionImpl.EventArgs {}
   export interface Options extends SelectionImpl.CommonOptions {
     enabled?: boolean
+    eventTypes?: SelectionEventType[]
   }
 
   export type Filter = SelectionImpl.Filter
