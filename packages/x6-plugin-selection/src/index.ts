@@ -336,19 +336,17 @@ export class Selection
   }
 
   protected onBlankLeftMouseDown(mouseDownEvent: EventArgs['blank:mousedown']) {
-    if (mouseDownEvent.e.button !== 0) {
-      return
+    if (mouseDownEvent.e.button === 0) {
+      this.onBlankMouseDown(mouseDownEvent)
     }
-    this.onBlankMouseDown(mouseDownEvent)
   }
 
   protected onBlankMouseWheelDown(
     mouseDownEvent: EventArgs['blank:mousedown'],
   ) {
-    if (mouseDownEvent.e.button !== 1) {
-      return
+    if (mouseDownEvent.e.button === 1) {
+      this.onBlankMouseDown(mouseDownEvent)
     }
-    this.onBlankMouseDown(mouseDownEvent)
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
