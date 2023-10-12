@@ -950,6 +950,8 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 }
 
 export namespace SelectionImpl {
+  type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown'
+
   export interface CommonOptions {
     model?: Model
     collection?: Collection
@@ -977,6 +979,9 @@ export namespace SelectionImpl {
 
     // Whether to respond event on the selectionBox
     pointerEvents?: 'none' | 'auto'
+
+    // with which mouse button the selection can be started
+    eventTypes?: SelectionEventType[]
   }
 
   export interface Options extends CommonOptions {

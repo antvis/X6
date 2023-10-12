@@ -3,7 +3,6 @@ import {
   ModifierKey,
   CssLoader,
   Dom,
-  ObjectExt,
   Cell,
   EventArgs,
   Graph,
@@ -42,15 +41,10 @@ export class Selection
 
   constructor(options: Selection.Options = {}) {
     super()
-    this.options = ObjectExt.merge(
-      { enabled: true },
-      Selection.defaultOptions,
-      options,
-    )
-
-    if (!Array.isArray(this.options.eventTypes)) {
-      // a new option, compatible with the behavior of older versions
-      this.options.eventTypes = ['leftMouseDown', 'mouseWheelDown']
+    this.options = {
+      enabled: true,
+      ...Selection.defaultOptions,
+      ...options,
     }
 
     CssLoader.ensure(this.name, content)
@@ -479,11 +473,9 @@ export class Selection
 }
 
 export namespace Selection {
-  type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown'
   export interface EventArgs extends SelectionImpl.EventArgs {}
   export interface Options extends SelectionImpl.CommonOptions {
     enabled?: boolean
-    eventTypes?: SelectionEventType[]
   }
 
   export type Filter = SelectionImpl.Filter
@@ -507,5 +499,6 @@ export namespace Selection {
     selectEdgeOnMoved: false,
     following: true,
     content: null,
+    eventTypes: ['leftMouseDown', 'mouseWheelDown'],
   }
 }
