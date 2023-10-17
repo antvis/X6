@@ -13,6 +13,7 @@ import {
   EventArgs,
 } from '@antv/x6'
 import { content } from './style/raw'
+import { alignPoint } from 'dom-align'
 
 export class Dnd extends View implements Graph.Plugin {
   public name = 'dnd'
@@ -169,35 +170,32 @@ export class Dnd extends View implements Graph.Plugin {
   }
 
   protected updateGraphPosition(clientX: number, clientY: number) {
-    const scrollTop =
-      document.body.scrollTop || document.documentElement.scrollTop
-    const scrollLeft =
-      document.body.scrollLeft || document.documentElement.scrollLeft
-    const delta = this.delta!
-    const nodeBBox = this.geometryBBox
-    const padding = this.padding || 5
+    const delta = this.delta!;
+    const nodeBBox = this.geometryBBox;
+    const padding = this.padding || 5;
     const offset = {
-      left: clientX - delta.x - nodeBBox.width / 2 - padding + scrollLeft,
-      top: clientY - delta.y - nodeBBox.height / 2 - padding + scrollTop,
-    }
+        left: clientX - delta.x - nodeBBox.width / 2 - padding,
+        top: clientY - delta.y - nodeBBox.height / 2 - padding,
+    };
 
     if (this.draggingGraph) {
-      if (this.options.draggingContainer) {
-        const { top, left } = Dom.offset(this.options.draggingContainer)
-        Dom.css(this.container, {
-          left: `${offset.left - left}px`,
-          top: `${offset.top - top}px`,
-        })
-      } else {
-        Dom.css(this.container, {
-          left: `${offset.left}px`,
-          top: `${offset.top}px`,
-        })
-      }
+        alignPoint(
+            this.container,
+            {
+                clientX: offset.left,
+                clientY: offset.top,
+            },
+            {
+                points: ['tl'],
+            },
+        );
     }
 
-    return offset
-  }
+    // TODO 原组件目前没有使用这个返回值（代码注释掉了）
+    // 而 dom-align 又没有返回计算后的top/left值
+    // 考虑干掉?
+    return offset;
+}
 
   protected updateNodePosition(x: number, y: number) {
     const local = this.targetGraph.clientToLocal(x, y)
