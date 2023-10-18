@@ -16,71 +16,31 @@ export class PanningManager extends Base {
   }
 
   protected init() {
+    this.onRightMouseDown = this.onRightMouseDown.bind(this)
     this.startListening()
     this.updateClassName()
   }
 
   protected startListening() {
-    const eventTypes = this.widgetOptions.eventTypes
-    if (!eventTypes) {
-      return
-    }
-    if (eventTypes.includes('leftMouseDown')) {
-      this.graph.on('blank:mousedown', this.preparePanning, this)
-      this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
-      this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
-    }
-    if (eventTypes.includes('rightMouseDown')) {
-      this.onRightMouseDown = this.onRightMouseDown.bind(this)
-      Dom.Event.on(this.graph.container, 'mousedown', this.onRightMouseDown)
-    }
-
-    if (eventTypes.includes('mouseWheelDown')) {
-      this.onMouseWheelDown = this.onMouseWheelDown.bind(this)
-      Dom.Event.on(this.graph.container, 'mousedown', this.onMouseWheelDown)
-    }
-
-    if (eventTypes.includes('mouseWheel')) {
-      this.mousewheelHandle = new Dom.MouseWheelHandle(
-        this.graph.container,
-        this.onMouseWheel.bind(this),
-        this.allowMouseWheel.bind(this),
-      )
-      this.mousewheelHandle.enable()
-    }
+    this.graph.on('blank:mousedown', this.onMouseDown, this)
+    this.graph.on('node:unhandled:mousedown', this.onMouseDown, this)
+    this.graph.on('edge:unhandled:mousedown', this.onMouseDown, this)
+    Dom.Event.on(this.graph.container, 'mousedown', this.onRightMouseDown)
+    this.mousewheelHandle = new Dom.MouseWheelHandle(
+      this.graph.container,
+      this.onMouseWheel.bind(this),
+      this.allowMouseWheel.bind(this),
+    )
+    this.mousewheelHandle.enable()
   }
 
   protected stopListening() {
-    const eventTypes = this.widgetOptions.eventTypes
-    if (!eventTypes) {
-      return
-    }
-    if (eventTypes.includes('leftMouseDown')) {
-      this.graph.off('blank:mousedown', this.preparePanning, this)
-      this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
-      this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
-    }
-    if (eventTypes.includes('rightMouseDown')) {
-      Dom.Event.off(this.graph.container, 'mousedown', this.onRightMouseDown)
-    }
-    if (eventTypes.includes('mouseWheelDown')) {
-      Dom.Event.off(this.graph.container, 'mousedown', this.onMouseWheelDown)
-    }
-    if (eventTypes.includes('mouseWheel')) {
-      if (this.mousewheelHandle) {
-        this.mousewheelHandle.disable()
-      }
-    }
-  }
-
-  protected preparePanning({ e }: { e: Dom.MouseDownEvent }) {
-    const selection = this.graph.getPlugin<any>('selection')
-    const allowRubberband = selection && selection.allowRubberband(e, true)
-    if (
-      this.allowPanning(e, true) ||
-      (this.allowPanning(e) && !allowRubberband)
-    ) {
-      this.startPanning(e)
+    this.graph.off('blank:mousedown', this.onMouseDown, this)
+    this.graph.off('node:unhandled:mousedown', this.onMouseDown, this)
+    this.graph.off('edge:unhandled:mousedown', this.onMouseDown, this)
+    Dom.Event.off(this.graph.container, 'mousedown', this.onRightMouseDown)
+    if (this.mousewheelHandle) {
+      this.mousewheelHandle.disable()
     }
   }
 
@@ -140,26 +100,43 @@ export class PanningManager extends Base {
     }
   }
 
+  protected onMouseDown({ e }: { e: Dom.MouseDownEvent }) {
+    const eventTypes = this.widgetOptions.eventTypes
+    if (!(eventTypes && eventTypes.includes('leftMouseDown'))) {
+      return
+    }
+    const selection = this.graph.getPlugin<any>('selection')
+    const allowRubberband = selection && selection.allowRubberband(e, true)
+    if (
+      this.allowPanning(e, true) ||
+      (this.allowPanning(e) && !allowRubberband)
+    ) {
+      this.startPanning(e)
+    }
+  }
+
   protected onRightMouseDown(e: Dom.MouseDownEvent) {
+    const eventTypes = this.widgetOptions.eventTypes
+    if (!(eventTypes && eventTypes.includes('rightMouseDown'))) {
+      return
+    }
     if (e.button === 2 && this.allowPanning(e, true)) {
       this.startPanning(e)
     }
   }
 
-  protected onMouseWheelDown(e: Dom.MouseDownEvent) {
-    if (e.button === 1 && this.allowPanning(e, true)) {
-      this.startPanning(e)
+  protected onMouseWheel(e: WheelEvent, deltaX: number, deltaY: number) {
+    const eventTypes = this.widgetOptions.eventTypes
+    if (!(eventTypes && eventTypes.includes('mouseWheel'))) {
+      return
+    }
+    if (!e.ctrlKey) {
+      this.graph.translateBy(-deltaX, -deltaY)
     }
   }
 
   protected allowMouseWheel(e: WheelEvent) {
     return this.pannable && !e.ctrlKey
-  }
-
-  protected onMouseWheel(e: WheelEvent, deltaX: number, deltaY: number) {
-    if (!e.ctrlKey) {
-      this.graph.translateBy(-deltaX, -deltaY)
-    }
   }
 
   autoPanning(x: number, y: number) {

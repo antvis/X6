@@ -751,6 +751,7 @@ export class NodeView<
       } else {
         const view = candidate.findView(graph) as NodeView
         if (
+          validateEmbeding &&
           FunctionExt.call(validateEmbeding, graph, {
             child: this.cell,
             parent: view.cell,

@@ -87,7 +87,7 @@ export class ObstacleMap {
       const excluded =
         excludedShape || excludedTerminal || excludedNode || excludedAncestor
 
-      if (!excluded) {
+      if (node.isVisible() && !excluded) {
         const bbox = node.getBBox().moveAndExpand(options.paddingBox)
         const origin = bbox.getOrigin().snapToGrid(mapGridSize)
         const corner = bbox.getCorner().snapToGrid(mapGridSize)
