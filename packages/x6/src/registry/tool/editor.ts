@@ -160,7 +160,7 @@ export class CellEditor extends ToolsView.ToolItem<
     style.transform = `scale(${scale.sx}, ${scale.sy}) translate(-50%, -50%)`
   }
 
-  onDocumentMouseDown(e: Dom.MouseDownEvent) {
+  onDocumentMouseUp(e: Dom.MouseDownEvent) {
     if (this.editor && e.target !== this.editor) {
       const value = this.editor.innerText.replace(/\n$/, '') || ''
       // set value, when value is null, we will remove label in edge
@@ -171,13 +171,15 @@ export class CellEditor extends ToolsView.ToolItem<
   }
 
   onCellDblClick({ e }: { e: Dom.DoubleClickEvent }) {
-    e.stopPropagation()
-    this.removeElement()
-    this.event = e
-    this.createElement()
-    this.updateEditor()
-    this.autoFocus()
-    this.delegateDocumentEvents(this.options.documentEvents!)
+    if (!this.editor) {
+      e.stopPropagation()
+      this.removeElement()
+      this.event = e
+      this.createElement()
+      this.updateEditor()
+      this.autoFocus()
+      this.delegateDocumentEvents(this.options.documentEvents!)
+    }
   }
 
   onMouseDown(e: Dom.MouseDownEvent) {
@@ -316,9 +318,12 @@ export namespace CellEditor {
     isSVGElement: false,
     events: {
       mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
     },
     documentEvents: {
-      mousedown: 'onDocumentMouseDown',
+      mouseup: 'onDocumentMouseUp',
+      touchend: 'onDocumentMouseUp',
+      touchcancel: 'onDocumentMouseUp',
     },
   })
 }
