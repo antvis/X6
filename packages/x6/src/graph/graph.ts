@@ -1309,6 +1309,7 @@ export namespace Graph {
   export import TransformManager = Transform
   export import HighlightManager = Highlight
   export import BackgroundManager = Background
+  export import PanningManager = Panning
 }
 
 export namespace Graph {
