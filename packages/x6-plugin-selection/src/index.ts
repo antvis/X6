@@ -304,12 +304,7 @@ export class Selection
   }
 
   protected startListening() {
-    if (this.options.eventTypes?.includes('leftMouseDown')) {
-      this.graph.on('blank:mousedown', this.onBlankLeftMouseDown, this)
-    }
-    if (this.options.eventTypes?.includes('mouseWheelDown')) {
-      this.graph.on('blank:mousedown', this.onBlankMouseWheelDown, this)
-    }
+    this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
     this.graph.on('blank:click', this.onBlankClick, this)
     this.graph.on('cell:mousemove', this.onCellMouseMove, this)
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
@@ -317,33 +312,22 @@ export class Selection
   }
 
   protected stopListening() {
-    if (this.options.eventTypes?.includes('leftMouseDown')) {
-      this.graph.off('blank:mousedown', this.onBlankLeftMouseDown, this)
-    }
-    if (this.options.eventTypes?.includes('mouseWheelDown')) {
-      this.graph.off('blank:mousedown', this.onBlankMouseWheelDown, this)
-    }
+    this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
     this.graph.off('blank:click', this.onBlankClick, this)
     this.graph.off('cell:mousemove', this.onCellMouseMove, this)
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
     this.selectionImpl.off('box:mousedown', this.onBoxMouseDown, this)
   }
 
-  protected onBlankLeftMouseDown(mouseDownEvent: EventArgs['blank:mousedown']) {
-    if (mouseDownEvent.e.button === 0) {
-      this.onBlankMouseDown(mouseDownEvent)
-    }
-  }
-
-  protected onBlankMouseWheelDown(
-    mouseDownEvent: EventArgs['blank:mousedown'],
-  ) {
-    if (mouseDownEvent.e.button === 1) {
-      this.onBlankMouseDown(mouseDownEvent)
-    }
-  }
-
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
+    const eventTypes = this.options.eventTypes
+    if (
+      !(eventTypes && eventTypes.includes('leftMouseDown') && e.button === 0) &&
+      !(eventTypes && eventTypes.includes('mouseWheelDown') && e.button === 1)
+    ) {
+      return
+    }
+
     const allowGraphPanning = this.graph.panning.allowPanning(e, true)
     const scroller = this.graph.getPlugin<any>('scroller')
     const allowScrollerPanning = scroller && scroller.allowPanning(e, true)

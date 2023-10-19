@@ -102,7 +102,10 @@ export class PanningManager extends Base {
 
   protected onMouseDown({ e }: { e: Dom.MouseDownEvent }) {
     const eventTypes = this.widgetOptions.eventTypes
-    if (!(eventTypes && eventTypes.includes('leftMouseDown'))) {
+    if (
+      !(eventTypes && eventTypes.includes('leftMouseDown') && e.button === 0) &&
+      !(eventTypes && eventTypes.includes('mouseWheelDown') && e.button === 1)
+    ) {
       return
     }
     const selection = this.graph.getPlugin<any>('selection')
