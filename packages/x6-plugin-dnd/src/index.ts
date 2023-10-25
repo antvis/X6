@@ -12,8 +12,8 @@ import {
   Graph,
   EventArgs,
 } from '@antv/x6'
-import { content } from './style/raw'
 import { alignPoint } from 'dom-align'
+import { content } from './style/raw'
 
 export class Dnd extends View implements Graph.Plugin {
   public name = 'dnd'
@@ -27,7 +27,6 @@ export class Dnd extends View implements Graph.Plugin {
   protected delta: Point | null
   protected padding: number | null
   protected snapOffset: Point.PointLike | null
-  protected originOffset: null | { left: number; top: number }
 
   public options: Dnd.Options
   public draggingGraph: Graph
@@ -166,36 +165,31 @@ export class Dnd extends View implements Graph.Plugin {
     this.draggingView = delegateView
     this.draggingBBox = draggingNode.getBBox()
     this.padding = padding
-    this.originOffset = this.updateGraphPosition(clientX, clientY)
+    this.updateGraphPosition(clientX, clientY)
   }
 
   protected updateGraphPosition(clientX: number, clientY: number) {
-    const delta = this.delta!;
-    const nodeBBox = this.geometryBBox;
-    const padding = this.padding || 5;
+    const delta = this.delta!
+    const nodeBBox = this.geometryBBox
+    const padding = this.padding || 5
     const offset = {
-        left: clientX - delta.x - nodeBBox.width / 2 - padding,
-        top: clientY - delta.y - nodeBBox.height / 2 - padding,
-    };
-
-    if (this.draggingGraph) {
-        alignPoint(
-            this.container,
-            {
-                clientX: offset.left,
-                clientY: offset.top,
-            },
-            {
-                points: ['tl'],
-            },
-        );
+      left: clientX - delta.x - nodeBBox.width / 2 - padding,
+      top: clientY - delta.y - nodeBBox.height / 2 - padding,
     }
 
-    // TODO 原组件目前没有使用这个返回值（代码注释掉了）
-    // 而 dom-align 又没有返回计算后的top/left值
-    // 考虑干掉?
-    return offset;
-}
+    if (this.draggingGraph) {
+      alignPoint(
+        this.container,
+        {
+          clientX: offset.left,
+          clientY: offset.top,
+        },
+        {
+          points: ['tl'],
+        },
+      )
+    }
+  }
 
   protected updateNodePosition(x: number, y: number) {
     const local = this.targetGraph.clientToLocal(x, y)
@@ -331,7 +325,6 @@ export class Dnd extends View implements Graph.Plugin {
       this.delta = null
       this.padding = null
       this.snapOffset = null
-      this.originOffset = null
       this.undelegateDocumentEvents()
     }
   }
