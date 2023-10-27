@@ -320,11 +320,7 @@ export class Selection
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
-    const eventTypes = this.options.eventTypes
-    if (
-      !(eventTypes && eventTypes.includes('leftMouseDown') && e.button === 0) &&
-      !(eventTypes && eventTypes.includes('mouseWheelDown') && e.button === 1)
-    ) {
+    if (!this.allowBlankMouseDown(e)) {
       return
     }
 
@@ -337,6 +333,14 @@ export class Selection
     ) {
       this.startRubberband(e)
     }
+  }
+
+  protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
+    const eventTypes = this.options.eventTypes
+    return (
+      (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
+      (eventTypes?.includes('mouseWheelDown') && e.button === 1)
+    )
   }
 
   protected onBlankClick() {
