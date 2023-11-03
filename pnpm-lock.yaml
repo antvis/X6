@@ -11997,10 +11997,11 @@ packages:
       bn.js: registry.npmmirror.com/bn.js@5.2.1
       randombytes: registry.npmmirror.com/randombytes@2.1.0
 
-  registry.npmmirror.com/browserify-sign@4.2.1:
-    resolution: {integrity: sha512-/vrA5fguVAKKAVTNJjgSm1tRQDHUU6DbwO9IROu/0WAzC8PKhucDSh18J0RMvVeHAn5puMd+QHC2erPRNf8lmg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/browserify-sign/-/browserify-sign-4.2.1.tgz}
+  registry.npmmirror.com/browserify-sign@4.2.2:
+    resolution: {integrity: sha512-1rudGyeYY42Dk6texmv7c4VcQ0EsvVbLwZkA+AQB7SxvXxmcD93jcHie8bzecJ+ChDlmAm2Qyu0+Ccg5uhZXCg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/browserify-sign/-/browserify-sign-4.2.2.tgz}
     name: browserify-sign
-    version: 4.2.1
+    version: 4.2.2
+    engines: {node: '>= 4'}
     dependencies:
       bn.js: registry.npmmirror.com/bn.js@5.2.1
       browserify-rsa: registry.npmmirror.com/browserify-rsa@4.1.0
@@ -13945,7 +13946,7 @@ packages:
     version: 3.12.0
     dependencies:
       browserify-cipher: registry.npmmirror.com/browserify-cipher@1.0.1
-      browserify-sign: registry.npmmirror.com/browserify-sign@4.2.1
+      browserify-sign: registry.npmmirror.com/browserify-sign@4.2.2
       create-ecdh: registry.npmmirror.com/create-ecdh@4.0.4
       create-hash: registry.npmmirror.com/create-hash@1.2.0
       create-hmac: registry.npmmirror.com/create-hmac@1.1.7
