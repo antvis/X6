@@ -101,10 +101,10 @@ export class PanningManager extends Base {
   }
 
   protected onMouseDown({ e }: { e: Dom.MouseDownEvent }) {
-    const eventTypes = this.widgetOptions.eventTypes
-    if (!(eventTypes && eventTypes.includes('leftMouseDown'))) {
+    if (!this.allowBlankMouseDown(e)) {
       return
     }
+
     const selection = this.graph.getPlugin<any>('selection')
     const allowRubberband = selection && selection.allowRubberband(e, true)
     if (
@@ -117,22 +117,30 @@ export class PanningManager extends Base {
 
   protected onRightMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.widgetOptions.eventTypes
-    if (!(eventTypes && eventTypes.includes('rightMouseDown'))) {
+    if (!(eventTypes?.includes('rightMouseDown') && e.button === 2)) {
       return
     }
-    if (e.button === 2 && this.allowPanning(e, true)) {
+    if (this.allowPanning(e, true)) {
       this.startPanning(e)
     }
   }
 
   protected onMouseWheel(e: WheelEvent, deltaX: number, deltaY: number) {
     const eventTypes = this.widgetOptions.eventTypes
-    if (!(eventTypes && eventTypes.includes('mouseWheel'))) {
+    if (!eventTypes?.includes('mouseWheel')) {
       return
     }
     if (!e.ctrlKey) {
       this.graph.translateBy(-deltaX, -deltaY)
     }
+  }
+
+  protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
+    const eventTypes = this.widgetOptions.eventTypes
+    return (
+      (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
+      (eventTypes?.includes('mouseWheelDown') && e.button === 1)
+    )
   }
 
   protected allowMouseWheel(e: WheelEvent) {
@@ -187,7 +195,11 @@ export class PanningManager extends Base {
 }
 
 export namespace PanningManager {
-  type EventType = 'leftMouseDown' | 'rightMouseDown' | 'mouseWheel'
+  type EventType =
+    | 'leftMouseDown'
+    | 'rightMouseDown'
+    | 'mouseWheel'
+    | 'mouseWheelDown'
   export interface Options {
     enabled?: boolean
     modifiers?: string | ModifierKey[] | null

@@ -57,20 +57,21 @@ graph.use(
 
 ## 配置
 
-| 属性名                     | 类型           | 默认值             | 必选 | 描述                                                                                                                                       |
-|----------------------------|----------------|--------------------|------|------------------------------------------------------------------------------------------------------------------------------------------|
-| className                  | string         | -                  |      | 附加样式名，用于定制样式                                                                                                                    |
-| multiple                   | boolean        | `true`             |      | 是否启用点击多选，启用后按住 `ctrl` 或 `command` 键点击节点实现多选                                                                         |
-| multipleSelectionModifiers | ModifierKey    | `['ctrl', 'meta']` |      | 用于设置上面点击多选配套的修饰键                                                                                                           |
-| rubberband                 | boolean        | `false`            |      | 是否启用框选节点功能                                                                                                                       |
-| modifiers                  | ModifierKey    | -                  |      | 用于设置上面框选配套的修饰键                                                                                                               |
-| strict                     | boolean        | `false`            |      | 选框是否需要完全包围节点时才选中节点                                                                                                       |
-| movable                    | boolean        | `true`             |      | 拖动选框时框选的节点是否一起移动                                                                                                           |
-| content                    | string         | -                  |      | 设置附加显示的内容                                                                                                                         |
-| filter                     | Filter         | -                  |      | 节点过滤器                                                                                                                                 |
-| showNodeSelectionBox       | boolean        | `false`            |      | 是否显示节点的选择框                                                                                                                       |
-| showEdgeSelectionBox       | boolean        | `false`            |      | 是否显示边的选择框                                                                                                                         |
-| pointerEvents              | `node \| auto` | `auto`             |      | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
+| 属性名                     | 类型                 | 默认值                                | 必选 | 描述                                                                                                                                           |
+| -------------------------- | -------------------- | ------------------------------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| className                  | string               | -                                     |      | 附加样式名，用于定制样式                                                                                                                       |
+| multiple                   | boolean              | `true`                                |      | 是否启用点击多选，启用后按住 `ctrl` 或 `command` 键点击节点实现多选                                                                            |
+| multipleSelectionModifiers | ModifierKey          | `['ctrl', 'meta']`                    |      | 用于设置上面点击多选配套的修饰键                                                                                                               |
+| rubberband                 | boolean              | `false`                               |      | 是否启用框选节点功能                                                                                                                           |
+| modifiers                  | ModifierKey          | -                                     |      | 用于设置上面框选配套的修饰键                                                                                                                   |
+| strict                     | boolean              | `false`                               |      | 选框是否需要完全包围节点时才选中节点                                                                                                           |
+| movable                    | boolean              | `true`                                |      | 拖动选框时框选的节点是否一起移动                                                                                                               |
+| content                    | string               | -                                     |      | 设置附加显示的内容                                                                                                                             |
+| filter                     | Filter               | -                                     |      | 节点过滤器                                                                                                                                     |
+| showNodeSelectionBox       | boolean              | `false`                               |      | 是否显示节点的选择框                                                                                                                           |
+| showEdgeSelectionBox       | boolean              | `false`                               |      | 是否显示边的选择框                                                                                                                             |
+| pointerEvents              | `node \| auto`       | `auto`                                |      | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
+| eventTypes                 | SelectionEventType[] | `['leftMouseDown', 'mouseWheelDown']` |      | 用于设置框选的触发事件类型                                                                                                                     |
 
 `Filter` 的类型定义如下：
 
@@ -95,6 +96,17 @@ X6 中修饰键包括 `alt`、`ctrl`、`meta`、`shift` 四个，设置修饰键
 - `alt|ctrl` 表示按下 `alt` 或 `ctrl`。
 - `alt&ctrl` 表示同时按下 `alt` 和 `ctrl`。
 - `alt|ctrl&shift` 表示同时按下 `alt` 和 `shift` 或者同时按下 `ctrl` 和 `shift`。
+
+`SelectionEventType` 的类型定义如下：
+
+```ts
+type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown';
+```
+触发框选的交互方式。支持2种形式或者他们之间的组合：
+
+- `leftMouseDown`: 按下鼠标左键移动进行拖拽
+- `mouseWheelDown`: 按下鼠标滚轮进行拖拽
+
 
 ## API
 
