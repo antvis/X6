@@ -3,7 +3,6 @@ import {
   ModifierKey,
   CssLoader,
   Dom,
-  ObjectExt,
   Cell,
   EventArgs,
   Graph,
@@ -42,11 +41,12 @@ export class Selection
 
   constructor(options: Selection.Options = {}) {
     super()
-    this.options = ObjectExt.merge(
-      { enabled: true },
-      Selection.defaultOptions,
-      options,
-    )
+    this.options = {
+      enabled: true,
+      ...Selection.defaultOptions,
+      ...options,
+    }
+
     CssLoader.ensure(this.name, content)
   }
 
@@ -320,6 +320,10 @@ export class Selection
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
+    if (!this.allowBlankMouseDown(e)) {
+      return
+    }
+
     const allowGraphPanning = this.graph.panning.allowPanning(e, true)
     const scroller = this.graph.getPlugin<any>('scroller')
     const allowScrollerPanning = scroller && scroller.allowPanning(e, true)
@@ -329,6 +333,14 @@ export class Selection
     ) {
       this.startRubberband(e)
     }
+  }
+
+  protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
+    const eventTypes = this.options.eventTypes
+    return (
+      (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
+      (eventTypes?.includes('mouseWheelDown') && e.button === 1)
+    )
   }
 
   protected onBlankClick() {
@@ -475,5 +487,6 @@ export namespace Selection {
     selectEdgeOnMoved: false,
     following: true,
     content: null,
+    eventTypes: ['leftMouseDown', 'mouseWheelDown'],
   }
 }
