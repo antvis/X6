@@ -38,7 +38,7 @@ const graph = new Graph({
 interface Options {
   enabled?: boolean
   modifiers?: ModifierKey
-  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel')[]
+  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel', 'mouseWheelDown')[]
 }
 ```
 
@@ -70,7 +70,8 @@ type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
 
 - `leftMouseDown`: 按下鼠标左键移动进行拖拽
 - `rightMouseDown`: 按下鼠标右键移动进行拖拽
-- `mouseWheel`: 使用鼠标滚轮拖拽
+- `mouseWheel`: 使用鼠标滚轮滚动拖拽
+- `mouseWheelDown`: 按下鼠标滚轮进行拖拽
 
 ## 方法
 
