@@ -148,7 +148,10 @@ export namespace Core {
       let type = originType
       const hook = EventHook.get(type)
       type = (selector ? hook.delegateType : hook.bindType) || type
-      const bag = events[type] || {}
+      const bag = events[type]
+      if (!bag) {
+        return
+      }
       const rns =
         namespaces.length > 0
           ? new RegExp(`(^|\\.)${namespaces.join('\\.(?:.*\\.|)')}(\\.|$)`)
