@@ -441,6 +441,10 @@ importers:
         version: link:../x6
 
   packages/x6-plugin-dnd:
+    dependencies:
+      dom-align:
+        specifier: ^1.12.4
+        version: registry.npmmirror.com/dom-align@1.12.4
     devDependencies:
       '@antv/x6':
         specifier: ^2.x
@@ -585,7 +589,7 @@ importers:
         version: registry.npmmirror.com/@vue/composition-api@1.0.0-rc.1(vue@3.2.47)
       vue-demi:
         specifier: latest
-        version: registry.npmmirror.com/vue-demi@0.14.6(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47)
+        version: registry.npmmirror.com/vue-demi@0.14.5(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47)
     devDependencies:
       '@antv/x6':
         specifier: ^2.x
@@ -1368,6 +1372,7 @@ packages:
       source-map: registry.npmmirror.com/source-map@0.5.7
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   registry.npmmirror.com/@babel/eslint-parser@7.19.1(@babel/core@7.21.0)(eslint@8.36.0):
     resolution: {integrity: sha512-AqNf2QWt1rtu2/1rLswy6CDP7H9Oh3mMhk177Y67Rg8d7RD9WfOLLv8CGn6tisFvS2htm86yIe1yLF6I1UDaGQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/eslint-parser/-/eslint-parser-7.19.1.tgz}
@@ -2387,19 +2392,6 @@ packages:
     dependencies:
       '@babel/core': registry.npmmirror.com/@babel/core@7.21.3
       '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils@7.20.2
-    dev: false
-
-  registry.npmmirror.com/@babel/plugin-syntax-flow@7.18.6(@babel/core@7.4.5):
-    resolution: {integrity: sha512-LUbR+KNTBWCUAqRG9ex5Gnzu2IOkt8jRJbHHXFT9q+L9zm7M/QQbEqXyw1n1pohYvOyWC8CjeyjrSaIwiYjK7A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/plugin-syntax-flow/-/plugin-syntax-flow-7.18.6.tgz}
-    id: registry.npmmirror.com/@babel/plugin-syntax-flow/7.18.6
-    name: '@babel/plugin-syntax-flow'
-    version: 7.18.6
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': registry.npmmirror.com/@babel/core@7.4.5
-      '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils@7.20.2
 
   registry.npmmirror.com/@babel/plugin-syntax-function-bind@7.18.6(@babel/core@7.4.5):
     resolution: {integrity: sha512-wZN0Aq/AScknI9mKGcR3TpHdASMufFGaeJgc1rhPmLtZ/PniwjePSh8cfh8tXMB3U4kh/3cRKrLjDtedejg8jQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/plugin-syntax-function-bind/-/plugin-syntax-function-bind-7.18.6.tgz}
@@ -2484,6 +2476,7 @@ packages:
     dependencies:
       '@babel/core': registry.npmmirror.com/@babel/core@7.4.5
       '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils@7.20.2
+    dev: true
 
   registry.npmmirror.com/@babel/plugin-syntax-logical-assignment-operators@7.10.4(@babel/core@7.21.3):
     resolution: {integrity: sha512-d8waShlpFDinQ5MtvGU9xDAOzKH47+FFoney2baFIoMr952hKOLp1HR7VszoZvOsV/4+RRszNY7D17ba0te0ig==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/plugin-syntax-logical-assignment-operators/-/plugin-syntax-logical-assignment-operators-7.10.4.tgz}
@@ -3446,6 +3439,7 @@ packages:
       '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils@7.20.2
       '@babel/plugin-syntax-jsx': registry.npmmirror.com/@babel/plugin-syntax-jsx@7.18.6(@babel/core@7.4.5)
       '@babel/types': registry.npmmirror.com/@babel/types@7.21.3
+    dev: true
 
   registry.npmmirror.com/@babel/plugin-transform-react-pure-annotations@7.18.6(@babel/core@7.21.3):
     resolution: {integrity: sha512-I8VfEPg9r2TRDdvnHgPepTKvuRomzA8+u+nhY7qSI1fR2hRNebasZEETLyM5mAUr0Ku56OkXJ0I7NHJnO6cJiQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/plugin-transform-react-pure-annotations/-/plugin-transform-react-pure-annotations-7.18.6.tgz}
@@ -16894,8 +16888,8 @@ packages:
       '@babel/plugin-transform-react-jsx': ^7.14.9
       eslint: ^8.1.0
     dependencies:
-      '@babel/plugin-syntax-flow': registry.npmmirror.com/@babel/plugin-syntax-flow@7.18.6(@babel/core@7.4.5)
-      '@babel/plugin-transform-react-jsx': registry.npmmirror.com/@babel/plugin-transform-react-jsx@7.21.0(@babel/core@7.4.5)
+      '@babel/plugin-syntax-flow': registry.npmmirror.com/@babel/plugin-syntax-flow@7.18.6(@babel/core@7.21.3)
+      '@babel/plugin-transform-react-jsx': registry.npmmirror.com/@babel/plugin-transform-react-jsx@7.21.0(@babel/core@7.21.3)
       eslint: registry.npmmirror.com/eslint@8.36.0
       lodash: registry.npmmirror.com/lodash@4.17.21
       string-natural-compare: registry.npmmirror.com/string-natural-compare@3.0.1
@@ -42322,11 +42316,11 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  registry.npmmirror.com/vue-demi@0.14.6(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47):
-    resolution: {integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.6.tgz}
-    id: registry.npmmirror.com/vue-demi/0.14.6
+  registry.npmmirror.com/vue-demi@0.14.5(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47):
+    resolution: {integrity: sha512-o9NUVpl/YlsGJ7t+xuqJKx8EBGf1quRhCiT6D/J0pfwmk9zUwYkC7yrF4SZCe6fETvSM3UNL2edcbYrSyc4QHA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.5.tgz}
+    id: registry.npmmirror.com/vue-demi/0.14.5
     name: vue-demi
-    version: 0.14.6
+    version: 0.14.5
     engines: {node: '>=12'}
     hasBin: true
     requiresBuild: true
