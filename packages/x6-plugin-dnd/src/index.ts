@@ -12,6 +12,7 @@ import {
   Graph,
   EventArgs,
 } from '@antv/x6'
+import { alignPoint } from 'dom-align'
 import { content } from './style/raw'
 
 export class Dnd extends View implements Graph.Plugin {
@@ -26,7 +27,6 @@ export class Dnd extends View implements Graph.Plugin {
   protected delta: Point | null
   protected padding: number | null
   protected snapOffset: Point.PointLike | null
-  protected originOffset: null | { left: number; top: number }
 
   public options: Dnd.Options
   public draggingGraph: Graph
@@ -165,38 +165,30 @@ export class Dnd extends View implements Graph.Plugin {
     this.draggingView = delegateView
     this.draggingBBox = draggingNode.getBBox()
     this.padding = padding
-    this.originOffset = this.updateGraphPosition(clientX, clientY)
+    this.updateGraphPosition(clientX, clientY)
   }
 
   protected updateGraphPosition(clientX: number, clientY: number) {
-    const scrollTop =
-      document.body.scrollTop || document.documentElement.scrollTop
-    const scrollLeft =
-      document.body.scrollLeft || document.documentElement.scrollLeft
     const delta = this.delta!
     const nodeBBox = this.geometryBBox
     const padding = this.padding || 5
     const offset = {
-      left: clientX - delta.x - nodeBBox.width / 2 - padding + scrollLeft,
-      top: clientY - delta.y - nodeBBox.height / 2 - padding + scrollTop,
+      left: clientX - delta.x - nodeBBox.width / 2 - padding,
+      top: clientY - delta.y - nodeBBox.height / 2 - padding,
     }
 
     if (this.draggingGraph) {
-      if (this.options.draggingContainer) {
-        const { top, left } = Dom.offset(this.options.draggingContainer)
-        Dom.css(this.container, {
-          left: `${offset.left - left}px`,
-          top: `${offset.top - top}px`,
-        })
-      } else {
-        Dom.css(this.container, {
-          left: `${offset.left}px`,
-          top: `${offset.top}px`,
-        })
-      }
+      alignPoint(
+        this.container,
+        {
+          clientX: offset.left,
+          clientY: offset.top,
+        },
+        {
+          points: ['tl'],
+        },
+      )
     }
-
-    return offset
   }
 
   protected updateNodePosition(x: number, y: number) {
@@ -333,7 +325,6 @@ export class Dnd extends View implements Graph.Plugin {
       this.delta = null
       this.padding = null
       this.snapOffset = null
-      this.originOffset = null
       this.undelegateDocumentEvents()
     }
   }
