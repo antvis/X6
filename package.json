@@ -22,7 +22,8 @@
     "setup:husky": "husky install .husky",
     "prepare": "is-ci || run-p setup:husky build:dev",
     "start:demo": "cd ./examples/x6-example-features && pnpm start",
-    "start:site": "cd ./sites/x6-sites && pnpm start"
+    "start:site": "cd ./sites/x6-sites && pnpm start",
+    "release": "pnpm publish --no-git-checks -r  --filter @antv/x6"
   },
   "rss": {
     "clean:turbo": "rimraf .turbo",
