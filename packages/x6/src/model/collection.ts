@@ -313,6 +313,11 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     this.cells = []
     this.map = {}
   }
+
+  @Collection.dispose()
+  dispose() {
+    this.reset([])
+  }
 }
 
 export namespace Collection {

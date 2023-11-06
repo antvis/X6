@@ -1262,6 +1262,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin.dispose()
+      this.installedPlugins.delete(plugin)
     })
     return this
   }
@@ -1273,10 +1274,8 @@ export class Graph extends Basecoat<EventArgs> {
   @Basecoat.dispose()
   dispose(clean = true) {
     if (clean) {
-      this.clearCells()
+      this.model.dispose()
     }
-
-    this.off()
 
     this.css.dispose()
     this.defs.dispose()
