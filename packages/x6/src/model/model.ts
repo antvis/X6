@@ -1323,6 +1323,11 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   // #endregion
+
+  @Model.dispose()
+  dispose() {
+    this.collection.dispose()
+  }
 }
 
 export namespace Model {

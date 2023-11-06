@@ -524,6 +524,11 @@ export class Scheduler extends Disposable {
   @Disposable.dispose()
   dispose() {
     this.stopListening()
+    // clear views
+    Object.keys(this.views).forEach((id) => {
+      this.views[id].view.dispose()
+    })
+    this.views = {}
   }
 }
 export namespace Scheduler {
