@@ -294,9 +294,15 @@ describe('EventDom', () => {
         expect(() => div.off('click', false)).not.toThrowError()
       })
 
-      it('should do noting for elem which do not bind any events', () => {
+      it('should do nothing for elem which do not bind any events', () => {
         const div = new EventDom()
         expect(() => div.off()).not.toThrowError()
+      })
+
+      it('should do nothing for unexist event', () => {
+        const div = new EventDom()
+        div.on('whatever', () => {})
+        expect(() => div.off('unexist')).not.toThrowError()
       })
     })
 

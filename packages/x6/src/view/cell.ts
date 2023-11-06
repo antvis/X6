@@ -251,7 +251,11 @@ export class CellView<
   }
 
   protected setup() {
-    this.cell.on('changed', ({ options }) => this.onAttrsChange(options))
+    this.cell.on('changed', this.onCellChanged, this)
+  }
+
+  protected onCellChanged({ options }: Cell.EventArgs['changed']) {
+    this.onAttrsChange(options)
   }
 
   protected onAttrsChange(options: Cell.MutateOptions) {
@@ -737,6 +741,11 @@ export class CellView<
 
     // Entering another view
     view.onMouseEnter(e as Dom.MouseEnterEvent)
+  }
+
+  @CellView.dispose()
+  dispose() {
+    this.cell.off('changed', this.onCellChanged, this)
   }
 
   // #endregion
