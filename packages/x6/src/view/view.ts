@@ -363,10 +363,10 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return View.normalizeEvent(evt)
   }
 
-  @View.dispose()
-  dispose() {
-    this.remove()
-  }
+  // @View.dispose()
+  // dispose() {
+  //   this.remove()
+  // }
 }
 
 export namespace View {
