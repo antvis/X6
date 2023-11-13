@@ -307,7 +307,7 @@ Graph.prototype.unselect = function (
 ) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
-    return selection.unselect(cells, options)
+    selection.unselect(cells, options)
   }
   return this
 }
