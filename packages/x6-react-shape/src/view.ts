@@ -6,10 +6,14 @@ import { Portal } from './portal'
 import { Wrap } from './wrap'
 
 export class ReactShapeView extends NodeView<ReactShape> {
+  protected targetId() {
+    return `${this.graph.view.cid}:${this.cell.id}`
+  }
+
   protected init() {
     super.init()
     this.cell.on('removed', () => {
-      Portal.disconnect(this.cell.id)
+      Portal.disconnect(this.targetId())
     })
   }
 
@@ -42,7 +46,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
       const component = this.graph.hook.getReactComponent(node)
       const elem = React.createElement(Wrap, { graph, node, component })
       if (Portal.isActive()) {
-        Portal.connect(this.cell.id, ReactDOM.createPortal(elem, root))
+        Portal.connect(this.targetId(), ReactDOM.createPortal(elem, root))
       } else {
         ReactDOM.render(elem, root)
       }
@@ -58,7 +62,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   unmount() {
-    Portal.disconnect(this.cell.id)
+    Portal.disconnect(this.targetId())
     this.unmountReactComponent()
     super.unmount()
     return this
