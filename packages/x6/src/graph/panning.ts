@@ -126,13 +126,7 @@ export class PanningManager extends Base {
   }
 
   protected onMouseWheel(e: WheelEvent, deltaX: number, deltaY: number) {
-    const eventTypes = this.widgetOptions.eventTypes
-    if (!eventTypes?.includes('mouseWheel')) {
-      return
-    }
-    if (!e.ctrlKey) {
-      this.graph.translateBy(-deltaX, -deltaY)
-    }
+    this.graph.translateBy(-deltaX, -deltaY)
   }
 
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
@@ -144,7 +138,11 @@ export class PanningManager extends Base {
   }
 
   protected allowMouseWheel(e: WheelEvent) {
-    return this.pannable && !e.ctrlKey
+    return (
+      this.pannable &&
+      !e.ctrlKey &&
+      this.widgetOptions.eventTypes?.includes('mouseWheel')
+    )
   }
 
   autoPanning(x: number, y: number) {
