@@ -12,6 +12,7 @@ export default defineConfig({
     defaultLanguage: 'zh',
     siteUrl: 'https://x6.antv.antgroup.com',
     isAntVSite: false,
+    footerTheme: 'light', // 白色 底部主题
     githubUrl: repository, // GitHub 地址
     showSearch: true, // 是否显示搜索框
     showGithubCorner: true, // 是否显示头部的 GitHub icon
@@ -68,16 +69,23 @@ export default defineConfig({
       },
     ],
     detail: {
+      engine: {
+        zh: 'X6',
+        en: 'X6',
+      },
       title: {
-        zh: 'X6 图编辑引擎',
-        en: 'X6 图编辑引擎',
+        zh: 'X6·图编辑引擎',
+        en: 'X6·图编辑引擎',
       },
       description: {
         zh: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
         en: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
       },
       image:
-        'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*A1g0RaZ-GJcAAAAAAAAAAAAADtOHAQ/original',
+        'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5qQsTo0dkOcAAAAAAAAAAAAADmJ7AQ/original',
+      imageStyle: {
+        transform: 'scale(0.6)',
+      },
       buttons: [
         {
           text: {
