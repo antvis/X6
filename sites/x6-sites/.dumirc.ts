@@ -84,7 +84,9 @@ export default defineConfig({
       image:
         'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5qQsTo0dkOcAAAAAAAAAAAAADmJ7AQ/original',
       imageStyle: {
-        transform: 'scale(0.6)',
+        transform: 'scale(0.7)',
+        marginTop: '70px',
+        marginLeft: '100px',
       },
       buttons: [
         {
