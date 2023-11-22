@@ -48,7 +48,10 @@
     "react-test-renderer": "^16.7.0",
     "umi": "^2.9.0",
     "umi-plugin-react": "^1.8.0",
-    "umi-types": "^0.3.0"
+    "umi-types": "^0.3.0",
+    "@fluidframework/aqueduct": "^0.33.5",
+    "@fluidframework/get-tinylicious-container": "^0.33.5",
+    "@fluidframework/map": "^0.33.5"
   },
   "engines": {
     "node": ">=8.0.0"
