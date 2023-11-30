@@ -126,7 +126,10 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     const { ui, selection, translateBy, snapped } = options
 
     const allowTranslating =
-      (showNodeSelectionBox !== true || pointerEvents === 'none') &&
+      (showNodeSelectionBox !== true ||
+        (typeof pointerEvents === 'string'
+          ? pointerEvents
+          : pointerEvents?.(this.cells)) === 'none') &&
       !this.translating &&
       !selection
 
@@ -819,6 +822,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
         const className = this.boxClassName
         const box = document.createElement('div')
+        const pointerEvents = this.options.pointerEvents
         Dom.addClass(box, className)
         Dom.addClass(box, `${className}-${cell.isNode() ? 'node' : 'edge'}`)
         Dom.attr(box, 'data-cell-id', cell.id)
@@ -828,7 +832,11 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
           top: bbox.y,
           width: bbox.width,
           height: bbox.height,
-          pointerEvents: this.options.pointerEvents || 'auto',
+          pointerEvents: pointerEvents
+            ? typeof pointerEvents === 'string'
+              ? pointerEvents
+              : pointerEvents(this.cells)
+            : 'auto',
         })
         Dom.appendTo(box, this.container)
         this.showSelected()
@@ -978,7 +986,7 @@ export namespace SelectionImpl {
     rubberEdge?: boolean
 
     // Whether to respond event on the selectionBox
-    pointerEvents?: 'none' | 'auto'
+    pointerEvents?: 'none' | 'auto' | ((cells: Cell[]) => 'none' | 'auto')
 
     // with which mouse button the selection can be started
     eventTypes?: SelectionEventType[]
