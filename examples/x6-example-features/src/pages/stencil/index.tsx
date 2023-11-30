@@ -111,6 +111,8 @@ export default class Example extends React.Component {
 
     stencil.load([r, c, c2, r2.clone()], 'group1')
     stencil.load([c2.clone(), r2, r3, c3], 'group2')
+    stencil.addGroup({ name: 'group3' })
+    stencil.load([c2.clone()], 'group3')
   }
 
   refContainer = (container: HTMLDivElement) => {

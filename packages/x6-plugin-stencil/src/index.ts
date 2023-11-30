@@ -169,7 +169,11 @@ export class Stencil extends View implements Graph.Plugin {
     } else {
       this.options.groups = groups
     }
-    groups.forEach((group) => this.initGroup(group))
+    groups.forEach((group) => {
+      this.initGroup(group)
+      const graph = this.graphs[group.name]
+      graph.on('cell:mousedown', this.onDragStart, this)
+    })
   }
 
   removeGroup(groupName: string | string[]) {
