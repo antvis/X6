@@ -10,8 +10,6 @@ import { Dom, PointData, PointLike } from '@antv/x6-common'
 import { normalize } from '../registry/marker/util'
 
 export namespace Util {
-  const svgDocument = Dom.createSvgElement('svg') as SVGSVGElement
-
   export const normalizeMarker = normalize
   /**
    * Transforms point by an SVG transformation represented by `matrix`.
@@ -47,6 +45,7 @@ export namespace Util {
     rect: Rectangle.RectangleLike,
     matrix: DOMMatrix,
   ) {
+    const svgDocument = Dom.createSvgElement('svg') as SVGSVGElement
     const p = svgDocument.createSVGPoint()
 
     p.x = rect.x

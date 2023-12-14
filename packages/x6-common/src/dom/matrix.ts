@@ -1,7 +1,6 @@
 import { PointLike } from '../types'
 import { createSvgElement } from './elem'
 
-const svgDocument = createSvgElement('svg') as SVGSVGElement
 const transformRegex = /(\w+)\(([^,)]+),?([^)]+)?\)/gi
 const transformSeparatorRegex = /[ ,]+/
 const transformationListRegex = /^(\w+)\((.*)\)/
@@ -36,6 +35,7 @@ export interface Scale {
  * @see https://developer.mozilla.org/en/docs/Web/API/SVGPoint
  */
 export function createSVGPoint(x: number, y: number) {
+  const svgDocument = createSvgElement('svg') as SVGSVGElement
   const p = svgDocument.createSVGPoint()
   p.x = x
   p.y = y
@@ -58,6 +58,7 @@ export function createSVGPoint(x: number, y: number) {
  * @see https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
  */
 export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
+  const svgDocument = createSvgElement('svg') as SVGSVGElement
   const mat = svgDocument.createSVGMatrix()
   if (matrix != null) {
     const source = matrix as any
@@ -75,6 +76,7 @@ export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
  * @see https://developer.mozilla.org/en/docs/Web/API/SVGTransform
  */
 export function createSVGTransform(matrix?: DOMMatrix | MatrixLike) {
+  const svgDocument = createSvgElement('svg') as SVGSVGElement
   if (matrix != null) {
     if (!(matrix instanceof DOMMatrix)) {
       matrix = createSVGMatrix(matrix) // eslint-disable-line
