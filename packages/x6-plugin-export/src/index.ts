@@ -40,7 +40,13 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     }, options)
   }
 
-  exportSVG(fileName = 'chart', options: Export.ToSVGOptions = {}) {
+  exportSVG(
+    fileName = 'chart',
+    options: Export.ToSVGOptions = {
+      copyStyles: true,
+      serializeImages: true,
+    },
+  ) {
     this.toSVG((svg: string) => {
       DataUri.downloadDataUri(DataUri.svgToDataUrl(svg), fileName)
     }, options)
