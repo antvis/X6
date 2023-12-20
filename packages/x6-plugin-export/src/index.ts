@@ -104,7 +104,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     //    custom stylesheets onto the `style` attribute of each of the nodes
     //    in SVG.
 
-    if (options.copyStyles !== false) {
+    if (options.copyStyles) {
       const document = rawSVG.ownerDocument!
       const raws = Array.from(rawSVG.querySelectorAll('*'))
       const clones = Array.from(clonedSVG.querySelectorAll('*'))
