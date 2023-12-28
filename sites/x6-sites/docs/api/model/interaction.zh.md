@@ -27,7 +27,7 @@ const graph = new Graph({
 ### snap
 
 ```typescript
-snap: boolean | { radius: number }
+snap: boolean | { radius: number, snapNode: 'center' | 'bbox' }
 ```
 
 当 `snap` 设置为 `true` 或者 `false` 代表开启和关闭连线过程中自动吸附，开启时距离目标 `50px` 是触发吸附。可以通过配置 `radius` 属性来自定义吸附半径。
@@ -47,6 +47,8 @@ const graph = new Graph({
   },
 })
 ```
+
+当开启了 `allowNode` 时，判断是否吸附到节点计算distance时默认为基于节点的中心，可以通过配置 `snapNode` 为 `bbox` 改为基于节点的包围盒子计算距离。
 
 ### allowBlank
 
