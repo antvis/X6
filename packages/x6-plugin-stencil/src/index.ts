@@ -180,6 +180,7 @@ export class Stencil extends View implements Graph.Plugin {
       )
       groupNames.forEach((groupName) => {
         const graph = this.graphs[groupName]
+        this.unregisterGraphEvents(graph)
         graph.dispose()
         delete this.graphs[groupName]
 
@@ -248,6 +249,8 @@ export class Stencil extends View implements Graph.Plugin {
       interacting: false,
       preventDefaultBlankAction: false,
     })
+
+    this.registerGraphEvents(graph)
 
     Dom.append(content, graph.container)
     Dom.append(groupElem, [title, content])
@@ -339,19 +342,18 @@ export class Stencil extends View implements Graph.Plugin {
       [`focusin .${searchText}`]: 'onSearchFocusIn',
       [`focusout .${searchText}`]: 'onSearchFocusOut',
     })
-
-    Object.keys(this.graphs).forEach((groupName) => {
-      const graph = this.graphs[groupName]
-      graph.on('cell:mousedown', this.onDragStart, this)
-    })
   }
 
   protected stopListening() {
     this.undelegateEvents()
-    Object.keys(this.graphs).forEach((groupName) => {
-      const graph = this.graphs[groupName]
-      graph.off('cell:mousedown', this.onDragStart, this)
-    })
+  }
+
+  protected registerGraphEvents(graph: Graph) {
+    graph.on('cell:mousedown', this.onDragStart, this)
+  }
+
+  protected unregisterGraphEvents(graph: Graph) {
+    graph.off('cell:mousedown', this.onDragStart, this)
   }
 
   protected loadGroup(
@@ -571,6 +573,7 @@ export class Stencil extends View implements Graph.Plugin {
   protected clearGroups() {
     Object.keys(this.graphs).forEach((groupName) => {
       const graph = this.graphs[groupName]
+      this.unregisterGraphEvents(graph)
       graph.dispose()
     })
     Object.keys(this.groups).forEach((groupName) => {
