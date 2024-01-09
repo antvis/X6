@@ -7,8 +7,6 @@ import { attr } from './attr'
 import { Vector } from '../vector'
 import { createSvgElement, empty } from './elem'
 
-const canvasContext = document.createElement('canvas').getContext('2d')!
-
 function createTextPathNode(
   attrs: { d?: string; 'xlink:href'?: string },
   elem: SVGElement,
@@ -374,6 +372,7 @@ export function text(
 }
 
 export function measureText(text: string, styles: any = {}) {
+  const canvasContext = document.createElement('canvas').getContext('2d')!
   if (!text) {
     return { width: 0 }
   }
