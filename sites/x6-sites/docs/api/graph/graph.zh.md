@@ -15,7 +15,7 @@ new Graph(options: Options)
 
 | 选项 | 类型 | 必选 | 描述 | 默认值 |
 | --- | --- | :-: | --- | --- |
-| containers | `HTMLElement` | ✓ | 画布的容器。 |  |
+| container | `HTMLElement` | ✓ | 画布的容器。 |  |
 | width | `number` |  | 画布宽度，默认使用容器宽度。 | - |
 | height | `number` |  | 画布高度，默认使用容器高度。 | - |
 | scaling | `{ min?: number, max?: number }` |  | 画布的最小最大缩放级别。 | `{ min: 0.01, max: 16 }` |
