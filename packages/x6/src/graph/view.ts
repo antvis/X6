@@ -18,6 +18,11 @@ export class GraphView extends View {
 
   private restore: () => void
 
+  /** Graph's `this.container` is from outer, should not dispose */
+  protected get disposeContainer(): boolean {
+    return false
+  }
+
   protected get options() {
     return this.graph.options
   }
