@@ -106,6 +106,10 @@ export class KeyboardImpl extends Disposable implements IDisablable {
       .replace(/\s/g, '')
       .replace('delete', 'del')
       .replace('cmd', 'command')
+      .replace('arrowup', 'up')
+      .replace('arrowright', 'right')
+      .replace('arrowdown', 'down')
+      .replace('arrowleft', 'left')
 
     const formatFn = this.options.format
     if (formatFn) {
