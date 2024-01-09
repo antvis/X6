@@ -13,6 +13,11 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return 2
   }
 
+  /** If need remove `this.container` DOM */
+  protected get disposeContainer() {
+    return true
+  }
+
   constructor() {
     super()
     this.cid = Private.uniqueId()
@@ -39,8 +44,12 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
       this.removeEventListeners(document)
       this.onRemove()
       delete View.views[this.cid]
+      if (this.disposeContainer) {
+        this.unmount(elem)
+      }
+    } else {
+      this.unmount(elem)
     }
-    this.unmount(elem)
     return this
   }
 
@@ -363,10 +372,10 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return View.normalizeEvent(evt)
   }
 
-  // @View.dispose()
-  // dispose() {
-  //   this.remove()
-  // }
+  @View.dispose()
+  dispose() {
+    this.remove()
+  }
 }
 
 export namespace View {
