@@ -51,6 +51,9 @@ export class EdgeView<
   protected labelContainer: Element | null
   protected labelCache: { [index: number]: Element }
   protected labelSelectors: { [index: number]: Markup.Selectors }
+  protected labelDestroyFn: {
+    [index: number]: (args: GraphOptions.OnEdgeLabelRenderedArgs) => void
+  } = {}
 
   protected get [Symbol.toStringTag]() {
     return EdgeView.toStringTag
@@ -162,15 +165,40 @@ export class EdgeView<
         const selectors = this.labelSelectors[i]
         const onEdgeLabelRendered = this.graph.options.onEdgeLabelRendered
         if (onEdgeLabelRendered) {
-          onEdgeLabelRendered({
+          const fn = onEdgeLabelRendered({
             edge,
             label,
+            container,
+            selectors,
+          })
+          if (fn) {
+            this.labelDestroyFn[i] = fn
+          }
+        }
+      }
+    }
+  }
+
+  protected destroyCustomizeLabels() {
+    const labels = this.cell.labels
+
+    if (this.labelCache && this.labelSelectors && this.labelDestroyFn) {
+      for (let i = 0, n = labels.length; i < n; i += 1) {
+        const fn = this.labelDestroyFn[i]
+        const container = this.labelCache[i]
+        const selectors = this.labelSelectors[i]
+        if (fn && container && selectors) {
+          fn({
+            edge: this.cell,
+            label: labels[i],
             container,
             selectors,
           })
         }
       }
     }
+
+    this.labelDestroyFn = {}
   }
 
   protected renderLabels() {
@@ -241,6 +269,8 @@ export class EdgeView<
   }
 
   onLabelsChange(options: any = {}) {
+    this.destroyCustomizeLabels()
+
     if (this.shouldRerenderLabels(options)) {
       this.renderLabels()
     } else {
