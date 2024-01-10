@@ -1968,6 +1968,7 @@ export class EdgeView<
     const graph = this.graph
     const { snap, allowEdge } = graph.options.connecting
     const radius = (typeof snap === 'object' && snap.radius) || 50
+    const anchor = (typeof snap === 'object' && snap.anchor) || 'center'
 
     const views = graph.renderer.findViewsInArea(
       {
@@ -2001,7 +2002,10 @@ export class EdgeView<
     views.forEach((view) => {
       if (view.container.getAttribute('magnet') !== 'false') {
         if (view.isNodeView()) {
-          distance = view.cell.getBBox().getCenter().distance(pos)
+          distance =
+            anchor === 'center'
+              ? view.cell.getBBox().getCenter().distance(pos)
+              : view.cell.getBBox().getNearestPointToPoint(pos).distance(pos)
         } else if (view.isEdgeView()) {
           const point = view.getClosestPoint(pos)
           if (point) {
