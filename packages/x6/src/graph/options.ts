@@ -54,7 +54,9 @@ export namespace Options {
     guard: (e: Dom.EventObject, view?: CellView | null) => boolean
 
     onPortRendered?: (args: OnPortRenderedArgs) => void
-    onEdgeLabelRendered?: (args: OnEdgeLabelRenderedArgs) => void
+    onEdgeLabelRendered?: (
+      args: OnEdgeLabelRenderedArgs,
+    ) => undefined | ((args: OnEdgeLabelRenderedArgs) => void)
 
     createCellView?: (
       this: Graph,
