@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-plugin-stencil",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "stencil plugin for X6",
   "main": "lib/index.js",
   "module": "es/index.js",
