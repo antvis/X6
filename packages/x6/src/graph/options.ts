@@ -109,7 +109,7 @@ export namespace Options {
     /**
      * Snap edge to the closest node/port in the given radius on dragging.
      */
-    snap: boolean | { radius: number }
+    snap: boolean | { radius: number; anchor: 'center' | 'bbox' }
 
     /**
      * Specify whether connect to point on the graph is allowed.
