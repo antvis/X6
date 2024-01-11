@@ -220,7 +220,9 @@ function shapeWrapper(
     if (resetOffset) {
       shape.translate(-shapeOrigin.x, -shapeOrigin.y)
     }
-
+    // increase relative offset of refBBox
+    // fix https://github.com/antvis/X6/issues/4134
+    shape.translate(refOrigin.x, refOrigin.y)
     return shape
   }
 }
