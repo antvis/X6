@@ -126,10 +126,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     const { ui, selection, translateBy, snapped } = options
 
     const allowTranslating =
-      (showNodeSelectionBox !== true ||
-        (typeof pointerEvents === 'string'
-          ? pointerEvents
-          : pointerEvents?.(this.cells)) === 'none') &&
+      (showNodeSelectionBox !== true || (pointerEvents && this.getPointerEventsValue(pointerEvents) === 'none')) &&
       !this.translating &&
       !selection
 
@@ -810,6 +807,12 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     )
   }
 
+  protected getPointerEventsValue(pointerEvents: 'none' | 'auto' | ((cells: Cell[]) => 'none' | 'auto')) {
+    return typeof pointerEvents === 'string'
+      ? pointerEvents
+      : pointerEvents(this.cells)
+  }
+
   protected createSelectionBox(cell: Cell) {
     this.addCellSelectedClassName(cell)
 
@@ -833,9 +836,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
           width: bbox.width,
           height: bbox.height,
           pointerEvents: pointerEvents
-            ? typeof pointerEvents === 'string'
-              ? pointerEvents
-              : pointerEvents(this.cells)
+            ? this.getPointerEventsValue(pointerEvents)
             : 'auto',
         })
         Dom.appendTo(box, this.container)
