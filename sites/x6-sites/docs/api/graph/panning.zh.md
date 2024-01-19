@@ -53,7 +53,7 @@ interface Options {
 `ModifierKey` 的类型定义如下：
 
 ```ts
-type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift' | 'space')[] | null
 ```
 
 支持以下几种形式：
