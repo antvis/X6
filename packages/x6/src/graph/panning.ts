@@ -6,6 +6,7 @@ export class PanningManager extends Base {
   private clientX: number
   private clientY: number
   private mousewheelHandle: Dom.MouseWheelHandle
+  private isSpaceKeyPressed: boolean
 
   protected get widgetOptions() {
     return this.options.panning
@@ -17,6 +18,8 @@ export class PanningManager extends Base {
 
   protected init() {
     this.onRightMouseDown = this.onRightMouseDown.bind(this)
+    this.onSpaceKeyDown = this.onSpaceKeyDown.bind(this)
+    this.onSpaceKeyUp = this.onSpaceKeyUp.bind(this)
     this.startListening()
     this.updateClassName()
   }
@@ -26,6 +29,10 @@ export class PanningManager extends Base {
     this.graph.on('node:unhandled:mousedown', this.onMouseDown, this)
     this.graph.on('edge:unhandled:mousedown', this.onMouseDown, this)
     Dom.Event.on(this.graph.container, 'mousedown', this.onRightMouseDown)
+    Dom.Event.on(document.body, {
+      keydown: this.onSpaceKeyDown,
+      keyup: this.onSpaceKeyUp,
+    })
     this.mousewheelHandle = new Dom.MouseWheelHandle(
       this.graph.container,
       this.onMouseWheel.bind(this),
@@ -39,15 +46,24 @@ export class PanningManager extends Base {
     this.graph.off('node:unhandled:mousedown', this.onMouseDown, this)
     this.graph.off('edge:unhandled:mousedown', this.onMouseDown, this)
     Dom.Event.off(this.graph.container, 'mousedown', this.onRightMouseDown)
+    Dom.Event.off(document.body, {
+      keydown: this.onSpaceKeyDown,
+      keyup: this.onSpaceKeyUp,
+    })
     if (this.mousewheelHandle) {
       this.mousewheelHandle.disable()
     }
   }
 
   allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
+    ;(e as any).spaceKey = this.isSpaceKeyPressed
     return (
       this.pannable &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict)
+      ModifierKey.isMatch(
+        e,
+        this.widgetOptions.modifiers as ModifierKey,
+        strict,
+      )
     )
   }
 
@@ -129,6 +145,16 @@ export class PanningManager extends Base {
     this.graph.translateBy(-deltaX, -deltaY)
   }
 
+  protected onSpaceKeyDown(e: Dom.KeyDownEvent) {
+    if (e.which === 32) {
+      this.isSpaceKeyPressed = true
+    }
+  }
+  protected onSpaceKeyUp(e: Dom.KeyUpEvent) {
+    if (e.which === 32) {
+      this.isSpaceKeyPressed = false
+    }
+  }
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.widgetOptions.eventTypes
     return (
@@ -200,7 +226,7 @@ export namespace PanningManager {
     | 'mouseWheelDown'
   export interface Options {
     enabled?: boolean
-    modifiers?: string | ModifierKey[] | null
+    modifiers?: string | Array<ModifierKey | 'space'> | null
     eventTypes?: EventType[]
   }
 }
