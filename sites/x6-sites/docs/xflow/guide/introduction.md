@@ -44,5 +44,5 @@ XFlow 是基于 X6 图编辑引擎、面向 React 技术栈用户的应用级解
 如需提交代码，请遵从我们的[贡献指南](https://github.com/antvis/X6/blob/master/CONTRIBUTING.zh-CN.md)。
 
 <a href="https://github.com/antvis/xflow/graphs/contributors" target="_blank" rel="noopener noreferrer">
-  <img src="https://opencollective.com/x6/contributors.svg?width=890&button=false">
+  <img src="https://opencollective.com/x6/contributors.svg?width=890&button=false" alt="Contributors">
 </a>
