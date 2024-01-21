@@ -248,6 +248,30 @@ export default defineConfig({
         },
         order: 4,
       },
+      {
+        slug: 'xflow/guide',
+        title: {
+          zh: '开始',
+          en: 'start',
+        },
+        order: 1,
+      },
+      {
+        slug: 'xflow/components',
+        title: {
+          zh: '组件',
+          en: 'component',
+        },
+        order: 2,
+      },
+      {
+        slug: 'xflow/hooks',
+        title: {
+          zh: 'Hook',
+          en: 'Hook',
+        },
+        order: 3,
+      },
     ],
     examples: [
       {
