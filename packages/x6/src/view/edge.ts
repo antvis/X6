@@ -406,7 +406,7 @@ export class EdgeView<
     this.cleanCache()
     this.updateConnection(options)
 
-    const attrs = this.cell.getAttrs()
+    const { text, ...attrs } = this.cell.getAttrs()
     if (attrs != null) {
       this.updateAttrs(this.container, attrs, {
         selectors: this.selectors,
