@@ -134,7 +134,7 @@ export class MiniMap extends View implements Graph.Plugin {
   }
 
   protected onTransform(options: { ui: boolean }) {
-    if (options.ui || this.targetGraphTransforming) {
+    if (options.ui || this.targetGraphTransforming || !this.scroller) {
       this.updateViewport()
     }
   }
