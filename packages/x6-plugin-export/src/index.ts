@@ -49,6 +49,16 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
   toSVG(callback: Export.ToSVGCallback, options: Export.ToSVGOptions = {}) {
     this.notify('before:export', options)
 
+    // to keep pace with it's doc description witch, the default value should be true.
+    // without Object.hasOwn method cause by ts config target.
+    // without instance.hasOwnProperty method cause by ts rule.
+    // the condition will be false if these properties have been set undefined in the target,
+    // but will be true if these properties are not in the target, cause the doc.
+    !Object.prototype.hasOwnProperty.call(options, 'copyStyle') &&
+      (options.copyStyles = true)
+    !Object.prototype.hasOwnProperty.call(options, 'serializeImages') &&
+      (options.serializeImages = true)
+
     const rawSVG = this.view.svg
     const vSVG = Vector.create(rawSVG).clone()
     let clonedSVG = vSVG.node as SVGSVGElement
@@ -94,7 +104,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     //    custom stylesheets onto the `style` attribute of each of the nodes
     //    in SVG.
 
-    if (options.copyStyles !== false) {
+    if (options.copyStyles) {
       const document = rawSVG.ownerDocument!
       const raws = Array.from(rawSVG.querySelectorAll('*'))
       const clones = Array.from(clonedSVG.querySelectorAll('*'))
