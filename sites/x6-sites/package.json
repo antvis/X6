@@ -31,15 +31,16 @@
     "@antv/x6-plugin-transform": "^2.x",
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
+    "@antv/xflow": "^2.0.3",
     "antd": "^5.7.3",
+    "classnames": "^2.2.6",
     "dagre": "^0.8.5",
     "dumi": "^2.1.14",
     "elkjs": "^0.8.2",
     "highlight.js": "^10.1.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-i18next": "^11.5.0",
-    "classnames": "^2.2.6"
+    "react-i18next": "^11.5.0"
   },
   "repository": "https://github.com/antvis/x6"
 }
