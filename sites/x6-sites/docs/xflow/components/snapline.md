@@ -1,6 +1,6 @@
 ---
 title: Snapline 对齐线
-order: 8
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow

@@ -1,6 +1,6 @@
 ---
 title: XFlowGraph 画布
-order: 2
+order: 0
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow

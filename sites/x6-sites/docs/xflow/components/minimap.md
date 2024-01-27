@@ -1,6 +1,6 @@
 ---
 title: Minimap 小地图
-order: 7
+order: 5
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow
