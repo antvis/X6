@@ -5,7 +5,7 @@ import {
   useGraphStore,
   Transform,
 } from '@antv/xflow'
-import React, { useEffect, useState, useCallBack } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Card, Row, Col, Slider, Checkbox, Badge } from 'antd'
 import './index.less'
 
@@ -33,7 +33,7 @@ export default Page
 const Setting = ({ setOptions, options }) => {
   const initData = useGraphStore((state) => state.initData)
 
-  const setInitData = useCallBack(() => {
+  const setInitData = useCallback(() => {
     initData({
       nodes: [
         {
