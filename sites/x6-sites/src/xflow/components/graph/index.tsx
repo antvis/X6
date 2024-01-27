@@ -223,7 +223,7 @@ const Setting = ({ setOptions }) => {
 
   return (
     <div>
-      <Card title="Transform 配置" bordered={false}>
+      <Card title="XFlowGraph 配置" bordered={false}>
         <Row align="middle">
           <Col span={24}>
             <Checkbox
