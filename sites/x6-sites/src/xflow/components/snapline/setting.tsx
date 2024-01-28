@@ -1,12 +1,9 @@
 import { useGraphStore } from '@antv/xflow'
 import React, { useEffect, useCallback } from 'react'
-import { Card, Row, Col, Checkbox } from 'antd'
+import { Card, Row, Col, Slider, Checkbox, Badge } from 'antd'
 
-import { ports } from './ports'
-
-export const Setting = ({ setOptions }) => {
+export const Setting = ({ setOptions, options }) => {
   const initData = useGraphStore((state) => state.initData)
-
   const setInitData = useCallback(() => {
     initData({
       nodes: [
@@ -26,12 +23,10 @@ export const Setting = ({ setOptions }) => {
               ry: 6,
             },
           },
-          ports: {
-            ...ports,
-          },
         },
         {
           id: '2',
+          shape: 'circle',
           x: 160,
           y: 180,
           width: 60,
@@ -44,39 +39,29 @@ export const Setting = ({ setOptions }) => {
               fill: '#fff',
             },
           },
-          ports: {
-            ...ports,
-          },
         },
         {
           id: '3',
-          x: 300,
-          y: 180,
+          x: 200,
+          y: 100,
           width: 100,
           height: 40,
-          label: 'Text',
+          label: 'Drag Me',
           attrs: {
             body: {
               stroke: '#8f8f8f',
               strokeWidth: 1,
               fill: '#fff',
+              rx: 6,
+              ry: 6,
             },
-          },
-          ports: {
-            ...ports,
           },
         },
       ],
       edges: [
         {
-          source: {
-            cell: '1',
-            port: 'group2',
-          },
-          target: {
-            cell: '2',
-            port: 'group1',
-          },
+          source: '1',
+          target: '2',
           attrs: {
             line: {
               stroke: '#8f8f8f',
@@ -87,22 +72,40 @@ export const Setting = ({ setOptions }) => {
       ],
     })
   }, [initData])
-
   useEffect(() => {
     setInitData()
   }, [setInitData])
 
   return (
     <div>
-      <Card title="XFlowGraph 配置" bordered={false}>
+      <Card title="Snapline 配置" bordered={false}>
+        <Row align="middle">
+          <Col span={6}>Tolerance</Col>
+          <Col span={2} offset={1}>
+            <Badge count={options.tolerance} showZero color="#faad14" />
+          </Col>
+        </Row>
+        <Row align="middle">
+          <Col span={24}>
+            <Slider
+              min={1}
+              max={30}
+              step={1}
+              value={options.tolerance}
+              onChange={(value) =>
+                setOptions((prev) => ({ ...prev, tolerance: value }))
+              }
+            />
+          </Col>
+        </Row>
         <Row align="middle">
           <Col span={24}>
             <Checkbox
               onChange={(e) =>
-                setOptions((prev) => ({ ...prev, readonly: e.target.checked }))
+                setOptions((prev) => ({ ...prev, sharp: e.target.checked }))
               }
             >
-              readonly
+              Sharp Line
             </Checkbox>
           </Col>
         </Row>
@@ -110,10 +113,10 @@ export const Setting = ({ setOptions }) => {
           <Col span={24}>
             <Checkbox
               onChange={(e) =>
-                setOptions((prev) => ({ ...prev, zoomable: e.target.checked }))
+                setOptions((prev) => ({ ...prev, resizing: e.target.checked }))
               }
             >
-              zoomable
+              Snap on Resizing
             </Checkbox>
           </Col>
         </Row>
@@ -121,32 +124,13 @@ export const Setting = ({ setOptions }) => {
           <Col span={24}>
             <Checkbox
               onChange={(e) =>
-                setOptions((prev) => ({ ...prev, pannable: e.target.checked }))
+                setOptions((prev) => ({
+                  ...prev,
+                  filter: e.target.checked ? ['circle'] : undefined,
+                }))
               }
             >
-              pannable
-            </Checkbox>
-          </Col>
-        </Row>
-        <Row align="middle">
-          <Col span={24}>
-            <Checkbox
-              onChange={(e) =>
-                setOptions((prev) => ({ ...prev, embedable: e.target.checked }))
-              }
-            >
-              embedable
-            </Checkbox>
-          </Col>
-        </Row>
-        <Row align="middle">
-          <Col span={24}>
-            <Checkbox
-              onChange={(e) =>
-                setOptions((prev) => ({ ...prev, restrict: e.target.checked }))
-              }
-            >
-              restrict
+              Add Filter(only circle)
             </Checkbox>
           </Col>
         </Row>
