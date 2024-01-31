@@ -1,6 +1,6 @@
 ---
 title: Transform 图形变换
-order: 9
+order: 7
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow
