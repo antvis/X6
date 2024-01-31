@@ -1,6 +1,6 @@
 ---
 title: Clipboard 复制粘贴
-order: 5
+order: 3
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow

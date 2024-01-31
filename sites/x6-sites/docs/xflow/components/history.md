@@ -1,6 +1,6 @@
 ---
 title: History 撤销重做
-order: 6
+order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow

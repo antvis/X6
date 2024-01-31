@@ -1,6 +1,6 @@
 ---
 title: Control 控制器
-order: 10
+order: 8
 redirect_from:
   - /zh/docs
   - /zh/docs/xflow
