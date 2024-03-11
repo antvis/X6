@@ -141,7 +141,7 @@ const stencil = new Stencil({
 })
 
 // 搜索 text 包含关键字的 rect 节点
-const stencil = new Addon.Stencil({
+const stencil = new Stencil({
   search: (cell, keyword, groupName, stencil) => {
     if (keyword) {
       return cell.shape === 'rect' && cell.attr('text/text').includes(keyword)
