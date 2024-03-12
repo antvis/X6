@@ -115,7 +115,7 @@ const dnd = new Dnd({
 3.怎么自定义放置到画布上的节点样式？
 
 ```ts
-const dnd = new Addon.Dnd({
+const dnd = new Dnd({
   getDropNode(node) {
     const { width, height } = node.size()
     // 返回一个新的节点作为实际放置到画布上的节点
