@@ -722,7 +722,7 @@ export class Graph extends Basecoat<EventArgs> {
     y: number,
     options?: Transform.CenterOptions,
   ): this
-  centerPoint(optons?: Transform.CenterOptions): this
+  centerPoint(options?: Transform.CenterOptions): this
   centerPoint(
     x?: number | null | Transform.CenterOptions,
     y?: number | null,

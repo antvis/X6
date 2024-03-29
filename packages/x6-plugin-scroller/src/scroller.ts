@@ -490,8 +490,8 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center(optons?: ScrollerImpl.CenterOptions) {
-    return this.centerPoint(optons)
+  center(options?: ScrollerImpl.CenterOptions) {
+    return this.centerPoint(options)
   }
 
   /**
@@ -510,7 +510,7 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     y: number,
     options?: ScrollerImpl.CenterOptions,
   ): this
-  centerPoint(optons?: ScrollerImpl.CenterOptions): this
+  centerPoint(options?: ScrollerImpl.CenterOptions): this
   centerPoint(
     x?: number | null | ScrollerImpl.CenterOptions,
     y?: number | null,
