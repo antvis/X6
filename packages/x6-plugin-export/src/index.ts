@@ -35,7 +35,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
   }
 
   exportJPEG(fileName = 'chart', options: Export.ToImageOptions = {}) {
-    this.toPNG((dataUri) => {
+    this.toJPEG((dataUri) => {
       DataUri.downloadDataUri(dataUri, fileName)
     }, options)
   }
