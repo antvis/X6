@@ -64,6 +64,12 @@ export class Scroller
 
   resize(width?: number, height?: number) {
     this.scrollerImpl.resize(width, height)
+    const size = {
+      width: this.scrollerImpl.options.width,
+      height: this.scrollerImpl.options.height,
+    }
+    this.trigger('resize', size)
+    this.graph.trigger('resize', size)
   }
 
   resizePage(width?: number, height?: number) {
