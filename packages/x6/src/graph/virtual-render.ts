@@ -3,9 +3,13 @@ import { Base } from './base'
 
 export class VirtualRenderManager extends Base {
   protected init() {
-    this.resetRenderArea = FunctionExt.throttle(this.resetRenderArea, 200, {
-      leading: true,
-    })
+    this.resetRenderArea = FunctionExt.throttle(
+      FunctionExt.throttle(this.resetRenderArea, 200, {
+        leading: true,
+      }),
+      1,
+      { leading: false },
+    )
     this.resetRenderArea()
     this.startListening()
   }
