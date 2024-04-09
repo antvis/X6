@@ -57,6 +57,7 @@ export class Scroller
     this.setup()
     this.startListening()
     this.updateClassName()
+    this.scrollerImpl.init()
     this.scrollerImpl.center()
   }
 

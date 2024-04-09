@@ -100,17 +100,17 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     Dom.append(this.content, graphContainer)
     Dom.appendTo(this.content, this.container)
 
-    this.startListening()
+    this.backgroundManager = new ScrollerImpl.Background(this)
+  }
 
+  init() {
     if (!this.options.pageVisible) {
       this.graph.grid.update()
     }
-
-    this.backgroundManager = new ScrollerImpl.Background(this)
-
     if (!this.options.autoResize) {
       this.update()
     }
+    this.startListening()
   }
 
   protected startListening() {
