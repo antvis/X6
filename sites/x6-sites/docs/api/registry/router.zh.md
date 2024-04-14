@@ -173,6 +173,7 @@ graph.addEdge({
 | startDirections  | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向开始路由。                                     |
 | endDirections    | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向结束路由。                                     |
 | padding          | SideOptions              |    否    | -                                    | 设置锚点距离转角的最小距离。                                 |
+| fallbackRouter   | Router                   |    否    | `Registry.Router.presets.orth`       | 无法避开障碍物的场景，降级到指定路由。                         |
 
 例如：
 
