@@ -20,7 +20,11 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> =
       center = node.getBBox().getCenter()
       angle = node.getAngle()
     } else {
-      bbox = view.getBBoxOfElement(magnet)
+      if (node.visible) {
+        bbox = view.getBBoxOfElement(magnet)
+      } else {
+        bbox = view.cell.getBBox()
+      }
     }
 
     const padding = options.padding
