@@ -559,10 +559,10 @@ toJSON(options?: Cell.ToJSONOptions): Object
 
 | 选项         | 类型    | 默认值  | 必选 | 描述                                    |
 |--------------|---------|---------|:----:|---------------------------------------|
-| options.diff | boolean | `false` |      | 是否返回与默认值相比具有差异的那些数据。 |
+| options.diff | boolean | `false` |      | 是否返回与默认值相比具有差异的那些数据（还是会导出整个画布的数据）。 |
 
 - 当 `options.diff` 为 `false` 时，返回完整数据。
-- 当 `options.diff` 为 `true` 时，返回差异数据。
+- 当 `options.diff` 为 `true` 时，返回差异数据（剔除属性的默认值）。
 
 #### clone(...)
 
