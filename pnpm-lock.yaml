@@ -597,7 +597,7 @@ importers:
         version: 1.0.0-rc.1(vue@3.2.47)
       vue-demi:
         specifier: latest
-        version: 0.14.6(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47)
+        version: 0.14.8(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47)
     devDependencies:
       '@antv/x6':
         specifier: ^2.x
@@ -46436,10 +46436,10 @@ packages:
     engines: { node: '>=0.10.0' }
     dev: false
 
-  /vue-demi@0.14.6(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47):
+  /vue-demi@0.14.8(@vue/composition-api@1.0.0-rc.1)(vue@3.2.47):
     resolution:
       {
-        integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==,
+        integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==,
       }
     engines: { node: '>=12' }
     hasBin: true
