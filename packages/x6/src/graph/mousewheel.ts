@@ -114,7 +114,6 @@ export class MouseWheel extends Base {
       let targetScale = this.graph.transform.clampScale(
         currentScale * this.cumulatedFactor,
       )
-      // console.log(targetScale, currentScale, this.cumulatedFactor)
 
       const minScale = this.widgetOptions.minScale || Number.MIN_SAFE_INTEGER
       const maxScale = this.widgetOptions.maxScale || Number.MAX_SAFE_INTEGER
