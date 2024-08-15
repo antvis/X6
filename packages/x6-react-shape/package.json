@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react-shape",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "X6 shape for rendering react components.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -31,9 +31,8 @@
     "build:watch:esm": "yarn build:esm --w",
     "build:watch:cjs": "yarn build:cjs --w",
     "build": "run-p build:cjs build:esm build:umd",
-    "prebuild": "run-s lint clean",
-    "prepare": "yarn build",
-    "precommit": "lint-staged"
+    "prebuild": "run-s clean",
+    "prepare": "yarn build"
   },
   "lint-staged": {
     "src/**/*.ts": [
