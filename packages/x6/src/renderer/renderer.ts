@@ -7,6 +7,7 @@ import { CellView, EdgeView } from '../view'
 import { Util } from '../util'
 
 export class Renderer extends Base {
+  // 初始化Renderer时，传入graph；再Renderer中的Scheduler调度器中，监听graph的相关事件（例如添加节点cell:added），然后进行渲染更新
   private readonly schedule: Scheduler = new Scheduler(this.graph)
 
   requestViewUpdate(view: CellView, flag: number, options: any = {}) {
