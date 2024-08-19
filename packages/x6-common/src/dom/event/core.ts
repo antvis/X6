@@ -244,6 +244,7 @@ export namespace Core {
           event.data = handleObj.data
 
           const hookHandle = EventHook.get(handleObj.originType).handle
+          console.log('dispatch 事件触发', handleObj.originType, hookHandle, handleObj.handler)
 
           const result = hookHandle
             ? hookHandle(matched.elem as Store.EventTarget, event, ...args)
