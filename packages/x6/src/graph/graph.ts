@@ -1,4 +1,4 @@
-import { Basecoat, NumberExt, Dom, KeyValue } from '@antv/x6-common'
+import { Basecoat, NumberExt, Dom, KeyValue } from '../../../x6-common'
 import { Point, Rectangle } from '../../../x6-geometry/src/index'
 import { Model, Collection, Cell, Node, Edge } from '../model'
 import { CellView } from '../view'
@@ -52,6 +52,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.css = new Css(this)
     this.view = new GraphView(this)
     this.defs = new Defs(this)
+    // 坐标
     this.coord = new Coord(this)
     this.transform = new Transform(this)
     this.highlight = new Highlight(this)
@@ -68,6 +69,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.renderer = new ViewRenderer(this)
     this.panning = new Panning(this)
     this.mousewheel = new Wheel(this)
+    // 虚拟渲染
     this.virtualRender = new VirtualRender(this)
     this.size = new Size(this)
   }

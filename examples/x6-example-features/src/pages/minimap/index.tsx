@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph } from '../../../../../packages/x6'
 import { MiniMap } from '../../../../../packages/x6-plugin-minimap/src/index'
 import { Scroller } from '@antv/x6-plugin-scroller'
 import { Radio } from 'antd'
