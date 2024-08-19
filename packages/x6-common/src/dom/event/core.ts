@@ -8,6 +8,8 @@ import './special'
 export namespace Core {
   let triggered: string | undefined
 
+
+  // Dom的事件注册，与Graph本身的事件注册机制区分开；使用Dom.Event.on进行Dom事件注册
   export function on(
     elem: Store.EventTarget,
     types: string,
@@ -44,6 +46,7 @@ export namespace Core {
     let mainHandler = store.handler
     if (mainHandler == null) {
       mainHandler = store.handler = function (e, ...args: any[]) {
+        // 事件处理器
         return triggered !== e.type ? dispatch(elem, e, ...args) : undefined
       }
     }
