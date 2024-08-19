@@ -52,7 +52,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.css = new Css(this)
     this.view = new GraphView(this)
     this.defs = new Defs(this)
-    // 坐标
+    // 坐标？（用于捕捉交互的元素?）
     this.coord = new Coord(this)
     this.transform = new Transform(this)
     this.highlight = new Highlight(this)
@@ -826,6 +826,12 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region coord
 
+   /**
+   * 捕捉到栅格？（是否捕捉到栅格上的元素）
+   * @param x 
+   * @param y 
+   * @returns 
+   */
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
   snapToGrid(x: number | Point.PointLike, y?: number) {

@@ -50,6 +50,7 @@ export class GraphView extends View {
   }
 
   delegateEvents() {
+    // 委托监听this.container dom事件上的交互事件；在对应的handler上再去触发graph上的事件
     const ctor = this.constructor as typeof GraphView
     super.delegateEvents(ctor.events)
     return this
@@ -126,9 +127,11 @@ export class GraphView extends View {
       }
 
       const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
+      // 捕捉到元素，触发事件
       if (view) {
         view.onClick(e, localPoint.x, localPoint.y)
       } else {
+        // 没有找到，触发空白点击事件
         this.graph.trigger('blank:click', {
           e,
           x: localPoint.x,
