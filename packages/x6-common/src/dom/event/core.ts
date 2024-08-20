@@ -212,6 +212,7 @@ export namespace Core {
     evt: Event | EventObject | string,
     ...args: any[]
   ) {
+    // 构建自定义的event数据
     const event = EventObject.create(evt)
     event.delegateTarget = elem as Element
 
@@ -243,11 +244,14 @@ export namespace Core {
           event.rnamespace == null ||
           (handleObj.namespace && event.rnamespace.test(handleObj.namespace))
         ) {
+          if(handleObj.originType === 'mousedown'){
+            console.log('handleObj', handleObj.originType, handleObj)
+          }
           event.handleObj = handleObj
           event.data = handleObj.data
 
           const hookHandle = EventHook.get(handleObj.originType).handle
-          console.log('dispatch 事件触发', handleObj.originType, hookHandle, handleObj.handler)
+          // console.log('dispatch 事件触发', handleObj.originType)
 
           const result = hookHandle
             ? hookHandle(matched.elem as Store.EventTarget, event, ...args)
