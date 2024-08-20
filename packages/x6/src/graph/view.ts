@@ -51,6 +51,9 @@ export class GraphView extends View {
 
   delegateEvents() {
     // 委托监听this.container dom事件上的交互事件；在对应的handler上再去触发graph上的事件
+    // 1. GraphView中将ctor.events事件都绑定在this.container上，回调事件根据配置，指向GraphView上具体的函数
+    // 2.this.container中的DOM事件触发之后，根据事件信息，找到对应的CellView子类，然后触发CellView上的事件
+    // 3.CellView中的notify，会触发this.graph.trigger事件，从而将事件传递给graph；业务层如果监听了graph上的事件（例如 this.graph.on('cell:added'))），也会收到事件
     const ctor = this.constructor as typeof GraphView
     super.delegateEvents(ctor.events)
     return this
