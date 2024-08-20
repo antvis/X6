@@ -1,4 +1,4 @@
-import { Basecoat, NumberExt, Dom, KeyValue } from '../../../x6-common'
+import { Basecoat, NumberExt, Dom, KeyValue } from '@antv/x6-common/es'
 import { Point, Rectangle } from '../../../x6-geometry/src/index'
 import { Model, Collection, Cell, Node, Edge } from '../model'
 import { CellView } from '../view'
@@ -826,11 +826,11 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region coord
 
-   /**
+  /**
    * 捕捉到栅格？（是否捕捉到栅格上的元素）
-   * @param x 
-   * @param y 
-   * @returns 
+   * @param x
+   * @param y
+   * @returns
    */
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
