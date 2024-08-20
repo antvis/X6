@@ -827,7 +827,7 @@ export class Graph extends Basecoat<EventArgs> {
   // #region coord
 
   /**
-   * 捕捉到栅格？（是否捕捉到栅格上的元素）
+   * 当前事件在栅格中的坐标
    * @param x
    * @param y
    * @returns

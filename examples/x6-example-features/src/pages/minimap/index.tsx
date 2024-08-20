@@ -39,7 +39,6 @@ export default class Example extends React.Component {
     //     pannable: false,
     //   }),
     // )
-   
 
     this.graph.addNode({
       x: 200,
@@ -102,20 +101,28 @@ export default class Example extends React.Component {
       },
     })
 
+    // this.graph.use(
+    //   new MiniMap({
+    //     container: this.minimapContainer,
+    //     width: 400,
+    //     height: 400,
+    //     padding: 1,
+    //     preserveAspectRatio: false,
+    //     graphOptions: {
+    //       width: 400,
+    //       height: 400,
+    //     },
+    //   }),
+    // )
 
-      this.graph.use(
-        new MiniMap({
-          container: this.minimapContainer,
-          width: 400,
-          height: 400,
-          padding: 1,
-          preserveAspectRatio:false,
-          graphOptions:{
-            width:400,
-            height:400
-          }
-        }),
-      )
+
+    this.graph.on('cell:click', ({ e, x, y, cell, view }) => {
+      console.log('graph cell:click')
+    })
+
+    this.graph.on('node:click',()=>{
+      console.log('graph node:click')
+    })
 
   }
 
