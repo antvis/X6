@@ -39,7 +39,7 @@ export namespace Core {
     // if (!Util.isValidSelector(elem, selector)) {
     //   throw new Error('Delegate event with invalid selector.')
     // }
-
+    // 确保elem进入store，后续dispatch 中Util.getHandlerQueue(elem, event)会用到
     const store = Store.ensure(elem)
 
     // Ensure the main handle
@@ -64,6 +64,8 @@ export namespace Core {
       }
 
       let type = originType
+      // 事件名称hook，通过事件名转换成其它事件名称；EventHook.register方法注册转换逻辑
+      // 例如mouseenter 会被转换为mouseover 事件
       let hook = EventHook.get(type)
 
       // If selector defined, determine special event type, otherwise given type
@@ -109,8 +111,10 @@ export namespace Core {
         Util.setHandlerId(handleObj.handler, guid)
       }
 
+
       // Add to the element's handler list, delegates in front
       if (selector) {
+        // 有选择器的情况下（理解为具体的cell选择器），将delegateCount+1，代表有多少个具体cell选择器
         bag.handlers.splice(bag.delegateCount, 0, handleObj)
         bag.delegateCount += 1
       } else {
@@ -244,9 +248,7 @@ export namespace Core {
           event.rnamespace == null ||
           (handleObj.namespace && event.rnamespace.test(handleObj.namespace))
         ) {
-          if(handleObj.originType === 'mousedown'){
-            console.log('handleObj', handleObj.originType, handleObj)
-          }
+          // 恢复之前的操作数据
           event.handleObj = handleObj
           event.data = handleObj.data
 
