@@ -316,6 +316,7 @@ export class Scheduler extends Disposable {
     if (viewItem) {
       const zIndex = view.cell.getZIndex()
       const pivot = this.addZPivot(zIndex)
+      // 先将view(NodeView/EdgeView)的Dom框架内容插入到container
       this.container.insertBefore(view.container, pivot)
 
       if (!view.cell.isVisible()) {
