@@ -88,7 +88,11 @@ export class GraphView extends View {
 
     return true
   }
-
+  /**
+   * 根据element查找对应的view (NodeView/EdgeView)
+   * @param elem 
+   * @returns 
+   */
   protected findView(elem: Element) {
     return this.graph.findViewByElem(elem)
   }
@@ -127,7 +131,7 @@ export class GraphView extends View {
       }
 
       const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
-      // 捕捉到元素，触发事件
+      // 捕捉到元素(NodeView、EdgeView)，触发对应view中的onclick事件
       if (view) {
         view.onClick(e, localPoint.x, localPoint.y)
       } else {

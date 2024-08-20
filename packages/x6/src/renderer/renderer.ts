@@ -35,10 +35,12 @@ export class Renderer extends Base {
         : elem[0]
 
     if (target) {
+      // 通过当前target元素，一直向上查找元素，直到找到拥有data-cell-id属性的元素，获取id值，在schedule中的views中，通过id找到对应的view
       const id = this.graph.view.findAttr('data-cell-id', target)
       if (id) {
         const views = this.schedule.views
         if (views[id]) {
+          // 返回view
           return views[id].view
         }
       }
