@@ -518,8 +518,11 @@ export class NodeView<
   }
 
   onClick(e: Dom.ClickEvent, x: number, y: number) {
+    // 触发CellView的click事件 graph.on('cell:click')
     super.onClick(e, x, y)
+    // 触发NodeView的click事件 graph.on('node:click')，这个监听会更具体
     this.notify('node:click', this.getEventArgs(e, x, y))
+    // 触发连接桩点击事件
     this.notifyPortEvent('node:port:click', e, { x, y })
   }
 

@@ -133,6 +133,7 @@ export class GraphView extends View {
       const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
       // 捕捉到元素(NodeView、EdgeView)，触发对应view中的onclick事件
       if (view) {
+        // view事件触发
         view.onClick(e, localPoint.x, localPoint.y)
       } else {
         // 没有找到，触发空白点击事件
