@@ -52,7 +52,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.css = new Css(this)
     this.view = new GraphView(this)
     this.defs = new Defs(this)
-    // 坐标？（用于捕捉交互的元素?）
+    // 坐标（用于画布与客户端/浏览器的坐标转换）
     this.coord = new Coord(this)
     this.transform = new Transform(this)
     this.highlight = new Highlight(this)
@@ -889,7 +889,10 @@ export class Graph extends Basecoat<EventArgs> {
 
     return this.coord.localToPagePoint(x, y)
   }
-
+  /**
+   * 画布坐标转换为客户端坐标(浏览器坐标)
+   * @param rect 
+   */
   clientToLocal(rect: Rectangle.RectangleLike): Rectangle
   clientToLocal(x: number, y: number, width: number, height: number): Rectangle
   clientToLocal(p: Point.PointLike): Point
@@ -915,7 +918,10 @@ export class Graph extends Basecoat<EventArgs> {
 
     return this.coord.clientToLocalPoint(x, y)
   }
-
+  /**
+   * 浏览器坐标转换为画布端坐标
+   * @param rect 
+   */
   localToClient(rect: Rectangle.RectangleLike): Rectangle
   localToClient(x: number, y: number, width: number, height: number): Rectangle
   localToClient(p: Point.PointLike): Point
