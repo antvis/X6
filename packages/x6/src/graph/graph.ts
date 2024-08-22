@@ -827,7 +827,7 @@ export class Graph extends Basecoat<EventArgs> {
   // #region coord
 
   /**
-   * 当前事件在栅格中的坐标
+   * 将浏览器坐标转换为画布本地坐标并对齐到画布网格
    * @param x
    * @param y
    * @returns
@@ -837,7 +837,10 @@ export class Graph extends Basecoat<EventArgs> {
   snapToGrid(x: number | Point.PointLike, y?: number) {
     return this.coord.snapToGrid(x, y)
   }
-
+  /**
+   * 将页面坐标转换为画布本地坐标
+   * @param rect
+   */
   pageToLocal(rect: Rectangle.RectangleLike): Rectangle
   pageToLocal(x: number, y: number, width: number, height: number): Rectangle
   pageToLocal(p: Point.PointLike): Point
@@ -863,7 +866,10 @@ export class Graph extends Basecoat<EventArgs> {
 
     return this.coord.pageToLocalPoint(x, y)
   }
-
+  /**
+   * 将画布本地坐标转换为页面坐标
+   * @param rect 
+   */
   localToPage(rect: Rectangle.RectangleLike): Rectangle
   localToPage(x: number, y: number, width: number, height: number): Rectangle
   localToPage(p: Point.PointLike): Point
@@ -890,7 +896,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.localToPagePoint(x, y)
   }
   /**
-   * 画布坐标转换为客户端坐标(浏览器坐标)
+   * 将页面的浏览器坐标转换画布本地坐标
    * @param rect 
    */
   clientToLocal(rect: Rectangle.RectangleLike): Rectangle
@@ -919,7 +925,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.clientToLocalPoint(x, y)
   }
   /**
-   * 浏览器坐标转换为画布端坐标
+   * 将页面的浏览器坐标转换画布本地坐标
    * @param rect 
    */
   localToClient(rect: Rectangle.RectangleLike): Rectangle
@@ -949,6 +955,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   /**
+   * 将画布本地坐标转换为画布坐标
    * Transform the rectangle `rect` defined in the local coordinate system to
    * the graph coordinate system.
    */
@@ -989,7 +996,10 @@ export class Graph extends Basecoat<EventArgs> {
 
     return this.coord.localToGraphPoint(x, y)
   }
-
+  /**
+   * 将画布坐标转换为画布本地坐标
+   * @param rect 
+   */
   graphToLocal(rect: Rectangle.RectangleLike): Rectangle
   graphToLocal(x: number, y: number, width: number, height: number): Rectangle
   graphToLocal(p: Point.PointLike): Point

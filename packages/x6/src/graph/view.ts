@@ -37,6 +37,7 @@ export class GraphView extends View {
     this.defs = selectors.defs as SVGDefsElement
     this.viewport = selectors.viewport as SVGGElement
     this.primer = selectors.primer as SVGGElement
+    // svg stage舞台元素
     this.stage = selectors.stage as SVGGElement
     this.decorator = selectors.decorator as SVGGElement
     this.overlay = selectors.overlay as SVGGElement
