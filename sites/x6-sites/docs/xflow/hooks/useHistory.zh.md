@@ -3,8 +3,8 @@ title: useHistory
 order: 6
 redirect_from:
  - /zh/docs
-  - /zh/docs/xflow
-  - /zh/docs/xflow/hooks
+ - /zh/docs/xflow
+ - /zh/docs/xflow/hooks
 ---
 
 用于实现画布历史记录的 Hook
