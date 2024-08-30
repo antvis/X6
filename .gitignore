@@ -17,4 +17,3 @@ test/coverage
 packages/**/src/style/raw.ts
 .eslintcache
 .stylelintcache
-pnpm-lock.yaml
