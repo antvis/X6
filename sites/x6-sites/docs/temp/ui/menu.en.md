@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/api/ui
 ---
 
-菜单组件。一般在 [Menubar](/en/docs/api/ui/menubar)、[ContextMenu](/en/docs/api/ui/contextmenu)、[Dropdown](/en/docs/api/ui/dropdown) 组件中使用。
+Menu component. Generally used in [Menubar](/en/docs/api/ui/menubar), [ContextMenu](/en/docs/api/ui/contextmenu), and [Dropdown](/en/docs/api/ui/dropdown) components.
 
 <iframe src="/demos/api/ui/menu/basic"></iframe>
 
@@ -43,43 +43,43 @@ const Divider = Menu.Divider
 
 ## Menu
 
-| 参数 | 说明 | 类型 | 默认值 |
+| Parameter | Description | Type | Default Value |
 | --- | --- | --- | --- |
-| className | 自定义的样式名 | string | - |
-| hasIcon | 是否包含 Icon | boolean | `false` |
-| onClick | 点击 MenuItem 调用此函数 | (name: string) => void | - |
-| registerHotkey | 注册快捷键 | (hotkey: string, handler: () => void) => void | - |
-| unregisterHotkey | 取消注册快捷键 | (hotkey: string, handler: () => void) => void | - |
+| className | Custom style name | string | - |
+| hasIcon | Whether to include an Icon | boolean | `false` |
+| onClick | Function called when MenuItem is clicked | (name: string) => void | - |
+| registerHotkey | Register a hotkey | (hotkey: string, handler: () => void) => void | - |
+| unregisterHotkey | Unregister a hotkey | (hotkey: string, handler: () => void) => void | - |
 
 ## Menu.Item
 
-| 参数 | 说明 | 类型 | 默认值 |
+| Parameter | Description | Type | Default Value |
 | --- | --- | --- | --- |
-| className | 自定义的样式名 | string | - |
-| name | 菜单名称(唯一标识)，在 Menu 的 `onClick` 回调中使用，如果不设置 `name` 属性，`onClick` 将不会被调用。 | string | - |
-| icon | 菜单图标 | ReactNode | - |
-| text | 菜单文本 | string | - |
-| hotkey | 菜单快捷键 | string | - |
-| active | 是否被激活(显示鼠标 Hover 的背景) | boolean | `false` |
-| hidden | 是否隐藏 | boolean | `false` |
-| disabled | 是否被禁用 | boolean | `false` |
-| onClick | 点击 MenuItem 调用此函数 | () => void | - |
-| children | 额外的子组件 | ReactNode | - |
+| className | Custom style name | string | - |
+| name | Menu name (unique identifier), used in the Menu's `onClick` callback. If the `name` attribute is not set, `onClick` will not be called. | string | - |
+| icon | Menu icon | ReactNode | - |
+| text | Menu text | string | - |
+| hotkey | Menu hotkey | string | - |
+| active | Whether it is active (shows background on mouse hover) | boolean | `false` |
+| hidden | Whether it is hidden | boolean | `false` |
+| disabled | Whether it is disabled | boolean | `false` |
+| onClick | Function called when MenuItem is clicked | () => void | - |
+| children | Additional child components | ReactNode | - |
 
 ## Menu.SubMenu
 
-| 参数 | 说明 | 类型 | 默认值 |
+| Parameter | Description | Type | Default Value |
 | --- | --- | --- | --- |
-| className | 自定义的样式名 | string | - |
-| name | 菜单名称(唯一标识)，在 Menu 的 `onClick` 回调用使用 | string | - |
-| icon | 菜单图标 | ReactNode | - |
-| text | 菜单文本 | string | - |
-| hotkey | 菜单快捷键 | string | - |
-| active | 是否被激活(显示鼠标 Hover 的背景和子菜单) | boolean | `false` |
-| hidden | 是否隐藏 | boolean | `false` |
-| disabled | 是否被禁用 | boolean | `false` |
-| onClick | 点击 MenuItem 调用此函数 | () => void | - |
+| className | Custom style name | string | - |
+| name | Menu name (unique identifier), used in the Menu's `onClick` callback | string | - |
+| icon | Menu icon | ReactNode | - |
+| text | Menu text | string | - |
+| hotkey | Menu hotkey | string | - |
+| active | Whether it is active (shows background on mouse hover and sub-menu) | boolean | `false` |
+| hidden | Whether it is hidden | boolean | `false` |
+| disabled | Whether it is disabled | boolean | `false` |
+| onClick | Function called when MenuItem is clicked | () => void | - |
 
 ## Menu.Divider
 
-菜单项分割线。
+Menu item divider.
