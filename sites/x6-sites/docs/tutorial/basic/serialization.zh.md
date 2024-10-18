@@ -1,6 +1,6 @@
 ---
 title: 数据
-order: 5
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
