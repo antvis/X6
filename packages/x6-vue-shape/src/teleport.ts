@@ -1,4 +1,13 @@
-import { defineComponent, h, reactive, isVue3, Teleport, markRaw, Fragment } from 'vue-demi'
+import {
+  defineComponent,
+  h,
+  reactive,
+  isVue3,
+  Teleport,
+  markRaw,
+  Fragment,
+  onMounted,
+} from 'vue-demi'
 import { Graph } from '@antv/x6'
 import { VueShape } from './node'
 
@@ -15,7 +24,10 @@ export function connect(
   if (active) {
     items[id] = markRaw(
       defineComponent({
-        render: () => h(Teleport, { to: container } as any, [h(component, { node, graph })]),
+        render: () =>
+          h(Teleport, { to: container } as any, [
+            h(component, { node, graph }),
+          ]),
         provide: () => ({
           getNode: () => node,
           getGraph: () => graph,
@@ -29,6 +41,12 @@ export function disconnect(id: string) {
   if (active) {
     delete items[id]
   }
+}
+
+export function clearItemsCache() {
+  Object.keys(items).forEach((key) => {
+    delete items[key]
+  })
 }
 
 export function isActive() {
@@ -52,3 +70,15 @@ export function getTeleport(): any {
     },
   })
 }
+
+export const VueNodeTeleport = defineComponent({
+  name: 'VueNodeTeleport',
+  setup() {
+    onMounted(() => {
+      clearItemsCache()
+    })
+
+    const TeleportContainer = getTeleport()
+    return () => h(TeleportContainer)
+  },
+})
