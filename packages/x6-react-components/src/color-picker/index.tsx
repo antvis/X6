@@ -83,12 +83,6 @@ export class ColorPicker extends React.Component<
     }
   }
 
-  refContainer = (popoverRef: { getContainer: () => HTMLDivElement }) => {
-    if (popoverRef) {
-      this.container = popoverRef.getContainer()
-    }
-  }
-
   renderPicker() {
     const { prefixCls, disabled, style, ...props } = this.props
 
@@ -125,7 +119,11 @@ export class ColorPicker extends React.Component<
         content={this.renderPicker()}
         overlayClassName={`${baseCls}-overlay`}
         destroyTooltipOnHide
-        ref={this.refContainer}
+        ref={(ref) => {
+          if (ref) {
+            this.container = (ref as any).getContainer()
+          }
+        }}
         trigger={[]}
       >
         <div
