@@ -305,18 +305,26 @@ export class Selection
 
   protected startListening() {
     this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
+    this.graph.on('blank:touchstart', this.onBlankMouseDown, this)
     this.graph.on('blank:click', this.onBlankClick, this)
     this.graph.on('cell:mousemove', this.onCellMouseMove, this)
+    this.graph.on('cell:touchmove', this.onCellMouseMove, this)
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
+    this.graph.on('cell:touchend', this.onCellMouseUp, this)
     this.selectionImpl.on('box:mousedown', this.onBoxMouseDown, this)
+    this.selectionImpl.on('blank:touchstart', this.onBoxMouseDown, this)
   }
 
   protected stopListening() {
     this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
+    this.graph.off('blank:touchstart', this.onBlankMouseDown, this)
     this.graph.off('blank:click', this.onBlankClick, this)
     this.graph.off('cell:mousemove', this.onCellMouseMove, this)
+    this.graph.off('cell:touchmove', this.onCellMouseMove, this)
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
+    this.graph.off('cell:touchend', this.onCellMouseUp, this)
     this.selectionImpl.off('box:mousedown', this.onBoxMouseDown, this)
+    this.selectionImpl.off('blank:touchstart', this.onBoxMouseDown, this)
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
@@ -335,10 +343,11 @@ export class Selection
     }
   }
 
-  protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
+  protected allowBlankMouseDown(e: Dom.MouseDownEvent | Dom.TouchStartEvent) {
     const eventTypes = this.options.eventTypes
     return (
-      (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
+      (eventTypes?.includes('leftMouseDown') &&
+        (e.button === 0 || e.touches?.length === 1)) ||
       (eventTypes?.includes('mouseWheelDown') && e.button === 1)
     )
   }
