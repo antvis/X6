@@ -331,6 +331,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       }
 
       case 'translating': {
+        if (evt.clientX == null || evt.clientY == null) break
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
         if (!this.options.following) {
           const data = eventData as EventData.Translating
@@ -819,30 +820,36 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     if (this.canShowSelectionBox(cell)) {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
-        const bbox = view.getBBox({
-          useCellGeometry: true,
-        })
-
         const className = this.boxClassName
         const box = document.createElement('div')
-        const pointerEvents = this.options.pointerEvents
         Dom.addClass(box, className)
         Dom.addClass(box, `${className}-${cell.isNode() ? 'node' : 'edge'}`)
         Dom.attr(box, 'data-cell-id', cell.id)
-        Dom.css(box, {
-          position: 'absolute',
-          left: bbox.x,
-          top: bbox.y,
-          width: bbox.width,
-          height: bbox.height,
-          pointerEvents: pointerEvents
-            ? this.getPointerEventsValue(pointerEvents)
-            : 'auto',
-        })
+        this.updateBoxPosition(box, cell)
         Dom.appendTo(box, this.container)
         this.showSelected()
         this.boxCount += 1
       }
+    }
+  }
+
+  protected updateBoxPosition(box: Element, cell: Cell) {
+    const view = this.graph.renderer.findViewByCell(cell)
+    if (view) {
+      const bbox = view.getBBox({
+        useCellGeometry: true,
+      })
+      const pointerEvents = this.options.pointerEvents
+      Dom.css(box, {
+        position: 'absolute',
+        left: bbox.x,
+        top: bbox.y,
+        width: bbox.width,
+        height: bbox.height,
+        pointerEvents: pointerEvents
+          ? this.getPointerEventsValue(pointerEvents)
+          : 'auto',
+      })
     }
   }
 
@@ -856,7 +863,6 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
   confirmUpdate() {
     if (this.boxCount) {
-      this.hide()
       for (
         let i = 0, $boxes = this.$boxes, len = $boxes.length;
         i < len;
@@ -864,12 +870,9 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       ) {
         const box = $boxes[i]
         const cellId = Dom.attr(box, 'data-cell-id')
-        Dom.remove(box)
-        this.boxCount -= 1
         const cell = this.collection.get(cellId)
-        if (cell) {
-          this.createSelectionBox(cell)
-        }
+
+        if (cell) this.updateBoxPosition(box, cell)
       }
 
       this.updateContainer()
