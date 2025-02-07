@@ -312,7 +312,7 @@ export class Selection
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
     this.graph.on('cell:touchend', this.onCellMouseUp, this)
     this.selectionImpl.on('box:mousedown', this.onBoxMouseDown, this)
-    this.selectionImpl.on('blank:touchstart', this.onBoxMouseDown, this)
+    this.selectionImpl.on('box:touchstart', this.onBoxMouseDown, this)
   }
 
   protected stopListening() {
@@ -324,7 +324,7 @@ export class Selection
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
     this.graph.off('cell:touchend', this.onCellMouseUp, this)
     this.selectionImpl.off('box:mousedown', this.onBoxMouseDown, this)
-    this.selectionImpl.off('blank:touchstart', this.onBoxMouseDown, this)
+    this.selectionImpl.off('box:touchstart', this.onBoxMouseDown, this)
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
