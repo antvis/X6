@@ -22,6 +22,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   protected selectionContent: HTMLElement
   protected boxCount: number
   protected boxesUpdated: boolean
+  private stopSelectionBoxMouseDownEventTimer?: NodeJS.Timeout
 
   public get graph() {
     return this.options.graph
@@ -363,6 +364,9 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   protected onSelectionBoxMouseDown(evt: Dom.MouseDownEvent) {
     if (!this.options.following) {
       evt.stopPropagation()
+    }
+    if (this.stopSelectionBoxMouseDownEventTimer) {
+      return
     }
 
     const e = this.normalizeEvent(evt)
@@ -820,6 +824,13 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     if (this.canShowSelectionBox(cell)) {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
+        // 因为移动端的触摸事件触发频率太高了，导致新创建的矩形一渲染就被触发了触摸按下的事件，所以需要加冷却
+        if (this.stopSelectionBoxMouseDownEventTimer) {
+          clearTimeout(this.stopSelectionBoxMouseDownEventTimer)
+        }
+        this.stopSelectionBoxMouseDownEventTimer = setTimeout(() => {
+          this.stopSelectionBoxMouseDownEventTimer = undefined
+        }, 250)
         const className = this.boxClassName
         const box = document.createElement('div')
         Dom.addClass(box, className)
