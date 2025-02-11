@@ -288,7 +288,12 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       moving: false,
     })
 
-    this.delegateDocumentEvents(Private.documentEvents, evt.data)
+    // this.delegateDocumentEvents(Private.documentEvents, evt.data)
+    this.addEventListeners(
+      this.graph.container,
+      Private.documentEvents,
+      evt.data,
+    )
   }
 
   filter(cells: Cell[]) {
@@ -357,7 +362,8 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     const action = this.getEventData<EventData.Common>(evt).action
     if (action) {
       this.stopSelecting(evt)
-      this.undelegateDocumentEvents()
+      // this.undelegateDocumentEvents()
+      this.removeEventListeners(this.graph.container)
     }
   }
 
@@ -379,7 +385,12 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     this.setEventData<EventData.SelectionBox>(e, { activeView })
     const client = this.graph.snapToGrid(e.clientX, e.clientY)
     this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
-    this.delegateDocumentEvents(Private.documentEvents, e.data)
+    // this.delegateDocumentEvents(Private.documentEvents, e.data)
+    this.addEventListeners(
+      this.graph.container,
+      Private.documentEvents,
+      evt.data,
+    )
   }
 
   protected startTranslating(evt: Dom.MouseDownEvent) {
@@ -497,8 +508,15 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     return { scrollerX: 0, scrollerY: 0 }
   }
 
-  protected adjustSelection(evt: Dom.MouseMoveEvent) {
+  protected adjustSelection(evt: Dom.MouseMoveEvent | Dom.TouchMoveEvent) {
+    // 过滤双指触摸事件，避免跟其它插件冲突，这是单指框选方法，不需要双指事件的
+    if (evt.touches?.length && evt.touches?.length >= 2) {
+      return
+    }
     const e = this.normalizeEvent(evt)
+    if (e.clientX == null || e.clientY == null) {
+      return
+    }
     const eventData = this.getEventData<EventData.Common>(e)
     const action = eventData.action
     switch (action) {

@@ -312,7 +312,7 @@ export class Selection
     this.graph.on('cell:mousemove', this.onCellMouseMove, this)
     this.graph.on('cell:touchmove', this.onCellMouseMove, this)
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
-    // this.graph.on('cell:touchcancel', this.onCellMouseUp, this)
+    // this.graph.on('cell:touchend', this.onCellMouseUp, this)
     this.selectionImpl.on('box:mousedown', this.onBoxMouseDown, this)
     this.selectionImpl.on('box:touchstart', this.onBoxMouseDown, this)
   }
@@ -326,7 +326,7 @@ export class Selection
     this.graph.off('cell:mousemove', this.onCellMouseMove, this)
     this.graph.off('cell:touchmove', this.onCellMouseMove, this)
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
-    // this.graph.off('cell:touchcancel', this.onCellMouseUp, this)
+    // this.graph.off('cell:touchend', this.onCellMouseUp, this)
     this.selectionImpl.off('box:mousedown', this.onBoxMouseDown, this)
     this.selectionImpl.off('box:touchstart', this.onBoxMouseDown, this)
   }
@@ -415,7 +415,6 @@ export class Selection
         disabled = options.selectEdgeOnMoved === false && cell.isEdge()
       }
     }
-
     if (!disabled) {
       if (!this.allowMultipleSelection(e)) {
         // 如果是触摸模式，不需要按快捷键就应该启动多选功能，默认开启
