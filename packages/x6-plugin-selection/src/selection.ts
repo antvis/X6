@@ -127,7 +127,9 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     const { ui, selection, translateBy, snapped } = options
 
     const allowTranslating =
-      (showNodeSelectionBox !== true || (pointerEvents && this.getPointerEventsValue(pointerEvents) === 'none')) &&
+      (showNodeSelectionBox !== true ||
+        (pointerEvents &&
+          this.getPointerEventsValue(pointerEvents) === 'none')) &&
       !this.translating &&
       !selection
 
@@ -386,11 +388,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     const client = this.graph.snapToGrid(e.clientX, e.clientY)
     this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
     // this.delegateDocumentEvents(Private.documentEvents, e.data)
-    this.addEventListeners(
-      this.graph.container,
-      Private.documentEvents,
-      evt.data,
-    )
+    this.addEventListeners(this.graph.container, Private.documentEvents, e.data)
   }
 
   protected startTranslating(evt: Dom.MouseDownEvent) {
@@ -830,7 +828,9 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     )
   }
 
-  protected getPointerEventsValue(pointerEvents: 'none' | 'auto' | ((cells: Cell[]) => 'none' | 'auto')) {
+  protected getPointerEventsValue(
+    pointerEvents: 'none' | 'auto' | ((cells: Cell[]) => 'none' | 'auto'),
+  ) {
     return typeof pointerEvents === 'string'
       ? pointerEvents
       : pointerEvents(this.cells)
