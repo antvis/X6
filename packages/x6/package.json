@@ -31,7 +31,7 @@
     "clean": "rss",
     "build:esm": "rss",
     "build:cjs": "rss",
-    "build:umd": "rollup -c --bundleConfigAsCjs",
+    "build:umd": "rss",
     "build:less": "rss",
     "build:dev": "rss",
     "build:watch": "rss",

@@ -72,49 +72,62 @@ export const textWrap: Attr.Definition = {
   set(val, { view, elem, attrs, refBBox }) {
     const info = val as JSONObject
 
+    // 计算实际可用空间
+    const padding = 5 // 添加内边距
     // option `width`
-    const width = info.width || 0
+    const width = typeof info.width === 'number' ? info.width : 0
     if (NumberExt.isPercentage(width)) {
-      refBBox.width *= parseFloat(width) / 100
-    } else if (width <= 0) {
-      refBBox.width += width as number
-    } else {
-      refBBox.width = width as number
+      refBBox.width =
+        (refBBox.width * parseFloat(String(width))) / 100 - padding * 2
+    } else if (typeof width === 'number' && width <= 0) {
+      refBBox.width = refBBox.width + width - padding * 2
+    } else if (typeof width === 'number') {
+      refBBox.width = width - padding * 2
     }
 
     // option `height`
-    const height = info.height || 0
+    const height = typeof info.height === 'number' ? info.height : 0
     if (NumberExt.isPercentage(height)) {
-      refBBox.height *= parseFloat(height) / 100
-    } else if (height <= 0) {
-      refBBox.height += height as number
-    } else {
-      refBBox.height = height as number
+      refBBox.height =
+        (refBBox.height * parseFloat(String(height))) / 100 - padding * 2
+    } else if (typeof height === 'number' && height <= 0) {
+      refBBox.height = refBBox.height + height - padding * 2
+    } else if (typeof height === 'number') {
+      refBBox.height = height - padding * 2
     }
+
+    // 确保最小尺寸
+    refBBox.width = Math.max(refBBox.width, 20)
+    refBBox.height = Math.max(refBBox.height, 20)
 
     // option `text`
     let wrappedText
     let txt = info.text
     if (txt == null) {
-      // the edge of the label is assigned to txt
       txt = attrs.text || elem?.textContent
     }
 
     if (txt != null) {
+      // 计算实际行高
+      const fontSize = parseInt(
+        String(attrs['font-size'] || attrs.fontSize || '14'),
+        10,
+      )
+      const lineHeightMultiplier = 1 // 默认行高倍数
+      const calculatedLineHeight = Math.ceil(fontSize * lineHeightMultiplier)
       wrappedText = Dom.breakText(
-        `${txt}`,
+        String(txt),
         refBBox,
         {
           'font-weight': attrs['font-weight'] || attrs.fontWeight,
           'font-size': attrs['font-size'] || attrs.fontSize,
           'font-family': attrs['font-family'] || attrs.fontFamily,
-          lineHeight: attrs.lineHeight,
+          lineHeight: calculatedLineHeight.toString(),
         },
         {
-          // svgDocument: view.graph.view.svg,
-          ellipsis: info.ellipsis as string,
-          // hyphen: info.hyphen as string,
-          // breakWord: info.breakWord as boolean,
+          ellipsis:
+            typeof info.ellipsis === 'string' ? info.ellipsis : undefined,
+          eol: '\n',
         },
       )
     } else {

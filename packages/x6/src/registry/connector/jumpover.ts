@@ -68,17 +68,17 @@ function findLineIntersections(line: Line, crossCheckLines: Line[]) {
   crossCheckLines.forEach((crossCheckLine) => {
     const intersection = line.intersectsWithLine(crossCheckLine)
     if (intersection) {
-      const { x, y } = intersection;
-      const { start, end } = crossCheckLine;
+      const { x, y } = intersection
+      const { start, end } = crossCheckLine
       const startIsIntersection =
         Math.round(start.x) === Math.round(x) &&
-        Math.round(start.y) === Math.round(y);
+        Math.round(start.y) === Math.round(y)
       const endIsIntersection =
         Math.round(end.x) === Math.round(x) &&
-        Math.round(end.y) === Math.round(y);
-      //If the starting or ending point is the same as the intersection point, return
+        Math.round(end.y) === Math.round(y)
+      // If the starting or ending point is the same as the intersection point, return
       if (startIsIntersection || endIsIntersection) {
-        return;
+        return
       }
       intersections.push(intersection)
     }
