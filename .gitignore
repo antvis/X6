@@ -21,3 +21,6 @@ packages/**/src/style/raw.ts
 # IDE
 .lh
 .history
+
+# Site server cache
+sites/x6-sites/server

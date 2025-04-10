@@ -2,6 +2,9 @@ import { defineConfig } from 'dumi'
 import { repository } from './package.json'
 
 export default defineConfig({
+  ...(process.env.NODE_ENV === 'production'
+    ? { ssr: { builder: 'mako' } }
+    : { ssr: false, mako: {} }),
   locales: [
     { id: 'zh', name: '中文' },
     { id: 'en', name: 'English' },
@@ -9,10 +12,26 @@ export default defineConfig({
   themeConfig: {
     title: 'X6',
     description: 'JavaScript diagramming library',
+    metas: {
+      title: {
+        zh: 'X6 图编辑引擎',
+        en: 'X6',
+      },
+      description: {
+        zh: 'JavaScript 图编辑引擎',
+        en: 'JavaScript diagramming library',
+      },
+    },
+    /** 站点地图配置 */
+    sitemap: {}, // 开启并采用默认配置
+    /** 死链检查配置  */
+    deadLinkChecker: {}, // 开启并采用默认配置
     defaultLanguage: 'zh',
     siteUrl: 'https://x6.antv.antgroup.com',
     isAntVSite: false,
     footerTheme: 'light', // 白色 底部主题
+    feedback: true, // 是否开启用户反馈
+    sitePackagePath: 'sites/x6-sites', // 文档项目相对于项目根目录的相对路径
     githubUrl: repository, // GitHub 地址
     showSearch: true, // 是否显示搜索框
     showGithubCorner: true, // 是否显示头部的 GitHub icon
