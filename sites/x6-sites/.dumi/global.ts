@@ -1,4 +1,4 @@
-if (window) {
+if (typeof window !== 'undefined' && window) {
   ;(window as any).react = require('react')
   ;(window as any).reactDom = require('react-dom')
   ;(window as any).antd = require('antd')
@@ -16,4 +16,5 @@ if (window) {
   ;(window as any).classnames = require('classnames')
   ;(window as any).hierarchy = require('@antv/hierarchy')
   ;(window as any).elkjs = require('elkjs/lib/elk.bundled.js')
+  ;(window as any).insertCss = require('insert-css')
 }
