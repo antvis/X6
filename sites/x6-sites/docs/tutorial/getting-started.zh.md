@@ -90,4 +90,4 @@ graph.use(
 graph.toJSON()
 ```
 
-我们的演示 demo 就到这里了，想继续了解 X6 的一些能力，可以从[基础教程](/zh/docs/tutorial/basic/graph)开始阅读。
+我们的演示 demo 就到这里了，想继续了解 X6 的一些能力，可以从[基础教程](/tutorial/basic/graph)开始阅读。
