@@ -1,1 +1,1 @@
-# x6-plugin-scrolle
+# x6-plugin-scroller
