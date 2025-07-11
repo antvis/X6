@@ -13,11 +13,11 @@ For native SVG attributes, there are many tutorials available online, such as th
 
 When customizing nodes or edges, setting the relative size of elements is a very common requirement. We provide a series of special attributes prefixed with `ref` in X6, which can be used to set the relative size of elements. These attributes are calculated based on the data size of nodes/edges, which means that all calculations do not rely on the browser's bbox calculation, so there are no performance issues.
 
--  [`refWidth`](/en/docs/api/registry/attr#refwidth) and [`refHeight`](/en/docs/api/registry/attr#refheight) set the element size.
--  [`refX`](/en/docs/api/registry/attr#refx) and [`refY`](/en/docs/api/registry/attr#refy) set the element position.
--  [`refCx`](/en/docs/api/registry/attr#refcx) and [`refCy`](/en/docs/api/registry/attr#refcy) set the center position of `<ellipse>` and `<circle>`.
--  [`refRx`](/en/docs/api/registry/attr#refrx) and [`refRy`](/en/docs/api/registry/attr#refry) set the radius of `<ellipse>`.
--  [`refR`](/en/docs/api/registry/attr#refr) sets the radius of `<circle>`.
+-  [`refWidth`](/api/registry/attr#refwidth) and [`refHeight`](/api/registry/attr#refheight) set the element size.
+-  [`refX`](/api/registry/attr#refx) and [`refY`](/api/registry/attr#refy) set the element position.
+-  [`refCx`](/api/registry/attr#refcx) and [`refCy`](/api/registry/attr#refcy) set the center position of `<ellipse>` and `<circle>`.
+-  [`refRx`](/api/registry/attr#refrx) and [`refRy`](/api/registry/attr#refry) set the radius of `<ellipse>`.
+-  [`refR`](/api/registry/attr#refr) sets the radius of `<circle>`.
 
 Let's take a look at how to use these relative attributes. In the following example, we define a red ellipse `e`, a green rectangle `r`, a blue circle `c`, and a rectangle `outline` that represents the node size.
 
@@ -103,11 +103,11 @@ graph.addNode({
 
 We provide the following attributes to set the position of edges and sub-elements relative to the edge.
 
--  [`connection`](/en/docs/api/registry/attr#connection) is only applicable to `<path>` elements of edges, indicating that the edge will be rendered on this element when set to `true`.
--  [`atConnectionLength`](/en/docs/api/registry/attr#atconnectionlengthkeepgradient) is an abbreviation of `atConnectionLengthKeepGradient`, indicating that the element will be moved to the specified offset position and automatically rotated to match the slope of the edge at that position.
--  [`atConnectionRatio`](/en/docs/api/registry/attr#atconnectionratiokeepgradient) is an abbreviation of `atConnectionRatioKeepGradient`, indicating that the element will be moved to the specified ratio `[0, 1]` position and automatically rotated to match the slope of the edge at that position.
--  [`atConnectionLengthIgnoreGradient`](/en/docs/api/registry/attr#atconnectionlengthignoregradient) will move the element to the specified offset position, ignoring the edge's slope, without automatic rotation.
--  [`atConnectionRatioIgnoreGradient`](/en/docs/api/registry/attr#atconnectionratioignoregradient) will move the element to the specified ratio `[0, 1]` position, ignoring the edge's slope, without automatic rotation.
+-  [`connection`](/api/registry/attr#connection) is only applicable to `<path>` elements of edges, indicating that the edge will be rendered on this element when set to `true`.
+-  [`atConnectionLength`](/api/registry/attr#atconnectionlengthkeepgradient) is an abbreviation of `atConnectionLengthKeepGradient`, indicating that the element will be moved to the specified offset position and automatically rotated to match the slope of the edge at that position.
+-  [`atConnectionRatio`](/api/registry/attr#atconnectionratiokeepgradient) is an abbreviation of `atConnectionRatioKeepGradient`, indicating that the element will be moved to the specified ratio `[0, 1]` position and automatically rotated to match the slope of the edge at that position.
+-  [`atConnectionLengthIgnoreGradient`](/api/registry/attr#atconnectionlengthignoregradient) will move the element to the specified offset position, ignoring the edge's slope, without automatic rotation.
+-  [`atConnectionRatioIgnoreGradient`](/api/registry/attr#atconnectionratioignoregradient) will move the element to the specified ratio `[0, 1]` position, ignoring the edge's slope, without automatic rotation.
 
 ```ts
 graph.addEdge({
@@ -196,4 +196,4 @@ graph.addEdge({
 
 ## Using Arrows
 
-We can use the `sourceMarker` and `targetMarker` special attributes to specify the start and end arrowheads of edges, respectively. For more information, please refer to [this tutorial](/en/docs/api/model/marker).
+We can use the `sourceMarker` and `targetMarker` special attributes to specify the start and end arrowheads of edges, respectively. For more information, please refer to [this tutorial](/api/model/marker).

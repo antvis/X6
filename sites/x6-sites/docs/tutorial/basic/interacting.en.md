@@ -18,7 +18,7 @@ redirect_from:
 
 ## Connection
 
-Connection interaction rules are all completed through the `connecting` configuration. For a complete configuration, refer to [API](/en/docs/api/interacting/interacting#connection). Below, we introduce some commonly used functions.
+Connection interaction rules are all completed through the `connecting` configuration. For a complete configuration, refer to [API](/api/interacting/interacting#connection). Below, we introduce some commonly used functions.
 
 ### allowXXX
 
@@ -58,7 +58,7 @@ new Graph({
 
 ### router/connector
 
-In the [edge tutorial](/en/docs/tutorial/basic/edge#router), we know that we can specify `router` and `connector` when adding an edge. If most edges in the entire canvas have the same `router` or `connector`, we can configure them directly in `connecting`, which can avoid repeated configuration in the edge.
+In the [edge tutorial](/tutorial/basic/edge#router), we know that we can specify `router` and `connector` when adding an edge. If most edges in the entire canvas have the same `router` or `connector`, we can configure them directly in `connecting`, which can avoid repeated configuration in the edge.
 
 ```ts
 new Graph({
@@ -103,7 +103,7 @@ We can also define whether to create a connection or whether the connection is v
 
 ## Embedding
 
-Sometimes we need to drag a node into another node, making it a child node of the other node. At this time, we can enable embedding through the `embedding` option, and specify the parent node through the `findParent` method when the node is moved. For more detailed configuration, refer to [API](/en/docs/api/interacting/interacting#embedding).
+Sometimes we need to drag a node into another node, making it a child node of the other node. At this time, we can enable embedding through the `embedding` option, and specify the parent node through the `findParent` method when the node is moved. For more detailed configuration, refer to [API](/api/interacting/interacting#embedding).
 
 ```ts
 const graph = new Graph({
@@ -169,7 +169,7 @@ Supported `highlighting` configuration items include:
 -  `magnetAvailable` Highlighting option used when a connection point can be connected during the connection process.
 -  `magnetAdsorbed` Highlighting option used when the connection point is automatically adsorbed to the edge during the connection process.
 
-The `magnetAvailable.name` above is actually the name of the highlighter, and X6 has built-in `stroke` and `className` highlighters. For more information, refer to [Highlighter](/en/docs/api/registry/highlighter).
+The `magnetAvailable.name` above is actually the name of the highlighter, and X6 has built-in `stroke` and `className` highlighters. For more information, refer to [Highlighter](/api/registry/highlighter).
 
 <code id="interacting-highlighting" src="@/src/tutorial/basic/interacting/highlighting/index.tsx"></code>
 
