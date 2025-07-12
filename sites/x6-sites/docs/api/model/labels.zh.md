@@ -13,13 +13,13 @@ X6 中边的标签配置非常灵活，所以这里用单独的篇幅来详细�
 
 | 方法签名                                                         | 说明                |
 |------------------------------------------------------------------|-------------------|
-| [edge.getLabels()](/zh/docs/api/model/edge#getlabels)            | 获取所有标签。       |
-| [edge.setLabels(...)](/zh/docs/api/model/edge#setlabels)         | 设置标签。           |
-| [edge.insertLabel(...)](/zh/docs/api/model/edge#insertlabel)     | 在指定位置插入标签。 |
-| [edge.appendLabel(...)](/zh/docs/api/model/edge#appendlabel)     | 在末尾追加标签。     |
-| [edge.setLabelAt(...)](/zh/docs/api/model/edge#setlabelat)       | 设置指定位置的标签。 |
-| [edge.getLabelAt(...)](/zh/docs/api/model/edge#getlabelat)       | 获取指定位置的标签。 |
-| [edge.removeLabelAt(...)](/zh/docs/api/model/edge#removelabelat) | 删除指定位置的标签。 |
+| [edge.getLabels()](/api/model/edge#getlabels)            | 获取所有标签。       |
+| [edge.setLabels(...)](/api/model/edge#setlabels)         | 设置标签。           |
+| [edge.insertLabel(...)](/api/model/edge#insertlabel)     | 在指定位置插入标签。 |
+| [edge.appendLabel(...)](/api/model/edge#appendlabel)     | 在末尾追加标签。     |
+| [edge.setLabelAt(...)](/api/model/edge#setlabelat)       | 设置指定位置的标签。 |
+| [edge.getLabelAt(...)](/api/model/edge#getlabelat)       | 获取指定位置的标签。 |
+| [edge.removeLabelAt(...)](/api/model/edge#removelabelat) | 删除指定位置的标签。 |
 
 ## 标签定义
 
@@ -60,7 +60,7 @@ interface Label {
 
 ## 默认标签
 
-创建 Edge 时可以通过 [defaultLabel 选项](/zh/docs/tutorial/basic/edge#defaultlabel) 来设置默认标签，其默认值如下：
+创建 Edge 时可以通过 [defaultLabel 选项](/tutorial/basic/edge#defaultlabel) 来设置默认标签，其默认值如下：
 
 ```ts
 {
@@ -523,7 +523,7 @@ Edge.parseStringLabel = (label: string) => {
 
 ## 单标签
 
-大多数边都只拥有最多一个标签，所以我们为 `Edge` 定义了一个[自定义选项](/zh/docs/tutorial/basic/cell#自定义选项) `label` 来支持传入单标签。
+大多数边都只拥有最多一个标签，所以我们为 `Edge` 定义了一个[自定义选项](/tutorial/basic/cell#自定义选项) `label` 来支持传入单标签。
 
 ```ts
 graph.addEdge({

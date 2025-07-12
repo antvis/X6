@@ -117,7 +117,7 @@ allowMulti: boolean |
 highlight: boolean
 ```
 
-拖动边时，是否高亮显示所有可用的连接桩或节点，默认值为 `false` 。一般都会与 [highlighting](/zh/docs/api/interacting/interacting#高亮) 联合使用。
+拖动边时，是否高亮显示所有可用的连接桩或节点，默认值为 `false` 。一般都会与 [highlighting](/api/interacting/interacting#高亮) 联合使用。
 
 ### anchor
 
@@ -125,7 +125,7 @@ highlight: boolean
 anchor: NodeAnchorOptions
 ```
 
-当连接到节点时，通过 [ `anchor` ](/zh/docs/api/registry/node-anchor) 来指定被连接的节点的锚点，默认值为 `center` 。
+当连接到节点时，通过 [ `anchor` ](/api/registry/node-anchor) 来指定被连接的节点的锚点，默认值为 `center` 。
 
 #### sourceAnchor
 
@@ -149,7 +149,7 @@ targetAnchor?: NodeAnchorOptions
 edgeAnchor: EdgeAnchorOptions
 ```
 
-当连接到边时，通过 [ `edgeAnchor` ](/zh/docs/api/registry/edge-anchor) 来指定被连接的边的锚点，默认值为 `ratio` 。
+当连接到边时，通过 [ `edgeAnchor` ](/api/registry/edge-anchor) 来指定被连接的边的锚点，默认值为 `ratio` 。
 
 ### sourceEdgeAnchor
 
@@ -173,7 +173,7 @@ targetEdgeAnchor?: EdgeAnchorOptions
 connectionPoint: ConnectionPointOptions
 ```
 
-指定[连接点](/zh/docs/api/registry/connector)，默认值为 `boundary` 。
+指定[连接点](/api/registry/connector)，默认值为 `boundary` 。
 
 ### sourceConnectionPoint
 
@@ -197,7 +197,7 @@ connectionPoint: ConnectionPointOptions
 router: string | Router.NativeItem | Router.ManaualItem
 ```
 
-[路由](/zh/docs/api/registry/router)将边的路径点 `vertices` 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点，默认值为 `normal` 。
+[路由](/api/registry/router)将边的路径点 `vertices` 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点，默认值为 `normal` 。
 
 ### connector
 
@@ -205,7 +205,7 @@ router: string | Router.NativeItem | Router.ManaualItem
 connector: string | Connector.NativeItem | Connector.ManaualItem
 ```
 
-[连接器](/zh/docs/api/registry/connector)将起点、路由返回的点、终点加工为 `path` 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal` 。
+[连接器](/api/registry/connector)将起点、路由返回的点、终点加工为 `path` 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal` 。
 
 ### createEdge
 
@@ -380,7 +380,7 @@ new Graph({
 - `'magnetAvailable'` 连线过程中，连接桩可以被链接时被使用。
 - `'magnetAdsorbed'` 连线过程中，自动吸附到连接桩时被使用。
 
-上面 `magnetAvailable.name` 其实是高亮器的名称，X6 内置了 `stroke` 和 `className` 两种高亮器，详细信息参考 [Highlighter](/zh/docs/api/registry/highlighter)。
+上面 `magnetAvailable.name` 其实是高亮器的名称，X6 内置了 `stroke` 和 `className` 两种高亮器，详细信息参考 [Highlighter](/api/registry/highlighter)。
 
 ## 移动范围
 

@@ -7,7 +7,7 @@ redirect_from:
   - /docs/api/model
 ---
 
-Cell is the base class for [Node](/docs/api/model/node) and [Edge](/docs/api/model/edge), containing common property and method definitions for nodes and edges, such as attribute styles, visibility, business data, etc. It also exhibits the same behavior in terms of instantiation, style customization, default options, and custom options.
+Cell is the base class for [Node](/api/model/node) and [Edge](/api/model/edge), containing common property and method definitions for nodes and edges, such as attribute styles, visibility, business data, etc. It also exhibits the same behavior in terms of instantiation, style customization, default options, and custom options.
 
 ## Properties
 
@@ -305,7 +305,7 @@ const rect = new Shape.Rect({
 
 It's worth mentioning that camelCase format for property names is supported, such as `fontSize`. This avoids the hassle of having to add quotes to property names like `font-size` when used as object keys.
 
-In addition to standard SVG attributes, we have defined a series of special attributes in X6. For details, please refer to [Special Attributes](/en/docs/api/model/attrs) and [Custom Attributes](/en/docs/api/model/cell/#custom-attributes). Furthermore, we can use CSS to customize styles. Nodes and edges rendered on the canvas have the class names `x6-node` and `x6-edge` respectively. The default style definitions can be [referenced here](https://github.com/antvis/X6/blob/master/packages/x6/src/style/index.less). For example, we can specify the style of the `<rect>` element in nodes like this:
+In addition to standard SVG attributes, we have defined a series of special attributes in X6. For details, please refer to [Special Attributes](/api/model/attrs) and [Custom Attributes](/api/model/cell/#custom-attributes). Furthermore, we can use CSS to customize styles. Nodes and edges rendered on the canvas have the class names `x6-node` and `x6-edge` respectively. The default style definitions can be [referenced here](https://github.com/antvis/X6/blob/master/packages/x6/src/style/index.less). For example, we can specify the style of the `<rect>` element in nodes like this:
 
 ```css
 .x6-node rect {
@@ -414,20 +414,20 @@ Tools for nodes/edges. Tools can enhance the interaction capabilities of nodes/e
 
 Nodes
 
-- [button](/en/docs/api/registry/node-tool#button) Renders a button at the specified position, supports customizing button click interactions.
-- [button-remove](/en/docs/api/registry/node-tool#button-remove) Renders a delete button at the specified position, deletes the corresponding node when clicked.
-- [boundary](/en/docs/api/registry/node-tool#boundary) Renders a rectangle surrounding the node based on the node's bounding box. Note that this tool only renders a rectangle without any interaction.
-- [node-editor](/en/docs/api/registry/node-tool#node-editor) Provides text editing functionality on the node.
+- [button](/api/registry/node-tool#button) Renders a button at the specified position, supports customizing button click interactions.
+- [button-remove](/api/registry/node-tool#button-remove) Renders a delete button at the specified position, deletes the corresponding node when clicked.
+- [boundary](/api/registry/node-tool#boundary) Renders a rectangle surrounding the node based on the node's bounding box. Note that this tool only renders a rectangle without any interaction.
+- [node-editor](/api/registry/node-tool#node-editor) Provides text editing functionality on the node.
 
 Edges
 
-- [vertices](/en/docs/api/registry/edge-tool#vertices) Path point tool, renders a small dot at the path point position, drag the dot to modify the path point position, double-click the dot to delete the path point, click on the edge to add a path point.
-- [segments](/en/docs/api/registry/edge-tool#segments) Segment tool. Renders a toolbar at the center of each edge segment, which can be dragged to adjust the positions of the path points at both ends of the segment.
-- [boundary](/en/docs/api/registry/edge-tool#boundary) Renders a rectangle surrounding the edge based on the edge's bounding box. Note that this tool only renders a rectangle without any interaction.
-- [button](/en/docs/api/registry/edge-tool#button) Renders a button at the specified position, supports customizing button click interactions.
-- [button-remove](/en/docs/api/registry/edge-tool#button-remove) Renders a delete button at the specified position, deletes the corresponding edge when clicked.
-- [source-arrowhead-and-target-arrowhead](/en/docs/api/registry/edge-tool#source-arrowhead-and-target-arrowhead) Renders a shape (arrow by default) at the start or end point of the edge, drag the shape to modify the start or end point of the edge.
-- [edge-editor](/en/docs/api/registry/edge-tool#edge-editor) Provides text editing functionality on the edge.
+- [vertices](/api/registry/edge-tool#vertices) Path point tool, renders a small dot at the path point position, drag the dot to modify the path point position, double-click the dot to delete the path point, click on the edge to add a path point.
+- [segments](/api/registry/edge-tool#segments) Segment tool. Renders a toolbar at the center of each edge segment, which can be dragged to adjust the positions of the path points at both ends of the segment.
+- [boundary](/api/registry/edge-tool#boundary) Renders a rectangle surrounding the edge based on the edge's bounding box. Note that this tool only renders a rectangle without any interaction.
+- [button](/api/registry/edge-tool#button) Renders a button at the specified position, supports customizing button click interactions.
+- [button-remove](/api/registry/edge-tool#button-remove) Renders a delete button at the specified position, deletes the corresponding edge when clicked.
+- [source-arrowhead-and-target-arrowhead](/api/registry/edge-tool#source-arrowhead-and-target-arrowhead) Renders a shape (arrow by default) at the start or end point of the edge, drag the shape to modify the start or end point of the edge.
+- [edge-editor](/api/registry/edge-tool#edge-editor) Provides text editing functionality on the edge.
 
 You can specify a single tool:
 
@@ -527,7 +527,7 @@ if (node.view === 'rect') {
 isNode(): boolean
 ```
 
-Checks if the instance is a [Node](/en/docs/api/model/node) instance. Returns `true` if it's a [Node](/en/docs/api/model/node) instance, otherwise returns `false`. All nodes inheriting from [Node](/en/docs/api/model/node) return `true`.
+Checks if the instance is a [Node](/api/model/node) instance. Returns `true` if it's a [Node](/api/model/node) instance, otherwise returns `false`. All nodes inheriting from [Node](/api/model/node) return `true`.
 
 ```ts
 if (cell.isNode()) {
@@ -541,7 +541,7 @@ if (cell.isNode()) {
 isEdge(): boolean
 ```
 
-Checks if the instance is an [Edge](/en/docs/api/model/edge) instance. Returns `true` if it's an [Edge](/en/docs/api/model/edge) instance, otherwise returns `false`. All edges inheriting from [Edge](/en/docs/api/model/edge) return `true`.
+Checks if the instance is an [Edge](/api/model/edge) instance. Returns `true` if it's an [Edge](/api/model/edge) instance, otherwise returns `false`. All edges inheriting from [Edge](/api/model/edge) return `true`.
 
 ```ts
 if (cell.isEdge()) {
@@ -1846,7 +1846,7 @@ Add tools.
 
 | Name             | Type                             | Required | Default | Description                                                                                                                                                                                |
 |------------------|----------------------------------|:--------:|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| items            | Cell.ToolItem \| Cell.ToolItem[] |          |         | Tools defined in [NodeTool](/en/docs/api/registry/node-tool#presets) or [EdgeTool](/en/docs/api/registry/edge-tool#presets).                                                               |
+| items            | Cell.ToolItem \| Cell.ToolItem[] |          |         | Tools defined in [NodeTool](/api/registry/node-tool#presets) or [EdgeTool](/api/registry/edge-tool#presets).                                                               |
 | name             | string                           |          | `null`  | Define an alias for this group of tools, which can be used as a parameter for `hasTools(name)`                                                                                             |
 | options.reset    | boolean                          |          | `false` | Whether to clear the tool set. By default, tools are appended to the tool set.                                                                                                             |
 | options.local    | boolean                          |          | `false` | Whether the tool is rendered in the node/edge container. By default, it's `false`, and all tools are rendered under `x6-graph-svg-decorator`. Only takes effect when `options.reset` is `true` |

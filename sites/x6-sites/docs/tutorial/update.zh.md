@@ -86,16 +86,16 @@ redirect_from:
 
 ### x6-react-shape 使用
 
-`x6-react-shape` 的使用方式详见[文档](/zh/docs/tutorial/intermediate/react)。
+`x6-react-shape` 的使用方式详见[文档](/tutorial/intermediate/react)。
 
 ### x6-vue-shape 使用
 
-`x6-vue-shape` 的使用方式详见[文档](/zh/docs/tutorial/intermediate/vue)。
+`x6-vue-shape` 的使用方式详见[文档](/tutorial/intermediate/vue)。
 
 ### x6-angular-shape 使用
 
-`x6-angular-shape` 的使用方式详见[文档](/zh/docs/tutorial/intermediate/angular)。
+`x6-angular-shape` 的使用方式详见[文档](/tutorial/intermediate/angular)。
 
 ### 插件使用
 
-插件的使用方式详见[文档](/zh/docs/tutorial/plugins/transform)。
+插件的使用方式详见[文档](/tutorial/plugins/transform)。

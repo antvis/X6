@@ -34,7 +34,7 @@ React/Vue/HTML 渲染方式也存在一些限制，因为浏览器的兼容性�
 
 ## 添加节点
 
-节点和边都有共同的基类 [Cell](/zh/docs/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
+节点和边都有共同的基类 [Cell](/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
 
 | 属性名 | 类型   | 默认值 | 描述                       |
 |--------|--------|--------|--------------------------|
@@ -73,7 +73,7 @@ graph.addNode({
 
 ## 定制节点
 
-我们可以通过 `markup` 和 `attrs` 来定制节点的形状和样式，`markup` 可以类比 `HTML`，`attrs` 类比 `CSS`。强烈建议仔细阅读 [markup](/zh/docs/api/model/cell#markup) 和 [attrs](/zh/docs/api/model/cell#attrs) 文档。
+我们可以通过 `markup` 和 `attrs` 来定制节点的形状和样式，`markup` 可以类比 `HTML`，`attrs` 类比 `CSS`。强烈建议仔细阅读 [markup](/api/model/cell#markup) 和 [attrs](/api/model/cell#attrs) 文档。
 
 接下来我们会遇到一个问题，定制的内容要被多个节点使用，是不是需要每个节点都重新定义一次呢？答案是否定的，X6 提供了便捷的方式，可以让不同的节点复用配置。
 
@@ -83,8 +83,8 @@ graph.addNode({
 
 在渲染完成之后，我们还可以通过 API 修改节点的所有属性。我们会常用到下面两个方法：
 
-- node.prop(path, value)，详细使用见 [prop](/zh/docs/api/model/cell#节点和边的属性-properties)。
-- node.attr(path, value)，详细使用见 [attr](/zh/docs/api/model/cell#元素属性-attrs)。
+- node.prop(path, value)，详细使用见 [prop](/api/model/cell#节点和边的属性-properties)。
+- node.attr(path, value)，详细使用见 [attr](/api/model/cell#元素属性-attrs)。
 
 首先来看 `prop`，我们直接打印 X6 默认 rect 节点的 `prop` 的值。
 
@@ -147,4 +147,4 @@ source.attr('rect/fill', '#ccc') // 修改填充色，等价于 source.prop('att
 
 <code id="node-prop" src="@/src/tutorial/basic/node/prop/index.tsx"></code>
 
-在上面 json 数中，我们可以看到有一些属性 `refWidth`、`refHeight` 并不是 SVG 的原生属性，它们其实是 X6 内置的特殊属性，比如 `refWidth` 就是相对宽度。更多详细的特殊属性参考 [attrs](/zh/docs/api/model/attrs)。
+在上面 json 数中，我们可以看到有一些属性 `refWidth`、`refHeight` 并不是 SVG 的原生属性，它们其实是 X6 内置的特殊属性，比如 `refWidth` 就是相对宽度。更多详细的特殊属性参考 [attrs](/api/model/attrs)。
