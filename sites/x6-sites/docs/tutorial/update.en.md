@@ -86,16 +86,16 @@ Compared to version 1.x, the changes to the external API and configuration are m
 
 ### Using x6-react-shape
 
-For details on using `x6-react-shape`, please refer to the [documentation](/tutorial/intermediate/react).
+For details on using `x6-react-shape`, please refer to the [documentation](/en/tutorial/intermediate/react).
 
 ### Using x6-vue-shape
 
-For details on using `x6-vue-shape`, please refer to the [documentation](/tutorial/intermediate/vue).
+For details on using `x6-vue-shape`, please refer to the [documentation](/en/tutorial/intermediate/vue).
 
 ### Using x6-angular-shape
 
-For details on using `x6-angular-shape`, please refer to the [documentation](/tutorial/intermediate/angular).
+For details on using `x6-angular-shape`, please refer to the [documentation](/en/tutorial/intermediate/angular).
 
 ### Plugin Usage
 
-For details on using plugins, please refer to the [documentation](/tutorial/plugins/transform).
+For details on using plugins, please refer to the [documentation](/en/tutorial/plugins/transform).

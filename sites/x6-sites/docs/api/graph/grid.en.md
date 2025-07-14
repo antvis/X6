@@ -185,7 +185,7 @@ Redraw the grid.
 
 | Name | Type | Required | Default | Description |
 | --- | --- | :-: | --- | --- |
-| type | string |  | `dot` | Grid type. For details, please refer to [here](/en/docs/api/registry/grid). |
+| type | string |  | `dot` | Grid type. For details, please refer to [here](/en/api/registry/grid). |
 | args | object |  | - | Grid parameters corresponding to the grid type. |
 
 ## Custom Grid
