@@ -7,11 +7,11 @@ redirect_from:
   - /en/docs/api/model
 ---
 
-Node is the base class for all nodes, inheriting from [Cell](/api/model/cell), and defines the common properties and methods for nodes.
+Node is the base class for all nodes, inheriting from [Cell](/en/api/model/cell), and defines the common properties and methods for nodes.
 
 ## Attributes
 
-In addition to inheriting from Cell [attributes](/api/model/cell#properties), the following attributes are also supported.
+In addition to inheriting from Cell [attributes](/en/api/model/cell#properties), the following attributes are also supported.
 
 | Option | Type | Default Value | Required | Description |
 | --- | --- | --- | :-: | --- |
@@ -449,7 +449,7 @@ Translates the node along with its child nodes and edges.
 | tx | number |  | `0` | The offset of the node in the X direction. |
 | ty | number |  | `0` | The offset of the node in the Y direction. |
 | options.restrict | Rectangle.RectangleLike |  | `undefined` | Restricts the movable range of the node to the specified rectangular area. |
-| options.transition | boolean \| Animation.Options |  | `false` | Whether to use animation or specify an [animation option](/api/model/cell#transition). |
+| options.transition | boolean \| Animation.Options |  | `false` | Whether to use animation or specify an [animation option](/en/api/model/cell#transition). |
 | options.silent | boolean |  | `false` | When `true`, does not trigger `'change:position'` events and does not redraw the canvas. |
 | options...others | object |  |  | Other custom key-value pairs that can be used in event callbacks. |
 
@@ -471,7 +471,7 @@ child.translate(30, 30, {
 })
 ```
 
-When `options.transition` is `true` or an [animation option](/api/model/cell#transition) is specified, it indicates that animation should be used to translate the node. For more details, please refer to the [Using Animation Documentation](/api/model/cell#transition).
+When `options.transition` is `true` or an [animation option](/en/api/model/cell#transition) is specified, it indicates that animation should be used to translate the node. For more details, please refer to the [Using Animation Documentation](/en/api/model/cell#transition).
 
 ```ts
 // Translate the node using the default animation

@@ -55,7 +55,7 @@ You can set the graph background and grid using the `background` and `grid` conf
 In X6, the grid is the minimum unit for rendering/moving nodes, with a default size of 10px. This means that a node positioned at `{ x: 24, y: 38 }` will actually render at `{ x: 20, y: 40 }` on the graph.
 :::
 
-The background supports not only colors but also background images. For detailed configurations and methods, refer to the [API](/api/graph/background). Additionally, the grid supports four different types and allows configuration of grid line colors and widths. For detailed configurations and methods, refer to the [API](/api/graph/grid).
+The background supports not only colors but also background images. For detailed configurations and methods, refer to the [API](/en/api/graph/background). Additionally, the grid supports four different types and allows configuration of grid line colors and widths. For detailed configurations and methods, refer to the [API](/en/api/graph/grid).
 
 ## Zooming and Panning
 
@@ -73,11 +73,11 @@ Let's experience this through an example:
 
 <code id="panning-mousewheel" src="@/src/tutorial/basic/graph/panning-mousewheel/index.tsx"></code>
 
-Of course, `panning` and `mousewheel` also support many other configurations, such as modifier keys (which must be pressed to trigger the corresponding behavior), zoom factors (rates), etc. We can learn more through the [API](/api/graph/mousewheel).
+Of course, `panning` and `mousewheel` also support many other configurations, such as modifier keys (which must be pressed to trigger the corresponding behavior), zoom factors (rates), etc. We can learn more through the [API](/en/api/graph/mousewheel).
 
 ## Common APIs
 
-In addition to the configurations mentioned above, X6 also provides a rich set of APIs for manipulating graph size and position. Here are some commonly used APIs; for more detailed content, see the [API](/api/graph/transform).
+In addition to the configurations mentioned above, X6 also provides a rich set of APIs for manipulating graph size and position. Here are some commonly used APIs; for more detailed content, see the [API](/en/api/graph/transform).
 
 ```ts
 graph.resize(800, 600) // Resize the graph size

@@ -117,14 +117,14 @@ Whether to allow multiple edges to be created between the same starting and endi
 highlight: boolean
 ```
 
-Whether to highlight all available connection ports or nodes while dragging an edge. The default value is `false`. This is generally used in conjunction with [highlighting](/api/interacting/interacting#highlighting)highlighting
+Whether to highlight all available connection ports or nodes while dragging an edge. The default value is `false`. This is generally used in conjunction with [highlighting](/en/api/interacting/interacting#highlighting)highlighting
 ### anchor
 
 ```typescript
 anchor: NodeAnchorOptions
 ```
 
-When connecting to a node, the anchor point of the connected node is specified through [ `anchor` ](/api/registry/node-anchor), with the default value being `center`.
+When connecting to a node, the anchor point of the connected node is specified through [ `anchor` ](/en/api/registry/node-anchor), with the default value being `center`.
 
 #### sourceAnchor
 
@@ -148,7 +148,7 @@ When connecting to a node, the anchor point of the target node is specified thro
 edgeAnchor: EdgeAnchorOptions
 ```
 
-When connecting to an edge, the anchor point of the connected edge is specified through [ `edgeAnchor` ](/api/registry/edge-anchor), with the default value being `ratio`.
+When connecting to an edge, the anchor point of the connected edge is specified through [ `edgeAnchor` ](/en/api/registry/edge-anchor), with the default value being `ratio`.
 
 ### sourceEdgeAnchor
 
@@ -172,7 +172,7 @@ When connecting to an edge, the anchor point of the target edge is specified thr
 connectionPoint: ConnectionPointOptions
 ```
 
-Specifies the [connection point](/api/registry/connector), with the default value being `boundary`.
+Specifies the [connection point](/en/api/registry/connector), with the default value being `boundary`.
 
 ### sourceConnectionPoint
 
@@ -196,7 +196,7 @@ The connection point of the target.
 router: string | Router.NativeItem | Router.ManaualItem
 ```
 
-The [router](/api/registry/router) further processes the edge's path points `vertices`, adding extra points if necessary, and returns the processed points. The default value is `normal`.
+The [router](/en/api/registry/router) further processes the edge's path points `vertices`, adding extra points if necessary, and returns the processed points. The default value is `normal`.
 
 ### connector
 
@@ -204,7 +204,7 @@ The [router](/api/registry/router) further processes the edge's path points `ver
 connector: string | Connector.NativeItem | Connector.ManaualItem
 ```
 
-The [connector](/api/registry/connector) processes the starting point, the points returned by the router, and the endpoint into the `d` attribute of the `path` element, determining the style of the edge after rendering on the canvas. The default value is `normal`.
+The [connector](/en/api/registry/connector) processes the starting point, the points returned by the router, and the endpoint into the `d` attribute of the `path` element, determining the style of the edge after rendering on the canvas. The default value is `normal`.
 
 ### createEdge
 
@@ -379,7 +379,7 @@ The supported `highlighting` configuration options include:
 - `'magnetAvailable'`: Used when connection ports can be linked during the connection process.
 - `'magnetAdsorbed'`: Used when automatically snapping to connection ports during the connection process.
 
-The `magnetAvailable.name` above is actually the name of the highlighter. X6 has built-in highlighters `stroke` and `className`. For more details, refer to [Highlighter](/api/registry/highlighter).
+The `magnetAvailable.name` above is actually the name of the highlighter. X6 has built-in highlighters `stroke` and `className`. For more details, refer to [Highlighter](/en/api/registry/highlighter).
 
 ## Movement Range
 

@@ -7,10 +7,10 @@ redirect_from:
   - /en/docs/api/registry
 ---
 
-When an edge connects to another edge, you can use EdgeAnchor to specify the anchor point on the connected edge. The anchor point, along with the connection point [ConnectionPoint](/api/registry/connection-point), determines the starting and ending points of the edge.
+When an edge connects to another edge, you can use EdgeAnchor to specify the anchor point on the connected edge. The anchor point, along with the connection point [ConnectionPoint](/en/api/registry/connection-point), determines the starting and ending points of the edge.
 
--  Starting point: Draw a reference line from the first path point or the center of the target node (if there are no path points) to the anchor point of the source node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/api/registry/connection-point). This intersection point is the starting point of the edge.
--  Ending point: Draw a reference line from the last path point or the center of the source node (if there are no path points) to the anchor point of the target node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/api/registry/connection-point). This intersection point is the ending point of the edge.
+-  Starting point: Draw a reference line from the first path point or the center of the target node (if there are no path points) to the anchor point of the source node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/en/api/registry/connection-point). This intersection point is the starting point of the edge.
+-  Ending point: Draw a reference line from the last path point or the center of the source node (if there are no path points) to the anchor point of the target node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/en/api/registry/connection-point). This intersection point is the ending point of the edge.
 
 X6 provides the following built-in anchor point definitions:
 
