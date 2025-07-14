@@ -75,4 +75,4 @@ graph.addEdge({
 })
 ```
 
-当然，X6 还支持非常多的锚点和连接点类型，如果要定制特殊的连接边，可以参考 [NodeAnchor](/zh/docs/api/registry/node-anchor) 和 [ConnectionPoint](/zh/docs/api/registry/connection-point)。
+当然，X6 还支持非常多的锚点和连接点类型，如果要定制特殊的连接边，可以参考 [NodeAnchor](/api/registry/node-anchor) 和 [ConnectionPoint](/api/registry/connection-point)。

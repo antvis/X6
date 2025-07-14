@@ -7,11 +7,11 @@ redirect_from:
   - /zh/docs/api/model
 ---
 
-Edge 是边的基类，继承自 [Cell](/zh/docs/api/model/cell)，并定义了边的通用属性和方法。
+Edge 是边的基类，继承自 [Cell](/api/model/cell)，并定义了边的通用属性和方法。
 
 ## 属性
 
-除了从 Cell 继承[属性](/zh/docs/api/model/cell#属性)外，还支持以下属性。
+除了从 Cell 继承[属性](/api/model/cell#属性)外，还支持以下属性。
 
 | 选项 | 类型 | 默认值 | 必选 | 描述 |
 | --- | --- | --- | :-: | --- |
@@ -56,7 +56,7 @@ Edge 是边的基类，继承自 [Cell](/zh/docs/api/model/cell)，并定义了�
   })
   ```
 
-另外，边的[锚点 anchor](/zh/docs/api/registry/node-anchor) 和[连接点 ConnectionPoint](/zh/docs/api/registry/connection-point) 选项共同确定了边的起点和终点。
+另外，边的[锚点 anchor](/api/registry/node-anchor) 和[连接点 ConnectionPoint](/api/registry/connection-point) 选项共同确定了边的起点和终点。
 
 - 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
 - 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
@@ -117,18 +117,18 @@ const edge = graph.addEdge({
 
 ### router
 
-路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](/zh/docs/api/registry/router#orth) 路由处理后，边的每一条链接线段都是水平或垂直的。
+路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](/api/registry/router#orth) 路由处理后，边的每一条链接线段都是水平或垂直的。
 
 我们默认提供了以下几种路由。
 
 | 路由名称 | 说明 |
 | --- | --- |
-| normal | [默认路由](/zh/docs/api/registry/router#normal)，原样返回路径点。 |
-| orth | [正交路由](/zh/docs/api/registry/router#orth)，由水平或垂直的正交线段组成。 |
-| oneSide | [受限正交路由](/zh/docs/api/registry/router#oneside)，由受限的三段水平或垂直的正交线段组成。 |
-| manhattan | [智能正交路由](/zh/docs/api/registry/router#manhattan)，由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。 |
-| metro | [智能地铁线路由](/zh/docs/api/registry/router#metro)，由水平或垂直的正交线段和斜角线段组成，类似地铁轨道图，并自动避开路径上的其他节点（障碍）。 |
-| er | [实体关系路由](/zh/docs/api/registry/router#er)，由 `Z` 字形的斜角线段组成。 |
+| normal | [默认路由](/api/registry/router#normal)，原样返回路径点。 |
+| orth | [正交路由](/api/registry/router#orth)，由水平或垂直的正交线段组成。 |
+| oneSide | [受限正交路由](/api/registry/router#oneside)，由受限的三段水平或垂直的正交线段组成。 |
+| manhattan | [智能正交路由](/api/registry/router#manhattan)，由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。 |
+| metro | [智能地铁线路由](/api/registry/router#metro)，由水平或垂直的正交线段和斜角线段组成，类似地铁轨道图，并自动避开路径上的其他节点（障碍）。 |
+| er | [实体关系路由](/api/registry/router#er)，由 `Z` 字形的斜角线段组成。 |
 
 可以这样指定路由名称 `name` 和路由参数 `args`：
 
@@ -163,7 +163,7 @@ const edge = graph.addEdge({
 })
 ```
 
-除了上面几种内置路由，我们还可以创建自定义路由，并注册使用，更多细节请参考[自定义路由](/zh/docs/api/registry/router#registry)教程。
+除了上面几种内置路由，我们还可以创建自定义路由，并注册使用，更多细节请参考[自定义路由](/api/registry/router#registry)教程。
 
 ### connector
 
@@ -173,10 +173,10 @@ const edge = graph.addEdge({
 
 | 连接器名称 | 说明 |
 | --- | --- |
-| normal | [简单连接器](/zh/docs/api/registry/connector#normal)，用直线连接起点、路由点和终点。 |
-| smooth | [平滑连接器](/zh/docs/api/registry/connector#smooth)，用三次贝塞尔曲线线连接起点、路由点和终点。 |
-| rounded | [圆角连接器](/zh/docs/api/registry/connector#rounded)，用直线连接起点、路由点和终点，并在线段连接处用圆弧链接（倒圆角）。 |
-| jumpover | [跳线连接器](/zh/docs/api/registry/connector#jumpover)，用直线连接起点、路由点和终点，并在边与边的交叉处用跳线符号链接。 |
+| normal | [简单连接器](/api/registry/connector#normal)，用直线连接起点、路由点和终点。 |
+| smooth | [平滑连接器](/api/registry/connector#smooth)，用三次贝塞尔曲线线连接起点、路由点和终点。 |
+| rounded | [圆角连接器](/api/registry/connector#rounded)，用直线连接起点、路由点和终点，并在线段连接处用圆弧链接（倒圆角）。 |
+| jumpover | [跳线连接器](/api/registry/connector#jumpover)，用直线连接起点、路由点和终点，并在边与边的交叉处用跳线符号链接。 |
 
 可以这样指定连接器名称 `name` 和路由参数 `args`：
 
@@ -211,11 +211,11 @@ const edge = graph.addEdge({
 })
 ```
 
-除了上面几种内置连接器，我们还可以创建自定义连接器，并注册使用，更多细节请参考[自定义连接器](/zh/docs/api/registry/connector#registry)教程。
+除了上面几种内置连接器，我们还可以创建自定义连接器，并注册使用，更多细节请参考[自定义连接器](/api/registry/connector#registry)教程。
 
 ### labels 和 defaultLabel
 
-由于标签配置非常灵活，所以我们提供了单独的教程来介绍如何使用标签，详情请参考[使用标签](/zh/docs/api/model/labels)教程。
+由于标签配置非常灵活，所以我们提供了单独的教程来介绍如何使用标签，详情请参考[使用标签](/api/model/labels)教程。
 
 ## 方法
 

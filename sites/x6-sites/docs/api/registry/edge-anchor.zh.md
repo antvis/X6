@@ -7,10 +7,10 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-当边连接到边时，可以通过 EdgeAnchor 来指定被连接的边上的锚点，锚点与连接点 [ConnectionPoint](/zh/docs/api/registry/connection-point) 共同确定了边的起点和终点。
+当边连接到边时，可以通过 EdgeAnchor 来指定被连接的边上的锚点，锚点与连接点 [ConnectionPoint](/api/registry/connection-point) 共同确定了边的起点和终点。
 
-- 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 [connectionPoint](/zh/docs/api/registry/connection-point) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
-- 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 [connectionPoint](/zh/docs/api/registry/connection-point) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
+- 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 [connectionPoint](/api/registry/connection-point) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
+- 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 [connectionPoint](/api/registry/connection-point) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
 
 X6 内置了以下几种锚点定义。
 

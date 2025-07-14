@@ -7,10 +7,10 @@ redirect_from:
   - /en/docs/api/registry
 ---
 
-When connecting to a node, you can specify the anchor point of the connected node using `NodeAnchor`, which, together with the connection point [ConnectionPoint](/en/docs/api/registry/connection-point), determines the starting and ending points of the edge.
+When connecting to a node, you can specify the anchor point of the connected node using `NodeAnchor`, which, together with the connection point [ConnectionPoint](/api/registry/connection-point), determines the starting and ending points of the edge.
 
--  Starting point: Draw a reference line from the first path point or the center of the target node (when there is no path point) to the anchor point of the source node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/en/docs/api/registry/connection-point), which is the starting point of the edge.
--  Ending point: Draw a reference line from the last path point or the center of the source node (when there is no path point) to the anchor point of the target node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/en/docs/api/registry/connection-point), which is the ending point of the edge.
+-  Starting point: Draw a reference line from the first path point or the center of the target node (when there is no path point) to the anchor point of the source node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/api/registry/connection-point), which is the starting point of the edge.
+-  Ending point: Draw a reference line from the last path point or the center of the source node (when there is no path point) to the anchor point of the target node, and then calculate the intersection point of the reference line and the graph according to the intersection calculation method specified by [connectionPoint](/api/registry/connection-point), which is the ending point of the edge.
 
 X6 has built-in the following anchor point definitions.
 
