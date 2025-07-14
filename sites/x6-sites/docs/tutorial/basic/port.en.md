@@ -67,7 +67,7 @@ The following example code clearly shows how to define connection ports.
 
 ## Modifying Connection Ports
 
-There is a rich [API](/en/docs/api/model/node#connection-ports) for adding, deleting, and modifying connection ports on nodes.
+There is a rich [API](/api/model/node#connection-ports) for adding, deleting, and modifying connection ports on nodes.
 
 ```ts
 // Add a connection port
@@ -93,30 +93,30 @@ node.portProp(portId, 'attrs/circle/stroke', color)
 
 The layout algorithm for connection ports can only be specified through the `position` option in `groups`, as the layout algorithm needs to consider all connection ports in the group when calculating their positions. We can influence the layout result of a single connection port through the `args` option.
 
-We provide the following layout algorithms for connection ports by default, and also support [custom connection port layout algorithms and registration](/en/docs/api/registry/port-layout#registry). Click the links below to learn how to use each layout algorithm.
+We provide the following layout algorithms for connection ports by default, and also support [custom connection port layout algorithms and registration](/api/registry/port-layout#registry). Click the links below to learn how to use each layout algorithm.
 
-- [`absolute`](/en/docs/api/registry/port-layout#absolute) Absolute positioning.
-- [`left`](/en/docs/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the left side of rectangular nodes.
-- [`right`](/en/docs/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the right side of rectangular nodes.
-- [`top`](/en/docs/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the top of rectangular nodes.
-- [`bottom`](/en/docs/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the bottom of rectangular nodes.
-- [`line`](/en/docs/api/registry/port-layout#line) Evenly distributed along a specified line.
-- [`ellipse`](/en/docs/api/registry/port-layout#ellipse) Distributed along an elliptical arc.
-- [`ellipseSpread`](/en/docs/api/registry/port-layout#ellipsespread) Evenly distributed along an ellipse.
+- [`absolute`](/api/registry/port-layout#absolute) Absolute positioning.
+- [`left`](/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the left side of rectangular nodes.
+- [`right`](/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the right side of rectangular nodes.
+- [`top`](/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the top of rectangular nodes.
+- [`bottom`](/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the bottom of rectangular nodes.
+- [`line`](/api/registry/port-layout#line) Evenly distributed along a specified line.
+- [`ellipse`](/api/registry/port-layout#ellipse) Distributed along an elliptical arc.
+- [`ellipseSpread`](/api/registry/port-layout#ellipsespread) Evenly distributed along an ellipse.
 
 ## Connection Port Label Position
 
 The position of the label can be specified in both the `label.position` option of `groups` and the `items.label.position` option of the node.
 
-We provide the following label positions by default, and also support [custom label positions and registration](/en/docs/api/registry/port-label-layout#registry). Click the links below to learn how to use each label position.
+We provide the following label positions by default, and also support [custom label positions and registration](/api/registry/port-label-layout#registry). Click the links below to learn how to use each label position.
 
-- [`left`](/en/docs/api/registry/port-label-layout#side) The label is located on the left side of the connection port.
-- [`right`](/en/docs/api/registry/port-label-layout#side) The label is located on the right side of the connection port.
-- [`top`](/en/docs/api/registry/port-label-layout#side) The label is located above the connection port.
-- [`bottom`](/en/docs/api/registry/port-label-layout#side) The label is located below the connection port.
-- [`inside`](/en/docs/api/registry/port-label-layout#insideoutside) The label is located inside the node (close to the edge).
-- [`outside`](/en/docs/api/registry/port-label-layout#insideoutside) The label is located outside the node (close to the edge).
-- [`insideOriented`](/en/docs/api/registry/port-label-layout#insideoutside) The label is located inside the node and automatically adjusts the text direction based on its position.
-- [`outsideOriented`](/en/docs/api/registry/port-label-layout#insideoutside) The label is located outside the node and automatically adjusts the text direction based on its position.
-- [`radial`](/en/docs/api/registry/port-label-layout#radial) The label is located outside circular or elliptical nodes.
-- [`radialOriented`](/en/docs/api/registry/port-label-layout#radial) The label is located outside circular or elliptical nodes and the label text automatically rotates along the arc direction.
+- [`left`](/api/registry/port-label-layout#side) The label is located on the left side of the connection port.
+- [`right`](/api/registry/port-label-layout#side) The label is located on the right side of the connection port.
+- [`top`](/api/registry/port-label-layout#side) The label is located above the connection port.
+- [`bottom`](/api/registry/port-label-layout#side) The label is located below the connection port.
+- [`inside`](/api/registry/port-label-layout#insideoutside) The label is located inside the node (close to the edge).
+- [`outside`](/api/registry/port-label-layout#insideoutside) The label is located outside the node (close to the edge).
+- [`insideOriented`](/api/registry/port-label-layout#insideoutside) The label is located inside the node and automatically adjusts the text direction based on its position.
+- [`outsideOriented`](/api/registry/port-label-layout#insideoutside) The label is located outside the node and automatically adjusts the text direction based on its position.
+- [`radial`](/api/registry/port-label-layout#radial) The label is located outside circular or elliptical nodes.
+- [`radialOriented`](/api/registry/port-label-layout#radial) The label is located outside circular or elliptical nodes and the label text automatically rotates along the arc direction.

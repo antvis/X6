@@ -87,7 +87,7 @@ export default defineConfig({
         order: 4,
       },
       {
-        slug: 'docs/xflow/guide/introduction.md',
+        slug: 'docs/xflow/guide/introduction',
         title: {
           zh: 'XFlow',
           en: 'XFlow',

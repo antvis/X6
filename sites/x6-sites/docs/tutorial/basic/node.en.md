@@ -34,7 +34,7 @@ The following introduction is based on `SVG` nodes, but the usage of other rende
 
 ## Adding Nodes
 
-Both nodes and edges share a common base class [Cell](/en/docs/api/model/cell). In addition to inheriting properties from `Cell`, they also support the following options.
+Both nodes and edges share a common base class [Cell](/api/model/cell). In addition to inheriting properties from `Cell`, they also support the following options.
 
 | Property Name | Type   | Default Value | Description                       |
 |---------------|--------|---------------|-----------------------------------|
@@ -73,7 +73,7 @@ The above example uses `shape` to specify the node's graphic, with the default v
 
 ## Customizing Nodes
 
-We can customize the shape and style of nodes using `markup` and `attrs`, where `markup` is analogous to `HTML` and `attrs` is analogous to `CSS`. It is strongly recommended to read the documentation on [markup](/en/docs/api/model/cell#markup) and [attrs](/en/docs/api/model/cell#attrs) carefully.
+We can customize the shape and style of nodes using `markup` and `attrs`, where `markup` is analogous to `HTML` and `attrs` is analogous to `CSS`. It is strongly recommended to read the documentation on [markup](/api/model/cell#markup) and [attrs](/api/model/cell#attrs) carefully.
 
 Next, we may encounter a problem: if the customized content needs to be used by multiple nodes, do we need to redefine it for each node? The answer is no. X6 provides a convenient way to allow different nodes to reuse configurations.
 
@@ -83,8 +83,8 @@ Next, we may encounter a problem: if the customized content needs to be used by 
 
 After rendering is complete, we can also modify all properties of a node through the API. The two methods we commonly use are:
 
-- node.prop(path, value), for detailed usage see [prop](/en/docs/api/model/cell#node-and-edge-properties-properties).
-- node.attr(path, value), for detailed usage see [attr](/en/docs/api/model/cell#element-attributes-attrs).
+- node.prop(path, value), for detailed usage see [prop](/api/model/cell#node-and-edge-properties-properties).
+- node.attr(path, value), for detailed usage see [attr](/api/model/cell#element-attributes-attrs).
 
 First, let's look at `prop`. We will directly print the `prop` values of the default rect node in X6.
 
@@ -147,4 +147,4 @@ source.attr('rect/fill', '#ccc') // Modify fill color, equivalent to source.prop
 
 <code id="node-prop" src="@/src/tutorial/basic/node/prop/index.tsx"></code>
 
-In the above JSON output, we can see that some properties like `refWidth` and `refHeight` are not native SVG properties. They are actually special properties built into X6, such as `refWidth`, which represents relative width. For more detailed special properties, refer to [attrs](/en/docs/api/model/attrs).
+In the above JSON output, we can see that some properties like `refWidth` and `refHeight` are not native SVG properties. They are actually special properties built into X6, such as `refWidth`, which represents relative width. For more detailed special properties, refer to [attrs](/api/model/attrs).
