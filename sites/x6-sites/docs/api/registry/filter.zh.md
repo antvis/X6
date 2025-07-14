@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-我们可以使用 [filter](/zh/docs/api/registry/attr#filter) 这个特殊属性来为元素指定 [SVG 滤镜](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Filter_effects)，像下面这样，为该元素的 `filter` 属性指定一个预定义的对象，其中 `name` 和 `args` 分别指定了滤镜名称和滤镜参数。
+我们可以使用 [filter](/api/registry/attr#filter) 这个特殊属性来为元素指定 [SVG 滤镜](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Filter_effects)，像下面这样，为该元素的 `filter` 属性指定一个预定义的对象，其中 `name` 和 `args` 分别指定了滤镜名称和滤镜参数。
 
 ```ts
 // 创建节点是通过 attrs 选项指定滤镜

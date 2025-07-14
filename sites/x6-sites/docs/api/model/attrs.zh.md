@@ -13,11 +13,11 @@ redirect_from:
 
 在定制节点或边时，设置元素的相对大小是一个非常常见需求，我们在 X6 中提供了一系列以 `ref` 为前缀特殊属性，可以通过这些属性来为元素设置相对大小，同时这些属性的计算都是基于节点/边的数据大小，也就是说所有计算都不依赖浏览器的 bbox 计算，所以不存在任何性能问题。
 
-- [`refWidth`](/zh/docs/api/registry/attr#refwidth) 和 [`refHeight`](/zh/docs/api/registry/attr#refheight) 元素大小。
-- [`refX`](/zh/docs/api/registry/attr#refx) 和 [`refY`](/zh/docs/api/registry/attr#refy) 元素位置。
-- [`refCx`](/zh/docs/api/registry/attr#refcx) 和 [`refCy`](/zh/docs/api/registry/attr#refcy) 椭圆 `<ellipse>` 和圆 `<circle>` 中心位置。
-- [`refRx`](/zh/docs/api/registry/attr#refrx) 和 [`refRy`](/zh/docs/api/registry/attr#refry) 椭圆 `<ellipse>` 半径。
-- [`refR`](/zh/docs/api/registry/attr#refr) 圆 `<circle>` 半径。
+- [`refWidth`](/api/registry/attr#refwidth) 和 [`refHeight`](/api/registry/attr#refheight) 元素大小。
+- [`refX`](/api/registry/attr#refx) 和 [`refY`](/api/registry/attr#refy) 元素位置。
+- [`refCx`](/api/registry/attr#refcx) 和 [`refCy`](/api/registry/attr#refcy) 椭圆 `<ellipse>` 和圆 `<circle>` 中心位置。
+- [`refRx`](/api/registry/attr#refrx) 和 [`refRy`](/api/registry/attr#refry) 椭圆 `<ellipse>` 半径。
+- [`refR`](/api/registry/attr#refr) 圆 `<circle>` 半径。
 
 接下来我们一起来看看如何使用这些相对属性。下面案例中，我们定一个红色椭圆 `e`、一个绿色矩形 `r`、和蓝色圆形 `c` 和一个表示节点大小的矩形 `outline`。
 
@@ -105,11 +105,11 @@ graph.addNode({
 
 我们提供了下面几个属性来设置边以及相对于边的位置。
 
-- [`connection`](/zh/docs/api/registry/attr#connection) 仅适用于边的 `<path>` 元素，当该属性为 `true` 时，表示将在该元素上渲染边。
-- [`atConnectionLength`](/zh/docs/api/registry/attr#atconnectionlengthkeepgradient) 是 [`atConnectionLengthKeepGradient`](/zh/docs/api/registry/attr#atconnectionlengthkeepgradient) 属性的简称，表示将指定元素移动到指定的偏移量的位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
-- [`atConnectionRatio`](/zh/docs/api/registry/attr#atconnectionratiokeepgradient) 是 [`atConnectionRatioKeepGradient`](/zh/docs/api/registry/attr#atconnectionratiokeepgradient) 属性的简称，表示将指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
-- [`atConnectionLengthIgnoreGradient`](/zh/docs/api/registry/attr#atconnectionlengthignoregradient) 将指定元素移动到指定偏移量的位置处，忽略边的斜率，即不会跟随边自动旋转。
-- [`atConnectionRatioIgnoreGradient`](/zh/docs/api/registry/attr#atconnectionratioignoregradient)，将指定元素移动到指定比例 `[0, 1]` 位置处，忽略边的斜率，即不会跟随边自动旋转。
+- [`connection`](/api/registry/attr#connection) 仅适用于边的 `<path>` 元素，当该属性为 `true` 时，表示将在该元素上渲染边。
+- [`atConnectionLength`](/api/registry/attr#atconnectionlengthkeepgradient) 是 [`atConnectionLengthKeepGradient`](/api/registry/attr#atconnectionlengthkeepgradient) 属性的简称，表示将指定元素移动到指定的偏移量的位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
+- [`atConnectionRatio`](/api/registry/attr#atconnectionratiokeepgradient) 是 [`atConnectionRatioKeepGradient`](/api/registry/attr#atconnectionratiokeepgradient) 属性的简称，表示将指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
+- [`atConnectionLengthIgnoreGradient`](/api/registry/attr#atconnectionlengthignoregradient) 将指定元素移动到指定偏移量的位置处，忽略边的斜率，即不会跟随边自动旋转。
+- [`atConnectionRatioIgnoreGradient`](/api/registry/attr#atconnectionratioignoregradient)，将指定元素移动到指定比例 `[0, 1]` 位置处，忽略边的斜率，即不会跟随边自动旋转。
 
 ```ts
 graph.addEdge({
@@ -202,4 +202,4 @@ graph.addEdge({
 
 ## 使用箭头
 
-我们可以使用 [`sourceMarker`](/zh/docs/api/registry/attr#sourcemarker) 和 [`targetMarker`](/zh/docs/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](/zh/docs/api/model/marker)。
+我们可以使用 [`sourceMarker`](/api/registry/attr#sourcemarker) 和 [`targetMarker`](/api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](/api/model/marker)。

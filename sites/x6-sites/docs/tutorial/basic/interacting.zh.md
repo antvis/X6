@@ -18,7 +18,7 @@ redirect_from:
 
 ## 连线
 
-连线交互规则都是通过 `connecting` 配置来完成，完整的配置参考 [API](/zh/docs/api/interacting/interacting#连线)。下面介绍一些常用的功能。
+连线交互规则都是通过 `connecting` 配置来完成，完整的配置参考 [API](/api/interacting/interacting#连线)。下面介绍一些常用的功能。
 
 ### allowXXX
 
@@ -58,7 +58,7 @@ new Graph({
 
 ### router/connector
 
-在[边教程](/zh/docs/tutorial/basic/edge#router)中我们知道，可以在添加边的时候指定 `router` 和 `connector`，如果整个画布中大部分边的 `router` 或者 `connector` 是一样的，我们可以直接配置在 `connecting` 中，这样就可以避免在边中重复配置。
+在[边教程](/tutorial/basic/edge#router)中我们知道，可以在添加边的时候指定 `router` 和 `connector`，如果整个画布中大部分边的 `router` 或者 `connector` 是一样的，我们可以直接配置在 `connecting` 中，这样就可以避免在边中重复配置。
 
 ```ts
 new Graph({
@@ -96,14 +96,14 @@ new Graph({
 我们还可以通过 `validateXXX` 方法来定义是否能创建连线或者连线是否有效。相比 `allowXXX`，`validateXXX` 更具备灵活性。默认支持以下项：
 
 - `validateMagnet`：点击 `magnet=true` 的元素时 根据 `validateMagnet` 返回值来判断是否新增边，触发时机是元素被按下，如果返回 `false`，则没有任何反应，如果返回 `true`，会在当前元素创建一条新的边。
-- `validateConnection`：在移动边的时候判断连接是否有效，如果返回 `false`，当鼠标放开的时候，不会连接到当前元素，常常配合[高亮](/zh/docs/tutorial/basic/interacting#高亮)功能一起使用。
+- `validateConnection`：在移动边的时候判断连接是否有效，如果返回 `false`，当鼠标放开的时候，不会连接到当前元素，常常配合[高亮](/tutorial/basic/interacting#高亮)功能一起使用。
 - `validateEdge`：当停止拖动边的时候根据 `validateEdge` 返回值来判断边是否生效，如果返回 `false`, 该边会被清除。
 
 <code id="interacting-validate" src="@/src/tutorial/basic/interacting/validate/index.tsx"></code>
 
 ## 组合
 
-有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/zh/docs/api/interacting/interacting#组合)。
+有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/api/interacting/interacting#组合)。
 
 ```ts
 const graph = new Graph({
@@ -169,7 +169,7 @@ new Graph({
 - `magnetAvailable` 连线过程中，连接桩可以被链接时被使用。
 - `magnetAdsorbed` 连线过程中，自动吸附到连接桩时被使用。
 
-上面 `magnetAvailable.name` 其实是高亮器的名称，X6 内置了 `stroke` 和 `className` 两种高亮器，详细信息参考 [Highlighter](/zh/docs/api/registry/highlighter)。
+上面 `magnetAvailable.name` 其实是高亮器的名称，X6 内置了 `stroke` 和 `className` 两种高亮器，详细信息参考 [Highlighter](/api/registry/highlighter)。
 
 <code id="interacting-highlighting" src="@/src/tutorial/basic/interacting/highlighting/index.tsx"></code>
 
