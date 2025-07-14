@@ -7,11 +7,11 @@ redirect_from:
   - /en/docs/api/model
 ---
 
-Edge is the base class for edges, inheriting from [Cell](/api/model/cell), and defines the common properties and methods for edges.
+Edge is the base class for edges, inheriting from [Cell](/en/api/model/cell), and defines the common properties and methods for edges.
 
 ## Attributes
 
-In addition to inheriting from Cell [attributes](/api/model/cell#properties), the following attributes are also supported.
+In addition to inheriting from Cell [attributes](/en/api/model/cell#properties), the following attributes are also supported.
 
 | Option      | Type                     | Default Value | Required | Description                                      |
 |-------------|--------------------------|---------------|:--------:|--------------------------------------------------|
@@ -56,7 +56,7 @@ Setting the starting/ending point or source/target node of an edge can be catego
   })
   ```
 
-Additionally, the edge's [anchor points](/api/registry/node-anchor) and [connection points](/api/registry/connection-point) options together determine the starting and ending points of the edge.
+Additionally, the edge's [anchor points](/en/api/registry/node-anchor) and [connection points](/en/api/registry/connection-point) options together determine the starting and ending points of the edge.
 
 - Starting Point: A reference line is drawn from the first path point or the center of the target node (if there are no path points) to the anchor point of the source node. Then, based on the intersection calculation method specified by the connectionPoint, the intersection of the reference line and the shape is calculated, which becomes the starting point of the edge.
 - Ending Point: A reference line is drawn from the last path point or the center of the source node (if there are no path points) to the anchor point of the target node. Then, based on the intersection calculation method specified by the connectionPoint, the intersection of the reference line and the shape is calculated, which becomes the ending point of the edge.
@@ -117,18 +117,18 @@ const edge = graph.addEdge({
 
 ### Router
 
-The router `router` will further process the `vertices`, adding additional points if necessary, and return the processed points (excluding the starting and ending points of the edge). For example, after processing with the [`orth`](/api/registry/router#orth) router, each link segment of the edge is either horizontal or vertical.
+The router `router` will further process the `vertices`, adding additional points if necessary, and return the processed points (excluding the starting and ending points of the edge). For example, after processing with the [`orth`](/en/api/registry/router#orth) router, each link segment of the edge is either horizontal or vertical.
 
 We provide the following default routers.
 
 | Router Name | Description                                      |
 |-------------|--------------------------------------------------|
-| normal      | [Default router](/api/registry/router#normal), returns the path points as is. |
-| orth        | [Orthogonal router](/api/registry/router#orth), consists of horizontal or vertical orthogonal segments. |
-| oneSide     | [Restricted orthogonal router](/api/registry/router#oneside), consists of three restricted horizontal or vertical orthogonal segments. |
-| manhattan   | [Smart orthogonal router](/api/registry/router#manhattan), consists of horizontal or vertical orthogonal segments and automatically avoids other nodes (obstacles) along the path. |
-| metro       | [Smart subway line router](/api/registry/router#metro), consists of horizontal or vertical orthogonal segments and diagonal segments, similar to a subway map, and automatically avoids other nodes (obstacles) along the path. |
-| er          | [Entity-relationship router](/api/registry/router#er), consists of `Z` shaped diagonal segments. |
+| normal      | [Default router](/en/api/registry/router#normal), returns the path points as is. |
+| orth        | [Orthogonal router](/en/api/registry/router#orth), consists of horizontal or vertical orthogonal segments. |
+| oneSide     | [Restricted orthogonal router](/en/api/registry/router#oneside), consists of three restricted horizontal or vertical orthogonal segments. |
+| manhattan   | [Smart orthogonal router](/en/api/registry/router#manhattan), consists of horizontal or vertical orthogonal segments and automatically avoids other nodes (obstacles) along the path. |
+| metro       | [Smart subway line router](/en/api/registry/router#metro), consists of horizontal or vertical orthogonal segments and diagonal segments, similar to a subway map, and automatically avoids other nodes (obstacles) along the path. |
+| er          | [Entity-relationship router](/en/api/registry/router#er), consists of `Z` shaped diagonal segments. |
 
 You can specify the router name `name` and router parameters `args` like this:
 
@@ -163,7 +163,7 @@ const edge = graph.addEdge({
 })
 ```
 
-In addition to the built-in routers mentioned above, we can also create custom routers and register them for use. For more details, please refer to the [Custom Router](/api/registry/router#registry) tutorial.
+In addition to the built-in routers mentioned above, we can also create custom routers and register them for use. For more details, please refer to the [Custom Router](/en/api/registry/router#registry) tutorial.
 
 ### Connector
 
@@ -173,10 +173,10 @@ We provide the following default connectors.
 
 | Connector Name | Description                                      |
 |----------------|--------------------------------------------------|
-| normal         | [Simple connector](/api/registry/connector#normal), connects the starting point, routing points, and ending point with straight lines. |
-| smooth         | [Smooth connector](/api/registry/connector#smooth), connects the starting point, routing points, and ending point with cubic Bezier curves. |
-| rounded        | [Rounded connector](/api/registry/connector#rounded), connects the starting point, routing points, and ending point with straight lines and uses arcs to link at the segment connections (rounded corners). |
-| jumpover       | [Jump line connector](/api/registry/connector#jumpover), connects the starting point, routing points, and ending point with straight lines and uses jump line symbols at the intersections of edges. |
+| normal         | [Simple connector](/en/api/registry/connector#normal), connects the starting point, routing points, and ending point with straight lines. |
+| smooth         | [Smooth connector](/en/api/registry/connector#smooth), connects the starting point, routing points, and ending point with cubic Bezier curves. |
+| rounded        | [Rounded connector](/en/api/registry/connector#rounded), connects the starting point, routing points, and ending point with straight lines and uses arcs to link at the segment connections (rounded corners). |
+| jumpover       | [Jump line connector](/en/api/registry/connector#jumpover), connects the starting point, routing points, and ending point with straight lines and uses jump line symbols at the intersections of edges. |
 
 You can specify the connector name `name` and connector parameters `args` like this:
 
@@ -211,11 +211,11 @@ const edge = graph.addEdge({
 })
 ```
 
-In addition to the built-in connectors mentioned above, we can also create custom connectors and register them for use. For more details, please refer to the [Custom Connector](/api/registry/connector#registry) tutorial.
+In addition to the built-in connectors mentioned above, we can also create custom connectors and register them for use. For more details, please refer to the [Custom Connector](/en/api/registry/connector#registry) tutorial.
 
 ### Labels and Default Label
 
-Due to the flexibility of label configuration, we provide a separate tutorial to explain how to use labels. For details, please refer to the [Using Labels](/api/model/labels) tutorial.
+Due to the flexibility of label configuration, we provide a separate tutorial to explain how to use labels. For details, please refer to the [Using Labels](/en/api/model/labels) tutorial.
 
 ## Methods
 

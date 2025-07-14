@@ -75,4 +75,4 @@ graph.addEdge({
 })
 ```
 
-Of course, X6 also supports a wide variety of anchor and connection point types. If you want to customize special connection edges, you can refer to [NodeAnchor](/api/registry/node-anchor) and [ConnectionPoint](/api/registry/connection-point).
+Of course, X6 also supports a wide variety of anchor and connection point types. If you want to customize special connection edges, you can refer to [NodeAnchor](/en/api/registry/node-anchor) and [ConnectionPoint](/en/api/registry/connection-point).
