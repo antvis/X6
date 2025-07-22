@@ -13,13 +13,13 @@ Before we begin, let's briefly understand a few methods for manipulating labels 
 
 | Method Signature                                                   | Description          |
 |-------------------------------------------------------------------|---------------------|
-| [edge.getLabels()](/en/docs/api/model/edge#getlabels)            | Get all labels.     |
-| [edge.setLabels(...)](/en/docs/api/model/edge#setlabels)         | Set labels.         |
-| [edge.insertLabel(...)](/en/docs/api/model/edge#insertlabel)     | Insert a label at a specified position. |
-| [edge.appendLabel(...)](/en/docs/api/model/edge#appendlabel)     | Append a label at the end. |
-| [edge.setLabelAt(...)](/en/docs/api/model/edge#setlabelat)       | Set a label at a specified position. |
-| [edge.getLabelAt(...)](/en/docs/api/model/edge#getlabelat)       | Get a label at a specified position. |
-| [edge.removeLabelAt(...)](/en/docs/api/model/edge#removelabelat) | Remove a label at a specified position. |
+| [edge.getLabels()](/en/api/model/edge#getlabels)            | Get all labels.     |
+| [edge.setLabels(...)](/en/api/model/edge#setlabels)         | Set labels.         |
+| [edge.insertLabel(...)](/en/api/model/edge#insertlabel)     | Insert a label at a specified position. |
+| [edge.appendLabel(...)](/en/api/model/edge#appendlabel)     | Append a label at the end. |
+| [edge.setLabelAt(...)](/en/api/model/edge#setlabelat)       | Set a label at a specified position. |
+| [edge.getLabelAt(...)](/en/api/model/edge#getlabelat)       | Get a label at a specified position. |
+| [edge.removeLabelAt(...)](/en/api/model/edge#removelabelat) | Remove a label at a specified position. |
 
 ## Label Definition
 
@@ -60,7 +60,7 @@ interface Label {
 
 ## Default Label
 
-When creating an Edge, you can set the default label using the [defaultLabel option](/en/docs/tutorial/basic/edge#defaultlabel), with the default value as follows:
+When creating an Edge, you can set the default label using the [defaultLabel option](/en/tutorial/basic/edge#defaultlabel), with the default value as follows:
 
 ```ts
 {
@@ -523,7 +523,7 @@ Edge.parseStringLabel = (label: string) => {
 
 ## Single Label
 
-Most edges only have at most one label, so we define a [custom option](/en/docs/tutorial/basic/cell#custom-options) `label` for `Edge` to support passing a single label.
+Most edges only have at most one label, so we define a [custom option](/en/tutorial/basic/cell#custom-options) `label` for `Edge` to support passing a single label.
 
 ```ts
 graph.addEdge({

@@ -19,7 +19,7 @@ redirect_from:
 
 ## Adding Edges
 
-Both nodes and edges share a common base class [Cell](/en/docs/api/model/cell). In addition to inheriting properties from `Cell`, edges support the following options.
+Both nodes and edges share a common base class [Cell](/en/api/model/cell). In addition to inheriting properties from `Cell`, edges support the following options.
 
 | Property Name  | Type               | Default Value                                   | Description          |
 |----------------|--------------------|------------------------------------------------|----------------------|
@@ -29,7 +29,7 @@ Both nodes and edges share a common base class [Cell](/en/docs/api/model/cell). 
 | router         | RouterData         | -                                              | Router.              |
 | connector      | ConnectorData      | -                                              | Connector.           |
 | labels         | Label[]            | -                                              | Labels.              |
-| defaultLabel   | Label              | [Default Label](/en/docs/api/model/labels#default-label) | Default label.       |
+| defaultLabel   | Label              | [Default Label](/en/api/model/labels#default-label) | Default label.       |
 
 ```ts
 graph.addEdge({
@@ -88,7 +88,7 @@ graph.addEdge({
 
 ### router
 
-The `router` will further process the `vertices`, adding additional points if necessary, and then return the processed points. For example, after processing with [orth routing](/en/docs/api/registry/router#orth), each link segment of the edge will be horizontal or vertical.
+The `router` will further process the `vertices`, adding additional points if necessary, and then return the processed points. For example, after processing with [orth routing](/en/api/registry/router#orth), each link segment of the edge will be horizontal or vertical.
 
 ```ts
 graph.addEdge({
@@ -110,14 +110,14 @@ graph.addEdge({
 
 X6 provides the following routing options by default. Click the links below to see how each routing option is used.
 
-- [normal](/en/docs/api/registry/router#normal)
-- [orth](/en/docs/api/registry/router#orth)
-- [oneSide](/en/docs/api/registry/router#oneside)
-- [manhattan](/en/docs/api/registry/router#manhattan)
-- [metro](/en/docs/api/registry/router#metro)
-- [er](/en/docs/api/registry/router#er)
+- [normal](/en/api/registry/router#normal)
+- [orth](/en/api/registry/router#orth)
+- [oneSide](/en/api/registry/router#oneside)
+- [manhattan](/en/api/registry/router#manhattan)
+- [metro](/en/api/registry/router#metro)
+- [er](/en/api/registry/router#er)
 
-Additionally, we can register custom routers. For more details, please refer to the [Custom Router](/en/docs/api/registry/router#registry) tutorial.
+Additionally, we can register custom routers. For more details, please refer to the [Custom Router](/en/api/registry/router#registry) tutorial.
 
 ### connector
 
@@ -144,16 +144,16 @@ graph.addEdge({
 
 X6 provides the following connector options by default. Click the links below to see how each connector is used.
 
-- [normal](/en/docs/api/registry/connector#normal)
-- [rounded](/en/docs/api/registry/connector#rounded)
-- [smooth](/en/docs/api/registry/connector#smooth)
-- [jumpover](/en/docs/api/registry/connector#jumpover)
+- [normal](/en/api/registry/connector#normal)
+- [rounded](/en/api/registry/connector#rounded)
+- [smooth](/en/api/registry/connector#smooth)
+- [jumpover](/en/api/registry/connector#jumpover)
 
-Additionally, we can register custom connectors. For more details, please refer to the [Custom Connector](/en/docs/api/registry/connector#register) tutorial.
+Additionally, we can register custom connectors. For more details, please refer to the [Custom Connector](/en/api/registry/connector#register) tutorial.
 
 ### labels
 
-Used to set label text, position, style, etc. Supports multiple labels in array form, and each item specified in `labels` will be used after being [merged](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the [defaultLabel](/en/docs/api/model/labels#default-label).
+Used to set label text, position, style, etc. Supports multiple labels in array form, and each item specified in `labels` will be used after being [merged](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the [defaultLabel](/en/api/model/labels#default-label).
 
 ```ts
 const edge = graph.addEdge({
@@ -185,7 +185,7 @@ const edge = graph.addEdge({
 
 <code id="edge-labels" src="@/src/tutorial/basic/edge/labels/index.tsx"></code>
 
-In addition to setting text, you can also create complex shapes on the edge using Label, which we will detail in the [API](/en/docs/api/model/labels).
+In addition to setting text, you can also create complex shapes on the edge using Label, which we will detail in the [API](/en/api/model/labels).
 
 ### defaultLabel
 
@@ -199,15 +199,15 @@ We define two special properties, `sourceMarker` and `targetMarker`, to customiz
 
 X6 provides the following built-in arrows. When using them, you only need to specify the arrow name and parameters (optional).
 
-- [block](/en/docs/api/model/marker#block)
-- [classic](/en/docs/api/model/marker#classic)
-- [diamond](/en/docs/api/model/marker#diamond)
-- [cross](/en/docs/api/model/marker#cross)
-- [async](/en/docs/api/model/marker#async)
-- [path](/en/docs/api/model/marker#path)
-- [circle](/en/docs/api/model/marker#circle)
-- [circlePlus](/en/docs/api/model/marker#circleplus)
-- [ellipse](/en/docs/api/model/marker#ellipse)
+- [block](/en/api/model/marker#block)
+- [classic](/en/api/model/marker#classic)
+- [diamond](/en/api/model/marker#diamond)
+- [cross](/en/api/model/marker#cross)
+- [async](/en/api/model/marker#async)
+- [path](/en/api/model/marker#path)
+- [circle](/en/api/model/marker#circle)
+- [circlePlus](/en/api/model/marker#circleplus)
+- [ellipse](/en/api/model/marker#ellipse)
 
 ```ts
 graph.addEdge({
@@ -266,7 +266,7 @@ Our starting and ending arrows use the same `d` attribute because we automatical
 
 <code id="edge-custom-marker" src="@/src/tutorial/basic/edge/custom-marker/index.tsx"></code>
 
-For more examples and customization tips for arrows, please refer to the [API](/en/docs/api/model/marker).
+For more examples and customization tips for arrows, please refer to the [API](/en/api/model/marker).
 
 ## Customizing Edges
 
@@ -278,8 +278,8 @@ Like nodes, we can customize the shape and style of edges using `markup` and `at
 
 Similar to nodes, after rendering is complete, we can modify all properties of edges through the API. We commonly use the following two methods:
 
-- edge.prop(path, value), for detailed usage see [prop](/en/docs/api/model/cell#node-and-edge-properties-properties).
-- edge.attr(path, value), for detailed usage see [attr](/en/docs/api/model/cell#element-attributes-attrs).
+- edge.prop(path, value), for detailed usage see [prop](/en/api/model/cell#node-and-edge-properties-properties).
+- edge.attr(path, value), for detailed usage see [attr](/en/api/model/cell#element-attributes-attrs).
 
 Let's take a look at the `prop` of the default edge provided by X6.
 

@@ -8,7 +8,7 @@ redirect_from:
 
 X6 is a graph editing engine based on HTML and SVG, offering low-cost customization capabilities and out-of-the-box built-in extensions, making it easy for us to quickly build applications such as DAG diagrams, ER diagrams, flowcharts, and lineage graphs.
 
-If you haven't used X6 yet, we recommend experiencing its charm through the [Getting Started Guide](/en/docs/tutorial/getting-started).
+If you haven't used X6 yet, we recommend experiencing its charm through the [Getting Started Guide](/en/tutorial/getting-started).
 
 <p align="left">
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&logo=github&style=flat-square" /></a>
@@ -32,11 +32,11 @@ If you haven't used X6 yet, we recommend experiencing its charm through the [Get
 
 ## 🍉 Documentation
 
-- [Getting Started](/en/docs/tutorial/getting-started)
-- [Basics](/en/docs/tutorial/basic/graph)
-- [Advanced](/en/docs/tutorial/intermediate/connection-point)
-- [Plugins](/en/docs/tutorial/plugins/transform)
-- [API](/en/docs/api/graph/graph)
+- [Getting Started](/en/tutorial/getting-started)
+- [Basics](/en/tutorial/basic/graph)
+- [Advanced](/en/tutorial/intermediate/connection-point)
+- [Plugins](/en/tutorial/plugins/transform)
+- [API](/en/api/graph/graph)
 
 The X6 documentation is divided into two parts: documentation and API. It is recommended to read the documentation carefully, as it will help you get started with development. The API documentation is extensive, so you can refer to it when you encounter issues by searching for the relevant documents.
 
@@ -48,7 +48,7 @@ If you have any questions, suggestions, feedback, or wish to communicate, you ca
 - Email: [antv@antfin.com](mailto:antv@antfin.com)
 - Yuque Column: [https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*AY2PSL5s0N4AAAAAAAAAAAAADtOHAQ/original" alt="X6 Graph Editing Community" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 Graph Editing Community" width="375" />
 
 ## 🤝 Contributing
 

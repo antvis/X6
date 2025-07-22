@@ -650,7 +650,7 @@ Export nodes and edges in the graph, returning an object with a `{ cells: [] }` 
 
 | Name         | Type | Required | Default | Description                                                                                                                   |
 |--------------|------|:--------:|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| options.deep | diff |          | `false` | Whether to export differential data of nodes and edges (parts that differ from the [default configuration](/docs/api/model/cell#default-options) of nodes and edges). |
+| options.deep | diff |          | `false` | Whether to export differential data of nodes and edges (parts that differ from the [default configuration](/en/api/model/cell#default-options) of nodes and edges). |
 
 ### parseJSON(...)
 
