@@ -49,7 +49,7 @@ X6 文档整体分为文档和 API 两部分，建议仔细阅读文档内容，
 - 邮件：[antv@antfin.com](mailto:antv@antfin.com)
 - 语雀专栏：[https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*AY2PSL5s0N4AAAAAAAAAAAAADtOHAQ/original](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 图编辑交流群" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 图编辑交流群" width="375" />
 
 ## 🤝 参与贡献
 
