@@ -48,7 +48,7 @@ If you have any questions, suggestions, feedback, or wish to communicate, you ca
 - Email: [antv@antfin.com](mailto:antv@antfin.com)
 - Yuque Column: [https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*AY2PSL5s0N4AAAAAAAAAAAAADtOHAQ/original" alt="X6 Graph Editing Community" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 Graph Editing Community" width="375" />
 
 ## 🤝 Contributing
 
