@@ -1,4 +1,4 @@
-import { ModifierKey, Dom } from '@antv/x6-common'
+import { Dom, ModifierKey } from '@antv/x6-common'
 import { Base } from './base'
 
 export class PanningManager extends Base {
@@ -18,8 +18,8 @@ export class PanningManager extends Base {
 
   protected init() {
     this.onRightMouseDown = this.onRightMouseDown.bind(this)
-    this.onSpaceKeyDown = this.onSpaceKeyDown.bind(this)
-    this.onSpaceKeyUp = this.onSpaceKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+    this.onKeyUp = this.onKeyUp.bind(this)
     this.startListening()
     this.updateClassName()
   }
@@ -30,8 +30,8 @@ export class PanningManager extends Base {
     this.graph.on('edge:unhandled:mousedown', this.onMouseDown, this)
     Dom.Event.on(this.graph.container, 'mousedown', this.onRightMouseDown)
     Dom.Event.on(document.body, {
-      keydown: this.onSpaceKeyDown,
-      keyup: this.onSpaceKeyUp,
+      keydown: this.onKeyDown,
+      keyup: this.onKeyUp,
     })
     this.mousewheelHandle = new Dom.MouseWheelHandle(
       this.graph.container,
@@ -47,15 +47,15 @@ export class PanningManager extends Base {
     this.graph.off('edge:unhandled:mousedown', this.onMouseDown, this)
     Dom.Event.off(this.graph.container, 'mousedown', this.onRightMouseDown)
     Dom.Event.off(document.body, {
-      keydown: this.onSpaceKeyDown,
-      keyup: this.onSpaceKeyUp,
+      keydown: this.onKeyDown,
+      keyup: this.onKeyUp,
     })
     if (this.mousewheelHandle) {
       this.mousewheelHandle.disable()
     }
   }
 
-  allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
+  allowPanning(e: Dom.EventObject, strict?: boolean) {
     ;(e as any).spaceKey = this.isSpaceKeyPressed
     return (
       this.pannable &&
@@ -72,7 +72,7 @@ export class PanningManager extends Base {
     this.clientX = e.clientX
     this.clientY = e.clientY
     this.panning = true
-    this.updateClassName()
+    this.updateClassName(evt)
     Dom.Event.on(document.body, {
       'mousemove.panning touchmove.panning': this.pan.bind(this),
       'mouseup.panning touchend.panning': this.stopPanning.bind(this),
@@ -93,16 +93,28 @@ export class PanningManager extends Base {
   // eslint-disable-next-line
   protected stopPanning(e: Dom.MouseUpEvent) {
     this.panning = false
-    this.updateClassName()
+    this.updateClassName(e)
     Dom.Event.off(document.body, '.panning')
     Dom.Event.off(window as any, '.panning')
   }
 
-  protected updateClassName() {
+  protected updateClassName(e?: Dom.EventObject) {
+    const eventTypes = this.widgetOptions.eventTypes
+    if (eventTypes?.length === 1 && eventTypes.includes('mouseWheel')) {
+      return
+    }
     const container = this.view.container
     const panning = this.view.prefixClassName('graph-panning')
     const pannable = this.view.prefixClassName('graph-pannable')
-    if (this.pannable) {
+    const selection = this.graph.getPlugin<any>('selection')
+    const allowRubberband = selection && selection.allowRubberband(e, true)
+    const allowRightMouseRubberband =
+      eventTypes?.includes('leftMouseDown') && !allowRubberband
+    if (
+      this.allowPanning(e ?? ({} as Dom.EventObject), true) ||
+      (this.allowPanning(e ?? ({} as Dom.EventObject)) &&
+        allowRightMouseRubberband)
+    ) {
       if (this.panning) {
         Dom.addClass(container, panning)
         Dom.removeClass(container, pannable)
@@ -110,7 +122,7 @@ export class PanningManager extends Base {
         Dom.removeClass(container, panning)
         Dom.addClass(container, pannable)
       }
-    } else {
+    } else if (!this.panning) {
       Dom.removeClass(container, panning)
       Dom.removeClass(container, pannable)
     }
@@ -145,16 +157,20 @@ export class PanningManager extends Base {
     this.graph.translateBy(-deltaX, -deltaY)
   }
 
-  protected onSpaceKeyDown(e: Dom.KeyDownEvent) {
+  protected onKeyDown(e: Dom.KeyDownEvent) {
     if (e.which === 32) {
       this.isSpaceKeyPressed = true
     }
+    this.updateClassName(e)
   }
-  protected onSpaceKeyUp(e: Dom.KeyUpEvent) {
+
+  protected onKeyUp(e: Dom.KeyUpEvent) {
     if (e.which === 32) {
       this.isSpaceKeyPressed = false
     }
+    this.updateClassName(e)
   }
+
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.widgetOptions.eventTypes
     return (
