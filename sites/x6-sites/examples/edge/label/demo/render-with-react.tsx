@@ -1,6 +1,6 @@
-import React from 'react'
 import { Graph, Markup } from '@antv/x6'
-import ReactDOM from 'react-dom'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
 
 class Label extends React.Component {
   onClick = () => {
@@ -34,7 +34,7 @@ const graph = new Graph({
     const { selectors } = args
     const content = selectors.foContent as HTMLDivElement
     if (content) {
-      ReactDOM.render(<Label />, content)
+      createRoot(content).render(<Label />)
     }
   },
 })

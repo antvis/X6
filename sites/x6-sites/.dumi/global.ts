@@ -1,6 +1,7 @@
 if (typeof window !== 'undefined' && window) {
   ;(window as any).react = require('react')
   ;(window as any).reactDom = require('react-dom')
+  ;(window as any).client = require('react-dom/client')
   ;(window as any).antd = require('antd')
   ;(window as any).dagre = require('dagre')
   ;(window as any).x6 = require('@antv/x6')
