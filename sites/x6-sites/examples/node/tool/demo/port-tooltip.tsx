@@ -1,7 +1,7 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
 import { Graph } from '@antv/x6'
 import { Tooltip } from 'antd'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
 
 const registerPortTooltip = (container: Element, text: string) => {
   container.addEventListener('mouseenter', (e: MouseEvent) => {
@@ -135,4 +135,8 @@ class Example extends React.Component {
   }
 }
 
-ReactDOM.render(<Example />, document.getElementById('container'))
+const container = document.getElementById('container')
+const root = createRoot(container)
+root.render(<Example />)
+
+// ReactDOM.render(<Example />, document.getElementById('container'))

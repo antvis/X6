@@ -1,10 +1,12 @@
-import React from 'react'
-import ReactDom from 'react-dom'
+import { EdgeView, Graph, ToolsView } from '@antv/x6'
 import { Tooltip } from 'antd'
-import { Graph, ToolsView, EdgeView } from '@antv/x6'
+import React from 'react'
+import type { Root } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 
 class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   private knob: HTMLDivElement
+  private root: Root
 
   render() {
     if (!this.knob) {
@@ -17,9 +19,10 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
 
   private toggleTooltip(visible: boolean) {
     if (this.knob) {
-      ReactDom.unmountComponentAtNode(this.knob)
+      this.root && this.root.unmount()
       if (visible) {
-        ReactDom.render(
+        this.root = createRoot(this.knob)
+        this.root.render(
           <Tooltip
             title={this.options.tooltip}
             open={true}
@@ -29,7 +32,6 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
           >
             <div />
           </Tooltip>,
-          this.knob,
         )
       }
     }
