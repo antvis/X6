@@ -1,0 +1,64 @@
+name: site
+
+on:
+  pull_request:
+    branches:
+      - master # default branch
+env:
+  CI: true
+  PNPM_STORE: .pnpm-store
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: checkout code repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Switch to site branch
+        run: git checkout -b gh-pages
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: install pnpm
+        run: npm i pnpm@latest -g
+      - name: Setup npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            email=${NPM_EMAIL}
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+      - name: setup pnpm config
+        run: pnpm config set store-dir $PNPM_STORE
+      - name: install dependencies
+        run: pnpm install
+      - name: build site
+        run: pnpm run build:site
+      - name: copy and delete files
+        run: |
+          find . -maxdepth 1 -type f -exec rm -f {} \;
+          cp -r sites/x6-sites/dist/* ./
+          rm -rf sites
+          rm -rf node_modules
+          rm -rf packages
+          rm -rf scripts
+          rm -rf examples
+          rm -rf public
+          rm -rf template
+          rm -rf .changeset
+          rm -rf .github
+          rm -rf $PNPM_STORE
+      - name: commit changes
+        run: |
+          git config --local user.email "954055752@qq.com"
+          git config --local user.name "lxfu1"
+          git add .
+          git commit -m "chore: update site"
+      - name: push to gh-pages branch
+        run: git push origin gh-pages -f

@@ -14,7 +14,7 @@
     "sites"
   ],
   "dependencies": {
-    "@antv/dumi-theme-antv": "^0.7.3",
+    "@antv/dumi-theme-antv": "^0.7.9",
     "@antv/hierarchy": "^0.6.6",
     "@antv/layout": "^0.3.12",
     "@antv/x6": "^2.x",
