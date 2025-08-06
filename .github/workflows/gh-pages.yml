@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Switch to site branch
-        run: git checkout -b gh-pages
+        run: git checkout -b site
       - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
@@ -60,5 +60,5 @@ jobs:
           git config --local user.name "lxfu1"
           git add .
           git commit -m "chore: update site"
-      - name: push to gh-pages branch
-        run: git push origin gh-pages -f
+      - name: push to site branch
+        run: git push origin site -f
