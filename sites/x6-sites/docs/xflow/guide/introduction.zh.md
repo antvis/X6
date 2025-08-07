@@ -28,7 +28,6 @@ XFlow 是基于 X6 图编辑引擎、面向 React 技术栈用户的应用级解
 如果您有任何的问题、建议、反馈或者交流意愿，可以通过如下方式联系我们：
 
 - 官方推荐: [GitHub issues](https://github.com/antvis/XFlow/issues/new/choose)
-- 邮件：<antv@antfin.com>
 - 语雀专栏：<https://www.yuque.com/antv/blog>
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&#x26;_dt_no_comment=1&#x26;origin=11" target="_blank" rel="noopener noreferrer">
