@@ -3,7 +3,7 @@ import { Graph } from '@antv/x6'
 import './index.less'
 
 Graph.registerNode(
-  'custom-node-width-port',
+  'custom-node-with-port',
   {
     inherit: 'rect',
     width: 100,
@@ -113,7 +113,7 @@ export default class Example extends React.Component {
     })
 
     const source = graph.addNode({
-      shape: 'custom-node-width-port',
+      shape: 'custom-node-with-port',
       x: 40,
       y: 40,
       width: 100,
@@ -128,7 +128,7 @@ export default class Example extends React.Component {
     })
 
     const target = graph.addNode({
-      shape: 'custom-node-width-port',
+      shape: 'custom-node-with-port',
       x: 140,
       y: 240,
       width: 100,
@@ -143,7 +143,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      shape: 'custom-node-width-port',
+      shape: 'custom-node-with-port',
       x: 320,
       y: 120,
       width: 100,

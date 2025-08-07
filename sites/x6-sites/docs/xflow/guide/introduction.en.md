@@ -28,7 +28,6 @@ XFlow is an application-level solution based on the X6 graph editing engine, des
 If you have any questions, suggestions, feedback, or wish to communicate, you can contact us through the following methods:
 
 - Official Recommendation: [GitHub issues](https://github.com/antvis/XFlow/issues/new/choose)  
-- Email: <antv@antfin.com>  
 - Yuque Column: <https://www.yuque.com/antv/blog>  
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&#x26;_dt_no_comment=1&#x26;origin=11" target="_blank" rel="noopener noreferrer">

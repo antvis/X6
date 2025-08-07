@@ -4,7 +4,7 @@ import { Button } from 'antd'
 import './index.less'
 
 Graph.registerNode(
-  'custom-node-width-port',
+  'custom-node-with-port',
   {
     inherit: 'rect',
     width: 100,
@@ -81,7 +81,7 @@ export default class Example extends React.Component {
 
     graph.addNode({
       id: '1',
-      shape: 'custom-node-width-port',
+      shape: 'custom-node-with-port',
       x: 150,
       y: 100,
       label: 'hello',
