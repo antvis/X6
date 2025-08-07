@@ -45,7 +45,6 @@ The X6 documentation is divided into two parts: documentation and API. It is rec
 If you have any questions, suggestions, feedback, or wish to communicate, you can contact us through the following methods:
 
 - Official Recommendation: [GitHub issues](https://github.com/antvis/X6/issues/new/choose)
-- Email: [antv@antfin.com](mailto:antv@antfin.com)
 - Yuque Column: [https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
 <img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 Graph Editing Community" width="375" />
