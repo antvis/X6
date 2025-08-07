@@ -23,6 +23,7 @@
     "prepare": "is-ci || run-p setup:husky build:dev",
     "start:demo": "cd ./examples/x6-example-features && pnpm start",
     "start:site": "cd ./sites/x6-sites && pnpm start",
+    "build:site": "pnpm -r --stream --filter=./sites/x6-sites run build",
     "release": "pnpm publish --no-git-checks -r --filter @antv/x6"
   },
   "rss": {
