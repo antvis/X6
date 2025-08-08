@@ -49,10 +49,9 @@ jobs:
           rm -rf packages
           rm -rf scripts
           rm -rf examples
-          rm -rf public
-          rm -rf template
           rm -rf .changeset
           rm -rf .github
+          rm -rf .husky
           rm -rf $PNPM_STORE
       - name: commit changes
         run: |
@@ -60,5 +59,7 @@ jobs:
           git config --local user.name "lxfu1"
           git add .
           git commit -m "chore: update site"
+      - name: delete origin site branch
+        run: git push origin --delete site || echo "branch not exist"
       - name: push to site branch
         run: git push origin site -f
