@@ -1,9 +1,11 @@
 name: site
 
 on:
-  pull_request:
+  push:
     branches:
       - master # default branch
+permissions:
+  contents: write
 env:
   CI: true
   PNPM_STORE: .pnpm-store
@@ -14,7 +16,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/setup-node@v3
         with:
           fetch-depth: 0
       - name: Switch to site branch
@@ -25,15 +27,6 @@ jobs:
           node-version: 20
       - name: install pnpm
         run: npm i pnpm@latest -g
-      - name: Setup npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            email=${NPM_EMAIL}
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
       - name: setup pnpm config
         run: pnpm config set store-dir $PNPM_STORE
       - name: install dependencies
@@ -43,22 +36,23 @@ jobs:
       - name: copy and delete files
         run: |
           find . -maxdepth 1 -type f -exec rm -f {} \;
+          rm -rf examples
           cp -r sites/x6-sites/dist/* ./
           rm -rf sites
           rm -rf node_modules
           rm -rf packages
           rm -rf scripts
-          rm -rf examples
-          rm -rf public
-          rm -rf template
           rm -rf .changeset
           rm -rf .github
+          rm -rf .husky
           rm -rf $PNPM_STORE
       - name: commit changes
         run: |
-          git config --local user.email "954055752@qq.com"
-          git config --local user.name "lxfu1"
+          git config --local user.email "${{ secrets.GH_EMAIL }}"
+          git config --local user.name "${{ secrets.GH_NAME }}"
           git add .
           git commit -m "chore: update site"
+      - name: delete origin site branch
+        run: git push origin --delete site || echo "branch not exist"
       - name: push to site branch
         run: git push origin site -f
