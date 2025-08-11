@@ -20,15 +20,14 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
 
       - name: Install pnpm
         run: npm install -g pnpm
