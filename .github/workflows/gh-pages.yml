@@ -31,21 +31,13 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-          run_install: false
+        run: npm install -g pnpm
 
-      - name: Cache pnpm store
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PNPM_STORE }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+      - name: setup pnpm config
+        run: pnpm config set store-dir $PNPM_STORE
 
       - name: Install dependencies
-        run: npm i pnpm -g
+        run: pnpm install
         env:
           CYPRESS_INSTALL_BINARY: 0
 
