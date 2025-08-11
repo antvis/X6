@@ -87,4 +87,4 @@ In addition to using `fromJSON` to render JSON data to the graph, of course, the
 graph.toJSON()
 ```
 
-That's the end of our demo. If you want to continue learning about some capabilities of X6, you can start reading from the [Basic Tutorial](/en/docs/tutorial/basic/graph).
+That's the end of our demo. If you want to continue learning about some capabilities of X6, you can start reading from the [Basic Tutorial](/en/tutorial/basic/graph).
