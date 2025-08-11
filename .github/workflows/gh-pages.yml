@@ -4,55 +4,80 @@ on:
   push:
     branches:
       - master # default branch
+
 permissions:
   contents: write
+
 env:
   CI: true
   PNPM_STORE: .pnpm-store
+  NODE_VERSION: 20
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: checkout code repository
-        uses: actions/setup-node@v3
+      - name: Checkout code repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Switch to site branch
-        run: git checkout -b site
-      - name: Use Node.js 20
-        uses: actions/setup-node@v3
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - name: install pnpm
-        run: npm i pnpm@latest -g
-      - name: setup pnpm config
-        run: pnpm config set store-dir $PNPM_STORE
-      - name: install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+          run_install: false
+
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PNPM_STORE }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
         run: pnpm install
-      - name: build site
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+
+      - name: Build site
         run: pnpm run build:site
-      - name: copy and delete files
+        id: build
+
+      - name: Verify build output
         run: |
-          find . -maxdepth 1 -type f -exec rm -f {} \;
+          if [ ! -d "sites/x6-sites/dist" ]; then
+            echo "Build output directory not found!"
+            exit 1
+          fi
+
+      - name: Prepare deployment files
+        run: |
+          shopt -s extglob
+          rm -rf !(sites|.git|$PNPM_STORE)
           rm -rf examples
+
+          # 复制构建产物
           cp -r sites/x6-sites/dist/* ./
-          rm -rf sites
-          rm -rf node_modules
-          rm -rf packages
-          rm -rf scripts
-          rm -rf .changeset
-          rm -rf .github
-          rm -rf .husky
-          rm -rf $PNPM_STORE
-      - name: commit changes
+
+          # 清理不需要的目录
+          rm -rf sites node_modules packages scripts .changeset .github .husky $PNPM_STORE
+
+      - name: Commit changes
         run: |
           git config --local user.email "${{ secrets.GH_EMAIL }}"
           git config --local user.name "${{ secrets.GH_NAME }}"
           git add .
-          git commit -m "chore: update site"
-      - name: delete origin site branch
-        run: git push origin --delete site || echo "branch not exist"
-      - name: push to site branch
-        run: git push origin site -f
+          git commit -m "chore: update site from ${GITHUB_SHA::7}" || echo "No changes to commit"
+
+      - name: Deploy to site branch
+        run: |
+          git push origin HEAD:site -f
