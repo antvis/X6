@@ -86,3 +86,5 @@ In addition to using `fromJSON` to render JSON data to the graph, of course, the
 ```ts
 graph.toJSON()
 ```
+
+That's the end of our demo. If you want to continue learning about some capabilities of X6, you can start reading from the [Basic Tutorial](/en/tutorial/basic/graph).

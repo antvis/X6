@@ -1,0 +1,76 @@
+name: site
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+
+permissions:
+  contents: write
+
+env:
+  CI: true
+  PNPM_STORE: .pnpm-store
+  NODE_VERSION: 20
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: setup pnpm config
+        run: pnpm config set store-dir $PNPM_STORE
+
+      - name: Install dependencies
+        run: pnpm install
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+
+      - name: Build site
+        run: pnpm run build:site
+        id: build
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "sites/x6-sites/dist" ]; then
+            echo "Build output directory not found!"
+            exit 1
+          fi
+
+      - name: Prepare deployment files
+        run: |
+          shopt -s extglob
+          rm -rf !(sites|.git|$PNPM_STORE)
+          rm -rf examples
+
+          # 复制构建产物
+          cp -r sites/x6-sites/dist/* ./
+
+          # 清理不需要的目录
+          rm -rf sites node_modules packages scripts .changeset .github .husky $PNPM_STORE
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "${{ secrets.GH_EMAIL }}"
+          git config --local user.name "${{ secrets.GH_NAME }}"
+          git add .
+          git commit -m "chore: update site from ${GITHUB_SHA::7}" || echo "No changes to commit"
+
+      - name: Deploy to site branch
+        run: |
+          git push origin HEAD:site -f
