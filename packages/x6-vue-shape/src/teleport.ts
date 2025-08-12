@@ -1,4 +1,13 @@
-import { defineComponent, h, reactive, isVue3, Vue } from 'vue-demi'
+import {
+  defineComponent,
+  h,
+  reactive,
+  isVue3,
+  Teleport,
+  markRaw,
+  Fragment,
+  onBeforeUnmount,
+} from 'vue-demi'
 import { Graph } from '@antv/x6'
 import { VueShape } from './node'
 
@@ -13,10 +22,12 @@ export function connect(
   graph: Graph,
 ) {
   if (active) {
-    const { Teleport, markRaw } = Vue as any
     items[id] = markRaw(
       defineComponent({
-        render: () => h(Teleport, { to: container } as any, [h(component, { node, graph })]),
+        render: () =>
+          h(Teleport, { to: container } as any, [
+            h(component, { node, graph }),
+          ]),
         provide: () => ({
           getNode: () => node,
           getGraph: () => graph,
@@ -36,15 +47,25 @@ export function isActive() {
   return active
 }
 
+let itemComponets: any = null
+
 export function getTeleport(): any {
   if (!isVue3) {
     throw new Error('teleport is only available in Vue3')
   }
-  active = true
-  const { Fragment } = Vue as any
 
-  return defineComponent({
+  if (itemComponets && active) {
+    return null
+  }
+
+  active = true
+
+  itemComponets = defineComponent({
     setup() {
+      onBeforeUnmount(() => {
+        itemComponets = null
+      })
+
       return () =>
         h(
           Fragment,
@@ -53,4 +74,5 @@ export function getTeleport(): any {
         )
     },
   })
+  return itemComponets
 }

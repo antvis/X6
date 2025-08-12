@@ -8,8 +8,10 @@ export interface OrthEndpointOptions extends ResolveOptions {
 
 const orthogonal: NodeAnchor.ResolvedDefinition<OrthEndpointOptions> =
   function (view, magnet, refPoint, options) {
-    const angle = view.cell.getAngle()
-    const bbox = view.getBBoxOfElement(magnet)
+    const angle = Angle.normalize(view.cell.getAngle())
+    const bbox = view.cell.visible
+      ? view.getBBoxOfElement(magnet)
+      : view.cell.getBBox()
     const result = bbox.getCenter()
     const topLeft = bbox.getTopLeft()
     const bottomRight = bbox.getBottomRight()
