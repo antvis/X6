@@ -4,7 +4,7 @@
   <b>X6: Graph Editing and Visualization Engine</b>
 </h1>
 
-<p align="center"><img alt="flow" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*3DpnSIVLCzYAAAAAQCAAAAgAemJ7AQ/original"></p>
+<p align="center"><img alt="x6 flow" src="./flow.svg"></p>
 
 <p align="center">
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&style=for-the-badge&logo=github"></a>
