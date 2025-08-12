@@ -18,7 +18,7 @@ redirect_from:
 
 ## Group Nodes
 
-We can implement groups through parent-child combinations and provide a series of [methods](/en/docs/api/model/cell#parentchildren-relationship) to get and set these relationships.
+We can implement groups through parent-child combinations and provide a series of [methods](/en/api/model/cell#parentchildren-relationship) to get and set these relationships.
 
 <code id="group-embed-edge" src="@/src/tutorial/intermediate/group/embed-edge/index.tsx"></code>
 
@@ -29,7 +29,7 @@ From the example above, we can see that:
 
 ## Combining Nodes through Interaction
 
-Sometimes we need to drag one node into another node to make it a child of the other node. In this case, we can enable the `embedding` option, which allows us to specify a method through `findParent` to return the parent node when the node is moved. For more detailed configuration, refer to the [API](/en/docs/api/interacting/interacting#embedding).
+Sometimes we need to drag one node into another node to make it a child of the other node. In this case, we can enable the `embedding` option, which allows us to specify a method through `findParent` to return the parent node when the node is moved. For more detailed configuration, refer to the [API](/en/api/interacting/interacting#embedding).
 
 <code id="group-embedding" src="@/src/tutorial/basic/interacting/embedding/index.tsx"></code>
 

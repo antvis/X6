@@ -1,44 +1,46 @@
-[简体中文](/README.md) | English
+<img src="https://gw.alipayobjects.com/zos/antfincdn/R8sN%24GNdh6/language.svg" width="18"> [中文](./README.md) | English
 
-<p align="center"><img src="/flow.svg"></p>
+<h1 align="center">
+  <b>X6: Graph Editing and Visualization Engine</b>
+</h1>
 
-<p align="center"><strong>Graph Editing Engine Of AntV</strong></p>
-<p align="center"><strong>JavaScript diagramming library that uses SVG and HTML for rendering</strong></p>
+<p align="center"><img alt="x6 flow" src="./flow.svg"></p>
 
 <p align="center">
-<a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/workflow/status/antvis/x6/%F0%9F%91%B7%E3%80%80CI/master?logo=github&style=flat-square"></a>
-<a href="https://app.codecov.io/gh/antvis/X6"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/antvis/x6?logo=codecov&style=flat-square&token=15CO54WYUV"></a>
-<a href="https://lgtm.com/projects/g/antvis/x6/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square"></a>
-<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square"></a>
-<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=flat-square"></a>
+<a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&style=for-the-badge&logo=github"></a>
+<!-- <a href="https://app.codecov.io/gh/antvis/X6"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/antvis/x6?logo=codecov&style=for-the-badge&token=15CO54WYUV"></a> -->
+<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?logo=npm&style=for-the-badge"></a>
+<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=for-the-badge"></a> <a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=for-the-badge" alt="MIT License"></a>
+<a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=for-the-badge"></a>
+<a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge"></a>
+<a href="https://x6.antv.antgroup.com"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=for-the-badge&logo=google-chrome&logoColor=f5f5f5"></a>
 </p>
 
 <p align="center">
-<a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=flat-square" alt="MIT License"></a>
-<a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=flat-square"></a>
-<a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square"></a>
-<a href="https://x6.antv.antgroup.com/"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=flat-square&logo=google-chrome&logoColor=0076D6"></a>
+  <a href="http://x6.antv.antgroup.com/tutorial/about">Official Documentation</a> •
+  <a href="https://x6.antv.antgroup.com/tutorial/getting-started">Quick Start</a> •
+  <a href="http://x6.antv.antgroup.com/examples">Graph Examples</a> •
+  <a href="https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy">FAQ</a> •
+  <a href="https://codesandbox.io/s/mo-ban-55i8dp">Demo Template</a> •
+  <a href="https://github.com/lloydzhou/awesome-x6">Awesome X6</a>
 </p>
 
-## Features
+AntV `X6` is a graph editing engine based on HTML and SVG, providing low-cost customization capabilities and out-of-the-box built-in extensions that make it easy to quickly build applications such as DAG diagrams, ER diagrams, flowcharts, lineage graphs, and more. We hope developers can use X6 to rapidly build various graph editing applications they need, making process relationship data controllable, interactive, and visualized.
 
-- 🌱 　 Easy-to-customize: based on well known SVG/HTML/CSS or React/Vue/Angular to custom nodes and edges
-- 🚀 　 Out-of-the-box: built-in 10+ plugins, such as selection, dnd, redo/undo, snapline, minimap, etc.
-- 🧲 　 Data-driven: base on MVC architecture, you can focus on data logic and business logic
-- 💯 　 Highly-event-driven: you can react on any event that happens inside the graph
+## ✨ Features
 
-## Environment Support
+As a professional graph editing and visualization engine, X6 has the following features:
 
-- Modern browsers and Internet Explorer 11 (with polyfills)
-- Server-side Rendering
+- 🌱 _Highly Customizable_: Supports customizing node styles and interactions using SVG / HTML / React / Vue / Angular, with a comprehensive `event system` that allows listening to any events occurring within the chart.
+- 🚀 _Out-of-the-Box_: Built-in `10+` graph editing extensions, such as lasso selection, alignment lines, minimap, etc.
+- 🧲 _Data-Driven_: Based on the `MVC` architecture, allowing users to focus more on data logic and business logic.
+- 💯 _Server-Side Rendering_: Supports server-side rendering with good browser compatibility.
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
-| --- | --- | --- | --- |
-| IE11, Edge | last 2 versions | last 2 versions | last 2 versions |
+## 🔨 Getting Started
 
-## Installation
+You can install via package managers like NPM or Yarn.
 
-```shell
+```bash
 # npm
 $ npm install @antv/x6 --save
 
@@ -46,7 +48,7 @@ $ npm install @antv/x6 --save
 $ yarn add @antv/x6
 ```
 
-## Usage
+After successful installation, you can import the `Graph` object using import.
 
 ```html
 <div id="container" style="width: 600px; height: 400px"></div>
@@ -66,7 +68,7 @@ const source = graph.addNode({
   width: 80,
   height: 40,
   label: 'Hello',
-})
+});
 
 const target = graph.addNode({
   x: 420,
@@ -74,47 +76,45 @@ const target = graph.addNode({
   width: 80,
   height: 40,
   label: 'World',
-})
+});
 
 graph.addEdge({
   source,
   target,
-})
+});
 ```
 
-## Links
+If everything goes smoothly, you will get a simple flowchart canvas as shown below.
 
-- [Documents](https://x6.antv.antgroup.com/tutorial/about)
-- [Samples](https://x6.antv.antgroup.com/examples)
-- [Blog](https://www.yuque.com/antv/x6/gcinvi)
-- [Versioning Release Note](https://www.yuque.com/antv/x6/bbfu6r)
-- [FAQ](https://www.yuque.com/antv/x6/be9pfx)
-- [Template](https://codesandbox.io/s/qosj0?file=/src/app.tsx)
-- [awesome-x6](https://github.com/lloydzhou/awesome-x6)
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*3rpsRLQl7dgAAAAAQyAAAAgAemJ7AQ/fmt.avif" height="300" />
 
-## Development
+## 🧑🏻‍💻 Local Development
 
 ```shell
-# install deps and build
+# Install project dependencies and initialize build
 $ pnpm install
 
-# enter the specified project development and debugging
+# Navigate to the specific project for development and debugging
 cd packages/x6
 pnpm run build:watch
 
-# start example to see the effect
+# Start example to view results
 cd examples/x6-example-features
 pnpm run start
 ```
 
-## Contributing
+## 📮 Contribution
 
-To become a contributor, please follow our [contributing guide](/CONTRIBUTING.md). If you are an active contributor, you can apply to be a outside collaborator.
+Thank you to everyone who has contributed to this project and all supporters! 🙏
 
-<a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+<a href="https://openomy.app/github/antvis/X6" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
 </a>
 
-## License
+- **Issue Feedback**: If you encounter any issues with X6 during use, feel free to submit an Issue along with minimal reproducible code.
+- **Contribution Guide**: How to participate in the [development and contribution](./CONTRIBUTING.md) of X6.
+- **Discussion Ideas**: Discuss on GitHub Discussion or DingTalk group.
 
-The scripts and documentation in this project are released under the [MIT License](/LICENSE).
+## 📄 License
+
+[MIT](./LICENSE).

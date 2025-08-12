@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/api/registry
 ---
 
-We can use the special attribute [filter](/en/docs/api/registry/attr#filter) to specify [SVG filters](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Filter_effects) for elements. For example, we can define a predefined object for the `filter` attribute of the element, where `name` and `args` specify the filter name and filter parameters, respectively.
+We can use the special attribute [filter](/en/api/registry/attr#filter) to specify [SVG filters](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Filter_effects) for elements. For example, we can define a predefined object for the `filter` attribute of the element, where `name` and `args` specify the filter name and filter parameters, respectively.
 
 ```ts
 // Create a node by specifying the filter through the attrs option

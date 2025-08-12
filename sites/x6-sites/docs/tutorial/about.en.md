@@ -8,7 +8,7 @@ redirect_from:
 
 X6 is a graph editing engine based on HTML and SVG, offering low-cost customization capabilities and out-of-the-box built-in extensions, making it easy for us to quickly build applications such as DAG diagrams, ER diagrams, flowcharts, and lineage graphs.
 
-If you haven't used X6 yet, we recommend experiencing its charm through the [Getting Started Guide](/en/docs/tutorial/getting-started).
+If you haven't used X6 yet, we recommend experiencing its charm through the [Getting Started Guide](/en/tutorial/getting-started).
 
 <p align="left">
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&logo=github&style=flat-square" /></a>
@@ -32,11 +32,11 @@ If you haven't used X6 yet, we recommend experiencing its charm through the [Get
 
 ## 🍉 Documentation
 
-- [Getting Started](/en/docs/tutorial/getting-started)
-- [Basics](/en/docs/tutorial/basic/graph)
-- [Advanced](/en/docs/tutorial/intermediate/connection-point)
-- [Plugins](/en/docs/tutorial/plugins/transform)
-- [API](/en/docs/api/graph/graph)
+- [Getting Started](/en/tutorial/getting-started)
+- [Basics](/en/tutorial/basic/graph)
+- [Advanced](/en/tutorial/intermediate/connection-point)
+- [Plugins](/en/tutorial/plugins/transform)
+- [API](/en/api/graph/graph)
 
 The X6 documentation is divided into two parts: documentation and API. It is recommended to read the documentation carefully, as it will help you get started with development. The API documentation is extensive, so you can refer to it when you encounter issues by searching for the relevant documents.
 
@@ -45,10 +45,9 @@ The X6 documentation is divided into two parts: documentation and API. It is rec
 If you have any questions, suggestions, feedback, or wish to communicate, you can contact us through the following methods:
 
 - Official Recommendation: [GitHub issues](https://github.com/antvis/X6/issues/new/choose)
-- Email: [antv@antfin.com](mailto:antv@antfin.com)
 - Yuque Column: [https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*AY2PSL5s0N4AAAAAAAAAAAAADtOHAQ/original" alt="X6 Graph Editing Community" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 Graph Editing Community" width="375" />
 
 ## 🤝 Contributing
 
@@ -68,5 +67,5 @@ You can also refer to the contribution guidelines below to become a contributor 
 - [How to Contribute Code Elegantly on GitHub](https://segmentfault.com/a/1190000000736629?u_atoken=b71f69b7-7d74-4e6c-a373-76e0a36e2c87&u_asession=01aGvG2P10Vrjamv5BFM7yX0X2_OcJ_XmHlitgQC_BVnNLlRLdwpnHYH8ma1b1UKRaX0KNBwm7Lovlpxjd_P_q4JsKWYrT3W_NKPr8w6oU7K93NVUbout2zcDySUWFprtJUe3R9QHfzEvknA4dzJmVTGBkFo3NEHBv0PZUm6pbxQU&u_asig=05FBplinh079EhmRTHTDgrLXp5aawipV_A-9VAsAs841tY8QeTTaaTvFKcH6odRhI4VX2pBdH5ae6FY2MiL2X_4yTqZp2jK-_nBOl2nesFZDM2RmF5JkBT_JWpU60Z6lY1hzgqVxFxj_uE1HnffLBmwa5Sl9NkdZ4_S8RH_A-AooP9JS7q8ZD7Xtz2Ly-b0kmuyAKRFSVJkkdwVUnyHAIJzZMNY1otqX6vcbPyd-A-Ld3WE-pEMt_G6ZtWjng8eWoZH_8T8uYGNepqxdb-gLe1IO3h9VXwMyh6PgyDIVSG1W-dzbV77H9pFSh5eWBVfcZZYGYDqHeX90h_yD6KfDquy8GWlAwW_v4wTa3IAdocwA0iaDksczFnALAG-4HaicdUmWspDxyAEEo4kbsryBKb9Q&u_aref=SU72jL%2FvYl46xrVouxNG%2FiEj5e0%3D)
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="https://raw.githubusercontent.com/antvis/X6/master/CONTRIBUTORS.svg" alt="Contributors" />
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
 </a>
