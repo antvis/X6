@@ -51,37 +51,9 @@ jobs:
       - name: ✅　Test
         run: pnpm run test
 
-      - name: 🔑　Generate Token
-        uses: wow-actions/use-app-token@v2
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-
-
       - name: 💡　Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/x6/test/coverage/lcov.info
           flags: x6
-
-      - name: 🔀　Dispatch(ci_passed)
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ env.BOT_TOKEN }}
-          event-type: ci_passed
-
-      - name: 🔀　Dispatch(ci_pr_passed)
-        if: github.event_name == 'pull_request_target'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ env.BOT_TOKEN }}
-          event-type: ci_pr_passed
-
-      - name: 🔀　Dispatch(ci_master_passed)
-        if: github.event_name == 'push'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ env.BOT_TOKEN }}
-          event-type: ci_master_passed
-
