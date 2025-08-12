@@ -1,43 +1,46 @@
-简体中文 | [English](/README.en-us.md)
+<img src="https://gw.alipayobjects.com/zos/antfincdn/R8sN%24GNdh6/language.svg" width="18"> 简体中文 | [English](/README.en-us.md)
 
-<p align="center"><img alt="flow" src="/flow.svg"></p>
+<h1 align="center">
+  <b>X6：图编辑可视化引擎</b>
+</h1>
 
-<p align="center"><strong>X6 是 AntV 旗下的图编辑引擎</strong></p>
-<p align="center"><strong>提供简单易用的节点定制能力和开箱即用的交互组件，方便我们快速搭建流程图、DAG 图、ER 图等图应用</strong></p>
+<p align="center"><img alt="x6 flow" src="./flow.svg"></p>
 
 <p align="center">
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&style=for-the-badge&logo=github"></a>
 <!-- <a href="https://app.codecov.io/gh/antvis/X6"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/antvis/x6?logo=codecov&style=for-the-badge&token=15CO54WYUV"></a> -->
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?logo=npm&style=for-the-badge"></a>
-<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=for-the-badge"></a>
-</p>
-
-<p align="center">
-<a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=for-the-badge" alt="MIT License"></a>
+<a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=for-the-badge"></a> <a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=for-the-badge" alt="MIT License"></a>
 <a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=for-the-badge"></a>
 <a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge"></a>
 <a href="https://x6.antv.antgroup.com"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=for-the-badge&logo=google-chrome&logoColor=f5f5f5"></a>
 </p>
 
-## 特性
+<p align="center">
+  <a href="http://x6.antv.antgroup.com/tutorial/about">官网文档</a> •
+  <a href="https://x6.antv.antgroup.com/tutorial/getting-started">快速开始</a> •
+  <a href="http://x6.antv.antgroup.com/examples">图表示例</a> •
+  <a href="https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy">常见问题</a> •
+  <a href="https://codesandbox.io/s/mo-ban-55i8dp">Demo 模板</a> •
+  <a href="https://github.com/lloydzhou/awesome-x6">Awesome X6</a>
+</p>
 
-- 🌱 　极易定制：支持使用 SVG/HTML/React/Vue/Angular 定制节点样式和交互
-- 🚀 　开箱即用：内置 10+ 图编辑配套扩展，如框选、对齐线、小地图等
-- 🧲 　数据驱动：基于 MVC 架构，用户更加专注于数据逻辑和业务逻辑
-- 💯 　事件驱动：完备的事件系统，可以监听图表内发生的任何事件
+AntV `X6` 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。我们期望开发者基于 X6 可以快速构建自己需要的各种图编辑应用，让流程关系数据变得可控、可交互，以及可视化。
 
-## 兼容环境
+## ✨ 特性
 
-- 现代浏览器
-- 支持服务端渲染。
+X6 作为一款专业的图编辑可视化引擎，具有以下特性：
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari |
-| --- | --- | --- |
-| last 2 versions | last 2 versions | last 2 versions |
+- 🌱 _极易定制_：支持使用 SVG / HTML / React / Vue / Angular 定制节点样式和交互，完备的`事件系统`，可以监听图表内发生的任何事件
+- 🚀 _开箱即用_：内置 `10+` 图编辑配套扩展，如框选、对齐线、小地图等
+- 🧲 _数据驱动_：基于 `MVC` 架构，用户更加专注于数据逻辑和业务逻辑
+- 💯 _服务端渲染_：支持服务端渲染，且有不错的浏览器兼容性。
 
-## 安装
+## 🔨 开始使用
 
-```shell
+可以通过 NPM 或 Yarn 等包管理器来安装。
+
+```bash
 # npm
 $ npm install @antv/x6 --save
 
@@ -45,7 +48,7 @@ $ npm install @antv/x6 --save
 $ yarn add @antv/x6
 ```
 
-## 示例
+成功安装之后，可以通过 import 导入 `Graph` 对象。
 
 ```html
 <div id="container" style="width: 600px; height: 400px"></div>
@@ -65,7 +68,7 @@ const source = graph.addNode({
   width: 80,
   height: 40,
   label: 'Hello',
-})
+});
 
 const target = graph.addNode({
   x: 420,
@@ -73,25 +76,19 @@ const target = graph.addNode({
   width: 80,
   height: 40,
   label: 'World',
-})
+});
 
 graph.addEdge({
   source,
   target,
-})
+});
 ```
 
-## 链接
+一切顺利，你可以得到下面的简单的流程图画布。
 
-- [文档](http://x6.antv.antgroup.com/tutorial/about)
-- [示例](http://x6.antv.antgroup.com/examples)
-- [博客](https://www.yuque.com/antv/x6/huhla47wqalq5n7r)
-- [更新日志](https://www.yuque.com/antv/x6/bbfu6r)
-- [常见问题](https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy)
-- [复现模板](https://codesandbox.io/s/mo-ban-55i8dp)
-- [awesome-x6](https://github.com/lloydzhou/awesome-x6)
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*3rpsRLQl7dgAAAAAQyAAAAgAemJ7AQ/fmt.avif" height="300" />
 
-## 本地开发
+## 🧑🏻‍💻 本地开发
 
 ```shell
 # 安装项目依赖和初始化构建
@@ -106,14 +103,14 @@ cd examples/x6-example-features
 pnpm run start
 ```
 
-## 参与共建
+## 📮 贡献
 
-如果希望参与到 X6 的开发中，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。如果你贡献度足够活跃，你可以申请成为社区协作者。
+感谢所有为这个项目做出贡献的人，感谢所有支持者！🙏
 
-<a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="https://raw.githubusercontent.com/antvis/X6/master/CONTRIBUTORS.svg" alt="Contributors" />
-</a>
+- **问题反馈**：使用过程遇到的 X6 的问题，欢迎提交 Issue，并附上可以复现问题的最小案例代码。
+- **贡献指南**：如何参与到 X6 的[开发和贡献](./CONTRIBUTING.zh-CN.md)。
+- **想法讨论**：在 GitHub Discussion 上或者钉钉群里面讨论。
 
-## 开源协议
+## 📄 License
 
-该项目的代码和文档基于 [MIT License](/LICENSE) 开源协议。
+[MIT](./LICENSE).
