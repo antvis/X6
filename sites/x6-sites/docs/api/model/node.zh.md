@@ -7,11 +7,11 @@ redirect_from:
   - /zh/docs/api/model
 ---
 
-Node 是所有节点的基类，继承自 [Cell](/zh/docs/api/model/cell)，并定义了节点的通用属性和方法。
+Node 是所有节点的基类，继承自 [Cell](/api/model/cell)，并定义了节点的通用属性和方法。
 
 ## 属性
 
-除了从 Cell 继承[属性](/zh/docs/api/model/cell#属性)外，还支持以下属性。
+除了从 Cell 继承[属性](/api/model/cell#属性)外，还支持以下属性。
 
 | 选项 | 类型 | 默认值 | 必选 | 描述 |
 | --- | --- | --- | :-: | --- |
@@ -449,7 +449,7 @@ translate(tx?: number, ty?: number, options?: Node.TranslateOptions): this
 | tx | number |  | `0` | 节点在 X 轴的偏移量。 |
 | ty | number |  | `0` | 节点在 Y 轴的偏移量。 |
 | options.restrict | Rectangle.RectangleLike |  | `undefined` | 将节点的可移动范围限制在指定的矩形区域内。 |
-| options.transition | boolean \| Animation.Options |  | `false` | 是否使用动画或指定一个[动画选项](/zh/docs/api/model/cell#transition)。 |
+| options.transition | boolean \| Animation.Options |  | `false` | 是否使用动画或指定一个[动画选项](/api/model/cell#transition)。 |
 | options.silent | boolean |  | `false` | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。 |
 | options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
@@ -471,7 +471,7 @@ child.translate(30, 30, {
 })
 ```
 
-当 `options.transition` 为 `true` 或指定了一个[动画选项](/zh/docs/api/model/cell#transition)时，表示使用动画来平移节点，详情请参考[使用动画文档](/zh/docs/api/model/cell#transition)。
+当 `options.transition` 为 `true` 或指定了一个[动画选项](/api/model/cell#transition)时，表示使用动画来平移节点，详情请参考[使用动画文档](/api/model/cell#transition)。
 
 ```ts
 // 使用默认动画在平移节点

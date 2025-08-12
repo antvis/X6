@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/api/registry
 ---
 
-Routing further processes the edge's waypoints [vertices](/en/docs/tutorial/basic/edge#vertices), adding additional points when necessary, and then returns the processed points (excluding the start and end points of the edge). For example, after [`orth`](#orth) routing, each segment of the edge is a horizontal or vertical orthogonal segment.
+Routing further processes the edge's waypoints [vertices](/en/tutorial/basic/edge#vertices), adding additional points when necessary, and then returns the processed points (excluding the start and end points of the edge). For example, after [`orth`](#orth) routing, each segment of the edge is a horizontal or vertical orthogonal segment.
 
 X6 has the following built-in routing options.
 

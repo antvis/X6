@@ -19,7 +19,7 @@ redirect_from:
 
 ## 添加边
 
-节点和边都有共同的基类 [Cell](/zh/docs/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
+节点和边都有共同的基类 [Cell](/api/model/cell)，除了从 `Cell` 继承属性外，还支持以下选项。
 
 | 属性名       | 类型              | 默认值                                         | 描述              |
 |--------------|-------------------|------------------------------------------------|-----------------|
@@ -29,7 +29,7 @@ redirect_from:
 | router       | RouterData        | -                                              | 路由。             |
 | connector    | ConnectorData     | -                                              | 连接器。           |
 | labels       | Label[]           | -                                              | 标签。             |
-| defaultLabel | Label             | [默认标签](/zh/docs/api/model/labels#默认标签) | 默认标签。         |
+| defaultLabel | Label             | [默认标签](/api/model/labels#默认标签) | 默认标签。         |
 
 ```ts
 graph.addEdge({
@@ -88,7 +88,7 @@ graph.addEdge({
 
 ### router
 
-路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](/zh/docs/api/registry/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
+路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](/api/registry/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
 
 ```ts
 graph.addEdge({
@@ -110,14 +110,14 @@ graph.addEdge({
 
 X6 默认提供了以下几种路由，点击下面的链接查看每种路由的使用方式。
 
-- [normal](/zh/docs/api/registry/router#normal)
-- [orth](/zh/docs/api/registry/router#orth)
-- [oneSide](/zh/docs/api/registry/router#oneside)
-- [manhattan](/zh/docs/api/registry/router#manhattan)
-- [metro](/zh/docs/api/registry/router#metro)
-- [er](/zh/docs/api/registry/router#er)
+- [normal](/api/registry/router#normal)
+- [orth](/api/registry/router#orth)
+- [oneSide](/api/registry/router#oneside)
+- [manhattan](/api/registry/router#manhattan)
+- [metro](/api/registry/router#metro)
+- [er](/api/registry/router#er)
 
-另外，我们也可以注册自定义路由，详情请参考[自定义路由](/zh/docs/api/registry/router#registry)教程。
+另外，我们也可以注册自定义路由，详情请参考[自定义路由](/api/registry/router#registry)教程。
 
 ### connector
 
@@ -144,16 +144,16 @@ graph.addEdge({
 
 X6 默认提供了以下几种连接器，点击下面的链接查看每种连接器的使用方式。
 
-- [normal](/zh/docs/api/registry/connector#normal)
-- [rounded](/zh/docs/api/registry/connector#rounded)
-- [smooth](/zh/docs/api/registry/connector#smooth)
-- [jumpover](/zh/docs/api/registry/connector#jumpover)
+- [normal](/api/registry/connector#normal)
+- [rounded](/api/registry/connector#rounded)
+- [smooth](/api/registry/connector#smooth)
+- [jumpover](/api/registry/connector#jumpover)
 
-另外，我们也可以注册自定义连接器，详情请参考[自定义连接器](/zh/docs/api/registry/connector#register)。
+另外，我们也可以注册自定义连接器，详情请参考[自定义连接器](/api/registry/connector#register)。
 
 ### labels
 
-用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将与 [defaultLabel](/zh/docs/api/model/labels#默认标签) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
+用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将与 [defaultLabel](/api/model/labels#默认标签) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
 
 ```ts
 const edge = graph.addEdge({
@@ -185,7 +185,7 @@ const edge = graph.addEdge({
 
 <code id="edge-labels" src="@/src/tutorial/basic/edge/labels/index.tsx"></code>
 
-除了设置文本，还可以使用 Label 在边上创建一些复杂图形，我们在 [API](/zh/docs/api/model/labels) 中会详细介绍。
+除了设置文本，还可以使用 Label 在边上创建一些复杂图形，我们在 [API](/api/model/labels) 中会详细介绍。
 
 ### defaultLabel
 
@@ -199,15 +199,15 @@ const edge = graph.addEdge({
 
 X6 提供了以下几种内置箭头，使用时只需要指定箭头名和参数（可省略）即可。
 
-- [block](/zh/docs/api/model/marker#block)
-- [classic](/zh/docs/api/model/marker#classic)
-- [diamond](/zh/docs/api/model/marker#diamond)
-- [cross](/zh/docs/api/model/marker#cross)
-- [async](/zh/docs/api/model/marker#async)
-- [path](/zh/docs/api/model/marker#path)
-- [circle](/zh/docs/api/model/marker#circle)
-- [circlePlus](/zh/docs/api/model/marker#circleplus)
-- [ellipse](/zh/docs/api/model/marker#ellipse)
+- [block](/api/model/marker#block)
+- [classic](/api/model/marker#classic)
+- [diamond](/api/model/marker#diamond)
+- [cross](/api/model/marker#cross)
+- [async](/api/model/marker#async)
+- [path](/api/model/marker#path)
+- [circle](/api/model/marker#circle)
+- [circlePlus](/api/model/marker#circleplus)
+- [ellipse](/api/model/marker#ellipse)
 
 ```ts
 graph.addEdge({
@@ -266,7 +266,7 @@ graph.addEdge({
 
 <code id="edge-custom-marker" src="@/src/tutorial/basic/edge/custom-marker/index.tsx"></code>
 
-更多箭头的案例和定制技巧请参考 [API](/zh/docs/api/model/marker)。
+更多箭头的案例和定制技巧请参考 [API](/api/model/marker)。
 
 ## 定制边
 
@@ -278,8 +278,8 @@ graph.addEdge({
 
 和节点类似，在渲染完成之后，我们还可以通过 API 修改边的所有属性。我们会常用到下面两个方法：
 
-- edge.prop(path, value)，详细使用见 [prop](/zh/docs/api/model/cell#节点和边的属性-properties)。
-- edge.attr(path, value)，详细使用见 [attr](/zh/docs/api/model/cell#元素属性-attrs)。
+- edge.prop(path, value)，详细使用见 [prop](/api/model/cell#节点和边的属性-properties)。
+- edge.attr(path, value)，详细使用见 [attr](/api/model/cell#元素属性-attrs)。
 
 下面我们看一下 X6 默认提供的边的 `prop`。
 

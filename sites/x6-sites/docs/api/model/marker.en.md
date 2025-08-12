@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/api/model
 ---
 
-In the previous [tutorial](/en/docs/tutorial/basic/edge#using-arrows), we briefly introduced how to use the two special attributes [`sourceMarker`](/en/docs/api/registry/attr#sourcemarker) and [`targetMarker`](/en/docs/api/registry/attr#targetmarker) to specify the starting and ending arrows for edges. We demonstrated how to use built-in arrows and custom arrows. Next, we will first list the parameters for each built-in arrow, then provide a detailed explanation of how to use various SVG elements to customize arrows, and finally explain how to register custom arrows as built-in arrows.
+In the previous [tutorial](/en/tutorial/basic/edge#using-arrows), we briefly introduced how to use the two special attributes [`sourceMarker`](/en/api/registry/attr#sourcemarker) and [`targetMarker`](/en/api/registry/attr#targetmarker) to specify the starting and ending arrows for edges. We demonstrated how to use built-in arrows and custom arrows. Next, we will first list the parameters for each built-in arrow, then provide a detailed explanation of how to use various SVG elements to customize arrows, and finally explain how to register custom arrows as built-in arrows.
 
 ## Built-in Arrows
 

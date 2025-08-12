@@ -28,7 +28,6 @@ XFlow is an application-level solution based on the X6 graph editing engine, des
 If you have any questions, suggestions, feedback, or wish to communicate, you can contact us through the following methods:
 
 - Official Recommendation: [GitHub issues](https://github.com/antvis/XFlow/issues/new/choose)  
-- Email: <antv@antfin.com>  
 - Yuque Column: <https://www.yuque.com/antv/blog>  
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&#x26;_dt_no_comment=1&#x26;origin=11" target="_blank" rel="noopener noreferrer">
@@ -44,5 +43,5 @@ Before reporting a bug, please ensure you have searched existing issues and read
 To submit code, please follow our [Contribution Guidelines](https://github.com/antvis/X6/blob/master/CONTRIBUTING.md).
 
 <a href="https://github.com/antvis/xflow/graphs/contributors" target="_blank" rel="noopener noreferrer">
-  <img src="https://opencollective.com/x6/contributors.svg?width=890&button=false" alt="Contributors">
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
 </a>

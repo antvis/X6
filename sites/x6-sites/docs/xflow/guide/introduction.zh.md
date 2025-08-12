@@ -28,7 +28,6 @@ XFlow 是基于 X6 图编辑引擎、面向 React 技术栈用户的应用级解
 如果您有任何的问题、建议、反馈或者交流意愿，可以通过如下方式联系我们：
 
 - 官方推荐: [GitHub issues](https://github.com/antvis/XFlow/issues/new/choose)
-- 邮件：<antv@antfin.com>
 - 语雀专栏：<https://www.yuque.com/antv/blog>
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&#x26;_dt_no_comment=1&#x26;origin=11" target="_blank" rel="noopener noreferrer">
@@ -44,5 +43,5 @@ XFlow 是基于 X6 图编辑引擎、面向 React 技术栈用户的应用级解
 如需提交代码，请遵从我们的[贡献指南](https://github.com/antvis/X6/blob/master/CONTRIBUTING.zh-CN.md)。
 
 <a href="https://github.com/antvis/xflow/graphs/contributors" target="_blank" rel="noopener noreferrer">
-  <img src="https://opencollective.com/x6/contributors.svg?width=890&button=false" alt="Contributors">
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
 </a>

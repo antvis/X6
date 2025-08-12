@@ -1105,13 +1105,64 @@ export class NodeView<
     }
   }
 
+  protected autoOffsetNode() {
+    const node = this.cell
+    const graph = this.graph
+    const nodePosition = { id: node.id, ...node.getPosition() }
+    const allNodes = graph.getNodes()
+    const restNodePositions = allNodes
+      .map((node) => {
+        const pos = node.getPosition()
+        return { id: node.id, x: pos.x, y: pos.y }
+      })
+      .filter((pos) => {
+        return pos.id !== nodePosition.id
+      })
+    /** offset directions: right bottom, right top, left bottom, left top */
+    const directions = [
+      [1, 1], // offset to right bottom
+      [1, -1], // offset to right top
+      [-1, 1], // offset to left bottom
+      [-1, -1], // offset to left top
+    ]
+    let step = graph.getGridSize()
+    const hasSamePosition = (position: { x: number; y: number }) =>
+      restNodePositions.some((pos) => {
+        return pos.x === position.x && pos.y === position.y
+      })
+    while (hasSamePosition(nodePosition)) {
+      let found = false
+      for (let i = 0; i < directions.length; i += 1) {
+        const dir = directions[i]
+        const position = {
+          x: nodePosition.x + dir[0] * step,
+          y: nodePosition.y + dir[1] * step,
+        }
+        if (!hasSamePosition(position)) {
+          node.translate(dir[0] * step, dir[1] * step)
+          found = true
+          break
+        }
+      }
+      if (found) {
+        break
+      }
+      step += graph.getGridSize()
+    }
+  }
+
   protected stopNodeDragging(e: Dom.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData<EventData.MovingTargetNode>(e)
+    const graph = this.graph
     if (data.embedding) {
       this.finalizeEmbedding(e, data)
     }
 
     if (data.moving) {
+      const autoOffset = graph.options.translating.autoOffset
+      if (autoOffset) {
+        this.autoOffsetNode()
+      }
       this.removeClass('node-moving')
       this.notifyNodeMove('node:moved', e, x, y, this.cell)
     }
