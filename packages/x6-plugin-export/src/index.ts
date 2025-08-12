@@ -1,14 +1,14 @@
 import {
+  Basecoat,
   DataUri,
-  NumberExt,
+  Dom,
   FunctionExt,
-  Vector,
+  Graph,
+  KeyValue,
+  NumberExt,
   Rectangle,
   Size,
-  KeyValue,
-  Basecoat,
-  Dom,
-  Graph,
+  Vector,
 } from '@antv/x6'
 import './api'
 
@@ -35,7 +35,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
   }
 
   exportJPEG(fileName = 'chart', options: Export.ToImageOptions = {}) {
-    this.toPNG((dataUri) => {
+    this.toJPEG((dataUri) => {
       DataUri.downloadDataUri(dataUri, fileName)
     }, options)
   }
@@ -213,6 +213,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
           DataUri.imageToDataUri(url, (err, dataUri) => {
             if (!err && dataUri) {
               vImage.attr('xlink:href', dataUri)
+              vImage.attr('href', dataUri)
             }
             resolve()
           })

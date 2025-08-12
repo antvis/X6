@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/model
 ---
 
-Cell 是 [Node](/zh/docs/api/model/node) 和 [Edge](/zh/docs/api/model/edge) 的基类，包含节点和边的通用属性和方法定义，如属性样式、可见性、业务数据等，并且在实例化、样式定制、默认选项、自定义选项等方面具有相同的行为。
+Cell 是 [Node](/api/model/node) 和 [Edge](/api/model/edge) 的基类，包含节点和边的通用属性和方法定义，如属性样式、可见性、业务数据等，并且在实例化、样式定制、默认选项、自定义选项等方面具有相同的行为。
 
 ## 属性
 
@@ -305,7 +305,7 @@ const rect = new Shape.Rect({
 
 值得一提的是，支持使用[小驼峰(camelCase)格式](https://zh.wikipedia.org/zh-cn/%E9%A7%9D%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%AF%AB)的属性名，如 `fontSize`，这就避免了 `font-size` 这种属性名作为对象 Key 时需要加引号的麻烦。
 
-除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[特殊属性](/zh/docs/api/model/attrs)和[自定义属性](/zh/docs/api/model/cell/#自定义属性)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `x6-node` 和 `x6-edge` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/style/index.less)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
+除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[特殊属性](/api/model/attrs)和[自定义属性](/api/model/cell/#自定义属性)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `x6-node` 和 `x6-edge` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/style/index.less)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
 
 ```css
 .x6-node rect {
@@ -414,20 +414,20 @@ const edge = graph.addEdge({
 
 节点
 
-- [button](/zh/docs/api/registry/node-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
-- [button-remove](/zh/docs/api/registry/node-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
-- [boundary](/zh/docs/api/registry/node-tool#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
-- [node-editor](/zh/docs/api/registry/node-tool#node-editor) 提供节点上文本编辑功能。
+- [button](/api/registry/node-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](/api/registry/node-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
+- [boundary](/api/registry/node-tool#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [node-editor](/api/registry/node-tool#node-editor) 提供节点上文本编辑功能。
 
 边
 
-- [vertices](/zh/docs/api/registry/edge-tool#vertices) 路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
-- [segments](/zh/docs/api/registry/edge-tool#segments) 线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
-- [boundary](/zh/docs/api/registry/edge-tool#boundary) 根据边的包围盒渲染一个包围边的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
-- [button](/zh/docs/api/registry/edge-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
-- [button-remove](/zh/docs/api/registry/edge-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
-- [source-arrowhead-和-target-arrowhead](/zh/docs/api/registry/edge-tool#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
-- [edge-editor](/zh/docs/api/registry/edge-tool#edge-editor) 提供边上文本编辑功能
+- [vertices](/api/registry/edge-tool#vertices) 路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
+- [segments](/api/registry/edge-tool#segments) 线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
+- [boundary](/api/registry/edge-tool#boundary) 根据边的包围盒渲染一个包围边的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [button](/api/registry/edge-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](/api/registry/edge-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
+- [source-arrowhead-和-target-arrowhead](/api/registry/edge-tool#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
+- [edge-editor](/api/registry/edge-tool#edge-editor) 提供边上文本编辑功能
 
 可以指定单个工具：
 
@@ -527,7 +527,7 @@ if (node.view === 'rect') {
 isNode(): boolean
 ```
 
-检测实例是不是 [Node](/zh/docs/api/model/node) 实例，如果是 [Node](/zh/docs/api/model/node) 实例则返回 `true`，否则返回 `false`。所有继承自 [Node](/zh/docs/api/model/node) 的节点都返回 `true`。
+检测实例是不是 [Node](/api/model/node) 实例，如果是 [Node](/api/model/node) 实例则返回 `true`，否则返回 `false`。所有继承自 [Node](/api/model/node) 的节点都返回 `true`。
 
 ```ts
 if (cell.isNode()) {
@@ -541,7 +541,7 @@ if (cell.isNode()) {
 isEdge(): boolean
 ```
 
-检测实例是不是 [Edge](/zh/docs/api/model/edge) 实例，如果是 [Edge](/zh/docs/api/model/edge) 实例则返回 `true`，否则返回 `false`。所有继承自 [Edge](/zh/docs/api/model/edge) 的边都返回 `true`。
+检测实例是不是 [Edge](/api/model/edge) 实例，如果是 [Edge](/api/model/edge) 实例则返回 `true`，否则返回 `false`。所有继承自 [Edge](/api/model/edge) 的边都返回 `true`。
 
 ```ts
 if (cell.isEdge()) {
@@ -559,10 +559,10 @@ toJSON(options?: Cell.ToJSONOptions): Object
 
 | 选项         | 类型    | 默认值  | 必选 | 描述                                    |
 |--------------|---------|---------|:----:|---------------------------------------|
-| options.diff | boolean | `false` |      | 是否返回与默认值相比具有差异的那些数据。 |
+| options.diff | boolean | `false` |      | 是否返回与默认值相比具有差异的那些数据（还是会导出整个画布的数据）。 |
 
 - 当 `options.diff` 为 `false` 时，返回完整数据。
-- 当 `options.diff` 为 `true` 时，返回差异数据。
+- 当 `options.diff` 为 `true` 时，返回差异数据（剔除属性的默认值）。
 
 #### clone(...)
 
@@ -1846,7 +1846,7 @@ addTools(
 
 | 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                                  |
 |------------------|----------------------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------|
-| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/zh/docs/api/registry/node-tool#presets) 或 [EdgeTool](/zh/docs/api/registry/edge-tool#presets) 中定义的小工具。            |
+| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](/api/registry/node-tool#presets) 或 [EdgeTool](/api/registry/edge-tool#presets) 中定义的小工具。            |
 | name             | string                           |      | `null`  | 定义该组工具的别称，可以作为`hasTools(name)`的参数                                                                                     |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                                |
 | options.local    | boolean                          |      | `false` | 工具是否渲染到节点/边的容器中，默认为 `false`，所有工具会渲染在 `x6-graph-svg-decorator` 下面，只有在 `options.reset` 为 `true` 为时生效 |

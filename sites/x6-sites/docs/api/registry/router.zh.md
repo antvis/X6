@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-路由将边的路径点 [vertices](/zh/docs/tutorial/basic/edge#vertices) 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](#orth) 路由处理后，边的每一条线段都是水平或垂直的正交线段。
+路由将边的路径点 [vertices](/tutorial/basic/edge#vertices) 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](#orth) 路由处理后，边的每一条线段都是水平或垂直的正交线段。
 
 X6 中内置了以下几种路由。
 
@@ -173,6 +173,7 @@ graph.addEdge({
 | startDirections  | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向开始路由。                                     |
 | endDirections    | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向结束路由。                                     |
 | padding          | SideOptions              |    否    | -                                    | 设置锚点距离转角的最小距离。                                 |
+| fallbackRouter   | Router                   |    否    | `Registry.Router.presets.orth`       | 无法避开障碍物的场景，降级到指定路由。                         |
 
 例如：
 
