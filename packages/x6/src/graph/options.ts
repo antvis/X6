@@ -111,7 +111,7 @@ export namespace Options {
     /**
      * Snap edge to the closest node/port in the given radius on dragging.
      */
-    snap: boolean | { radius: number; anchor: 'center' | 'bbox' }
+    snap: boolean | { radius: number; anchor?: 'center' | 'bbox' }
 
     /**
      * Specify whether connect to point on the graph is allowed.
@@ -248,6 +248,11 @@ export namespace Options {
     restrict:
       | boolean
       | OptionItem<CellView | null, Rectangle.RectangleLike | number | null>
+    /**
+     * After a node is moved, if it overlaps with other nodes, it will be
+     * automatically offset (by default, no offset occurs).
+     */
+    autoOffset?: boolean
   }
 
   export interface Embedding {

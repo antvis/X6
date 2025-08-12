@@ -1,8 +1,9 @@
-import React from 'react'
-import ReactDom from 'react-dom'
-import { Dropdown } from 'antd'
-import { Graph, ToolsView, EdgeView } from '@antv/x6'
+import { EdgeView, Graph, ToolsView } from '@antv/x6'
 import type { MenuProps } from 'antd'
+import { Dropdown } from 'antd'
+import React from 'react'
+import type { Root } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 
 // 如果项目中使用的是 antd@4，使用方式参考：https://codesandbox.io/s/contextmenu-z8gpq3
 
@@ -11,13 +12,16 @@ class ContextMenuTool extends ToolsView.ToolItem<
   ContextMenuToolOptions
 > {
   private timer: number
+  private root: Root
 
   private toggleContextMenu(visible: boolean, pos?: { x: number; y: number }) {
-    ReactDom.unmountComponentAtNode(this.container)
+    // ReactDom.unmountComponentAtNode(this.container)
+    this.root && this.root.unmount()
     document.removeEventListener('mousedown', this.onMouseDown)
 
     if (visible && pos) {
-      ReactDom.render(
+      this.root = createRoot(this.container)
+      this.root.render(
         <Dropdown
           open={true}
           trigger={['contextMenu']}
@@ -26,7 +30,6 @@ class ContextMenuTool extends ToolsView.ToolItem<
         >
           <span />
         </Dropdown>,
-        this.container,
       )
       document.addEventListener('mousedown', this.onMouseDown)
     }

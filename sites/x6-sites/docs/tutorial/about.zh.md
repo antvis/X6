@@ -8,7 +8,7 @@ redirect_from:
 
 X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。
 
-如果你还没有使用过 X6， 建议通过 [快速上手](/zh/docs/tutorial/getting-started) 抢先体验 X6 的魅力。
+如果你还没有使用过 X6， 建议通过 [快速上手](/tutorial/getting-started) 抢先体验 X6 的魅力。
 
 <p align="left">
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&logo=github&style=flat-square" /></a>
@@ -32,11 +32,11 @@ X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和
 
 ## 🍉 使用文档
 
-- [快速上手](/zh/docs/tutorial/getting-started)
-- [基础](/zh/docs/tutorial/basic/graph)
-- [进阶](/zh/docs/tutorial/intermediate/connection-point)
-- [插件](/zh/docs/tutorial/plugins/transform)
-- [API](/zh/docs/api/graph/graph)
+- [快速上手](/tutorial/getting-started)
+- [基础](/tutorial/basic/graph)
+- [进阶](/tutorial/intermediate/connection-point)
+- [插件](/tutorial/plugins/transform)
+- [API](/api/graph/graph)
 
 X6 文档整体分为文档和 API 两部分，建议仔细阅读文档内容，会帮助你更好的上手开发，API 文档内容比较多，可以等遇到问题时，通过搜索定位到相关的文档。
 
@@ -45,10 +45,9 @@ X6 文档整体分为文档和 API 两部分，建议仔细阅读文档内容，
 如果您有任何的问题、建议、反馈或者交流意愿，可以通过如下方式联系我们：
 
 - 官方推荐: [GitHub issues](https://github.com/antvis/X6/issues/new/choose)
-- 邮件：[antv@antfin.com](mailto:antv@antfin.com)
 - 语雀专栏：[https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*AY2PSL5s0N4AAAAAAAAAAAAADtOHAQ/original" alt="X6 图编辑交流群" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 图编辑交流群" width="375" />
 
 ## 🤝 参与贡献
 

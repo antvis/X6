@@ -44,9 +44,9 @@ export class AngularShapeView extends NodeView<AngularShape> {
   }
 
   protected renderAngularContent(): void {
-    this.unmountAngularContent()
     const container = this.getNodeContainer()
     if (container) {
+      this.unmountAngularContent()
       const node = this.cell
       const { injector, content } = registerInfo.get(node.shape)!
       const viewContainerRef = injector.get(ViewContainerRef)
@@ -61,7 +61,9 @@ export class AngularShapeView extends NodeView<AngularShape> {
           this.setInstanceInput(content, embeddedViewRef),
         )
       } else {
-        const componentRef = viewContainerRef.createComponent(content)
+        const componentRef = viewContainerRef.createComponent(content, {
+          injector,
+        })
         const insertNode = (componentRef.hostView as EmbeddedViewRef<any>)
           .rootNodes[0] as HTMLElement
         container.appendChild(insertNode)

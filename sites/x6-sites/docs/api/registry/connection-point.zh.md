@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-连接点 ConnectionPoint 与锚点 [Anchor](/zh/docs/api/registry/node-anchor) 共同确定了边的起点或终点。
+连接点 ConnectionPoint 与锚点 [Anchor](/api/registry/node-anchor) 共同确定了边的起点或终点。
 
 - 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 `connectionPoint` 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
 - 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 `connectionPoint` 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
