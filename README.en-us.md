@@ -107,6 +107,10 @@ pnpm run start
 
 Thank you to everyone who has contributed to this project and all supporters! 🙏
 
+<a href="https://openomy.app/github/antvis/X6" target="_blank" style="display: block; width: 100%;" align="center">
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
+</a>
+
 - **Issue Feedback**: If you encounter any issues with X6 during use, feel free to submit an Issue along with minimal reproducible code.
 - **Contribution Guide**: How to participate in the [development and contribution](./CONTRIBUTING.md) of X6.
 - **Discussion Ideas**: Discuss on GitHub Discussion or DingTalk group.
