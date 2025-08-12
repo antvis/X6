@@ -109,7 +109,7 @@ pnpm run start
 
 <a href="https://openomy.app/github/antvis/X6" target="_blank" style="display: block; width: 100%;" align="center">
   <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
- </a>
+</a>
 
 - **问题反馈**：使用过程遇到的 X6 的问题，欢迎提交 Issue，并附上可以复现问题的最小案例代码。
 - **贡献指南**：如何参与到 X6 的[开发和贡献](./CONTRIBUTING.zh-CN.md)。

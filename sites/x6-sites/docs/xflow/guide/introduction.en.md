@@ -43,5 +43,5 @@ Before reporting a bug, please ensure you have searched existing issues and read
 To submit code, please follow our [Contribution Guidelines](https://github.com/antvis/X6/blob/master/CONTRIBUTING.md).
 
 <a href="https://github.com/antvis/xflow/graphs/contributors" target="_blank" rel="noopener noreferrer">
-  <img src="https://opencollective.com/x6/contributors.svg?width=890&button=false" alt="Contributors">
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
 </a>
