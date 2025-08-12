@@ -18,7 +18,7 @@ redirect_from:
 
 ## 组合节点
 
-我们可以通过父子组合来实现群组，并提供了一系列获取和设置组合关系的[方法](/zh/docs/api/model/cell#父子关系-parentchildren)。
+我们可以通过父子组合来实现群组，并提供了一系列获取和设置组合关系的[方法](/api/model/cell#父子关系-parentchildren)。
 
 <code id="group-embed-edge" src="@/src/tutorial/intermediate/group/embed-edge/index.tsx"></code>
 
@@ -29,7 +29,7 @@ redirect_from:
 
 ## 通过交互组合节点
 
-有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/zh/docs/api/interacting/interacting#组合)。
+有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/api/interacting/interacting#组合)。
 
 <code id="group-embedding" src="@/src/tutorial/basic/interacting/embedding/index.tsx"></code>
 
