@@ -1,8 +1,9 @@
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import { requestAnimationFrame, cancelAnimationFrame } from './animationFrame'
+import { safeDocument } from './executionEnvironment'
 
 export class MouseMoveTracker {
-  private elem: HTMLElement
+  private elem: HTMLElement | undefined
 
   private clientX: number
 
@@ -31,7 +32,8 @@ export class MouseMoveTracker {
   private onMouseMoveEndCallback: (cancel: boolean) => void
 
   constructor(options: MouseMoveTracker.Options) {
-    this.elem = options.elem || document.documentElement
+    this.elem =
+      options.elem || safeDocument((document) => document.documentElement)
     this.onMouseMoveCallback = options.onMouseMove
     this.onMouseMoveEndCallback = options.onMouseMoveEnd
     this.animationFrameID = null

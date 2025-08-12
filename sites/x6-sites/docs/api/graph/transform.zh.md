@@ -154,7 +154,7 @@ translate(tx: number, ty: number): this
 getContentArea(options?: Transform.GetContentAreaOptions): Rectangle
 ```
 
-获取画布内容的矩形区域，使用[画布本地坐标](/zh/docs/api/graph/coordinate#clienttolocal)表示。
+获取画布内容的矩形区域，使用[画布本地坐标](/api/graph/coordinate#clienttolocal)表示。
 
 | 名称 | 类型 | 必选 | 默认值 | 描述 |
 | --- | --- | :-: | --- | --- |
@@ -166,7 +166,7 @@ getContentArea(options?: Transform.GetContentAreaOptions): Rectangle
 getContentBBox(options?: Transform.GetContentAreaOptions): Rectangle
 ```
 
-获取画布内容的矩形区域，使用[画布坐标](/zh/docs/api/graph/coordinate#localtograph)表示。
+获取画布内容的矩形区域，使用[画布坐标](/api/graph/coordinate#localtograph)表示。
 
 | 名称 | 类型 | 必选 | 默认值 | 描述 |
 | --- | --- | :-: | --- | --- |

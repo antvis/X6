@@ -1,8 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Tooltip } from 'antd'
 import { Graph, Markup } from '@antv/x6'
+import { Tooltip } from 'antd'
 import insertCss from 'insert-css'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
 
 const graph = new Graph({
   container: document.getElementById('container'),
@@ -12,13 +12,12 @@ const graph = new Graph({
     const selectors = args.contentSelectors
     const container = selectors && selectors.foContent
     if (container) {
-      ReactDOM.render(
+      createRoot(container as HTMLElement).render(
         (
           <Tooltip title="port">
             <div className="my-port" />
           </Tooltip>
         ) as any,
-        container as HTMLElement,
       )
     }
   },

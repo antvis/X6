@@ -55,7 +55,7 @@ const graph = new Graph({
 在 X6 中，网格是渲染/移动节点的最小单位，默认是 10px ，也就是说位置为 `{ x: 24, y: 38 }` 的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }`
 :::
 
-背景不仅支持颜色，还支持背景图片，详细的配置与方法参考 [API](/zh/docs/api/graph/background)。同时，网格支持四种不同类型，并且能配置网格线的颜色以及宽度，详细的配置与方法参考 [API](/zh/docs/api/graph/grid)。
+背景不仅支持颜色，还支持背景图片，详细的配置与方法参考 [API](/api/graph/background)。同时，网格支持四种不同类型，并且能配置网格线的颜色以及宽度，详细的配置与方法参考 [API](/api/graph/grid)。
 
 ## 缩放与平移
 
@@ -73,11 +73,11 @@ const graph = new Graph({
 
 <code id="panning-mousewheel" src="@/src/tutorial/basic/graph/panning-mousewheel/index.tsx"></code>
 
-当然，`panning` 和 `mousewheel` 也支持很多其他的配置，比如修饰键（按下修饰键才能触发相应的行为）、缩放因子(速率)等等，我们可以通过 [API](/zh/docs/api/graph/mousewheel) 了解更多内容。
+当然，`panning` 和 `mousewheel` 也支持很多其他的配置，比如修饰键（按下修饰键才能触发相应的行为）、缩放因子(速率)等等，我们可以通过 [API](/api/graph/mousewheel) 了解更多内容。
 
 ## 常用 API
 
-除了上述的一些配置，X6 还有丰富的 API 对画布尺寸、位置进行操作，下面列举一些常用的 API，更详细的内容见 [API](/zh/docs/api/graph/transform)。
+除了上述的一些配置，X6 还有丰富的 API 对画布尺寸、位置进行操作，下面列举一些常用的 API，更详细的内容见 [API](/api/graph/transform)。
 
 ```ts
 graph.resize(800, 600) // resize 画布大小
