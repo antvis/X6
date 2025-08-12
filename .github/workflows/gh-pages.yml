@@ -1,10 +1,11 @@
 name: site
 
 on:
-  # push:
-  pull_request:
+  workflow_dispatch:
+  push:
     branches:
-      - master # default branch
+      - master
+      - main
 
 permissions:
   contents: write
