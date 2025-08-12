@@ -55,9 +55,10 @@ export class Button extends ToolsView.ToolItem<
     x = NumberExt.normalizePercentage(x, bbox.width)
     y = NumberExt.normalizePercentage(y, bbox.height)
 
-    const origin = this.parent.options.local ? [bbox.width / 2, bbox.height / 2] : [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
+    const originX = this.parent.options.local ? bbox.width / 2 : bbox.x + bbox.width / 2;
+    const originY = this.parent.options.local ? bbox.height / 2 : bbox.y + bbox.height / 2;
 
-    let matrix = Dom.createSVGMatrix().translate(origin[0], origin[1])
+    let matrix = Dom.createSVGMatrix().translate(originX, originY)
 
     if (rotate) {
       matrix = matrix.rotate(angle)
