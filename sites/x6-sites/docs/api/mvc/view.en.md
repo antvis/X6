@@ -91,18 +91,20 @@ const graph = new Graph({
 ### onEdgeLabelRendered
 
 ```ts
+type OnEdgeLabelRenderedArgs = {
+  edge: Edge
+  label: Edge.Label
+  container: Element
+  selectors: Markup.Selectors
+}
+
 (
   this: Graph,
-  args: {
-    edge: Edge
-    label: Edge.Label
-    container: Element
-    selectors: Markup.Selectors
-  },
-) => void
+  args: OnEdgeLabelRenderedArgs,
+) => void | ((args: OnEdgeLabelRenderedArgs) => void)
 ```
 
-Callback triggered when an edge's text label is rendered, with the following parameters:
+The callback triggered when an edge label is rendered, And it can return a cleanup function, which will be executed when the label is destroyed, with the following parameters:
 
 | Name      | Type             | Required | Description                                    |
 |-----------|------------------|:--------:|------------------------------------------------|
@@ -126,8 +128,33 @@ const graph = new Graph({
       content.style.justifyContent = 'center'
       ReactDOM.render(<Button size="small">Antd Button</Button>, content)
     }
+
+    //  And it can return a cleanup function, which will be executed when the label is destroyed.
+    return (edgeLabelRenderedArgs: typeof args) => {
+      // Remove event listeners...
+    }
   },
 })
+
+
+// The main purpose of this code is to test the cleanup function of onEdgeLabelRendered in a specific scenario.
+const edge = graph.addEdge({
+  source: [170, 160],
+  target: [550, 160],
+  labels: [
+    {
+      attrs: {
+        text: {
+          text: "Custom Label",
+        },
+      },
+    },
+  ],
+});
+
+setTimeout(() => {
+  edge.prop("labels", ["Updated Label"]);
+}, 2000);
 ```
 
 ### createCellView
