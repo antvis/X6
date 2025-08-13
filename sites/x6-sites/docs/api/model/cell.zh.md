@@ -2205,7 +2205,7 @@ const rect = graph.addNode({
 
 ### generateId
 
-我们在 Cell 基类上提供了一个静态方法 `generateId` 来快速实现自定义节点/边ID。
+我们在 Cell 基类上提供了一个静态方法 `generateId` 来快速实现自定义节点/边 ID。
 
 ```ts
 generateId(metadata: Cell.Metadata): string
