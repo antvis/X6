@@ -2203,12 +2203,12 @@ const rect = graph.addNode({
 
 ## 静态方法
 
-### customId
+### generateId
 
-我们在 Cell 基类上提供了一个静态方法 `customId` 来快速实现自定义节点/边ID。
+我们在 Cell 基类上提供了一个静态方法 `generateId` 来快速实现自定义节点/边ID。
 
 ```ts
-customId(metadata: Cell.Metadata): string
+generateId(metadata: Cell.Metadata): string
 ```
 
 例如：
@@ -2217,7 +2217,7 @@ customId(metadata: Cell.Metadata): string
 import { Cell } from '@antv/x6'
 
 let sid = 0
-Cell.customId = ({ shape }) => {
+Cell.generateId = ({ shape }) => {
   return `${shape}_${sid++}`
 }
 ```

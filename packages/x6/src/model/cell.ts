@@ -84,7 +84,7 @@ export class Cell<
   }
 
   // eslint-disable-next-line
-  public static customId(metadata: Cell.Metadata = {}) {
+  public static generateId(metadata: Cell.Metadata = {}) {
     return StringExt.uuid()
   }
 
@@ -112,7 +112,7 @@ export class Cell<
       this.preprocess(metadata),
     )
 
-    this.id = props.id || Cell.customId(metadata)
+    this.id = props.id || Cell.generateId(metadata)
     this.store = new Store(props)
     this.animation = new Animation(this)
     this.setup()
@@ -145,7 +145,7 @@ export class Cell<
     const props = ctor.applyPropHooks(this, metadata)
 
     if (id == null && ignoreIdCheck !== true) {
-      props.id = Cell.customId(metadata)
+      props.id = Cell.generateId(metadata)
     }
 
     return props as Properties
