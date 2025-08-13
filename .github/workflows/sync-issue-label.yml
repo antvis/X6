@@ -16,77 +16,82 @@ jobs:
               {
                 name: 'waiting for maintainer',
                 description: 'Triage or intervention needed from a maintainer',
-                color: 'bcf5db'
+                color: '#bcf5db'
               },
               {
                 name: 'waiting for author',
                 description: 'Further information is requested from the author',
-                color: 'fef2c0'
+                color: '#fef2c0'
               },
               {
                 name: 'need improvement',
                 description: 'Lack of information or incorrect format',
-                color: 'fbca04'
+                color: '#fbca04'
               },
               {
                 name: 'bug 🐛',
                 description: "Something isn't working",
-                color: 'ee0701'
+                color: '#ee0701'
               },
               {
                 name: 'documentation 📖',
                 description: 'Improvements or additions to documentation',
-                color: 'd4c5f9'
+                color: '#d4c5f9'
               },
               {
                 name: 'feature 💡',
                 description: 'A new feature request or an enhancement proposal',
-                color: 'a2eeef'
+                color: '#a2eeef'
               },
               {
                 name: 'question 💬',
                 description: 'This issue is just a question. It will be converted into discussion automatically',
-                color: 'cc317c'
+                color: '#cc317c'
               },
               {
                 name: 'duplicate',
                 description: 'This issue or PR already exists and may be closed with a reference to the original',
-                color: 'eeeeee'
+                color: '#eeeeee'
               },
               {
                 name: 'good first issue',
                 description: 'Good for newcomers',
-                color: '7057ff'
+                color: '#7057ff'
               },
               {
                 name: 'help wanted',
                 description: "Anyone can help, whether you're a seasoned developer or new to the project",
-                color: '008672'
+                color: '#008672'
               },
               {
                 name: 'resolved',
                 description: 'This issue has been resolved and is now available in the latest release',
-                color: '0E8A16'
+                color: '#0E8A16'
               },
               {
                 name: 'resolved pending release',
                 description: 'This issue has been resolved and is pending release',
-                color: '0E8A16'
+                color: '#0E8A16'
               },
               {
                 name: 'stale',
                 description: 'This issue has not had recent activity or appears to be solved. It will be automatically closed',
-                color: 'eeeeee'
+                color: '#eeeeee'
               },
               {
                 name: 'wontfix',
                 description: 'This issue will not be fixed or otherwise handled. It will be automatically closed',
-                color: 'eeeeee'
+                color: '#eeeeee'
               },
               {
                 name: 'notabug',
                 description: 'This issue reported is not a bug (e.g., misreported, not reproducible) and will be automatically closed',
-                color: 'eeeeee'
+                color: '#eeeeee'
+              },
+              {
+                name: 'oscp',
+                description: 'This issue is related to the OSCP (Open Source Contribution Plan)',
+                color: '#5E1CFF'
               }
             ];
 
@@ -113,7 +118,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   name: label.name,
-                  color: label.color,
+                  color: label.color.slice(1),
                   description: label.description
                 });
                 console.log(`成功创建标签: ${label.name}`);
