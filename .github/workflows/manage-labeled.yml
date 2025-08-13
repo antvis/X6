@@ -74,6 +74,31 @@ jobs:
               - [基本撰写和格式语法](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
           emoji: "heart"
 
+      # 当添加 'oscp' 标签时，发送贡献者提醒评论
+      - name: Info contribution msg when `oscp` label is added
+        if: github.event.label.name == 'oscp'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            🧑🏻‍💻 In order to ensure the better, healthy, and sustainable development of our open-source project, and to allow develops in the community who are interested in open source to easily get started and contribute, we have included this issue in the `oscp` program. You can claim it by replying with "claim." During the process, you will receive one-on-one guidance from project members, and after your contribution is merged, you will be eligible for some official activity incentives. 
+
+            Reference document: 
+
+              - [Creating a Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+
+            ---
+
+            🧑🏻‍💻 为了让我们的开源项目能更好的、健康的可持续发展，也让社区对开源感兴趣的同学，能轻轻松松的入门和贡献，我们将这个 issue 纳入到 `oscp` 计划中，回复「收到」即可认领，过程中能有项目成员的一对一指导，并在合并之后获得官方的一些活动激励。
+
+            参考文档：
+
+              - [创建一个 Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+
+          emoji: "heart"
+
       # 处理 stale 标签
       - name: Add stale issue comment before closing
         if: github.event.label.name == 'stale'
