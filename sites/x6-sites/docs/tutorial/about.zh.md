@@ -67,5 +67,5 @@ X6 文档整体分为文档和 API 两部分，建议仔细阅读文档内容，
 - [如何优雅地在 github 上贡献代码](https://segmentfault.com/a/1190000000736629?u_atoken=b71f69b7-7d74-4e6c-a373-76e0a36e2c87&u_asession=01aGvG2P10Vrjamv5BFM7yX0X2_OcJ_XmHlitgQC_BVnNLlRLdwpnHYH8ma1b1UKRaX0KNBwm7Lovlpxjd_P_q4JsKWYrT3W_NKPr8w6oU7K93NVUbout2zcDySUWFprtJUe3R9QHfzEvknA4dzJmVTGBkFo3NEHBv0PZUm6pbxQU&u_asig=05FBplinh079EhmRTHTDgrLXp5aawipV_A-9VAsAs841tY8QeTTaaTvFKcH6odRhI4VX2pBdH5ae6FY2MiL2X_4yTqZp2jK-_nBOl2nesFZDM2RmF5JkBT_JWpU60Z6lY1hzgqVxFxj_uE1HnffLBmwa5Sl9NkdZ4_S8RH_A-AooP9JS7q8ZD7Xtz2Ly-b0kmuyAKRFSVJkkdwVUnyHAIJzZMNY1otqX6vcbPyd-A-Ld3WE-pEMt_G6ZtWjng8eWoZH_8T8uYGNepqxdb-gLe1IO3h9VXwMyh6PgyDIVSG1W-dzbV77H9pFSh5eWBVfcZZYGYDqHeX90h_yD6KfDquy8GWlAwW_v4wTa3IAdocwA0iaDksczFnALAG-4HaicdUmWspDxyAEEo4kbsryBKb9Q&u_aref=SU72jL%2FvYl46xrVouxNG%2FiEj5e0%3D)
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="https://raw.githubusercontent.com/antvis/X6/master/CONTRIBUTORS.svg" alt="Contributors" />
+  <img src="https://openomy.app/svg?repo=antvis/X6&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; height: 400px" />
 </a>
