@@ -2200,3 +2200,24 @@ const rect = graph.addNode({
   },
 })
 ```
+
+## Static Methods
+
+### generateId
+
+We provide a static method `generateId` on the Cell base class to quickly implement custom node/edge IDs.
+
+```ts
+generateId(metadata: Cell.Metadata): string
+```
+
+For example:
+
+```ts
+import { Cell } from '@antv/x6'
+
+let sid = 0
+Cell.generateId = ({ shape }) => {
+  return `${shape}_${sid++}`
+}
+```
