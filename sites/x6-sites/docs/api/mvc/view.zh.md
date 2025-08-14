@@ -91,18 +91,20 @@ const graph = new Graph({
 ### onEdgeLabelRendered
 
 ```ts
+type OnEdgeLabelRenderedArgs = {
+  edge: Edge
+  label: Edge.Label
+  container: Element
+  selectors: Markup.Selectors
+}
+
 (
   this: Graph,
-  args: {
-    edge: Edge
-    label: Edge.Label
-    container: Element
-    selectors: Markup.Selectors
-  },
-) => void
+  args: OnEdgeLabelRenderedArgs,
+) => void | ((args: OnEdgeLabelRenderedArgs) => void)
 ```
 
-当边的文本标签渲染完成时触发的回调，参数如下：
+当边的文本标签渲染完成时触发的回调，并且它可以返回一个清理函数，该函数会在标签被销毁时执行，参数如下：
 
 | 名称      | 类型             | 非空 | 描述                                  |
 |-----------|------------------|:----:|-------------------------------------|
@@ -126,8 +128,32 @@ const graph = new Graph({
       content.style.justifyContent = 'center'
       ReactDOM.render(<Button size="small">Antd Button</Button>, content)
     }
+
+    // 并且它可以返回一个清理函数，该函数会在标签被销毁时执行
+    return (edgeLabelRenderedArgs: typeof args) => {
+      // Remove event listeners...
+    }
   },
 })
+
+// 这段代码的主要目的是测试 onEdgeLabelRendered 的清理函数在特定场景下的触发情况
+const edge = graph.addEdge({
+  source: [170, 160],
+  target: [550, 160],
+  labels: [
+    {
+      attrs: {
+        text: {
+          text: "Custom Label",
+        },
+      },
+    },
+  ],
+});
+
+setTimeout(() => {
+  edge.prop("labels", ["Updated Label"]);
+}, 2000);
 ```
 
 ### createCellView
