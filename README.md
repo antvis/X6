@@ -42,7 +42,7 @@ X6 作为一款专业的图编辑可视化引擎，具有以下特性：
 
 ```bash
 # npm
-$ npm install @antv/x6 --save
+$ npm install @antv/x6 --save-dev
 
 # yarn
 $ yarn add @antv/x6
