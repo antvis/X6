@@ -37,5 +37,5 @@ new Graph(options: Options)
 | [async](/en/api/graph/view#async) | `boolean` |  | Whether to render asynchronously. | `true` |
 | [virtual](/en/api/graph/view#virtual) | `boolean` |  | Whether to only render the visible area of the canvas. | `false` |
 | [onPortRendered](/en/api/graph/view#onportrendered) | `(args: OnPortRenderedArgs) => void` |  | The callback triggered when a port is rendered. | - |
-| [onEdgeLabelRendered](/en/api/graph/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void` |  | The callback triggered when an edge label is rendered. | - |
+| [onEdgeLabelRendered](/en/api/mvc/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void \| ((args: OnEdgeLabelRenderedArgs) => void)` |  | The callback triggered when an edge label is rendered, And it can return a cleanup function, which will be executed when the label is destroyed. | - |
 | [createCellView](/en/api/graph/view#createcellview) | `(cell: Cell) => CellView \| null \| undefined` |  | Customizes the view of a cell. | - |
