@@ -37,5 +37,5 @@ new Graph(options: Options)
 | [async](/api/graph/view#async) | `boolean` |  | 是否异步渲染 | `true` |
 | [virtual](/api/graph/view#virtual) | `boolean` |  | 是否只渲染可视区域内容 | `false` |
 | [onPortRendered](/api/graph/view#onportrendered) | `(args: OnPortRenderedArgs) => void` |  | 当某个连接桩渲染完成时触发的回调。 | - |
-| [onEdgeLabelRendered](/api/graph/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void` |  | 当边的文本标签渲染完成时触发的回调。 | - |
+| [onEdgeLabelRendered](/api/mvc/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void \| ((args: OnEdgeLabelRenderedArgs) => void)` |  | 当边的文本标签渲染完成时触发的回调，并且它可以返回一个清理函数，该函数会在标签被销毁时执行。 | - |
 | [createCellView](/api/graph/view#createcellview) | `(cell: Cell) => CellView \| null \| undefined` |  | 是自定义元素的视图。 | - |

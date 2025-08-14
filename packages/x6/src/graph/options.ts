@@ -56,7 +56,7 @@ export namespace Options {
     onPortRendered?: (args: OnPortRenderedArgs) => void
     onEdgeLabelRendered?: (
       args: OnEdgeLabelRenderedArgs,
-    ) => undefined | ((args: OnEdgeLabelRenderedArgs) => void)
+    ) => void | ((args: OnEdgeLabelRenderedArgs) => void)
 
     createCellView?: (
       this: Graph,
