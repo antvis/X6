@@ -1,9 +1,0 @@
-node_modules
-.cache
-static/apps
-static/demos
-.dumi/tmp
-.dumi/tmp-production
-dist
-# Dead links report
-dead-links-report.log
