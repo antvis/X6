@@ -1,8 +1,7 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, History } from '@antv/x6'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Selection } from '@antv/x6-plugin-selection'
-import { History } from '@antv/x6-plugin-history'
 import { Button } from 'antd'
 import '../index.less'
 

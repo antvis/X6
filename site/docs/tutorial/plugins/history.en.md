@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-We provide a standalone plugin package `@antv/x6-plugin-history` to use the undo and redo functionality.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-history --save
-
-# yarn
-$ yarn add @antv/x6-plugin-history
-```
-
-Then we use it in the code like this:
+We provide a standalone plugin `history` to use the undo and redo functionality, then we use it in the code like this:
 
 ```ts
-import { History } from '@antv/x6-plugin-history'
+import { Graph, History } from 'history'
 
 const graph = new Graph({
   background: {

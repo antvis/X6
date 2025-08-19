@@ -12,7 +12,7 @@ if (typeof window !== 'undefined' && window) {
   ;(window as any).x6PluginSelection = require('@antv/x6-plugin-selection')
   ;(window as any).x6PluginTransform = require('@antv/x6-plugin-transform')
   ;(window as any).x6PluginStencil = require('@antv/x6-plugin-stencil')
-  ;(window as any).x6PluginHistory = require('@antv/x6-plugin-history')
+  ;(window as any).x6PluginHistory = X6
   ;(window as any).x6ReactShape = require('@antv/x6-react-shape')
   ;(window as any).layout = require('@antv/layout')
   ;(window as any).classnames = require('classnames')
