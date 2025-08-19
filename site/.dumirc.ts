@@ -31,7 +31,7 @@ export default defineConfig({
     isAntVSite: false,
     footerTheme: 'light', // 白色 底部主题
     feedback: true, // 是否开启用户反馈
-    sitePackagePath: 'sites/x6-sites', // 文档项目相对于项目根目录的相对路径
+    sitePackagePath: 'site', // 文档项目相对于项目根目录的相对路径
     githubUrl: repository, // GitHub 地址
     showSearch: true, // 是否显示搜索框
     showGithubCorner: true, // 是否显示头部的 GitHub icon
