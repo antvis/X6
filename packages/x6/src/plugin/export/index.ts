@@ -3,13 +3,13 @@ import {
   DataUri,
   Dom,
   FunctionExt,
-  Graph,
   KeyValue,
   NumberExt,
   Rectangle,
   Size,
   Vector,
-} from '@antv/x6'
+} from '@antv/x6-common'
+import { Graph } from '../../graph'
 import './api'
 
 export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
