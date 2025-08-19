@@ -7,3 +7,4 @@ static/demos
 dist
 # Dead links report
 dead-links-report.log
+server
