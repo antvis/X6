@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-We provide a standalone plugin package `@antv/x6-plugin-keyboard` to use keyboard shortcut functionality.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-keyboard --save
-
-# yarn
-$ yarn add @antv/x6-plugin-keyboard
-```
-
-Then we use it in the code like this:
+We provide a standalone plugin `keyboard` to use keyboard shortcut functionality, we use it in the code like this:
 
 ```ts
-import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { Graph, Keyboard } from '@antv/x6'
 
 const graph = new Graph({
   background: {
