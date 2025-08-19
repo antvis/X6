@@ -15,20 +15,10 @@ redirect_from:
 
 ## 使用
 
-我们提供了一个独立的插件包 `@antv/x6-plugin-keyboard` 来使用快捷键功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-keyboard --save
-
-# yarn
-$ yarn add @antv/x6-plugin-keyboard
-```
-
-然后我们在代码中这样使用：
+我们提供了一个独立的插件 `keyboard` 来使用快捷键功能，我们在代码中这样使用：
 
 ```ts
-import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { Graph, Keyboard } from '@antv/x6'
 
 const graph = new Graph({
   background: {

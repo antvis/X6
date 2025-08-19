@@ -8,7 +8,7 @@ if (typeof window !== 'undefined' && window) {
   ;(window as any).x6 = X6
   ;(window as any).x6PluginSnapline = require('@antv/x6-plugin-snapline')
   ;(window as any).x6PluginClipboard = X6
-  ;(window as any).x6PluginKeyboard = require('@antv/x6-plugin-keyboard')
+  ;(window as any).x6PluginKeyboard = X6
   ;(window as any).x6PluginSelection = require('@antv/x6-plugin-selection')
   ;(window as any).x6PluginTransform = require('@antv/x6-plugin-transform')
   ;(window as any).x6PluginStencil = require('@antv/x6-plugin-stencil')
