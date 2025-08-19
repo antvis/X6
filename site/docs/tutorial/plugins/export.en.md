@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-We often need to export the content of a canvas as an image. We provide a standalone plugin package `@antv/x6-plugin-export` to use this feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-export --save
-
-# yarn
-$ yarn add @antv/x6-plugin-export
-```
-
-Then we use it in the code like this:
+We often need to export the content of a canvas as an image. We provide a standalone plugin `export` to use this feature, we use it in the code like this:
 
 ```ts
-import { Export } from '@antv/x6-plugin-export'
+import { Graph, Export } from '@antv/x6'
 
 const graph = new Graph({
   background: {

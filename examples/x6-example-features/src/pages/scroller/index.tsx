@@ -1,10 +1,9 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph } from '@antv/x6'
+import { Graph, Export } from '@antv/x6'
 import { Scroller } from '@antv/x6-plugin-scroller'
 import { Selection } from '@antv/x6-plugin-selection'
 import { MiniMap } from '@antv/x6-plugin-minimap'
-import { Export } from '@antv/x6-plugin-export'
 import '../index.less'
 import './index.less'
 export default class Example extends React.Component {
