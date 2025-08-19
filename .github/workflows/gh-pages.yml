@@ -47,7 +47,7 @@ jobs:
 
       - name: Verify build output
         run: |
-          if [ ! -d "sites/x6-sites/dist" ]; then
+          if [ ! -d "site/dist" ]; then
             echo "Build output directory not found!"
             exit 1
           fi
@@ -55,14 +55,14 @@ jobs:
       - name: Prepare deployment files
         run: |
           shopt -s extglob
-          rm -rf !(sites|.git|$PNPM_STORE)
+          rm -rf !(site|.git|$PNPM_STORE)
           rm -rf examples
 
           # 复制构建产物
-          cp -r sites/x6-sites/dist/* ./
+          cp -r site/dist/* ./
 
           # 清理不需要的目录
-          rm -rf sites node_modules packages scripts .changeset .github .husky $PNPM_STORE
+          rm -rf site node_modules packages scripts .changeset .github .husky $PNPM_STORE
 
       - name: Commit changes
         run: |
