@@ -1,7 +1,8 @@
-import { Graph, KeyValue } from '@antv/x6'
-import { History } from './index'
+import { KeyValue } from '@antv/x6-common'
+import { Graph } from '../../graph'
+import type { History } from './index'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph/graph' {
   interface Graph {
     isHistoryEnabled: () => boolean
     enableHistory: () => Graph
@@ -20,7 +21,7 @@ declare module '@antv/x6/lib/graph/graph' {
   }
 }
 
-declare module '@antv/x6/lib/graph/events' {
+declare module '../../graph/events' {
   interface EventArgs {
     'history:undo': History.Args
     'history:redo': History.Args

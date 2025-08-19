@@ -15,20 +15,10 @@ redirect_from:
 
 ## 使用
 
-我们提供了一个独立的插件包 `@antv/x6-plugin-history` 来使用撤销重做功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-history --save
-
-# yarn
-$ yarn add @antv/x6-plugin-history
-```
-
-然后我们在代码中这样使用：
+我们提供了一个独立的插件 `history` 来实现撤销重做功能，然后我们在代码中这样使用：
 
 ```ts
-import { History } from '@antv/x6-plugin-history'
+import { Graph, History } from '@antv/x6'
 
 const graph = new Graph({
   background: {
