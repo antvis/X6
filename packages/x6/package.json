@@ -46,7 +46,11 @@
   "dependencies": {
     "@antv/x6-common": "^2.0.16",
     "@antv/x6-geometry": "^2.0.5",
+    "mousetrap": "^1.6.5",
     "utility-types": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/mousetrap": "^1.6.11"
   },
   "author": {
     "name": "bubkoo",

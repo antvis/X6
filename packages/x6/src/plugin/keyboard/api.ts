@@ -1,8 +1,8 @@
-import { Graph } from '@antv/x6'
+import { Graph } from '../../graph'
 import { Keyboard } from './index'
 import { KeyboardImpl } from './keyboard'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph/graph' {
   interface Graph {
     isKeyboardEnabled: () => boolean
     enableKeyboard: () => Graph

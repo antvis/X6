@@ -4,9 +4,9 @@ import {
   FunctionExt,
   Disposable,
   IDisablable,
-  Graph,
   EventArgs,
-} from '@antv/x6'
+} from '@antv/x6-common'
+import { Graph } from '../../graph'
 
 export class KeyboardImpl extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
