@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph } from '@antv/x6'
-import { History } from '@antv/x6-plugin-history'
+import { Graph, History } from '@antv/x6'
 import './index.less'
 
 interface Props {}
