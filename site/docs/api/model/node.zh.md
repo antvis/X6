@@ -16,7 +16,8 @@ Node 是所有节点的基类，继承自 [Cell](/api/model/cell)，并定义了
 | 选项 | 类型 | 默认值 | 必选 | 描述 |
 | --- | --- | --- | :-: | --- |
 | size | `{ width: number; height: number }` | `{ width: 1, height: 1 }` |  | 节点大小。 |
-| position | `{ x: number; y: number } ` | - |  | 节点位置。 |
+| position | `{ x: number; y: number } ` | - |  | 节点位置。 |<img width="1017" height="594" alt="image" src="https://github.com/user-attachments/assets/8437a6f8-af72-4c68-834c-66a3b244bc6f" />
+
 | angle | number | - |  | 节点的旋转角度。 |
 | ports | object | - |  | 连接桩。 |
 | portMarkup | Markup | object |  | 连接桩的 DOM 结构。 |
@@ -832,7 +833,7 @@ setPortProp(
 | options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ```ts
-node.getPortProp('port1', {
+node.setPortProp('port1', {
   attrs: {
     circle: {
       fill: '#ffffff',
