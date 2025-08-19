@@ -1,4 +1,7 @@
-import { Config, Graph, Cell, Node, Edge, Model, ArrayExt } from '@antv/x6'
+import { ArrayExt } from '@antv/x6-common'
+import { Graph } from '../../graph'
+import { Cell, Node, Edge, Model } from '../../model'
+import { Config } from '../../config'
 
 export class ClipboardImpl {
   protected options: ClipboardImpl.Options
