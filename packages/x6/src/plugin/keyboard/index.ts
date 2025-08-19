@@ -1,4 +1,5 @@
-import { Disposable, Graph } from '@antv/x6'
+import { Disposable } from '@antv/x6-common'
+import { Graph } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'
 

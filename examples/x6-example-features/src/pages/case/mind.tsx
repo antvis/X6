@@ -1,9 +1,8 @@
 import React from 'react'
-import { Graph, Node } from '@antv/x6'
+import { Graph, Node, Keyboard } from '@antv/x6'
 import { connectors } from '../connector/xmind-definitions'
 import Hierarchy from '@antv/hierarchy'
 import { Selection } from '@antv/x6-plugin-selection'
-import { Keyboard } from '@antv/x6-plugin-keyboard'
 import '../index.less'
 import './mind.less'
 
