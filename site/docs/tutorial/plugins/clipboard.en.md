@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-The clipboard is used for copying/pasting nodes and edges. We provide a standalone plugin package `@antv/x6-plugin-clipboard` to utilize this feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-clipboard --save
-
-# yarn
-$ yarn add @antv/x6-plugin-clipboard
-```
-
-Then we use it in the code like this:
+The clipboard is used for copying/pasting nodes and edges. We provide a plugin named `clipboard` to utilize this feature, we use it in the code like this:
 
 ```ts
-import { Clipboard } from '@antv/x6-plugin-clipboard'
+import { Clipboard } from '@antv/x6'
 
 const graph = new Graph({
   background: {

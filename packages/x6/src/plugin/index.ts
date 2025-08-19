@@ -1,0 +1,1 @@
+export { Clipboard } from './clipboard'
