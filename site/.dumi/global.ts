@@ -6,7 +6,6 @@ if (typeof window !== 'undefined' && window) {
   ;(window as any).antd = require('antd')
   ;(window as any).dagre = require('dagre')
   ;(window as any).x6 = X6
-  ;(window as any).X6 = X6
   ;(window as any).x6PluginSnapline = require('@antv/x6-plugin-snapline')
   ;(window as any).x6PluginClipboard = X6
   ;(window as any).x6PluginKeyboard = require('@antv/x6-plugin-keyboard')
