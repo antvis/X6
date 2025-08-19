@@ -10,7 +10,6 @@
   "dependencies": {
     "@antv/hierarchy": "^0.6.8",
     "@antv/x6": "workspace:latest",
-    "@antv/x6-plugin-clipboard": "workspace:latest",
     "@antv/x6-plugin-dnd": "workspace:latest",
     "@antv/x6-plugin-export": "workspace:latest",
     "@antv/x6-plugin-history": "workspace:latest",
