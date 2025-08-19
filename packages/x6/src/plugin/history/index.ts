@@ -1,12 +1,8 @@
-import {
-  KeyValue,
-  ObjectExt,
-  FunctionExt,
-  Basecoat,
-  Cell,
-  Model,
-  Graph,
-} from '@antv/x6'
+import { KeyValue, ObjectExt, FunctionExt, Basecoat } from '@antv/x6-common'
+import { Cell } from '../../cell'
+import { Model } from '../../model'
+import { Graph } from '../../graph'
+
 import './api'
 
 export class History
@@ -804,7 +800,6 @@ export namespace History {
               fn(err, cmd, rollup)
             } else {
               handoverErr = err
-              return
             }
           } catch (err) {
             rollup(err)
