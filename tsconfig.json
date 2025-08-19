@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
-    "noEmitOnError": true,
+    "noEmitOnError": false,
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,

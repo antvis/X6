@@ -1,7 +1,8 @@
-import { Graph, Cell } from '@antv/x6'
-import { Clipboard } from './index'
+import { Graph } from '../../graph'
+import { Cell } from '../../model'
+import type { Clipboard } from './index'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph' {
   interface Graph {
     isClipboardEnabled: () => boolean
     enableClipboard: () => Graph
@@ -16,7 +17,7 @@ declare module '@antv/x6/lib/graph/graph' {
   }
 }
 
-declare module '@antv/x6/lib/graph/events' {
+declare module '../../graph/events' {
   interface EventArgs {
     'clipboard:changed': { cells: Cell[] }
   }

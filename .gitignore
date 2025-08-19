@@ -22,5 +22,8 @@ packages/**/src/style/raw.ts
 .lh
 .history
 
-# Site server cache
-sites/x6-sites/server
+# Package
+package-lock.json
+pnpm-lock.yaml
+
+bun.lock
