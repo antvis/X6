@@ -22,7 +22,6 @@ Compared to version 1.x, the changes to the external API and configuration are m
   "@antv/x6-plugin-dnd": "^2.0.0", // Install this package if using drag-and-drop functionality
   "@antv/x6-plugin-stencil": "^2.0.0", // Install this package if using stencil functionality
   "@antv/x6-plugin-transform": "^2.0.0", // Install this package if using shape transformation functionality
-  "@antv/x6-plugin-export": "^2.0.0", // Install this package if using image export functionality
   "@antv/x6-react-components": "^2.0.0", // Install this package if using accompanying UI components
   "@antv/x6-react-shape": "^2.0.0", // Install this package if using React rendering functionality
   "@antv/x6-vue-shape": "^2.0.0" // Install this package if using Vue rendering functionality

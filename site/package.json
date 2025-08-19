@@ -19,7 +19,6 @@
     "@antv/layout": "^0.3.12",
     "@antv/x6": "workspace:*",
     "@antv/x6-plugin-dnd": "^2.x",
-    "@antv/x6-plugin-export": "^2.x",
     "@antv/x6-plugin-minimap": "^2.x",
     "@antv/x6-plugin-scroller": "^2.x",
     "@antv/x6-plugin-selection": "^2.x",
