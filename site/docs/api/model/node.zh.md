@@ -832,7 +832,7 @@ setPortProp(
 | options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 ```ts
-node.getPortProp('port1', {
+node.setPortProp('port1', {
   attrs: {
     circle: {
       fill: '#ffffff',

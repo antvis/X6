@@ -832,7 +832,7 @@ Sets the properties of the port, merging the provided property options with the 
 | options...others | object                |          |               | Other custom key-value pairs that can be used in event callbacks. |
 
 ```ts
-node.getPortProp('port1', {
+node.setPortProp('port1', {
   attrs: {
     circle: {
       fill: '#ffffff',
