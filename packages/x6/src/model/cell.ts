@@ -1813,7 +1813,7 @@ export namespace Cell {
       // Find the children of the original cell
       const children = cell.getChildren()
       if (children && children.length) {
-        const embeds = children.reduce<Cell[]>((memo: Cell[], child: any) => {
+        const embeds = children.reduce<Cell[]>((memo: Cell[], child: Cell) => {
           // Embedded cells that are not being cloned can not be carried
           // over with other embedded cells.
           if (cloneMap[child.id]) {

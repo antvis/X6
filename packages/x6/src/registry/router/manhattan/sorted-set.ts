@@ -27,7 +27,7 @@ export class SortedSet {
     const index = ArrayExt.sortedIndexBy(
       this.items,
       item,
-      (key: any) => this.values[key],
+      (key: string) => this.values[key],
     )
 
     this.items.splice(index, 0, item)

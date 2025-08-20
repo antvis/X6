@@ -619,7 +619,9 @@ export class Node<
   }
 
   getPortsByGroup(groupName: string) {
-    return this.getPorts().filter((port: any) => port.group === groupName)
+    return this.getPorts().filter(
+      (port: PortManager.PortMetadata) => port.group === groupName,
+    )
   }
 
   getPort(portId: string) {

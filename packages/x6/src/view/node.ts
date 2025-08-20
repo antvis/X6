@@ -237,7 +237,7 @@ export class NodeView<
 
     // render non-z first
     if (portsGropsByZ[autoZIndexKey]) {
-      portsGropsByZ[autoZIndexKey].forEach((port: any) => {
+      portsGropsByZ[autoZIndexKey].forEach((port: PortManager.Port) => {
         const portElement = this.getPortElement(port)
         container.append(portElement)
         references.push(portElement)
