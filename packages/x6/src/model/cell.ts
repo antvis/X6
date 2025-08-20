@@ -1776,10 +1776,13 @@ export namespace Cell {
 
   export function cloneCells(cells: Cell[]) {
     const inputs = ArrayExt.uniq(cells)
-    const cloneMap = inputs.reduce<KeyValue<Cell>>((map: any, cell: Cell) => {
-      map[cell.id] = cell.clone()
-      return map
-    }, {})
+    const cloneMap = inputs.reduce<KeyValue<Cell>>(
+      (map: KeyValue<Cell>, cell: Cell) => {
+        map[cell.id] = cell.clone()
+        return map
+      },
+      {},
+    )
 
     inputs.forEach((cell: Cell) => {
       const clone = cloneMap[cell.id]
