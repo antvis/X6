@@ -2,7 +2,7 @@ import { Graph } from '../../graph'
 import { Cell } from '../../model'
 import type { Clipboard } from './index'
 
-declare module '../../graph' {
+declare module '../../graph/graph' {
   interface Graph {
     isClipboardEnabled: () => boolean
     enableClipboard: () => Graph

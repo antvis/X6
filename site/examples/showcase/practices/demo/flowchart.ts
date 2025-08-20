@@ -1,7 +1,6 @@
-import { Graph, Shape, Clipboard, History, Keyboard } from '@antv/x6'
+import { Graph, Shape, Clipboard, History, Keyboard, Selection } from '@antv/x6'
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
-import { Selection } from '@antv/x6-plugin-selection'
 import { Snapline } from '@antv/x6-plugin-snapline'
 import insertCss from 'insert-css'
 
