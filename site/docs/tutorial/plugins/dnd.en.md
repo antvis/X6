@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-We often need to add nodes to the canvas through drag-and-drop interactions, such as in process graph editing scenarios, where we drag and drop components from the process graph component library onto the canvas. We provide a separate plugin package `@antv/x6-plugin-dnd` to use this feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-dnd --save
-
-# yarn
-$ yarn add @antv/x6-plugin-dnd
-```
-
-Then we use it in our code like this:
+We often need to add nodes to the canvas through drag-and-drop interactions, such as in process graph editing scenarios, where we drag and drop components from the process graph component library onto the canvas. We provide a separate plugin `dnd` to use this feature, we use it in our code like this:
 
 ```ts
-import { Dnd } from '@antv/x6-plugin-dnd'
+import { Graph, Dnd } from '@antv/x6'
 
 const graph = new Graph({
   background: {

@@ -1,4 +1,5 @@
 export { Clipboard } from './clipboard'
+export { Dnd } from './dnd'
 export { Export } from './export'
 export { History } from './history'
 export { Keyboard } from './keyboard'

@@ -1,18 +1,10 @@
-import {
-  GeometryUtil,
-  Rectangle,
-  Point,
-  FunctionExt,
-  Dom,
-  CssLoader,
-  Cell,
-  Node,
-  View,
-  NodeView,
-  Graph,
-  EventArgs,
-} from '@antv/x6'
 import { alignPoint } from 'dom-align'
+import { GeometryUtil, Rectangle, Point } from '@antv/x6-geometry'
+import { FunctionExt, Dom, CssLoader } from '@antv/x6-common'
+import { Cell, Node } from '../../model'
+import { View, NodeView } from '../../view'
+import { Graph, EventArgs } from '../../graph'
+
 import { content } from './style/raw'
 
 export class Dnd extends View implements Graph.Plugin {
