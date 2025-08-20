@@ -1,8 +1,10 @@
-import { Graph, Cell, ModifierKey } from '@antv/x6'
+import { ModifierKey } from '@antv/x6-common'
+import { Cell } from '../../model'
+import { Graph } from '../../graph'
 import { Selection } from './index'
-import { SelectionImpl } from './selection'
+import type { SelectionImpl } from './selection'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph/graph' {
   interface Graph {
     isSelectionEnabled: () => boolean
     enableSelection: () => Graph
@@ -47,7 +49,7 @@ declare module '@antv/x6/lib/graph/graph' {
   }
 }
 
-declare module '@antv/x6/lib/graph/events' {
+declare module '../../graph/events' {
   interface EventArgs extends SelectionImpl.SelectionEventArgs {}
 }
 

@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Keyboard } from '@antv/x6'
-import { Selection } from '@antv/x6-plugin-selection'
+import { Graph, Keyboard, Selection } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

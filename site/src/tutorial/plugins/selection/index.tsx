@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Selection } from '@antv/x6-plugin-selection'
+import { Graph, Selection } from '@antv/x6'
 import { Settings, State } from './settings'
 import './index.less'
 

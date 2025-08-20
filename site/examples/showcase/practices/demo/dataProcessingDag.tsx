@@ -1,6 +1,13 @@
 import React from 'react'
-import { Graph, Node, Path, Edge, Platform, StringExt } from '@antv/x6'
-import { Selection } from '@antv/x6-plugin-selection'
+import {
+  Graph,
+  Node,
+  Path,
+  Edge,
+  Platform,
+  StringExt,
+  Selection,
+} from '@antv/x6'
 import classnames from 'classnames'
 import insertCss from 'insert-css'
 import { register } from '@antv/x6-react-shape'
