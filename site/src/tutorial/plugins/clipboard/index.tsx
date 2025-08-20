@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button, message } from 'antd'
-import { Graph, Clipboard } from '@antv/x6'
-import { Selection } from '@antv/x6-plugin-selection'
+import { Graph, Clipboard, Selection } from '@antv/x6'
 import { Settings, State } from './settings'
 import './index.less'
 

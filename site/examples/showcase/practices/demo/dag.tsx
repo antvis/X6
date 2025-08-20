@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Path, Cell } from '@antv/x6'
-import { Selection } from '@antv/x6-plugin-selection'
+import { Graph, Path, Cell, Selection } from '@antv/x6'
 import insertCss from 'insert-css'
 import { register } from '@antv/x6-react-shape'
 

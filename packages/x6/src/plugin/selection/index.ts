@@ -1,12 +1,6 @@
-import {
-  Basecoat,
-  ModifierKey,
-  CssLoader,
-  Dom,
-  Cell,
-  EventArgs,
-  Graph,
-} from '@antv/x6'
+import { Basecoat, ModifierKey, CssLoader, Dom } from '@antv/x6-common'
+import { Graph, EventArgs } from '../../graph'
+import { Cell } from '../../model'
 import { SelectionImpl } from './selection'
 import { content } from './style/raw'
 import './api'

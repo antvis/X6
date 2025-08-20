@@ -1,19 +1,8 @@
-import {
-  Rectangle,
-  Point,
-  ModifierKey,
-  FunctionExt,
-  Dom,
-  KeyValue,
-  Cell,
-  Node,
-  Edge,
-  Model,
-  Collection,
-  View,
-  CellView,
-  Graph,
-} from '@antv/x6'
+import { ModifierKey, FunctionExt, Dom, KeyValue } from '@antv/x6-common'
+import { Rectangle, Point } from '@antv/x6-geometry'
+import { Graph } from '../../graph'
+import { Model, Cell, Node, Edge, Collection } from '../../model'
+import { CellView, View } from '../../view'
 
 export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   public readonly options: SelectionImpl.Options

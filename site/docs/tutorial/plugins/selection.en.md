@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-We provide a standalone plugin package `@antv/x6-plugin-selection` to use the selection feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-selection --save
-
-# yarn
-$ yarn add @antv/x6-plugin-selection
-```
-
-Then we use it in the code like this:
+We provide a standalone plugin `selection` to use the selection feature, we use it in the code like this:
 
 ```ts
-import { Selection } from '@antv/x6-plugin-selection'
+import { Graph, Selection } from '@antv/x6'
 
 const graph = new Graph({
   background: {
