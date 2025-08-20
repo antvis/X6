@@ -1,4 +1,4 @@
-import { Dom, FunctionExt } from '@antv/x6-common'
+import { Dom, FunctionExt } from '../common'
 import { Cell } from '../model'
 import { Config } from '../config'
 import { View, Markup, CellView } from '../view'

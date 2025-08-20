@@ -13,7 +13,7 @@ import {
   Dom,
   Vector,
   KeyValue,
-} from '@antv/x6-common'
+} from '../common'
 import {
   Router,
   Connector,

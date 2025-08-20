@@ -7,8 +7,8 @@ export * from './graph'
 export * from './config'
 export * from './util'
 export * from './plugin'
+export * from './common'
 
-export * from '@antv/x6-common'
 export * from '@antv/x6-geometry'
 
 export { Shape, Registry }

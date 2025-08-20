@@ -1,5 +1,5 @@
-import { ArrayExt, FunctionExt, Dom } from '@antv/x6-common'
 import { Rectangle, Point, GeometryUtil } from '@antv/x6-geometry'
+import { ArrayExt, FunctionExt, Dom } from '../common'
 import { Config } from '../config'
 import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
@@ -237,7 +237,7 @@ export class NodeView<
 
     // render non-z first
     if (portsGropsByZ[autoZIndexKey]) {
-      portsGropsByZ[autoZIndexKey].forEach((port) => {
+      portsGropsByZ[autoZIndexKey].forEach((port: any) => {
         const portElement = this.getPortElement(port)
         container.append(portElement)
         references.push(portElement)

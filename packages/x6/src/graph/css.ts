@@ -1,4 +1,4 @@
-import { CssLoader } from '@antv/x6-common'
+import { CssLoader } from '../common'
 import { Config } from '../config'
 import { content } from '../style/raw'
 import { Base } from './base'

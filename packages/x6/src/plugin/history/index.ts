@@ -1,4 +1,4 @@
-import { KeyValue, ObjectExt, FunctionExt, Basecoat } from '@antv/x6-common'
+import { KeyValue, ObjectExt, FunctionExt, Basecoat } from '../../common'
 import { Model, Cell } from '../../model'
 import { Graph } from '../../graph'
 

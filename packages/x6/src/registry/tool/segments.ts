@@ -1,5 +1,5 @@
-import { Dom, ObjectExt, FunctionExt } from '@antv/x6-common'
 import { Point, Line } from '@antv/x6-geometry'
+import { Dom, ObjectExt, FunctionExt } from '../../common'
 import { View } from '../../view/view'
 import { ToolsView } from '../../view/tool'
 import * as Util from './util'

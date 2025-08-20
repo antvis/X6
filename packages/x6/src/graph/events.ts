@@ -1,4 +1,4 @@
-import { Dom } from '@antv/x6-common'
+import { Dom } from '../common'
 import { Model } from '../model'
 import { CellView } from '../view'
 import { Scheduler } from '../renderer/scheduler'

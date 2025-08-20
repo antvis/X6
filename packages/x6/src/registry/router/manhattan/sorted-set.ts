@@ -1,4 +1,4 @@
-import { ArrayExt } from '@antv/x6-common'
+import { ArrayExt } from '../../../common'
 
 const OPEN = 1
 const CLOSE = 2
@@ -27,7 +27,7 @@ export class SortedSet {
     const index = ArrayExt.sortedIndexBy(
       this.items,
       item,
-      (key) => this.values[key],
+      (key: any) => this.values[key],
     )
 
     this.items.splice(index, 0, item)

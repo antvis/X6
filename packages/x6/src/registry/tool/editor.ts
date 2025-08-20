@@ -1,5 +1,5 @@
 import { Point } from '@antv/x6-geometry'
-import { Dom, FunctionExt, NumberExt, ObjectExt } from '@antv/x6-common'
+import { Dom, FunctionExt, NumberExt, ObjectExt } from '../../common'
 import { ToolsView } from '../../view/tool'
 import { Cell, Edge } from '../../model'
 import { CellView, NodeView, EdgeView } from '../../view'

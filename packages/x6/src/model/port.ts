@@ -1,5 +1,5 @@
-import { JSONObject, ObjectExt, Size, KeyValue } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
+import { JSONObject, ObjectExt, Size, KeyValue } from '../common'
 import { Markup } from '../view'
 import { Attr, PortLayout, PortLabelLayout } from '../registry'
 

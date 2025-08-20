@@ -1,5 +1,4 @@
-// import { Rectangle, Ellipse, Polyline, Path } from '../../geometry'
-import { Vector } from '@antv/x6-common'
+import { Vector } from '../../common'
 import { Util } from '../../util'
 
 describe('Util', () => {

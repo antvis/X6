@@ -78,7 +78,7 @@ export function annotate(
       batch = curr
     } else {
       // Both previous and current item are strings.
-      batch = (batch || '') + curr
+      batch = String(batch || '') + String(curr)
     }
   }
 

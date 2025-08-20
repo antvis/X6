@@ -1,5 +1,5 @@
 import { NonUndefined } from 'utility-types'
-import { KeyValue } from '@antv/x6-common'
+import { KeyValue } from '../../common'
 import { Registry } from '../registry'
 import * as filters from './main'
 

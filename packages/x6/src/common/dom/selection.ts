@@ -1,6 +1,5 @@
 export const clearSelection = (function () {
-  if (typeof document == 'undefined')
-    return function () {}
+  if (typeof document === 'undefined') return function () {}
   const doc = document as any
   if (doc.selection) {
     return function () {

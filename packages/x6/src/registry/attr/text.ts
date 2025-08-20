@@ -5,7 +5,7 @@ import {
   Dom,
   FunctionExt,
   Text,
-} from '@antv/x6-common'
+} from '../../common'
 import { Attr } from './index'
 
 export const text: Attr.Definition = {

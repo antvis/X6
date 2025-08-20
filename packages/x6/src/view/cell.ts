@@ -7,7 +7,7 @@ import {
   FunctionExt,
   Nilable,
   KeyValue,
-} from '@antv/x6-common'
+} from '../common'
 import { Registry } from '../registry/registry'
 import { View } from './view'
 import { Cache } from './cache'

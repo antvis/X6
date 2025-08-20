@@ -1,4 +1,4 @@
-import { ObjectExt } from '@antv/x6-common'
+import { ObjectExt } from '../../common'
 import { PortLabelLayout } from './index'
 
 const defaults: PortLabelLayout.Result = {

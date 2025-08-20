@@ -1,5 +1,6 @@
-import { FunctionExt, Dijkstra, KeyValue, Basecoat } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
+import { FunctionExt, KeyValue, Basecoat } from '../common'
+import { Dijkstra } from '../common/algorithm'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
