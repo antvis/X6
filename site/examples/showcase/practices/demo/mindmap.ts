@@ -1,5 +1,4 @@
-import { Graph, Cell, Node, Path, Keyboard } from '@antv/x6'
-import { Selection } from '@antv/x6-plugin-selection'
+import { Graph, Cell, Node, Path, Keyboard, Selection } from '@antv/x6'
 import Hierarchy from '@antv/hierarchy'
 import insertCss from 'insert-css'
 
