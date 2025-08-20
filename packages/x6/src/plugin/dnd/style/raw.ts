@@ -12,7 +12,6 @@ export const content = `.x6-widget-dnd {
   display: none;
   cursor: move;
   opacity: 0.7;
-  pointer-events: 'cursor';
 }
 .x6-widget-dnd.dragging {
   display: inline-block;
