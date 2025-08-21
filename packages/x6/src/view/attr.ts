@@ -6,12 +6,12 @@ import {
   FunctionExt,
   Dictionary,
   StringExt,
+  Util,
 } from '../common'
 import { Attr } from '../registry/attr'
 import { View } from './view'
 import { Markup } from './markup'
 import { CellView } from './cell'
-import { Util } from '../util'
 
 export class AttrManager {
   constructor(protected view: CellView) {}

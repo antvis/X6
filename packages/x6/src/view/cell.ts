@@ -7,6 +7,7 @@ import {
   FunctionExt,
   Nilable,
   KeyValue,
+  Util,
 } from '../common'
 import { Registry } from '../registry/registry'
 import { View } from './view'
@@ -15,7 +16,6 @@ import { Markup } from './markup'
 import { ToolsView } from './tool'
 import { AttrManager } from './attr'
 import { FlagManager } from './flag'
-import { Util } from '../util'
 import { Attr } from '../registry/attr'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'

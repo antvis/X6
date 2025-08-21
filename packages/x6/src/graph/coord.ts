@@ -1,7 +1,6 @@
 import { Point, Rectangle } from '../geometry'
-import { Dom } from '../common'
+import { Dom, Util } from '../common'
 import { Base } from './base'
-import { Util } from '../util'
 
 export class CoordManager extends Base {
   getClientMatrix() {

@@ -1,8 +1,7 @@
 import { Path, Rectangle, Ellipse, Segment } from '../../geometry'
-import { ObjectExt, Dom } from '../../common'
+import { ObjectExt, Dom, Util } from '../../common'
 import { offset, getStrokeWidth, findShapeNode } from './util'
 import { ConnectionPoint } from './index'
-import { Util } from '../../util'
 
 export interface BoundaryOptions extends ConnectionPoint.StrokedOptions {
   selector?: string | string[]

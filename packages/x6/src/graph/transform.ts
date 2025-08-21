@@ -1,7 +1,6 @@
 import { Point, Rectangle } from '../geometry'
-import { Dom, NumberExt } from '../common'
+import { Dom, NumberExt, Util } from '../common'
 import { Base } from './base'
-import { Util } from '../util'
 import { Cell } from '../model'
 
 export class TransformManager extends Base {
