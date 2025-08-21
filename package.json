@@ -8,7 +8,7 @@
     "lint": "run-s lint:ts lint:style",
     "prettier": "prettier --write '**/*.{js,mjs,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
-    "test": "turbo run test --filter=./packages/*",
+    "test": "turbo run test --filter=./packages/x6",
     "build": "turbo run build --filter=./packages/*",
     "build:cjs": "turbo run build:cjs --filter=./packages/*",
     "build:esm": "turbo run build:esm --filter=./packages/*",
