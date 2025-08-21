@@ -15,7 +15,6 @@ redirect_from:
 ```json
 {
   "@antv/x6": "^2.0.0",
-  "@antv/x6-plugin-transform": "^2.0.0", // 如果使用图形变换功能，需要安装此包
   "@antv/x6-react-components": "^2.0.0", // 如果使用配套 UI 组件，需要安装此包
   "@antv/x6-react-shape": "^2.0.0", // 如果使用 react 渲染功能，需要安装此包
   "@antv/x6-vue-shape": "^2.0.0" // 如果使用 vue 渲染功能，需要安装此包

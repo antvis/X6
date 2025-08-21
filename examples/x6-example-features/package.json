@@ -10,7 +10,6 @@
   "dependencies": {
     "@antv/hierarchy": "^0.6.8",
     "@antv/x6": "workspace:latest",
-    "@antv/x6-plugin-transform": "workspace:latest",
     "@antv/x6-react-components": "workspace:latest",
     "@antv/x6-react-shape": "workspace:latest",
     "antd": "^4.4.2",
