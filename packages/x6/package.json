@@ -39,9 +39,9 @@
     "build:watch:cjs": "rss",
     "build": "rss",
     "prebuild": "rss",
-    "test": "rss",
     "coveralls": "rss",
-    "pretest": "rss"
+    "pretest": "rss",
+    "test": "vitest run --reporter=dot"
   },
   "dependencies": {
     "lodash-es": "^4.17.15",
@@ -50,7 +50,11 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
-    "@types/mousetrap": "^1.6.11"
+    "@types/mousetrap": "^1.6.11",
+    "vitest": "^3.0.5",
+    "jsdom": "^24.0.0",
+    "pretty": "^2.0.0",
+    "@testing-library/jest-dom": "^6.7.0"
   },
   "author": {
     "name": "bubkoo",
