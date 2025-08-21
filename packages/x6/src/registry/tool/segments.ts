@@ -1,4 +1,4 @@
-import { Point, Line } from '@antv/x6-geometry'
+import { Point, Line } from '../../geometry'
 import { Dom, ObjectExt, FunctionExt } from '../../common'
 import { View } from '../../view/view'
 import { ToolsView } from '../../view/tool'

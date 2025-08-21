@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-
-import { Rectangle, Point } from '@antv/x6-geometry'
 import { NonUndefined } from 'utility-types'
+import { Rectangle, Point } from '../geometry'
 import {
   ArrayExt,
   StringExt,

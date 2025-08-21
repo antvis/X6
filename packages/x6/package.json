@@ -44,7 +44,6 @@
     "pretest": "rss"
   },
   "dependencies": {
-    "@antv/x6-geometry": "^2.0.5",
     "lodash-es": "^4.17.15",
     "mousetrap": "^1.6.5",
     "utility-types": "^3.10.0"

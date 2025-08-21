@@ -1,4 +1,4 @@
-import { Point } from '@antv/x6-geometry'
+import { Point } from '../../geometry'
 import { Dom, ModifierKey } from '../../common'
 import { Config } from '../../config'
 import { View } from '../../view/view'

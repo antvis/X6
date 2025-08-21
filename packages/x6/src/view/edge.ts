@@ -1,11 +1,4 @@
-import {
-  Rectangle,
-  Polyline,
-  Point,
-  Angle,
-  Path,
-  Line,
-} from '@antv/x6-geometry'
+import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
 import {
   ObjectExt,
   NumberExt,

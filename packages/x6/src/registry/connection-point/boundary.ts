@@ -1,4 +1,4 @@
-import { Path, Rectangle, Ellipse, Segment } from '@antv/x6-geometry'
+import { Path, Rectangle, Ellipse, Segment } from '../../geometry'
 import { ObjectExt, Dom } from '../../common'
 import { offset, getStrokeWidth, findShapeNode } from './util'
 import { ConnectionPoint } from './index'

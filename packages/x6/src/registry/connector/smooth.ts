@@ -1,4 +1,4 @@
-import { Curve, Path } from '@antv/x6-geometry'
+import { Curve, Path } from '../../geometry'
 import { Connector } from './index'
 
 export interface SmoothConnectorOptions extends Connector.BaseOptions {

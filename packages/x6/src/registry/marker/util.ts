@@ -1,4 +1,4 @@
-import { Path } from '@antv/x6-geometry'
+import { Path } from '../../geometry'
 
 /**
  * Normalizes marker's path data by translate the center

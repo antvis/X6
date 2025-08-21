@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../geometry'
 import { Base } from '../graph/base'
 import { Cell } from '../model'
 import { Scheduler } from './scheduler'

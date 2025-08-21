@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../geometry'
 import { JSONObject, ObjectExt, Size, KeyValue } from '../common'
 import { Markup } from '../view'
 import { Attr, PortLayout, PortLabelLayout } from '../registry'

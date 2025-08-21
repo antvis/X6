@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../geometry'
 import { Basecoat, NumberExt, Dom, KeyValue } from '../common'
 import { Model, Collection, Cell, Node, Edge } from '../model'
 import { CellView } from '../view'
