@@ -39,9 +39,10 @@
     "build:watch:cjs": "rss",
     "build": "rss",
     "prebuild": "rss",
-    "test": "rss",
     "coveralls": "rss",
-    "pretest": "rss"
+    "pretest": "rss",
+    "test:watch": "vitest",
+    "test": "vitest --watch=false"
   },
   "dependencies": {
     "lodash-es": "^4.17.15",
@@ -50,13 +51,14 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.7.0",
     "@types/lodash-es": "^4.17.12",
-    "@types/mousetrap": "^1.6.11"
+    "@types/mousetrap": "^1.6.11",
+    "jsdom": "^24.0.0",
+    "pretty": "^2.0.0",
+    "vitest": "^3.2.4"
   },
-  "author": {
-    "name": "bubkoo",
-    "email": "bubkoo.wy@gmail.com"
-  },
+  "author": "antv",
   "license": "MIT",
   "homepage": "https://x6.antv.antgroup.com/tutorial/about",
   "bugs": {
