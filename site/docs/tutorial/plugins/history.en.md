@@ -18,7 +18,7 @@ redirect_from:
 We provide a standalone plugin `history` to use the undo and redo functionality, then we use it in the code like this:
 
 ```ts
-import { Graph, History } from 'history'
+import { Graph, History } from '@antv/x6'
 
 const graph = new Graph({
   background: {
