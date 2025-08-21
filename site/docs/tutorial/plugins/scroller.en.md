@@ -19,20 +19,10 @@ When using the `Scroller` plugin, please do not enable the canvas's `panning` co
 
 ## Usage
 
-We provide a standalone plugin package `@antv/x6-plugin-scroller` to use the scroller feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-scroller --save
-
-# yarn
-$ yarn add @antv/x6-plugin-scroller
-```
-
-Then we use it in the code like this:
+We provide a plugin `scroller` to use the scroller feature, Then we use it in the code like this:
 
 ```ts
-import { Scroller } from '@antv/x6-plugin-scroller'
+import { Scroller } from '@antv/x6'
 
 const graph = new Graph({
   background: {
