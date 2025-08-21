@@ -1,5 +1,5 @@
 import { vi, expect } from 'vitest'
-import { createTestGraph, toSVG } from '../utils'
+import { createTestGraph } from '../utils'
 
 describe('Geometry: circle', () => {
   beforeEach(() => vi.useFakeTimers())
@@ -25,15 +25,12 @@ describe('Geometry: circle', () => {
         },
       },
     })
-    const dir = `${__dirname}/__snapshots__`
     const circle = graph.getCellById('circle1') as any
     expect(circle).toBeTruthy()
     expect(circle.getPosition()).toEqual({ x: 40, y: 50 })
     expect(circle.getLabel()).toBe('Hello')
 
-    const svg = await toSVG(graph, { copyStyles: true })
-    expect(svg).toBeTruthy()
-    expect(svg).toMatchDOMSnapshot(dir, 'circle')
+    expect(graph).toMatchDOMSnapshot(__dirname, 'circle', { copyStyles: true })
 
     cleanup()
   })

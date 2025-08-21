@@ -41,7 +41,8 @@
     "prebuild": "rss",
     "coveralls": "rss",
     "pretest": "rss",
-    "test": "vitest run --reporter=dot"
+    "test:watch": "vitest",
+    "test": "vitest --watch=false"
   },
   "dependencies": {
     "lodash-es": "^4.17.15",
@@ -54,12 +55,9 @@
     "@types/mousetrap": "^1.6.11",
     "jsdom": "^24.0.0",
     "pretty": "^2.0.0",
-    "vitest": "^3.0.5"
+    "vitest": "^3.2.4"
   },
-  "author": {
-    "name": "bubkoo",
-    "email": "bubkoo.wy@gmail.com"
-  },
+  "author": "antv",
   "license": "MIT",
   "homepage": "https://x6.antv.antgroup.com/tutorial/about",
   "bugs": {

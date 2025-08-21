@@ -3,7 +3,7 @@ import { toMatchDOMSnapshot } from './toMatchDOMSnapshot'
 
 declare module 'vitest' {
   interface Assertion {
-    toMatchDOMSnapshot(dir: string, name: string): void
+    toMatchDOMSnapshot(dir: string, name: string, options?: object): void
   }
 }
 

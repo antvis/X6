@@ -7,9 +7,6 @@ export default defineConfig({
     setupFiles: ['./setup-env.ts', './__tests__/utils/useSnapshotMatchers.ts'],
     restoreMocks: true,
     clearMocks: true,
-    fakeTimers: {
-      toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame'],
-    },
     reporters: ['default'],
     snapshotFormat: { escapeString: false, printBasicPrototype: false },
     testTimeout: 20_000,

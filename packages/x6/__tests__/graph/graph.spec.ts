@@ -1,10 +1,9 @@
 import { expect, vi } from 'vitest'
-import { createTestGraph, toSVG } from '../utils'
+import { createTestGraph } from '../utils'
 
 describe('Graph: 基础节点/边操作', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => vi.useRealTimers())
-  const dir = `${__dirname}/__snapshots__`
   it('addNode / getCell / removeNode', async () => {
     const { graph, cleanup } = createTestGraph()
 
@@ -148,8 +147,7 @@ describe('Graph: 基础节点/边操作', () => {
     })
 
     expect(graph.getCellById('e1')).toBeTruthy()
-    const svg = await toSVG(graph)
-    expect(svg).toMatchFileSnapshot(`${dir}/graph.svg`)
+    await expect(graph).toMatchDOMSnapshot(__dirname, 'graph')
 
     cleanup()
   })
