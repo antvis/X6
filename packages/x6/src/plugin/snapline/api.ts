@@ -1,7 +1,7 @@
-import { Graph } from '@antv/x6'
+import { Graph } from '../../graph'
 import { Snapline } from './index'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph/graph' {
   interface Graph {
     isSnaplineEnabled: () => boolean
     enableSnapline: () => Graph
