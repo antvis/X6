@@ -1,7 +1,6 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Stencil } from '@antv/x6'
 import { Snapline } from '@antv/x6-plugin-snapline'
-import { Stencil } from '@antv/x6-plugin-stencil'
 import './index.less'
 
 const commonAttrs = {

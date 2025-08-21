@@ -15,9 +15,7 @@ redirect_from:
 ```json
 {
   "@antv/x6": "^2.0.0",
-  "@antv/x6-plugin-scroller": "^2.0.0", // 如果使用滚动画布功能，需要安装此包
   "@antv/x6-plugin-snapline": "^2.0.0", // 如果使用对齐线功能，需要安装此包
-  "@antv/x6-plugin-stencil": "^2.0.0", // 如果使用 stencil 功能，需要安装此包
   "@antv/x6-plugin-transform": "^2.0.0", // 如果使用图形变换功能，需要安装此包
   "@antv/x6-react-components": "^2.0.0", // 如果使用配套 UI 组件，需要安装此包
   "@antv/x6-react-shape": "^2.0.0", // 如果使用 react 渲染功能，需要安装此包
