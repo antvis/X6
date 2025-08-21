@@ -1,4 +1,4 @@
-import { ObjectExt, Dom, Vector, KeyValue, Nilable } from '@antv/x6-common'
+import { ObjectExt, Dom, Vector, KeyValue, Nilable } from '../common'
 import { Attr } from '../registry'
 
 export type Markup = string | Markup.JSONMarkup | Markup.JSONMarkup[]

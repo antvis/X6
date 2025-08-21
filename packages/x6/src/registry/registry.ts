@@ -1,4 +1,4 @@
-import { StringExt, FunctionExt, Platform, KeyValue } from '@antv/x6-common'
+import { StringExt, FunctionExt, Platform, KeyValue } from '../common'
 
 export class Registry<
   Entity,

@@ -1,3 +1,4 @@
+import { Rectangle } from '@antv/x6-geometry'
 import {
   Basecoat,
   DataUri,
@@ -7,8 +8,7 @@ import {
   NumberExt,
   Size,
   Vector,
-} from '@antv/x6-common'
-import { Rectangle } from '@antv/x6-geometry'
+} from '../../common'
 import { Graph } from '../../graph'
 import './api'
 

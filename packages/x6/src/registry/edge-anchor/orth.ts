@@ -1,5 +1,5 @@
 import { Line, Point } from '@antv/x6-geometry'
-import { FunctionExt } from '@antv/x6-common'
+import { FunctionExt } from '../../common'
 import { ResolveOptions, resolve, getPointAtEdge } from '../node-anchor/util'
 import { getClosestPoint } from './closest'
 import { EdgeAnchor } from './index'

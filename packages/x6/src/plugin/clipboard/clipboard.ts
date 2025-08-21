@@ -1,4 +1,4 @@
-import { ArrayExt } from '@antv/x6-common'
+import { ArrayExt } from '../../common'
 import { Graph } from '../../graph'
 import { Cell, Node, Edge, Model } from '../../model'
 import { Config } from '../../config'
@@ -19,7 +19,7 @@ export class ClipboardImpl {
     // sort asc by cell type
     this.cells = ArrayExt.sortBy(
       Object.keys(cloned).map((key) => cloned[key]),
-      (cell) => (cell.isEdge() ? 2 : 1),
+      (cell: Cell) => (cell.isEdge() ? 2 : 1),
     )
 
     this.serialize(options)

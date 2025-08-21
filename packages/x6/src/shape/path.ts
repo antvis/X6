@@ -1,4 +1,4 @@
-import { ObjectExt } from '@antv/x6-common'
+import { ObjectExt } from '../common'
 import { Base } from './base'
 
 export const Path = Base.define({

@@ -1,4 +1,4 @@
-import { ObjectExt, KeyValue, Timing, Interp } from '@antv/x6-common'
+import { ObjectExt, KeyValue, Interp, Timing } from '../common'
 import { Cell } from './cell'
 
 export class Animation {

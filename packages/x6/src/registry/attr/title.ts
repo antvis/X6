@@ -1,4 +1,4 @@
-import { Dom } from '@antv/x6-common'
+import { Dom } from '../../common'
 import { Attr } from './index'
 
 export const title: Attr.Definition = {

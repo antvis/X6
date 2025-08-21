@@ -1,5 +1,5 @@
 import { Path } from '@antv/x6-geometry'
-import { NumberExt, KeyValue } from '@antv/x6-common'
+import { NumberExt, KeyValue } from '../../common'
 import { normalize } from './util'
 import { Marker } from './index'
 

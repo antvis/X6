@@ -1,6 +1,6 @@
 import './polyfill'
 
-export * from './common'
+export * from './base'
 export * from './array'
 export * from './object'
 export * from './string'

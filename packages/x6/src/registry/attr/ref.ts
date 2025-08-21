@@ -1,5 +1,5 @@
 import { Point, Path, Polyline, Rectangle } from '@antv/x6-geometry'
-import { NumberExt, FunctionExt, Dom } from '@antv/x6-common'
+import { NumberExt, FunctionExt, Dom } from '../../common'
 import { Attr } from './index'
 
 export const ref: Attr.Definition = {

@@ -1,5 +1,5 @@
-import { Dom, FunctionExt } from '@antv/x6-common'
 import { Point } from '@antv/x6-geometry'
+import { Dom, FunctionExt } from '../../common'
 import { Attr } from '../attr'
 import { Edge } from '../../model/edge'
 import { Node } from '../../model/node'

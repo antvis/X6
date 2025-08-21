@@ -1,4 +1,3 @@
-import { Dictionary, JSONObject, Dom } from '@antv/x6-common'
 import {
   Line,
   Rectangle,
@@ -7,6 +6,7 @@ import {
   Path,
   Segment,
 } from '@antv/x6-geometry'
+import { Dictionary, JSONObject, Dom } from '../common'
 import { Util } from '../util'
 import { CellView } from './cell'
 

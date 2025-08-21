@@ -1,4 +1,4 @@
-import { FunctionExt } from '@antv/x6-common'
+import { FunctionExt } from '../../common'
 import { bbox } from './bbox'
 import { offset, getStrokeWidth } from './util'
 import { ConnectionPoint } from './index'

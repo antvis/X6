@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { ValuesType } from 'utility-types'
-import { KeyValue } from '@antv/x6-common'
+import { KeyValue } from '../../common'
 import { Registry } from '../registry'
 import * as patterns from './main'
 

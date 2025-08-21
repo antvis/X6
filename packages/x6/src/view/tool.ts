@@ -1,4 +1,4 @@
-import { Dom, ObjectExt, StringExt, KeyValue } from '@antv/x6-common'
+import { Dom, ObjectExt, StringExt, KeyValue } from '../common'
 import { NodeTool, EdgeTool } from '../registry/tool'
 import { View } from './view'
 import { CellView } from './cell'

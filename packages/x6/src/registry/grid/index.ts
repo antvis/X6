@@ -1,4 +1,4 @@
-import { Dom, Vector, KeyValue } from '@antv/x6-common'
+import { Dom, Vector, KeyValue } from '../../common'
 import { Registry } from '../registry'
 import * as patterns from './main'
 

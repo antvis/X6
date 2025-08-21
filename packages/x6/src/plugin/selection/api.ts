@@ -1,4 +1,4 @@
-import { ModifierKey } from '@antv/x6-common'
+import { ModifierKey } from '../../common'
 import { Cell } from '../../model'
 import { Graph } from '../../graph'
 import { Selection } from './index'
