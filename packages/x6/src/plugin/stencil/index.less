@@ -27,10 +27,7 @@
 
 .@{stencil-prefix-cls} {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
 
   &::after {
     position: absolute;
@@ -49,13 +46,9 @@
 
   &-content {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     height: auto;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden auto;
   }
 
   .x6-node [magnet]:not([magnet='passive']) {

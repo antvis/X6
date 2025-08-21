@@ -1,4 +1,4 @@
-import { Node, Model } from '@antv/x6'
+import { Model, Node } from '../../model'
 
 export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
   const model = Model.isModel(cells)

@@ -19,7 +19,6 @@
     "@antv/layout": "^0.3.12",
     "@antv/x6": "workspace:*",
     "@antv/x6-plugin-snapline": "^2.x",
-    "@antv/x6-plugin-stencil": "^2.x",
     "@antv/x6-plugin-transform": "^2.x",
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
