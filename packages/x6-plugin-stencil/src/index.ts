@@ -8,8 +8,8 @@ import {
   View,
   Graph,
   EventArgs,
+  Dnd,
 } from '@antv/x6'
-import { Dnd } from '@antv/x6-plugin-dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
 
