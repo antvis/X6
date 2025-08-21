@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react'
-import { Graph, Dnd } from '@antv/x6'
-import { Snapline } from '@antv/x6-plugin-snapline'
+import { Graph, Dnd, Snapline } from '@antv/x6'
 import './index.less'
 
 export default class Example extends React.Component {

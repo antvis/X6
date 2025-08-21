@@ -1,19 +1,8 @@
-import {
-  IDisablable,
-  ArrayExt,
-  FunctionExt,
-  Vector,
-  Angle,
-  Point,
-  Rectangle,
-  Graph,
-  EventArgs,
-  Model,
-  Node,
-  CellView,
-  NodeView,
-  View,
-} from '@antv/x6'
+import { Graph, EventArgs } from '../../graph'
+import { Model, Node } from '../../model'
+import { IDisablable, ArrayExt, FunctionExt, Vector } from '../../common'
+import { Point, Rectangle, Angle } from '../../geometry'
+import { CellView, NodeView, View } from '../../view'
 
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImpl.Options

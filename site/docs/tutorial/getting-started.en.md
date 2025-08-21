@@ -68,7 +68,7 @@ For example, we have a new requirement: add a right-click menu to the node. It w
 In addition to the basic element rendering capabilities, X6 also comes with a large number of built-in plugins for graph editing. Using these mature plugins, we can improve the development efficiency. For example, we add a snapline plugin to the graph, when a moving node is aligned with other nodes, the snapline will automatically appear.
 
 ```ts
-import { Snapline } from '@antv/x6-plugin-snapline'
+import { Snapline } from '@antv/x6'
 
 graph.use(
   new Snapline({
