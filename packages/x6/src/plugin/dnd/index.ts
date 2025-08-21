@@ -1,6 +1,6 @@
 import { alignPoint } from 'dom-align'
-import { GeometryUtil, Rectangle, Point } from '@antv/x6-geometry'
-import { FunctionExt, Dom, CssLoader } from '@antv/x6-common'
+import { GeometryUtil, Rectangle, Point } from '../../geometry'
+import { FunctionExt, Dom, CssLoader } from '../../common'
 import { Cell, Node } from '../../model'
 import { View, NodeView } from '../../view'
 import { Graph, EventArgs } from '../../graph'
