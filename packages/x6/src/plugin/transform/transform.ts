@@ -1,15 +1,8 @@
-import {
-  GeometryUtil,
-  Angle,
-  Point,
-  Dom,
-  KeyValue,
-  NumberExt,
-  Node,
-  Graph,
-  View,
-  NodeView,
-} from '@antv/x6'
+import { GeometryUtil, Angle, Point } from '../../geometry'
+import { Dom, KeyValue, NumberExt } from '../../common'
+import { Graph } from '../../graph'
+import { Node } from '../../model'
+import { View, NodeView } from '../../view'
 
 export class TransformImpl extends View<TransformImpl.EventArgs> {
   private node: Node
