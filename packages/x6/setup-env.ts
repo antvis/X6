@@ -35,14 +35,7 @@ class PE extends MouseEvent {
 }
 ;(globalThis as any).PointerEvent = PE
 
-// SVG.getBBox polyfill：X6 在布局/选框时可能读取
-;(SVGElement as any).prototype.getBBox = function () {
-  const width = Number(this.getAttribute('width')) || 100
-  const height = Number(this.getAttribute('height')) || 100
-  return { x: 0, y: 0, width, height }
-}
-
-function createSVGMatrixMock() {
+function createSVGMatrixMock(values?: Partial<DOMMatrix>) {
   const matrix: any = {
     a: 1,
     b: 0,
@@ -50,38 +43,65 @@ function createSVGMatrixMock() {
     d: 1,
     e: 0,
     f: 0,
-    multiply() {
-      return createSVGMatrixMock()
+    ...values,
+    multiply(other: any) {
+      return createSVGMatrixMock({
+        a: this.a * other.a + this.c * other.b,
+        b: this.b * other.a + this.d * other.b,
+        c: this.a * other.c + this.c * other.d,
+        d: this.b * other.c + this.d * other.d,
+        e: this.a * other.e + this.c * other.f + this.e,
+        f: this.b * other.e + this.d * other.f + this.f,
+      })
     },
     inverse() {
       return createSVGMatrixMock()
     },
-    translate() {
-      return createSVGMatrixMock()
+    translate(x: number, y: number) {
+      return createSVGMatrixMock({ ...this, e: this.e + x, f: this.f + y })
     },
-    scale() {
-      return createSVGMatrixMock()
+    scale(s: number) {
+      return createSVGMatrixMock({ ...this, a: this.a * s, d: this.d * s })
     },
     rotate() {
-      return createSVGMatrixMock()
-    },
-    flipX() {
-      return createSVGMatrixMock()
-    },
-    flipY() {
-      return createSVGMatrixMock()
-    },
-    skewX() {
-      return createSVGMatrixMock()
-    },
-    skewY() {
       return createSVGMatrixMock()
     },
   }
   return matrix
 }
+
+;(SVGElement as any).prototype.getCTM = function () {
+  return createSVGMatrixMock()
+}
+;(SVGElement as any).prototype.getScreenCTM = function () {
+  return createSVGMatrixMock()
+}
 ;(SVGElement as any).prototype.createSVGMatrix = function () {
   return createSVGMatrixMock()
+}
+
+if (!SVGSVGElement.prototype.createSVGPoint) {
+  ;(SVGSVGElement as any).prototype.createSVGPoint = function () {
+    return {
+      x: 0,
+      y: 0,
+      matrixTransform(m: DOMMatrix): { x: number; y: number } {
+        return {
+          x: this.x * m.a + this.y * m.c + m.e,
+          y: this.x * m.b + this.y * m.d + m.f,
+        }
+      },
+    }
+  }
+}
+
+// getBBox 根据属性返回
+;(SVGElement as any).prototype.getBBox = function () {
+  const width = Number(this.getAttribute('width')) || 100
+  const height = Number(this.getAttribute('height')) || 100
+  const x = Number(this.getAttribute('x')) || 0
+  const y = Number(this.getAttribute('y')) || 0
+  return { x, y, width, height }
 }
 
 if (!SVGSVGElement.prototype.createSVGPoint) {

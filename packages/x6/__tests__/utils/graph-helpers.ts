@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import { Graph } from '../../src'
+import { Graph, Export } from '../../src'
 
 export function createTestContainer(width = 800, height = 600) {
   const el = document.createElement('div')
@@ -20,6 +20,7 @@ export function createTestGraph(options: Partial<Graph.Options> = {}) {
     interacting: { magnetConnectable: true },
     ...options,
   })
+  graph.use(new Export())
   const cleanup = () => {
     graph.dispose()
     container.remove()

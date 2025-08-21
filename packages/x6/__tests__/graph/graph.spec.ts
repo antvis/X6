@@ -104,23 +104,47 @@ describe('Graph: 基础节点/边操作', () => {
   it('addEdge / path 生成', async () => {
     vi.useRealTimers()
     const { graph, cleanup } = createTestGraph({
-      // connecting: { router: { name: 'manhattan' }, connector: 'rounded' },
+      connecting: { router: { name: 'manhattan' }, connector: 'rounded' },
     })
-    graph.addNode({ id: 'a', x: 60, y: 60, width: 80, height: 40, label: 'A' })
+    graph.addNode({
+      id: 'a',
+      x: 60,
+      y: 60,
+      width: 80,
+      height: 40,
+      attrs: {
+        body: {
+          stroke: '#5F95FF',
+          fill: '#EFF4FF',
+          strokeWidth: 1,
+        },
+      },
+    })
     graph.addNode({
       id: 'b',
       x: 260,
       y: 200,
       width: 80,
       height: 40,
-      label: 'B',
+      attrs: {
+        body: {
+          stroke: '#5F95FF',
+          fill: '#EFF4FF',
+          strokeWidth: 1,
+        },
+      },
     })
 
     graph.addEdge({
       id: 'e1',
       source: 'a',
       target: 'b',
-      labels: [{ attrs: { label: { text: 'A→B' } } }],
+      attrs: {
+        line: {
+          stroke: '#A2B1C3',
+          strokeWidth: 2,
+        },
+      },
     })
 
     expect(graph.getCellById('e1')).toBeTruthy()

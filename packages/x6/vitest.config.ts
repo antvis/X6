@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./setup-env.ts'],
+    setupFiles: ['./setup-env.ts', './__tests__/utils/useSnapshotMatchers.ts'],
     restoreMocks: true,
     clearMocks: true,
     fakeTimers: {

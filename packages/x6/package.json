@@ -49,12 +49,12 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.7.0",
     "@types/lodash-es": "^4.17.12",
     "@types/mousetrap": "^1.6.11",
-    "vitest": "^3.0.5",
     "jsdom": "^24.0.0",
     "pretty": "^2.0.0",
-    "@testing-library/jest-dom": "^6.7.0"
+    "vitest": "^3.0.5"
   },
   "author": {
     "name": "bubkoo",

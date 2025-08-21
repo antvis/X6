@@ -7,15 +7,20 @@ export const toSVG = async (
 ): Promise<string | null> => {
   return new Promise((resolve) => {
     const timer = setTimeout(() => {
+      console.error('SVG export timed out')
       resolve(null)
     }, timeout)
 
     try {
-      graph.toSVG((dataUri) => {
-        clearTimeout(timer)
-        resolve(dataUri)
-      }, options)
+      // 使用requestAnimationFrame确保在下一帧渲染完成后再导出
+      requestAnimationFrame(() => {
+        graph.toSVG((dataUri) => {
+          clearTimeout(timer)
+          resolve(dataUri)
+        }, options)
+      })
     } catch (error) {
+      console.error('SVG export error:', error)
       clearTimeout(timer)
       resolve(null)
     }
