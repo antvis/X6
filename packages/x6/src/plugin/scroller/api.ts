@@ -1,7 +1,7 @@
-import { Graph } from '@antv/x6'
+import { Graph } from '../../graph'
 import { Scroller } from './index'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph/graph' {
   interface Graph {
     lockScroller: () => Graph
     unlockScroller: () => Graph
