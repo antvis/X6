@@ -1,11 +1,8 @@
-import { vi, expect } from 'vitest'
+import { expect } from 'vitest'
 import { createTestGraph } from '../utils'
 
 describe('Geometry: circle', () => {
-  beforeEach(() => vi.useFakeTimers())
-  afterEach(() => vi.useRealTimers())
   it('circle path', async () => {
-    vi.useRealTimers()
     const { graph, cleanup } = createTestGraph()
     graph.addNode({
       id: 'circle1',

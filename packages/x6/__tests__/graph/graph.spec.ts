@@ -1,9 +1,7 @@
-import { expect, vi } from 'vitest'
+import { expect } from 'vitest'
 import { createTestGraph } from '../utils'
 
 describe('Graph: 基础节点/边操作', () => {
-  beforeEach(() => vi.useFakeTimers())
-  afterEach(() => vi.useRealTimers())
   it('addNode / getCell / removeNode', async () => {
     const { graph, cleanup } = createTestGraph()
 
@@ -101,7 +99,6 @@ describe('Graph: 基础节点/边操作', () => {
   })
 
   it('addEdge / path 生成', async () => {
-    vi.useRealTimers()
     const { graph, cleanup } = createTestGraph({
       connecting: { router: { name: 'manhattan' }, connector: 'rounded' },
     })
