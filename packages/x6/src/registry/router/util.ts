@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../../geometry'
 import { NumberExt } from '../../common'
 import { EdgeView } from '../../view/edge'
 

@@ -1,5 +1,5 @@
-import { Point, Rectangle, Angle } from '@antv/x6-geometry'
 import { DeepPartial, Omit } from 'utility-types'
+import { Point, Rectangle, Angle } from '../geometry'
 import {
   StringExt,
   ObjectExt,

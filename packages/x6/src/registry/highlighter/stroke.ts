@@ -1,9 +1,8 @@
-import { ObjectExt, Dom, Vector } from '../../common'
+import { ObjectExt, Dom, Vector, Util } from '../../common'
 import { Attr } from '../attr'
 import { Config } from '../../config'
 import { EdgeView } from '../../view'
 import { Highlighter } from './index'
-import { Util } from '../../util'
 
 export interface StrokeHighlighterOptions {
   padding?: number

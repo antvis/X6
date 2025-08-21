@@ -1,4 +1,4 @@
-import { Point } from '@antv/x6-geometry'
+import { Point } from '../../geometry'
 import { NumberExt } from '../../common'
 import { Attr } from './index'
 

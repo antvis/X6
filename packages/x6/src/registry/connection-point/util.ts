@@ -1,4 +1,4 @@
-import { Point, Line } from '@antv/x6-geometry'
+import { Point, Line } from '../../geometry'
 
 export function offset(
   p1: Point,

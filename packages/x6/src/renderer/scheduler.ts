@@ -1,4 +1,4 @@
-import { Rectangle } from '@antv/x6-geometry'
+import { Rectangle } from '../geometry'
 import { KeyValue, Dom, Disposable, FunctionExt } from '../common'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'

@@ -1,13 +1,7 @@
-import {
-  Point,
-  Line,
-  Rectangle,
-  Polyline,
-  Ellipse,
-  Path,
-} from '@antv/x6-geometry'
-import { Dom, PointData, PointLike } from '../common'
-import { normalize } from '../registry/marker/util'
+import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../../geometry'
+import { Dom } from '../dom'
+import { PointData, PointLike } from '../types'
+import { normalize } from '../../registry/marker/util'
 
 export namespace Util {
   export const normalizeMarker = normalize

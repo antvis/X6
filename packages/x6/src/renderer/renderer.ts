@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../geometry'
 import { Base } from '../graph/base'
 import { Cell } from '../model'
 import { Scheduler } from './scheduler'
 import { CellView, EdgeView } from '../view'
-import { Util } from '../util'
+import { Util } from '../common'
 
 export class Renderer extends Base {
   private readonly schedule: Scheduler = new Scheduler(this.graph)

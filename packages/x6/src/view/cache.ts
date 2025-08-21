@@ -1,13 +1,5 @@
-import {
-  Line,
-  Rectangle,
-  Ellipse,
-  Polyline,
-  Path,
-  Segment,
-} from '@antv/x6-geometry'
-import { Dictionary, JSONObject, Dom } from '../common'
-import { Util } from '../util'
+import { Line, Rectangle, Ellipse, Polyline, Path, Segment } from '../geometry'
+import { Dictionary, JSONObject, Dom, Util } from '../common'
 import { CellView } from './cell'
 
 export class Cache {

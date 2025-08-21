@@ -1,4 +1,4 @@
-import { Rectangle } from '@antv/x6-geometry'
+import { Rectangle } from '../geometry'
 import { ObjectExt, Dom, Nilable } from '../common'
 import { Config } from '../config'
 import { Graph } from '../graph'
