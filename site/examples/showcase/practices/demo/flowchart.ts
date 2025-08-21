@@ -7,8 +7,8 @@ import {
   Selection,
   Stencil,
   Snapline,
+  Transform,
 } from '@antv/x6'
-import { Transform } from '@antv/x6-plugin-transform'
 import insertCss from 'insert-css'
 
 // 为了协助代码演示

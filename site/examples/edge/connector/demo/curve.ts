@@ -1,5 +1,4 @@
-import { Graph, Path } from '@antv/x6'
-import { Transform } from '@antv/x6-plugin-transform'
+import { Graph, Path, Transform } from '@antv/x6'
 
 const degreesToRadians = (degrees) => degrees * (Math.PI / 180)
 const transCanvasAngleToRos = (angle) => angle - 90
