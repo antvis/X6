@@ -11,19 +11,12 @@ coverage:
         threshold: 1%
         flags:
           - x6
-      x6-geometry:
-        threshold: 1%
-        flags:
-          - x6-geometry
 
 flags:
   x6:
     paths:
       # filter the folder(s) you wish to measure by that flag
       - packages/x6
-  x6-geometry:
-    paths:
-      - packages/x6-geometry
 
 comment:
   layout: "reach, diff, flags, files"

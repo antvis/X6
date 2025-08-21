@@ -1,4 +1,4 @@
-import { Point, Line, Angle } from '@antv/x6-geometry'
+import { Point, Line, Angle } from '../../geometry'
 import { FunctionExt } from '../../common'
 import { ManhattanRouterOptions, resolve } from './manhattan/options'
 import { manhattan } from './manhattan/index'

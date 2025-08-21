@@ -1,4 +1,4 @@
-import { Point, Path, Polyline, Rectangle } from '@antv/x6-geometry'
+import { Point, Path, Polyline, Rectangle } from '../../geometry'
 import { NumberExt, FunctionExt, Dom } from '../../common'
 import { Attr } from './index'
 

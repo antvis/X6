@@ -1,4 +1,4 @@
-import { Rectangle, Point, GeometryUtil } from '@antv/x6-geometry'
+import { Rectangle, Point, GeometryUtil } from '../geometry'
 import { ArrayExt, FunctionExt, Dom } from '../common'
 import { Config } from '../config'
 import { Attr, PortLayout } from '../registry'

@@ -1,4 +1,4 @@
-import { Point, Rectangle, Line, Angle } from '@antv/x6-geometry'
+import { Point, Rectangle, Line, Angle } from '../../geometry'
 import { ArrayExt } from '../../common'
 import { Router } from './index'
 import * as Util from './util'

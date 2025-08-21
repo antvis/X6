@@ -1,4 +1,4 @@
-import { Point } from '@antv/x6-geometry'
+import { Point } from '../../geometry'
 import { Dom, NumberExt, FunctionExt } from '../../common'
 import { CellView } from '../../view/cell'
 import { NodeView } from '../../view/node'

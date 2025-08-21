@@ -1,5 +1,4 @@
-import { Vector } from '../../common'
-import { Util } from '../../util'
+import { Vector, Util } from '../../common'
 
 describe('Util', () => {
   const fixture = document.createElement('div')

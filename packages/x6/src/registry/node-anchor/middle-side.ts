@@ -1,4 +1,4 @@
-import { Point } from '@antv/x6-geometry'
+import { Point } from '../../geometry'
 import { ResolveOptions, resolve } from './util'
 import { NodeAnchor } from './index'
 

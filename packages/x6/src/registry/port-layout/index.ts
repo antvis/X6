@@ -1,4 +1,4 @@
-import { Rectangle, Point } from '@antv/x6-geometry'
+import { Rectangle, Point } from '../../geometry'
 import { KeyValue } from '../../common'
 import { Registry } from '../registry'
 import * as layouts from './main'

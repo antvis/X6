@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../../geometry'
 import { PortLabelLayout } from './index'
 import { toResult } from './util'
 
