@@ -6,9 +6,9 @@ import {
   Keyboard,
   Selection,
   Stencil,
+  Snapline,
 } from '@antv/x6'
 import { Transform } from '@antv/x6-plugin-transform'
-import { Snapline } from '@antv/x6-plugin-snapline'
 import insertCss from 'insert-css'
 
 // 为了协助代码演示

@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-The alignment line is an auxiliary tool for the layout of movable nodes. We provide a standalone plugin package `@antv/x6-plugin-snapline` to use this feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-snapline --save
-
-# yarn
-$ yarn add @antv/x6-plugin-snapline
-```
-
-Then we use it in the code like this:
+The alignment line is an auxiliary tool for the layout of movable nodes. We provide a plugin `snapline` to use this feature, we use it in the code like this:
 
 ```ts
-import { Snapline } from '@antv/x6-plugin-snapline'
+import { Snapline } from '@antv/x6'
 
 const graph = new Graph({
   background: {

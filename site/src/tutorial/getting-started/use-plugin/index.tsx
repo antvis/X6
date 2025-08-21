@@ -1,8 +1,7 @@
 import React from 'react'
-import { Graph, Node } from '@antv/x6'
+import { Graph, Node, Snapline } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Dropdown } from 'antd'
-import { Snapline } from '@antv/x6-plugin-snapline'
 import './index.less'
 
 const CustomComponent = ({ node }: { node: Node }) => {
