@@ -1,6 +1,5 @@
 /* eslint-disable no-bitwise */
-
-import { KeyValue } from '@antv/x6-common'
+import { KeyValue } from '../common'
 import { CellView } from './cell'
 
 export class FlagManager {

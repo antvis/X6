@@ -1,5 +1,5 @@
 import { Point, Line } from '@antv/x6-geometry'
-import { KeyValue } from '@antv/x6-common'
+import { KeyValue } from '../../common'
 import { Registry } from '../registry'
 import { Edge } from '../../model/edge'
 import { CellView } from '../../view/cell'

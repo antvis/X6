@@ -1,4 +1,4 @@
-import { ObjectExt } from '@antv/x6-common'
+import { ObjectExt } from '../../common'
 import { Attr } from './index'
 
 export const fill: Attr.Definition = {

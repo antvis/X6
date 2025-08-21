@@ -1,4 +1,4 @@
-import { ArrayExt, Basecoat } from '@antv/x6-common'
+import { ArrayExt, Basecoat } from '../common'
 import { Cell } from './cell'
 import { Node } from './node'
 import { Edge } from './edge'

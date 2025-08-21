@@ -1,4 +1,4 @@
-import { Platform, Dom, FunctionExt, ObjectExt } from '@antv/x6-common'
+import { Platform, Dom, FunctionExt, ObjectExt } from '../common'
 import { Attr } from '../registry'
 import { Base } from './base'
 

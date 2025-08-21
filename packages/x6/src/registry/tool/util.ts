@@ -1,5 +1,5 @@
-import { FunctionExt } from '@antv/x6-common'
 import { Point } from '@antv/x6-geometry'
+import { FunctionExt } from '../../common'
 import { ConnectionStrategy } from '../connection-strategy'
 import { Edge } from '../../model/edge'
 import { CellView } from '../../view/cell'

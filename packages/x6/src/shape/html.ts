@@ -1,4 +1,4 @@
-import { Dom } from '@antv/x6-common'
+import { Dom } from '../common'
 import { Markup } from '../view'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'

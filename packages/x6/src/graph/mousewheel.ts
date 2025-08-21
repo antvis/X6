@@ -1,4 +1,4 @@
-import { ModifierKey, Dom, NumberExt, Disposable } from '@antv/x6-common'
+import { ModifierKey, Dom, NumberExt, Disposable } from '../common'
 import { Base } from './base'
 
 export class MouseWheel extends Base {

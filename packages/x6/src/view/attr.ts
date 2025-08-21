@@ -1,3 +1,4 @@
+import { Rectangle, Point } from '@antv/x6-geometry'
 import {
   ObjectExt,
   ArrayExt,
@@ -5,8 +6,7 @@ import {
   FunctionExt,
   Dictionary,
   StringExt,
-} from '@antv/x6-common'
-import { Rectangle, Point } from '@antv/x6-geometry'
+} from '../common'
 import { Attr } from '../registry/attr'
 import { View } from './view'
 import { Markup } from './markup'

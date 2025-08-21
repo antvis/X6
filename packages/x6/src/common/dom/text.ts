@@ -452,8 +452,13 @@ export function breakText(
     const delimiter = StringExt.uuid()
     const splitText: string[] = []
 
-    text.split(eol).map((line) => {
-      const part = breakText(line, { ...size, height: Number.MAX_SAFE_INTEGER }, styles, { ...options, eol: delimiter })
+    text.split(eol).forEach((line) => {
+      const part = breakText(
+        line,
+        { ...size, height: Number.MAX_SAFE_INTEGER },
+        styles,
+        { ...options, eol: delimiter },
+      )
 
       if (part) {
         splitText.push(...part.split(delimiter))

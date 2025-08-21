@@ -1,4 +1,4 @@
-import { Dom, ModifierKey } from '@antv/x6-common'
+import { Dom, ModifierKey } from '../common'
 import { Base } from './base'
 
 export class PanningManager extends Base {

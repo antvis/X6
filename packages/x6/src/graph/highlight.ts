@@ -1,4 +1,4 @@
-import { Dom, KeyValue } from '@antv/x6-common'
+import { Dom, KeyValue } from '../common'
 import { CellView } from '../view'
 import { Highlighter } from '../registry'
 import { EventArgs } from './events'

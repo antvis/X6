@@ -1,4 +1,4 @@
-import { ObjectExt, JSONObject, KeyValue } from '@antv/x6-common'
+import { ObjectExt, JSONObject, KeyValue } from '../../common'
 import { CellView } from '../../view'
 import { Marker } from '../marker'
 import { Attr } from './index'

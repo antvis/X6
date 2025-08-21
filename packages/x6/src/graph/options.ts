@@ -1,5 +1,5 @@
-import { ObjectExt, Dom, Nilable } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
+import { ObjectExt, Dom, Nilable } from '../common'
 import { Config } from '../config'
 import { Graph } from '../graph'
 import { GridManager } from './grid'

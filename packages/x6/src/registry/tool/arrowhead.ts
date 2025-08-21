@@ -1,5 +1,5 @@
-import { Dom } from '@antv/x6-common'
 import { Point } from '@antv/x6-geometry'
+import { Dom } from '../../common'
 import { Attr } from '../attr'
 import { Edge } from '../../model/edge'
 import { EdgeView } from '../../view/edge'

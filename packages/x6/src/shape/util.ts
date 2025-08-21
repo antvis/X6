@@ -1,4 +1,4 @@
-import { ObjectExt } from '@antv/x6-common'
+import { ObjectExt } from '../common'
 import { Cell, Node } from '../model'
 import { Markup } from '../view'
 import { Base } from './base'

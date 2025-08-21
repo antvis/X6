@@ -1,5 +1,5 @@
-import { Dom, NumberExt } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
+import { Dom, NumberExt } from '../common'
 import { Base } from './base'
 import { Util } from '../util'
 import { Cell } from '../model'

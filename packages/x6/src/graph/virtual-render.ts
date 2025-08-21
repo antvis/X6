@@ -1,4 +1,4 @@
-import { FunctionExt } from '@antv/x6-common'
+import { FunctionExt } from '../common'
 import { Base } from './base'
 
 export class VirtualRenderManager extends Base {

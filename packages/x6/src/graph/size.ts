@@ -1,4 +1,4 @@
-import { SizeSensor } from '@antv/x6-common'
+import { SizeSensor } from '../common'
 import { Base } from './base'
 
 export class SizeManager extends Base {

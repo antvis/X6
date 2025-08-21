@@ -1,4 +1,4 @@
-import { Dom } from '@antv/x6-common'
+import { Dom } from '../../common'
 import { Grid } from './index'
 
 export interface DotOptions extends Grid.Options {}

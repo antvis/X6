@@ -1,5 +1,5 @@
 import Mousetrap from 'mousetrap'
-import { Dom, FunctionExt, Disposable, IDisablable } from '@antv/x6-common'
+import { Dom, FunctionExt, Disposable, IDisablable } from '../../common'
 import { Graph, EventArgs } from '../../graph'
 
 export class KeyboardImpl extends Disposable implements IDisablable {
