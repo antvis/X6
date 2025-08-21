@@ -18,7 +18,6 @@
     "@antv/hierarchy": "^0.6.6",
     "@antv/layout": "^0.3.12",
     "@antv/x6": "workspace:*",
-    "@antv/x6-plugin-dnd": "^2.x",
     "@antv/x6-plugin-scroller": "^2.x",
     "@antv/x6-plugin-snapline": "^2.x",
     "@antv/x6-plugin-stencil": "^2.x",

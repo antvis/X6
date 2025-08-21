@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Node } from '@antv/x6'
-import { Dnd } from '@antv/x6-plugin-dnd'
+import { Graph, Node, Dnd } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

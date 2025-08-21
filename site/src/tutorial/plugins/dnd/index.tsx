@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Dnd } from '@antv/x6-plugin-dnd'
+import { Graph, Dnd } from '@antv/x6'
 import { Snapline } from '@antv/x6-plugin-snapline'
 import './index.less'
 

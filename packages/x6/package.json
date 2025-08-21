@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "lodash-es": "^4.17.15",
+    "dom-align": "^1.12.4",
     "mousetrap": "^1.6.5",
     "utility-types": "^3.10.0"
   },

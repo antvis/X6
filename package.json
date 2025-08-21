@@ -170,5 +170,6 @@
   },
   "engines": {
     "pnpm": ">=7"
-  }
+  },
+  "repository": "git@github.com:antvis/X6.git"
 }
