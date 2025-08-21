@@ -15,20 +15,10 @@ redirect_from:
 
 ## 使用
 
-我们提供了一个独立的插件包 `@antv/x6-plugin-minimap` 来使用小地图功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-minimap --save
-
-# yarn
-$ yarn add @antv/x6-plugin-minimap
-```
-
-然后我们在代码中这样使用：
+我们提供了一个独立的插件 `minimap` 来使用小地图功能，我们在代码中这样使用：
 
 ```ts
-import { MiniMap } from '@antv/x6-plugin-minimap'
+import { MiniMap } from '@antv/x6'
 
 const graph = new Graph({
   background: {

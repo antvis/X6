@@ -15,7 +15,6 @@ Compared to version 1.x, the changes to the external API and configuration are m
 ```json
 {
   "@antv/x6": "^2.0.0",
-  "@antv/x6-plugin-minimap": "^2.0.0", // Install this package if using minimap functionality
   "@antv/x6-plugin-scroller": "^2.0.0", // Install this package if using scrollable canvas functionality
   "@antv/x6-plugin-snapline": "^2.0.0", // Install this package if using alignment line functionality
   "@antv/x6-plugin-dnd": "^2.0.0", // Install this package if using drag-and-drop functionality

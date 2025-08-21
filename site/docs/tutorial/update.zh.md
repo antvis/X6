@@ -15,7 +15,6 @@ redirect_from:
 ```json
 {
   "@antv/x6": "^2.0.0",
-  "@antv/x6-plugin-minimap": "^2.0.0", // 如果使用小地图功能，需要安装此包
   "@antv/x6-plugin-scroller": "^2.0.0", // 如果使用滚动画布功能，需要安装此包
   "@antv/x6-plugin-snapline": "^2.0.0", // 如果使用对齐线功能，需要安装此包
   "@antv/x6-plugin-dnd": "^2.0.0", // 如果使用 dnd 功能，需要安装此包

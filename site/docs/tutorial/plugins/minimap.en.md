@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-We provide a standalone plugin package `@antv/x6-plugin-minimap` to use the mini-map feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-minimap --save
-
-# yarn
-$ yarn add @antv/x6-plugin-minimap
-```
-
-Then we use it in the code like this:
+We provide a standalone plugin `minimap` to use the mini-map feature, then we use it in the code like this:
 
 ```ts
-import { MiniMap } from '@antv/x6-plugin-minimap'
+import { MiniMap } from '@antv/x6'
 
 const graph = new Graph({
   background: {
