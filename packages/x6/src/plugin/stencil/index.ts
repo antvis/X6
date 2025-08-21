@@ -1,15 +1,8 @@
-import {
-  Dom,
-  FunctionExt,
-  CssLoader,
-  Cell,
-  Node,
-  Model,
-  View,
-  Graph,
-  EventArgs,
-  Dnd,
-} from '@antv/x6'
+import { Dom, FunctionExt, CssLoader } from '../../common'
+import { Graph, EventArgs } from '../../graph'
+import { View } from '../../view'
+import { Model, Node, Cell } from '../../model'
+import { Dnd } from '../dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
 

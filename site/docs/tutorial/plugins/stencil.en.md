@@ -15,20 +15,10 @@ redirect_from:
 
 ## Usage
 
-Stencil is a further encapsulation based on Dnd, providing a sidebar-like UI component that supports grouping, collapsing, searching, and other capabilities. We offer a standalone plugin package `@antv/x6-plugin-stencil` to use this feature.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-stencil --save
-
-# yarn
-$ yarn add @antv/x6-plugin-stencil
-```
-
-Then we can use it in the code like this:
+Stencil is a further encapsulation based on Dnd, providing a sidebar-like UI component that supports grouping, collapsing, searching, and other capabilities. We offer a plugin `stencil` to use this feature, we can use it in the code like this:
 
 ```ts
-import { Stencil } from '@antv/x6-plugin-stencil'
+import { Stencil } from '@antv/x6'
 
 const graph = new Graph({
   background: {

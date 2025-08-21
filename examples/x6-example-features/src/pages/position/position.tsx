@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Scroller } from '@antv/x6-plugin-scroller'
+import { Graph, Scroller } from '@antv/x6'
 import { Button } from 'antd'
 import '../index.less'
 

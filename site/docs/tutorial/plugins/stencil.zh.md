@@ -15,20 +15,10 @@ redirect_from:
 
 ## 使用
 
-Stencil 是在 Dnd 基础上的进一步封装，提供了一个类似侧边栏的 UI 组件，并支持分组、折叠、搜索等能力。我们提供了一个独立的插件包 `@antv/x6-plugin-stencil` 来使用这个功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-stencil --save
-
-# yarn
-$ yarn add @antv/x6-plugin-stencil
-```
-
-然后我们在代码中这样使用：
+Stencil 是在 Dnd 基础上的进一步封装，提供了一个类似侧边栏的 UI 组件，并支持分组、折叠、搜索等能力。我们提供了一个插件 `stencil` 来使用这个功能，在代码中这样使用：
 
 ```ts
-import { Stencil } from '@antv/x6-plugin-stencil'
+import { Stencil } from '@antv/x6'
 
 const graph = new Graph({
   background: {

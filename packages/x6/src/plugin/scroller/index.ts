@@ -1,16 +1,8 @@
-import {
-  Dom,
-  ModifierKey,
-  Basecoat,
-  CssLoader,
-  Rectangle,
-  Point,
-  Graph,
-  Config,
-  TransformManager,
-  Cell,
-  BackgroundManager,
-} from '@antv/x6'
+import { Rectangle, Point } from '../../geometry'
+import { Dom, ModifierKey, Basecoat, CssLoader } from '../../common'
+import { Graph, BackgroundManager, TransformManager } from '../../graph'
+import { Cell } from '../../model'
+import { Config } from '../../config'
 import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 import './api'

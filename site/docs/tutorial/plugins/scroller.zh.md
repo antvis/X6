@@ -19,20 +19,10 @@ redirect_from:
 
 ## 使用
 
-我们提供了一个独立的插件包 `@antv/x6-plugin-scroller` 来使用滚动画布功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-scroller --save
-
-# yarn
-$ yarn add @antv/x6-plugin-scroller
-```
-
-然后我们在代码中这样使用：
+我们提供了一个插件 `scroller` 来使用滚动画布功能，在代码中这样使用：
 
 ```ts
-import { Scroller } from '@antv/x6-plugin-scroller'
+import { Scroller } from '@antv/x6'
 
 const graph = new Graph({
   background: {
