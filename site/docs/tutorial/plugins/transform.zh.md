@@ -16,20 +16,10 @@ redirect_from:
 
 ## 使用
 
-使用 `UI` 组件来调整节点尺寸和角度是常用需求，我们提供了一个独立的插件包 `@antv/x6-plugin-transform` 来使用这个功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-transform --save
-
-# yarn
-$ yarn add @antv/x6-plugin-transform
-```
-
-然后我们在代码中这样使用：
+使用 `UI` 组件来调整节点尺寸和角度是常用需求，我们提供了一个插件 `transform` 来使用这个功能，在代码中这样使用：
 
 ```ts
-import { Transform } from '@antv/x6-plugin-transform'
+import { Transform } from '@antv/x6'
 
 const graph = new Graph({
   background: {

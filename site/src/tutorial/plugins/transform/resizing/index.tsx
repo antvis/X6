@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Transform } from '@antv/x6-plugin-transform'
+import { Graph, Transform } from '@antv/x6'
 import { Settings, State } from './settings'
 import './index.less'
 

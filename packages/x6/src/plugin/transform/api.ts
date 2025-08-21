@@ -1,15 +1,16 @@
-import { Graph, Node } from '@antv/x6'
+import { Graph } from '../../graph'
+import { Node } from '../../model'
 import { TransformImpl } from './transform'
 import { Transform } from './index'
 
-declare module '@antv/x6/lib/graph/graph' {
+declare module '../../graph/graph' {
   interface Graph {
     createTransformWidget: (node: Node) => Graph
     clearTransformWidgets: () => Graph
   }
 }
 
-declare module '@antv/x6/lib/graph/events' {
+declare module '../../graph/events' {
   interface EventArgs extends TransformImpl.EventArgs {}
 }
 

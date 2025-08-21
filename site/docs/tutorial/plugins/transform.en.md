@@ -16,20 +16,10 @@ redirect_from:
 
 ## Usage
 
-Using `UI` components to adjust node size and angle is a common requirement. We provide a standalone plugin package `@antv/x6-plugin-transform` to utilize this functionality.
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-transform --save
-
-# yarn
-$ yarn add @antv/x6-plugin-transform
-```
-
-Then we can use it in our code like this:
+Using `UI` components to adjust node size and angle is a common requirement. We provide a plugin `transform` to utilize this functionality, we can use it in our code like this:
 
 ```ts
-import { Transform } from '@antv/x6-plugin-transform'
+import { Transform } from '@antv/x6'
 
 const graph = new Graph({
   background: {

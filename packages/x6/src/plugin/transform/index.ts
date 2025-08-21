@@ -1,4 +1,6 @@
-import { Basecoat, CssLoader, KeyValue, Node, Graph, EventArgs } from '@antv/x6'
+import { Basecoat, CssLoader, KeyValue } from '../../common'
+import { Node } from '../../model'
+import { Graph, EventArgs } from '../../graph'
 import { TransformImpl } from './transform'
 import { content } from './style/raw'
 import './api'
