@@ -1,4 +1,4 @@
-import { Point, Polyline } from '@antv/x6-geometry'
+import { Point, Polyline } from '../geometry'
 import { ObjectExt, StringExt, Size, KeyValue } from '../common'
 import { Registry } from '../registry/registry'
 import {

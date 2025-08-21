@@ -1,4 +1,4 @@
-import { Point, Line } from '@antv/x6-geometry'
+import { Point, Line } from '../../geometry'
 import { normalizePoint, toResult } from './util'
 import { PortLayout } from './index'
 

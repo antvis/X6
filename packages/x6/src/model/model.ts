@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../geometry'
 import { FunctionExt, KeyValue, Basecoat } from '../common'
 import { Dijkstra } from '../common/algorithm'
 import { Cell } from './cell'

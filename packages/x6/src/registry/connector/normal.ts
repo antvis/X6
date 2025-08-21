@@ -1,4 +1,4 @@
-import { Polyline, Path } from '@antv/x6-geometry'
+import { Polyline, Path } from '../../geometry'
 import { Connector } from './index'
 
 export const normal: Connector.Definition = function (

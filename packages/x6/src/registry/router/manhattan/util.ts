@@ -1,4 +1,4 @@
-import { Point, Line, Angle, Rectangle, GeometryUtil } from '@antv/x6-geometry'
+import { Point, Line, Angle, Rectangle, GeometryUtil } from '../../../geometry'
 import { KeyValue } from '../../../common'
 import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'

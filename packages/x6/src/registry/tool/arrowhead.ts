@@ -1,4 +1,4 @@
-import { Point } from '@antv/x6-geometry'
+import { Point } from '../../geometry'
 import { Dom } from '../../common'
 import { Attr } from '../attr'
 import { Edge } from '../../model/edge'

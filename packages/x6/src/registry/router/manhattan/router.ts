@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@antv/x6-geometry'
+import { Point, Rectangle } from '../../../geometry'
 import { FunctionExt, KeyValue } from '../../../common'
 import { EdgeView } from '../../../view'
 import { Router } from '../index'

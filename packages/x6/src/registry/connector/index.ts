@@ -1,4 +1,4 @@
-import { Point, Path } from '@antv/x6-geometry'
+import { Point, Path } from '../../geometry'
 import { KeyValue } from '../../common'
 import { Registry } from '../registry'
 import { EdgeView } from '../../view'

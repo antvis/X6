@@ -1,4 +1,4 @@
-import { Point } from '@antv/x6-geometry'
+import { Point } from '../../geometry'
 import { FunctionExt } from '../../common'
 import { ConnectionStrategy } from '../connection-strategy'
 import { Edge } from '../../model/edge'

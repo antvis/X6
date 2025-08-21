@@ -1,4 +1,4 @@
-import { Rectangle, Point } from '@antv/x6-geometry'
+import { Rectangle, Point } from '../../geometry'
 import { ModifierKey, FunctionExt, Dom, KeyValue } from '../../common'
 import { Graph } from '../../graph'
 import { Model, Cell, Node, Edge, Collection } from '../../model'

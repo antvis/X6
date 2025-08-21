@@ -1,4 +1,4 @@
-import { Rectangle, Ellipse } from '@antv/x6-geometry'
+import { Rectangle, Ellipse } from '../../geometry'
 import { PortLayout } from './index'
 import { toResult } from './util'
 
