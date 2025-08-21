@@ -1,5 +1,5 @@
-import { NumberExt } from '@antv/x6-common'
 import { Point } from '@antv/x6-geometry'
+import { NumberExt } from '../../common'
 import { EdgeView } from '../../view'
 
 export interface ResolveOptions {

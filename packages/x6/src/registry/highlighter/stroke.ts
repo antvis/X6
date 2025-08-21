@@ -1,4 +1,4 @@
-import { ObjectExt, Dom, Vector } from '@antv/x6-common'
+import { ObjectExt, Dom, Vector } from '../../common'
 import { Attr } from '../attr'
 import { Config } from '../../config'
 import { EdgeView } from '../../view'

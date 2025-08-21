@@ -6,7 +6,7 @@ import {
   Ellipse,
   Path,
 } from '@antv/x6-geometry'
-import { Dom, PointData, PointLike } from '@antv/x6-common'
+import { Dom, PointData, PointLike } from '../common'
 import { normalize } from '../registry/marker/util'
 
 export namespace Util {

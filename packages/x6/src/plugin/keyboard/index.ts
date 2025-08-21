@@ -1,4 +1,4 @@
-import { Disposable } from '@antv/x6-common'
+import { Disposable } from '../../common'
 import { Graph } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'

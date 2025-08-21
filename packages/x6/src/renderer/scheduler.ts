@@ -1,5 +1,5 @@
-import { KeyValue, Dom, Disposable, FunctionExt } from '@antv/x6-common'
 import { Rectangle } from '@antv/x6-geometry'
+import { KeyValue, Dom, Disposable, FunctionExt } from '../common'
 import { Model, Cell } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
 import { JobQueue, JOB_PRIORITY } from './queueJob'

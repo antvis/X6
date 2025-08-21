@@ -1,5 +1,5 @@
-import { Dom, KeyValue, Basecoat } from '@antv/x6-common'
-import { EventArgs } from '@antv/x6-common/lib/event/types'
+import { Dom, KeyValue, Basecoat } from '../common'
+import { EventArgs } from '../common/event/types'
 import { Config } from '../config'
 import { Markup } from './markup'
 import { Attr } from '../registry'

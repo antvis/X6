@@ -1,4 +1,4 @@
-import { Dom } from '@antv/x6-common'
+import { Dom } from '../../common'
 import { Grid } from './index'
 
 export interface DoubleMeshOptions extends Grid.Options {

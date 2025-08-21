@@ -1,5 +1,5 @@
 import { Point, Line, Angle, Rectangle, GeometryUtil } from '@antv/x6-geometry'
-import { KeyValue } from '@antv/x6-common'
+import { KeyValue } from '../../../common'
 import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'
 

@@ -1,5 +1,5 @@
-import { Dom } from '@antv/x6-common'
 import { Point, Rectangle } from '@antv/x6-geometry'
+import { Dom } from '../common'
 import { Base } from './base'
 import { Util } from '../util'
 

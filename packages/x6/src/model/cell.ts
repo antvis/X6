@@ -1,5 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 
+import { Rectangle, Point } from '@antv/x6-geometry'
+import { NonUndefined } from 'utility-types'
 import {
   ArrayExt,
   StringExt,
@@ -8,9 +10,7 @@ import {
   KeyValue,
   Size,
   Basecoat,
-} from '@antv/x6-common'
-import { Rectangle, Point } from '@antv/x6-geometry'
-import { NonUndefined } from 'utility-types'
+} from '../common'
 import { Attr } from '../registry'
 import { Model } from './model'
 import { PortManager } from './port'
@@ -1776,12 +1776,15 @@ export namespace Cell {
 
   export function cloneCells(cells: Cell[]) {
     const inputs = ArrayExt.uniq(cells)
-    const cloneMap = inputs.reduce<KeyValue<Cell>>((map, cell) => {
-      map[cell.id] = cell.clone()
-      return map
-    }, {})
+    const cloneMap = inputs.reduce<KeyValue<Cell>>(
+      (map: KeyValue<Cell>, cell: Cell) => {
+        map[cell.id] = cell.clone()
+        return map
+      },
+      {},
+    )
 
-    inputs.forEach((cell) => {
+    inputs.forEach((cell: Cell) => {
       const clone = cloneMap[cell.id]
       if (clone.isEdge()) {
         const sourceId = clone.getSourceCellId()
@@ -1813,7 +1816,7 @@ export namespace Cell {
       // Find the children of the original cell
       const children = cell.getChildren()
       if (children && children.length) {
-        const embeds = children.reduce<Cell[]>((memo, child) => {
+        const embeds = children.reduce<Cell[]>((memo: Cell[], child: Cell) => {
           // Embedded cells that are not being cloned can not be carried
           // over with other embedded cells.
           if (cloneMap[child.id]) {

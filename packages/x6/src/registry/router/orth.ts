@@ -1,5 +1,5 @@
-import { ArrayExt } from '@antv/x6-common'
 import { Point, Rectangle, Line, Angle } from '@antv/x6-geometry'
+import { ArrayExt } from '../../common'
 import { Router } from './index'
 import * as Util from './util'
 

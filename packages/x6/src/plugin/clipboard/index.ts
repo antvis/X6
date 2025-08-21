@@ -1,4 +1,4 @@
-import { Basecoat } from '@antv/x6-common'
+import { Basecoat } from '../../common'
 import { Graph } from '../../graph'
 import { Cell } from '../../model'
 import { ClipboardImpl } from './clipboard'

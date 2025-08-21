@@ -1,5 +1,5 @@
-import { ModifierKey, FunctionExt, Dom, KeyValue } from '@antv/x6-common'
 import { Rectangle, Point } from '@antv/x6-geometry'
+import { ModifierKey, FunctionExt, Dom, KeyValue } from '../../common'
 import { Graph } from '../../graph'
 import { Model, Cell, Node, Edge, Collection } from '../../model'
 import { CellView, View } from '../../view'

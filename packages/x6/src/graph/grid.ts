@@ -1,4 +1,4 @@
-import { Dom, Vector } from '@antv/x6-common'
+import { Dom, Vector } from '../common'
 import * as Registry from '../registry'
 import { Base } from './base'
 

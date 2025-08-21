@@ -1,4 +1,4 @@
-import { NumberExt, Dom } from '@antv/x6-common'
+import { NumberExt, Dom } from '../../common'
 import { Attr } from '../attr'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'

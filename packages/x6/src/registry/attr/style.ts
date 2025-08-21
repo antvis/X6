@@ -1,4 +1,4 @@
-import { ObjectExt, Dom } from '@antv/x6-common'
+import { ObjectExt, Dom } from '../../common'
 import { Attr } from './index'
 
 export const style: Attr.Definition = {

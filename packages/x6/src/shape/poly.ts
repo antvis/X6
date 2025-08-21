@@ -1,5 +1,5 @@
 import { Point } from '@antv/x6-geometry'
-import { ObjectExt } from '@antv/x6-common'
+import { ObjectExt } from '../common'
 import { Base } from './base'
 import { Node } from '../model/node'
 

@@ -1,4 +1,5 @@
 import { Point, Rectangle, Angle } from '@antv/x6-geometry'
+import { DeepPartial, Omit } from 'utility-types'
 import {
   StringExt,
   ObjectExt,
@@ -6,8 +7,7 @@ import {
   Size,
   KeyValue,
   Interp,
-} from '@antv/x6-common'
-import { DeepPartial, Omit } from 'utility-types'
+} from '../common'
 import { Registry } from '../registry/registry'
 import { Markup } from '../view/markup'
 import { Cell } from './cell'
@@ -619,7 +619,9 @@ export class Node<
   }
 
   getPortsByGroup(groupName: string) {
-    return this.getPorts().filter((port) => port.group === groupName)
+    return this.getPorts().filter(
+      (port: PortManager.PortMetadata) => port.group === groupName,
+    )
   }
 
   getPort(portId: string) {
