@@ -15,20 +15,10 @@ redirect_from:
 
 ## 使用
 
-我们经常需要通过拖拽交互往画布中添加节点，如流程图编辑场景，从流程图组件库中拖拽组件到画布中。我们提供了一个独立的插件包 `@antv/x6-plugin-dnd` 来使用这个功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-dnd --save
-
-# yarn
-$ yarn add @antv/x6-plugin-dnd
-```
-
-然后我们在代码中这样使用：
+我们经常需要通过拖拽交互往画布中添加节点，如流程图编辑场景，从流程图组件库中拖拽组件到画布中。我们提供了一个独立的插件 `dnd` 来使用这个功能，我们在代码中这样使用：
 
 ```ts
-import { Dnd } from '@antv/x6-plugin-dnd'
+import { Graph, Dnd } from '@antv/x6'
 
 const graph = new Graph({
   background: {
