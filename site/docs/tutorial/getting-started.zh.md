@@ -71,7 +71,7 @@ X6 支持使用 `SVG`、`HTML` 来渲染节点内容，在此基础上，我们�
 除了基本的元素渲染能力，X6 还内置了大量的图编辑配套插件，使用这些成熟的插件，能很大程度上降低开发成本。下面为画布增加对齐线功能，当移动的节点与其他节点对齐时，会自动出现对齐线，可以方便用户进行位置排版。
 
 ```ts
-import { Snapline } from '@antv/x6-plugin-snapline'
+import { Snapline } from '@antv/x6'
 
 graph.use(
   new Snapline({

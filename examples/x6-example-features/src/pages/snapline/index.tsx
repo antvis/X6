@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Snapline } from '@antv/x6-plugin-snapline'
+import { Graph, Snapline } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

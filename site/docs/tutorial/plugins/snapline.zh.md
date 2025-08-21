@@ -15,20 +15,10 @@ redirect_from:
 
 ## 使用
 
-对齐线是移动节点排版的辅助工具，我们提供了一个独立的插件包 `@antv/x6-plugin-snapline` 来使用这个功能。
-
-```shell
-# npm
-$ npm install @antv/x6-plugin-snapline --save
-
-# yarn
-$ yarn add @antv/x6-plugin-snapline
-```
-
-然后我们在代码中这样使用：
+对齐线是移动节点排版的辅助工具，我们提供了一个插件 `snapline` 来使用这个功能，在代码中这样使用：
 
 ```ts
-import { Snapline } from '@antv/x6-plugin-snapline'
+import { Snapline } from '@antv/x6'
 
 const graph = new Graph({
   background: {

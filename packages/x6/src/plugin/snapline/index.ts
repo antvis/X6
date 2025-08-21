@@ -1,4 +1,5 @@
-import { Disposable, CssLoader, Graph, EventArgs } from '@antv/x6'
+import { Graph, EventArgs } from '../../graph'
+import { Disposable, CssLoader } from '../../common'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
 import './api'
