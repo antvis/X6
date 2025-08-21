@@ -1,4 +1,6 @@
-import { FunctionExt, CssLoader, Dom, View, Graph, EventArgs } from '@antv/x6'
+import { View } from '../../view'
+import { Graph, EventArgs } from '../../graph'
+import { FunctionExt, CssLoader, Dom } from '../../common'
 import { content } from './style/raw'
 
 export class MiniMap extends View implements Graph.Plugin {

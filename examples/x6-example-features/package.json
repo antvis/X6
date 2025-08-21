@@ -11,7 +11,6 @@
     "@antv/hierarchy": "^0.6.8",
     "@antv/x6": "workspace:latest",
     "@antv/x6-plugin-dnd": "workspace:latest",
-    "@antv/x6-plugin-minimap": "workspace:latest",
     "@antv/x6-plugin-scroller": "workspace:latest",
     "@antv/x6-plugin-snapline": "workspace:latest",
     "@antv/x6-plugin-stencil": "workspace:latest",
