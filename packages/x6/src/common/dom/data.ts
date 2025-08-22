@@ -32,11 +32,7 @@ export function data(
   value?: any,
 ) {
   if (!name) {
-    const datas: Record<string, any> = {}
-    Object.keys(dataset).forEach((key) => {
-      datas[key] = getData(elem, key)
-    })
-    return datas
+    return dataset.get(elem)
   }
 
   if (typeof name === 'string') {

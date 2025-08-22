@@ -47,9 +47,22 @@ export namespace Unit {
     return size
   }
 
+  export function setMillimeterSize(pxPerMm: number) {
+    millimeterSize = pxPerMm
+  }
+
+  export function getMillimeterSize() {
+    return millimeterSize
+  }
+
   export function toPx(val: number, unit?: Unit) {
     if (millimeterSize == null) {
-      millimeterSize = measure('1', '1', 'mm').width
+      if (typeof document === 'undefined' || !document.body) {
+        // Node / 测试环境
+        millimeterSize = 3.7795275591 // 1mm ≈ 3.78px
+      } else {
+        millimeterSize = measure('1', '1', 'mm').width
+      }
     }
 
     const convert = unit ? supportedUnits[unit] : null

@@ -65,6 +65,7 @@
     "@typescript-eslint/lines-between-class-members": 0,
     "consistent-return": 0,
     "no-return-assign": [2, "except-parens"],
+    "no-underscore-dangle": 0,
     "no-param-reassign": [
       2,
       {

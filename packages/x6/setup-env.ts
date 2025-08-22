@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
+import { createCanvas } from 'canvas'
 
 declare global {
   interface Window {
     ResizeObserver: any
+    SVGRectElement: typeof SVGRectElement
   }
 }
 
@@ -55,7 +57,16 @@ function createSVGMatrixMock(values?: Partial<DOMMatrix>) {
       })
     },
     inverse() {
-      return createSVGMatrixMock()
+      const det = this.a * this.d - this.b * this.c
+      if (det === 0) throw new Error('Matrix is not invertible')
+      return createSVGMatrixMock({
+        a: this.d / det,
+        b: -this.b / det,
+        c: -this.c / det,
+        d: this.a / det,
+        e: (this.c * this.f - this.d * this.e) / det,
+        f: (this.b * this.e - this.a * this.f) / det,
+      })
     },
     translate(x: number, y: number) {
       return createSVGMatrixMock({ ...this, e: this.e + x, f: this.f + y })
@@ -70,11 +81,29 @@ function createSVGMatrixMock(values?: Partial<DOMMatrix>) {
   return matrix
 }
 
+;(SVGElement as any).prototype.__tx = [0, 0]
+;(SVGElement as any).prototype.translate = function (x: number, y: number) {
+  this.__tx = this.__tx || [0, 0]
+  this.__tx[0] += x // 仅更新自定义的__tx属性
+  this.__tx[1] += y
+  // 同步更新transform属性
+  this.setAttribute('transform', `translate(${this.__tx[0]},${this.__tx[1]})`)
+}
 ;(SVGElement as any).prototype.getCTM = function () {
-  return createSVGMatrixMock()
+  let e = 0
+  let f = 0
+  let el = this as any
+  while (el && el.nodeName !== 'svg') {
+    if (el.__tx) {
+      e += el.__tx[0]
+      f += el.__tx[1]
+    }
+    el = el.parentNode
+  }
+  return createSVGMatrixMock({ a: 1, b: 0, c: 0, d: 1, e, f })
 }
 ;(SVGElement as any).prototype.getScreenCTM = function () {
-  return createSVGMatrixMock()
+  return this.getCTM()
 }
 ;(SVGElement as any).prototype.createSVGMatrix = function () {
   return createSVGMatrixMock()
@@ -104,21 +133,19 @@ if (!SVGSVGElement.prototype.createSVGPoint) {
   return { x, y, width, height }
 }
 
-if (!SVGSVGElement.prototype.createSVGPoint) {
-  ;(SVGSVGElement as any).prototype.createSVGPoint = function () {
-    return {
-      x: 0,
-      y: 0,
-      matrixTransform: () => {
-        return { x: this.x, y: this.y }
-      },
-    }
-  }
-}
-
 // requestAnimationFrame
 if (!(globalThis as any).requestAnimationFrame) {
   ;(globalThis as any).requestAnimationFrame = (cb: FrameRequestCallback) =>
     setTimeout(() => cb(Date.now()), 16)
   ;(globalThis as any).cancelAnimationFrame = (id: number) => clearTimeout(id)
 }
+
+const originalCreateElement = document.createElement
+Object.defineProperty(document, 'createElement', {
+  value: (tagName: string) => {
+    if (tagName === 'canvas') {
+      return createCanvas(200, 200)
+    }
+    return originalCreateElement.call(document, tagName)
+  },
+})

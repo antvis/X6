@@ -12,5 +12,6 @@ export default defineConfig({
     testTimeout: 20_000,
     hookTimeout: 20_000,
     include: ['__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    // include: [`__tests__/common/dom/transform.spec.ts`],
   },
 })
