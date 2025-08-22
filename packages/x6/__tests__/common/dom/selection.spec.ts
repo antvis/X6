@@ -1,4 +1,4 @@
-import { Dom } from '../../../src/common/dom'
+import { Dom } from '@/common/dom'
 
 describe('Dom', () => {
   describe('#clearSelection', () => {

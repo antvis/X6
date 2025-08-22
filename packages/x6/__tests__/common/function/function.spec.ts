@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { FunctionExt } from '../../../src/common/function'
+import { FunctionExt } from '@/common/function'
 
 describe('FunctionExt', () => {
   describe('#call', () => {

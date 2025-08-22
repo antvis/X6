@@ -1,4 +1,4 @@
-import { Vector } from '../../../src/common/vector'
+import { Vector } from '@/common/vector'
 
 describe('Vector', () => {
   describe('#create', () => {

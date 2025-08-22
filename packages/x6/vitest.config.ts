@@ -1,6 +1,13 @@
+import path from 'path'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
+  resolve: {
+    // 配置路径别名
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,
@@ -12,6 +19,5 @@ export default defineConfig({
     testTimeout: 20_000,
     hookTimeout: 20_000,
     include: ['__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-    // include: [`__tests__/common/dom/transform.spec.ts`],
   },
 })

@@ -1,4 +1,4 @@
-import { ObjectExt } from '../../../src/common'
+import { ObjectExt } from '@/common'
 
 describe('object', () => {
   class Parent {

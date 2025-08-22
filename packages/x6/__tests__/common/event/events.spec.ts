@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { Events } from '../../../src/common/event'
+import { Events } from '@/common/event'
 
 describe('events', () => {
   it('should trigger with context', () => {

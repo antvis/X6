@@ -1,5 +1,5 @@
-import { Dom } from '../../../src/common/dom'
-import { Vector } from '../../../src/common/vector'
+import { Dom } from '@/common/dom'
+import { Vector } from '@/common/vector'
 
 describe.skip('Dom', () => {
   describe('matrix', () => {

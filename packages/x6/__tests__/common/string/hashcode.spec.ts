@@ -1,4 +1,4 @@
-import { StringExt } from '../../../src/common/string'
+import { StringExt } from '@/common/string'
 
 describe('StringExt', () => {
   describe('#StringExt.hashcode', () => {

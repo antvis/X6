@@ -1,6 +1,6 @@
 import sinon from 'sinon'
-import { Dom } from '../../../src/common/dom'
-import { Core } from '../../../src/common/dom/event/core'
+import { Dom } from '@/common/dom'
+import { Core } from '@/common/dom/event/core'
 
 describe('EventDom', () => {
   describe('events', () => {

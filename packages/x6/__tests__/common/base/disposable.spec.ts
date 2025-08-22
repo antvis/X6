@@ -3,7 +3,7 @@ import {
   IDisposable,
   DisposableSet,
   DisposableDelegate,
-} from '../../../src/common/base/disposable'
+} from '@/common/base/disposable'
 
 class TestDisposable implements IDisposable {
   count = 0

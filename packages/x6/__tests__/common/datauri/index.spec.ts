@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { DataUri } from '../../../src/common/datauri'
+import { DataUri } from '@/common/datauri'
 
 describe('DataUri', () => {
   describe('#isDataUrl', () => {

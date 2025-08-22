@@ -1,4 +1,4 @@
-import { ObjectExt } from '../../../src/common/object'
+import { ObjectExt } from '@/common/object'
 
 describe('Object', () => {
   const obj = {

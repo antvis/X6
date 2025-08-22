@@ -1,5 +1,5 @@
-import { Vector } from '../../../src/common/vector'
-import { Dom } from '../../../src/common/dom'
+import { Vector } from '@/common/vector'
+import { Dom } from '@/common/dom'
 
 describe('Dom', () => {
   describe('css', () => {

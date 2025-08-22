@@ -1,6 +1,6 @@
-import { Vector } from '../../../src/common/vector'
-import { Dom } from '../../../src/common/dom'
-import { ObjectExt } from '../../../src/common/object'
+import { Vector } from '@/common/vector'
+import { Dom } from '@/common/dom'
+import { ObjectExt } from '@/common/object'
 
 describe('Dom', () => {
   describe('data', () => {

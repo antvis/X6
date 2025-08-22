@@ -1,4 +1,4 @@
-import { Unit } from '../../../src/common'
+import { Unit } from '@/common'
 
 describe('Unit', () => {
   beforeAll(() => {

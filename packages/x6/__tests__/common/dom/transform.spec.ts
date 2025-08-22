@@ -1,5 +1,5 @@
-import { Vector } from '../../../src/common/vector'
-import { Dom } from '../../../src/common/dom'
+import { Vector } from '@/common/vector'
+import { Dom } from '@/common/dom'
 
 // 太难模拟了，先跳过
 describe.skip('Dom', () => {

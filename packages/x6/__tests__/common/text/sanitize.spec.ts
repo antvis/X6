@@ -1,4 +1,4 @@
-import { Text } from '../../../src/common/text'
+import { Text } from '@/common/text'
 
 describe('Text', () => {
   describe('#sanitize', () => {

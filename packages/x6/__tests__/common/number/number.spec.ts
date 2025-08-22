@@ -1,4 +1,4 @@
-import { NumberExt } from '../../../src/common/number'
+import { NumberExt } from '@/common/number'
 
 describe('NumberExt', () => {
   describe('#mod', () => {

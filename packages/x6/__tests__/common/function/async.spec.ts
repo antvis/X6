@@ -1,4 +1,4 @@
-import { FunctionExt } from '../../../src/common/function'
+import { FunctionExt } from '@/common/function'
 
 describe('async', () => {
   describe('#toDeferredBoolean', () => {
