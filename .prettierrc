@@ -1,15 +1,6 @@
 {
-  "semi": false,
-  "singleQuote": true,
-  "printWidth": 80,
+  "semi": true,
+  "singleQuote": false,
   "trailingComma": "all",
-  "proseWrap": "never",
-  "endOfLine": "auto",
-  "useTabs": false,
-  "overrides": [
-    { "files": ".eslintrc", "options": { "parser": "json" } },
-    { "files": ".prettierrc", "options": { "parser": "json" } },
-    { "files": ".releaserc", "options": { "parser": "json" } },
-    { "files": ".stylelintrc", "options": { "parser": "json" } }
-  ]
+  "bracketSpacing": true
 }
