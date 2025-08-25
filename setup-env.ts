@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { createCanvas } from "canvas";
+import { createCanvas } from "@napi-rs/canvas";
 
 declare global {
   interface Window {
