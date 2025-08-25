@@ -1,9 +1,7 @@
-import { optimizeLodashImports } from "@optimize-lodash/rollup-plugin";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
-import nodePolyfills from "rollup-plugin-polyfill-node";
 import typescript from "rollup-plugin-typescript2";
 import visualizer from "rollup-plugin-visualizer";
 
@@ -31,7 +29,6 @@ export default [
       },
     ],
     plugins: [
-      nodePolyfills(),
       resolve(),
       commonjs(),
       typescript({
@@ -39,7 +36,6 @@ export default [
         tsconfig: "./tsconfig.json",
         exclude: ["__tests__/**"],
       }),
-      optimizeLodashImports(),
       json(),
       terser(),
     ],
