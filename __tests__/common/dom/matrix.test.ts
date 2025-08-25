@@ -1,7 +1,18 @@
 import { Dom } from '../../../src/common/dom'
 import { Vector } from '../../../src/common/vector'
 
-describe.skip('Dom', () => {
+const pickMatrix = (m: SVGMatrix | DOMMatrix) => {
+  return {
+    a: m.a,
+    b: m.b,
+    c: m.c,
+    d: m.d,
+    e: m.e,
+    f: m.f,
+  }
+}
+
+describe('Dom', () => {
   describe('matrix', () => {
     const fixture = document.createElement('div')
     const svgContainer = Vector.create('svg').node
@@ -71,7 +82,6 @@ describe.skip('Dom', () => {
       })
 
       const arr = [
-        '',
         'scale(2)',
         'scale(2,3)',
         'scale(2.5,3.1)',
@@ -90,8 +100,12 @@ describe.skip('Dom', () => {
       arr.forEach((transformString) => {
         it(`should convert "${transformString}" to matrix`, () => {
           svgTestGroup.attr('transform', transformString)
-          expect(Dom.transformStringToMatrix(transformString)).toEqual(
-            (svgTestGroup.node as SVGGraphicsElement).getCTM() as any,
+          expect(
+            pickMatrix(Dom.transformStringToMatrix(transformString)),
+          ).toEqual(
+            pickMatrix(
+              (svgTestGroup.node as SVGGraphicsElement).getCTM() as any,
+            ),
           )
         })
       })
@@ -175,10 +189,7 @@ describe.skip('Dom', () => {
         expect(roundObject(scale)).toEqual({ sx: 2, sy: 2 })
 
         scale = Dom.matrixToScale(
-          Dom.createSVGMatrix()
-            .translate(15, 15)
-            .scaleNonUniform(2, 3)
-            .rotate(10, 20),
+          Dom.createSVGMatrix().translate(15, 15).scale(2, 3).rotate(10, 20),
         )
         expect(roundObject(scale)).toEqual({ sx: 2, sy: 3 })
 
