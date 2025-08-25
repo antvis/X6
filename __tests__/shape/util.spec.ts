@@ -37,7 +37,7 @@ describe('shape/util', () => {
     expect(typeof hook).toBe('function')
   })
 
-  it('getImageUrlHooks hould return hook function with custom attrName', () => {
+  it('getImageUrlHooks should return hook function with custom attrName', () => {
     const hook = getImageUrlHook('href')
     expect(typeof hook).toBe('function')
   })
