@@ -31,7 +31,8 @@
     "size": "limit-size",
     "build": "run-p -s build:*",
     "test:watch": "vitest",
-    "test": "vitest --coverage"
+    "test": "vitest --watch=false",
+    "test:coverage": "vitest run --coverage --watch=false"
   },
   "dependencies": {
     "dom-align": "^1.12.4",

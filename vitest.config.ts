@@ -1,6 +1,8 @@
 import path from 'path'
 import { coverageConfigDefaults, defineConfig } from 'vitest/config'
 
+const enableCoverage = process.argv.includes('--coverage')
+
 export default defineConfig({
   resolve: {
     // 配置路径别名
@@ -19,14 +21,18 @@ export default defineConfig({
     testTimeout: 20_000,
     hookTimeout: 20_000,
     include: ['__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-    coverage: {
-      exclude: [
-        '**/site/**',
-        '**/examples/**',
-        '**/es/**',
-        '**/lib/**',
-        ...coverageConfigDefaults.exclude,
-      ],
-    },
+    ...(enableCoverage
+      ? {
+          coverage: {
+            exclude: [
+              '**/site/**',
+              '**/examples/**',
+              '**/es/**',
+              '**/lib/**',
+              ...coverageConfigDefaults.exclude,
+            ],
+          },
+        }
+      : {}),
   },
 })
