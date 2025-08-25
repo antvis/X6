@@ -166,17 +166,7 @@ describe('shape/util', () => {
   })
 
   it('createShape should create shape with default options', () => {
-    const config = { width: 100 }
-    const expectedDefaults = {
-      constructorName: 'rect',
-      markup: getMarkup('rect', 'body'),
-      attrs: {
-        rect: { ...Base.bodyAttr },
-      },
-    }
-    const mergedConfig = { ...expectedDefaults, ...config, shape: 'rect' }
-
-    const result = createShape('rect', config)
+    const result = createShape('rect', { width: 100 })
 
     expect(result.getMarkup()).toEqual([
       {
