@@ -1,20 +1,25 @@
 {
-  "exclude": ["node_modules", "**/es", "**/lib"],
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "noEmitOnError": false,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "jsx": "react",
+    "module": "ESNext",
     "target": "es6",
-    "lib": ["DOM", "ES2020"]
-  }
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "declaration": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noEmitOnError": false,
+    "pretty": true,
+    "lib": ["dom", "esnext"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*", "__tests__/**/*"]
 }
