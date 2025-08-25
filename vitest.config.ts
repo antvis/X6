@@ -13,9 +13,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    coverage: {
-      provider: 'istanbul',
-    },
     setupFiles: ['./setup-env.ts', './__tests__/utils/useSnapshotMatchers.ts'],
     restoreMocks: true,
     clearMocks: true,
