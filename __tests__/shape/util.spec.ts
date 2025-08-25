@@ -53,6 +53,7 @@ describe('shape/util', () => {
       },
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.attrs.image).toEqual({
       x: 10,
@@ -71,6 +72,7 @@ describe('shape/util', () => {
       },
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.attrs.image).toEqual({
       'xlink:href': 'test.jpg',
@@ -84,6 +86,7 @@ describe('shape/util', () => {
       imageWidth: 100,
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.attrs.image).toEqual({
       'xlink:href': 'test.jpg',
@@ -98,6 +101,7 @@ describe('shape/util', () => {
       attrs: { image: {} },
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.attrs.image).toEqual({
       href: 'test.jpg',
@@ -111,6 +115,7 @@ describe('shape/util', () => {
       attrs: { image: {} },
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.attrs.image).toEqual({
       width: 100,
@@ -124,6 +129,7 @@ describe('shape/util', () => {
       attrs: { image: {} },
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.attrs.image).toEqual({
       height: 200,
@@ -137,6 +143,7 @@ describe('shape/util', () => {
       attrs: { someAttr: 'value' },
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result).toEqual(metadata)
   })
@@ -150,6 +157,7 @@ describe('shape/util', () => {
       otherProp: 'value',
     }
 
+    // @ts-expect-error
     const result = hook(metadata)
     expect(result.imageUrl).toBeUndefined()
     expect(result.imageWidth).toBeUndefined()
