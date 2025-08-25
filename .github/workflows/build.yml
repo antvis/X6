@@ -29,8 +29,9 @@ jobs:
         run: npm run test:coverage
 
       - name: 💡 Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
           flags: x6
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

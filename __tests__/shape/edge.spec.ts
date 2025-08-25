@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Edge } from '../../src/shape/edge'
 
-describe('Edge', () => {
+describe('shape/edge', () => {
   it('should have correct markup structure', () => {
     expect(Edge.getMarkup()).toEqual([
       {
