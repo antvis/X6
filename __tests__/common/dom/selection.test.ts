@@ -1,23 +1,22 @@
-import { Dom } from '../../../src/common/dom'
+import { Dom } from '@/common/dom'
 
 describe('Dom', () => {
   describe('#clearSelection', () => {
-    const input = document.createElement('input')
+    it('should clear div selection', () => {
+      const div = document.createElement('div')
+      div.textContent = '12345'
+      document.body.appendChild(div)
 
-    beforeAll(() => {
-      input.value = '12345'
-      document.body.appendChild(input)
-      input.select()
-    })
+      const range = document.createRange()
+      range.selectNodeContents(div)
+      window.getSelection()?.addRange(range)
 
-    afterAll(() => {
-      document.body.removeChild(input)
-    })
-
-    it('should clear input selection', () => {
       expect(window.getSelection()?.toString()).toBe('12345')
+
       Dom.clearSelection()
+
       expect(window.getSelection()?.toString()).toBe('')
+      document.body.removeChild(div)
     })
   })
 })

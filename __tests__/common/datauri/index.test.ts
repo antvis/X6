@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { DataUri } from '../../../src/common/datauri'
+import { DataUri } from '@/common/datauri'
 
 describe('DataUri', () => {
   describe('#isDataUrl', () => {
@@ -43,13 +43,15 @@ describe('DataUri', () => {
       window.FileReader = oldFileReader
     })
 
-    it('should run setTimeout with dataurl', (done) => {
+    it('should run setTimeout with dataurl', () => {
       const spy = sinon.spy()
-      DataUri.imageToDataUri('data:image', spy)
-      setTimeout(() => {
-        expect(spy.callCount).toBe(1)
-        done()
-      }, 10)
+      return new Promise<void>((resolve) => {
+        DataUri.imageToDataUri('data:image', spy)
+        setTimeout(() => {
+          expect(spy.callCount).toBe(1)
+          resolve()
+        }, 10)
+      })
     })
 
     it('should return datauri with image loaded', () => {
@@ -114,11 +116,11 @@ describe('DataUri', () => {
     it('should throw error when no width or no height', () => {
       expect(() => {
         DataUri.svgToDataUrl('<svg></svg>')
-      }).toThrowError('Can not parse width from svg string')
+      }).toThrow('Can not parse width from svg string')
 
       expect(() => {
         DataUri.svgToDataUrl('<svg width="100"></svg>')
-      }).toThrowError('Can not parse height from svg string')
+      }).toThrow('Can not parse height from svg string')
     })
   })
 })

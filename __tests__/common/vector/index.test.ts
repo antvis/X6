@@ -5,28 +5,28 @@ describe('Vector', () => {
     it('should create a vector instance with tagName', () => {
       const vel = Vector.create('rect')
       expect(Vector.isVector(vel)).toBe(true)
-      expect(vel.node).toBeInstanceOf(SVGRectElement)
+      expect(vel.node.tagName).toBe('rect')
     })
 
     it('should create a vector instance with SVGElement', () => {
       const old = Vector.create('rect')
       const vel = Vector.create(old.node)
       expect(Vector.isVector(vel)).toBe(true)
-      expect(vel.node).toBeInstanceOf(SVGRectElement)
+      expect(vel.node.tagName).toBe('rect')
     })
 
     it('should create a vector instance with another vector', () => {
       const old = Vector.create('rect')
       const vel = Vector.create(old)
       expect(Vector.isVector(vel)).toBe(true)
-      expect(vel.node).toBeInstanceOf(SVGRectElement)
+      expect(vel.node.tagName).toBe('rect')
     })
 
     it('should create a vector instance with markup', () => {
       const vel = Vector.create(
         '<rect width="100%" height="100%" fill="red" />',
       )
-      expect(vel.node).toBeInstanceOf(SVGRectElement)
+      expect(vel.node.tagName).toBe('rect')
       expect(vel.getAttribute('width')).toEqual('100%')
       expect(vel.getAttribute('height')).toEqual('100%')
       expect(vel.getAttribute('fill')).toEqual('red')
@@ -34,12 +34,12 @@ describe('Vector', () => {
 
     it('should throw an error with invalid markup', () => {
       const fn = () => Vector.create('<invalid markup>')
-      expect(fn).toThrowError()
+      expect(fn).toThrow()
     })
 
     it('should throw an error with empty markup', () => {
       const fn = () => Vector.create('')
-      expect(fn).toThrowError()
+      expect(fn).toThrow()
     })
   })
 

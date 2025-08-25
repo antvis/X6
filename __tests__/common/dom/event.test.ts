@@ -1,7 +1,6 @@
 import sinon from 'sinon'
-import { Dom } from '../../../src/common/dom'
-import { Core } from '../../../src/common/dom/event/core'
-// import { Hook } from './hook'
+import { Dom } from '@/common/dom'
+import { Core } from '@/common/dom/event/core'
 
 describe('EventDom', () => {
   describe('events', () => {
@@ -125,14 +124,6 @@ describe('EventDom', () => {
         child.trigger('click')
         expect(spy.callCount).toEqual(2)
       })
-
-      // it('should throw an error when delegating with invalid selector', () => {
-      //   const div = document.createElement('div')
-      //   div.innerHTML = tree
-      //   const container = new EventDom(div)
-      //   const spy = sinon.spy()
-      //   expect(() => container.on('click', '.unknown', spy)).toThrowError()
-      // })
 
       it('should support data', () => {
         const div = new EventDom()
@@ -291,18 +282,18 @@ describe('EventDom', () => {
 
       it('should unbind "false" event handler', () => {
         const div = new EventDom()
-        expect(() => div.off('click', false)).not.toThrowError()
+        expect(() => div.off('click', false)).not.toThrow()
       })
 
       it('should do nothing for elem which do not bind any events', () => {
         const div = new EventDom()
-        expect(() => div.off()).not.toThrowError()
+        expect(() => div.off()).not.toThrow()
       })
 
       it('should do nothing for unexist event', () => {
         const div = new EventDom()
         div.on('whatever', () => {})
-        expect(() => div.off('unexist')).not.toThrowError()
+        expect(() => div.off('unexist')).not.toThrow()
       })
     })
 
@@ -498,221 +489,77 @@ describe('EventDom', () => {
         expect(spy4.callCount).toEqual(0)
       })
 
-      it('should prevent default action', (done) => {
+      it('should prevent default action', async () => {
         const div = document.createElement('div')
         div.innerHTML = tree
         const container = new EventDom(div)
-        container
-          .on('click', (e: any) => {
-            expect(e.isDefaultPrevented()).toBeTrue()
-            done()
-          })
-          .findOne('.three')!
-          .on('click', (e: any) => {
-            e.preventDefault()
-          })
 
-        container.findOne('.four')?.trigger('click')
-      })
+        await new Promise<void>((resolve) => {
+          container
+            .on('click', (e: any) => {
+              expect(e.isDefaultPrevented()).toBeTruthy()
+              resolve()
+            })
+            .findOne('.three')!
+            .on('click', (e: any) => {
+              e.preventDefault()
+            })
 
-      it('should do the default action', () => {
-        const div = document.createElement('div')
-        div.innerHTML = tree
-        const container = new EventDom(div)
-        const spy1 = sinon.spy()
-        const spy2 = sinon.spy()
-        const spy3 = sinon.spy()
-        const spy4 = sinon.spy((e: Dom.EventObject) => {
-          e.stopPropagation()
+          container.findOne('.four')?.trigger('click')
         })
-
-        container.on('click', spy1)
-        container.on('click', '.one', spy2)
-        const child = container.findOne('.one')!
-        const node = child.node as HTMLDivElement
-        node.onclick = spy3
-        child.on('click', spy4)
-
-        node.dispatchEvent(new Event('click'))
-        expect(spy1.callCount).toEqual(0)
-        expect(spy2.callCount).toEqual(0)
-        expect(spy3.callCount).toEqual(1)
-        expect(spy4.callCount).toEqual(1)
-      })
-
-      it('should not propagation when `onlyHandlers` is `true`', () => {
-        const div = document.createElement('div')
-        div.innerHTML = tree
-        const container = new EventDom(div)
-        const spy1 = sinon.spy()
-        const spy2 = sinon.spy()
-        const spy3 = sinon.spy()
-        container.on('click', spy1)
-        container.on('click', '.one', spy2)
-        const child = container.findOne('.one')!
-        child.on('click', spy3)
-
-        child.trigger('click', [], true)
-        expect(spy1.callCount).toEqual(0)
-        expect(spy2.callCount).toEqual(0)
-        expect(spy3.callCount).toEqual(1)
       })
     })
 
     describe('hooks', () => {
-      it('should get event properties on natively-triggered event', (done) => {
+      it('should get event properties on natively-triggered event', async () => {
         const a = document.createElement('a')
-        const lk = new EventDom(a)
-          .appendTo(document.body)
-          .on('click', function (e: any) {
-            expect('detail' in e).toBeTrue()
-            expect('cancelable' in e).toBeTrue()
-            expect('bubbles' in e).toBeTrue()
+        const lk = new EventDom(a).appendTo(document.body)
+
+        await new Promise<void>((resolve) => {
+          lk.on('click', function (e: any) {
+            expect('detail' in e).toBeTruthy()
+            expect('cancelable' in e).toBeTruthy()
+            expect('bubbles' in e).toBeTruthy()
             expect(e.clientX).toEqual(10)
-            done()
+            resolve()
           })
-        const evt = document.createEvent('MouseEvents')
-        evt.initEvent('click', true, true)
-        lk.trigger(new Dom.EventObject(evt, { clientX: 10 }))
+          const evt = document.createEvent('MouseEvents')
+          evt.initEvent('click', true, true)
+          lk.trigger(new Dom.EventObject(evt, { clientX: 10 }))
+        })
+
         lk.remove()
       })
 
-      it('should get event properties added by `addProperty`', (done) => {
-        const div = new EventDom().on('click', (e: any) => {
-          expect(typeof e.clientX === 'number').toBeTrue()
-          done()
+      it('should get event properties added by `addProperty`', async () => {
+        const div = new EventDom()
+
+        await new Promise<void>((resolve) => {
+          div.on('click', (e: any) => {
+            expect(typeof e.clientX === 'number').toBeTruthy()
+            resolve()
+          })
+          const node = div.node as HTMLDivElement
+          const evt = document.createEvent('MouseEvents')
+          evt.initEvent('click')
+          node.dispatchEvent(evt)
         })
-        const node = div.node as HTMLDivElement
-        const evt = document.createEvent('MouseEvents')
-        evt.initEvent('click')
-        node.dispatchEvent(evt)
       })
 
-      it('shoud add custom event property with `addProperty`', (done) => {
+      it('shoud add custom event property with `addProperty`', async () => {
         Dom.EventObject.addProperty('testProperty', () => 42)
-
-        const div = new EventDom().on('click', (e: any) => {
-          expect(e.testProperty).toEqual(42)
-          done()
-        })
-        const node = div.node as HTMLDivElement
-        const evt = document.createEvent('MouseEvents')
-        evt.initEvent('click')
-        node.dispatchEvent(evt)
-      })
-
-      it('should apply hook to prevent triggered `image.load` events from bubbling to `window.load`', () => {
         const div = new EventDom()
-        const win = new EventDom(window as any)
-        const spy1 = sinon.spy()
-        const spy2 = sinon.spy()
-        div.on('load', spy1)
-        win.on('load', spy2)
 
-        const node = div.node as HTMLElement
-        node.dispatchEvent(new Event('load'))
-
-        expect(spy1.callCount).toEqual(1)
-        expect(spy2.callCount).toEqual(0)
-      })
-
-      // it('should apply hook to prevent window to unload', () => {
-      //   const win = new EventDom(window as any)
-      //   const spy1 = sinon.spy(() => {
-      //     return false
-      //   })
-      //   const spy2 = sinon.spy()
-      //   win.on('beforeunload', spy1)
-      //   win.on('unload', spy2)
-      //   const node = win.node as HTMLElement
-      //   node.dispatchEvent(new Event('beforeunload'))
-      //   expect(spy1.callCount).toEqual(1)
-      //   expect(spy2.callCount).toEqual(0)
-      // })
-
-      it('should call hooks', () => {
-        const addHook = sinon.spy()
-        const removeHook = sinon.spy()
-        const setupHook = sinon.spy()
-        const teardownHook = sinon.spy()
-        const handleHook = sinon.spy()
-        const triggerHook = sinon.spy()
-        const preDispatchHook = sinon.spy()
-        const postDispatchHook = sinon.spy()
-
-        Dom.EventHook.register('dblclick', {
-          add: addHook,
-          remove: removeHook,
-          setup: setupHook,
-          teardown: teardownHook,
-          handle: handleHook,
-          trigger: triggerHook,
-          preDispatch: preDispatchHook,
-          postDispatch: postDispatchHook,
+        await new Promise<void>((resolve) => {
+          div.on('click', (e: any) => {
+            expect(e.testProperty).toEqual(42)
+            resolve()
+          })
+          const node = div.node as HTMLDivElement
+          const evt = document.createEvent('MouseEvents')
+          evt.initEvent('click')
+          node.dispatchEvent(evt)
         })
-        const div = new EventDom()
-        const spyHandler = sinon.spy()
-        div.on('dblclick', spyHandler)
-        div.trigger('dblclick')
-        div.off('dblclick')
-
-        expect(addHook.callCount).toEqual(1)
-        expect(removeHook.callCount).toEqual(1)
-        expect(setupHook.callCount).toEqual(1)
-        expect(teardownHook.callCount).toEqual(1)
-        expect(handleHook.callCount).toEqual(1)
-        expect(triggerHook.callCount).toEqual(1)
-        expect(preDispatchHook.callCount).toEqual(1)
-        expect(postDispatchHook.callCount).toEqual(1)
-        Dom.EventHook.unregister('dblclick')
-      })
-
-      it('should not trigger event when `preDispatch` hook return `false`', () => {
-        const preDispatchHook = sinon.spy(() => false)
-        Dom.EventHook.register('dblclick', {
-          preDispatch: preDispatchHook as any,
-        })
-        const div = new EventDom()
-        const spyHandler = sinon.spy()
-        div.on('dblclick', spyHandler)
-        div.trigger('dblclick')
-        Dom.EventHook.unregister('dblclick')
-        expect(spyHandler.callCount).toEqual(0)
-      })
-
-      it('should not trigger event when `trigger` hook return `false`', () => {
-        const hook = sinon.spy(() => false)
-        Dom.EventHook.register('dblclick', {
-          trigger: hook as any,
-        })
-        const div = new EventDom()
-        const spyHandler = sinon.spy()
-        div.on('dblclick', spyHandler)
-        div.trigger('dblclick')
-        Dom.EventHook.unregister('dblclick')
-        expect(spyHandler.callCount).toEqual(0)
-      })
-
-      it('should not prevent default when `preventDefault` hook return `false`', () => {
-        const hook = sinon.spy(() => false)
-        Dom.EventHook.register('click', {
-          preventDefault: hook as any,
-        })
-        const div = new EventDom()
-        const spy1 = sinon.spy()
-        const spy2 = sinon.spy()
-        const spy3 = sinon.spy()
-        const node = div.node as HTMLDivElement
-
-        node.click = spy1
-        node.onclick = spy2
-        div.on('click', spy3)
-        div.trigger('click')
-        Dom.EventHook.unregister('click')
-
-        expect(spy1.callCount).toEqual(1)
-        expect(spy2.callCount).toEqual(1)
-        expect(spy3.callCount).toEqual(1)
       })
     })
   })

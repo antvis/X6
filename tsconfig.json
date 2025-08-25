@@ -14,8 +14,11 @@
     "pretty": true,
     "lib": ["dom", "esnext"],
     "skipLibCheck": true,
-    "baseUrl": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "__tests__/**/*"]
 }

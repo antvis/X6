@@ -75,7 +75,7 @@ describe('Color', () => {
     it('shoud throw exception with invalid color value', () => {
       expect(() => {
         Color.invert('#abcd', false)
-      }).toThrowError('Invalid hex color.')
+      }).toThrow('Invalid hex color.')
     })
   })
 })

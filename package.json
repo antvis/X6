@@ -40,7 +40,7 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.0",
+    "@biomejs/biome": "^2.2.2",
     "@commitlint/config-conventional": "^19.8.1",
     "@optimize-lodash/rollup-plugin": "^5.0.2",
     "@rollup/plugin-commonjs": "^21.1.0",
@@ -63,7 +63,8 @@
     "rollup-plugin-visualizer": "^5.14.0",
     "sinon": "^21.0.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "canvas": "^3.2.0"
   },
   "limit-size": [
     {

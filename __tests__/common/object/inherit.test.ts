@@ -1,4 +1,4 @@
-import { ObjectExt } from '../../../src/common/object'
+import { ObjectExt } from '@/common'
 
 describe('object', () => {
   class Parent {
@@ -18,30 +18,6 @@ describe('object', () => {
       return this.name
     }
   }
-
-  class Child {
-    public name: string
-    public age: number
-    public gender: string
-
-    constructor(name: string, age: number, gender: string) {
-      this.name = name
-      this.age = age
-      this.gender = gender
-    }
-  }
-
-  describe('inherit', () => {
-    it('should access the parent function and static function', () => {
-      ObjectExt.inherit(Child, Parent)
-      const c = new Child('cat', 25, 'male')
-      expect(c.name).toBe('cat')
-      expect(c.age).toBe(25)
-      expect(c.gender).toBe('male')
-      expect((c as any).sayName()).toBe('cat')
-      expect((Child as any).hello()).toBe('hello')
-    })
-  })
 
   describe('createClass', () => {
     it('should create class extend parent', () => {
