@@ -27,7 +27,9 @@ describe('Geometry: circle', () => {
     expect(circle.getPosition()).toEqual({ x: 40, y: 50 })
     expect(circle.getLabel()).toBe('Hello')
 
-    expect(graph).toMatchDOMSnapshot(__dirname, 'circle', { copyStyles: true })
+    await expect(graph).toMatchDOMSnapshot(__dirname, 'circle', {
+      copyStyles: true,
+    })
 
     cleanup()
   })

@@ -8,7 +8,7 @@
 
 <p align="center">
 <a href="https://github.com/antvis/X6/actions/workflows/build.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/build.yml?branch=master&style=for-the-badge&logo=github"></a>
-<!-- <a href="https://app.codecov.io/gh/antvis/X6"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/antvis/x6?logo=codecov&style=for-the-badge&token=15CO54WYUV"></a> -->
+<a href="https://app.codecov.io/gh/antvis/X6"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/antvis/x6?logo=codecov&style=for-the-badge&token=15CO54WYUV"></a>
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?logo=npm&style=for-the-badge"></a>
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@antv/x6?logo=npm&style=for-the-badge"></a> <a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=for-the-badge" alt="MIT License"></a>
 <a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=for-the-badge"></a>
