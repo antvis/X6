@@ -61,11 +61,13 @@ export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
   const svgDocument = createSvgElement('svg') as SVGSVGElement
   const mat = svgDocument.createSVGMatrix()
   if (matrix != null) {
-    const source = matrix as any
-    const target = mat as any
-    // eslint-disable-next-line
-    for (const key in source) {
-      target[key] = source[key]
+    const source = matrix as MatrixLike
+    const items = ['a', 'b', 'c', 'd', 'e', 'f']
+    for (const key of items) {
+      if (source[key] === undefined) {
+        continue
+      }
+      mat[key] = source[key]
     }
   }
   return mat
