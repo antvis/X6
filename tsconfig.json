@@ -3,6 +3,7 @@
     "module": "ESNext",
     "target": "es6",
     "jsx": "preserve",
+    "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "declaration": true,
