@@ -10,67 +10,51 @@ on:
 permissions:
   contents: write
 
-env:
-  CI: true
-  PNPM_STORE: .pnpm-store
-  NODE_VERSION: 20
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout code repository
+      - name: ⤵️　Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+      - name: 🎉　Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 20
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: 🚧　Install
+        run: |
+          npm install --legacy-peer-deps
+          cd site && npm install --legacy-peer-deps
 
-      - name: setup pnpm config
-        run: pnpm config set store-dir $PNPM_STORE
+      - name: 🚀　Build site
+        run: |
+          cd site
+          npm run build
+          cp ./CNAME ./dist/CNAME
 
-      - name: Install dependencies
-        run: pnpm install
-        env:
-          CYPRESS_INSTALL_BINARY: 0
-
-      - name: Build site
-        run: pnpm run build:site
-        id: build
-
-      - name: Verify build output
+      - name: 👩‍⚕️　Verify build output
         run: |
           if [ ! -d "site/dist" ]; then
             echo "Build output directory not found!"
             exit 1
           fi
 
-      - name: Prepare deployment files
+      - name: 🗂　Commit changes
         run: |
-          shopt -s extglob
-          rm -rf !(site|.git|$PNPM_STORE)
-          rm -rf examples
-
-          # 复制构建产物
-          cp -r site/dist/* ./
-
-          # 清理不需要的目录
-          rm -rf site node_modules packages scripts .changeset .github .husky $PNPM_STORE
-
-      - name: Commit changes
-        run: |
-          git config --local user.email "${{ secrets.GH_EMAIL }}"
-          git config --local user.name "${{ secrets.GH_NAME }}"
+          cd site/dist
+          git init
+          git config --local user.name antv
+          git config --local user.email antv@antfin.com
           git add .
-          git commit -m "chore: update site from ${GITHUB_SHA::7}" || echo "No changes to commit"
+          git commit -m "update by release action"
 
-      - name: Deploy to site branch
-        run: |
-          git push origin HEAD:site -f
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+          directory: site/dist
+          branch: gh-pages
+          force: true

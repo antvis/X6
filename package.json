@@ -54,7 +54,6 @@
     "@types/mousetrap": "^1.6.11",
     "@types/node": "^24.3.0",
     "@vitest/coverage-v8": "3.2.4",
-    "canvas": "^3.2.0",
     "jsdom": "^24.0.0",
     "limit-size": "^0.1.4",
     "lint-staged": "^16.1.5",
