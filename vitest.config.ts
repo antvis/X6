@@ -16,7 +16,6 @@ export default defineConfig({
     setupFiles: ['./setup-env.ts', './__tests__/utils/useSnapshotMatchers.ts'],
     restoreMocks: true,
     clearMocks: true,
-    reporters: ['default'],
     snapshotFormat: { escapeString: false, printBasicPrototype: false },
     testTimeout: 20_000,
     hookTimeout: 20_000,
