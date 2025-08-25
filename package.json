@@ -31,7 +31,8 @@
     "size": "limit-size",
     "build": "run-p -s build:*",
     "test:watch": "vitest",
-    "test": "vitest --watch=false"
+    "test": "vitest --watch=false",
+    "test:coverage": "vitest run --coverage --watch=false"
   },
   "dependencies": {
     "dom-align": "^1.12.4",
@@ -52,6 +53,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/mousetrap": "^1.6.11",
     "@types/node": "^24.3.0",
+    "@vitest/coverage-v8": "3.2.4",
     "canvas": "^3.2.0",
     "jsdom": "^24.0.0",
     "limit-size": "^0.1.4",
