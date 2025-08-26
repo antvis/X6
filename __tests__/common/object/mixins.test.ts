@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { ObjectExt } from '../../../src/common/object'
 
 describe('Ojbect', () => {
