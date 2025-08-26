@@ -1,12 +1,5 @@
-import { delay } from 'lodash-es'
 import { Graph } from '../../graph'
 import type { Export } from './index'
-
-export const sleep = (ms = 100): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
-}
 
 declare module '../../graph/graph' {
   interface Graph {
