@@ -186,16 +186,13 @@ describe('Graph: 基础节点/边操作', () => {
     const node1 = graph.addNode({ id: 'node1' })
     const node2 = graph.addNode({ id: 'node2' })
     const node3 = graph.addNode({ id: 'node3' })
-    // 关联：node1 <-> node2, node1 -> node3
     graph.addEdge({ source: 'node1', target: 'node2' })
     graph.addEdge({ source: 'node2', target: 'node1' })
     graph.addEdge({ source: 'node1', target: 'node3' })
 
-    // 获取node1的邻居（node2、node3）
     const neighbors = graph.getNeighbors(node1)
     expect(neighbors.map((c) => c.id).sort()).toEqual(['node2', 'node3'])
 
-    // 验证邻居关系
     expect(graph.isNeighbor(node1, node2)).toBe(true)
     expect(graph.isNeighbor(node1, node3)).toBe(true)
     expect(graph.isNeighbor(node2, node3)).toBe(false)
@@ -274,7 +271,6 @@ describe('Graph: Model / 数据模型', () => {
   it('addNode / addEdge / getCellById: 添加节点/边并通过ID获取', () => {
     const { graph, cleanup } = createTestGraph()
 
-    // 测试1：通过metadata添加节点
     const node1 = graph.addNode({
       id: 'node1',
       x: 10,
@@ -285,12 +281,10 @@ describe('Graph: Model / 数据模型', () => {
     expect(graph.isNode(node1)).toBe(true)
     expect(graph.getCellById('node1')).toEqual(node1)
 
-    // 测试2：通过Node实例添加节点
     const node2 = new Node({ id: 'node2', x: 100, y: 200 })
     graph.addNode(node2)
     expect(graph.getCellById('node2')).toEqual(node2)
 
-    // 测试3：添加边（关联已存在的节点）
     const edge1 = graph.addEdge({
       id: 'edge1',
       source: 'node1',
@@ -384,7 +378,7 @@ describe('Graph: Model / 数据模型', () => {
       return graph.getCellCount()
     })
 
-    expect(result).toBe(2) // 批量执行后返回结果
+    expect(result).toBe(2)
     expect(graph.getCellCount()).toBe(2)
 
     cleanup()
@@ -424,16 +418,13 @@ describe('Graph: Model / 数据模型', () => {
     const node1 = graph.addNode({ id: 'node1' })
     const node2 = graph.addNode({ id: 'node2' })
     const node3 = graph.addNode({ id: 'node3' })
-    // 关联：node1 <-> node2, node1 -> node3
     graph.addEdge({ source: 'node1', target: 'node2' })
     graph.addEdge({ source: 'node2', target: 'node1' })
     graph.addEdge({ source: 'node1', target: 'node3' })
 
-    // 获取node1的邻居（node2、node3）
     const neighbors = graph.getNeighbors(node1)
     expect(neighbors.map((c) => c.id).sort()).toEqual(['node2', 'node3'])
 
-    // 验证邻居关系
     expect(graph.isNeighbor(node1, node2)).toBe(true)
     expect(graph.isNeighbor(node1, node3)).toBe(true)
     expect(graph.isNeighbor(node2, node3)).toBe(false)
@@ -504,15 +495,12 @@ describe('Graph: Model / 数据模型', () => {
       height: 50,
     })
 
-    // 测试1：按点获取（(15,15)在两个节点内）
     const nodesFromPoint = graph.getNodesFromPoint(15, 15)
     expect(nodesFromPoint.map((c) => c.id).sort()).toEqual(['node1', 'node2'])
 
-    // 测试2：按区域获取（区域(0,0,20,20)包含两个节点）
     const nodesInArea = graph.getNodesInArea(0, 0, 20, 20)
     expect(nodesInArea.map((c) => c.id).sort()).toEqual(['node1', 'node2'])
 
-    // 测试3：按Rectangle对象获取
     const nodesInAreaRect = graph.getNodesInArea({
       x: 0,
       y: 0,
@@ -542,14 +530,13 @@ describe('Graph: Model / 数据模型', () => {
       height: 50,
     })
 
-    // 获取node2下方的节点（应返回node1）
     const nodesUnder = graph.getNodesUnderNode(node2)
     expect(nodesUnder.map((c) => c.id)).toEqual(['node1'])
 
     cleanup()
   })
 
-  it('searchCell: 细胞搜索迭代', () => {
+  it('searchCell: 搜索迭代', () => {
     const { graph, cleanup } = createTestGraph()
     graph.addNode({ id: 'node1' })
     graph.addNode({ id: 'node2' })
@@ -570,7 +557,7 @@ describe('Graph: Model / 数据模型', () => {
     cleanup()
   })
 
-  it('getAllCellsBBox / getCellsBBox: 获取细胞包围盒', () => {
+  it('getAllCellsBBox / getCellsBBox: 获取包围盒', () => {
     const { graph, cleanup } = createTestGraph()
     const node1 = graph.addNode({
       id: 'node1',
@@ -587,7 +574,6 @@ describe('Graph: Model / 数据模型', () => {
       height: 50,
     })
 
-    // 测试1：所有细胞的包围盒（左上角(0,0)，右下角(150,250)）
     const allBBox = graph.getAllCellsBBox() as {
       x: number
       y: number
@@ -599,7 +585,6 @@ describe('Graph: Model / 数据模型', () => {
     expect(allBBox.width).toBe(150) // 100+50
     expect(allBBox.height).toBe(250) // 200+50
 
-    // 测试2：指定细胞的包围盒（仅node1）
     const cellsBBox = graph.getCellsBBox([node1])
     expect(cellsBBox).toEqual({ x: 0, y: 0, width: 50, height: 50 })
 
@@ -608,7 +593,7 @@ describe('Graph: Model / 数据模型', () => {
 })
 
 describe('Graph: View / 视图查找', () => {
-  it('findViewByCell / findViewsFromPoint: 按细胞/坐标查找视图', () => {
+  it('findViewByCell / findViewsFromPoint: 按坐标查找视图', () => {
     const { graph, cleanup } = createTestGraph()
     const node = graph.addNode({
       id: 'node1',
@@ -661,16 +646,13 @@ describe('Graph: View / 视图查找', () => {
 describe('Graph: Coord / 坐标转换补充', () => {
   it('localToGraph / graphToLocal: 本地与图坐标转换', () => {
     const { graph, cleanup } = createTestGraph()
-    // 假设图坐标初始与本地坐标一致
     const localPoint = { x: 10, y: 20 }
     const graphPoint = graph.localToGraph(localPoint)
     expect(graphPoint).toEqual(localPoint)
 
-    // 转换回本地坐标
     const localPoint2 = graph.graphToLocal(graphPoint)
     expect(localPoint2).toEqual(localPoint)
 
-    // 测试矩形转换
     const localRect = { x: 0, y: 0, width: 100, height: 100 }
     const graphRect = graph.localToGraph(localRect)
     expect(graphRect).toEqual(localRect)
@@ -680,12 +662,10 @@ describe('Graph: Coord / 坐标转换补充', () => {
 
   it('clientToGraph: 客户端坐标转图坐标', () => {
     const { graph, cleanup } = createTestGraph()
-    // 假设客户端坐标(0,0)对应图坐标(0,0)（实际需结合视图偏移，此处简化）
     const clientPoint = { x: 50, y: 50 }
     const graphPoint = graph.clientToGraph(clientPoint)
     expect(graphPoint).toEqual(clientPoint)
 
-    // 测试矩形转换
     const clientRect = { x: 10, y: 10, width: 50, height: 50 }
     const graphRect = graph.clientToGraph(clientRect)
     expect(graphRect).toEqual(clientRect)
@@ -891,15 +871,12 @@ describe('Graph: Utils / 工具方法', () => {
 })
 
 describe('Graph: Boundary / 边界场景测试', () => {
-  it('getCommonAncestor: 多细胞公共祖先（含null/undefined）', () => {
+  it('getCommonAncestor: 公共祖先（含null/undefined）', () => {
     const { graph, cleanup } = createTestGraph()
     const node1 = graph.addNode({ id: 'node1' })
     const node2 = graph.addNode({ id: 'node2' })
 
-    // 测试1：无公共祖先（返回null）
     expect(graph.getCommonAncestor(node1, node2)).toBeNull()
-
-    // 测试2：含null/undefined参数（返回null）
     expect(graph.getCommonAncestor(node1, null, undefined)).toBeNull()
 
     cleanup()
@@ -910,14 +887,13 @@ describe('Graph: Boundary / 边界场景测试', () => {
     const node1 = graph.addNode({ id: 'node1' })
     const node2 = graph.addNode({ id: 'node2' })
 
-    // 两节点无关联边，路径为空
     const path = graph.getShortestPath('node1', 'node2')
     expect(path).toEqual([])
 
     cleanup()
   })
 
-  it('cloneSubGraph: 空细胞列表', () => {
+  it('cloneSubGraph: 克隆子图', () => {
     const { graph, cleanup } = createTestGraph()
     const node1 = graph.addNode({ id: 'node1' })
     const node2 = graph.addNode({ id: 'node2' })
@@ -935,11 +911,10 @@ describe('Graph: Boundary / 边界场景测试', () => {
     const node1 = graph.addNode({ id: 'node1' })
     const node2 = graph.addNode({ id: 'node2' })
 
-    // 找到node1后终止迭代
     const cellIds: string[] = []
     graph.searchCell(node1, (cell) => {
       cellIds.push(cell.id)
-      return cell.id !== 'node1' // 找到node1后返回false，终止
+      return cell.id !== 'node1'
     })
     expect(cellIds).toEqual(['node1'])
 
@@ -949,13 +924,11 @@ describe('Graph: Boundary / 边界场景测试', () => {
 
 describe('Graph: Static / 静态方法与注册工具', () => {
   it('Graph.render: 静态创建图实例', () => {
-    // 测试1：传入container
     const container = document.createElement('div')
     const graph1 = Graph.render(container)
     expect(Graph.isGraph(graph1)).toBe(true)
     expect(graph1.container).toBe(container)
 
-    // 测试2：传入options+data
     const graph2 = Graph.render({ container }, testGraphJSON)
     expect(graph2.getCellById('json-node1')).not.toBeNull()
 
@@ -1020,14 +993,12 @@ describe('Graph: Transform / 补充未覆盖方法', () => {
 
   it('matrix: 读写变换矩阵', () => {
     const { graph, cleanup } = createTestGraph()
-    // 测试1：读取默认矩阵（单位矩阵）
     const defaultMatrix = graph.matrix()
     expect(defaultMatrix.a).toBe(1) // 缩放x
     expect(defaultMatrix.d).toBe(1) // 缩放y
     expect(defaultMatrix.e).toBe(0) // 平移x
     expect(defaultMatrix.f).toBe(0) // 平移y
 
-    // 测试2：设置新矩阵（缩放2倍，平移10,20）
     const newMatrix = new DOMMatrix().scale(2).translate(10, 20)
     graph.matrix(newMatrix)
     const updatedMatrix = graph.matrix()
@@ -1051,7 +1022,7 @@ describe('Graph: Transform / 补充未覆盖方法', () => {
     cleanup()
   })
 
-  it('center / centerCell: 居中视图与细胞', () => {
+  it('center / centerCell: 居中视图', () => {
     const { graph, cleanup } = createTestGraph()
     const node = graph.addNode({
       id: 'node1',
@@ -1100,12 +1071,10 @@ describe('Graph: Transform / 补充未覆盖方法', () => {
 
   it('resize: 调整图尺寸', () => {
     const { graph, cleanup } = createTestGraph()
-    // 测试无scroller插件时的resize（不报错，验证执行）
     expect(() => {
       graph.resize(800, 600)
     }).not.toThrow()
 
-    // 测试有scroller插件时的resize（模拟scroller）
     const mockScroller = { resize: vi.fn() }
     graph.use({
       name: 'scroller',
@@ -1121,23 +1090,19 @@ describe('Graph: Transform / 补充未覆盖方法', () => {
 
   it('getGraphArea / getContentArea / getContentBBox: 获取区域信息', () => {
     const { graph, cleanup } = createTestGraph()
-    // 添加节点用于计算内容区域
     graph.addNode({ id: 'node1', x: 10, y: 20, width: 50, height: 50 })
     graph.addNode({ id: 'node2', x: 100, y: 200, width: 50, height: 50 })
 
-    // 测试1：获取图区域（视图区域，假设默认800x600）
     const graphArea = graph.getGraphArea()
     expect(graphArea.width).toBeGreaterThan(0)
     expect(graphArea.height).toBeGreaterThan(0)
 
-    // 测试2：获取内容区域（包含所有节点的区域）
     const contentArea = graph.getContentArea()
     expect(contentArea.x).toBe(10)
     expect(contentArea.y).toBe(20)
-    expect(contentArea.width).toBe(140) // 100+50
-    expect(contentArea.height).toBe(230) // 200+50
+    expect(contentArea.width).toBe(140)
+    expect(contentArea.height).toBe(230)
 
-    // 测试3：获取内容包围盒（同内容区域）
     const contentBBox = graph.getContentBBox()
     expect(contentBBox).toEqual(contentArea)
 
