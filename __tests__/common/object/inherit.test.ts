@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { ObjectExt } from '@/common'
 
 describe('object', () => {

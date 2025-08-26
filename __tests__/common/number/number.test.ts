@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { NumberExt } from '../../../src/common/number'
 
 describe('NumberExt', () => {
