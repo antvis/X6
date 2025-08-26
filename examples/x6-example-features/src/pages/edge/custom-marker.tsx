@@ -1,7 +1,8 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Marker } from '@antv/x6/es/registry'
+import { Graph, Registry } from '@antv/x6'
 import '../index.less'
+
+const { Marker } = Registry
 
 export default class Example extends React.Component {
   private container: HTMLDivElement

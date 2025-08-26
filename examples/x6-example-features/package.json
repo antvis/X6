@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@antv/hierarchy": "^0.6.8",
-    "@antv/x6": "workspace:latest",
-    "@antv/x6-react-components": "workspace:latest",
-    "@antv/x6-react-shape": "workspace:latest",
+    "@antv/x6": "workspace:*",
+    "@antv/x6-react-components": "^2.0.9",
+    "@antv/x6-react-shape": "^2.2.3",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",

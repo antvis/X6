@@ -1,7 +1,8 @@
 import React from 'react'
-import { Graph, Timing } from '@antv/x6'
-import { Marker } from '@antv/x6/lib/registry/marker'
+import { Graph, Timing, Registry } from '@antv/x6'
 import '../index.less'
+
+const { Marker } = Registry
 
 function registerEdgeTool(name: string, inherit: string, options: any) {
   Graph.registerEdgeTool(
