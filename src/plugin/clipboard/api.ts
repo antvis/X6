@@ -50,9 +50,7 @@ Graph.prototype.disableClipboard = function () {
 Graph.prototype.toggleClipboard = function (enabled?: boolean) {
   const clipboard = this.getPlugin('clipboard') as Clipboard
   if (clipboard) {
-    arguments.length === 0
-      ? clipboard.toggleEnabled()
-      : clipboard.toggleEnabled(enabled)
+    clipboard.toggleEnabled(enabled)
   }
 
   return this

@@ -52,7 +52,7 @@ export class Clipboard
 
   toggleEnabled(enabled?: boolean) {
     // the enabled state is not specified.
-    if (arguments.length === 0) {
+    if (enabled === undefined) {
       enabled = !this.isEnabled()
     }
     enabled ? this.enable() : this.disable()
