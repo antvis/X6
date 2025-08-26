@@ -50,7 +50,7 @@ describe('GraphView', () => {
     expect(spy).toHaveBeenCalledWith('blank:click', expect.any(Object))
   })
 
-  it.skip('onDblClick should trigger blank:dblclick when no view', () => {
+  it('onDblClick should trigger blank:dblclick when no view', () => {
     const spy = vi.spyOn(graph, 'trigger')
     const evt: any = new Dom.EventObject(
       new MouseEvent('dblclick', { bubbles: true, cancelable: true }),
