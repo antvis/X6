@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { Dom } from '../../../src/common/dom'
 import { Vector } from '../../../src/common/vector'
 

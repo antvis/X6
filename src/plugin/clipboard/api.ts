@@ -1,5 +1,5 @@
 import { Graph } from '../../graph'
-import { Cell } from '../../model'
+import type { Cell } from '../../model'
 import type { Clipboard } from './index'
 
 declare module '../../graph/graph' {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import sinon from 'sinon'
 import { Dom } from '@/common/dom'
 import { Core } from '@/common/dom/event/core'

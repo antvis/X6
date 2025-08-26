@@ -1,4 +1,4 @@
-import { expect } from 'vitest'
+import { describe, expect, it } from "vitest";
 import { createTestGraph } from '../utils'
 
 describe('Graph: 基础节点/边操作', () => {
