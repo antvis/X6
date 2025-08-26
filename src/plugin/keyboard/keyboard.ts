@@ -1,6 +1,26 @@
 import Mousetrap from 'mousetrap'
-import { Dom, FunctionExt, Disposable, IDisablable } from '../../common'
-import { Graph, EventArgs } from '../../graph'
+import { Disposable, FunctionExt, type IDisablable } from '../../common'
+import type { EventArgs, Graph } from '../../graph'
+import { formatKey, isGraphEvent, isInputEvent } from './util'
+
+/**
+ * Create a Mousetrap instance for the keyboard.
+ */
+export function createMousetrap(keyboard: KeyboardImpl) {
+  const mousetrap = new Mousetrap(keyboard.target as Element)
+  const stopCallback = mousetrap.stopCallback
+  mousetrap.stopCallback = (e, elem, combo) => {
+    if (keyboard.isEnabledForEvent(e)) {
+      if (stopCallback) {
+        return stopCallback.call(mousetrap, e, elem, combo)
+      }
+      return false
+    }
+    return true
+  }
+
+  return mousetrap
+}
 
 export class KeyboardImpl extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
@@ -28,11 +48,11 @@ export class KeyboardImpl extends Disposable implements IDisablable {
       }
 
       // change to mouseup event，prevent page stalling caused by focus
-      this.graph.on('cell:mouseup', this.focus, this)
-      this.graph.on('blank:mouseup', this.focus, this)
+      this.graph.on('cell:mouseup', this.focus.bind, this)
+      this.graph.on('blank:mouseup', this.focus.bind, this)
     }
 
-    this.mousetrap = KeyboardImpl.createMousetrap(this)
+    this.mousetrap = createMousetrap(this)
   }
 
   get disabled() {
@@ -74,12 +94,15 @@ export class KeyboardImpl extends Disposable implements IDisablable {
   }
 
   trigger(key: string, action?: KeyboardImpl.Action) {
-    this.mousetrap.trigger(key, action)
+    this.mousetrap.trigger(
+      formatKey(key, this.options.format, this.graph),
+      action,
+    )
   }
 
   private focus(e: EventArgs['node:mouseup']) {
-    const isInputEvent = this.isInputEvent(e.e)
-    if (isInputEvent) {
+    const isInput = isInputEvent(e.e)
+    if (isInput) {
       return
     }
     const target = this.target as HTMLElement
@@ -90,62 +113,16 @@ export class KeyboardImpl extends Disposable implements IDisablable {
 
   private getKeys(keys: string | string[]) {
     return (Array.isArray(keys) ? keys : [keys]).map((key) =>
-      this.formatkey(key),
+      formatKey(key, this.options.format, this.graph),
     )
   }
 
-  protected formatkey(key: string) {
-    const formated = key
-      .toLocaleLowerCase()
-      .replace(/\s/g, '')
-      .replace('delete', 'del')
-      .replace('cmd', 'command')
-      .replace('arrowup', 'up')
-      .replace('arrowright', 'right')
-      .replace('arrowdown', 'down')
-      .replace('arrowleft', 'left')
-
-    const formatFn = this.options.format
-    if (formatFn) {
-      return FunctionExt.call(formatFn, this.graph, formated)
-    }
-
-    return formated
-  }
-
-  protected isGraphEvent(e: KeyboardEvent) {
-    const target = e.target as Element
-    const currentTarget = e.currentTarget as Element
-    if (target) {
-      if (
-        target === this.target ||
-        currentTarget === this.target ||
-        target === document.body
-      ) {
-        return true
-      }
-
-      return Dom.contains(this.container, target)
-    }
-
-    return false
-  }
-
-  isInputEvent(e: KeyboardEvent | Dom.MouseUpEvent) {
-    const target = e.target as Element
-    const tagName = target?.tagName?.toLowerCase()
-    let isInput = ['input', 'textarea'].includes(tagName)
-    if (Dom.attr(target, 'contenteditable') === 'true') {
-      isInput = true
-    }
-    return isInput
-  }
-
   isEnabledForEvent(e: KeyboardEvent) {
-    const allowed = !this.disabled && this.isGraphEvent(e)
-    const isInputEvent = this.isInputEvent(e)
+    const allowed =
+      !this.disabled && isGraphEvent(e, this.target as Element, this.container)
+    const isInput = isInputEvent(e)
     if (allowed) {
-      if (isInputEvent && (e.key === 'Backspace' || e.key === 'Delete')) {
+      if (isInput && (e.key === 'Backspace' || e.key === 'Delete')) {
         return false
       }
       if (this.options.guard) {
@@ -177,27 +154,5 @@ export namespace KeyboardImpl {
 
     format?: (this: Graph, key: string) => string
     guard?: (this: Graph, e: KeyboardEvent) => boolean
-  }
-}
-
-export namespace KeyboardImpl {
-  export function createMousetrap(keyboard: KeyboardImpl) {
-    const mousetrap = new Mousetrap(keyboard.target as Element)
-    const stopCallback = mousetrap.stopCallback
-    mousetrap.stopCallback = (
-      e: KeyboardEvent,
-      elem: HTMLElement,
-      combo: string,
-    ) => {
-      if (keyboard.isEnabledForEvent(e)) {
-        if (stopCallback) {
-          return stopCallback.call(mousetrap, e, elem, combo)
-        }
-        return false
-      }
-      return true
-    }
-
-    return mousetrap
   }
 }
