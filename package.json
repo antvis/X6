@@ -4,8 +4,8 @@
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/index.js",
-  "jsdelivr": "dist/index.js",
+  "unpkg": "dist/x6.min.js",
+  "jsdelivr": "dist/x6.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",

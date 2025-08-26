@@ -1,5 +1,5 @@
 import { Graph } from '../../graph'
-import { Cell } from '../../model'
+import type { Cell } from '../../model'
 import type { Clipboard } from './index'
 
 declare module '../../graph/graph' {
@@ -50,7 +50,9 @@ Graph.prototype.disableClipboard = function () {
 Graph.prototype.toggleClipboard = function (enabled?: boolean) {
   const clipboard = this.getPlugin('clipboard') as Clipboard
   if (clipboard) {
-    clipboard.toggleEnabled(enabled)
+    arguments.length === 0
+      ? clipboard.toggleEnabled()
+      : clipboard.toggleEnabled(enabled)
   }
 
   return this

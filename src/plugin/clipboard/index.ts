@@ -1,6 +1,6 @@
 import { Basecoat } from '../../common'
-import { Graph } from '../../graph'
-import { Cell } from '../../model'
+import type { Graph } from '../../graph'
+import type { Cell } from '../../model'
 import { ClipboardImpl } from './clipboard'
 import './api'
 
@@ -51,20 +51,11 @@ export class Clipboard
   }
 
   toggleEnabled(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isEnabled()) {
-        if (enabled) {
-          this.enable()
-        } else {
-          this.disable()
-        }
-      }
-    } else if (this.isEnabled()) {
-      this.disable()
-    } else {
-      this.enable()
+    // the enabled state is not specified.
+    if (arguments.length === 0) {
+      enabled = !this.isEnabled()
     }
-
+    enabled ? this.enable() : this.disable()
     return this
   }
 
