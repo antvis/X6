@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { Clipboard, type Node } from '../../src/'
 import { createTestGraph } from '../utils/graph-helpers'
 
@@ -35,7 +36,7 @@ describe('plugin/clipboard', () => {
     cleanup()
   })
 
-  it('copy / cut / paste keep the bbox and ports', () => {
+  it('copy / cut / paste keep the bbox and ports', async () => {
     const { graph, cleanup } = createTestGraph()
     graph.use(new Clipboard())
 
@@ -66,6 +67,8 @@ describe('plugin/clipboard', () => {
     const pn1 = pasted1[0] as Node
     expect(pn1.getBBox()).toMatchObject({ x: 120, y: 120 })
     expect(pn1.getPorts()?.length).toBe(1)
+
+    await expect(graph).toMatchDOMSnapshot(__dirname, 'plugin-clipboard')
 
     cleanup()
   })

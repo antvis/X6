@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { FunctionExt } from '../../../src/common/function'
 
 describe('async', () => {

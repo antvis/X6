@@ -1,5 +1,12 @@
+import { delay } from 'lodash-es'
 import { Graph } from '../../graph'
 import type { Export } from './index'
+
+export const sleep = (ms = 100): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
 
 declare module '../../graph/graph' {
   interface Graph {
@@ -7,14 +14,17 @@ declare module '../../graph/graph' {
       callback: Export.ToSVGCallback,
       options?: Export.ToSVGOptions,
     ) => void
+    toSVGAsync: (options?: Export.ToSVGOptions) => Promise<string>
     toPNG: (
       callback: Export.ToSVGCallback,
       options?: Export.ToImageOptions,
     ) => void
+    toPNGAsync: (options?: Export.ToImageOptions) => Promise<string>
     toJPEG: (
       callback: Export.ToSVGCallback,
       options?: Export.ToImageOptions,
     ) => void
+    toJPEGAsync: (options?: Export.ToImageOptions) => Promise<string>
     exportPNG: (fileName?: string, options?: Export.ToImageOptions) => void
     exportJPEG: (fileName?: string, options?: Export.ToImageOptions) => void
     exportSVG: (fileName?: string, options?: Export.ToSVGOptions) => void
@@ -31,6 +41,12 @@ Graph.prototype.toSVG = function (
   }
 }
 
+Graph.prototype.toSVGAsync = async function (options?: Export.ToSVGOptions) {
+  return new Promise((resolve) => {
+    this.toSVG(resolve, options)
+  })
+}
+
 Graph.prototype.toPNG = function (
   callback: Export.ToSVGCallback,
   options?: Export.ToImageOptions,
@@ -41,6 +57,12 @@ Graph.prototype.toPNG = function (
   }
 }
 
+Graph.prototype.toPNGAsync = async function (options?: Export.ToImageOptions) {
+  return new Promise((resolve) => {
+    this.toPNG(resolve, options)
+  })
+}
+
 Graph.prototype.toJPEG = function (
   callback: Export.ToSVGCallback,
   options?: Export.ToImageOptions,
@@ -49,6 +71,12 @@ Graph.prototype.toJPEG = function (
   if (instance) {
     instance.toJPEG(callback, options)
   }
+}
+
+Graph.prototype.toJPEGAsync = async function (options?: Export.ToImageOptions) {
+  return new Promise((resolve) => {
+    this.toJPEG(resolve, options)
+  })
 }
 
 Graph.prototype.exportPNG = function (

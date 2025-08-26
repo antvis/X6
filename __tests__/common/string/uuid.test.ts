@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { StringExt } from '../../../src/common/string'
 
 describe('string', () => {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { Path, normalizePathData } from '../../../src/geometry/path'
 
 describe('Path', () => {

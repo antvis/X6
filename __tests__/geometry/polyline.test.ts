@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { Line, Point, Polyline } from '../../src/geometry'
 
 describe('Polyline', () => {

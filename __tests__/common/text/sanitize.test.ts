@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { Text } from '../../../src/common/text'
 
 describe('Text', () => {
