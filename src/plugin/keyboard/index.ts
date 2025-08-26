@@ -1,5 +1,5 @@
 import { Disposable } from '../../common'
-import { Graph } from '../../graph'
+import type { Graph } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'
 
@@ -35,19 +35,11 @@ export class Keyboard extends Disposable implements Graph.Plugin {
   }
 
   toggleEnabled(enabled?: boolean) {
-    if (enabled != null) {
-      if (enabled !== this.isEnabled()) {
-        if (enabled) {
-          this.enable()
-        } else {
-          this.disable()
-        }
-      }
-    } else if (this.isEnabled()) {
-      this.disable()
-    } else {
-      this.enable()
+    // the enabled state is not specified.
+    if (enabled === undefined) {
+      enabled = !this.isEnabled()
     }
+    enabled ? this.enable() : this.disable()
     return this
   }
 
