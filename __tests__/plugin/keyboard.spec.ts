@@ -133,10 +133,6 @@ describe('plugin/keyboard', () => {
 
     cleanup()
   })
-
-  it('keyboard util', () => {
-    expect(formatKey('delete')).toBe('del')
-  })
 })
 
 describe('plugin/keyboard/util', () => {

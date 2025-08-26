@@ -48,8 +48,8 @@ export class KeyboardImpl extends Disposable implements IDisablable {
       }
 
       // change to mouseup event，prevent page stalling caused by focus
-      this.graph.on('cell:mouseup', this.focus.bind(this), this)
-      this.graph.on('blank:mouseup', this.focus.bind(this), this)
+      this.graph.on('cell:mouseup', this.focus.bind, this)
+      this.graph.on('blank:mouseup', this.focus.bind, this)
     }
 
     this.mousetrap = createMousetrap(this)
