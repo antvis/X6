@@ -1,6 +1,6 @@
 import { Graph } from '../../graph'
-import type { Cell } from '../../model'
-import type { Clipboard } from './index'
+import { Cell } from '../../model'
+import { Clipboard } from './index'
 
 declare module '../../graph/graph' {
   interface Graph {
