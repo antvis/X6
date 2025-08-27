@@ -64,13 +64,13 @@ describe('LineTo', () => {
     expect(seg.end.x).toBe(20)
     expect(seg.end.y).toBe(60)
 
-    seg.rotate(Math.PI / 2) // 90度
-    expect(typeof seg.end.x).toBe('number')
-    expect(typeof seg.end.y).toBe('number')
+    seg.rotate(90)
+    expect(seg.end.x).toBeCloseTo(60)
+    expect(seg.end.y).toBeCloseTo(-20)
 
     seg.translate(5, 10)
-    expect(typeof seg.end.x).toBe('number')
-    expect(typeof seg.end.y).toBe('number')
+    expect(seg.end.x).toBeCloseTo(65)
+    expect(seg.end.y).toBeCloseTo(-10)
   })
 
   it('should return correct JSON and serialized string', () => {
