@@ -35,6 +35,7 @@ function draw(
   close?: boolean,
   exclude?: number[],
 ) {
+  if (!points || points.length === 0) return ''
   const data: (string | number)[] = []
   const end = points[points.length - 1]
   const rounded = round != null && round > 0
