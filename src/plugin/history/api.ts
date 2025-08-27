@@ -1,6 +1,6 @@
 import { KeyValue } from '../../common'
 import { Graph } from '../../graph'
-import type { History } from './index'
+import { History } from './index'
 
 declare module '../../graph/graph' {
   interface Graph {

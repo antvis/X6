@@ -373,7 +373,7 @@ edge.addTools({
 
 ### 方式一
 
-继承 `ToolItem` 实现一个工具类，难度较高，要求对 [ToolItem](https://github.com/antvis/X6/blob/master/packages/x6/src/view/tool.ts) 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
+继承 `ToolItem` 实现一个工具类，难度较高，要求对 [ToolItem](https://github.com/antvis/X6/blob/master/src/view/tool.ts) 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
 
 ```ts
 Graph.registerEdgeTool('button', Button)

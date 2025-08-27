@@ -1,8 +1,4 @@
-export * from './ratio'
+export { closest } from './closest'
 export * from './length'
 export * from './orth'
-export {
-  closest,
-  // @ts-ignore
-  ClosestEndpointOptions as ClosestAnchorOptions,
-} from './closest'
+export * from './ratio'
