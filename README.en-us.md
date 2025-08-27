@@ -96,12 +96,10 @@ If everything goes smoothly, you will get a simple flowchart canvas as shown bel
 # Install project dependencies and initialize build
 $ pnpm install
 
-# Navigate to the specific project for development and debugging
-cd packages/x6
-pnpm run build:watch
+# Navigate to the specific project for development and debugging in the root directory
 
 # Start example to view results
-cd examples/x6-example-features
+cd examples
 pnpm run start
 ```
 

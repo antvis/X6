@@ -1,5 +1,5 @@
 import { Graph } from '../../graph'
-import { Keyboard } from './index'
+import type { Keyboard } from './index'
 import type { KeyboardImpl } from './keyboard'
 
 declare module '../../graph/graph' {

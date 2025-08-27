@@ -305,7 +305,7 @@ const rect = new Shape.Rect({
 
 It's worth mentioning that camelCase format for property names is supported, such as `fontSize`. This avoids the hassle of having to add quotes to property names like `font-size` when used as object keys.
 
-In addition to standard SVG attributes, we have defined a series of special attributes in X6. For details, please refer to [Special Attributes](/en/api/model/attrs) and [Custom Attributes](/en/api/model/cell/#custom-attributes). Furthermore, we can use CSS to customize styles. Nodes and edges rendered on the canvas have the class names `x6-node` and `x6-edge` respectively. The default style definitions can be [referenced here](https://github.com/antvis/X6/blob/master/packages/x6/src/style/index.less). For example, we can specify the style of the `<rect>` element in nodes like this:
+In addition to standard SVG attributes, we have defined a series of special attributes in X6. For details, please refer to [Special Attributes](/en/api/model/attrs) and [Custom Attributes](/en/api/model/cell/#custom-attributes). Furthermore, we can use CSS to customize styles. Nodes and edges rendered on the canvas have the class names `x6-node` and `x6-edge` respectively. The default style definitions can be [referenced here](https://github.com/antvis/X6/blob/master/src/style/index.less). For example, we can specify the style of the `<rect>` element in nodes like this:
 
 ```css
 .x6-node rect {

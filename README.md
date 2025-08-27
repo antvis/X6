@@ -96,12 +96,10 @@ graph.addEdge({
 # 安装项目依赖和初始化构建
 $ pnpm install
 
-# 进入到指定项目开发和调试
-cd packages/x6
-pnpm run build:watch
+# 根目录进行项目开发和调试
 
 # 启动 example 查看效果
-cd examples/x6-example-features
+cd examples
 pnpm run start
 ```
 

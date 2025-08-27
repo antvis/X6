@@ -1,7 +1,7 @@
-import { ModifierKey } from '../../common'
-import { Cell } from '../../model'
+import type { ModifierKey } from '../../common'
 import { Graph } from '../../graph'
-import { Selection } from './index'
+import type { Cell } from '../../model'
+import type { Selection } from './index'
 import type { SelectionImpl } from './selection'
 
 declare module '../../graph/graph' {

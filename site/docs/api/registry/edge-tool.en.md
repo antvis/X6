@@ -373,7 +373,7 @@ The above configuration indicates:
 
 ### Method One
 
-Inherit from `ToolItem` to implement a tool class, which is more complex and requires understanding of the [ToolItem](https://github.com/antvis/X6/blob/master/packages/x6/src/view/tool.ts) class. You can refer to the source code of the built-in tools above; this will not be elaborated here.
+Inherit from `ToolItem` to implement a tool class, which is more complex and requires understanding of the [ToolItem](https://github.com/antvis/X6/blob/master/src/view/tool.ts) class. You can refer to the source code of the built-in tools above; this will not be elaborated here.
 
 ```ts
 Graph.registerEdgeTool('button', Button)

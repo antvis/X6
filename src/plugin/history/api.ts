@@ -1,4 +1,4 @@
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
 import { Graph } from '../../graph'
 import type { History } from './index'
 
