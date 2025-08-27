@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { Curve, Point, Line } from '@'
-import { MoveTo } from '@/geometry/path/moveTo'
-import { LineTo } from '@/geometry/path/lineTo'
+import { describe, expect, it } from 'vitest'
+import { Curve, Line, Point } from '@'
+import { LineTo } from '@/geometry/path/lineto'
+import { MoveTo } from '@/geometry/path/moveto'
 
 describe('MoveTo', () => {
   const p = new Point(10, 20)
