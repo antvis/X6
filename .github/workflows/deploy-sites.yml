@@ -2,8 +2,9 @@
 
 name: 🚀　Deploy Sites
 on:
-  repository_dispatch:
-    types: [released]
+  push:
+    branches:
+      - v1
 jobs:
   deploy:
     runs-on: ubuntu-latest
