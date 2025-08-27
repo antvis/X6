@@ -99,8 +99,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/antvis/x6.git",
-    "directory": "X6"
+    "url": "https://github.com/antvis/x6.git"
   },
   "publishConfig": {
     "access": "public",
