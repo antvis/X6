@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Dom, MiniMap, Scroller, Transform } from '../../src'
+import { MiniMap, Scroller, Transform } from '../../src'
 import { createDivElement } from '../utils/dom'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
