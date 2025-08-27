@@ -1,10 +1,4 @@
-import {
-  type JSONObject,
-  Line,
-  NumberExt,
-  Path,
-  Shape,
-} from '../../../../../../src'
+import { JSONObject, Line, NumberExt, Path, Shape } from '../../../../../../src'
 
 interface KnobsAttrValue extends JSONObject {
   round: boolean | string | number

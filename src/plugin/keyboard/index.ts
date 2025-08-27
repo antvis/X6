@@ -1,5 +1,5 @@
 import { Disposable } from '../../common'
-import type { Graph } from '../../graph'
+import { Graph } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'
 

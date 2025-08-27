@@ -1,6 +1,6 @@
 import { Graph } from '../../graph'
-import type { Keyboard } from './index'
-import type { KeyboardImpl } from './keyboard'
+import { Keyboard } from './index'
+import { KeyboardImpl } from './keyboard'
 
 declare module '../../graph/graph' {
   interface Graph {

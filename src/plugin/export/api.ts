@@ -1,5 +1,5 @@
 import { Graph } from '../../graph'
-import type { Export } from './index'
+import { Export } from './index'
 
 declare module '../../graph/graph' {
   interface Graph {

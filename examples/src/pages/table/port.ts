@@ -1,4 +1,4 @@
-import { Dom, Graph, type Markup, type Point, Registry } from '../../../../src'
+import { Dom, Graph, Markup, Point, Registry } from '../../../../src'
 
 const { PortLayout } = Registry
 

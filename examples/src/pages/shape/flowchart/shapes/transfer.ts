@@ -1,4 +1,4 @@
-import { type JSONObject, NumberExt, Path, Shape } from '../../../../../../src'
+import { JSONObject, NumberExt, Path, Shape } from '../../../../../../src'
 
 interface KnobsAttrValue extends JSONObject {
   tail: number

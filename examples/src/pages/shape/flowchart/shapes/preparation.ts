@@ -1,8 +1,8 @@
 import {
-  type JSONObject,
+  JSONObject,
   NumberExt,
   Path,
-  type Point,
+  Point,
   Shape,
 } from '../../../../../../src'
 

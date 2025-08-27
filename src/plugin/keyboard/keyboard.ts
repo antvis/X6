@@ -1,6 +1,6 @@
 import Mousetrap from 'mousetrap'
-import { Disposable, FunctionExt, type IDisablable } from '../../common'
-import type { EventArgs, Graph } from '../../graph'
+import { Disposable, FunctionExt, IDisablable } from '../../common'
+import { EventArgs, Graph } from '../../graph'
 import { formatKey, isGraphEvent, isInputEvent } from './util'
 
 /**

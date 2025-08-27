@@ -1,11 +1,6 @@
-import {
-  FunctionExt,
-  type Graph,
-  type Rectangle,
-  Vector,
-} from '../../../../src'
-import type { FitToContentCard } from './fit-card'
-import type { ScaleContentToFitCard } from './scale-card'
+import { FunctionExt, Graph, Rectangle, Vector } from '../../../../src'
+import { FitToContentCard } from './fit-card'
+import { ScaleContentToFitCard } from './scale-card'
 
 export function createEffect(graph: Graph) {
   const vSvg = Vector.create(graph.view.svg)

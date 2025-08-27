@@ -1,4 +1,4 @@
-import { NumberExt, Path, type Point, Shape } from '../../../../../../src'
+import { NumberExt, Path, Point, Shape } from '../../../../../../src'
 
 Shape.Path.define({
   title: 'Merge or Storage',

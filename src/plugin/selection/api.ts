@@ -1,8 +1,8 @@
-import type { ModifierKey } from '../../common'
+import { ModifierKey } from '../../common'
 import { Graph } from '../../graph'
-import type { Cell } from '../../model'
-import type { Selection } from './index'
-import type { SelectionImpl } from './selection'
+import { Cell } from '../../model'
+import { Selection } from './index'
+import { SelectionImpl } from './selection'
 
 declare module '../../graph/graph' {
   interface Graph {
