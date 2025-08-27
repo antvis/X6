@@ -1,13 +1,35 @@
+import { CssLoader, Dom, FunctionExt } from '../../common'
+import { type EventArgs, Graph } from '../../graph'
 import { View } from '../../view'
-import { Graph, EventArgs } from '../../graph'
-import { FunctionExt, CssLoader, Dom } from '../../common'
 import { content } from './style/raw'
+
+const DefaultOptions: Partial<MiniMap.Options> = {
+  width: 300,
+  height: 200,
+  padding: 10,
+  scalable: true,
+  minScale: 0.01,
+  maxScale: 16,
+  graphOptions: {},
+  createGraph: (options) => new Graph(options),
+}
+
+const DocumentEvents = {
+  mousemove: 'doAction',
+  touchmove: 'doAction',
+  mouseup: 'stopAction',
+  touchend: 'stopAction',
+}
+
+const RootClassName = 'widget-minimap'
+const ViewportClassName = `${RootClassName}-viewport`
+const ZoomClassName = `${ViewportClassName}-zoom`
 
 export class MiniMap extends View implements Graph.Plugin {
   public name = 'minimap'
   private graph: Graph
   public readonly options: MiniMap.Options
-  public container: HTMLDivElement
+  public declare container: HTMLDivElement
   protected zoomHandle: HTMLDivElement
   protected viewport: HTMLElement
   protected sourceGraph: Graph
@@ -33,7 +55,7 @@ export class MiniMap extends View implements Graph.Plugin {
     super()
 
     this.options = {
-      ...Util.defaultOptions,
+      ...DefaultOptions,
       ...options,
     } as MiniMap.Options
 
@@ -49,17 +71,17 @@ export class MiniMap extends View implements Graph.Plugin {
     )
 
     this.container = document.createElement('div')
-    Dom.addClass(this.container, this.prefixClassName(ClassName.root))
+    Dom.addClass(this.container, this.prefixClassName(RootClassName))
 
     const graphContainer = document.createElement('div')
     this.container.appendChild(graphContainer)
 
     this.viewport = document.createElement('div')
-    Dom.addClass(this.viewport, this.prefixClassName(ClassName.viewport))
+    Dom.addClass(this.viewport, this.prefixClassName(ViewportClassName))
 
     if (this.options.scalable) {
       this.zoomHandle = document.createElement('div')
-      Dom.addClass(this.zoomHandle, this.prefixClassName(ClassName.zoom))
+      Dom.addClass(this.zoomHandle, this.prefixClassName(ZoomClassName))
       Dom.appendTo(this.zoomHandle, this.viewport)
     }
 
@@ -191,12 +213,9 @@ export class MiniMap extends View implements Graph.Plugin {
     const sourceGraphScale = this.sourceGraph.transform.getScale()
     const targetGraphScale = this.targetGraph.transform.getScale()
 
-    let origin = null
-    if (this.scroller) {
-      origin = this.scroller.clientToLocalPoint(0, 0)
-    } else {
-      origin = this.graph.graphToLocal(0, 0)
-    }
+    const origin = this.scroller
+      ? this.scroller.clientToLocalPoint(0, 0)
+      : this.graph.graphToLocal(0, 0)
 
     const position = Dom.position(this.targetGraph.container)
     const translation = this.targetGraph.translate()
@@ -232,7 +251,7 @@ export class MiniMap extends View implements Graph.Plugin {
       translateY: ty,
     }
     this.targetGraphTransforming = true
-    this.delegateDocumentEvents(Util.documentEvents, eventData)
+    this.delegateDocumentEvents(DocumentEvents, eventData)
   }
 
   protected doAction(evt: Dom.MouseMoveEvent) {
@@ -290,8 +309,8 @@ export class MiniMap extends View implements Graph.Plugin {
   protected scrollTo(evt: Dom.MouseDownEvent) {
     const e = this.normalizeEvent(evt)
 
-    let x
-    let y
+    let x: number
+    let y: number
 
     const ts = this.targetGraph.translate()
     ts.ty = ts.ty || 0
@@ -317,11 +336,6 @@ export class MiniMap extends View implements Graph.Plugin {
   }
 }
 
-namespace ClassName {
-  export const root = 'widget-minimap'
-  export const viewport = `${root}-viewport`
-  export const zoom = `${viewport}-zoom`
-}
 export namespace MiniMap {
   export interface Options {
     container: HTMLElement
@@ -337,24 +351,6 @@ export namespace MiniMap {
 }
 
 namespace Util {
-  export const defaultOptions: Partial<MiniMap.Options> = {
-    width: 300,
-    height: 200,
-    padding: 10,
-    scalable: true,
-    minScale: 0.01,
-    maxScale: 16,
-    graphOptions: {},
-    createGraph: (options) => new Graph(options),
-  }
-
-  export const documentEvents = {
-    mousemove: 'doAction',
-    touchmove: 'doAction',
-    mouseup: 'stopAction',
-    touchend: 'stopAction',
-  }
-
   export interface ViewGeometry extends Record<string, number> {
     top: number
     left: number
