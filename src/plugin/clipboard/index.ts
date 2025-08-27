@@ -1,6 +1,6 @@
 import { Basecoat } from '../../common'
-import type { Graph } from '../../graph'
-import type { Cell } from '../../model'
+import { Graph } from '../../graph'
+import { Cell } from '../../model'
 import { ClipboardImpl } from './clipboard'
 import './api'
 

@@ -305,7 +305,7 @@ const rect = new Shape.Rect({
 
 值得一提的是，支持使用[小驼峰(camelCase)格式](https://zh.wikipedia.org/zh-cn/%E9%A7%9D%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%AF%AB)的属性名，如 `fontSize`，这就避免了 `font-size` 这种属性名作为对象 Key 时需要加引号的麻烦。
 
-除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[特殊属性](/api/model/attrs)和[自定义属性](/api/model/cell/#自定义属性)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `x6-node` 和 `x6-edge` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/style/index.less)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
+除了标准的 [SVG 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)，我们在 X6 中还定义了一系列特殊属性，详情请参考[特殊属性](/api/model/attrs)和[自定义属性](/api/model/cell/#自定义属性)。另外，我们还可以使用 [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) 来定制样式，节点和边渲染到画布后分别有 `x6-node` 和 `x6-edge` 两个样式名，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/src/style/index.less)。例如，我们可以像下面这样来指定节点中 `<rect>` 元素的样式：
 
 ```css
 .x6-node rect {
