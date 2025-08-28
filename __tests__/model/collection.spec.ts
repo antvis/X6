@@ -92,7 +92,9 @@ class FakeCell {
     callList.forEach(({ cb, ctx }) => {
       try {
         cb.call(ctx, name, args || {})
-      } catch (e) {}
+      } catch (e) {
+        console.error(e)
+      }
     })
   }
 
