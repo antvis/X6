@@ -1,11 +1,11 @@
+import { Dom, FunctionExt, NumberExt } from '../../common'
 import { Point } from '../../geometry'
-import { Dom, NumberExt, FunctionExt } from '../../common'
-import { CellView } from '../../view/cell'
-import { NodeView } from '../../view/node'
-import { EdgeView } from '../../view/edge'
+import type { Cell } from '../../model'
+import type { CellView } from '../../view/cell'
+import type { EdgeView } from '../../view/edge'
+import type { NodeView } from '../../view/node'
 import { ToolsView } from '../../view/tool'
-import * as Util from './util'
-import { Cell } from '../../model'
+import { getViewBBox } from './util'
 
 export class Button extends ToolsView.ToolItem<
   EdgeView | NodeView,
@@ -36,7 +36,7 @@ export class Button extends ToolsView.ToolItem<
     let { x = 0, y = 0 } = options
     const { offset, useCellGeometry, rotate } = options
 
-    let bbox = Util.getViewBBox(view, useCellGeometry)
+    let bbox = getViewBBox(view, useCellGeometry)
     const angle = view.cell.getAngle()
     if (!rotate) {
       bbox = bbox.bbox(angle)
@@ -77,24 +77,14 @@ export class Button extends ToolsView.ToolItem<
     const options = this.options
     const { offset = 0, distance = 0, rotate } = options
 
-    let tangent
-    let position
-    let angle
-
     const d = NumberExt.normalizePercentage(distance, 1)
-    if (d >= 0 && d <= 1) {
-      tangent = view.getTangentAtRatio(d)
-    } else {
-      tangent = view.getTangentAtLength(d)
-    }
 
-    if (tangent) {
-      position = tangent.start
-      angle = tangent.vector().vectorAngle(new Point(1, 0)) || 0
-    } else {
-      position = view.getConnection()!.start!
-      angle = 0
-    }
+    const tangent =
+      d >= 0 && d <= 1 ? view.getTangentAtRatio(d) : view.getTangentAtLength(d)
+    const position = tangent ? tangent.start : view.getConnection()!.start!
+    const angle = tangent
+      ? tangent.vector().vectorAngle(new Point(1, 0)) || 0
+      : 0
 
     let matrix = Dom.createSVGMatrix()
       .translate(position.x, position.y)
