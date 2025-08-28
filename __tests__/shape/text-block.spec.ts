@@ -1,6 +1,4 @@
-import { View } from '@antv/g2/lib/composition/view'
-import sinon from 'sinon'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { Dom } from '../../src/common'
 import { Rectangle } from '../../src/geometry'
 import {
