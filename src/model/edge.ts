@@ -1,19 +1,19 @@
+import { type KeyValue, ObjectExt, type Size, StringExt } from '../common'
 import { Point, Polyline } from '../geometry'
-import { ObjectExt, StringExt, Size, KeyValue } from '../common'
-import { Registry } from '../registry/registry'
-import {
+import type {
   Attr,
-  Router,
+  ConnectionPoint,
   Connector,
   EdgeAnchor,
   NodeAnchor,
-  ConnectionPoint,
+  Router,
 } from '../registry'
-import { Markup } from '../view/markup'
-import { ShareRegistry } from './registry'
-import { Store } from './store'
+import { Registry } from '../registry/registry'
+import { Markup, type MarkupType } from '../view/markup'
 import { Cell } from './cell'
-import { Node } from './node'
+import type { Node } from './node'
+import { ShareRegistry } from './registry'
+import type { Store } from './store'
 
 export class Edge<
   Properties extends Edge.Properties = Edge.Properties,
@@ -534,8 +534,8 @@ export class Edge<
             return null
           })
         : current
-        ? [...current]
-        : []
+          ? [...current]
+          : []
 
     const removed =
       previous && current
@@ -551,8 +551,8 @@ export class Edge<
             return null
           })
         : previous
-        ? [...previous]
-        : []
+          ? [...previous]
+          : []
 
     if (added.length > 0) {
       this.notify('labels:added', { added, cell: this, edge: this })
@@ -652,8 +652,8 @@ export class Edge<
             return null
           })
         : current
-        ? [...current]
-        : []
+          ? [...current]
+          : []
 
     const removed =
       previous && current
@@ -664,8 +664,8 @@ export class Edge<
             return null
           })
         : previous
-        ? [...previous]
-        : []
+          ? [...previous]
+          : []
 
     if (added.length > 0) {
       this.notify('vertexs:added', { added, cell: this, edge: this })
@@ -866,7 +866,7 @@ export namespace Edge {
     labels?: Label[] | string[]
     defaultLabel?: Label
     vertices?: (Point.PointLike | Point.PointData)[]
-    defaultMarkup?: Markup
+    defaultMarkup?: MarkupType
   }
 
   interface TerminalOptions {
@@ -972,7 +972,7 @@ export namespace Edge {
 
 export namespace Edge {
   export interface Label extends KeyValue {
-    markup?: Markup
+    markup?: MarkupType
     attrs?: Attr.CellAttrs
     /**
      * If the distance is in the `[0,1]` range (inclusive), then the position

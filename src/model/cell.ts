@@ -1,31 +1,32 @@
 /* eslint-disable no-underscore-dangle */
-import { NonUndefined } from 'utility-types'
-import { Rectangle, Point } from '../geometry'
+import type { NonUndefined } from 'utility-types'
 import {
   ArrayExt,
-  StringExt,
-  ObjectExt,
-  FunctionExt,
-  KeyValue,
-  Size,
   Basecoat,
+  FunctionExt,
+  type KeyValue,
+  ObjectExt,
+  type Size,
+  StringExt,
 } from '../common'
+import { Point, Rectangle } from '../geometry'
+import type { Graph } from '../graph'
 import { Attr } from '../registry'
-import { Model } from './model'
-import { PortManager } from './port'
-import { Store } from './store'
-import { Edge } from './edge'
+import { type CellView, Markup } from '../view'
+import type { MarkupType } from '../view/markup'
 import { Animation } from './animation'
-import { CellView, Markup } from '../view'
-import { Node } from './node'
-import { Graph } from '../graph'
+import type { Edge } from './edge'
+import type { Model } from './model'
+import type { Node } from './node'
+import type { PortManager } from './port'
+import { Store } from './store'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties,
 > extends Basecoat<Cell.EventArgs> {
   // #region static
 
-  protected static markup: Markup
+  protected static markup: MarkupType
   protected static defaults: Cell.Defaults = {}
   protected static attrHooks: Attr.Definitions = {}
   protected static propHooks: Cell.PropHook[] = []
@@ -477,7 +478,7 @@ export class Cell<
     return this.getMarkup()
   }
 
-  set markup(value: Markup | undefined | null) {
+  set markup(value: MarkupType | undefined | null) {
     if (value == null) {
       this.removeMarkup()
     } else {
@@ -494,7 +495,7 @@ export class Cell<
     return markup
   }
 
-  setMarkup(markup: Markup, options: Cell.SetOptions = {}) {
+  setMarkup(markup: MarkupType, options: Cell.SetOptions = {}) {
     this.store.set('markup', markup, options)
     return this
   }
@@ -1270,8 +1271,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-    ? Edge.Properties
-    : Properties {
+      ? Edge.Properties
+      : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1460,7 +1461,7 @@ export namespace Cell {
   export interface Common {
     view?: string
     shape?: string
-    markup?: Markup
+    markup?: MarkupType
     attrs?: Attr.CellAttrs
     zIndex?: number
     visible?: boolean
@@ -1581,7 +1582,7 @@ export namespace Cell {
     'change:*': ChangeAnyKeyArgs
     'change:attrs': ChangeArgs<Attr.CellAttrs>
     'change:zIndex': ChangeArgs<number>
-    'change:markup': ChangeArgs<Markup>
+    'change:markup': ChangeArgs<MarkupType>
     'change:visible': ChangeArgs<boolean>
     'change:parent': ChangeArgs<string>
     'change:children': ChangeArgs<string[]>
@@ -1594,9 +1595,9 @@ export namespace Cell {
     'change:angle': NodeChangeArgs<number>
     'change:position': NodeChangeArgs<Point.PointLike>
     'change:ports': NodeChangeArgs<PortManager.Port[]>
-    'change:portMarkup': NodeChangeArgs<Markup>
-    'change:portLabelMarkup': NodeChangeArgs<Markup>
-    'change:portContainerMarkup': NodeChangeArgs<Markup>
+    'change:portMarkup': NodeChangeArgs<MarkupType>
+    'change:portLabelMarkup': NodeChangeArgs<MarkupType>
+    'change:portContainerMarkup': NodeChangeArgs<MarkupType>
     'ports:removed': {
       cell: Cell
       node: Node

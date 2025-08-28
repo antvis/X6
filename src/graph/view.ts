@@ -1,8 +1,9 @@
 import { Dom, FunctionExt } from '../common'
-import { Cell } from '../model'
 import { Config } from '../config'
-import { View, Markup, CellView } from '../view'
-import { Graph } from '../graph'
+import type { Graph } from '../graph'
+import { Cell } from '../model'
+import { type CellView, Markup, View } from '../view'
+import type { MarkupJSONMarkup } from '../view/markup'
 
 export class GraphView extends View {
   public readonly container: HTMLElement
@@ -529,7 +530,7 @@ export namespace GraphView {
 export namespace GraphView {
   const prefixCls = `${Config.prefixCls}-graph`
 
-  export const markup: Markup.JSONMarkup[] = [
+  export const markup: MarkupJSONMarkup[] = [
     {
       ns: Dom.ns.xhtml,
       tagName: 'div',

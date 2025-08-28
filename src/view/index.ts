@@ -1,6 +1,6 @@
-export * from './markup'
-export * from './view'
 export * from './cell'
 export * from './edge'
+export { Markup } from './markup'
 export * from './node'
 export * from './tool'
+export { View } from './view'
