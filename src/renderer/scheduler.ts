@@ -1,10 +1,10 @@
-import { Rectangle } from '../geometry'
-import { KeyValue, Dom, Disposable, FunctionExt } from '../common'
-import { Model, Cell } from '../model'
-import { View, CellView, NodeView, EdgeView } from '../view'
-import { JobQueue, JOB_PRIORITY } from './queueJob'
-import { FlagManager } from '../view/flag'
-import { Graph } from '../graph'
+import { Disposable, Dom, FunctionExt, type KeyValue } from '../common'
+import type { Rectangle } from '../geometry'
+import type { Graph } from '../graph'
+import type { Cell, Model } from '../model'
+import { CellView, EdgeView, NodeView, type View } from '../view'
+import type { FlagManagerAction } from '../view/flag'
+import { JOB_PRIORITY, JobQueue } from './queueJob'
 
 export class Scheduler extends Disposable {
   public views: KeyValue<Scheduler.View> = {}
@@ -395,7 +395,6 @@ export class Scheduler extends Disposable {
       if (currentZ < zIndex && currentZ > neighborZ) {
         neighborZ = currentZ
         if (neighborZ === zIndex - 1) {
-          continue
         }
       }
     }
@@ -475,7 +474,7 @@ export class Scheduler extends Disposable {
         continue
       }
 
-      const flagLabels: FlagManager.Action[] = ['update']
+      const flagLabels: FlagManagerAction[] = ['update']
       if (edge.getTargetCell() === cell) {
         flagLabels.push('target')
       }

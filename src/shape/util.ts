@@ -1,9 +1,9 @@
 import { ObjectExt } from '../common'
-import { Cell, Node } from '../model'
-import { Markup } from '../view'
+import type { Cell, Node } from '../model'
+import type { MarkupType } from '../view/markup'
 import { Base } from './base'
 
-export function getMarkup(tagName: string, selector = 'body'): Markup {
+export function getMarkup(tagName: string, selector = 'body'): MarkupType {
   return [
     {
       tagName,
