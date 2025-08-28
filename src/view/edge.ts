@@ -1,27 +1,32 @@
-import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
 import {
-  ObjectExt,
-  NumberExt,
-  FunctionExt,
   Dom,
+  FunctionExt,
+  type KeyValue,
+  NumberExt,
+  ObjectExt,
   Vector,
-  KeyValue,
 } from '../common'
-import {
-  Router,
-  Connector,
-  NodeAnchor,
-  EdgeAnchor,
-  ConnectionPoint,
-} from '../registry'
-import { Cell } from '../model/cell'
+import { Angle, Line, Path, Point, Polyline, Rectangle } from '../geometry'
+import type { Graph } from '../graph'
+import type { Options as GraphOptions } from '../graph/options'
+import type { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
-import { Markup } from './markup'
+import {
+  ConnectionPoint,
+  Connector,
+  EdgeAnchor,
+  NodeAnchor,
+  Router,
+} from '../registry'
 import { CellView } from './cell'
+import {
+  Markup,
+  type MarkupJSONMarkup,
+  type MarkupSelectors,
+  type MarkupType,
+} from './markup'
 import { NodeView } from './node'
-import { ToolsView } from './tool'
-import { Graph } from '../graph'
-import { Options as GraphOptions } from '../graph/options'
+import type { ToolsView } from './tool'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -43,7 +48,7 @@ export class EdgeView<
 
   protected labelContainer: Element | null
   protected labelCache: { [index: number]: Element }
-  protected labelSelectors: { [index: number]: Markup.Selectors }
+  protected labelSelectors: { [index: number]: MarkupSelectors }
   protected labelDestroyFn: {
     [index: number]: (args: GraphOptions.OnEdgeLabelRenderedArgs) => void
   } = {}
@@ -142,7 +147,7 @@ export class EdgeView<
     throw new TypeError('Invalid edge markup.')
   }
 
-  protected renderJSONMarkup(markup: Markup.JSONMarkup | Markup.JSONMarkup[]) {
+  protected renderJSONMarkup(markup: MarkupJSONMarkup | MarkupJSONMarkup[]) {
     const ret = this.parseJSONMarkup(markup, this.container)
     this.selectors = ret.selectors
     this.container.append(ret.fragment)
@@ -309,7 +314,7 @@ export class EdgeView<
     return true
   }
 
-  protected parseLabelMarkup(markup?: Markup) {
+  protected parseLabelMarkup(markup?: MarkupType) {
     if (markup) {
       if (typeof markup === 'string') {
         return this.parseLabelStringMarkup(markup)
@@ -334,7 +339,7 @@ export class EdgeView<
   protected normalizeLabelMarkup(
     markup?: {
       fragment: DocumentFragment
-      selectors: Markup.Selectors
+      selectors: MarkupSelectors
     } | null,
   ) {
     if (markup == null) {
@@ -1719,16 +1724,16 @@ export class EdgeView<
             ? candidateTerminal.port
             : null
           : edge
-          ? edge.getSourcePortId()
-          : null
+            ? edge.getSourcePortId()
+            : null
       const targetPort =
         terminalType === 'target'
           ? candidateTerminal
             ? candidateTerminal.port
             : null
           : edge
-          ? edge.getTargetPortId()
-          : null
+            ? edge.getTargetPortId()
+            : null
       return FunctionExt.call(validate, this.graph, {
         edge,
         edgeView,
@@ -2477,7 +2482,7 @@ export namespace EdgeView {
 }
 
 namespace EventData {
-  export interface MousemoveEventData {}
+  export type MousemoveEventData = {}
 
   export interface EdgeDragging {
     action: 'drag-edge'

@@ -1,13 +1,13 @@
-import { Dom, KeyValue, Basecoat } from '../common'
-import { EventArgs } from '../common/event/types'
+import { Basecoat, Dom, type KeyValue } from '../common'
+import type { EventArgs } from '../common/event/types'
 import { Config } from '../config'
-import { Markup } from './markup'
-import { Attr } from '../registry'
+import type { Attr } from '../registry'
+import type { MarkupSelectors } from './markup'
 
 export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   public readonly cid: string
   public container: Element
-  protected selectors: Markup.Selectors
+  protected selectors: MarkupSelectors
 
   public get priority() {
     return 2
@@ -24,7 +24,6 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     View.views[this.cid] = this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmUpdate(flag: number, options: any): number {
     return 0
   }
@@ -121,7 +120,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   find(
     selector?: string,
     rootElem: Element = this.container,
-    selectors: Markup.Selectors = this.selectors,
+    selectors: MarkupSelectors = this.selectors,
   ) {
     return View.find(selector, rootElem, selectors).elems
   }
@@ -129,7 +128,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   findOne(
     selector?: string,
     rootElem: Element = this.container,
-    selectors: Markup.Selectors = this.selectors,
+    selectors: MarkupSelectors = this.selectors,
   ) {
     const nodes = this.find(selector, rootElem, selectors)
     return nodes.length > 0 ? nodes[0] : null
@@ -137,7 +136,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
 
   findByAttr(attrName: string, elem: Element = this.container) {
     let node = elem
-    while (node && node.getAttribute) {
+    while (node?.getAttribute) {
       const val = node.getAttribute(attrName)
       if ((val != null || node === this.container) && val !== 'false') {
         return node
@@ -154,7 +153,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   }
 
   getSelector(elem: Element, prevSelector?: string): string | undefined {
-    let selector
+    let selector: string
 
     if (elem === this.container) {
       if (typeof prevSelector === 'string') {
@@ -293,9 +292,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return `.${Config.prefixCls}-event-${this.cid}`
   }
 
-  // eslint-disable-next-line
   protected getEventHandler(handler: string | Function) {
-    // eslint-disable-next-line
     let method: Function | undefined
     if (typeof handler === 'string') {
       const fn = (this as any)[handler]
@@ -379,7 +376,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
 }
 
 export namespace View {
-  export type Events = KeyValue<string | Function> // eslint-disable-line
+  export type Events = KeyValue<string | Function>
 }
 
 export namespace View {
@@ -392,7 +389,7 @@ export namespace View {
   export function find(
     selector: string | null | undefined,
     rootElem: Element,
-    selectors: Markup.Selectors,
+    selectors: MarkupSelectors,
   ): { isCSSSelector?: boolean; elems: Element[] } {
     if (!selector || selector === '.') {
       return { elems: [rootElem] }
@@ -424,10 +421,7 @@ export namespace View {
   export function normalizeEvent<T extends Dom.EventObject>(evt: T) {
     let normalizedEvent = evt
     const originalEvent = evt.originalEvent as TouchEvent
-    const touchEvt: any =
-      originalEvent &&
-      originalEvent.changedTouches &&
-      originalEvent.changedTouches[0]
+    const touchEvt: any = originalEvent?.changedTouches?.[0]
 
     if (touchEvt) {
       // eslint-disable-next-line no-restricted-syntax

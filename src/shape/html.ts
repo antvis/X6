@@ -17,7 +17,6 @@ export type HTMLShapeConfig = Node.Properties & {
   inherit?: string
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const ViewAction = 'html' as any
 
 const HTMLShapeMaps: Record<

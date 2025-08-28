@@ -1,7 +1,7 @@
-import { Point, Rectangle } from '../geometry'
-import { JSONObject, ObjectExt, Size, KeyValue } from '../common'
-import { Markup } from '../view'
-import { Attr, PortLayout, PortLabelLayout } from '../registry'
+import { type JSONObject, type KeyValue, ObjectExt, type Size } from '../common'
+import { Point, type Rectangle } from '../geometry'
+import { type Attr, PortLabelLayout, PortLayout } from '../registry'
+import type { MarkupType } from '../view/markup'
 
 export class PortManager {
   ports: PortManager.Port[]
@@ -238,7 +238,7 @@ export namespace PortManager {
     | PortLabelPosition
 
   export interface LabelMetadata {
-    markup?: Markup
+    markup?: MarkupType
     size?: Size
     position?: PortLabelPositionMetadata
   }
@@ -250,7 +250,7 @@ export namespace PortManager {
   }
 
   interface Common {
-    markup: Markup
+    markup: MarkupType
     attrs: Attr.CellAttrs
     zIndex: number | 'auto'
     size?: Size

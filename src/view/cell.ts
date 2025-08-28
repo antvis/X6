@@ -1,28 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Rectangle } from '../geometry'
+
 import {
   ArrayExt,
-  ObjectExt,
   Dom,
   FunctionExt,
-  Nilable,
-  KeyValue,
+  type KeyValue,
+  type Nilable,
+  ObjectExt,
   Util,
 } from '../common'
+import { Rectangle } from '../geometry'
+import type { Graph } from '../graph'
+import type { Cell } from '../model/cell'
+import type { Edge } from '../model/edge'
+import type { Model } from '../model/model'
+import type { Attr } from '../registry/attr'
 import { Registry } from '../registry/registry'
-import { View } from './view'
+import { AttrManager, type AttrManagerUpdateOptions } from './attr'
 import { Cache } from './cache'
-import { Markup } from './markup'
+import type { EdgeView } from './edge'
+import {
+  FlagManager,
+  type FlagManagerAction,
+  type FlagManagerActions,
+} from './flag'
+import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from './markup'
+import type { NodeView } from './node'
 import { ToolsView } from './tool'
-import { AttrManager } from './attr'
-import { FlagManager } from './flag'
-import { Attr } from '../registry/attr'
-import { Cell } from '../model/cell'
-import { Edge } from '../model/edge'
-import { Model } from '../model/model'
-import { EdgeView } from './edge'
-import { NodeView } from './node'
-import { Graph } from '../graph'
+import { View } from './view'
 
 export class CellView<
   Entity extends Cell = Cell,
@@ -37,13 +42,13 @@ export class CellView<
   }
 
   public static getDefaults() {
-    return this.defaults
+    return CellView.defaults
   }
 
   public static config<T extends CellView.Options = CellView.Options>(
     options: Partial<T>,
   ) {
-    this.defaults = this.getOptions(options)
+    CellView.defaults = CellView.getOptions(options)
   }
 
   public static getOptions<T extends CellView.Options = CellView.Options>(
@@ -59,7 +64,7 @@ export class CellView<
       return Array.isArray(arr1) ? [...arr1] : [arr1]
     }
 
-    const ret = ObjectExt.cloneDeep(this.getDefaults()) as T
+    const ret = ObjectExt.cloneDeep(CellView.getDefaults()) as T
     const { bootstrap, actions, events, documentEvents, ...others } = options
 
     if (bootstrap) {
@@ -90,7 +95,7 @@ export class CellView<
 
   public graph: Graph
   public cell: Entity
-  protected selectors: Markup.Selectors
+  protected selectors: MarkupSelectors
   protected readonly options: Options
   protected readonly flag: FlagManager
   protected readonly attr: AttrManager
@@ -146,9 +151,11 @@ export class CellView<
     return this.options.isSvgElement ? 'g' : 'div'
   }
 
-  protected getContainerStyle(): Nilable<
-    Record<string, string | number>
-  > | void {}
+  protected getContainerStyle():
+    | Nilable<Record<string, string | number>>
+    | undefined {
+    return
+  }
 
   protected getContainerAttrs(): Nilable<Attr.SimpleAttrs> {
     return {
@@ -184,7 +191,6 @@ export class CellView<
 
       const style = this.getContainerStyle()
       if (style != null) {
-        // @ts-ignore
         this.setStyle(style, container)
       }
 
@@ -209,8 +215,7 @@ export class CellView<
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  confirmUpdate(flag: number, options: any = {}) {
+  confirmUpdate(flag: number, options: object = {}) {
     return 0
   }
 
@@ -218,23 +223,23 @@ export class CellView<
     return this.flag.getBootstrapFlag()
   }
 
-  getFlag(actions: FlagManager.Actions) {
+  getFlag(actions: FlagManagerActions) {
     return this.flag.getFlag(actions)
   }
 
-  hasAction(flag: number, actions: FlagManager.Actions) {
+  hasAction(flag: number, actions: FlagManagerActions) {
     return this.flag.hasAction(flag, actions)
   }
 
-  removeAction(flag: number, actions: FlagManager.Actions) {
+  removeAction(flag: number, actions: FlagManagerActions) {
     return this.flag.removeAction(flag, actions)
   }
 
   handleAction(
     flag: number,
-    action: FlagManager.Action,
+    action: FlagManagerAction,
     handle: () => void,
-    additionalRemovedActions?: FlagManager.Actions | null,
+    additionalRemovedActions?: FlagManagerActions | null,
   ) {
     if (this.hasAction(flag, action)) {
       handle()
@@ -280,7 +285,7 @@ export class CellView<
   }
 
   parseJSONMarkup(
-    markup: Markup.JSONMarkup | Markup.JSONMarkup[],
+    markup: MarkupJSONMarkup | MarkupJSONMarkup[],
     rootElem?: Element,
   ) {
     const result = Markup.parseJSONMarkup(markup)
@@ -358,7 +363,7 @@ export class CellView<
   }
 
   getBBox(options: { useCellGeometry?: boolean } = {}) {
-    let bbox
+    let bbox: Rectangle
     if (options.useCellGeometry) {
       const cell = this.cell
       const angle = cell.isNode() ? cell.getAngle() : 0
@@ -396,7 +401,7 @@ export class CellView<
   updateAttrs(
     rootNode: Element,
     attrs: Attr.CellAttrs,
-    options: Partial<AttrManager.UpdateOptions> = {},
+    options: Partial<AttrManagerUpdateOptions> = {},
   ) {
     if (options.rootBBox == null) {
       options.rootBBox = new Rectangle()
@@ -406,7 +411,7 @@ export class CellView<
       options.selectors = this.selectors
     }
 
-    this.attr.update(rootNode, attrs, options as AttrManager.UpdateOptions)
+    this.attr.update(rootNode, attrs, options as AttrManagerUpdateOptions)
   }
 
   isEdgeElement(magnet?: Element | null) {
@@ -521,7 +526,7 @@ export class CellView<
     const root = this.container
     const portId = (terminal as Edge.TerminalCellData).port
     let selector = terminal.magnet
-    let magnet
+    let magnet: any
     if (portId != null && cell.isNode() && cell.hasPort(portId)) {
       magnet = (this as any).findPortElem(portId, selector) || root
     } else {
@@ -758,8 +763,8 @@ export namespace CellView {
     priority: number
     isSvgElement: boolean
     rootSelector: string
-    bootstrap: FlagManager.Actions
-    actions: KeyValue<FlagManager.Actions>
+    bootstrap: FlagManagerActions
+    actions: KeyValue<FlagManagerActions>
     events?: View.Events | null
     documentEvents?: View.Events | null
   }
@@ -889,13 +894,13 @@ export namespace CellView {
 // ----
 export namespace CellView {
   export function priority(value: number) {
-    return function (ctor: Definition) {
+    return (ctor: Definition) => {
       ctor.config({ priority: value })
     }
   }
 
-  export function bootstrap(actions: FlagManager.Actions) {
-    return function (ctor: Definition) {
+  export function bootstrap(actions: FlagManagerActions) {
+    return (ctor: Definition) => {
       ctor.config({ bootstrap: actions })
     }
   }
