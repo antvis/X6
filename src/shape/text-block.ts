@@ -1,46 +1,51 @@
-import { Platform, Dom, FunctionExt, ObjectExt } from '../common'
+import { Dom, FunctionExt, ObjectExt, Platform } from '../common'
+import type { Node } from '../model'
 import { Attr } from '../registry'
 import { Base } from './base'
 
-export const TextBlock = Base.define({
+export function getTextBlockMarkup(supportForeignobject: boolean) {
+  return supportForeignobject
+    ? {
+        tagName: 'foreignObject',
+        selector: 'foreignObject',
+        children: [
+          {
+            tagName: 'div',
+            ns: Dom.ns.xhtml,
+            selector: 'label',
+            style: {
+              width: '100%',
+              height: '100%',
+              position: 'static',
+              backgroundColor: 'transparent',
+              textAlign: 'center',
+              margin: 0,
+              padding: '0px 5px',
+              boxSizing: 'border-box',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          },
+        ],
+      }
+    : {
+        tagName: 'text',
+        selector: 'label',
+        attrs: {
+          textAnchor: 'middle',
+        },
+      }
+}
+
+export const TextBlockConfig: Node.Config = {
   shape: 'text-block',
   markup: [
     {
       tagName: 'rect',
       selector: 'body',
     },
-    Platform.SUPPORT_FOREIGNOBJECT
-      ? {
-          tagName: 'foreignObject',
-          selector: 'foreignObject',
-          children: [
-            {
-              tagName: 'div',
-              ns: Dom.ns.xhtml,
-              selector: 'label',
-              style: {
-                width: '100%',
-                height: '100%',
-                position: 'static',
-                backgroundColor: 'transparent',
-                textAlign: 'center',
-                margin: 0,
-                padding: '0px 5px',
-                boxSizing: 'border-box',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              },
-            },
-          ],
-        }
-      : {
-          tagName: 'text',
-          selector: 'label',
-          attrs: {
-            textAnchor: 'middle',
-          },
-        },
+    getTextBlockMarkup(Platform.SUPPORT_FOREIGNOBJECT),
   ],
   attrs: {
     body: {
@@ -98,4 +103,6 @@ export const TextBlock = Base.define({
       },
     },
   },
-})
+}
+
+export const TextBlock = Base.define(TextBlockConfig)

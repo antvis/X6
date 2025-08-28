@@ -1,7 +1,74 @@
-import { describe, expect, it } from 'vitest'
-import { TextBlock } from '../../src/shape/text-block'
+import { View } from '@antv/g2/lib/composition/view'
+import sinon from 'sinon'
+import { describe, expect, it, vi } from 'vitest'
+import { Dom } from '../../src/common'
+import { Rectangle } from '../../src/geometry'
+import {
+  getTextBlockMarkup,
+  TextBlock,
+  TextBlockConfig,
+} from '../../src/shape/text-block'
 
 describe('shape/text-block', () => {
+  it('getTextBlockMarkup should process foreignObject', () => {
+    expect(getTextBlockMarkup(true)).toEqual({
+      tagName: 'foreignObject',
+      selector: 'foreignObject',
+      children: [
+        {
+          tagName: 'div',
+          ns: Dom.ns.xhtml,
+          selector: 'label',
+          style: {
+            width: '100%',
+            height: '100%',
+            position: 'static',
+            backgroundColor: 'transparent',
+            textAlign: 'center',
+            margin: 0,
+            padding: '0px 5px',
+            boxSizing: 'border-box',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        },
+      ],
+    })
+
+    expect(getTextBlockMarkup(false)).toEqual({
+      tagName: 'text',
+      selector: 'label',
+      attrs: {
+        textAnchor: 'middle',
+      },
+    })
+  })
+
+  it('text-block default config', () => {
+    expect(TextBlockConfig.shape).toEqual('text-block')
+
+    // @ts-expect-error
+    expect(TextBlockConfig.propHooks({ text: 'x6', value: 'antv' })).toEqual({
+      attrs: {
+        label: {
+          text: 'x6',
+        },
+      },
+      value: 'antv',
+    })
+
+    const refBBox = new Rectangle(10, 10, 100, 100)
+    const elem = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    // @ts-expect-error
+    expect(
+      TextBlockConfig.attrHooks.text.position('x6', { refBBox, elem }),
+    ).toEqual({
+      x: 60,
+      y: 60,
+    })
+  })
+
   it('should have correct markup structure', () => {
     expect(TextBlock.getMarkup()).toEqual([
       {
