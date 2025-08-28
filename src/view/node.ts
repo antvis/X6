@@ -1,16 +1,16 @@
-import { Rectangle, Point, GeometryUtil } from '../geometry'
-import { ArrayExt, FunctionExt, Dom } from '../common'
+import { ArrayExt, Dom, FunctionExt } from '../common'
 import { Config } from '../config'
-import { Attr, PortLayout } from '../registry'
+import { GeometryUtil, Point, Rectangle } from '../geometry'
+import type { Graph } from '../graph'
 import { Cell } from '../model/cell'
-import { Node } from '../model/node'
-import { Edge } from '../model/edge'
-import { PortManager } from '../model/port'
+import type { Edge } from '../model/edge'
+import type { Node } from '../model/node'
+import type { PortManager } from '../model/port'
+import type { Attr, PortLayout } from '../registry'
+import type { AttrManagerUpdateOptions } from './attr'
 import { CellView } from './cell'
-import { EdgeView } from './edge'
-import { Markup } from './markup'
-import { AttrManager } from './attr'
-import { Graph } from '../graph'
+import type { EdgeView } from './edge'
+import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from './markup'
 
 export class NodeView<
   Entity extends Node = Node,
@@ -142,7 +142,7 @@ export class NodeView<
     throw new TypeError('Invalid node markup.')
   }
 
-  protected renderJSONMarkup(markup: Markup.JSONMarkup | Markup.JSONMarkup[]) {
+  protected renderJSONMarkup(markup: MarkupJSONMarkup | MarkupJSONMarkup[]) {
     const ret = this.parseJSONMarkup(markup, this.container)
     this.selectors = ret.selectors
     this.container.appendChild(ret.fragment)
@@ -308,9 +308,9 @@ export class NodeView<
     Dom.addClass(portContentElement, 'x6-port-body')
     portElement.appendChild(portContentElement)
 
-    let portSelectors: Markup.Selectors | undefined = portContentSelectors
+    let portSelectors: MarkupSelectors | undefined = portContentSelectors
     let portLabelElement: Element | undefined
-    let portLabelSelectors: Markup.Selectors | null | undefined
+    let portLabelSelectors: MarkupSelectors | null | undefined
     const existLabel = this.existPortLabel(port)
     if (existLabel) {
       renderResult = Markup.renderMarkup(this.getPortLabelMarkup(port.label))
@@ -366,7 +366,9 @@ export class NodeView<
     if (groupList.length === 0) {
       this.updatePortGroup()
     } else {
-      groupList.forEach((groupName) => this.updatePortGroup(groupName))
+      groupList.forEach((groupName) => {
+        this.updatePortGroup(groupName)
+      })
     }
   }
 
@@ -379,11 +381,11 @@ export class NodeView<
       const portId = metric.portId
       const cached = this.portsCache[portId] || {}
       const portLayout = metric.portLayout
-      // @ts-ignore
+      // @ts-expect-error
       this.applyPortTransform(cached.portElement, portLayout)
       if (metric.portAttrs != null) {
-        const options: Partial<AttrManager.UpdateOptions> = {
-          // @ts-ignore
+        const options: Partial<AttrManagerUpdateOptions> = {
+          // @ts-expect-error
           selectors: cached.portSelectors || {},
         }
 
@@ -391,23 +393,23 @@ export class NodeView<
           options.rootBBox = Rectangle.fromSize(metric.portSize)
         }
 
-        // @ts-ignore
+        // @ts-expect-error
         this.updateAttrs(cached.portElement, metric.portAttrs, options)
       }
 
       const labelLayout = metric.labelLayout
-      // @ts-ignore
+      // @ts-expect-error
       if (labelLayout && cached.portLabelElement) {
         this.applyPortTransform(
-          // @ts-ignore
+          // @ts-expect-error
           cached.portLabelElement,
           labelLayout,
           -(portLayout.angle || 0),
         )
 
         if (labelLayout.attrs) {
-          const options: Partial<AttrManager.UpdateOptions> = {
-            // @ts-ignore
+          const options: Partial<AttrManagerUpdateOptions> = {
+            // @ts-expect-error
             selectors: cached.portLabelSelectors || {},
           }
 
@@ -415,7 +417,7 @@ export class NodeView<
             options.rootBBox = Rectangle.fromSize(metric.labelSize)
           }
 
-          // @ts-ignore
+          // @ts-expect-error
           this.updateAttrs(cached.portLabelElement, labelLayout.attrs, options)
         }
       }
@@ -892,7 +894,7 @@ export class NodeView<
     })
 
     if (this.validateMagnet(this, magnet, e)) {
-      // @ts-ignore
+      // @ts-expect-error
       if (graph.options.magnetThreshold <= 0) {
         this.startConnectting(e, magnet, x, y)
       }
@@ -1195,11 +1197,11 @@ export namespace NodeView {
 
   export interface PortCache {
     portElement: Element
-    portSelectors?: Markup.Selectors | null
+    portSelectors?: MarkupSelectors | null
     portLabelElement?: Element
-    portLabelSelectors?: Markup.Selectors | null
+    portLabelSelectors?: MarkupSelectors | null
     portContentElement?: Element
-    portContentSelectors?: Markup.Selectors | null
+    portContentSelectors?: MarkupSelectors | null
   }
 }
 

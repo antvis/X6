@@ -1,9 +1,26 @@
-import { Line, Rectangle, Ellipse, Polyline, Path, Segment } from '../geometry'
-import { Dictionary, JSONObject, Dom, Util } from '../common'
-import { CellView } from './cell'
+import { Dictionary, Dom, type JSONObject, Util } from '../common'
+import type {
+  Ellipse,
+  Line,
+  Path,
+  Polyline,
+  Rectangle,
+  Segment,
+} from '../geometry'
+import type { CellView } from './cell'
 
+export interface CacheItem {
+  data?: JSONObject
+  matrix?: DOMMatrix
+  boundingRect?: Rectangle
+  shape?: Rectangle | Ellipse | Polyline | Path | Line
+}
+
+/**
+ * 一个 element 的缓存类
+ */
 export class Cache {
-  protected elemCache: Dictionary<Element, Cache.Item>
+  protected elemCache: Dictionary<Element, CacheItem>
 
   public pathCache: {
     data?: string
@@ -28,7 +45,7 @@ export class Cache {
     if (!cache.has(elem)) {
       this.elemCache.set(elem, {})
     }
-    return this.elemCache.get(elem)!
+    return this.elemCache.get(elem)
   }
 
   getData(elem: Element) {
@@ -44,7 +61,7 @@ export class Cache {
     if (meta.matrix == null) {
       const target = this.view.container
       meta.matrix = Dom.getTransformToParentElement(
-        elem as any,
+        elem as SVGElement,
         target as SVGElement,
       )
     }
@@ -66,14 +83,5 @@ export class Cache {
       meta.boundingRect = Util.getBBoxV2(elem as SVGElement)
     }
     return meta.boundingRect.clone()
-  }
-}
-
-export namespace Cache {
-  export interface Item {
-    data?: JSONObject
-    matrix?: DOMMatrix
-    boundingRect?: Rectangle
-    shape?: Rectangle | Ellipse | Polyline | Path | Line
   }
 }

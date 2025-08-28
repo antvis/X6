@@ -1,21 +1,21 @@
-import { DeepPartial, Omit } from 'utility-types'
-import { Point, Rectangle, Angle } from '../geometry'
+import type { DeepPartial, Omit } from 'utility-types'
 import {
-  StringExt,
-  ObjectExt,
-  NumberExt,
-  Size,
-  KeyValue,
   Interp,
+  type KeyValue,
+  NumberExt,
+  ObjectExt,
+  type Size,
+  StringExt,
 } from '../common'
+import { Angle, Point, Rectangle } from '../geometry'
 import { Registry } from '../registry/registry'
-import { Markup } from '../view/markup'
+import { Markup, type MarkupType } from '../view/markup'
+import type { Animation } from './animation'
 import { Cell } from './cell'
-import { Edge } from './edge'
-import { Store } from './store'
-import { ShareRegistry } from './registry'
+import type { Edge } from './edge'
 import { PortManager } from './port'
-import { Animation } from './animation'
+import { ShareRegistry } from './registry'
+import type { Store } from './store'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties,
@@ -539,7 +539,7 @@ export class Node<
     return this.getPortContainerMarkup()
   }
 
-  set portContainerMarkup(markup: Markup) {
+  set portContainerMarkup(markup: MarkupType) {
     this.setPortContainerMarkup(markup)
   }
 
@@ -557,7 +557,7 @@ export class Node<
     )
   }
 
-  setPortContainerMarkup(markup?: Markup, options: Node.SetOptions = {}) {
+  setPortContainerMarkup(markup?: MarkupType, options: Node.SetOptions = {}) {
     this.store.set('portContainerMarkup', Markup.clone(markup), options)
     return this
   }
@@ -566,7 +566,7 @@ export class Node<
     return this.getPortMarkup()
   }
 
-  set portMarkup(markup: Markup) {
+  set portMarkup(markup: MarkupType) {
     this.setPortMarkup(markup)
   }
 
@@ -578,7 +578,7 @@ export class Node<
     return this.store.get('portMarkup') || this.getDefaultPortMarkup()
   }
 
-  setPortMarkup(markup?: Markup, options: Node.SetOptions = {}) {
+  setPortMarkup(markup?: MarkupType, options: Node.SetOptions = {}) {
     this.store.set('portMarkup', Markup.clone(markup), options)
     return this
   }
@@ -587,7 +587,7 @@ export class Node<
     return this.getPortLabelMarkup()
   }
 
-  set portLabelMarkup(markup: Markup) {
+  set portLabelMarkup(markup: MarkupType) {
     this.setPortLabelMarkup(markup)
   }
 
@@ -601,7 +601,7 @@ export class Node<
     return this.store.get('portLabelMarkup') || this.getDefaultPortLabelMarkup()
   }
 
-  setPortLabelMarkup(markup?: Markup, options: Node.SetOptions = {}) {
+  setPortLabelMarkup(markup?: MarkupType, options: Node.SetOptions = {}) {
     this.store.set('portLabelMarkup', Markup.clone(markup), options)
     return this
   }
@@ -993,12 +993,12 @@ export namespace Node {
     position?: { x: number; y: number }
     angle?: number
     ports?: Partial<PortManager.Metadata> | PortManager.PortMetadata[]
-    portContainerMarkup?: Markup
-    portMarkup?: Markup
-    portLabelMarkup?: Markup
-    defaultPortMarkup?: Markup
-    defaultPortLabelMarkup?: Markup
-    defaultPortContainerMarkup?: Markup
+    portContainerMarkup?: MarkupType
+    portMarkup?: MarkupType
+    portLabelMarkup?: MarkupType
+    defaultPortMarkup?: MarkupType
+    defaultPortLabelMarkup?: MarkupType
+    defaultPortContainerMarkup?: MarkupType
   }
 
   interface Boundary {

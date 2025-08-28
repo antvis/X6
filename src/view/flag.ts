@@ -1,11 +1,27 @@
 /* eslint-disable no-bitwise */
-import { KeyValue } from '../common'
-import { CellView } from './cell'
+import type { KeyValue } from '../common'
+import type { CellView } from './cell'
+
+export type FlagManagerAction =
+  | 'render'
+  | 'update'
+  | 'resize'
+  | 'scale'
+  | 'rotate'
+  | 'translate'
+  | 'ports'
+  | 'tools'
+  | 'source'
+  | 'target'
+  | 'vertices'
+  | 'labels'
+
+export type FlagManagerActions = FlagManagerAction | FlagManagerAction[]
 
 export class FlagManager {
   protected attrs: { [attr: string]: number }
   protected flags: { [name: string]: number }
-  protected bootstrap: FlagManager.Actions
+  protected bootstrap: FlagManagerActions
 
   protected get cell() {
     return this.view.cell
@@ -13,8 +29,8 @@ export class FlagManager {
 
   constructor(
     protected view: CellView,
-    actions: KeyValue<FlagManager.Actions>,
-    bootstrap: FlagManager.Actions = [],
+    actions: KeyValue<FlagManagerActions>,
+    bootstrap: FlagManagerActions = [],
   ) {
     const flags: { [name: string]: number } = {}
     const attrs: { [attr: string]: number } = {}
@@ -59,7 +75,7 @@ export class FlagManager {
     this.bootstrap = bootstrap
   }
 
-  getFlag(label: FlagManager.Actions) {
+  getFlag(label: FlagManagerActions) {
     const flags = this.flags
     if (flags == null) {
       return 0
@@ -72,11 +88,11 @@ export class FlagManager {
     return flags[label] | 0
   }
 
-  hasAction(flag: number, label: FlagManager.Actions) {
+  hasAction(flag: number, label: FlagManagerActions) {
     return flag & this.getFlag(label)
   }
 
-  removeAction(flag: number, label: FlagManager.Actions) {
+  removeAction(flag: number, label: FlagManagerActions) {
     return flag ^ (flag & this.getFlag(label))
   }
 
@@ -99,22 +115,4 @@ export class FlagManager {
 
     return flag
   }
-}
-
-export namespace FlagManager {
-  export type Action =
-    | 'render'
-    | 'update'
-    | 'resize'
-    | 'scale'
-    | 'rotate'
-    | 'translate'
-    | 'ports'
-    | 'tools'
-    | 'source'
-    | 'target'
-    | 'vertices'
-    | 'labels'
-
-  export type Actions = Action | Action[]
 }

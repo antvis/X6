@@ -1,17 +1,36 @@
-import { Rectangle, Point } from '../geometry'
 import {
-  ObjectExt,
   ArrayExt,
+  Dictionary,
   Dom,
   FunctionExt,
-  Dictionary,
+  ObjectExt,
   StringExt,
   Util,
 } from '../common'
+import { Point, type Rectangle } from '../geometry'
 import { Attr } from '../registry/attr'
+import type { CellView } from './cell'
+import type { MarkupSelectors } from './markup'
 import { View } from './view'
-import { Markup } from './markup'
-import { CellView } from './cell'
+
+export interface AttrManagerUpdateOptions {
+  rootBBox: Rectangle
+  selectors: MarkupSelectors
+  scalableNode?: Element | null
+  rotatableNode?: Element | null
+  /**
+   * Rendering only the specified attributes.
+   */
+  attrs?: Attr.CellAttrs | null
+}
+
+export interface AttrManagerProcessedAttrs {
+  raw: Attr.ComplexAttrs
+  normal?: Attr.SimpleAttrs | undefined
+  set?: Attr.ComplexAttrs | undefined
+  offset?: Attr.ComplexAttrs | undefined
+  position?: Attr.ComplexAttrs | undefined
+}
 
 export class AttrManager {
   constructor(protected view: CellView) {}
@@ -27,7 +46,7 @@ export class AttrManager {
   protected processAttrs(
     elem: Element,
     raw: Attr.ComplexAttrs,
-  ): AttrManager.ProcessedAttrs {
+  ): AttrManagerProcessedAttrs {
     let normal: Attr.SimpleAttrs | undefined
     let set: Attr.ComplexAttrs | undefined
     let offset: Attr.ComplexAttrs | undefined
@@ -110,8 +129,8 @@ export class AttrManager {
   }
 
   protected mergeProcessedAttrs(
-    allProcessedAttrs: AttrManager.ProcessedAttrs,
-    roProcessedAttrs: AttrManager.ProcessedAttrs,
+    allProcessedAttrs: AttrManagerProcessedAttrs,
+    roProcessedAttrs: AttrManagerProcessedAttrs,
   ) {
     allProcessedAttrs.set = {
       ...allProcessedAttrs.set,
@@ -129,8 +148,7 @@ export class AttrManager {
     }
 
     // Handle also the special transform property.
-    const transform =
-      allProcessedAttrs.normal && allProcessedAttrs.normal.transform
+    const transform = allProcessedAttrs.normal?.transform
     if (transform != null && roProcessedAttrs.normal) {
       roProcessedAttrs.normal.transform = transform
     }
@@ -141,7 +159,7 @@ export class AttrManager {
     cellAttrs: Attr.CellAttrs,
     rootNode: Element,
     selectorCache: { [selector: string]: Element[] },
-    selectors: Markup.Selectors,
+    selectors: MarkupSelectors,
   ) {
     const merge: Element[] = []
     const result: Dictionary<
@@ -223,7 +241,7 @@ export class AttrManager {
 
   protected updateRelativeAttrs(
     elem: Element,
-    processedAttrs: AttrManager.ProcessedAttrs,
+    processedAttrs: AttrManagerProcessedAttrs,
     refBBox: Rectangle,
   ) {
     const rawAttrs = processedAttrs.raw || {}
@@ -256,7 +274,7 @@ export class AttrManager {
               ...ret,
             }
           } else if (ret != null) {
-            // @ts-ignore
+            // @ts-expect-error
             nodeAttrs[name] = ret
           }
         }
@@ -351,7 +369,7 @@ export class AttrManager {
   update(
     rootNode: Element,
     attrs: Attr.CellAttrs,
-    options: AttrManager.UpdateOptions,
+    options: AttrManagerUpdateOptions,
   ) {
     const selectorCache: { [selector: string]: Element[] } = {}
     const nodesAttrs = this.findAttrs(
@@ -371,7 +389,7 @@ export class AttrManager {
       node: Element
       refNode: Element | null
       attributes: Attr.ComplexAttrs | null
-      processedAttributes: AttrManager.ProcessedAttrs
+      processedAttributes: AttrManagerProcessedAttrs
     }[] = []
 
     nodesAttrs.each((data) => {
@@ -457,7 +475,7 @@ export class AttrManager {
         }
       }
 
-      let processedAttrs
+      let processedAttrs: AttrManagerProcessedAttrs
       if (options.attrs && item.attributes) {
         // If there was a special attribute affecting the position amongst
         // passed-in attributes we have to merge it with the rest of the
@@ -488,26 +506,5 @@ export class AttrManager {
 
       this.updateRelativeAttrs(node, processedAttrs, refBBox)
     })
-  }
-}
-
-export namespace AttrManager {
-  export interface UpdateOptions {
-    rootBBox: Rectangle
-    selectors: Markup.Selectors
-    scalableNode?: Element | null
-    rotatableNode?: Element | null
-    /**
-     * Rendering only the specified attributes.
-     */
-    attrs?: Attr.CellAttrs | null
-  }
-
-  export interface ProcessedAttrs {
-    raw: Attr.ComplexAttrs
-    normal?: Attr.SimpleAttrs | undefined
-    set?: Attr.ComplexAttrs | undefined
-    offset?: Attr.ComplexAttrs | undefined
-    position?: Attr.ComplexAttrs | undefined
   }
 }

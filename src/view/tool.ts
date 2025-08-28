@@ -1,8 +1,8 @@
-import { Dom, ObjectExt, StringExt, KeyValue } from '../common'
-import { NodeTool, EdgeTool } from '../registry/tool'
-import { View } from './view'
+import { Dom, type KeyValue, ObjectExt, StringExt } from '../common'
+import { EdgeTool, NodeTool } from '../registry/tool'
 import { CellView } from './cell'
-import { Markup } from './markup'
+import { Markup, type MarkupType } from './markup'
+import { View } from './view'
 
 export class ToolsView extends View {
   public tools: ToolsView.ToolItem[] | null
@@ -298,20 +298,20 @@ export namespace ToolsView {
     }
 
     public static getDefaults<T extends ToolItem.Options>() {
-      return this.defaults as T
+      return ToolItem.defaults as T
     }
 
     public static config<T extends ToolItem.Options = ToolItem.Options>(
       options: Partial<T>,
     ) {
-      this.defaults = this.getOptions(options)
+      ToolItem.defaults = ToolItem.getOptions(options)
     }
 
     public static getOptions<T extends ToolItem.Options = ToolItem.Options>(
       options: Partial<T>,
     ): T {
       return ObjectExt.merge(
-        ObjectExt.cloneDeep(this.getDefaults()),
+        ObjectExt.cloneDeep(ToolItem.getDefaults()),
         options,
       ) as T
     }
@@ -470,7 +470,7 @@ export namespace ToolsView {
       tagName?: string
       isSVGElement?: boolean
       className?: string
-      markup?: Exclude<Markup, string>
+      markup?: Exclude<MarkupType, string>
       events?: View.Events | null
       documentEvents?: View.Events | null
       focusOpacity?: number
@@ -480,7 +480,9 @@ export namespace ToolsView {
   export namespace ToolItem {
     export type Definition =
       | typeof ToolItem
-      | (new (options: ToolItem.Options) => ToolItem)
+      | (new (
+          options: ToolItem.Options,
+        ) => ToolItem)
 
     let counter = 0
     function getClassName(name?: string) {

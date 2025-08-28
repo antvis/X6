@@ -1,23 +1,24 @@
-import { Rectangle } from '../geometry'
-import { ObjectExt, Dom, Nilable } from '../common'
+import { type Dom, type Nilable, ObjectExt } from '../common'
 import { Config } from '../config'
-import { Graph } from '../graph'
-import { GridManager } from './grid'
-import { BackgroundManager } from './background'
-import { PanningManager } from './panning'
-import { MouseWheel } from './mousewheel'
-import { Edge as StandardEdge } from '../shape'
-import { Model, Cell, Node, Edge } from '../model'
-import { CellView, NodeView, EdgeView, Markup } from '../view'
-import {
-  Router,
-  Connector,
-  NodeAnchor,
-  EdgeAnchor,
+import type { Rectangle } from '../geometry'
+import type { Graph } from '../graph'
+import type { Cell, Edge, Model, Node } from '../model'
+import type { PortManager } from '../model/port'
+import type {
   ConnectionPoint,
+  Connector,
+  EdgeAnchor,
+  NodeAnchor,
+  Router,
 } from '../registry'
-import { HighlightManager } from './highlight'
-import { PortManager } from '../model/port'
+import { Edge as StandardEdge } from '../shape'
+import { type CellView, type EdgeView, Markup, type NodeView } from '../view'
+import type { MarkupSelectors } from '../view/markup'
+import type { BackgroundManager } from './background'
+import type { GridManager } from './grid'
+import type { HighlightManager } from './highlight'
+import type { MouseWheel } from './mousewheel'
+import type { PanningManager } from './panning'
 
 export namespace Options {
   interface Common {
@@ -385,18 +386,18 @@ export namespace Options {
     node: Node
     port: PortManager.Port
     container: Element
-    selectors?: Markup.Selectors
+    selectors?: MarkupSelectors
     labelContainer?: Element
-    labelSelectors?: Markup.Selectors | null
+    labelSelectors?: MarkupSelectors | null
     contentContainer: Element
-    contentSelectors?: Markup.Selectors
+    contentSelectors?: MarkupSelectors
   }
 
   export interface OnEdgeLabelRenderedArgs {
     edge: Edge
     label: Edge.Label
     container: Element
-    selectors: Markup.Selectors
+    selectors: MarkupSelectors
   }
 }
 
