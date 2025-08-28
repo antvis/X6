@@ -83,7 +83,7 @@ describe('Port', () => {
       const data = { items: [] }
       const portManager = new PortManager(data)
       const group = portManager.getGroup('group1')
-      expect(group).toBeNull()
+      expect(group).toBeUndefined()
     })
 
     it('should return null if the groupName is null or undefined', () => {
