@@ -60,8 +60,8 @@ describe('shape/text-block', () => {
 
     const refBBox = new Rectangle(10, 10, 100, 100)
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    // @ts-expect-error
     expect(
+      // @ts-expect-error
       TextBlockConfig.attrHooks.text.position('x6', { refBBox, elem }),
     ).toEqual({
       x: 60,
