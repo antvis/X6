@@ -242,4 +242,4 @@ export class ToolItem<
   }
 }
 
-export const ToolItemToStringTag = `X6.tool-item`
+export const ToolItemToStringTag = `X6.${ToolItem.name}`
