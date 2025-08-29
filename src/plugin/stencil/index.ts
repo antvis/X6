@@ -660,7 +660,7 @@ export namespace Stencil {
   }
 }
 
-namespace ClassNames {
+export namespace ClassNames {
   export const base = 'widget-stencil'
   export const title = `${base}-title`
   export const search = `${base}-search`
