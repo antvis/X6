@@ -1,15 +1,15 @@
-import { Point, Line } from '../../geometry'
-import { Dom, ObjectExt, FunctionExt } from '../../common'
+import { Dom, FunctionExt, ObjectExt } from '../../common'
+import { Line, Point } from '../../geometry'
+import type { Graph } from '../../graph'
+import type { Edge } from '../../model/edge'
+import type { CellView } from '../../view/cell'
+import type { EdgeView } from '../../view/edge'
+import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
 import { View } from '../../view/view'
-import { ToolsView } from '../../view/tool'
+import type { Attr } from '../attr'
 import * as Util from './util'
-import { Attr } from '../attr'
-import { CellView } from '../../view/cell'
-import { EdgeView } from '../../view/edge'
-import { Edge } from '../../model/edge'
-import { Graph } from '../../graph'
 
-export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
+export class Segments extends ToolItem<EdgeView, Segments.Options> {
   protected handles: Segments.Handle[] = []
 
   protected get vertices() {
@@ -356,7 +356,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
 }
 
 export namespace Segments {
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends ToolItemOptions {
     threshold: number
     precision?: number
     snapRadius: number

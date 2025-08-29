@@ -1,14 +1,14 @@
-import { Point } from '../../geometry'
-import { Dom, ModifierKey } from '../../common'
+import { type Dom, ModifierKey } from '../../common'
 import { Config } from '../../config'
+import { Point } from '../../geometry'
+import type { Graph } from '../../graph'
+import type { Edge } from '../../model/edge'
+import type { EdgeView } from '../../view/edge'
+import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
 import { View } from '../../view/view'
-import { ToolsView } from '../../view/tool'
-import { EdgeView } from '../../view/edge'
-import { Edge } from '../../model/edge'
-import { Attr } from '../attr'
-import { Graph } from '../../graph'
+import type { Attr } from '../attr'
 
-export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
+export class Vertices extends ToolItem<EdgeView, Vertices.Options> {
   protected handles: Vertices.Handle[] = []
 
   protected get vertices() {
@@ -289,7 +289,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 }
 
 export namespace Vertices {
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends ToolItemOptions {
     snapRadius?: number
     addable?: boolean
     removable?: boolean

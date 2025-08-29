@@ -26,7 +26,7 @@ import {
   type MarkupType,
 } from './markup'
 import { NodeView } from './node'
-import type { ToolsView } from './tool'
+import type { ToolsView, ToolsViewOptions } from './tool'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -392,7 +392,7 @@ export class EdgeView<
 
   protected renderTools() {
     const tools = this.cell.getTools()
-    this.addTools(tools as ToolsView.Options)
+    this.addTools(tools as ToolsViewOptions)
     return this
   }
 

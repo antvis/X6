@@ -1,13 +1,17 @@
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
+import {
+  ToolItem,
+  type ToolItemDefinition,
+  type ToolItemOptions,
+} from '../../view/tool'
 import { Registry } from '../registry'
-import { ToolsView } from '../../view/tool'
-import { Button } from './button'
-import { Boundary } from './boundary'
-import { Vertices } from './vertices'
-import { Segments } from './segments'
 import { SourceAnchor, TargetAnchor } from './anchor'
 import { SourceArrowhead, TargetArrowhead } from './arrowhead'
+import { Boundary } from './boundary'
+import { Button } from './button'
 import { CellEditor } from './editor'
+import { Segments } from './segments'
+import { Vertices } from './vertices'
 
 export namespace NodeTool {
   export const presets = {
@@ -17,12 +21,12 @@ export namespace NodeTool {
     'node-editor': CellEditor.NodeEditor,
   }
 
-  export type Definition = ToolsView.ToolItem.Definition
+  export type Definition = ToolItemDefinition
 
   export const registry = Registry.create<
     Definition,
     Presets,
-    ToolsView.ToolItem.Options & { inherit?: string } & KeyValue
+    ToolItemOptions & { inherit?: string } & KeyValue
   >({
     type: 'node tool',
     process(name, options) {
@@ -30,7 +34,7 @@ export namespace NodeTool {
         return options
       }
 
-      let parent = ToolsView.ToolItem
+      let parent = ToolItem
       const { inherit, ...others } = options
       if (inherit) {
         const base = this.get(inherit)
@@ -68,7 +72,7 @@ export namespace NodeTool {
 
   export interface ManaualItem {
     name: Exclude<string, NativeNames>
-    args?: ToolsView.ToolItem.Options
+    args?: ToolItemOptions
   }
 }
 
@@ -91,7 +95,7 @@ export namespace EdgeTool {
   export const registry = Registry.create<
     Definition,
     Presets,
-    ToolsView.ToolItem.Options & { inherit?: string } & KeyValue
+    ToolItemOptions & { inherit?: string } & KeyValue
   >({
     type: 'edge tool',
     process(name, options) {
@@ -99,7 +103,7 @@ export namespace EdgeTool {
         return options
       }
 
-      let parent = ToolsView.ToolItem
+      let parent = ToolItem
       const { inherit, ...others } = options
       if (inherit) {
         const base = this.get(inherit)
@@ -137,6 +141,6 @@ export namespace EdgeTool {
 
   export interface ManaualItem {
     name: Exclude<string, NativeNames>
-    args?: ToolsView.ToolItem.Options
+    args?: ToolItemOptions
   }
 }

@@ -26,7 +26,8 @@ import {
 } from './flag'
 import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from './markup'
 import type { NodeView } from './node'
-import { ToolsView } from './tool'
+import { ToolsView, type ToolsViewOptions } from './tool'
+import type { ToolsViewUpdateOptions } from './tool/tool-view'
 import { View } from './view'
 
 export class CellView<
@@ -559,9 +560,9 @@ export class CellView<
     return tools.name === name
   }
 
-  addTools(options: ToolsView.Options | null): this
+  addTools(options: ToolsViewOptions | null): this
   addTools(tools: ToolsView | null): this
-  addTools(config: ToolsView | ToolsView.Options | null) {
+  addTools(config: ToolsView | ToolsViewOptions | null) {
     this.removeTools()
     if (config) {
       if (!this.can('toolsAddable')) {
@@ -577,7 +578,7 @@ export class CellView<
     return this
   }
 
-  updateTools(options: ToolsView.UpdateOptions = {}) {
+  updateTools(options: ToolsViewUpdateOptions = {}) {
     if (this.tools) {
       this.tools.update(options)
     }
@@ -608,7 +609,7 @@ export class CellView<
 
   protected renderTools() {
     const tools = this.cell.getTools()
-    this.addTools(tools as ToolsView.Options)
+    this.addTools(tools as ToolsViewOptions)
     return this
   }
 
