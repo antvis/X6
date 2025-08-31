@@ -1,14 +1,14 @@
-import { Point } from '../../geometry'
 import { Dom, FunctionExt } from '../../common'
-import { Attr } from '../attr'
-import { Edge } from '../../model/edge'
-import { Node } from '../../model/node'
-import { EdgeView } from '../../view/edge'
-import { CellView } from '../../view/cell'
-import { ToolsView } from '../../view/tool'
+import { Point } from '../../geometry'
+import type { Edge } from '../../model/edge'
+import type { Node } from '../../model/node'
+import type { CellView } from '../../view/cell'
+import type { EdgeView } from '../../view/edge'
+import { ToolItem, type ToolItemOptions } from '../../view/tool'
+import type { Attr } from '../attr'
 import * as Util from './util'
 
-class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
+class Anchor extends ToolItem<EdgeView, Anchor.Options> {
   protected get type() {
     return this.options.type!
   }
@@ -256,7 +256,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
 }
 
 namespace Anchor {
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends ToolItemOptions {
     type?: Edge.TerminalType
     snapRadius?: number
     areaPadding?: number
