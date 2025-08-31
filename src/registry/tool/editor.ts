@@ -1,10 +1,10 @@
-import { Point } from '../../geometry'
 import { Dom, FunctionExt, NumberExt, ObjectExt, Util } from '../../common'
-import { ToolsView } from '../../view/tool'
-import { Cell, Edge } from '../../model'
-import { CellView, NodeView, EdgeView } from '../../view'
+import { Point } from '../../geometry'
+import type { Cell, Edge } from '../../model'
+import type { CellView, EdgeView, NodeView } from '../../view'
+import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
 
-export class CellEditor extends ToolsView.ToolItem<
+export class CellEditor extends ToolItem<
   NodeView | EdgeView,
   CellEditor.CellEditorOptions & { event: Dom.EventObject }
 > {
@@ -276,7 +276,7 @@ export class CellEditor extends ToolsView.ToolItem<
 }
 
 export namespace CellEditor {
-  export interface CellEditorOptions extends ToolsView.ToolItem.Options {
+  export interface CellEditorOptions extends ToolItemOptions {
     x?: number | string
     y?: number | string
     width?: number

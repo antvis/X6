@@ -4,13 +4,10 @@ import type { Cell } from '../../model'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
 import type { NodeView } from '../../view/node'
-import { ToolsView } from '../../view/tool'
+import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { getViewBBox } from './util'
 
-export class Button extends ToolsView.ToolItem<
-  EdgeView | NodeView,
-  Button.Options
-> {
+export class Button extends ToolItem<EdgeView | NodeView, Button.Options> {
   protected onRender() {
     Dom.addClass(this.container, this.prefixClassName('cell-tool-button'))
     this.update()
@@ -124,7 +121,7 @@ export class Button extends ToolsView.ToolItem<
 }
 
 export namespace Button {
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends ToolItemOptions {
     x?: number | string
     y?: number | string
     distance?: number | string

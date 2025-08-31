@@ -1,11 +1,11 @@
-import { Point } from '../../geometry'
 import { Dom } from '../../common'
-import { Attr } from '../attr'
-import { Edge } from '../../model/edge'
-import { EdgeView } from '../../view/edge'
-import { ToolsView } from '../../view/tool'
+import { Point } from '../../geometry'
+import type { Edge } from '../../model/edge'
+import type { EdgeView } from '../../view/edge'
+import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
+import type { Attr } from '../attr'
 
-class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
+class Arrowhead extends ToolItem<EdgeView, Arrowhead.Options> {
   protected get type() {
     return this.options.type!
   }
@@ -112,7 +112,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
 }
 
 namespace Arrowhead {
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends ToolItemOptions {
     attrs?: Attr.SimpleAttrs
     type?: Edge.TerminalType
     ratio?: number
