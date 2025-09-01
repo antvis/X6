@@ -12,7 +12,9 @@ export function getView(cid: string) {
   return VIEWS[cid] || null
 }
 
-export function registerView(cid: string, view: View) {}
+export function registerView(cid: string, view: View) {
+  VIEWS[cid] = view
+}
 
 export function unregisterView(cid: string) {
   delete VIEWS[cid]

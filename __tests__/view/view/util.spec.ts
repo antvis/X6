@@ -39,7 +39,9 @@ describe('view/util', () => {
       // Access the internal VIEWS object through registerView side effect
       registerView('test-cid', mockView)
       // Since registerView is empty, we need to test the actual implementation
-      expect(getView('test-cid')).toBeNull()
+      expect(getView('test-cid')).toEqual({
+        id: 'test',
+      })
     })
   })
 
