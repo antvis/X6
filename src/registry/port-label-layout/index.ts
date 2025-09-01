@@ -1,14 +1,14 @@
-import { Point, Rectangle } from '../../geometry'
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
+import type { Point, Rectangle } from '../../geometry'
+import type { CellAttrs } from '../attr'
 import { Registry } from '../registry'
-import { Attr } from '../attr'
 import * as layouts from './main'
 
 export namespace PortLabelLayout {
   export interface Result {
     position: Point.PointLike
     angle: number
-    attrs: Attr.CellAttrs
+    attrs: CellAttrs
   }
 
   export type Definition<T> = (
@@ -23,7 +23,7 @@ export namespace PortLabelLayout {
     x?: number
     y?: number
     angle?: number
-    attrs?: Attr.CellAttrs
+    attrs?: CellAttrs
   }
 }
 

@@ -15,7 +15,7 @@ import type { Graph } from '../graph'
 import type { Cell } from '../model/cell'
 import type { Edge } from '../model/edge'
 import type { Model } from '../model/model'
-import type { Attr } from '../registry/attr'
+import type { CellAttrs, SimpleAttrs } from '../registry/attr'
 import { Registry } from '../registry/registry'
 import { AttrManager, type AttrManagerUpdateOptions } from './attr'
 import { Cache } from './cache'
@@ -160,7 +160,7 @@ export class CellView<
     return
   }
 
-  protected getContainerAttrs(): Nilable<Attr.SimpleAttrs> {
+  protected getContainerAttrs(): Nilable<SimpleAttrs> {
     return {
       'data-cell-id': this.cell.id,
       'data-shape': this.cell.shape,
@@ -403,7 +403,7 @@ export class CellView<
 
   updateAttrs(
     rootNode: Element,
-    attrs: Attr.CellAttrs,
+    attrs: CellAttrs,
     options: Partial<AttrManagerUpdateOptions> = {},
   ) {
     if (options.rootBBox == null) {

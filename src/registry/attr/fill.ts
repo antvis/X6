@@ -1,7 +1,7 @@
 import { ObjectExt } from '../../common'
-import { Attr } from './index'
+import type { Definition } from './index'
 
-export const fill: Attr.Definition = {
+export const fill: Definition = {
   qualify: ObjectExt.isPlainObject,
   set(fill, { view }) {
     return `url(#${view.graph.defineGradient(fill as any)})`

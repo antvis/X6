@@ -1,7 +1,7 @@
-import { ObjectExt, Dom } from '../../common'
-import { Attr } from './index'
+import { Dom, ObjectExt } from '../../common'
+import type { Definition } from './index'
 
-export const style: Attr.Definition = {
+export const style: Definition = {
   qualify: ObjectExt.isPlainObject,
   set(styles, { elem }) {
     Dom.css(elem, styles as Record<string, string | number>)

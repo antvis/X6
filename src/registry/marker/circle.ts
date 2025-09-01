@@ -1,9 +1,9 @@
 import { Path } from '../../geometry'
-import { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
+import type { Marker } from './index'
 import { normalize } from './util'
-import { Marker } from './index'
 
-export interface CircleMarkerOptions extends Attr.SimpleAttrs {
+export interface CircleMarkerOptions extends SimpleAttrs {
   r?: number
 }
 

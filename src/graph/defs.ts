@@ -1,5 +1,6 @@
-import { StringExt, Dom, Vector } from '../common'
-import { Attr, Filter, Marker } from '../registry'
+import { Dom, StringExt, Vector } from '../common'
+import type { SimpleAttrs } from '../registry'
+import { Filter, type Marker } from '../registry'
 import { Markup } from '../view'
 import { Base } from './base'
 
@@ -154,11 +155,11 @@ export namespace DefsManager {
       color: string
       opacity?: number
     }[]
-    attrs?: Attr.SimpleAttrs
+    attrs?: SimpleAttrs
   }
 
   export type FilterOptions = (Filter.NativeItem | Filter.ManaualItem) & {
     id?: string
-    attrs?: Attr.SimpleAttrs
+    attrs?: SimpleAttrs
   }
 }

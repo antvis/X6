@@ -1,7 +1,6 @@
 import { type KeyValue, ObjectExt, type Size, StringExt } from '../common'
 import { Point, Polyline } from '../geometry'
 import type {
-  Attr,
   ConnectionPoint,
   Connector,
   EdgeAnchor,
@@ -973,7 +972,7 @@ export namespace Edge {
 export namespace Edge {
   export interface Label extends KeyValue {
     markup?: MarkupType
-    attrs?: Attr.CellAttrs
+    attrs?: CellAttrs
     /**
      * If the distance is in the `[0,1]` range (inclusive), then the position
      * of the label is defined as a percentage of the total length of the edge

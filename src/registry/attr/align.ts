@@ -1,20 +1,20 @@
-import { Point } from '../../geometry'
 import { NumberExt } from '../../common'
-import { Attr } from './index'
+import { Point } from '../../geometry'
+import type { Definition, OffsetFunction } from './index'
 
 // `x-align` when set to `middle` causes centering of the subelement around its new x coordinate.
 // `x-align` when set to `right` uses the x coordinate as referenced to the right of the bbox.
-export const xAlign: Attr.Definition = {
+export const xAlign: Definition = {
   offset: offsetWrapper('x', 'width', 'right'),
 }
 
 // `y-align` when set to `middle` causes centering of the subelement around its new y coordinate.
 // `y-align` when set to `bottom` uses the y coordinate as referenced to the bottom of the bbox.
-export const yAlign: Attr.Definition = {
+export const yAlign: Definition = {
   offset: offsetWrapper('y', 'height', 'bottom'),
 }
 
-export const resetOffset: Attr.Definition = {
+export const resetOffset: Definition = {
   offset(val, { refBBox }) {
     return val ? { x: -refBBox.x, y: -refBBox.y } : { x: 0, y: 0 }
   },
@@ -24,7 +24,7 @@ function offsetWrapper(
   axis: 'x' | 'y',
   dimension: 'width' | 'height',
   corner: 'right' | 'bottom',
-): Attr.OffsetFunction {
+): OffsetFunction {
   return (value, { refBBox }) => {
     const point = new Point()
     let delta
