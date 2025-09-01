@@ -1,4 +1,4 @@
-import { Dom } from '../common'
+import { Dom, disposable } from '../common'
 import { Graph } from '../graph/graph'
 import type { Cell } from '../model/cell'
 import { Node } from '../model/node'
@@ -135,7 +135,7 @@ class View extends NodeView<HTML> {
     }
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.cell.off('change:*', this.onCellChangeAny, this)
   }

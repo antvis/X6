@@ -1,8 +1,8 @@
-import { Basecoat, CssLoader, KeyValue } from '../../common'
-import { Node } from '../../model'
-import { Graph, EventArgs } from '../../graph'
-import { TransformImpl } from './transform'
+import { Basecoat, CssLoader, disposable, type KeyValue } from '../../common'
+import type { EventArgs, Graph } from '../../graph'
+import type { Node } from '../../model'
 import { content } from './style/raw'
+import { TransformImpl } from './transform'
 import './api'
 
 export class Transform
@@ -155,7 +155,7 @@ export class Transform
     this.widgets.clear()
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.clearWidgets()
     this.stopListening()

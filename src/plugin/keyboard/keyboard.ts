@@ -1,6 +1,11 @@
 import Mousetrap from 'mousetrap'
-import { Disposable, FunctionExt, IDisablable } from '../../common'
-import { EventArgs, Graph } from '../../graph'
+import {
+  Disposable,
+  disposable,
+  FunctionExt,
+  type IDisablable,
+} from '../../common'
+import type { EventArgs, Graph } from '../../graph'
 import { formatKey, isGraphEvent, isInputEvent } from './util'
 
 /**
@@ -132,7 +137,7 @@ export class KeyboardImpl extends Disposable implements IDisablable {
     return allowed
   }
 
-  @Disposable.dispose()
+  @disposable()
   dispose() {
     this.mousetrap.reset()
   }

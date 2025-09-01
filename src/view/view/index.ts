@@ -1,8 +1,15 @@
-import { Basecoat, Dom, type KeyValue } from '../common'
-import type { EventArgs } from '../common/event/types'
-import { Config } from '../config'
-import type { Attr } from '../registry'
-import type { MarkupSelectors } from './markup'
+import {
+  Basecoat,
+  Dom,
+  disposable,
+  type KeyValue,
+  StringExt,
+} from '../../common'
+import type { EventArgs } from '../../common/event/types'
+import { Config } from '../../config'
+import type { Attr } from '../../registry'
+import type { MarkupSelectors } from '../markup'
+import { normalizeEvent, registerView, unregisterView, viewFind } from './util'
 
 export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   public readonly cid: string
@@ -20,8 +27,8 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
 
   constructor() {
     super()
-    this.cid = Private.uniqueId()
-    View.views[this.cid] = this
+    this.cid = StringExt.uniqueId('v')
+    registerView(this.cid, this)
   }
 
   confirmUpdate(flag: number, options: any): number {
@@ -42,7 +49,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     if (elem === this.container) {
       this.removeEventListeners(document)
       this.onRemove()
-      delete View.views[this.cid]
+      unregisterView(this.cid)
       if (this.disposeContainer) {
         this.unmount(elem)
       }
@@ -122,7 +129,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     rootElem: Element = this.container,
     selectors: MarkupSelectors = this.selectors,
   ) {
-    return View.find(selector, rootElem, selectors).elems
+    return viewFind(selector, rootElem, selectors).elems
   }
 
   findOne(
@@ -366,10 +373,10 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   }
 
   normalizeEvent<T extends Dom.EventObject>(evt: T) {
-    return View.normalizeEvent(evt)
+    return normalizeEvent(evt)
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.remove()
   }
@@ -377,79 +384,4 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
 
 export namespace View {
   export type Events = KeyValue<string | Function>
-}
-
-export namespace View {
-  export function createElement(tagName?: string, isSvgElement?: boolean) {
-    return isSvgElement
-      ? Dom.createSvgElement(tagName || 'g')
-      : (Dom.createElementNS(tagName || 'div') as HTMLElement)
-  }
-
-  export function find(
-    selector: string | null | undefined,
-    rootElem: Element,
-    selectors: MarkupSelectors,
-  ): { isCSSSelector?: boolean; elems: Element[] } {
-    if (!selector || selector === '.') {
-      return { elems: [rootElem] }
-    }
-
-    if (selectors) {
-      const nodes = selectors[selector]
-      if (nodes) {
-        return { elems: Array.isArray(nodes) ? nodes : [nodes] }
-      }
-    }
-
-    if (Config.useCSSSelector) {
-      const validSelector = selector.includes('>')
-        ? `:scope ${selector}`
-        : selector
-      return {
-        isCSSSelector: true,
-        // $(rootElem).find(selector).toArray() as Element[]
-        elems: Array.prototype.slice.call(
-          rootElem.querySelectorAll(validSelector),
-        ),
-      }
-    }
-
-    return { elems: [] }
-  }
-
-  export function normalizeEvent<T extends Dom.EventObject>(evt: T) {
-    let normalizedEvent = evt
-    const originalEvent = evt.originalEvent as TouchEvent
-    const touchEvt: any = originalEvent?.changedTouches?.[0]
-
-    if (touchEvt) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const key in evt) {
-        if (touchEvt[key] === undefined) {
-          touchEvt[key] = (evt as any)[key]
-        }
-      }
-      normalizedEvent = touchEvt
-    }
-
-    return normalizedEvent
-  }
-}
-
-export namespace View {
-  export const views: { [cid: string]: View } = {}
-
-  export function getView(cid: string) {
-    return views[cid] || null
-  }
-}
-
-namespace Private {
-  let counter = 0
-  export function uniqueId() {
-    const id = `v${counter}`
-    counter += 1
-    return id
-  }
 }

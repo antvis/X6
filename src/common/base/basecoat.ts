@@ -1,22 +1,18 @@
 import { Events } from '../event'
-import { EventArgs } from '../event/types'
+import type { EventArgs } from '../event/types'
 import { ObjectExt } from '../object'
-import { Disposable } from './disposable'
+import { Disposable, disposable } from './disposable'
 
 export class Basecoat<A extends EventArgs = any>
   extends Events<A>
   implements Disposable
 {
-  @Disposable.dispose()
+  @disposable()
   dispose() {
     this.off()
   }
 }
 
 export interface Basecoat extends Disposable {}
-
-export namespace Basecoat {
-  export const dispose = Disposable.dispose
-}
 
 ObjectExt.applyMixins(Basecoat, Disposable)

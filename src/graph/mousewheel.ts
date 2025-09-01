@@ -1,4 +1,4 @@
-import { ModifierKey, Dom, NumberExt, Disposable } from '../common'
+import { Disposable, Dom, disposable, ModifierKey, NumberExt } from '../common'
 import { Base } from './base'
 
 export class MouseWheel extends Base {
@@ -138,7 +138,7 @@ export class MouseWheel extends Base {
     }
   }
 
-  @Disposable.dispose()
+  @disposable()
   dispose() {
     this.disable()
   }

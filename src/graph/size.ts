@@ -1,4 +1,4 @@
-import { SizeSensor } from '../common'
+import { disposable, SizeSensor } from '../common'
 import { Base } from './base'
 
 export class SizeManager extends Base {
@@ -51,7 +51,7 @@ export class SizeManager extends Base {
     }
   }
 
-  @Base.dispose()
+  @disposable()
   dispose() {
     SizeSensor.clear(this.graph.container)
   }

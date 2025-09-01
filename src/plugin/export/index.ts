@@ -1,15 +1,16 @@
-import { Rectangle } from '../../geometry'
 import {
   Basecoat,
   DataUri,
   Dom,
+  disposable,
   FunctionExt,
-  KeyValue,
+  type KeyValue,
   NumberExt,
-  Size,
+  type Size,
   Vector,
 } from '../../common'
-import { Graph } from '../../graph'
+import { Rectangle } from '../../geometry'
+import type { Graph } from '../../graph'
 import './api'
 
 export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
@@ -54,9 +55,8 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     // without instance.hasOwnProperty method cause by ts rule.
     // the condition will be false if these properties have been set undefined in the target,
     // but will be true if these properties are not in the target, cause the doc.
-    !Object.prototype.hasOwnProperty.call(options, 'copyStyle') &&
-      (options.copyStyles = true)
-    !Object.prototype.hasOwnProperty.call(options, 'serializeImages') &&
+    !Object.hasOwn(options, 'copyStyle') && (options.copyStyles = true)
+    !Object.hasOwn(options, 'serializeImages') &&
       (options.serializeImages = true)
 
     const rawSVG = this.view.svg
@@ -340,7 +340,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     this.graph.trigger(name, args)
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose(): void {
     this.off()
   }

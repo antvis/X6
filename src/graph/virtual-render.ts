@@ -1,4 +1,4 @@
-import { FunctionExt } from '../common'
+import { disposable, FunctionExt } from '../common'
 import { Base } from './base'
 
 export class VirtualRenderManager extends Base {
@@ -39,7 +39,7 @@ export class VirtualRenderManager extends Base {
     }
   }
 
-  @Base.dispose()
+  @disposable()
   dispose() {
     this.stopListening()
   }

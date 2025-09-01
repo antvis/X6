@@ -12,6 +12,7 @@ import { Attr } from '../registry/attr'
 import type { CellView } from './cell'
 import type { MarkupSelectors } from './markup'
 import { View } from './view'
+import { viewFind } from './view/util'
 
 export interface AttrManagerUpdateOptions {
   rootBBox: Rectangle
@@ -178,7 +179,7 @@ export class AttrManager {
         return
       }
 
-      const { isCSSSelector, elems } = View.find(selector, rootNode, selectors)
+      const { isCSSSelector, elems } = viewFind(selector, rootNode, selectors)
       selectorCache[selector] = elems
       for (let i = 0, l = elems.length; i < l; i += 1) {
         const elem = elems[i]

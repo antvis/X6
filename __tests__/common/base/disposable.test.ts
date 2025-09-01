@@ -1,9 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest'
 import {
   Disposable,
-  IDisposable,
-  DisposableSet,
   DisposableDelegate,
+  DisposableSet,
+  disposable,
+  type IDisposable,
 } from '../../../src/common/base/disposable'
 
 class TestDisposable implements IDisposable {
@@ -21,7 +22,8 @@ class TestDisposable implements IDisposable {
 class AOPTest extends Disposable {
   a = 1
 
-  @Disposable.dispose()
+  // @ts-expect-error
+  @disposable()
   dispose() {
     this.a = 0
   }
