@@ -47,6 +47,10 @@ export class Disposable implements IDisposable {
   }
 }
 
+/**
+ * This is a decorator that automatically disposes the target object when the decorated method is called.
+ * @returns A method decorator.
+ */
 export function disposable() {
   return (target: any, methodName: string, descriptor: PropertyDescriptor) => {
     const raw = descriptor.value
@@ -103,6 +107,19 @@ export class DisposableSet implements IDisposable {
   private isDisposed = false // eslint-disable-line:variable-name
 
   private items = new Set<IDisposable>()
+
+  /**
+   * Create a disposable set from an iterable of items.
+   * @param items - The iterable or array-like object of interest.
+   * @returns A new disposable initialized with the given items.
+   */
+  public static from(items: IDisposable[]): DisposableSet {
+    const set = new DisposableSet()
+    items.forEach((item) => {
+      set.add(item)
+    })
+    return set
+  }
 
   /**
    * Test whether the set has been disposed.
@@ -169,22 +186,5 @@ export class DisposableSet implements IDisposable {
    */
   clear(): void {
     this.items.clear()
-  }
-}
-
-export namespace DisposableSet {
-  /**
-   * Create a disposable set from an iterable of items.
-   *
-   * @param items - The iterable or array-like object of interest.
-   *
-   * @returns A new disposable initialized with the given items.
-   */
-  export function from(items: IDisposable[]): DisposableSet {
-    const set = new DisposableSet()
-    items.forEach((item) => {
-      set.add(item)
-    })
-    return set
   }
 }
