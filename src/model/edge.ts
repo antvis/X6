@@ -6,6 +6,7 @@ import type {
   EdgeAnchor,
   NodeAnchor,
   Router,
+  CellAttrs,
 } from '../registry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
@@ -533,8 +534,8 @@ export class Edge<
             return null
           })
         : current
-          ? [...current]
-          : []
+        ? [...current]
+        : []
 
     const removed =
       previous && current
@@ -550,8 +551,8 @@ export class Edge<
             return null
           })
         : previous
-          ? [...previous]
-          : []
+        ? [...previous]
+        : []
 
     if (added.length > 0) {
       this.notify('labels:added', { added, cell: this, edge: this })
@@ -651,8 +652,8 @@ export class Edge<
             return null
           })
         : current
-          ? [...current]
-          : []
+        ? [...current]
+        : []
 
     const removed =
       previous && current
@@ -663,8 +664,8 @@ export class Edge<
             return null
           })
         : previous
-          ? [...previous]
-          : []
+        ? [...previous]
+        : []
 
     if (added.length > 0) {
       this.notify('vertexs:added', { added, cell: this, edge: this })
