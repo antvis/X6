@@ -1,5 +1,5 @@
-import { Graph, EventArgs } from '../../graph'
-import { Disposable, CssLoader } from '../../common'
+import { CssLoader, Disposable, disposable } from '../../common'
+import type { EventArgs, Graph } from '../../graph'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
 import './api'
@@ -146,7 +146,7 @@ export class Snapline extends Disposable implements Graph.Plugin {
 
   // #endregion
 
-  @Disposable.dispose()
+  @disposable()
   dispose() {
     this.snaplineImpl.dispose()
     CssLoader.clean(this.name)

@@ -1,5 +1,5 @@
+import { disposable, ObjectExt } from '../common'
 import { Rectangle } from '../geometry'
-import { ObjectExt } from '../common'
 import { Background } from '../registry'
 import { Base } from './base'
 
@@ -170,7 +170,7 @@ export class BackgroundManager extends Base {
     this.draw()
   }
 
-  @Base.dispose()
+  @disposable()
   dispose() {
     this.clear()
     this.stopListening()

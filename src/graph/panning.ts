@@ -1,4 +1,4 @@
-import { Dom, ModifierKey } from '../common'
+import { Dom, disposable, ModifierKey } from '../common'
 import { Base } from './base'
 
 export class PanningManager extends Base {
@@ -228,7 +228,7 @@ export class PanningManager extends Base {
     }
   }
 
-  @Base.dispose()
+  @disposable()
   dispose() {
     this.stopListening()
   }

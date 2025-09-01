@@ -1,11 +1,11 @@
-import { Point, Rectangle } from '../geometry'
-import { FunctionExt, KeyValue, Basecoat } from '../common'
+import { Basecoat, disposable, FunctionExt, type KeyValue } from '../common'
 import { Dijkstra } from '../common/algorithm'
+import { type Point, Rectangle } from '../geometry'
+import type { Graph } from '../graph'
 import { Cell } from './cell'
+import { Collection } from './collection'
 import { Edge } from './edge'
 import { Node } from './node'
-import { Collection } from './collection'
-import { Graph } from '../graph'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
@@ -1325,7 +1325,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #endregion
 
-  @Model.dispose()
+  @disposable()
   dispose() {
     this.collection.dispose()
   }

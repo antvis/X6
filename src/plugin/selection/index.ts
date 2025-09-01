@@ -1,6 +1,12 @@
-import { Basecoat, ModifierKey, CssLoader, Dom } from '../../common'
-import { Graph, EventArgs } from '../../graph'
-import { Cell } from '../../model'
+import {
+  Basecoat,
+  CssLoader,
+  type Dom,
+  disposable,
+  ModifierKey,
+} from '../../common'
+import type { EventArgs, Graph } from '../../graph'
+import type { Cell } from '../../model'
 import { SelectionImpl } from './selection'
 import { content } from './style/raw'
 import './api'
@@ -445,7 +451,7 @@ export class Selection
     return this
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.stopListening()
     this.off()

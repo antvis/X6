@@ -1,8 +1,8 @@
-import { Rectangle, Point } from '../../geometry'
-import { Dom, ModifierKey, Basecoat, CssLoader } from '../../common'
-import { Graph, BackgroundManager, TransformManager } from '../../graph'
-import { Cell } from '../../model'
+import { Basecoat, CssLoader, Dom, disposable, ModifierKey } from '../../common'
 import { Config } from '../../config'
+import type { Point, Rectangle } from '../../geometry'
+import type { BackgroundManager, Graph, TransformManager } from '../../graph'
+import type { Cell } from '../../model'
 import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 import './api'
@@ -388,7 +388,7 @@ export class Scroller
     }
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.scrollerImpl.dispose()
     this.stopListening()

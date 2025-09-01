@@ -1,4 +1,4 @@
-import { CssLoader, Dom, FunctionExt } from '../../common'
+import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { type EventArgs, Graph } from '../../graph'
 import { View } from '../../view'
 import { content } from './style/raw'
@@ -329,7 +329,7 @@ export class MiniMap extends View implements Graph.Plugin {
     this.sourceGraph.centerPoint(cx, cy)
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.remove()
     CssLoader.clean(this.name)

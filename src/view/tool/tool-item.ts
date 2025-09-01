@@ -2,6 +2,7 @@ import { Dom, type KeyValue, ObjectExt } from '../../common'
 import type { CellView } from '../cell'
 import { Markup, type MarkupType } from '../markup'
 import { View } from '../view'
+import { createViewElement } from '../view/util'
 import type { ToolsView } from './tool-view'
 import { getClassName } from './util'
 
@@ -128,7 +129,7 @@ export class ToolItem<
     super()
 
     this.options = this.getOptions(options)
-    this.container = View.createElement(
+    this.container = createViewElement(
       this.options.tagName || 'g',
       this.options.isSVGElement !== false,
     )

@@ -3,6 +3,7 @@ import type { NonUndefined } from 'utility-types'
 import {
   ArrayExt,
   Basecoat,
+  disposable,
   FunctionExt,
   type KeyValue,
   ObjectExt,
@@ -1448,7 +1449,7 @@ export class Cell<
 
   // #region IDisposable
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.removeFromParent()
     this.store.dispose()
