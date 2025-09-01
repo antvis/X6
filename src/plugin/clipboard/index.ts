@@ -1,6 +1,6 @@
-import { Basecoat } from '../../common'
-import { Graph } from '../../graph'
-import { Cell } from '../../model'
+import { Basecoat, disposable } from '../../common'
+import type { Graph } from '../../graph'
+import type { Cell } from '../../model'
 import { ClipboardImpl } from './clipboard'
 import './api'
 
@@ -122,7 +122,7 @@ export class Clipboard
     this.graph.trigger(name, args)
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.clean(true)
     this.off()

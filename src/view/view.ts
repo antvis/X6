@@ -1,4 +1,4 @@
-import { Basecoat, Dom, type KeyValue } from '../common'
+import { Basecoat, Dom, disposable, type KeyValue } from '../common'
 import type { EventArgs } from '../common/event/types'
 import { Config } from '../config'
 import type { Attr } from '../registry'
@@ -369,7 +369,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return View.normalizeEvent(evt)
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.remove()
   }

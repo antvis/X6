@@ -1,23 +1,29 @@
+import {
+  Basecoat,
+  type Dom,
+  disposable,
+  type KeyValue,
+  type NumberExt,
+} from '../common'
 import { Point, Rectangle } from '../geometry'
-import { Basecoat, NumberExt, Dom, KeyValue } from '../common'
-import { Model, Collection, Cell, Node, Edge } from '../model'
-import { CellView } from '../view'
+import { Cell, type Collection, Edge, Model, Node } from '../model'
 import * as Registry from '../registry'
-import { GraphView } from './view'
-import { EventArgs } from './events'
-import { CSSManager as Css } from './css'
-import { Options as GraphOptions } from './options'
-import { GridManager as Grid } from './grid'
-import { TransformManager as Transform } from './transform'
-import { BackgroundManager as Background } from './background'
-import { PanningManager as Panning } from './panning'
-import { MouseWheel as Wheel } from './mousewheel'
-import { VirtualRenderManager as VirtualRender } from './virtual-render'
 import { Renderer as ViewRenderer } from '../renderer'
-import { DefsManager as Defs } from './defs'
+import { CellView } from '../view'
+import { BackgroundManager as Background } from './background'
 import { CoordManager as Coord } from './coord'
+import { CSSManager as Css } from './css'
+import { DefsManager as Defs } from './defs'
+import type { EventArgs } from './events'
+import { GridManager as Grid } from './grid'
 import { HighlightManager as Highlight } from './highlight'
+import { MouseWheel as Wheel } from './mousewheel'
+import { Options as GraphOptions } from './options'
+import { PanningManager as Panning } from './panning'
 import { SizeManager as Size } from './size'
+import { TransformManager as Transform } from './transform'
+import { GraphView } from './view'
+import { VirtualRenderManager as VirtualRender } from './virtual-render'
 
 export class Graph extends Basecoat<EventArgs> {
   private installedPlugins: Set<Graph.Plugin> = new Set()
@@ -1271,7 +1277,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region dispose
 
-  @Basecoat.dispose()
+  @disposable()
   dispose(clean = true) {
     if (clean) {
       this.model.dispose()

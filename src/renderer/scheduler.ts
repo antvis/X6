@@ -1,4 +1,10 @@
-import { Disposable, Dom, FunctionExt, type KeyValue } from '../common'
+import {
+  Disposable,
+  Dom,
+  disposable,
+  FunctionExt,
+  type KeyValue,
+} from '../common'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import type { Cell, Model } from '../model'
@@ -520,7 +526,7 @@ export class Scheduler extends Disposable {
       : JOB_PRIORITY.RenderEdge
   }
 
-  @Disposable.dispose()
+  @disposable()
   dispose() {
     this.stopListening()
     // clear views

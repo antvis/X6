@@ -1,20 +1,21 @@
-import { Rectangle, Point } from '../../geometry'
 import {
-  TransformManager,
-  BackgroundManager,
-  Graph,
-  GraphView,
-  EventArgs,
-} from '../../graph'
-import {
-  Platform,
+  Dom,
+  disposable,
+  FunctionExt,
   NumberExt,
   ObjectExt,
-  Dom,
-  FunctionExt,
+  Platform,
   Util,
 } from '../../common'
-import { Cell } from '../../model'
+import { Point, Rectangle } from '../../geometry'
+import {
+  BackgroundManager,
+  type EventArgs,
+  type Graph,
+  GraphView,
+  type TransformManager,
+} from '../../graph'
+import type { Cell } from '../../model'
 import { View } from '../../view'
 
 export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
@@ -1116,7 +1117,7 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     this.stopListening()
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     Dom.before(this.container, this.graph.container)
     this.remove()

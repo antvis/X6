@@ -3,6 +3,7 @@
 import {
   ArrayExt,
   Dom,
+  disposable,
   FunctionExt,
   type KeyValue,
   type Nilable,
@@ -750,7 +751,7 @@ export class CellView<
     view.onMouseEnter(e as Dom.MouseEnterEvent)
   }
 
-  @CellView.dispose()
+  @disposable()
   dispose() {
     this.cell.off('changed', this.onCellChanged, this)
   }

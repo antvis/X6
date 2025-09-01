@@ -1,8 +1,14 @@
-import { Graph, EventArgs } from '../../graph'
-import { Model, Node } from '../../model'
-import { IDisablable, ArrayExt, FunctionExt, Vector } from '../../common'
-import { Point, Rectangle, Angle } from '../../geometry'
-import { CellView, NodeView, View } from '../../view'
+import {
+  ArrayExt,
+  disposable,
+  FunctionExt,
+  type IDisablable,
+  Vector,
+} from '../../common'
+import { Angle, Point, Rectangle } from '../../geometry'
+import type { EventArgs, Graph } from '../../graph'
+import type { Model, Node } from '../../model'
+import { type CellView, type NodeView, View } from '../../view'
 
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImpl.Options
@@ -273,10 +279,10 @@ export class SnaplineImpl extends View implements IDisablable {
             angle >= 0 && angle < 90
               ? 1
               : angle >= 90 && angle < 180
-              ? 4
-              : angle >= 180 && angle < 270
-              ? 3
-              : 2
+                ? 4
+                : angle >= 180 && angle < 270
+                  ? 3
+                  : 2
 
           if (horizontalTop != null && verticalLeft != null) {
             if (dx < dy) {
@@ -654,7 +660,7 @@ export class SnaplineImpl extends View implements IDisablable {
     this.hide()
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.remove()
   }

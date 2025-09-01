@@ -1,7 +1,7 @@
-import { ArrayExt, Basecoat } from '../common'
-import { Cell } from './cell'
-import { Node } from './node'
-import { Edge } from './edge'
+import { ArrayExt, Basecoat, disposable } from '../common'
+import type { Cell } from './cell'
+import type { Edge } from './edge'
+import type { Node } from './node'
 
 export class Collection extends Basecoat<Collection.EventArgs> {
   public length = 0
@@ -314,7 +314,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     this.map = {}
   }
 
-  @Collection.dispose()
+  @disposable()
   dispose() {
     this.reset([])
   }

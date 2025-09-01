@@ -1,8 +1,8 @@
-import { GeometryUtil, Angle, Point } from '../../geometry'
-import { Dom, KeyValue, NumberExt } from '../../common'
-import { Graph } from '../../graph'
-import { Node } from '../../model'
-import { View, NodeView } from '../../view'
+import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
+import { Angle, GeometryUtil, Point } from '../../geometry'
+import type { Graph } from '../../graph'
+import type { Node } from '../../model'
+import { type NodeView, View } from '../../view'
 
 export class TransformImpl extends View<TransformImpl.EventArgs> {
   private node: Node
@@ -548,7 +548,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     }
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.stopListening()
     this.remove()

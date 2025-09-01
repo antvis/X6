@@ -47,22 +47,16 @@ export class Disposable implements IDisposable {
   }
 }
 
-export namespace Disposable {
-  export function dispose() {
-    return (
-      target: any,
-      methodName: string,
-      descriptor: PropertyDescriptor,
-    ) => {
-      const raw = descriptor.value
-      const proto = target.__proto__ as IDisposable // eslint-disable-line
-      descriptor.value = function (this: IDisposable, ...args: any[]) {
-        if (this.disposed) {
-          return
-        }
-        raw.call(this, ...args)
-        proto.dispose.call(this)
+export function disposable() {
+  return (target: any, methodName: string, descriptor: PropertyDescriptor) => {
+    const raw = descriptor.value
+    const proto = target.__proto__ as IDisposable // eslint-disable-line
+    descriptor.value = function (this: IDisposable, ...args: any[]) {
+      if (this.disposed) {
+        return
       }
+      raw.call(this, ...args)
+      proto.dispose.call(this)
     }
   }
 }

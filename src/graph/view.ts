@@ -1,4 +1,4 @@
-import { Dom, FunctionExt } from '../common'
+import { Dom, disposable, FunctionExt } from '../common'
 import { Config } from '../config'
 import type { Graph } from '../graph'
 import { Cell } from '../model'
@@ -514,7 +514,7 @@ export class GraphView extends View {
     return false
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.undelegateEvents()
     this.undelegateDocumentEvents()
