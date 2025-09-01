@@ -2,6 +2,7 @@ import { Dom } from '../../common'
 import { EdgeTool, NodeTool } from '../../registry/tool'
 import { CellView } from '../cell'
 import { View } from '../view'
+import { createViewElement } from '../view/util'
 import { ToolItem } from './tool-item'
 
 export interface ToolsViewOptions extends ToolsViewConfigOptions {
@@ -93,8 +94,8 @@ export class ToolsView extends View {
 
   protected createContainer(svg: boolean, options: ToolsViewOptions) {
     const container = svg
-      ? View.createElement('g', true)
-      : View.createElement('div', false)
+      ? createViewElement('g', true)
+      : createViewElement('div', false)
     Dom.addClass(container, this.prefixClassName('cell-tools'))
     if (options.className) {
       Dom.addClass(container, options.className)

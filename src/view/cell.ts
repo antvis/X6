@@ -30,6 +30,7 @@ import type { NodeView } from './node'
 import { ToolsView, type ToolsViewOptions } from './tool'
 import type { ToolsViewUpdateOptions } from './tool/tool-view'
 import { View } from './view'
+import { createViewElement } from './view/util'
 
 export class CellView<
   Entity extends Cell = Cell,
@@ -171,7 +172,7 @@ export class CellView<
   }
 
   protected ensureContainer() {
-    return View.createElement(
+    return createViewElement(
       this.getContainerTagName(),
       this.options.isSvgElement,
     )

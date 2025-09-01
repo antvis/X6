@@ -1,8 +1,9 @@
+import { createViewElement } from '@/view/view/util'
 import { Dom, FunctionExt, NumberExt, ObjectExt, Util } from '../../common'
 import { Point } from '../../geometry'
 import type { Cell, Edge } from '../../model'
 import type { CellView, EdgeView, NodeView } from '../../view'
-import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
+import { ToolItem, type ToolItemOptions } from '../../view/tool'
 
 export class CellEditor extends ToolItem<
   NodeView | EdgeView,
@@ -28,7 +29,7 @@ export class CellEditor extends ToolItem<
       ),
       this.prefixClassName('cell-tool-editor'),
     ]
-    this.editor = ToolsView.createElement('div', false) as HTMLDivElement
+    this.editor = createViewElement('div', false) as HTMLDivElement
     this.addClass(classNames, this.editor)
     this.editor.contentEditable = 'true'
     this.container.appendChild(this.editor)
