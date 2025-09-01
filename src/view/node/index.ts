@@ -1,22 +1,62 @@
-import { ArrayExt, Dom, FunctionExt } from '../common'
-import { Config } from '../config'
-import { GeometryUtil, Point, Rectangle } from '../geometry'
-import type { Graph } from '../graph'
-import { Cell } from '../model/cell'
-import type { Edge } from '../model/edge'
-import type { Node } from '../model/node'
-import type { PortManager } from '../model/port'
-import type { CellAttrs, PortLayout } from '../registry'
-import type { AttrManagerUpdateOptions } from './attr'
-import { CellView } from './cell'
-import type { EdgeView } from './edge'
-import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from './markup'
+import { ArrayExt, Dom, FunctionExt } from '../../common'
+import { Config } from '../../config'
+import { GeometryUtil, Point, Rectangle } from '../../geometry'
+import type { Graph } from '../../graph'
+import { Cell } from '../../model/cell'
+import type { Edge } from '../../model/edge'
+import type { Node } from '../../model/node'
+import type { PortManager } from '../../model/port'
+import type { SimpleAttrs, PortLayout } from '../../registry'
+import type { AttrManagerUpdateOptions } from '../attr'
+import { CellView } from '../cell'
+import type { EdgeView } from '../edge'
+import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from '../markup'
+import type {
+  EventDataMagnet,
+  EventDataMousemove,
+  EventDataMoving,
+  EventDataMovingTargetNode,
+  NodeViewEventArgs,
+  NodeViewMouseEventArgs,
+  NodeViewOptions,
+  NodeViewPortCache,
+  NodeViewPositionEventArgs,
+} from './type'
 
 export class NodeView<
   Entity extends Node = Node,
-  Options extends NodeView.Options = NodeView.Options,
+  Options extends NodeViewOptions = NodeViewOptions,
 > extends CellView<Entity, Options> {
-  protected portsCache: { [id: string]: NodeView.PortCache } = {}
+  protected portsCache: { [id: string]: NodeViewPortCache } = {}
+
+  public static isNodeView(instance: any): instance is NodeView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof NodeView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as NodeView
+
+    if (
+      (tag == null || tag === NodeViewToStringTag) &&
+      typeof view.isNodeView === 'function' &&
+      typeof view.isEdgeView === 'function' &&
+      typeof view.confirmUpdate === 'function' &&
+      typeof view.update === 'function' &&
+      typeof view.findPortElem === 'function' &&
+      typeof view.resize === 'function' &&
+      typeof view.rotate === 'function' &&
+      typeof view.translate === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
 
   protected get [Symbol.toStringTag]() {
     return NodeView.toStringTag
@@ -455,27 +495,27 @@ export class NodeView<
 
   // #region events
 
-  protected getEventArgs<E>(e: E): NodeView.MouseEventArgs<E>
+  protected getEventArgs<E>(e: E): NodeViewMouseEventArgs<E>
   protected getEventArgs<E>(
     e: E,
     x: number,
     y: number,
-  ): NodeView.PositionEventArgs<E>
+  ): NodeViewPositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
     const view = this // eslint-disable-line
     const node = view.cell
     const cell = node
     if (x == null || y == null) {
-      return { e, view, node, cell } as NodeView.MouseEventArgs<E>
+      return { e, view, node, cell } as NodeViewMouseEventArgs<E>
     }
-    return { e, x, y, view, node, cell } as NodeView.PositionEventArgs<E>
+    return { e, x, y, view, node, cell } as NodeViewPositionEventArgs<E>
   }
 
   protected getPortEventArgs<E>(
     e: E,
     port: string,
     pos?: { x: number; y: number },
-  ): NodeView.PositionEventArgs<E> | NodeView.MouseEventArgs<E> {
+  ): NodeViewPositionEventArgs<E> | NodeViewMouseEventArgs<E> {
     const view = this // eslint-disable-line
     const node = view.cell
     const cell = node
@@ -488,9 +528,9 @@ export class NodeView<
         node,
         cell,
         port,
-      } as NodeView.PositionEventArgs<E>
+      } as NodeViewPositionEventArgs<E>
     }
-    return { e, view, node, cell, port } as NodeView.MouseEventArgs<E>
+    return { e, view, node, cell, port } as NodeViewMouseEventArgs<E>
   }
 
   notifyMouseDown(e: Dom.MouseDownEvent, x: number, y: number) {
@@ -554,13 +594,13 @@ export class NodeView<
   }
 
   onMouseMove(e: Dom.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.Mousemove>(e)
+    const data = this.getEventData<EventDataMousemove>(e)
     const action = data.action
     if (action === 'magnet') {
       this.dragMagnet(e, x, y)
     } else {
       if (action === 'move') {
-        const meta = data as EventData.Moving
+        const meta = data as EventDataMoving
         const view = meta.targetView || this
         view.dragNode(e, x, y)
         view.notify('node:moving', {
@@ -576,11 +616,11 @@ export class NodeView<
       this.notifyPortEvent('node:port:mousemove', e, { x, y })
     }
 
-    this.setEventData<EventData.Mousemove>(e, data)
+    this.setEventData<EventDataMousemove>(e, data)
   }
 
   onMouseUp(e: Dom.MouseUpEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.Mousemove>(e)
+    const data = this.getEventData<EventDataMousemove>(e)
     const action = data.action
     if (action === 'magnet') {
       this.stopMagnetDragging(e, x, y)
@@ -588,13 +628,13 @@ export class NodeView<
       this.notifyMouseUp(e, x, y)
       this.notifyPortEvent('node:port:mouseup', e, { x, y })
       if (action === 'move') {
-        const meta = data as EventData.Moving
+        const meta = data as EventDataMoving
         const view = meta.targetView || this
         view.stopNodeDragging(e, x, y)
       }
     }
 
-    const magnet = (data as EventData.Magnet).targetMagnet
+    const magnet = (data as EventDataMagnet).targetMagnet
     if (magnet) {
       this.onMagnetClick(e, magnet, x, y)
     }
@@ -691,7 +731,7 @@ export class NodeView<
 
   protected prepareEmbedding(e: Dom.MouseMoveEvent) {
     const graph = this.graph
-    const data = this.getEventData<EventData.MovingTargetNode>(e)
+    const data = this.getEventData<EventDataMovingTargetNode>(e)
     const node = data.cell || this.cell
     const view = graph.findViewByCell(node)
     const localPoint = graph.snapToGrid(e.clientX, e.clientY)
@@ -707,7 +747,7 @@ export class NodeView<
     })
   }
 
-  processEmbedding(e: Dom.MouseMoveEvent, data: EventData.MovingTargetNode) {
+  processEmbedding(e: Dom.MouseMoveEvent, data: EventDataMovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const options = graph.options.embedding
@@ -794,7 +834,7 @@ export class NodeView<
     })
   }
 
-  clearEmbedding(data: EventData.MovingTargetNode) {
+  clearEmbedding(data: EventDataMovingTargetNode) {
     const candidateView = data.candidateEmbedView
     if (candidateView) {
       candidateView.unhighlight(null, { type: 'embedding' })
@@ -802,7 +842,7 @@ export class NodeView<
     }
   }
 
-  finalizeEmbedding(e: Dom.MouseUpEvent, data: EventData.MovingTargetNode) {
+  finalizeEmbedding(e: Dom.MouseUpEvent, data: EventDataMovingTargetNode) {
     this.graph.startBatch('embedding')
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
@@ -889,7 +929,7 @@ export class NodeView<
     const magnet = e.currentTarget
     const graph = this.graph
 
-    this.setEventData<Partial<EventData.Magnet>>(e, {
+    this.setEventData<Partial<EventDataMagnet>>(e, {
       targetMagnet: magnet,
     })
 
@@ -899,7 +939,7 @@ export class NodeView<
         this.startConnectting(e, magnet, x, y)
       }
 
-      this.setEventData<Partial<EventData.Magnet>>(e, {
+      this.setEventData<Partial<EventDataMagnet>>(e, {
         action: 'magnet',
       })
       this.stopPropagation(e)
@@ -927,7 +967,7 @@ export class NodeView<
         fallbackAction: 'remove',
       }),
     )
-    this.setEventData<Partial<EventData.Magnet>>(e, { edgeView })
+    this.setEventData<Partial<EventDataMagnet>>(e, { edgeView })
     edgeView.notifyMouseDown(e, x, y)
   }
 
@@ -962,7 +1002,7 @@ export class NodeView<
   }
 
   protected dragMagnet(e: Dom.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.Magnet>(e)
+    const data = this.getEventData<EventDataMagnet>(e)
     const edgeView = data.edgeView
     if (edgeView) {
       edgeView.onMouseMove(e, x, y)
@@ -993,7 +1033,7 @@ export class NodeView<
   }
 
   protected stopMagnetDragging(e: Dom.MouseUpEvent, x: number, y: number) {
-    const data = this.eventData<EventData.Magnet>(e)
+    const data = this.eventData<EventDataMagnet>(e)
     const edgeView = data.edgeView
     if (edgeView) {
       edgeView.onMouseUp(e, x, y)
@@ -1016,7 +1056,7 @@ export class NodeView<
     })
   }
 
-  protected notifyNodeMove<Key extends keyof NodeView.EventArgs>(
+  protected notifyNodeMove<Key extends keyof NodeViewEventArgs>(
     name: Key,
     e: Dom.MouseMoveEvent | Dom.MouseUpEvent,
     x: number,
@@ -1069,13 +1109,13 @@ export class NodeView<
       return this.notifyUnhandledMouseDown(e, x, y)
     }
 
-    this.setEventData<EventData.Moving>(e, {
+    this.setEventData<EventDataMoving>(e, {
       targetView,
       action: 'move',
     })
 
     const position = Point.create(targetView.cell.getPosition())
-    targetView.setEventData<EventData.MovingTargetNode>(e, {
+    targetView.setEventData<EventDataMovingTargetNode>(e, {
       moving: false,
       offset: position.diff(x, y),
       restrict: this.getRestrictArea(targetView),
@@ -1086,7 +1126,7 @@ export class NodeView<
     const node = this.cell
     const graph = this.graph
     const gridSize = graph.getGridSize()
-    const data = this.getEventData<EventData.MovingTargetNode>(e)
+    const data = this.getEventData<EventDataMovingTargetNode>(e)
     const offset = data.offset
     const restrict = data.restrict
 
@@ -1162,7 +1202,7 @@ export class NodeView<
   }
 
   protected stopNodeDragging(e: Dom.MouseUpEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.MovingTargetNode>(e)
+    const data = this.getEventData<EventDataMovingTargetNode>(e)
     const graph = this.graph
     if (data.embedding) {
       this.finalizeEmbedding(e, data)
@@ -1192,161 +1232,7 @@ export class NodeView<
   // #endregion
 }
 
-export namespace NodeView {
-  export interface Options extends CellView.Options {}
-
-  export interface PortCache {
-    portElement: Element
-    portSelectors?: MarkupSelectors | null
-    portLabelElement?: Element
-    portLabelSelectors?: MarkupSelectors | null
-    portContentElement?: Element
-    portContentSelectors?: MarkupSelectors | null
-  }
-}
-
-export namespace NodeView {
-  interface MagnetEventArgs {
-    magnet: Element
-  }
-  export interface MouseEventArgs<E> {
-    e: E
-    node: Node
-    cell: Node
-    view: NodeView
-    port?: string
-  }
-  export interface PositionEventArgs<E>
-    extends MouseEventArgs<E>,
-      CellView.PositionEventArgs {}
-
-  export interface TranslateEventArgs<E> extends PositionEventArgs<E> {}
-
-  export interface ResizeEventArgs<E> extends PositionEventArgs<E> {}
-
-  export interface RotateEventArgs<E> extends PositionEventArgs<E> {}
-
-  export interface EventArgs {
-    'node:click': PositionEventArgs<Dom.ClickEvent>
-    'node:dblclick': PositionEventArgs<Dom.DoubleClickEvent>
-    'node:contextmenu': PositionEventArgs<Dom.ContextMenuEvent>
-    'node:mousedown': PositionEventArgs<Dom.MouseDownEvent>
-    'node:mousemove': PositionEventArgs<Dom.MouseMoveEvent>
-    'node:mouseup': PositionEventArgs<Dom.MouseUpEvent>
-    'node:mouseover': MouseEventArgs<Dom.MouseOverEvent>
-    'node:mouseout': MouseEventArgs<Dom.MouseOutEvent>
-    'node:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
-    'node:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
-    'node:mousewheel': PositionEventArgs<Dom.EventObject> &
-      CellView.MouseDeltaEventArgs
-
-    'node:port:click': PositionEventArgs<Dom.ClickEvent>
-    'node:port:dblclick': PositionEventArgs<Dom.DoubleClickEvent>
-    'node:port:contextmenu': PositionEventArgs<Dom.ContextMenuEvent>
-    'node:port:mousedown': PositionEventArgs<Dom.MouseDownEvent>
-    'node:port:mousemove': PositionEventArgs<Dom.MouseMoveEvent>
-    'node:port:mouseup': PositionEventArgs<Dom.MouseUpEvent>
-    'node:port:mouseover': MouseEventArgs<Dom.MouseOverEvent>
-    'node:port:mouseout': MouseEventArgs<Dom.MouseOutEvent>
-    'node:port:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
-    'node:port:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
-
-    'node:customevent': PositionEventArgs<Dom.MouseDownEvent> & {
-      name: string
-    }
-
-    'node:unhandled:mousedown': PositionEventArgs<Dom.MouseDownEvent>
-
-    'node:highlight': {
-      magnet: Element
-      view: NodeView
-      node: Node
-      cell: Node
-      options: CellView.HighlightOptions
-    }
-    'node:unhighlight': EventArgs['node:highlight']
-
-    'node:magnet:click': PositionEventArgs<Dom.MouseUpEvent> & MagnetEventArgs
-    'node:magnet:dblclick': PositionEventArgs<Dom.DoubleClickEvent> &
-      MagnetEventArgs
-    'node:magnet:contextmenu': PositionEventArgs<Dom.ContextMenuEvent> &
-      MagnetEventArgs
-
-    'node:move': TranslateEventArgs<Dom.MouseMoveEvent>
-    'node:moving': TranslateEventArgs<Dom.MouseMoveEvent>
-    'node:moved': TranslateEventArgs<Dom.MouseUpEvent>
-
-    'node:embed': PositionEventArgs<Dom.MouseMoveEvent> & {
-      currentParent: Node | null
-    }
-    'node:embedding': PositionEventArgs<Dom.MouseMoveEvent> & {
-      currentParent: Node | null
-      candidateParent: Node | null
-    }
-    'node:embedded': PositionEventArgs<Dom.MouseUpEvent> & {
-      currentParent: Node | null
-      previousParent: Node | null
-    }
-  }
-}
-
-export namespace NodeView {
-  export const toStringTag = `X6.${NodeView.name}`
-
-  export function isNodeView(instance: any): instance is NodeView {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof NodeView) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const view = instance as NodeView
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof view.isNodeView === 'function' &&
-      typeof view.isEdgeView === 'function' &&
-      typeof view.confirmUpdate === 'function' &&
-      typeof view.update === 'function' &&
-      typeof view.findPortElem === 'function' &&
-      typeof view.resize === 'function' &&
-      typeof view.rotate === 'function' &&
-      typeof view.translate === 'function'
-    ) {
-      return true
-    }
-
-    return false
-  }
-}
-
-namespace EventData {
-  export type Mousemove = Moving | Magnet
-
-  export interface Magnet {
-    action: 'magnet'
-    targetMagnet: Element
-    edgeView?: EdgeView
-  }
-
-  export interface Moving {
-    action: 'move'
-    targetView: NodeView
-  }
-
-  export interface MovingTargetNode {
-    moving: boolean
-    offset: Point.PointLike
-    restrict?: Rectangle.RectangleLike | null
-    embedding?: boolean
-    candidateEmbedView?: NodeView | null
-    cell?: Node
-    graph?: Graph
-  }
-}
+export const NodeViewToStringTag = `X6.${NodeView.name}`
 
 NodeView.config({
   isSvgElement: true,
