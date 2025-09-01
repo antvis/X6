@@ -1,6 +1,6 @@
 import { type JSONObject, type KeyValue, ObjectExt, type Size } from '../common'
 import { Point, type Rectangle } from '../geometry'
-import { PortLabelLayout, PortLayout } from '../registry'
+import { type CellAttrs, PortLabelLayout, PortLayout } from '../registry'
 import type { MarkupType } from '../view/markup'
 
 export class PortManager {

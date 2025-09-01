@@ -41,50 +41,50 @@ export class Cell<
     const { markup, propHooks, attrHooks, ...others } = presets
 
     if (markup != null) {
-      Cell.markup = markup
+      this.markup = markup
     }
 
     if (propHooks) {
-      Cell.propHooks = Cell.propHooks.slice()
+      this.propHooks = this.propHooks.slice()
       if (Array.isArray(propHooks)) {
-        Cell.propHooks.push(...propHooks)
+        this.propHooks.push(...propHooks)
       } else if (typeof propHooks === 'function') {
-        Cell.propHooks.push(propHooks)
+        this.propHooks.push(propHooks)
       } else {
         Object.values(propHooks).forEach((hook) => {
           if (typeof hook === 'function') {
-            Cell.propHooks.push(hook)
+            this.propHooks.push(hook)
           }
         })
       }
     }
 
     if (attrHooks) {
-      Cell.attrHooks = { ...Cell.attrHooks, ...attrHooks }
+      this.attrHooks = { ...this.attrHooks, ...attrHooks }
     }
 
-    Cell.defaults = ObjectExt.merge({}, Cell.defaults, others)
+    this.defaults = ObjectExt.merge({}, this.defaults, others)
   }
 
   public static getMarkup() {
-    return Cell.markup
+    return this.markup
   }
 
   public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
     raw?: boolean,
   ): T {
-    return (raw ? Cell.defaults : ObjectExt.cloneDeep(Cell.defaults)) as T
+    return (raw ? this.defaults : ObjectExt.cloneDeep(this.defaults)) as T
   }
 
   public static getAttrHooks() {
-    return Cell.attrHooks
+    return this.attrHooks
   }
 
   public static applyPropHooks(
     cell: Cell,
     metadata: Cell.Metadata,
   ): Cell.Metadata {
-    return Cell.propHooks.reduce((memo, hook) => {
+    return this.propHooks.reduce((memo, hook) => {
       return hook ? FunctionExt.call(hook, cell, memo) : memo
     }, metadata)
   }
@@ -1272,8 +1272,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-      ? Edge.Properties
-      : Properties {
+    ? Edge.Properties
+    : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'

@@ -109,7 +109,7 @@ export function isValidDefinition(
   return false
 }
 
-export type Presets = (typeof Attr)['presets']
+export type Presets = typeof presets
 export type NativeNames = keyof Presets
 
 export const presets: Definitions = {
@@ -121,4 +121,4 @@ export const registry = Registry.create<Definition, Presets>({
   type: 'attribute definition',
 })
 
-registry.register(Attr.presets, true)
+registry.register(presets, true)
