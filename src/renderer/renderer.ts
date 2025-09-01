@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Point, Rectangle } from '../geometry'
+
+import { disposable, Util } from '../common'
+import { type Point, Rectangle } from '../geometry'
 import { Base } from '../graph/base'
 import { Cell } from '../model'
+import type { CellView, EdgeView } from '../view'
 import { Scheduler } from './scheduler'
-import { CellView, EdgeView } from '../view'
-import { Util } from '../common'
 
 export class Renderer extends Base {
   private readonly schedule: Scheduler = new Scheduler(this.graph)
@@ -30,8 +31,8 @@ export class Renderer extends Base {
       typeof elem === 'string'
         ? container.querySelector(elem)
         : elem instanceof Element
-        ? elem
-        : elem[0]
+          ? elem
+          : elem[0]
 
     if (target) {
       const id = this.graph.view.findAttr('data-cell-id', target)
@@ -123,7 +124,7 @@ export class Renderer extends Base {
       }) as CellView[]
   }
 
-  @Base.dispose()
+  @disposable()
   dispose() {
     this.schedule.dispose()
   }

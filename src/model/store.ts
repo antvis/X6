@@ -1,5 +1,5 @@
-import { Assign, NonUndefined } from 'utility-types'
-import { ObjectExt, KeyValue, Basecoat } from '../common'
+import type { Assign, NonUndefined } from 'utility-types'
+import { Basecoat, disposable, type KeyValue, ObjectExt } from '../common'
 
 export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   protected data: D
@@ -291,7 +291,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     return new constructor(this.data) as T
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.off()
     this.data = {} as D

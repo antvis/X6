@@ -1,3 +1,4 @@
+import { createViewElement } from '@/view/view/util'
 import { type Dom, ModifierKey } from '../../common'
 import { Config } from '../../config'
 import { Point } from '../../geometry'
@@ -320,7 +321,7 @@ export namespace Vertices {
     }
 
     render() {
-      this.container = View.createElement('circle', true)
+      this.container = createViewElement('circle', true)
       const attrs = this.options.attrs
       if (typeof attrs === 'function') {
         const defaults = Vertices.getDefaults<Vertices.Options>()

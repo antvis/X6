@@ -1,8 +1,14 @@
-import { Rectangle, Point } from '../../geometry'
-import { ModifierKey, FunctionExt, Dom, KeyValue } from '../../common'
-import { Graph } from '../../graph'
-import { Model, Cell, Node, Edge, Collection } from '../../model'
-import { CellView, View } from '../../view'
+import {
+  Dom,
+  disposable,
+  FunctionExt,
+  type KeyValue,
+  type ModifierKey,
+} from '../../common'
+import { type Point, Rectangle } from '../../geometry'
+import type { Graph } from '../../graph'
+import { Cell, Collection, type Edge, type Model, type Node } from '../../model'
+import { type CellView, View } from '../../view'
 
 export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   public readonly options: SelectionImpl.Options
@@ -948,7 +954,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
   // #endregion
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.clean()
     this.remove()

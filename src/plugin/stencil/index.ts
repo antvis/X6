@@ -1,7 +1,7 @@
-import { Dom, FunctionExt, CssLoader } from '../../common'
-import { Graph, EventArgs } from '../../graph'
+import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
+import { type EventArgs, Graph } from '../../graph'
+import { type Cell, Model, Node } from '../../model'
 import { View } from '../../view'
-import { Model, Node, Cell } from '../../model'
 import { Dnd } from '../dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
@@ -584,7 +584,7 @@ export class Stencil extends View implements Graph.Plugin {
     this.undelegateDocumentEvents()
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.remove()
     CssLoader.clean(this.name)

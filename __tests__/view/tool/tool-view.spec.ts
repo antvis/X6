@@ -36,12 +36,6 @@ describe('ToolsView', () => {
     }
 
     vi.spyOn(CellView, 'isCellView').mockReturnValue(true)
-    vi.spyOn(View, 'createElement').mockImplementation((tagName, isSVG) => {
-      // @ts-expect-error
-      return isSVG
-        ? document.createElementNS('http://www.w3.org/2000/svg', tagName)
-        : document.createElement(tagName)
-    })
     vi.spyOn(Dom, 'addClass').mockImplementation(() => {})
     vi.spyOn(Dom, 'remove').mockImplementation(() => {})
   })
@@ -142,16 +136,6 @@ describe('ToolsView', () => {
   describe('createContainer', () => {
     beforeEach(() => {
       toolsView = new ToolsView()
-    })
-
-    it('should create SVG container', () => {
-      const container = toolsView['createContainer'](true, {})
-      expect(View.createElement).toHaveBeenCalledWith('g', true)
-    })
-
-    it('should create HTML container', () => {
-      const container = toolsView['createContainer'](false, {})
-      expect(View.createElement).toHaveBeenCalledWith('div', false)
     })
 
     it('should add custom className', () => {

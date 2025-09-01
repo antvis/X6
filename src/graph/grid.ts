@@ -1,4 +1,4 @@
-import { Dom, Vector } from '../common'
+import { Dom, disposable, Vector } from '../common'
 import * as Registry from '../registry'
 import { Base } from './base'
 
@@ -178,7 +178,7 @@ export class GridManager extends Base {
     return Registry.Grid.registry.onNotFound(type)
   }
 
-  @Base.dispose()
+  @disposable()
   dispose() {
     this.stopListening()
     this.clear()

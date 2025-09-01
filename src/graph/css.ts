@@ -1,4 +1,4 @@
-import { CssLoader } from '../common'
+import { CssLoader, disposable } from '../common'
 import { Config } from '../config'
 import { content } from '../style/raw'
 import { Base } from './base'
@@ -10,7 +10,7 @@ export class CSSManager extends Base {
     }
   }
 
-  @CSSManager.dispose()
+  @disposable()
   dispose() {
     CssLoader.clean('core')
   }

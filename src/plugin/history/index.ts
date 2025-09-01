@@ -1,6 +1,12 @@
-import { KeyValue, ObjectExt, FunctionExt, Basecoat } from '../../common'
-import { Model, Cell } from '../../model'
-import { Graph } from '../../graph'
+import {
+  Basecoat,
+  disposable,
+  FunctionExt,
+  type KeyValue,
+  ObjectExt,
+} from '../../common'
+import type { Graph } from '../../graph'
+import { type Cell, Model } from '../../model'
 
 import './api'
 
@@ -628,7 +634,7 @@ export class History
     return hasUndefinedAttr
   }
 
-  @Basecoat.dispose()
+  @disposable()
   dispose() {
     this.validator.dispose()
     this.clean()
@@ -838,7 +844,7 @@ export namespace History {
       return this
     }
 
-    @Basecoat.dispose()
+    @disposable()
     dispose() {
       this.command.off('add', this.onCommandAdded, this)
     }

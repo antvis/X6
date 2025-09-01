@@ -1,8 +1,8 @@
-import { Dom, KeyValue } from '../common'
-import { CellView } from '../view'
+import { Dom, disposable, type KeyValue } from '../common'
 import { Highlighter } from '../registry'
-import { EventArgs } from './events'
+import type { CellView } from '../view'
 import { Base } from './base'
+import type { EventArgs } from './events'
 
 export class HighlightManager extends Base {
   protected readonly highlights: KeyValue<HighlightManager.Cache> = {}
@@ -120,7 +120,7 @@ export class HighlightManager extends Base {
     }
   }
 
-  @HighlightManager.dispose()
+  @disposable()
   dispose() {
     Object.keys(this.highlights).forEach((id) => this.unhighlight(id))
     this.stopListening()

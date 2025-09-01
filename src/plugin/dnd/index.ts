@@ -1,9 +1,9 @@
 import { alignPoint } from 'dom-align'
-import { GeometryUtil, Rectangle, Point } from '../../geometry'
-import { FunctionExt, Dom, CssLoader } from '../../common'
-import { Cell, Node } from '../../model'
-import { View, NodeView } from '../../view'
-import { Graph, EventArgs } from '../../graph'
+import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
+import { GeometryUtil, type Point, Rectangle } from '../../geometry'
+import { type EventArgs, Graph } from '../../graph'
+import type { Cell, Node } from '../../model'
+import { type NodeView, View } from '../../view'
 
 import { content } from './style/raw'
 
@@ -460,7 +460,7 @@ export class Dnd extends View implements Graph.Plugin {
     }
   }
 
-  @View.dispose()
+  @disposable()
   dispose() {
     this.remove()
     CssLoader.clean(this.name)

@@ -1,3 +1,4 @@
+import { createViewElement } from '@/view/view/util'
 import { Dom, FunctionExt, ObjectExt } from '../../common'
 import { Line, Point } from '../../geometry'
 import type { Graph } from '../../graph'
@@ -399,7 +400,7 @@ export namespace Segments {
     }
 
     render() {
-      this.container = View.createElement('rect', true) as SVGRectElement
+      this.container = createViewElement('rect', true) as SVGRectElement
       const attrs = this.options.attrs
       if (typeof attrs === 'function') {
         const defaults = Segments.getDefaults<Segments.Options>()

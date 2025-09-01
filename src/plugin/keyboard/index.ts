@@ -1,5 +1,5 @@
-import { Disposable } from '../../common'
-import { Graph } from '../../graph'
+import { Disposable, disposable } from '../../common'
+import type { Graph } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'
 
@@ -69,7 +69,7 @@ export class Keyboard extends Disposable implements Graph.Plugin {
 
   // #endregion
 
-  @Disposable.dispose()
+  @disposable()
   dispose() {
     this.keyboardImpl.dispose()
   }
