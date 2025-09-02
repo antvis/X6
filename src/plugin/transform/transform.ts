@@ -1,3 +1,4 @@
+import type { NodeViewPositionEventArgs } from '@/view/node/type'
 import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
 import { Angle, GeometryUtil, Point } from '../../geometry'
 import type { Graph } from '../../graph'
@@ -557,8 +558,8 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
 }
 
 export namespace TransformImpl {
-  interface ResizeEventArgs<E> extends NodeView.PositionEventArgs<E> {}
-  interface RotateEventArgs<E> extends NodeView.PositionEventArgs<E> {}
+  interface ResizeEventArgs<E> extends NodeViewPositionEventArgs<E> {}
+  interface RotateEventArgs<E> extends NodeViewPositionEventArgs<E> {}
   export interface EventArgs {
     'node:resize': ResizeEventArgs<Dom.MouseDownEvent>
     'node:resizing': ResizeEventArgs<Dom.MouseMoveEvent>

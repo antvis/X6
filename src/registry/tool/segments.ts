@@ -1,4 +1,3 @@
-import { createViewElement } from '@/view/view/util'
 import { Dom, FunctionExt, ObjectExt } from '../../common'
 import { Line, Point } from '../../geometry'
 import type { Graph } from '../../graph'
@@ -7,7 +6,8 @@ import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { View } from '../../view/view'
-import type { SimpleAttrs } from '../attr'
+import { createViewElement } from '../../view/view/util'
+import type { SimpleAttrs, SimpleAttrValue } from '../attr'
 import * as Util from './util'
 
 export class Segments extends ToolItem<EdgeView, Segments.Options> {
