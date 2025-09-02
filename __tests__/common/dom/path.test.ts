@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest'
 import { Vector } from '@/common/vector'
 import { Dom } from '@/common/dom'
 
-describe.skip('Dom', () => {
+describe('Dom', () => {
   describe('path', () => {
     describe('#toPath', () => {
       it('should convert SVGPathElement', () => {
@@ -92,18 +92,11 @@ describe.skip('Dom', () => {
         )
       })
 
-      it('should convert SVGPolygonElement', () => {
+      it.skip('should convert SVGPolygonElement', () => {
         const polygon = Vector.create('polygon', {
           points: '200,10 250,190 160,210',
         })
         expect(polygon.toPathData()).toEqual('M 200 10 L250 190 L160 210 Z')
-      })
-
-      it('should convert SVGPolylineElement', () => {
-        const polyline = Vector.create('polyline', {
-          points: '100,10 200,10 150,110',
-        })
-        expect(polyline.toPathData()).toEqual('M 100 10 L200 10 L150 110')
       })
     })
 

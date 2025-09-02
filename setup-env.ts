@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
 import { createCanvas, DOMMatrix } from '@napi-rs/canvas'
 
 declare global {
@@ -365,5 +366,21 @@ if (!(SVGSVGElement.prototype as any).createSVGTransformFromMatrix) {
     matrix: DOMMatrix,
   ) {
     return new (global as any).SVGTransform(matrix)
+  }
+}
+
+if (!(SVGSVGElement.prototype as any).createSVGTransform) {
+  ;(SVGSVGElement.prototype as any).createSVGTransform = function (
+    matrix: DOMMatrix,
+  ) {
+    return {
+      setMatrix: vi.fn(),
+      setTranslate: vi.fn(),
+      setScale: vi.fn(),
+      setRotate: vi.fn(),
+      setSkewX: vi.fn(),
+      setSkewY: vi.fn(),
+      matrix: matrix || createSVGMatrixMock(),
+    }
   }
 }
