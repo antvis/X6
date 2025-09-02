@@ -27,6 +27,7 @@ import {
 } from './flag'
 import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from './markup'
 import type { NodeView } from './node'
+import type { NodeViewEventArgs } from './node/type'
 import { ToolsView, type ToolsViewOptions } from './tool'
 import type { ToolsViewUpdateOptions } from './tool/tool-view'
 import { View } from './view'
@@ -834,7 +835,7 @@ export namespace CellView {
     extends MouseEventArgs<E>,
       PositionEventArgs {}
 
-  export interface EventArgs extends NodeView.EventArgs, EdgeView.EventArgs {
+  export interface EventArgs extends NodeViewEventArgs, EdgeView.EventArgs {
     'cell:click': MousePositionEventArgs<Dom.ClickEvent>
     'cell:dblclick': MousePositionEventArgs<Dom.DoubleClickEvent>
     'cell:contextmenu': MousePositionEventArgs<Dom.ContextMenuEvent>

@@ -1,4 +1,3 @@
-import { createViewElement } from '@/view/view/util'
 import { type Dom, ModifierKey } from '../../common'
 import { Config } from '../../config'
 import { Point } from '../../geometry'
@@ -7,6 +6,7 @@ import type { Edge } from '../../model/edge'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
 import { View } from '../../view/view'
+import { createViewElement } from '../../view/view/util'
 import type { SimpleAttrs } from '../attr'
 
 export class Vertices extends ToolItem<EdgeView, Vertices.Options> {
