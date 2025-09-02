@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Graph, Shape, Stencil } from '../../src'
-import { ClassNames } from '../../src/plugin/stencil'
-import { createTestGraph } from '../utils/graph-helpers'
-import { createDivElement } from '../utils/dom'
-import { sleep } from '../utils/sleep'
+import { type Graph, Shape, Stencil } from '../../src'
 import { Dom } from '../../src/common/dom'
+import { ClassNames } from '../../src/plugin/stencil'
 import { grid } from '../../src/plugin/stencil/grid'
+import { createDivElement } from '../utils/dom'
+import { createTestGraph } from '../utils/graph-helpers'
+import { sleep } from '../utils/sleep'
 
 describe('plugin/stencil', () => {
   it('default options', () => {
@@ -514,7 +514,7 @@ describe('plugin/stencil/grid', () => {
     expect(modelNodes[2].position()).toEqual({ x: 20, y: 110 })
   })
 
-  it('when rowHeight option is unset', async () => {
+  it('when rowHeight option is compact', async () => {
     const layoutSpy = createLayoutFn({ rowHeight: 'compact' })
     const modelNodes = layoutSpy.mock.calls[0][0].getNodes()
 
