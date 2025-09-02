@@ -1,11 +1,11 @@
-import { EdgeView } from '../../view'
-import { Attr } from './index'
+import type { EdgeView } from '../../view'
+import type { Definition, QualifyFucntion, SetFunction } from './index'
 
-const isEdgeView: Attr.QualifyFucntion = (val, { view }) => {
+const isEdgeView: QualifyFucntion = (val, { view }) => {
   return view.cell.isEdge()
 }
 
-export const connection: Attr.Definition = {
+export const connection: Definition = {
   qualify: isEdgeView,
   set(val, args) {
     const view = args.view as EdgeView
@@ -54,22 +54,22 @@ export const connection: Attr.Definition = {
   },
 }
 
-export const atConnectionLengthKeepGradient: Attr.Definition = {
+export const atConnectionLengthKeepGradient: Definition = {
   qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtLength', { rotate: true }),
 }
 
-export const atConnectionLengthIgnoreGradient: Attr.Definition = {
+export const atConnectionLengthIgnoreGradient: Definition = {
   qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtLength', { rotate: false }),
 }
 
-export const atConnectionRatioKeepGradient: Attr.Definition = {
+export const atConnectionRatioKeepGradient: Definition = {
   qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtRatio', { rotate: true }),
 }
 
-export const atConnectionRatioIgnoreGradient: Attr.Definition = {
+export const atConnectionRatioIgnoreGradient: Definition = {
   qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtRatio', { rotate: false }),
 }
@@ -85,7 +85,7 @@ export const atConnectionRatio = atConnectionRatioKeepGradient
 function atConnectionWrapper(
   method: 'getTangentAtLength' | 'getTangentAtRatio',
   options: { rotate: boolean },
-): Attr.SetFunction {
+): SetFunction {
   const zeroVector = { x: 1, y: 0 }
 
   return (value, args) => {

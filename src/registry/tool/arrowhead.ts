@@ -3,7 +3,7 @@ import { Point } from '../../geometry'
 import type { Edge } from '../../model/edge'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
-import type { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
 
 class Arrowhead extends ToolItem<EdgeView, Arrowhead.Options> {
   protected get type() {
@@ -113,7 +113,7 @@ class Arrowhead extends ToolItem<EdgeView, Arrowhead.Options> {
 
 namespace Arrowhead {
   export interface Options extends ToolItemOptions {
-    attrs?: Attr.SimpleAttrs
+    attrs?: SimpleAttrs
     type?: Edge.TerminalType
     ratio?: number
   }

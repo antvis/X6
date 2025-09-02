@@ -1,6 +1,6 @@
-import { Attr } from './index'
+import type { Definition } from './index'
 
-export const html: Attr.Definition = {
+export const html: Definition = {
   set(html, { elem }) {
     elem.innerHTML = `${html}`
   },

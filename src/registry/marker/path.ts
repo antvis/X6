@@ -1,8 +1,8 @@
-import { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
+import type { Marker } from './index'
 import { normalize } from './util'
-import { Marker } from './index'
 
-export interface PathMarkerOptions extends Attr.SimpleAttrs {
+export interface PathMarkerOptions extends SimpleAttrs {
   d: string
   offsetX?: number
   offsetY?: number

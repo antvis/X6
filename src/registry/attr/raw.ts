@@ -1,6 +1,6 @@
-import { Attr } from './index'
+import type { Definitions } from './index'
 
-export const raw: Attr.Definitions = {
+export const raw: Definitions = {
   xlinkHref: 'xlink:href',
   xlinkShow: 'xlink:show',
   xlinkRole: 'xlink:role',

@@ -1,14 +1,14 @@
-import { ObjectExt, Dom, Vector, Util } from '../../common'
-import { Attr } from '../attr'
+import { Dom, ObjectExt, Util, Vector } from '../../common'
 import { Config } from '../../config'
-import { EdgeView } from '../../view'
-import { Highlighter } from './index'
+import type { EdgeView } from '../../view'
+import type { SimpleAttrs } from '../attr'
+import type { Highlighter } from './index'
 
 export interface StrokeHighlighterOptions {
   padding?: number
   rx?: number
   ry?: number
-  attrs?: Attr.SimpleAttrs
+  attrs?: SimpleAttrs
 }
 
 const defaultOptions: StrokeHighlighterOptions = {

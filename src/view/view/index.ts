@@ -7,7 +7,7 @@ import {
 } from '../../common'
 import type { EventArgs } from '../../common/event/types'
 import { Config } from '../../config'
-import type { Attr } from '../../registry'
+import type { SimpleAttrs } from '../../registry'
 import type { MarkupSelectors } from '../markup'
 import { normalizeEvent, registerView, unregisterView, viewFind } from './util'
 
@@ -91,7 +91,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return this
   }
 
-  setAttrs(attrs?: Attr.SimpleAttrs | null, elem: Element = this.container) {
+  setAttrs(attrs?: SimpleAttrs | null, elem: Element = this.container) {
     if (attrs != null && elem != null) {
       Dom.attr(elem, attrs)
     }

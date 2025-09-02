@@ -6,7 +6,7 @@ import { Cell } from '../model/cell'
 import type { Edge } from '../model/edge'
 import type { Node } from '../model/node'
 import type { PortManager } from '../model/port'
-import type { Attr, PortLayout } from '../registry'
+import type { CellAttrs, PortLayout } from '../registry'
 import type { AttrManagerUpdateOptions } from './attr'
 import { CellView } from './cell'
 import type { EdgeView } from './edge'
@@ -107,7 +107,7 @@ export class NodeView<
     return ret
   }
 
-  update(partialAttrs?: Attr.CellAttrs) {
+  update(partialAttrs?: CellAttrs) {
     this.cleanCache()
 
     // When CSS selector strings are used, make sure no rule matches port nodes.

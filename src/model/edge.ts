@@ -1,12 +1,12 @@
 import { type KeyValue, ObjectExt, type Size, StringExt } from '../common'
 import { Point, Polyline } from '../geometry'
 import type {
-  Attr,
   ConnectionPoint,
   Connector,
   EdgeAnchor,
   NodeAnchor,
   Router,
+  CellAttrs,
 } from '../registry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
@@ -534,8 +534,8 @@ export class Edge<
             return null
           })
         : current
-          ? [...current]
-          : []
+        ? [...current]
+        : []
 
     const removed =
       previous && current
@@ -551,8 +551,8 @@ export class Edge<
             return null
           })
         : previous
-          ? [...previous]
-          : []
+        ? [...previous]
+        : []
 
     if (added.length > 0) {
       this.notify('labels:added', { added, cell: this, edge: this })
@@ -652,8 +652,8 @@ export class Edge<
             return null
           })
         : current
-          ? [...current]
-          : []
+        ? [...current]
+        : []
 
     const removed =
       previous && current
@@ -664,8 +664,8 @@ export class Edge<
             return null
           })
         : previous
-          ? [...previous]
-          : []
+        ? [...previous]
+        : []
 
     if (added.length > 0) {
       this.notify('vertexs:added', { added, cell: this, edge: this })
@@ -973,7 +973,7 @@ export namespace Edge {
 export namespace Edge {
   export interface Label extends KeyValue {
     markup?: MarkupType
-    attrs?: Attr.CellAttrs
+    attrs?: CellAttrs
     /**
      * If the distance is in the `[0,1]` range (inclusive), then the position
      * of the label is defined as a percentage of the total length of the edge
