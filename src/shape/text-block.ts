@@ -1,7 +1,7 @@
 import { Dom, FunctionExt, ObjectExt, Platform } from '../common'
 import type { Node } from '../model'
 import { presets, type SetDefinition, type SimpleAttrs } from '../registry'
-import { Base } from './base'
+import { Base, BaseBodyAttr } from './base'
 
 export function getTextBlockMarkup(supportForeignobject: boolean) {
   return supportForeignobject
@@ -49,7 +49,7 @@ export const TextBlockConfig: Node.Config = {
   ],
   attrs: {
     body: {
-      ...Base.bodyAttr,
+      ...BaseBodyAttr,
       refWidth: '100%',
       refHeight: '100%',
     },

@@ -37,6 +37,10 @@ import type {
   EdgeViewMouseEventArgs,
   EdgeViewOptions,
   EdgeViewPositionEventArgs,
+  EventDataArrowheadDragging,
+  EventDataEdgeDragging,
+  EventDataLabelDragging,
+  EventDataValidateConnectionArgs,
 } from './type'
 
 export class EdgeView<
@@ -1576,7 +1580,7 @@ export class EdgeView<
       return
     }
 
-    this.setEventData<EventData.EdgeDragging>(e, {
+    this.setEventData<EventDataEdgeDragging>(e, {
       x,
       y,
       moving: false,
@@ -1585,7 +1589,7 @@ export class EdgeView<
   }
 
   protected dragEdge(e: Dom.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.EdgeDragging>(e)
+    const data = this.getEventData<EventDataEdgeDragging>(e)
     if (!data.moving) {
       data.moving = true
       this.addClass('edge-moving')
@@ -1600,7 +1604,7 @@ export class EdgeView<
     }
 
     this.cell.translate(x - data.x, y - data.y, { ui: true })
-    this.setEventData<Partial<EventData.EdgeDragging>>(e, { x, y })
+    this.setEventData<Partial<EventDataEdgeDragging>>(e, { x, y })
     this.notify('edge:moving', {
       e,
       x,
@@ -1612,7 +1616,7 @@ export class EdgeView<
   }
 
   protected stopEdgeDragging(e: Dom.MouseUpEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.EdgeDragging>(e)
+    const data = this.getEventData<EventDataEdgeDragging>(e)
     if (data.moving) {
       this.removeClass('edge-moving')
       this.notify('edge:moved', {
@@ -1638,11 +1642,11 @@ export class EdgeView<
       y: number
       options?: KeyValue
       isNewEdge?: boolean
-      fallbackAction?: EventData.ArrowheadDragging['fallbackAction']
+      fallbackAction?: EventDataArrowheadDragging['fallbackAction']
     },
   ) {
     const magnet = this.getTerminalMagnet(type)
-    const data: EventData.ArrowheadDragging = {
+    const data: EventDataArrowheadDragging = {
       action: 'drag-arrowhead',
       x: options.x,
       y: options.y,
@@ -1661,7 +1665,7 @@ export class EdgeView<
   }
 
   protected createValidateConnectionArgs(type: Edge.TerminalType) {
-    const args: EventData.ValidateConnectionArgs = [] as any
+    const args: EventDataValidateConnectionArgs = [] as any
 
     args[4] = type
     args[5] = this
@@ -1699,7 +1703,7 @@ export class EdgeView<
     }
   }
 
-  protected beforeArrowheadDragging(data: EventData.ArrowheadDragging) {
+  protected beforeArrowheadDragging(data: EventDataArrowheadDragging) {
     data.zIndex = this.cell.zIndex
     this.cell.toFront()
 
@@ -1712,7 +1716,7 @@ export class EdgeView<
     }
   }
 
-  protected afterArrowheadDragging(data: EventData.ArrowheadDragging) {
+  protected afterArrowheadDragging(data: EventDataArrowheadDragging) {
     if (data.zIndex != null) {
       this.cell.setZIndex(data.zIndex, { ui: true })
       data.zIndex = null
@@ -1954,7 +1958,7 @@ export class EdgeView<
     target: Element,
     x: number,
     y: number,
-    data: EventData.ArrowheadDragging,
+    data: EventDataArrowheadDragging,
   ) {
     data.x = x
     data.y = y
@@ -2008,7 +2012,7 @@ export class EdgeView<
   }
 
   protected arrowheadDragged(
-    data: EventData.ArrowheadDragging,
+    data: EventDataArrowheadDragging,
     x: number,
     y: number,
   ) {
@@ -2028,7 +2032,7 @@ export class EdgeView<
   protected snapArrowhead(
     x: number,
     y: number,
-    data: EventData.ArrowheadDragging,
+    data: EventDataArrowheadDragging,
   ) {
     const graph = this.graph
     const { snap, allowEdge } = graph.options.connecting
@@ -2161,7 +2165,7 @@ export class EdgeView<
     this.cell.setTerminal(type, terminal, {}, { ...data.options, ui: true })
   }
 
-  protected snapArrowheadEnd(data: EventData.ArrowheadDragging) {
+  protected snapArrowheadEnd(data: EventDataArrowheadDragging) {
     // Finish off link snapping.
     // Everything except view unhighlighting was already done on pointermove.
     const closestView = data.closestView
@@ -2177,7 +2181,7 @@ export class EdgeView<
     data.closestMagnet = null
   }
 
-  protected finishEmbedding(data: EventData.ArrowheadDragging) {
+  protected finishEmbedding(data: EventDataArrowheadDragging) {
     // Resets parent of the edge if embedding is enabled
     if (this.graph.options.embedding.enabled && this.cell.updateParent()) {
       // Make sure we don't reverse to the original 'z' index
@@ -2185,7 +2189,7 @@ export class EdgeView<
     }
   }
 
-  protected fallbackConnection(data: EventData.ArrowheadDragging) {
+  protected fallbackConnection(data: EventDataArrowheadDragging) {
     switch (data.fallbackAction) {
       case 'remove':
         this.cell.remove({ ui: true })
@@ -2200,7 +2204,7 @@ export class EdgeView<
   }
 
   protected notifyConnectionEvent(
-    data: EventData.ArrowheadDragging,
+    data: EventDataArrowheadDragging,
     e: Dom.MouseUpEvent,
   ) {
     const terminalType = data.terminalType
@@ -2252,7 +2256,7 @@ export class EdgeView<
     }
   }
 
-  protected highlightAvailableMagnets(data: EventData.ArrowheadDragging) {
+  protected highlightAvailableMagnets(data: EventDataArrowheadDragging) {
     const graph = this.graph
     const cells = graph.model.getCells()
     data.marked = {}
@@ -2300,7 +2304,7 @@ export class EdgeView<
     }
   }
 
-  protected unhighlightAvailableMagnets(data: EventData.ArrowheadDragging) {
+  protected unhighlightAvailableMagnets(data: EventDataArrowheadDragging) {
     const marked = data.marked || {}
     Object.keys(marked).forEach((id) => {
       const view = this.graph.findViewByCell(id)
@@ -2330,11 +2334,11 @@ export class EdgeView<
     const elem = e.target
     const type = elem.getAttribute('data-terminal') as Edge.TerminalType
     const data = this.prepareArrowheadDragging(type, { x, y })
-    this.setEventData<EventData.ArrowheadDragging>(e, data)
+    this.setEventData<EventDataArrowheadDragging>(e, data)
   }
 
   protected dragArrowhead(e: Dom.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.ArrowheadDragging>(e)
+    const data = this.getEventData<EventDataArrowheadDragging>(e)
     if (this.graph.options.connecting.snap) {
       this.snapArrowhead(x, y, data)
     } else {
@@ -2344,7 +2348,7 @@ export class EdgeView<
 
   protected stopArrowheadDragging(e: Dom.MouseUpEvent, x: number, y: number) {
     const graph = this.graph
-    const data = this.getEventData<EventData.ArrowheadDragging>(e)
+    const data = this.getEventData<EventDataArrowheadDragging>(e)
     if (graph.options.connecting.snap) {
       this.snapArrowheadEnd(data)
     } else {
@@ -2384,7 +2388,7 @@ export class EdgeView<
         defaultLabelPositionArgs,
       )
 
-      this.setEventData<EventData.LabelDragging>(e, {
+      this.setEventData<EventDataLabelDragging>(e, {
         index,
         positionAngle,
         positionArgs,
@@ -2400,7 +2404,7 @@ export class EdgeView<
   }
 
   dragLabel(e: Dom.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.LabelDragging>(e)
+    const data = this.getEventData<EventDataLabelDragging>(e)
     const originLabel = this.cell.getLabelAt(data.index)
     const label = ObjectExt.merge({}, originLabel, {
       position: this.getLabelPosition(
@@ -2421,66 +2425,7 @@ export class EdgeView<
 
 export const EdgeViewToStringTag = `X6.${EdgeView.name}`
 
-namespace EventData {
-  export type MousemoveEventData = {}
-
-  export interface EdgeDragging {
-    action: 'drag-edge'
-    moving: boolean
-    x: number
-    y: number
-  }
-
-  export type ValidateConnectionArgs = [
-    CellView | null | undefined, // source view
-    Element | null | undefined, // source magnet
-    CellView | null | undefined, // target view
-    Element | null | undefined, // target magnet
-    Edge.TerminalType,
-    EdgeView,
-  ]
-
-  export interface ArrowheadDragging {
-    action: 'drag-arrowhead'
-    x: number
-    y: number
-    isNewEdge: boolean
-    terminalType: Edge.TerminalType
-    fallbackAction: 'remove' | 'revert'
-    initialMagnet: Element | null
-    initialTerminal: Edge.TerminalData
-    getValidateConnectionArgs: (
-      cellView: CellView,
-      magnet: Element | null,
-    ) => ValidateConnectionArgs
-    zIndex?: number | null
-    pointerEvents?: string | null
-    /**
-     * Current event target.
-     */
-    currentTarget?: Element
-    /**
-     * Current view under pointer.
-     */
-    currentView?: CellView | null
-    /**
-     * Current magnet under pointer.
-     */
-    currentMagnet?: Element | null
-    closestView?: CellView | null
-    closestMagnet?: Element | null
-    marked?: KeyValue<Element[]> | null
-    options?: KeyValue
-  }
-
-  export interface LabelDragging {
-    action: 'drag-label'
-    index: number
-    positionAngle: number
-    positionArgs?: Edge.LabelPositionOptions | null
-    stopPropagation: true
-  }
-}
+namespace EventData {}
 
 EdgeView.config<EdgeViewOptions>({
   isSvgElement: true,

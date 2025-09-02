@@ -1,7 +1,7 @@
 import { ObjectExt } from '../common'
 import type { Cell, Node } from '../model'
 import type { MarkupType } from '../view/markup'
-import { Base } from './base'
+import { Base, BaseBodyAttr } from './base'
 
 export function getMarkup(tagName: string, selector = 'body'): MarkupType {
   return [
@@ -67,7 +67,7 @@ export function createShape(
     constructorName: shape,
     markup: getMarkup(shape, options.selector),
     attrs: {
-      [shape]: { ...Base.bodyAttr },
+      [shape]: { ...BaseBodyAttr },
     },
   }
 

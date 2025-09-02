@@ -1,7 +1,25 @@
-import { Point } from '../geometry'
 import { ObjectExt } from '../common'
+import { Point } from '../geometry'
+import type { Node } from '../model/node'
 import { Base } from './base'
-import { Node } from '../model/node'
+
+function pointsToString(
+  points: Point.PointLike[] | Point.PointData[] | string,
+) {
+  return typeof points === 'string'
+    ? points
+    : (points as Point.PointLike[])
+        .map((p) => {
+          if (Array.isArray(p)) {
+            return p.join(',')
+          }
+          if (Point.isPointLike(p)) {
+            return `${p.x}, ${p.y}`
+          }
+          return ''
+        })
+        .join(' ')
+}
 
 export class Poly extends Base {
   get points() {
@@ -23,7 +41,7 @@ export class Poly extends Base {
     if (points == null) {
       this.removePoints()
     } else {
-      this.setAttrByPath('body/refPoints', Poly.pointsToString(points), options)
+      this.setAttrByPath('body/refPoints', pointsToString(points), options)
     }
 
     return this
@@ -35,35 +53,15 @@ export class Poly extends Base {
   }
 }
 
-export namespace Poly {
-  export function pointsToString(
-    points: Point.PointLike[] | Point.PointData[] | string,
-  ) {
-    return typeof points === 'string'
-      ? points
-      : (points as Point.PointLike[])
-          .map((p) => {
-            if (Array.isArray(p)) {
-              return p.join(',')
-            }
-            if (Point.isPointLike(p)) {
-              return `${p.x}, ${p.y}`
-            }
-            return ''
-          })
-          .join(' ')
-  }
-
-  Poly.config({
-    propHooks(metadata) {
-      const { points, ...others } = metadata
-      if (points) {
-        const data = pointsToString(points)
-        if (data) {
-          ObjectExt.setByPath(others, 'attrs/body/refPoints', data)
-        }
+Poly.config({
+  propHooks(metadata) {
+    const { points, ...others } = metadata
+    if (points) {
+      const data = pointsToString(points)
+      if (data) {
+        ObjectExt.setByPath(others, 'attrs/body/refPoints', data)
       }
-      return others
-    },
-  })
-}
+    }
+    return others
+  },
+})
