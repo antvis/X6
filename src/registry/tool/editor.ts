@@ -1,9 +1,9 @@
-import { createViewElement } from '@/view/view/util'
 import { Dom, FunctionExt, NumberExt, ObjectExt, Util } from '../../common'
 import { Point } from '../../geometry'
 import type { Cell, Edge } from '../../model'
 import type { CellView, EdgeView, NodeView } from '../../view'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
+import { createViewElement } from '../../view/view/util'
 
 export class CellEditor extends ToolItem<
   NodeView | EdgeView,
