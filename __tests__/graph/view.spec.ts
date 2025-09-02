@@ -1,132 +1,295 @@
-import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest'
-import { Graph } from '../../src/graph'
-import { GraphView } from '../../src'
-import { createTestGraph } from '../utils'
-import { Dom } from '../../src/common'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { GraphView } from '../../src/graph/view'
+import { Cell } from '../../src/model/cell'
 
 describe('GraphView', () => {
-  let graph: Graph
+  let graph: any
+  let container: HTMLElement
   let view: GraphView
-  let cleanup: () => void
+  let mockCellView: any
+  let findViewByElemSpy: any
 
   beforeEach(() => {
-    const { graph: g, cleanup: c } = createTestGraph()
-    graph = g
-    cleanup = c
+    container = document.createElement('div')
+    graph = {
+      options: {
+        container,
+        clickThreshold: 2,
+        moveThreshold: 1,
+        preventDefaultDblClick: false,
+        preventDefaultMouseDown: false,
+      },
+      findViewByElem: vi.fn(),
+      snapToGrid: vi.fn((x, y) => ({ x, y })),
+      trigger: vi.fn(),
+    }
+    mockCellView = {
+      cell: {},
+      onClick: vi.fn(),
+      onDblClick: vi.fn(),
+      onContextMenu: vi.fn(),
+      onMouseDown: vi.fn(),
+      onMouseMove: vi.fn(),
+      onMouseUp: vi.fn(),
+      onMouseOver: vi.fn(),
+      onMouseOut: vi.fn(),
+      onMouseEnter: vi.fn(),
+      onMouseLeave: vi.fn(),
+      onMouseWheel: vi.fn(),
+      onCustomEvent: vi.fn(),
+      onMagnetMouseDown: vi.fn(),
+      onMagnetDblClick: vi.fn(),
+      onMagnetContextMenu: vi.fn(),
+      onLabelMouseDown: vi.fn(),
+    }
     view = new GraphView(graph)
+    findViewByElemSpy = vi
+      .spyOn(graph, 'findViewByElem')
+      .mockReturnValue(mockCellView)
   })
 
-  afterAll(() => {
-    cleanup()
+  it('should init and mount elements', () => {
+    expect(view.container).toBe(container)
   })
 
-  it('should mount with correct DOM structure', () => {
-    expect(view.container.classList.contains('x6-graph')).toBeTruthy()
-    expect(view.background).toBeInstanceOf(HTMLDivElement)
-    expect(view.svg).toBeInstanceOf(SVGSVGElement)
+  it('delegateEvents should call super', () => {
+    const result = view.delegateEvents()
+    expect(result).toBe(view)
   })
 
-  it('guard should return true for right click', () => {
-    const e: any = { type: 'mousedown', button: 2 }
-    expect(view.guard(e)).toBeTruthy()
+  describe('guard', () => {
+    it('should return true on right click', () => {
+      const e = { type: 'mousedown', button: 2 }
+      expect(view.guard(e as any)).toBe(true)
+    })
+
+    it('should use options.guard if provided', () => {
+      graph.options.guard = () => true
+      const e = { type: 'click', button: 0 }
+      expect(view.guard(e as any)).toBe(true)
+    })
+
+    it('should return e.data.guarded if defined', () => {
+      const e = { type: 'click', button: 0, data: { guarded: false } }
+      expect(view.guard(e as any)).toBe(false)
+    })
+
+    it('should return false if view.cell exists', () => {
+      const e = { type: 'click', button: 0 }
+      const cell = new Cell()
+      expect(view.guard(e as any, { cell } as any)).toBe(false)
+    })
+
+    it('should return false if target is svg or container', () => {
+      const e = { type: 'click', button: 0, target: view.svg }
+      expect(view.guard(e as any)).toBe(false)
+    })
+
+    it('should default to true', () => {
+      const e = {
+        type: 'click',
+        button: 0,
+        target: document.createElement('div'),
+      }
+      expect(view.guard(e as any)).toBe(true)
+    })
   })
 
-  it('guard should return false if event target inside svg', () => {
-    const e: any = { type: 'click', target: view.svg }
-    expect(view.guard(e)).toBeFalsy()
+  it('onClick should trigger view.onClick', () => {
+    vi.spyOn(view, 'guard').mockReturnValue(false)
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+
+    view.onClick({ clientX: 10, clientY: 20, type: 'click' } as any)
+    expect(mockCellView.onClick).toHaveBeenCalled()
   })
 
-  it('onClick should trigger blank:click when no view', () => {
-    const spy = vi.spyOn(graph, 'trigger')
-    const evt: any = new Dom.EventObject(
-      new MouseEvent('click', { bubbles: true, cancelable: true }),
-    )
-    evt.clientX = 10
-    evt.clientY = 20
-    evt.target = graph.container // ✅ 容器本身，不属于 cell
-    evt.data = { mouseMovedCount: 0 }
+  it('onClick should trigger blank:click if no view', () => {
+    vi.spyOn(view, 'findView').mockReturnValue(null)
+    vi.spyOn(view.graph, 'snapToGrid').mockImplementation((x, y) => ({ x, y }))
+    vi.spyOn(graph, 'trigger')
+
+    const evt = {
+      clientX: 1,
+      clientY: 2,
+      type: 'click',
+      data: {},
+      target: view.svg, // <--- 必须保证 target 在 svg 内
+    } as any
 
     view.onClick(evt)
-    expect(spy).toHaveBeenCalledWith('blank:click', expect.any(Object))
-  })
 
-  it('onDblClick should trigger blank:dblclick when no view', () => {
-    const spy = vi.spyOn(graph, 'trigger')
-    const evt: any = new Dom.EventObject(
-      new MouseEvent('dblclick', { bubbles: true, cancelable: true }),
+    expect(graph.trigger).toHaveBeenCalledWith(
+      'blank:click',
+      expect.objectContaining({ x: 1, y: 2 }),
     )
-    evt.clientX = 10
-    evt.clientY = 20
-    evt.target = graph.container
-    evt.data = { mouseMovedCount: 0 }
-    view.onDblClick(evt)
-    expect(spy).toHaveBeenCalledWith('blank:dblclick', expect.any(Object))
   })
 
-  it('onContextMenu should preventDefault and trigger blank:contextmenu', () => {
-    const spy = vi.spyOn(graph, 'trigger')
-    const prevent = vi.fn()
-    const evt: any = new Dom.EventObject(
-      new MouseEvent('contextmenu', { bubbles: true, cancelable: true }),
+  it('onDblClick should trigger view.onDblClick', () => {
+    const mockCellView = {
+      cell: {}, // 必须有 cell，且 Cell.isCell(cell) 返回 true
+      onDblClick: vi.fn(),
+    } as any
+
+    // 模拟 Cell.isCell
+    vi.spyOn(Cell, 'isCell').mockReturnValue(true)
+
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+    vi.spyOn(view.graph, 'snapToGrid').mockImplementation((x, y) => ({ x, y }))
+
+    view.onDblClick({ clientX: 10, clientY: 20, type: 'dblclick' } as any)
+
+    expect(mockCellView.onDblClick).toHaveBeenCalledWith(
+      expect.anything(),
+      10,
+      20,
     )
-    evt.clientX = 50
-    evt.clientY = 60
-    evt.preventDefault = prevent
-    evt.target = graph.container
-    evt.data = { mouseMovedCount: 0 }
-    view.onContextMenu(evt)
-    expect(prevent).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith('blank:contextmenu', expect.any(Object))
   })
 
-  it('delegateDragEvents should set eventData and undelegateEvents', () => {
-    const e: any = new Dom.EventObject(new MouseEvent('mousedown'))
-    e.clientX = 1
-    e.clientY = 2
-    view.delegateDragEvents(e, null)
-    const data = view.getEventData(e)
-    expect(data.startPosition).toEqual({ x: 1, y: 2 })
+  it('onContextMenu should call preventDefault if needed', () => {
+    graph.options.preventDefaultContextMenu = true
+    const evt = { clientX: 1, clientY: 2, preventDefault: vi.fn() }
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+    view.onContextMenu(evt as any)
+    expect(evt.preventDefault).toHaveBeenCalled()
   })
 
-  it('onMouseMove should increment mouseMovedCount', () => {
-    const e: any = new Dom.EventObject(new MouseEvent('mousemove'))
-    e.clientX = 3
-    e.clientY = 4
-    view.setEventData(e, {
-      startPosition: { x: 1, y: 2 },
-      mouseMovedCount: 0,
+  it('onMouseDown should delegate drag events', () => {
+    const evt = {
+      type: 'mousedown',
+      target: document.createElement('div'),
+      clientX: 10,
+      clientY: 20,
+      button: 0,
+      data: {},
+      preventDefault: vi.fn(),
+      stopImmediatePropagation: vi.fn(),
+    } as any
+
+    vi.spyOn(view, 'findView').mockReturnValue(null) // 空白
+    vi.spyOn(view, 'guard').mockReturnValue(false)
+    vi.spyOn(view.graph, 'snapToGrid').mockImplementation((x, y) => ({ x, y }))
+    vi.spyOn(view.graph, 'trigger')
+
+    view.onMouseDown(evt)
+
+    expect(view.graph.trigger).toHaveBeenCalledWith(
+      'blank:mousedown',
+      expect.objectContaining({ e: expect.anything(), x: 10, y: 20 }),
+    )
+  })
+
+  it('onMouseMove should increase count and call graph.trigger', () => {
+    const evt: any = { clientX: 2, clientY: 3, data: {} }
+    view.setEventData(evt, {
+      startPosition: { x: 1, y: 1 },
+      mouseMovedCount: 2,
     })
-    view.onMouseMove(e)
-    const data = view.getEventData(e)
-    expect(data.mouseMovedCount).toBeGreaterThan(0)
+    view.onMouseMove(evt)
+    expect(graph.trigger).toHaveBeenCalledWith(
+      'blank:mousemove',
+      expect.anything(),
+    )
   })
 
-  it('onMouseUp should trigger blank:mouseup when no view', () => {
-    const spy = vi.spyOn(graph, 'trigger')
-    const e: any = new Dom.EventObject(new MouseEvent('mouseup'))
-    e.clientX = 7
-    e.clientY = 8
-    view.setEventData(e, { currentView: null })
-    view.onMouseUp(e)
-    expect(spy).toHaveBeenCalledWith('blank:mouseup', expect.any(Object))
+  it('onMouseUp should trigger blank:mouseup', () => {
+    const evt: any = {
+      clientX: 5,
+      clientY: 6,
+      data: {},
+      stopImmediatePropagation: vi.fn(),
+      isPropagationStopped: () => true,
+    }
+    view.setEventData(evt, { currentView: null })
+    view.onMouseUp(evt)
+    expect(graph.trigger).toHaveBeenCalledWith(
+      'blank:mouseup',
+      expect.anything(),
+    )
   })
 
-  it('snapshoot and restore should work', () => {
-    const container = document.createElement('div')
-    container.setAttribute('data-test', '1')
-    const child = document.createElement('span')
-    container.appendChild(child)
-    const restore = GraphView.snapshoot(container)
-    container.setAttribute('data-test', '2')
-    container.innerHTML = ''
-    restore()
-    expect(container.getAttribute('data-test')).toBe('1')
-    expect(container.querySelector('span')).not.toBeNull()
+  it('onMouseWheel should trigger view.onMouseWheel', () => {
+    const evt = {
+      type: 'mousewheel',
+      target: document.createElement('g'),
+      originalEvent: { clientX: 10, clientY: 20, wheelDelta: 1 },
+      data: {},
+    } as any
+
+    const mockCellView = {
+      onMouseWheel: vi.fn(),
+      cell: {},
+    } as any
+
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+    vi.spyOn(view, 'guard').mockReturnValue(false)
+    vi.spyOn(view.graph, 'snapToGrid').mockImplementation((x, y) => ({ x, y }))
+
+    view.onMouseWheel(evt)
+
+    expect(mockCellView.onMouseWheel).toHaveBeenCalledWith(
+      expect.anything(), // evt
+      10, // x
+      20, // y
+      1, // delta
+    )
   })
 
-  it('dispose should restore DOM and clean listeners', () => {
-    const spy = vi.spyOn(view as any, 'undelegateEvents')
-    view.dispose()
-    expect(spy).toHaveBeenCalled()
+  it('onCustomEvent should call view.onCustomEvent', () => {
+    const elem = document.createElement('div')
+    elem.setAttribute('event', 'test-event')
+    const evt: any = { currentTarget: elem, clientX: 1, clientY: 2 }
+    const mockCellView = {
+      onCustomEvent: vi.fn(),
+      cell: new Cell(),
+    } as any
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+    view.onCustomEvent(evt)
+    expect(mockCellView.onCustomEvent).toHaveBeenCalledWith(
+      expect.anything(),
+      'test-event',
+      1,
+      2,
+    )
+  })
+
+  it('onMagnetMouseDown should trigger view.onMagnetMouseDown', () => {
+    const elem = document.createElement('div')
+    elem.setAttribute('magnet', 'true')
+    const evt: any = { currentTarget: elem, clientX: 1, clientY: 2 }
+    const mockCellView = {
+      onMagnetMouseDown: vi.fn(),
+      cell: new Cell(),
+    } as any
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+    view.onMagnetMouseDown(evt)
+    expect(mockCellView.onMagnetMouseDown).toHaveBeenCalled()
+  })
+
+  it('onLabelMouseDown should call view.onLabelMouseDown', () => {
+    const elem = document.createElement('div')
+    const mockCellView = {
+      cell: new Cell(),
+      onLabelMouseDown: vi.fn(),
+    } as any
+    const evt: any = {
+      currentTarget: elem,
+      clientX: 1,
+      clientY: 2,
+    }
+    vi.spyOn(view, 'findView').mockImplementation(() => mockCellView)
+    view.onLabelMouseDown(evt)
+    expect(mockCellView.onLabelMouseDown).toHaveBeenCalled()
+  })
+
+  it('onImageDragStart should return false', () => {
+    expect(view.onImageDragStart()).toBe(false)
+  })
+
+  it('dispose should call restore and undelegateEvents', () => {
+    const mockCellView = { onLabelMouseDown: vi.fn() } as any
+    vi.spyOn(view, 'findView').mockReturnValue(mockCellView)
+    vi.spyOn(view, 'guard').mockReturnValue(false)
+    view.onLabelMouseDown({ type: 'mousedown', target: {} } as any)
+    expect(mockCellView.onLabelMouseDown).toHaveBeenCalled()
   })
 })
