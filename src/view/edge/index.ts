@@ -5,38 +5,43 @@ import {
   NumberExt,
   ObjectExt,
   Vector,
-} from '../common'
-import { Angle, Line, Path, Point, Polyline, Rectangle } from '../geometry'
-import type { Graph } from '../graph'
-import type { Options as GraphOptions } from '../graph/options'
-import type { Cell } from '../model/cell'
-import { Edge } from '../model/edge'
+} from '../../common'
+import { Angle, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
+import type { Graph } from '../../graph'
+import type { Options as GraphOptions } from '../../graph/options'
+import type { Cell } from '../../model/cell'
+import { Edge } from '../../model/edge'
 import {
   ConnectionPoint,
   Connector,
   EdgeAnchor,
   NodeAnchor,
   Router,
-} from '../registry'
-import { CellView } from './cell'
+} from '../../registry'
+import { CellView } from '../cell'
 import type {
   CellViewHighlightOptions,
   CellViewMouseDeltaEventArgs,
   CellViewOptions,
   CellViewPositionEventArgs,
-} from './cell/type'
+} from '../cell/type'
 import {
   Markup,
   type MarkupJSONMarkup,
   type MarkupSelectors,
   type MarkupType,
-} from './markup'
-import { NodeView } from './node'
-import type { ToolsView, ToolsViewOptions } from './tool'
+} from '../markup'
+import { NodeView } from '../node'
+import type { ToolsView, ToolsViewOptions } from '../tool'
+import type {
+  EdgeViewMouseEventArgs,
+  EdgeViewOptions,
+  EdgeViewPositionEventArgs,
+} from './type'
 
 export class EdgeView<
   Entity extends Edge = Edge,
-  Options extends EdgeView.Options = EdgeView.Options,
+  Options extends EdgeViewOptions = EdgeViewOptions,
 > extends CellView<Entity, Options> {
   protected readonly POINT_ROUNDING = 2
   public path: Path
@@ -59,8 +64,34 @@ export class EdgeView<
     [index: number]: (args: GraphOptions.OnEdgeLabelRenderedArgs) => void
   } = {}
 
+  public static isEdgeView(instance: any): instance is EdgeView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof EdgeView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as EdgeView
+
+    if (
+      (tag == null || tag === EdgeViewToStringTag) &&
+      typeof view.isNodeView === 'function' &&
+      typeof view.isEdgeView === 'function' &&
+      typeof view.confirmUpdate === 'function' &&
+      typeof view.update === 'function' &&
+      typeof view.getConnection === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+
   protected get [Symbol.toStringTag]() {
-    return EdgeView.toStringTag
+    return EdgeViewToStringTag
   }
 
   protected getContainerClassName() {
@@ -1360,20 +1391,20 @@ export class EdgeView<
 
   // #region events
 
-  protected getEventArgs<E>(e: E): EdgeView.MouseEventArgs<E>
+  protected getEventArgs<E>(e: E): EdgeViewMouseEventArgs<E>
   protected getEventArgs<E>(
     e: E,
     x: number,
     y: number,
-  ): EdgeView.PositionEventArgs<E>
+  ): EdgeViewPositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
     const view = this // eslint-disable-line
     const edge = view.cell
     const cell = edge
     if (x == null || y == null) {
-      return { e, view, edge, cell } as EdgeView.MouseEventArgs<E>
+      return { e, view, edge, cell } as EdgeViewMouseEventArgs<E>
     }
-    return { e, x, y, view, edge, cell } as EdgeView.PositionEventArgs<E>
+    return { e, x, y, view, edge, cell } as EdgeViewPositionEventArgs<E>
   }
 
   protected notifyUnhandledMouseDown(
@@ -2388,104 +2419,7 @@ export class EdgeView<
   // #endregion
 }
 
-export namespace EdgeView {
-  export interface Options extends CellViewOptions {}
-}
-
-export namespace EdgeView {
-  export interface MouseEventArgs<E> {
-    e: E
-    edge: Edge
-    cell: Edge
-    view: EdgeView
-  }
-
-  export interface PositionEventArgs<E>
-    extends MouseEventArgs<E>,
-      CellViewPositionEventArgs {}
-
-  export interface EventArgs {
-    'edge:click': PositionEventArgs<Dom.ClickEvent>
-    'edge:dblclick': PositionEventArgs<Dom.DoubleClickEvent>
-    'edge:contextmenu': PositionEventArgs<Dom.ContextMenuEvent>
-    'edge:mousedown': PositionEventArgs<Dom.MouseDownEvent>
-    'edge:mousemove': PositionEventArgs<Dom.MouseMoveEvent>
-    'edge:mouseup': PositionEventArgs<Dom.MouseUpEvent>
-    'edge:mouseover': MouseEventArgs<Dom.MouseOverEvent>
-    'edge:mouseout': MouseEventArgs<Dom.MouseOutEvent>
-    'edge:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
-    'edge:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
-    'edge:mousewheel': PositionEventArgs<Dom.EventObject> &
-      CellViewMouseDeltaEventArgs
-
-    'edge:customevent': EdgeView.PositionEventArgs<Dom.MouseDownEvent> & {
-      name: string
-    }
-
-    'edge:unhandled:mousedown': PositionEventArgs<Dom.MouseDownEvent>
-
-    'edge:connected': {
-      e: Dom.MouseUpEvent
-      edge: Edge
-      view: EdgeView
-      isNew: boolean
-      type: Edge.TerminalType
-      previousCell?: Cell | null
-      previousView?: CellView | null
-      previousPort?: string | null
-      previousPoint?: Point.PointLike | null
-      previousMagnet?: Element | null
-      currentCell?: Cell | null
-      currentView?: CellView | null
-      currentPort?: string | null
-      currentPoint?: Point.PointLike | null
-      currentMagnet?: Element | null
-    }
-
-    'edge:highlight': {
-      magnet: Element
-      view: EdgeView
-      edge: Edge
-      cell: Edge
-      options: CellViewHighlightOptions
-    }
-    'edge:unhighlight': EventArgs['edge:highlight']
-
-    'edge:move': PositionEventArgs<Dom.MouseMoveEvent>
-    'edge:moving': PositionEventArgs<Dom.MouseMoveEvent>
-    'edge:moved': PositionEventArgs<Dom.MouseUpEvent>
-  }
-}
-
-export namespace EdgeView {
-  export const toStringTag = `X6.${EdgeView.name}`
-
-  export function isEdgeView(instance: any): instance is EdgeView {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof EdgeView) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const view = instance as EdgeView
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof view.isNodeView === 'function' &&
-      typeof view.isEdgeView === 'function' &&
-      typeof view.confirmUpdate === 'function' &&
-      typeof view.update === 'function' &&
-      typeof view.getConnection === 'function'
-    ) {
-      return true
-    }
-
-    return false
-  }
-}
+export const EdgeViewToStringTag = `X6.${EdgeView.name}`
 
 namespace EventData {
   export type MousemoveEventData = {}
@@ -2548,7 +2482,7 @@ namespace EventData {
   }
 }
 
-EdgeView.config<EdgeView.Options>({
+EdgeView.config<EdgeViewOptions>({
   isSvgElement: true,
   priority: 1,
   bootstrap: ['render', 'source', 'target'],
