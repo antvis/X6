@@ -1,6 +1,22 @@
 import { ObjectExt } from '../common'
 import { Node } from '../model'
 
+export const BaseBodyAttr = {
+  fill: '#ffffff',
+  stroke: '#333333',
+  strokeWidth: 2,
+}
+
+export const BaseLabelAttr = {
+  fontSize: 14,
+  fill: '#000000',
+  refX: 0.5,
+  refY: 0.5,
+  textAnchor: 'middle',
+  textVerticalAnchor: 'middle',
+  fontFamily: 'Arial, helvetica, sans-serif',
+}
+
 export class Base<
   Properties extends Node.Properties = Node.Properties,
 > extends Node<Properties> {
@@ -32,32 +48,14 @@ export class Base<
   }
 }
 
-export namespace Base {
-  export const bodyAttr = {
-    fill: '#ffffff',
-    stroke: '#333333',
-    strokeWidth: 2,
-  }
-
-  export const labelAttr = {
-    fontSize: 14,
-    fill: '#000000',
-    refX: 0.5,
-    refY: 0.5,
-    textAnchor: 'middle',
-    textVerticalAnchor: 'middle',
-    fontFamily: 'Arial, helvetica, sans-serif',
-  }
-
-  Base.config({
-    attrs: { text: { ...labelAttr } },
-    propHooks(metadata) {
-      const { label, ...others } = metadata
-      if (label) {
-        ObjectExt.setByPath(others, 'attrs/text/text', label)
-      }
-      return others
-    },
-    visible: true,
-  })
-}
+Base.config({
+  attrs: { text: { ...BaseLabelAttr } },
+  propHooks(metadata) {
+    const { label, ...others } = metadata
+    if (label) {
+      ObjectExt.setByPath(others, 'attrs/text/text', label)
+    }
+    return others
+  },
+  visible: true,
+})
