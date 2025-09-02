@@ -1,6 +1,7 @@
 import { Dom, disposable, type KeyValue } from '../common'
 import { Highlighter } from '../registry'
 import type { CellView } from '../view'
+import type { CellViewHighlightOptions } from '../view/cell/type'
 import { Base } from './base'
 import type { EventArgs } from './events'
 
@@ -58,7 +59,7 @@ export class HighlightManager extends Base {
     this.unhighlight(id)
   }
 
-  protected resolveHighlighter(options: CellView.HighlightOptions) {
+  protected resolveHighlighter(options: CellViewHighlightOptions) {
     const graphOptions = this.options
     let highlighterDef: string | undefined | Highlighter.ManaualItem =
       options.highlighter
