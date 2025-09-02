@@ -3,11 +3,17 @@ import type { Point, Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Node } from '../../model/node'
 import type { CellView } from '../cell'
+import type {
+  CellViewHighlightOptions,
+  CellViewMouseDeltaEventArgs,
+  CellViewOptions,
+  CellViewPositionEventArgs,
+} from '../cell/type'
 import type { EdgeView } from '../edge'
 import type { MarkupSelectors } from '../markup'
 import type { NodeView } from '.'
 
-export interface NodeViewOptions extends CellView.Options {}
+export interface NodeViewOptions extends CellViewOptions {}
 
 export interface NodeViewPortCache {
   portElement: Element
@@ -31,7 +37,7 @@ export interface NodeViewMouseEventArgs<E> {
 }
 export interface NodeViewPositionEventArgs<E>
   extends NodeViewMouseEventArgs<E>,
-    CellView.PositionEventArgs {}
+    CellViewPositionEventArgs {}
 
 export interface NodeViewTranslateEventArgs<E>
   extends NodeViewPositionEventArgs<E> {}
@@ -54,7 +60,7 @@ export interface NodeViewEventArgs {
   'node:mouseenter': NodeViewMouseEventArgs<Dom.MouseEnterEvent>
   'node:mouseleave': NodeViewMouseEventArgs<Dom.MouseLeaveEvent>
   'node:mousewheel': NodeViewPositionEventArgs<Dom.EventObject> &
-    CellView.MouseDeltaEventArgs
+    CellViewMouseDeltaEventArgs
 
   'node:port:click': NodeViewPositionEventArgs<Dom.ClickEvent>
   'node:port:dblclick': NodeViewPositionEventArgs<Dom.DoubleClickEvent>
@@ -78,7 +84,7 @@ export interface NodeViewEventArgs {
     view: NodeView
     node: Node
     cell: Node
-    options: CellView.HighlightOptions
+    options: CellViewHighlightOptions
   }
   'node:unhighlight': NodeViewEventArgs['node:highlight']
 

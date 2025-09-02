@@ -59,7 +59,7 @@ export class NodeView<
   }
 
   protected get [Symbol.toStringTag]() {
-    return NodeView.toStringTag
+    return NodeViewToStringTag
   }
 
   protected getContainerClassName() {
