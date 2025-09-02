@@ -66,7 +66,7 @@ describe('NodeView', () => {
 
   describe('instance methods', () => {
     it('should have Symbol.toStringTag', () => {
-      expect(nodeView[Symbol.toStringTag]).toBe(NodeView.toStringTag)
+      expect(nodeView[Symbol.toStringTag]).toBe(NodeViewToStringTag)
     })
 
     it('should initialize portsCache as empty object', () => {

@@ -13,6 +13,7 @@ import type {
 } from '../registry'
 import { Edge as StandardEdge } from '../shape'
 import { type CellView, type EdgeView, Markup, type NodeView } from '../view'
+import type { CellViewInteracting } from '../view/cell/type'
 import type { MarkupSelectors } from '../view/markup'
 import type { BackgroundManager } from './background'
 import type { GridManager } from './grid'
@@ -47,7 +48,7 @@ export namespace Options {
       | ((this: Graph, { view }: { view: CellView | null }) => boolean)
     preventDefaultMouseDown: boolean
     preventDefaultBlankAction: boolean
-    interacting: CellView.Interacting
+    interacting: CellViewInteracting
 
     async?: boolean
     virtual?: boolean
