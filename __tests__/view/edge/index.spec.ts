@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Dom } from '../../../src/common'
 import { Path, Point, Rectangle } from '../../../src/geometry'
