@@ -553,7 +553,8 @@ describe('EdgeView', () => {
     it('should start edge dragging', () => {
       const mockEvent = new MouseEvent('mousedown') as Dom.MouseDownEvent
       edgeView.startEdgeDragging(mockEvent, 100, 100)
-      expect(edgeView.can('edgeDragging')).toBe(true)
+      const eventData = edgeView.getEventData(mockEvent)
+      expect(eventData.action).toBe('drag-edge')
     })
 
     it('should drag edge', () => {
