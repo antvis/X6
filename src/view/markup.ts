@@ -1,5 +1,5 @@
 import { Dom, type KeyValue, type Nilable, ObjectExt, Vector } from '../common'
-import type { Attr } from '../registry'
+import type { SimpleAttrs } from '../registry'
 
 export type MarkupSelectors = KeyValue<Element | Element[]>
 
@@ -28,7 +28,7 @@ export interface MarkupJSONMarkup {
    */
   groupSelector?: string | string[] | null
 
-  attrs?: Attr.SimpleAttrs
+  attrs?: SimpleAttrs
 
   style?: Record<string, string | number>
 

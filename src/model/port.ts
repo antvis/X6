@@ -1,6 +1,6 @@
 import { type JSONObject, type KeyValue, ObjectExt, type Size } from '../common'
 import { Point, type Rectangle } from '../geometry'
-import { type Attr, PortLabelLayout, PortLayout } from '../registry'
+import { type CellAttrs, PortLabelLayout, PortLayout } from '../registry'
 import type { MarkupType } from '../view/markup'
 
 export class PortManager {
@@ -251,7 +251,7 @@ export namespace PortManager {
 
   interface Common {
     markup: MarkupType
-    attrs: Attr.CellAttrs
+    attrs: CellAttrs
     zIndex: number | 'auto'
     size?: Size
   }
@@ -285,7 +285,7 @@ export namespace PortManager {
 
   export interface LayoutResult {
     portId: string
-    portAttrs?: Attr.CellAttrs
+    portAttrs?: CellAttrs
     portSize?: Size
     portLayout: PortLayout.Result
     labelSize?: Size

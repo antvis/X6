@@ -1,6 +1,6 @@
 import { Dom, FunctionExt, ObjectExt, Platform } from '../common'
 import type { Node } from '../model'
-import { Attr } from '../registry'
+import { presets, type SetDefinition, type SimpleAttrs } from '../registry'
 import { Base } from './base'
 
 export function getTextBlockMarkup(supportForeignobject: boolean) {
@@ -77,14 +77,14 @@ export const TextBlockConfig: Node.Config = {
           elem.textContent = text
         } else {
           // No foreign object
-          const style = (attrs.style as Attr.SimpleAttrs) || {}
+          const style = (attrs.style as SimpleAttrs) || {}
           const wrapValue = { text, width: -5, height: '100%' }
           const wrapAttrs = {
             textVerticalAnchor: 'middle',
             ...style,
           }
 
-          const textWrap = Attr.presets.textWrap as Attr.SetDefinition
+          const textWrap = presets.textWrap as SetDefinition
           FunctionExt.call(textWrap.set, this, wrapValue, {
             cell,
             view,

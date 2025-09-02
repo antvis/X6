@@ -12,7 +12,12 @@ import {
 } from '../common'
 import { Point, Rectangle } from '../geometry'
 import type { Graph } from '../graph'
-import { Attr } from '../registry'
+import {
+  type CellAttrs,
+  type ComplexAttrValue,
+  type Definitions,
+  registry,
+} from '../registry'
 import { type CellView, Markup } from '../view'
 import type { MarkupType } from '../view/markup'
 import { Animation } from './animation'
@@ -29,7 +34,7 @@ export class Cell<
 
   protected static markup: MarkupType
   protected static defaults: Cell.Defaults = {}
-  protected static attrHooks: Attr.Definitions = {}
+  protected static attrHooks: Definitions = {}
   protected static propHooks: Cell.PropHook[] = []
 
   public static config<C extends Cell.Config = Cell.Config>(presets: C) {
@@ -514,7 +519,7 @@ export class Cell<
     return this.getAttrs()
   }
 
-  set attrs(value: Attr.CellAttrs | null | undefined) {
+  set attrs(value: CellAttrs | null | undefined) {
     if (value == null) {
       this.removeAttrs()
     } else {
@@ -528,14 +533,13 @@ export class Cell<
   }
 
   setAttrs(
-    attrs: Attr.CellAttrs | null | undefined,
+    attrs: CellAttrs | null | undefined,
     options: Cell.SetAttrOptions = {},
   ) {
     if (attrs == null) {
       this.removeAttrs(options)
     } else {
-      const set = (attrs: Attr.CellAttrs) =>
-        this.store.set('attrs', attrs, options)
+      const set = (attrs: CellAttrs) => this.store.set('attrs', attrs, options)
 
       if (options.overwrite === true) {
         set(attrs)
@@ -552,11 +556,11 @@ export class Cell<
     return this
   }
 
-  replaceAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
+  replaceAttrs(attrs: CellAttrs, options: Cell.SetOptions = {}) {
     return this.setAttrs(attrs, { ...options, overwrite: true })
   }
 
-  updateAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
+  updateAttrs(attrs: CellAttrs, options: Cell.SetOptions = {}) {
     return this.setAttrs(attrs, { ...options, deep: false })
   }
 
@@ -572,16 +576,16 @@ export class Cell<
 
     const ctor = this.constructor as typeof Cell
     const hooks = ctor.getAttrHooks() || {}
-    let definition = hooks[attrName] || Attr.registry.get(attrName)
+    let definition = hooks[attrName] || registry.get(attrName)
     if (!definition) {
       const name = StringExt.camelCase(attrName)
-      definition = hooks[name] || Attr.registry.get(name)
+      definition = hooks[name] || registry.get(name)
     }
 
     return definition || null
   }
 
-  getAttrByPath(): Attr.CellAttrs
+  getAttrByPath(): CellAttrs
   getAttrByPath<T>(path: string | string[]): T
   getAttrByPath<T>(path?: string | string[]) {
     if (path == null || path === '') {
@@ -592,7 +596,7 @@ export class Cell<
 
   setAttrByPath(
     path: string | string[],
-    value: Attr.ComplexAttrValue,
+    value: ComplexAttrValue,
     options: Cell.SetOptions = {},
   ) {
     this.setPropByPath(this.prefixAttrPath(path), value, options)
@@ -608,17 +612,17 @@ export class Cell<
     return Array.isArray(path) ? ['attrs'].concat(path) : `attrs/${path}`
   }
 
-  attr(): Attr.CellAttrs
+  attr(): CellAttrs
   attr<T>(path: string | string[]): T
   attr(
     path: string | string[],
-    value: Attr.ComplexAttrValue | null,
+    value: ComplexAttrValue | null,
     options?: Cell.SetOptions,
   ): this
-  attr(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
+  attr(attrs: CellAttrs, options?: Cell.SetAttrOptions): this
   attr(
-    path?: string | string[] | Attr.CellAttrs,
-    value?: Attr.ComplexAttrValue | Cell.SetOptions,
+    path?: string | string[] | CellAttrs,
+    value?: ComplexAttrValue | Cell.SetOptions,
     options?: Cell.SetOptions,
   ) {
     if (path == null) {
@@ -632,11 +636,7 @@ export class Cell<
       if (value == null) {
         return this.removeAttrByPath(path, options || {})
       }
-      return this.setAttrByPath(
-        path,
-        value as Attr.ComplexAttrValue,
-        options || {},
-      )
+      return this.setAttrByPath(path, value as ComplexAttrValue, options || {})
     }
 
     return this.setAttrs(path, (value || {}) as Cell.SetOptions)
@@ -1272,8 +1272,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-      ? Edge.Properties
-      : Properties {
+    ? Edge.Properties
+    : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1295,7 +1295,7 @@ export class Cell<
     // such as `width`, `height` etc. to ensure the comparing work correctly.
     const defaults = diff ? this.preprocess(presets, true) : presets
     const defaultAttrs = defaults.attrs || {}
-    const finalAttrs: Attr.CellAttrs = {}
+    const finalAttrs: CellAttrs = {}
 
     Object.entries(props).forEach(([key, val]) => {
       if (
@@ -1463,7 +1463,7 @@ export namespace Cell {
     view?: string
     shape?: string
     markup?: MarkupType
-    attrs?: Attr.CellAttrs
+    attrs?: CellAttrs
     zIndex?: number
     visible?: boolean
     data?: any
@@ -1581,7 +1581,7 @@ export namespace Cell {
 
     // common
     'change:*': ChangeAnyKeyArgs
-    'change:attrs': ChangeArgs<Attr.CellAttrs>
+    'change:attrs': ChangeArgs<CellAttrs>
     'change:zIndex': ChangeArgs<number>
     'change:markup': ChangeArgs<MarkupType>
     'change:visible': ChangeArgs<boolean>
@@ -1855,7 +1855,7 @@ export namespace Cell {
     constructorName?: string
     overwrite?: boolean
     propHooks?: PropHooks<M, C>
-    attrHooks?: Attr.Definitions
+    attrHooks?: Definitions
   }
 }
 

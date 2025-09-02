@@ -1,8 +1,8 @@
 import { Dom, NumberExt } from '../../common'
 import type { EdgeView } from '../../view/edge'
 import type { NodeView } from '../../view/node'
-import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
-import type { Attr } from '../attr'
+import { ToolItem, type ToolItemOptions } from '../../view/tool'
+import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 export class Boundary extends ToolItem<EdgeView | NodeView, Boundary.Options> {
@@ -57,7 +57,7 @@ export namespace Boundary {
     padding?: NumberExt.SideOptions
     rotate?: boolean
     useCellGeometry?: boolean
-    attrs?: Attr.SimpleAttrs
+    attrs?: SimpleAttrs
   }
 }
 

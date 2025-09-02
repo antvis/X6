@@ -1,8 +1,8 @@
 import { ObjectExt } from '../../common'
-import { EdgeView } from '../../view/edge'
-import { Attr } from './index'
+import type { EdgeView } from '../../view/edge'
+import type { Definition } from './index'
 
-export const stroke: Attr.Definition = {
+export const stroke: Definition = {
   qualify: ObjectExt.isPlainObject,
   set(stroke: any, { view }) {
     const cell = view.cell

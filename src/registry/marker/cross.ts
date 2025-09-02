@@ -1,9 +1,9 @@
 import { Path } from '../../geometry'
-import { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
+import type { Marker } from './index'
 import { normalize } from './util'
-import { Marker } from './index'
 
-export interface CrossMarkerOptions extends Attr.SimpleAttrs {
+export interface CrossMarkerOptions extends SimpleAttrs {
   size?: number
   width?: number
   height?: number

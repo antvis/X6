@@ -7,7 +7,7 @@ import type { Edge } from '../../model/edge'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
 import { View } from '../../view/view'
-import type { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
 
 export class Vertices extends ToolItem<EdgeView, Vertices.Options> {
   protected handles: Vertices.Handle[] = []
@@ -297,7 +297,7 @@ export namespace Vertices {
     removeRedundancies?: boolean
     stopPropagation?: boolean
     modifiers?: string | ModifierKey[]
-    attrs?: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
+    attrs?: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
     createHandle?: (options: Handle.Options) => Handle
     processHandle?: (handle: Handle) => void
     onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
@@ -383,7 +383,7 @@ export namespace Vertices {
       graph: Graph
       index: number
       guard: (evt: Dom.EventObject) => boolean
-      attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
+      attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
     }
 
     export interface EventArgs {
