@@ -19,6 +19,12 @@ import {
   Router,
 } from '../registry'
 import { CellView } from './cell'
+import type {
+  CellViewHighlightOptions,
+  CellViewMouseDeltaEventArgs,
+  CellViewOptions,
+  CellViewPositionEventArgs,
+} from './cell/type'
 import {
   Markup,
   type MarkupJSONMarkup,
@@ -2383,7 +2389,7 @@ export class EdgeView<
 }
 
 export namespace EdgeView {
-  export interface Options extends CellView.Options {}
+  export interface Options extends CellViewOptions {}
 }
 
 export namespace EdgeView {
@@ -2396,7 +2402,7 @@ export namespace EdgeView {
 
   export interface PositionEventArgs<E>
     extends MouseEventArgs<E>,
-      CellView.PositionEventArgs {}
+      CellViewPositionEventArgs {}
 
   export interface EventArgs {
     'edge:click': PositionEventArgs<Dom.ClickEvent>
@@ -2410,7 +2416,7 @@ export namespace EdgeView {
     'edge:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
     'edge:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
     'edge:mousewheel': PositionEventArgs<Dom.EventObject> &
-      CellView.MouseDeltaEventArgs
+      CellViewMouseDeltaEventArgs
 
     'edge:customevent': EdgeView.PositionEventArgs<Dom.MouseDownEvent> & {
       name: string
@@ -2441,7 +2447,7 @@ export namespace EdgeView {
       view: EdgeView
       edge: Edge
       cell: Edge
-      options: CellView.HighlightOptions
+      options: CellViewHighlightOptions
     }
     'edge:unhighlight': EventArgs['edge:highlight']
 

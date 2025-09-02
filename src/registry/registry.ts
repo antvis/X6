@@ -1,4 +1,18 @@
-import { StringExt, FunctionExt, Platform, KeyValue } from '../common'
+import { FunctionExt, type KeyValue, Platform, StringExt } from '../common'
+
+export interface RegistryOptions<Entity> {
+  type: string
+  data?: KeyValue<Entity>
+  process?: <T, Context extends Registry<any>>(
+    this: Context,
+    name: string,
+    entity: Entity,
+  ) => T
+  onConflict?: <Context extends Registry<any>>(
+    this: Context,
+    name: string,
+  ) => void
+}
 
 export class Registry<
   Entity,
@@ -6,9 +20,17 @@ export class Registry<
   OptionalType = never,
 > {
   public readonly data: KeyValue<Entity>
-  public readonly options: Registry.Options<Entity | OptionalType>
+  public readonly options: RegistryOptions<Entity | OptionalType>
 
-  constructor(options: Registry.Options<Entity | OptionalType>) {
+  public static create<
+    Entity,
+    Presets = KeyValue<Entity>,
+    OptionalType = never,
+  >(options: RegistryOptions<Entity | OptionalType>) {
+    return new Registry<Entity, Presets, OptionalType>(options)
+  }
+
+  constructor(options: RegistryOptions<Entity | OptionalType>) {
     this.options = { ...options }
     this.data = (this.options.data as KeyValue<Entity>) || {}
     this.register = this.register.bind(this)
@@ -116,31 +138,5 @@ export class Registry<
       Object.keys(this.data),
       (candidate) => candidate,
     )
-  }
-}
-
-export namespace Registry {
-  export interface Options<Entity> {
-    type: string
-    data?: KeyValue<Entity>
-    process?: <T, Context extends Registry<any>>(
-      this: Context,
-      name: string,
-      entity: Entity,
-    ) => T
-    onConflict?: <Context extends Registry<any>>(
-      this: Context,
-      name: string,
-    ) => void
-  }
-}
-
-export namespace Registry {
-  export function create<
-    Entity,
-    Presets = KeyValue<Entity>,
-    OptionalType = never,
-  >(options: Options<Entity | OptionalType>) {
-    return new Registry<Entity, Presets, OptionalType>(options)
   }
 }

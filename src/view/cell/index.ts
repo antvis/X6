@@ -9,35 +9,46 @@ import {
   type Nilable,
   ObjectExt,
   Util,
-} from '../common'
-import { Rectangle } from '../geometry'
-import type { Graph } from '../graph'
-import type { Cell } from '../model/cell'
-import type { Edge } from '../model/edge'
-import type { Model } from '../model/model'
-import type { CellAttrs, SimpleAttrs } from '../registry/attr'
-import { Registry } from '../registry/registry'
-import { AttrManager, type AttrManagerUpdateOptions } from './attr'
-import { Cache } from './cache'
-import type { EdgeView } from './edge'
+} from '../../common'
+import { Rectangle } from '../../geometry'
+import type { Graph } from '../../graph'
+import type { Cell } from '../../model/cell'
+import type { Edge } from '../../model/edge'
+import type { Model } from '../../model/model'
+import type { CellAttrs, Definition, SimpleAttrs } from '../../registry/attr'
+import { Registry } from '../../registry/registry'
+import { AttrManager, type AttrManagerUpdateOptions } from '../attr'
+import { Cache } from '../cache'
+import type { EdgeView } from '../edge'
 import {
   FlagManager,
   type FlagManagerAction,
   type FlagManagerActions,
-} from './flag'
-import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from './markup'
-import type { NodeView } from './node'
-import type { NodeViewEventArgs } from './node/type'
-import { ToolsView, type ToolsViewOptions } from './tool'
-import type { ToolsViewUpdateOptions } from './tool/tool-view'
-import { View } from './view'
-import { createViewElement } from './view/util'
+} from '../flag'
+import { Markup, type MarkupJSONMarkup, type MarkupSelectors } from '../markup'
+import type { NodeView } from '../node'
+import { ToolsView, type ToolsViewOptions } from '../tool'
+import type { ToolsViewUpdateOptions } from '../tool/tool-view'
+import { View } from '../view'
+import { createViewElement } from '../view/util'
+import type {
+  CellViewDefinition,
+  CellViewEventArgs,
+  CellViewHighlightOptions,
+  CellViewInteractionNames,
+  CellViewMouseEventArgs,
+  CellViewMousePositionEventArgs,
+  CellViewOptions,
+} from './type'
+
+const CellViewFlag = FlagManager
+const CellViewAttr = AttrManager
 
 export class CellView<
   Entity extends Cell = Cell,
-  Options extends CellView.Options = CellView.Options,
-> extends View<CellView.EventArgs> {
-  protected static defaults: Partial<CellView.Options> = {
+  Options extends CellViewOptions = CellViewOptions,
+> extends View<CellViewEventArgs> {
+  protected static defaults: Partial<CellViewOptions> = {
     isSvgElement: true,
     rootSelector: 'root',
     priority: 0,
@@ -45,17 +56,45 @@ export class CellView<
     actions: {},
   }
 
+  public static registry = Registry.create<CellViewDefinition>({
+    type: 'view',
+  })
+
   public static getDefaults() {
     return CellView.defaults
   }
 
-  public static config<T extends CellView.Options = CellView.Options>(
+  public static isCellView(instance: any): instance is CellView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof CellView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as CellView
+
+    if (
+      (tag == null || tag === CellViewToStringTag) &&
+      typeof view.isNodeView === 'function' &&
+      typeof view.isEdgeView === 'function' &&
+      typeof view.confirmUpdate === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+
+  public static config<T extends CellViewOptions = CellViewOptions>(
     options: Partial<T>,
   ) {
     CellView.defaults = CellView.getOptions(options)
   }
 
-  public static getOptions<T extends CellView.Options = CellView.Options>(
+  public static getOptions<T extends CellViewOptions = CellViewOptions>(
     options: Partial<T>,
   ): T {
     const mergeActions = <T>(arr1: T | T[], arr2?: T | T[]) => {
@@ -106,7 +145,7 @@ export class CellView<
   protected readonly cache: Cache
 
   protected get [Symbol.toStringTag]() {
-    return CellView.toStringTag
+    return CellViewToStringTag
   }
 
   constructor(cell: Entity, options: Partial<Options> = {}) {
@@ -143,7 +182,7 @@ export class CellView<
     return this.options.rootSelector
   }
 
-  protected getConstructor<T extends CellView.Definition>() {
+  protected getConstructor<T extends CellViewDefinition>() {
     return this.constructor as any as T
   }
 
@@ -304,7 +343,7 @@ export class CellView<
     return result
   }
 
-  can(feature: CellView.InteractionNames): boolean {
+  can(feature: CellViewInteractionNames): boolean {
     let interacting = this.graph.options.interacting
 
     if (typeof interacting === 'function') {
@@ -426,14 +465,14 @@ export class CellView<
 
   protected prepareHighlight(
     elem?: Element | null,
-    options: CellView.HighlightOptions = {},
+    options: CellViewHighlightOptions = {},
   ) {
     const magnet = elem || this.container
     options.partial = magnet === this.container
     return magnet
   }
 
-  highlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
+  highlight(elem?: Element | null, options: CellViewHighlightOptions = {}) {
     const magnet = this.prepareHighlight(elem, options)
     this.notify('cell:highlight', {
       magnet,
@@ -461,7 +500,7 @@ export class CellView<
     return this
   }
 
-  unhighlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
+  unhighlight(elem?: Element | null, options: CellViewHighlightOptions = {}) {
     const magnet = this.prepareHighlight(elem, options)
     this.notify('cell:unhighlight', {
       magnet,
@@ -490,7 +529,7 @@ export class CellView<
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  notifyUnhighlight(magnet: Element, options: CellView.HighlightOptions) {}
+  notifyUnhighlight(magnet: Element, options: CellViewHighlightOptions) {}
 
   // #endregion
 
@@ -620,33 +659,33 @@ export class CellView<
 
   // #region events
 
-  notify<Key extends keyof CellView.EventArgs>(
+  notify<Key extends keyof CellViewEventArgs>(
     name: Key,
-    args: CellView.EventArgs[Key],
+    args: CellViewEventArgs[Key],
   ): this
-  notify(name: Exclude<string, keyof CellView.EventArgs>, args: any): this
-  notify<Key extends keyof CellView.EventArgs>(
+  notify(name: Exclude<string, keyof CellViewEventArgs>, args: any): this
+  notify<Key extends keyof CellViewEventArgs>(
     name: Key,
-    args: CellView.EventArgs[Key],
+    args: CellViewEventArgs[Key],
   ) {
     this.trigger(name, args)
     this.graph.trigger(name, args)
     return this
   }
 
-  protected getEventArgs<E>(e: E): CellView.MouseEventArgs<E>
+  protected getEventArgs<E>(e: E): CellViewMouseEventArgs<E>
   protected getEventArgs<E>(
     e: E,
     x: number,
     y: number,
-  ): CellView.MousePositionEventArgs<E>
+  ): CellViewMousePositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
     const view = this // eslint-disable-line @typescript-eslint/no-this-alias
     const cell = view.cell
     if (x == null || y == null) {
-      return { e, view, cell } as CellView.MouseEventArgs<E>
+      return { e, view, cell } as CellViewMouseEventArgs<E>
     }
-    return { e, x, y, view, cell } as CellView.MousePositionEventArgs<E>
+    return { e, x, y, view, cell } as CellViewMousePositionEventArgs<E>
   }
 
   onClick(e: Dom.ClickEvent, x: number, y: number) {
@@ -761,169 +800,4 @@ export class CellView<
   // #endregion
 }
 
-export namespace CellView {
-  export interface Options {
-    graph: Graph
-    priority: number
-    isSvgElement: boolean
-    rootSelector: string
-    bootstrap: FlagManagerActions
-    actions: KeyValue<FlagManagerActions>
-    events?: View.Events | null
-    documentEvents?: View.Events | null
-  }
-
-  type Interactable = boolean | ((this: Graph, cellView: CellView) => boolean)
-
-  interface InteractionMap {
-    // edge
-    edgeMovable?: Interactable
-    edgeLabelMovable?: Interactable
-    arrowheadMovable?: Interactable
-    vertexMovable?: Interactable
-    vertexAddable?: Interactable
-    vertexDeletable?: Interactable
-    useEdgeTools?: Interactable
-
-    // node
-    nodeMovable?: Interactable
-    magnetConnectable?: Interactable
-    stopDelegateOnDragging?: Interactable
-
-    // general
-    toolsAddable?: Interactable
-  }
-
-  export type InteractionNames = keyof InteractionMap
-
-  export type Interacting =
-    | boolean
-    | InteractionMap
-    | ((this: Graph, cellView: CellView) => InteractionMap | boolean)
-
-  export interface HighlightOptions {
-    highlighter?:
-      | string
-      | {
-          name: string
-          args: KeyValue
-        }
-
-    type?: 'embedding' | 'nodeAvailable' | 'magnetAvailable' | 'magnetAdsorbed'
-
-    partial?: boolean
-  }
-}
-
-export namespace CellView {
-  export interface PositionEventArgs {
-    x: number
-    y: number
-  }
-
-  export interface MouseDeltaEventArgs {
-    delta: number
-  }
-
-  export interface MouseEventArgs<E> {
-    e: E
-    view: CellView
-    cell: Cell
-  }
-
-  export interface MousePositionEventArgs<E>
-    extends MouseEventArgs<E>,
-      PositionEventArgs {}
-
-  export interface EventArgs extends NodeViewEventArgs, EdgeView.EventArgs {
-    'cell:click': MousePositionEventArgs<Dom.ClickEvent>
-    'cell:dblclick': MousePositionEventArgs<Dom.DoubleClickEvent>
-    'cell:contextmenu': MousePositionEventArgs<Dom.ContextMenuEvent>
-    'cell:mousedown': MousePositionEventArgs<Dom.MouseDownEvent>
-    'cell:mousemove': MousePositionEventArgs<Dom.MouseMoveEvent>
-    'cell:mouseup': MousePositionEventArgs<Dom.MouseUpEvent>
-    'cell:mouseover': MouseEventArgs<Dom.MouseOverEvent>
-    'cell:mouseout': MouseEventArgs<Dom.MouseOutEvent>
-    'cell:mouseenter': MouseEventArgs<Dom.MouseEnterEvent>
-    'cell:mouseleave': MouseEventArgs<Dom.MouseLeaveEvent>
-    'cell:mousewheel': MousePositionEventArgs<Dom.EventObject> &
-      MouseDeltaEventArgs
-    'cell:customevent': MousePositionEventArgs<Dom.MouseDownEvent> & {
-      name: string
-    }
-    'cell:highlight': {
-      magnet: Element
-      view: CellView
-      cell: Cell
-      options: CellView.HighlightOptions
-    }
-    'cell:unhighlight': EventArgs['cell:highlight']
-  }
-}
-
-export namespace CellView {
-  export const Flag = FlagManager
-  export const Attr = AttrManager
-}
-
-export namespace CellView {
-  export const toStringTag = `X6.${CellView.name}`
-
-  export function isCellView(instance: any): instance is CellView {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof CellView) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const view = instance as CellView
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof view.isNodeView === 'function' &&
-      typeof view.isEdgeView === 'function' &&
-      typeof view.confirmUpdate === 'function'
-    ) {
-      return true
-    }
-
-    return false
-  }
-}
-
-// decorators
-// ----
-export namespace CellView {
-  export function priority(value: number) {
-    return (ctor: Definition) => {
-      ctor.config({ priority: value })
-    }
-  }
-
-  export function bootstrap(actions: FlagManagerActions) {
-    return (ctor: Definition) => {
-      ctor.config({ bootstrap: actions })
-    }
-  }
-}
-
-export namespace CellView {
-  type CellViewClass = typeof CellView
-
-  export interface Definition extends CellViewClass {
-    new <
-      Entity extends Cell = Cell,
-      Options extends CellView.Options = CellView.Options,
-    >(
-      cell: Entity,
-      options: Partial<Options>,
-    ): CellView
-  }
-
-  export const registry = Registry.create<Definition>({
-    type: 'view',
-  })
-}
+export const CellViewToStringTag = `X6.${CellView.name}`
