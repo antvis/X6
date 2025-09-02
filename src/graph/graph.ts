@@ -1373,7 +1373,7 @@ export namespace Graph {
   export const registerNode = Node.registry.register
   export const registerEdge = Edge.registry.register
   export const registerView = CellView.registry.register
-  export const registerAttr = Registry.Attr.registry.register
+  export const registerAttr = Registry.registry.register
   export const registerGrid = Registry.Grid.registry.register
   export const registerFilter = Registry.Filter.registry.register
   export const registerNodeTool = Registry.NodeTool.registry.register
@@ -1396,7 +1396,7 @@ export namespace Graph {
   export const unregisterNode = Node.registry.unregister
   export const unregisterEdge = Edge.registry.unregister
   export const unregisterView = CellView.registry.unregister
-  export const unregisterAttr = Registry.Attr.registry.unregister
+  export const unregisterAttr = Registry.registry.unregister
   export const unregisterGrid = Registry.Grid.registry.unregister
   export const unregisterFilter = Registry.Filter.registry.unregister
   export const unregisterNodeTool = Registry.NodeTool.registry.unregister

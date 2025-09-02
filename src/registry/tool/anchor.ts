@@ -5,7 +5,7 @@ import type { Node } from '../../model/node'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
-import type { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 class Anchor extends ToolItem<EdgeView, Anchor.Options> {
@@ -263,8 +263,8 @@ namespace Anchor {
     restrictArea?: boolean
     resetAnchor?: boolean | Edge.TerminalCellData['anchor']
     removeRedundancies?: boolean
-    defaultAnchorAttrs?: Attr.SimpleAttrs
-    customAnchorAttrs?: Attr.SimpleAttrs
+    defaultAnchorAttrs?: SimpleAttrs
+    customAnchorAttrs?: SimpleAttrs
     snap?: (
       this: EdgeView,
       pos: Point,

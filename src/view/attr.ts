@@ -8,7 +8,17 @@ import {
   Util,
 } from '../common'
 import { Point, type Rectangle } from '../geometry'
-import { Attr } from '../registry/attr'
+import {
+  type CellAttrs,
+  type ComplexAttrs,
+  type Definition,
+  isValidDefinition,
+  type OffsetDefinition,
+  type PositionDefinition,
+  type SetDefinition,
+  type SimpleAttrs,
+  type SimpleAttrValue,
+} from '../registry/attr'
 import type { CellView } from './cell'
 import type { MarkupSelectors } from './markup'
 import { View } from './view'
@@ -22,15 +32,15 @@ export interface AttrManagerUpdateOptions {
   /**
    * Rendering only the specified attributes.
    */
-  attrs?: Attr.CellAttrs | null
+  attrs?: CellAttrs | null
 }
 
 export interface AttrManagerProcessedAttrs {
-  raw: Attr.ComplexAttrs
-  normal?: Attr.SimpleAttrs | undefined
-  set?: Attr.ComplexAttrs | undefined
-  offset?: Attr.ComplexAttrs | undefined
-  position?: Attr.ComplexAttrs | undefined
+  raw: ComplexAttrs
+  normal?: SimpleAttrs | undefined
+  set?: ComplexAttrs | undefined
+  offset?: ComplexAttrs | undefined
+  position?: ComplexAttrs | undefined
 }
 
 export class AttrManager {
@@ -40,27 +50,27 @@ export class AttrManager {
     return this.view.cell
   }
 
-  protected getDefinition(attrName: string): Attr.Definition | null {
+  protected getDefinition(attrName: string): Definition | null {
     return this.cell.getAttrDefinition(attrName)
   }
 
   protected processAttrs(
     elem: Element,
-    raw: Attr.ComplexAttrs,
+    raw: ComplexAttrs,
   ): AttrManagerProcessedAttrs {
-    let normal: Attr.SimpleAttrs | undefined
-    let set: Attr.ComplexAttrs | undefined
-    let offset: Attr.ComplexAttrs | undefined
-    let position: Attr.ComplexAttrs | undefined
+    let normal: SimpleAttrs | undefined
+    let set: ComplexAttrs | undefined
+    let offset: ComplexAttrs | undefined
+    let position: ComplexAttrs | undefined
 
-    const specials: { name: string; definition: Attr.Definition }[] = []
+    const specials: { name: string; definition: Definition }[] = []
 
     // divide the attributes between normal and special
     Object.keys(raw).forEach((name) => {
       const val = raw[name]
       const definition = this.getDefinition(name)
       const isValid = FunctionExt.call(
-        Attr.isValidDefinition,
+        isValidDefinition,
         this.view,
         definition,
         val,
@@ -77,7 +87,7 @@ export class AttrManager {
           if (normal == null) {
             normal = {}
           }
-          normal[definition] = val as Attr.SimpleAttrValue
+          normal[definition] = val as SimpleAttrValue
         } else if (val !== null) {
           specials.push({ name, definition })
         }
@@ -88,14 +98,14 @@ export class AttrManager {
         const normalName = Dom.CASE_SENSITIVE_ATTR.includes(name)
           ? name
           : StringExt.kebabCase(name)
-        normal[normalName] = val as Attr.SimpleAttrValue
+        normal[normalName] = val as SimpleAttrValue
       }
     })
 
     specials.forEach(({ name, definition }) => {
       const val = raw[name]
 
-      const setDefine = definition as Attr.SetDefinition
+      const setDefine = definition as SetDefinition
       if (typeof setDefine.set === 'function') {
         if (set == null) {
           set = {}
@@ -103,7 +113,7 @@ export class AttrManager {
         set[name] = val
       }
 
-      const offsetDefine = definition as Attr.OffsetDefinition
+      const offsetDefine = definition as OffsetDefinition
       if (typeof offsetDefine.offset === 'function') {
         if (offset == null) {
           offset = {}
@@ -111,7 +121,7 @@ export class AttrManager {
         offset[name] = val
       }
 
-      const positionDefine = definition as Attr.PositionDefinition
+      const positionDefine = definition as PositionDefinition
       if (typeof positionDefine.position === 'function') {
         if (position == null) {
           position = {}
@@ -157,7 +167,7 @@ export class AttrManager {
   }
 
   protected findAttrs(
-    cellAttrs: Attr.CellAttrs,
+    cellAttrs: CellAttrs,
     rootNode: Element,
     selectorCache: { [selector: string]: Element[] },
     selectors: MarkupSelectors,
@@ -169,7 +179,7 @@ export class AttrManager {
         elem: Element
         array: boolean
         priority: number | number[]
-        attrs: Attr.ComplexAttrs | Attr.ComplexAttrs[]
+        attrs: ComplexAttrs | ComplexAttrs[]
       }
     > = new Dictionary()
 
@@ -189,11 +199,11 @@ export class AttrManager {
           if (!prev.array) {
             merge.push(elem)
             prev.array = true
-            prev.attrs = [prev.attrs as Attr.ComplexAttrs]
+            prev.attrs = [prev.attrs as ComplexAttrs]
             prev.priority = [prev.priority as number]
           }
 
-          const attributes = prev.attrs as Attr.ComplexAttrs[]
+          const attributes = prev.attrs as ComplexAttrs[]
           const selectedLength = prev.priority as number[]
           if (unique) {
             // node referenced by `selector`
@@ -222,7 +232,7 @@ export class AttrManager {
 
     merge.forEach((node) => {
       const item = result.get(node)!
-      const arr = item.attrs as Attr.ComplexAttrs[]
+      const arr = item.attrs as ComplexAttrs[]
       item.attrs = arr.reduceRight(
         (memo, attrs) => ObjectExt.merge(memo, attrs),
         {},
@@ -235,7 +245,7 @@ export class AttrManager {
         elem: Element
         array: boolean
         priority: number | number[]
-        attrs: Attr.ComplexAttrs
+        attrs: ComplexAttrs
       }
     >
   }
@@ -264,7 +274,7 @@ export class AttrManager {
         const def = this.getDefinition(name)
         if (def != null) {
           const ret = FunctionExt.call(
-            (def as Attr.SetDefinition).set,
+            (def as SetDefinition).set,
             this.view,
             val,
             getOptions(),
@@ -308,7 +318,7 @@ export class AttrManager {
         const def = this.getDefinition(name)
         if (def != null) {
           const ts = FunctionExt.call(
-            (def as Attr.PositionDefinition).position,
+            (def as PositionDefinition).position,
             this.view,
             val,
             getOptions(),
@@ -338,7 +348,7 @@ export class AttrManager {
           const def = this.getDefinition(name)
           if (def != null) {
             const ts = FunctionExt.call(
-              (def as Attr.OffsetDefinition).offset,
+              (def as OffsetDefinition).offset,
               this.view,
               val,
               {
@@ -369,7 +379,7 @@ export class AttrManager {
 
   update(
     rootNode: Element,
-    attrs: Attr.CellAttrs,
+    attrs: CellAttrs,
     options: AttrManagerUpdateOptions,
   ) {
     const selectorCache: { [selector: string]: Element[] } = {}
@@ -389,7 +399,7 @@ export class AttrManager {
     const specialItems: {
       node: Element
       refNode: Element | null
-      attributes: Attr.ComplexAttrs | null
+      attributes: ComplexAttrs | null
       processedAttributes: AttrManagerProcessedAttrs
     }[] = []
 

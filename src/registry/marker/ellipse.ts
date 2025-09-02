@@ -1,7 +1,7 @@
-import { Attr } from '../attr'
-import { Marker } from './index'
+import type { SimpleAttrs } from '../attr'
+import type { Marker } from './index'
 
-export interface EllipseMarkerOptions extends Attr.SimpleAttrs {
+export interface EllipseMarkerOptions extends SimpleAttrs {
   rx?: number
   ry?: number
 }

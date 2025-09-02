@@ -1,14 +1,14 @@
 import {
-  ObjectExt,
-  JSONObject,
-  NumberExt,
   Dom,
   FunctionExt,
-  Text,
+  type JSONObject,
+  NumberExt,
+  ObjectExt,
+  type Text,
 } from '../../common'
-import { Attr } from './index'
+import type { Definition, QualifyFucntion } from './index'
 
-export const text: Attr.Definition = {
+export const text: Definition = {
   qualify(text, { attrs }) {
     return attrs.textWrap == null || !ObjectExt.isPlainObject(attrs.textWrap)
   },
@@ -67,7 +67,7 @@ export const text: Attr.Definition = {
   },
 }
 
-export const textWrap: Attr.Definition = {
+export const textWrap: Definition = {
   qualify: ObjectExt.isPlainObject,
   set(val, { view, elem, attrs, refBBox }) {
     const info = val as JSONObject
@@ -76,7 +76,7 @@ export const textWrap: Attr.Definition = {
     const width = info.width || 0
     if (NumberExt.isPercentage(width)) {
       refBBox.width *= parseFloat(width) / 100
-      // @ts-ignore
+      // @ts-expect-error
     } else if (width <= 0) {
       refBBox.width += width as number
     } else {
@@ -87,7 +87,7 @@ export const textWrap: Attr.Definition = {
     const height = info.height || 0
     if (NumberExt.isPercentage(height)) {
       refBBox.height *= parseFloat(height) / 100
-      // @ts-ignore
+      // @ts-expect-error
     } else if (height <= 0) {
       refBBox.height += height as number
     } else {
@@ -133,30 +133,30 @@ export const textWrap: Attr.Definition = {
   },
 }
 
-const isTextInUse: Attr.QualifyFucntion = (val, { attrs }) => {
+const isTextInUse: QualifyFucntion = (val, { attrs }) => {
   return attrs.text !== undefined
 }
 
-export const lineHeight: Attr.Definition = {
+export const lineHeight: Definition = {
   qualify: isTextInUse,
 }
 
-export const textVerticalAnchor: Attr.Definition = {
+export const textVerticalAnchor: Definition = {
   qualify: isTextInUse,
 }
 
-export const textPath: Attr.Definition = {
+export const textPath: Definition = {
   qualify: isTextInUse,
 }
 
-export const annotations: Attr.Definition = {
+export const annotations: Definition = {
   qualify: isTextInUse,
 }
 
-export const eol: Attr.Definition = {
+export const eol: Definition = {
   qualify: isTextInUse,
 }
 
-export const displayEmpty: Attr.Definition = {
+export const displayEmpty: Definition = {
   qualify: isTextInUse,
 }

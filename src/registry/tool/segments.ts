@@ -5,9 +5,9 @@ import type { Graph } from '../../graph'
 import type { Edge } from '../../model/edge'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
-import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
+import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { View } from '../../view/view'
-import type { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 export class Segments extends ToolItem<EdgeView, Segments.Options> {
@@ -363,7 +363,7 @@ export namespace Segments {
     snapRadius: number
     stopPropagation: boolean
     removeRedundancies: boolean
-    attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
+    attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
     anchor?: (
       this: EdgeView,
       pos: Point,
@@ -479,7 +479,7 @@ export namespace Segments {
     export interface Options {
       graph: Graph
       guard: (evt: Dom.EventObject) => boolean
-      attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
+      attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
       index?: number
       axis?: 'x' | 'y'
     }

@@ -1,9 +1,9 @@
 import { Path } from '../../geometry'
-import { Attr } from '../attr'
+import type { SimpleAttrs } from '../attr'
+import type { Marker } from './index'
 import { normalize } from './util'
-import { Marker } from './index'
 
-export interface DiamondMarkerOptions extends Attr.SimpleAttrs {
+export interface DiamondMarkerOptions extends SimpleAttrs {
   size?: number
   width?: number
   height?: number

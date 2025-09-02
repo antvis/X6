@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Dom } from '../../src/common'
 import { Point, Rectangle } from '../../src/geometry'
 import type { Cell } from '../../src/model/cell'
-import type { Attr } from '../../src/registry/attr'
 import { AttrManager } from '../../src/view/attr'
 import type { CellView } from '../../src/view/cell'
 

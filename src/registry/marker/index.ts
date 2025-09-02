@@ -1,13 +1,13 @@
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
+import type { SimpleAttrs } from '../attr'
 import { Registry } from '../registry'
-import { Attr } from '../attr'
 import * as markers from './main'
 import { normalize as normalizeMarker } from './util'
 
 export namespace Marker {
   export type Factory<T extends KeyValue = KeyValue> = (options: T) => Result
 
-  export interface BaseResult extends Attr.SimpleAttrs {
+  export interface BaseResult extends SimpleAttrs {
     tagName?: string
   }
 
