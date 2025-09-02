@@ -7,7 +7,7 @@ import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { View } from '../../view/view'
 import { createViewElement } from '../../view/view/util'
-import type { SimpleAttrValue } from '../attr'
+import type { SimpleAttrs, SimpleAttrValue } from '../attr'
 import * as Util from './util'
 
 export class Segments extends ToolItem<EdgeView, Segments.Options> {
