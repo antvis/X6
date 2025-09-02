@@ -1,7 +1,7 @@
 import type { Cell } from '@/model'
 import type { Dom, KeyValue } from '../../common'
 import type { Graph } from '../../graph'
-import type { EdgeView } from '../edge'
+import type { EdgeViewEventArgs } from '../edge/type'
 import type { FlagManagerActions } from '../flag'
 import type { NodeViewEventArgs } from '../node/type'
 import type { View } from '../view'
@@ -80,7 +80,7 @@ export interface CellViewMousePositionEventArgs<E>
 
 export interface CellViewEventArgs
   extends NodeViewEventArgs,
-    EdgeView.EventArgs {
+    EdgeViewEventArgs {
   'cell:click': CellViewMousePositionEventArgs<Dom.ClickEvent>
   'cell:dblclick': CellViewMousePositionEventArgs<Dom.DoubleClickEvent>
   'cell:contextmenu': CellViewMousePositionEventArgs<Dom.ContextMenuEvent>
