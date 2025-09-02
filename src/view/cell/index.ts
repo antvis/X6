@@ -5,7 +5,6 @@ import {
   Dom,
   disposable,
   FunctionExt,
-  type KeyValue,
   type Nilable,
   ObjectExt,
   Util,
@@ -40,9 +39,6 @@ import type {
   CellViewMousePositionEventArgs,
   CellViewOptions,
 } from './type'
-
-const CellViewFlag = FlagManager
-const CellViewAttr = AttrManager
 
 export class CellView<
   Entity extends Cell = Cell,
