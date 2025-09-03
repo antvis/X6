@@ -1,14 +1,14 @@
 import { Angle } from '../../geometry'
-import { Background } from './index'
+import type { BackgroundCommonOptions, BackgroundDefinition } from './index'
 
-export interface WatermarkOptions extends Background.CommonOptions {
+export interface WatermarkOptions extends BackgroundCommonOptions {
   angle?: number
 }
 
-export const watermark: Background.Definition<WatermarkOptions> = function (
+export const watermark: BackgroundDefinition<WatermarkOptions> = (
   img,
   options,
-) {
+) => {
   const width = img.width
   const height = img.height
   const canvas = document.createElement('canvas')

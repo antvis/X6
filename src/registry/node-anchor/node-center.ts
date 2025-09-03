@@ -1,4 +1,4 @@
-import { NodeAnchor } from './index'
+import type { NodeAnchorDefinition } from './index'
 
 export interface NodeCenterEndpointOptions {
   dx?: number
@@ -8,7 +8,7 @@ export interface NodeCenterEndpointOptions {
 /**
  * Places the anchor of the edge at center of the node bbox.
  */
-export const nodeCenter: NodeAnchor.Definition<NodeCenterEndpointOptions> =
+export const nodeCenter: NodeAnchorDefinition<NodeCenterEndpointOptions> =
   function (view, magnet, ref, options, endType) {
     const result = view.cell.getConnectionPoint(this.cell, endType)
     if (options.dx || options.dy) {

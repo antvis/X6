@@ -1,5 +1,5 @@
 import { NumberExt } from '../../common'
-import { NodeAnchor } from './index'
+import type { NodeAnchorDefinition } from './index'
 
 export interface BBoxEndpointOptions {
   dx?: number | string
@@ -33,8 +33,8 @@ function createBBoxAnchor(
     | 'topRight'
     | 'bottomLeft'
     | 'bottomRight',
-): NodeAnchor.Definition<BBoxEndpointOptions> {
-  return function (view, magnet, ref, options: BBoxEndpointOptions = {}) {
+): NodeAnchorDefinition<BBoxEndpointOptions> {
+  return (view, magnet, ref, options: BBoxEndpointOptions = {}) => {
     let bbox
     if (view.cell.visible) {
       bbox = options.rotate

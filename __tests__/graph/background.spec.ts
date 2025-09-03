@@ -1,15 +1,15 @@
 import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
+  afterAll,
   afterEach,
   beforeAll,
-  afterAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
 } from 'vitest'
+import { backgroundRegistry } from '../../src/registry'
 import { createTestGraph } from '../utils'
-import { Background } from '../../src/registry'
 
 describe('BackgroundManager', () => {
   let graph: any
@@ -96,7 +96,7 @@ describe('BackgroundManager', () => {
   it('should support repeat pattern from registry', () => {
     const fakeCanvas = document.createElement('canvas')
     const fn = vi.fn().mockReturnValue(fakeCanvas)
-    Background.registry.register('repeat-test', fn)
+    backgroundRegistry.register('repeat-test', fn)
     const img = document.createElement('img')
     img.src =
       'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*aTu6SLT6SK4AAAAAAAAAAAAAemJ7AQ/fmt.avif'

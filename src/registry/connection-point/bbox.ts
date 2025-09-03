@@ -1,18 +1,21 @@
-import { offset, getStrokeWidth } from './util'
-import { ConnectionPoint } from './index'
+import type {
+  ConnectionPointDefinition,
+  ConnectionPointStrokedOptions,
+} from './index'
+import { getStrokeWidth, offset } from './util'
 
-export interface BBoxOptions extends ConnectionPoint.StrokedOptions {}
+export interface BBoxOptions extends ConnectionPointStrokedOptions {}
 
 /**
  * Places the connection point at the intersection between the edge
  * path end segment and the target node bbox.
  */
-export const bbox: ConnectionPoint.Definition<BBoxOptions> = function (
+export const bbox: ConnectionPointDefinition<BBoxOptions> = (
   line,
   view,
   magnet,
   options,
-) {
+) => {
   const bbox = view.getBBoxOfElement(magnet)
   if (options.stroked) {
     bbox.inflate(getStrokeWidth(magnet) / 2)

@@ -1,6 +1,6 @@
 import { Path } from '../../geometry'
 import type { SimpleAttrs } from '../attr'
-import type { Marker } from './index'
+import type { MarkerFactory } from './index'
 import { normalize } from './util'
 
 export interface DiamondMarkerOptions extends SimpleAttrs {
@@ -10,7 +10,7 @@ export interface DiamondMarkerOptions extends SimpleAttrs {
   offset?: number
 }
 
-export const diamond: Marker.Factory<DiamondMarkerOptions> = ({
+export const diamond: MarkerFactory<DiamondMarkerOptions> = ({
   size,
   width,
   height,

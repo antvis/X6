@@ -1,10 +1,19 @@
 import { Dom, disposable, Vector } from '../common'
-import * as Registry from '../registry'
+import {
+  Grid,
+  type GridDefinition,
+  type GridManualItem,
+  type GridNativeItem,
+  type GridOptions,
+  type GridOptionsMap,
+  gridPresets,
+  gridRegistry,
+} from '../registry'
 import { Base } from './base'
 
 export class GridManager extends Base {
-  protected instance: Registry.Grid | null
-  protected patterns: Registry.Grid.Definition[]
+  protected instance: Grid | null
+  protected patterns: GridDefinition[]
 
   protected get elem() {
     return this.view.grid
@@ -67,11 +76,7 @@ export class GridManager extends Base {
     this.update()
   }
 
-  update(
-    options:
-      | Partial<Registry.Grid.Options>
-      | Partial<Registry.Grid.Options>[] = {},
-  ) {
+  update(options: Partial<GridOptions> | Partial<GridOptions>[] = {}) {
     const gridSize = this.grid.size
     if (gridSize <= 1 || !this.grid.visible) {
       return this.clear()
@@ -140,7 +145,7 @@ export class GridManager extends Base {
 
   protected getInstance() {
     if (!this.instance) {
-      this.instance = new Registry.Grid()
+      this.instance = new Grid()
     }
 
     return this.instance
@@ -148,22 +153,22 @@ export class GridManager extends Base {
 
   protected resolveGrid(
     options?: GridManager.DrawGridOptions,
-  ): Registry.Grid.Definition[] | never {
+  ): GridDefinition[] | never {
     if (!options) {
       return []
     }
 
-    const type = (options as Registry.Grid.NativeItem).type
+    const type = (options as GridNativeItem).type
     if (type == null) {
       return [
         {
-          ...Registry.Grid.presets.dot,
+          ...gridPresets.dot,
           ...options.args,
         },
       ]
     }
 
-    const items = Registry.Grid.registry.get(type)
+    const items = gridRegistry.get(type)
     if (items) {
       let args = options.args || []
       if (!Array.isArray(args)) {
@@ -175,7 +180,7 @@ export class GridManager extends Base {
         : [{ ...items, ...args[0] }]
     }
 
-    return Registry.Grid.registry.onNotFound(type)
+    return gridRegistry.onNotFound(type)
   }
 
   @disposable()
@@ -187,10 +192,10 @@ export class GridManager extends Base {
 
 export namespace GridManager {
   export type DrawGridOptions =
-    | Registry.Grid.NativeItem
-    | Registry.Grid.ManaualItem
+    | GridNativeItem
+    | GridManualItem
     | {
-        args?: Registry.Grid.OptionsMap['dot']
+        args?: GridOptionsMap['dot']
       }
 
   export interface CommonOptions {

@@ -1,5 +1,14 @@
 import { Dom } from '../../common'
-import { EdgeTool, NodeTool } from '../../registry/tool'
+import {
+  type EdgeToolManualItem,
+  type EdgeToolNativeItem,
+  type EdgeToolNativeNames,
+  edgeToolRegistry,
+  type NodeToolManualItem,
+  type NodeToolNativeItem,
+  type NodeToolNativeNames,
+  nodeToolRegistry,
+} from '../../registry/tool'
 import { CellView } from '../cell'
 import { View } from '../view'
 import { createViewElement } from '../view/util'
@@ -17,12 +26,12 @@ export interface ToolsViewConfigOptions {
     | (
         | ToolItem
         | string
-        | NodeTool.NativeNames
-        | NodeTool.NativeItem
-        | NodeTool.ManaualItem
-        | EdgeTool.NativeNames
-        | EdgeTool.NativeItem
-        | EdgeTool.ManaualItem
+        | NodeToolNativeNames
+        | NodeToolNativeItem
+        | NodeToolManualItem
+        | EdgeToolNativeNames
+        | EdgeToolNativeItem
+        | EdgeToolManualItem
       )[]
     | null
 }
@@ -168,18 +177,18 @@ export class ToolsView extends View {
         const args = typeof meta === 'object' ? meta.args || {} : {}
         if (name) {
           if (this.cell.isNode()) {
-            const ctor = NodeTool.registry.get(name)
+            const ctor = nodeToolRegistry.get(name)
             if (ctor) {
-              tool = new ctor(args) // eslint-disable-line
+              tool = new ctor(args)
             } else {
-              return NodeTool.registry.onNotFound(name)
+              return nodeToolRegistry.onNotFound(name)
             }
           } else if (this.cell.isEdge()) {
-            const ctor = EdgeTool.registry.get(name)
+            const ctor = edgeToolRegistry.get(name)
             if (ctor) {
-              tool = new ctor(args) // eslint-disable-line
+              tool = new ctor(args)
             } else {
-              return EdgeTool.registry.onNotFound(name)
+              return edgeToolRegistry.onNotFound(name)
             }
           }
         }

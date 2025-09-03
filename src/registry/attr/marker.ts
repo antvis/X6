@@ -1,20 +1,20 @@
 import { type JSONObject, type KeyValue, ObjectExt } from '../../common'
 import type { CellView } from '../../view'
-import { Marker } from '../marker'
-import type { ComplexAttrs, Definition, SimpleAttrs } from './index'
+import { markerRegistry } from '../marker'
+import type { AttrDefinition, ComplexAttrs, SimpleAttrs } from './index'
 
 function qualify(value: any) {
   return typeof value === 'string' || ObjectExt.isPlainObject(value)
 }
 
-export const sourceMarker: Definition = {
+export const sourceMarker: AttrDefinition = {
   qualify,
   set(marker: string | JSONObject, { view, attrs }) {
     return createMarker('marker-start', marker, view, attrs)
   },
 }
 
-export const targetMarker: Definition = {
+export const targetMarker: AttrDefinition = {
   qualify,
   set(marker: string | JSONObject, { view, attrs }) {
     return createMarker('marker-end', marker, view, attrs, {
@@ -23,7 +23,7 @@ export const targetMarker: Definition = {
   },
 }
 
-export const vertexMarker: Definition = {
+export const vertexMarker: AttrDefinition = {
   qualify,
   set(marker: string | JSONObject, { view, attrs }) {
     return createMarker('marker-mid', marker, view, attrs)
@@ -42,11 +42,11 @@ function createMarker(
   let preset = others
 
   if (name && typeof name === 'string') {
-    const fn = Marker.registry.get(name)
+    const fn = markerRegistry.get(name)
     if (fn) {
       preset = fn({ ...others, ...(args as KeyValue) })
     } else {
-      return Marker.registry.onNotFound(name)
+      return markerRegistry.onNotFound(name)
     }
   }
 

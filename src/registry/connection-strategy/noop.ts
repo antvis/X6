@@ -1,3 +1,3 @@
-import { ConnectionStrategy } from './index'
+import type { ConnectionStrategyDefinition } from './index'
 
-export const noop: ConnectionStrategy.Definition = (terminal) => terminal
+export const noop: ConnectionStrategyDefinition = (terminal) => terminal

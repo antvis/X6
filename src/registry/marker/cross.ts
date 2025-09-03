@@ -1,6 +1,6 @@
 import { Path } from '../../geometry'
 import type { SimpleAttrs } from '../attr'
-import type { Marker } from './index'
+import type { MarkerFactory } from './index'
 import { normalize } from './util'
 
 export interface CrossMarkerOptions extends SimpleAttrs {
@@ -10,7 +10,7 @@ export interface CrossMarkerOptions extends SimpleAttrs {
   offset?: number
 }
 
-export const cross: Marker.Factory<CrossMarkerOptions> = ({
+export const cross: MarkerFactory<CrossMarkerOptions> = ({
   size,
   width,
   height,

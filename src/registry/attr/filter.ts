@@ -1,7 +1,7 @@
 import { ObjectExt } from '../../common'
-import type { Definition } from './index'
+import type { AttrDefinition } from './index'
 
-export const filter: Definition = {
+export const filter: AttrDefinition = {
   qualify: ObjectExt.isPlainObject,
   set(filter, { view }) {
     return `url(#${view.graph.defineFilter(filter as any)})`

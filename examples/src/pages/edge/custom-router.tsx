@@ -1,10 +1,9 @@
 import React from 'react'
-import { Graph, Point, Registry } from '../../../../src'
+import { Graph, Point } from '../../../../src'
+import { routerRegistry } from '../../../../src/registry'
 import '../index.less'
 
-const { Router } = Registry
-
-Router.registry.register(
+routerRegistry.register(
   'random',
   (vertices, args, view) => {
     const BOUNCES = args.bounces || 20

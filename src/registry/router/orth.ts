@@ -1,6 +1,6 @@
-import { Point, Rectangle, Line, Angle } from '../../geometry'
 import { ArrayExt } from '../../common'
-import { Router } from './index'
+import { Angle, Line, Point, type Rectangle } from '../../geometry'
+import type { RouterDefinition } from './index'
 import * as Util from './util'
 
 export interface OrthRouterOptions extends Util.PaddingOptions {}
@@ -8,11 +8,11 @@ export interface OrthRouterOptions extends Util.PaddingOptions {}
 /**
  * Returns a route with orthogonal line segments.
  */
-export const orth: Router.Definition<OrthRouterOptions> = function (
+export const orth: RouterDefinition<OrthRouterOptions> = (
   vertices,
   options,
   edgeView,
-) {
+) => {
   let sourceBBox = Util.getSourceBBox(edgeView, options)
   let targetBBox = Util.getTargetBBox(edgeView, options)
   const sourceAnchor = Util.getSourceAnchor(edgeView, options)

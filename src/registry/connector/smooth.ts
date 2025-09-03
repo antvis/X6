@@ -1,16 +1,16 @@
 import { Curve, Path } from '../../geometry'
-import { Connector } from './index'
+import type { ConnectorBaseOptions, ConnectorDefinition } from './index'
 
-export interface SmoothConnectorOptions extends Connector.BaseOptions {
+export interface SmoothConnectorOptions extends ConnectorBaseOptions {
   direction?: 'H' | 'V'
 }
 
-export const smooth: Connector.Definition<SmoothConnectorOptions> = function (
+export const smooth: ConnectorDefinition<SmoothConnectorOptions> = (
   sourcePoint,
   targetPoint,
   routePoints,
   options = {},
-) {
+) => {
   let path
   let direction = options.direction
 

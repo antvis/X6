@@ -1,9 +1,9 @@
 import { Dom } from '../../common'
-import { Grid } from './index'
+import type { GridDefinition, GridOptions } from './index'
 
-export interface FixedDotOptions extends Grid.Options {}
+export interface FixedDotOptions extends GridOptions {}
 
-export const fixedDot: Grid.Definition<FixedDotOptions> = {
+export const fixedDot: GridDefinition<FixedDotOptions> = {
   color: '#aaaaaa',
   thickness: 1,
   markup: 'rect',

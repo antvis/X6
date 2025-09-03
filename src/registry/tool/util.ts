@@ -1,9 +1,9 @@
-import { Point } from '../../geometry'
 import { FunctionExt } from '../../common'
-import { ConnectionStrategy } from '../connection-strategy'
-import { Edge } from '../../model/edge'
-import { CellView } from '../../view/cell'
-import { EdgeView } from '../../view/edge'
+import type { Point } from '../../geometry'
+import type { Edge } from '../../model/edge'
+import type { CellView } from '../../view/cell'
+import type { EdgeView } from '../../view/edge'
+import { connectionStrategyPresets } from '../connection-strategy'
 
 export function getAnchor(
   this: EdgeView,
@@ -13,7 +13,7 @@ export function getAnchor(
   type: Edge.TerminalType,
 ) {
   const end = FunctionExt.call(
-    ConnectionStrategy.presets.pinRelative,
+    connectionStrategyPresets.pinRelative,
     this.graph,
     {} as Edge.TerminalCellData,
     terminalView,

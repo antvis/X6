@@ -1,7 +1,7 @@
+import type { KeyValue } from '../../common'
 import { Path } from '../../geometry'
-import { KeyValue } from '../../common'
+import type { MarkerFactory, MarkerResult } from './index'
 import { normalize } from './util'
-import { Marker } from './index'
 
 export interface AsyncMarkerOptions extends KeyValue {
   width?: number
@@ -11,7 +11,7 @@ export interface AsyncMarkerOptions extends KeyValue {
   flip?: boolean
 }
 
-export const async: Marker.Factory<AsyncMarkerOptions> = ({
+export const async: MarkerFactory<AsyncMarkerOptions> = ({
   width,
   height,
   offset,
@@ -23,7 +23,7 @@ export const async: Marker.Factory<AsyncMarkerOptions> = ({
   const w = width || 10
   const opened = open === true
   const fliped = flip === true
-  const result: Marker.Result = { ...attrs, tagName: 'path' }
+  const result: MarkerResult = { ...attrs, tagName: 'path' }
 
   if (fliped) {
     h = -h
