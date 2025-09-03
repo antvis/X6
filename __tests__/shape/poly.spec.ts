@@ -1,10 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ObjectExt } from '../../src/common'
+import { describe, expect, it, vi } from 'vitest'
 import { Point } from '../../src/geometry'
-import { Poly, pointsToString } from '../../src/shape/poly'
-
-vi.mock('../../src/shape/base')
-vi.mock('../../src/common')
+import { pointsToString } from '../../src/shape/util'
 
 describe('pointsToString', () => {
   it('should return string as is when input is string', () => {
