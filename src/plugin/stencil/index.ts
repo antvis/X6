@@ -12,7 +12,7 @@ import type {
   StencilOptions,
 } from './type'
 
-const ClassNames = {
+export const ClassNames = {
   base: 'widget-stencil',
   title: `widget-stencil-title`,
   search: `widget-stencil-search`,
@@ -23,9 +23,9 @@ const ClassNames = {
   groupContent: `widget-stencil-group-content`,
 }
 
-const DefaultGroupName = '__default__'
+export const DefaultGroupName = '__default__'
 
-const DefaultOptions: Partial<StencilOptions> = {
+export const DefaultOptions: Partial<StencilOptions> = {
   stencilGraphWidth: 200,
   stencilGraphHeight: 800,
   title: 'Stencil',
