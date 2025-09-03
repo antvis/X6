@@ -2,14 +2,15 @@ import { CssLoader, Disposable, disposable } from '../../common'
 import type { EventArgs, Graph } from '../../graph'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
+import type { SnaplineImplFilter, SnaplineOptions } from './type'
 import './api'
 
 export class Snapline extends Disposable implements Graph.Plugin {
   public name = 'snapline'
   private snaplineImpl: SnaplineImpl
-  public options: Snapline.Options
+  public options: SnaplineOptions
 
-  constructor(options: Snapline.Options = {}) {
+  constructor(options: SnaplineOptions = {}) {
     super()
     this.options = { enabled: true, tolerance: 10, ...options }
     CssLoader.ensure(this.name, content)
@@ -60,7 +61,7 @@ export class Snapline extends Disposable implements Graph.Plugin {
     return this
   }
 
-  setFilter(filter?: SnaplineImpl.Filter) {
+  setFilter(filter?: SnaplineImplFilter) {
     this.snaplineImpl.setFilter(filter)
     return this
   }
@@ -151,9 +152,4 @@ export class Snapline extends Disposable implements Graph.Plugin {
     this.snaplineImpl.dispose()
     CssLoader.clean(this.name)
   }
-}
-
-export namespace Snapline {
-  export interface Options extends SnaplineImpl.Options {}
-  export type Filter = SnaplineImpl.Filter
 }

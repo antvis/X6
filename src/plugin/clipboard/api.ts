@@ -1,6 +1,11 @@
 import { Graph } from '../../graph'
-import { Cell } from '../../model'
-import { Clipboard } from './index'
+import type { Cell } from '../../model'
+import type { Clipboard } from './index'
+import type {
+  ClipboardImplCopyOptions,
+  ClipboardImplPasteOptions,
+  ClipboardOptions,
+} from './type'
 
 declare module '../../graph/graph' {
   interface Graph {
@@ -8,12 +13,12 @@ declare module '../../graph/graph' {
     enableClipboard: () => Graph
     disableClipboard: () => Graph
     toggleClipboard: (enabled?: boolean) => Graph
-    isClipboardEmpty: (options?: Clipboard.Options) => boolean
+    isClipboardEmpty: (options?: ClipboardOptions) => boolean
     getCellsInClipboard: () => Cell[]
     cleanClipboard: () => Graph
-    copy: (cells: Cell[], options?: Clipboard.CopyOptions) => Graph
-    cut: (cells: Cell[], options?: Clipboard.CopyOptions) => Graph
-    paste: (options?: Clipboard.PasteOptions, graph?: Graph) => Cell[]
+    copy: (cells: Cell[], options?: ClipboardImplCopyOptions) => Graph
+    cut: (cells: Cell[], options?: ClipboardImplCopyOptions) => Graph
+    paste: (options?: ClipboardImplPasteOptions, graph?: Graph) => Cell[]
   }
 }
 
@@ -56,7 +61,7 @@ Graph.prototype.toggleClipboard = function (enabled?: boolean) {
   return this
 }
 
-Graph.prototype.isClipboardEmpty = function (options?: Clipboard.Options) {
+Graph.prototype.isClipboardEmpty = function (options?: ClipboardOptions) {
   const clipboard = this.getPlugin('clipboard') as Clipboard
   if (clipboard) {
     return clipboard.isEmpty(options)
@@ -82,7 +87,7 @@ Graph.prototype.cleanClipboard = function () {
 
 Graph.prototype.copy = function (
   cells: Cell[],
-  options?: Clipboard.CopyOptions,
+  options?: ClipboardImplCopyOptions,
 ) {
   const clipboard = this.getPlugin('clipboard') as Clipboard
   if (clipboard) {
@@ -93,7 +98,7 @@ Graph.prototype.copy = function (
 
 Graph.prototype.cut = function (
   cells: Cell[],
-  options?: Clipboard.CopyOptions,
+  options?: ClipboardImplCopyOptions,
 ) {
   const clipboard = this.getPlugin('clipboard') as Clipboard
   if (clipboard) {
@@ -103,7 +108,7 @@ Graph.prototype.cut = function (
 }
 
 Graph.prototype.paste = function (
-  options?: Clipboard.PasteOptions,
+  options?: ClipboardImplPasteOptions,
   graph?: Graph,
 ) {
   const clipboard = this.getPlugin('clipboard') as Clipboard

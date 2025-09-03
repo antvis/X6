@@ -6,38 +6,55 @@ import {
   ObjectExt,
 } from '../../common'
 import type { Graph } from '../../graph'
-import { type Cell, Model } from '../../model'
-
+import { Model } from '../../model'
+import type {
+  HistoryChangingData,
+  HistoryCommand,
+  HistoryCommands,
+  HistoryCommonOptions,
+  HistoryCreationData,
+  HistoryEventArgs,
+  HistoryModelEvents,
+  HistoryOptions,
+} from './type'
+import {
+  getOptions,
+  isAddEvent,
+  isChangeEvent,
+  isRemoveEvent,
+  sortBatchCommands,
+} from './util'
+import { Validator, type ValidatorCallback } from './validator'
 import './api'
 
 export class History
-  extends Basecoat<History.EventArgs>
+  extends Basecoat<HistoryEventArgs>
   implements Graph.Plugin
 {
   public name = 'history'
   public graph: Graph
   public model: Model
-  public readonly options: History.CommonOptions
-  public readonly validator: History.Validator
-  protected redoStack: History.Commands[]
-  protected undoStack: History.Commands[]
-  protected batchCommands: History.Command[] | null = null
+  public readonly options: HistoryCommonOptions
+  public readonly validator: Validator
+  protected redoStack: HistoryCommands[]
+  protected undoStack: HistoryCommands[]
+  protected batchCommands: HistoryCommand[] | null = null
   protected batchLevel = 0
   protected lastBatchIndex = -1
   protected freezed = false
   protected stackSize = 0 // 0: not limit
 
-  protected readonly handlers: (<T extends History.ModelEvents>(
+  protected readonly handlers: (<T extends HistoryModelEvents>(
     event: T,
     args: Model.EventArgs[T],
   ) => any)[] = []
 
-  constructor(options: History.Options = {}) {
+  constructor(options: HistoryOptions = {}) {
     super()
     const { stackSize = 0 } = options
     this.stackSize = stackSize
-    this.options = Util.getOptions(options)
-    this.validator = new History.Validator({
+    this.options = getOptions(options)
+    this.validator = new Validator({
       history: this,
       cancelInvalid: this.options.cancelInvalid,
     })
@@ -167,7 +184,7 @@ export class History
 
   protected validate(
     events: string | string[],
-    ...callbacks: History.Validator.Callback[]
+    ...callbacks: ValidatorCallback[]
   ) {
     this.validator.validate(events, ...callbacks)
     return this
@@ -198,17 +215,17 @@ export class History
     this.validator.off('invalid')
   }
 
-  protected createCommand(options?: { batch: boolean }): History.Command {
+  protected createCommand(options?: { batch: boolean }): HistoryCommand {
     return {
       batch: options ? options.batch : false,
-      data: {} as History.CreationData,
+      data: {} as HistoryCreationData,
     }
   }
 
-  protected revertCommand(cmd: History.Commands, options?: KeyValue) {
+  protected revertCommand(cmd: HistoryCommands, options?: KeyValue) {
     this.freezed = true
 
-    const cmds = Array.isArray(cmd) ? Util.sortBatchCommands(cmd) : [cmd]
+    const cmds = Array.isArray(cmd) ? sortBatchCommands(cmd) : [cmd]
     for (let i = cmds.length - 1; i >= 0; i -= 1) {
       const cmd = cmds[i]
       const localOptions = {
@@ -221,10 +238,10 @@ export class History
     this.freezed = false
   }
 
-  protected applyCommand(cmd: History.Commands, options?: KeyValue) {
+  protected applyCommand(cmd: HistoryCommands, options?: KeyValue) {
     this.freezed = true
 
-    const cmds = Array.isArray(cmd) ? Util.sortBatchCommands(cmd) : [cmd]
+    const cmds = Array.isArray(cmd) ? sortBatchCommands(cmd) : [cmd]
     for (let i = 0; i < cmds.length; i += 1) {
       const cmd = cmds[i]
       const localOptions = {
@@ -238,7 +255,7 @@ export class History
   }
 
   protected executeCommand(
-    cmd: History.Command,
+    cmd: HistoryCommand,
     revert: boolean,
     options: KeyValue,
   ) {
@@ -247,23 +264,20 @@ export class History
     const cell = model.getCell(cmd.data.id!)
     const event = cmd.event
 
-    if (
-      (Util.isAddEvent(event) && revert) ||
-      (Util.isRemoveEvent(event) && !revert)
-    ) {
+    if ((isAddEvent(event) && revert) || (isRemoveEvent(event) && !revert)) {
       cell && cell.remove(options)
     } else if (
-      (Util.isAddEvent(event) && !revert) ||
-      (Util.isRemoveEvent(event) && revert)
+      (isAddEvent(event) && !revert) ||
+      (isRemoveEvent(event) && revert)
     ) {
-      const data = cmd.data as History.CreationData
+      const data = cmd.data as HistoryCreationData
       if (data.node) {
         model.addNode(data.props, options)
       } else if (data.edge) {
         model.addEdge(data.props, options)
       }
-    } else if (Util.isChangeEvent(event)) {
-      const data = cmd.data as History.ChangingData
+    } else if (isChangeEvent(event)) {
+      const data = cmd.data as HistoryChangingData
       const key = data.key
       if (key && cell) {
         const value = revert ? data.prev[key] : data.next[key]
@@ -305,9 +319,9 @@ export class History
     }
 
     if (
-      (Util.isAddEvent(event) && this.options.ignoreAdd) ||
-      (Util.isRemoveEvent(event) && this.options.ignoreRemove) ||
-      (Util.isChangeEvent(event) && this.options.ignoreChange)
+      (isAddEvent(event) && this.options.ignoreAdd) ||
+      (isRemoveEvent(event) && this.options.ignoreRemove) ||
+      (isChangeEvent(event) && this.options.ignoreChange)
     ) {
       return
     }
@@ -329,7 +343,7 @@ export class History
 
     const cell = eventArgs.cell
     const isModelChange = Model.isModel(cell)
-    let cmd: History.Command
+    let cmd: HistoryCommand
 
     if (this.batchCommands) {
       // In most cases we are working with same object, doing
@@ -354,7 +368,7 @@ export class History
             cmd.event === event,
         )
 
-        if (index < 0 || Util.isAddEvent(event) || Util.isRemoveEvent(event)) {
+        if (index < 0 || isAddEvent(event) || isRemoveEvent(event)) {
           cmd = this.createCommand({ batch: true })
         } else {
           cmd = this.batchCommands[index]
@@ -369,8 +383,8 @@ export class History
 
     // add & remove
     // ------------
-    if (Util.isAddEvent(event) || Util.isRemoveEvent(event)) {
-      const data = cmd.data as History.CreationData
+    if (isAddEvent(event) || isRemoveEvent(event)) {
+      const data = cmd.data as HistoryCreationData
       cmd.event = event
       cmd.options = options
       data.id = cell.id
@@ -386,9 +400,9 @@ export class History
 
     // change:*
     // --------
-    if (Util.isChangeEvent(event)) {
+    if (isChangeEvent(event)) {
       const key = (args as Model.EventArgs['cell:change:*']).key
-      const data = cmd.data as History.ChangingData
+      const data = cmd.data as HistoryChangingData
 
       if (!cmd.batch || !cmd.event) {
         // Do this only once. Set previous data and action (also
@@ -469,7 +483,7 @@ export class History
     }
   }
 
-  protected filterBatchCommand(batchCommands: History.Command[]) {
+  protected filterBatchCommand(batchCommands: HistoryCommand[]) {
     let cmds = batchCommands.slice()
     const result = []
 
@@ -479,25 +493,25 @@ export class History
       const id = cmd.data.id
 
       if (evt != null && (id != null || cmd.modelChange)) {
-        if (Util.isAddEvent(evt)) {
+        if (isAddEvent(evt)) {
           const index = cmds.findIndex(
-            (c) => Util.isRemoveEvent(c.event) && c.data.id === id,
+            (c) => isRemoveEvent(c.event) && c.data.id === id,
           )
 
           if (index >= 0) {
             cmds = cmds.filter((c, i) => index < i || c.data.id !== id)
             continue
           }
-        } else if (Util.isRemoveEvent(evt)) {
+        } else if (isRemoveEvent(evt)) {
           const index = cmds.findIndex(
-            (c) => Util.isAddEvent(c.event) && c.data.id === id,
+            (c) => isAddEvent(c.event) && c.data.id === id,
           )
           if (index >= 0) {
             cmds.splice(index, 1)
             continue
           }
-        } else if (Util.isChangeEvent(evt)) {
-          const data = cmd.data as History.ChangingData
+        } else if (isChangeEvent(evt)) {
+          const data = cmd.data as HistoryChangingData
 
           if (ObjectExt.isEqual(data.prev, data.next)) {
             continue
@@ -514,8 +528,8 @@ export class History
   }
 
   protected notify(
-    event: keyof History.EventArgs,
-    cmd: History.Commands | null,
+    event: keyof HistoryEventArgs,
+    cmd: HistoryCommands | null,
     options: KeyValue,
   ) {
     const cmds = cmd == null ? null : Array.isArray(cmd) ? cmd : [cmd]
@@ -525,7 +539,7 @@ export class History
     this.graph.trigger('history:change', { cmds, options })
   }
 
-  protected push(cmd: History.Command, options: KeyValue) {
+  protected push(cmd: HistoryCommand, options: KeyValue) {
     this.redoStack = []
     if (cmd.batch) {
       this.lastBatchIndex = Math.max(this.lastBatchIndex, 0)
@@ -593,7 +607,7 @@ export class History
     this.undoStack.pop()
   }
 
-  protected undoStackPush(cmd: History.Commands) {
+  protected undoStackPush(cmd: HistoryCommands) {
     if (this.stackSize === 0) {
       this.undoStack.push(cmd)
       return
@@ -640,301 +654,5 @@ export class History
     this.clean()
     this.stopListening()
     this.off()
-  }
-}
-
-export namespace History {
-  export type ModelEvents = keyof Model.EventArgs
-
-  export interface CommonOptions {
-    enabled?: boolean
-    ignoreAdd?: boolean
-    ignoreRemove?: boolean
-    ignoreChange?: boolean
-    eventNames?: (keyof Model.EventArgs)[]
-    /**
-     * A function evaluated before any command is added. If the function
-     * returns `false`, the command does not get stored. This way you can
-     * control which commands do not get registered for undo/redo.
-     */
-    beforeAddCommand?: <T extends ModelEvents>(
-      this: History,
-      event: T,
-      args: Model.EventArgs[T],
-    ) => any
-    afterAddCommand?: <T extends ModelEvents>(
-      this: History,
-      event: T,
-      args: Model.EventArgs[T],
-      cmd: Command,
-    ) => any
-    executeCommand?: (
-      this: History,
-      cmd: Command,
-      revert: boolean,
-      options: KeyValue,
-    ) => any
-    /**
-     * An array of options property names that passed in undo actions.
-     */
-    revertOptionsList?: string[]
-    /**
-     * An array of options property names that passed in redo actions.
-     */
-    applyOptionsList?: string[]
-    /**
-     * Determine whether to cancel an invalid command or not.
-     */
-    cancelInvalid?: boolean
-  }
-
-  export interface Options extends Partial<CommonOptions> {
-    stackSize?: number
-  }
-
-  interface Data {
-    id?: string
-  }
-
-  export interface CreationData extends Data {
-    edge?: boolean
-    node?: boolean
-    props: Cell.Properties
-  }
-
-  export interface ChangingData extends Data {
-    key: string
-    prev: KeyValue
-    next: KeyValue
-  }
-
-  export interface Command {
-    batch: boolean
-    modelChange?: boolean
-    event?: ModelEvents
-    data: CreationData | ChangingData
-    options?: KeyValue
-  }
-
-  export type Commands = History.Command[] | History.Command
-}
-
-export namespace History {
-  export interface Args<T = never> {
-    cmds: Command[] | T
-    options: KeyValue
-  }
-
-  export interface EventArgs extends Validator.EventArgs {
-    /**
-     * Triggered when a command was undone.
-     */
-    undo: Args
-    /**
-     * Triggered when a command were redone.
-     */
-    redo: Args
-    /**
-     * Triggered when a command was canceled.
-     */
-    cancel: Args
-    /**
-     * Triggered when command(s) were added to the stack.
-     */
-    add: Args
-    /**
-     * Triggered when all commands were clean.
-     */
-    clean: Args<null>
-    /**
-     * Triggered when any change was made to stacks.
-     */
-    change: Args<null>
-    /**
-     * Triggered when a batch command received.
-     */
-    batch: { cmd: Command; options: KeyValue }
-  }
-}
-
-export namespace History {
-  /**
-   * Runs a set of callbacks to determine if a command is valid. This is
-   * useful for checking if a certain action in your application does
-   * lead to an invalid state of the graph.
-   */
-  export class Validator extends Basecoat<Validator.EventArgs> {
-    protected readonly command: History
-
-    protected readonly cancelInvalid: boolean
-
-    protected readonly map: { [event: string]: Validator.Callback[][] }
-
-    constructor(options: Validator.Options) {
-      super()
-      this.map = {}
-      this.command = options.history
-      this.cancelInvalid = options.cancelInvalid !== false
-      this.command.on('add', this.onCommandAdded, this)
-    }
-
-    protected onCommandAdded({ cmds }: History.EventArgs['add']) {
-      return Array.isArray(cmds)
-        ? cmds.every((cmd) => this.isValidCommand(cmd))
-        : this.isValidCommand(cmds)
-    }
-
-    protected isValidCommand(cmd: History.Command) {
-      if (cmd.options && cmd.options.validation === false) {
-        return true
-      }
-
-      const callbacks = (cmd.event && this.map[cmd.event]) || []
-
-      let handoverErr: Error | null = null
-
-      callbacks.forEach((routes) => {
-        let i = 0
-
-        const rollup = (err: Error | null) => {
-          const fn = routes[i]
-          i += 1
-
-          try {
-            if (fn) {
-              fn(err, cmd, rollup)
-            } else {
-              handoverErr = err
-            }
-          } catch (err) {
-            rollup(err)
-          }
-        }
-
-        rollup(handoverErr)
-      })
-
-      if (handoverErr) {
-        if (this.cancelInvalid) {
-          this.command.cancel()
-        }
-        this.emit('invalid', { err: handoverErr })
-        return false
-      }
-
-      return true
-    }
-
-    validate(events: string | string[], ...callbacks: Validator.Callback[]) {
-      const evts = Array.isArray(events) ? events : events.split(/\s+/)
-
-      callbacks.forEach((callback) => {
-        if (typeof callback !== 'function') {
-          throw new Error(`${evts.join(' ')} requires callback functions.`)
-        }
-      })
-
-      evts.forEach((event) => {
-        if (this.map[event] == null) {
-          this.map[event] = []
-        }
-        this.map[event].push(callbacks)
-      })
-
-      return this
-    }
-
-    @disposable()
-    dispose() {
-      this.command.off('add', this.onCommandAdded, this)
-    }
-  }
-
-  export namespace Validator {
-    export interface Options {
-      history: History
-      /**
-       * To cancel (= undo + delete from redo stack) a command if is not valid.
-       */
-      cancelInvalid?: boolean
-    }
-
-    export type Callback = (
-      err: Error | null,
-      cmd: History.Command,
-      next: (err: Error | null) => any,
-    ) => any
-
-    export interface EventArgs {
-      invalid: { err: Error }
-    }
-  }
-}
-
-namespace Util {
-  export function isAddEvent(event?: History.ModelEvents) {
-    return event === 'cell:added'
-  }
-
-  export function isRemoveEvent(event?: History.ModelEvents) {
-    return event === 'cell:removed'
-  }
-
-  export function isChangeEvent(event?: History.ModelEvents) {
-    return event != null && event.startsWith('cell:change:')
-  }
-
-  export function getOptions(options: History.Options): History.CommonOptions {
-    const reservedNames: History.ModelEvents[] = [
-      'cell:added',
-      'cell:removed',
-      'cell:change:*',
-    ]
-
-    const batchEvents: History.ModelEvents[] = ['batch:start', 'batch:stop']
-
-    const eventNames = options.eventNames
-      ? options.eventNames.filter(
-          (event) =>
-            !(
-              Util.isChangeEvent(event) ||
-              reservedNames.includes(event) ||
-              batchEvents.includes(event)
-            ),
-        )
-      : reservedNames
-
-    return {
-      enabled: true,
-      ...options,
-      eventNames,
-      applyOptionsList: options.applyOptionsList || ['propertyPath'],
-      revertOptionsList: options.revertOptionsList || ['propertyPath'],
-    }
-  }
-
-  export function sortBatchCommands(cmds: History.Command[]) {
-    const results: History.Command[] = []
-    for (let i = 0, ii = cmds.length; i < ii; i += 1) {
-      const cmd = cmds[i]
-      let index: number | null = null
-
-      if (Util.isAddEvent(cmd.event)) {
-        const id = cmd.data.id
-        for (let j = 0; j < i; j += 1) {
-          if (cmds[j].data.id === id) {
-            index = j
-            break
-          }
-        }
-      }
-
-      if (index !== null) {
-        results.splice(index, 0, cmd)
-      } else {
-        results.push(cmd)
-      }
-    }
-    return results
   }
 }

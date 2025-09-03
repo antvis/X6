@@ -5,10 +5,56 @@ import { View } from '../../view'
 import { Dnd } from '../dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
+import type {
+  StencilFilter,
+  StencilFilters,
+  StencilGroup,
+  StencilOptions,
+} from './type'
+
+export const ClassNames = {
+  base: 'widget-stencil',
+  title: `widget-stencil-title`,
+  search: `widget-stencil-search`,
+  searchText: `widget-stencil-search-text`,
+  content: `widget-stencil-content`,
+  group: `widget-stencil-group`,
+  groupTitle: `widget-stencil-group-title`,
+  groupContent: `widget-stencil-group-content`,
+}
+
+export const DefaultGroupName = '__default__'
+
+export const DefaultOptions: Partial<StencilOptions> = {
+  stencilGraphWidth: 200,
+  stencilGraphHeight: 800,
+  title: 'Stencil',
+  collapsable: false,
+  placeholder: 'Search',
+  notFoundText: 'No matches found',
+
+  layout(model, group) {
+    const options = {
+      columnWidth: (this.options.stencilGraphWidth as number) / 2 - 10,
+      columns: 2,
+      rowHeight: 80,
+      resizeToFit: false,
+      dx: 10,
+      dy: 10,
+    }
+
+    grid(model, {
+      ...options,
+      ...this.options.layoutOptions,
+      ...(group ? group.layoutOptions : {}),
+    })
+  },
+  ...Dnd.defaults,
+}
 
 export class Stencil extends View implements Graph.Plugin {
   public name = 'stencil'
-  public options: Stencil.Options
+  public options: StencilOptions
   public dnd: Dnd
   protected graphs: { [groupName: string]: Graph }
   protected groups: { [groupName: string]: HTMLElement }
@@ -28,15 +74,15 @@ export class Stencil extends View implements Graph.Plugin {
     return this.targetGraph.model
   }
 
-  constructor(options: Partial<Stencil.Options> = {}) {
+  constructor(options: Partial<StencilOptions> = {}) {
     super()
     CssLoader.ensure(this.name, content)
     this.graphs = {}
     this.groups = {}
     this.options = {
-      ...Stencil.defaultOptions,
+      ...DefaultOptions,
       ...options,
-    } as Stencil.Options
+    } as StencilOptions
     this.init()
   }
 
@@ -155,7 +201,7 @@ export class Stencil extends View implements Graph.Plugin {
     return this
   }
 
-  addGroup(group: Stencil.Group | Stencil.Group[]) {
+  addGroup(group: StencilGroup | StencilGroup[]) {
     const groups = Array.isArray(group) ? group : [group]
     if (this.options.groups) {
       this.options.groups.push(...groups)
@@ -209,7 +255,7 @@ export class Stencil extends View implements Graph.Plugin {
     }
   }
 
-  protected initGroup(group: Stencil.Group) {
+  protected initGroup(group: StencilGroup) {
     const globalGraphOptions = this.options.stencilGraphOptions || {}
     const groupElem = document.createElement('div')
     Dom.addClass(groupElem, this.prefixClassName(ClassNames.group))
@@ -273,7 +319,7 @@ export class Stencil extends View implements Graph.Plugin {
         preventDefaultBlankAction: false,
       })
       Dom.append(this.content, graph.container)
-      this.graphs[Private.defaultGroupName] = graph
+      this.graphs[DefaultGroupName] = graph
     }
   }
 
@@ -401,10 +447,10 @@ export class Stencil extends View implements Graph.Plugin {
     this.dnd.start(node, e)
   }
 
-  protected filter(keyword: string, filter?: Stencil.Filter) {
+  protected filter(keyword: string, filter?: StencilFilter) {
     const found = Object.keys(this.graphs).reduce((memo, groupName) => {
       const graph = this.graphs[groupName]
-      const name = groupName === Private.defaultGroupName ? null : groupName
+      const name = groupName === DefaultGroupName ? null : groupName
       const items = graph.model.getNodes().filter((cell) => {
         let matched = false
         if (typeof filter === 'function') {
@@ -457,7 +503,7 @@ export class Stencil extends View implements Graph.Plugin {
   protected isCellMatched(
     cell: Cell,
     keyword: string,
-    filters: Stencil.Filters | undefined,
+    filters: StencilFilters | undefined,
     ignoreCase: boolean,
   ) {
     if (keyword && filters) {
@@ -538,7 +584,7 @@ export class Stencil extends View implements Graph.Plugin {
   }
 
   protected getGraph(groupName?: string) {
-    return this.graphs[groupName || Private.defaultGroupName]
+    return this.graphs[groupName || DefaultGroupName]
   }
 
   protected getGroup(groupName?: string) {
@@ -589,88 +635,4 @@ export class Stencil extends View implements Graph.Plugin {
     this.remove()
     CssLoader.clean(this.name)
   }
-}
-
-export namespace Stencil {
-  export interface Options extends Dnd.Options {
-    title: string
-    groups?: Group[]
-    search?: Filter
-    placeholder?: string
-    notFoundText?: string
-    collapsable?: boolean
-    stencilGraphWidth: number
-    stencilGraphHeight: number
-    stencilGraphOptions?: Graph.Options
-    stencilGraphPadding?: number
-    layout?: (this: Stencil, model: Model, group?: Group | null) => any
-    layoutOptions?: any
-  }
-
-  export type Filter = Filters | FilterFn | boolean
-  export type Filters = { [shape: string]: string | string[] | boolean }
-  export type FilterFn = (
-    this: Stencil,
-    cell: Node,
-    keyword: string,
-    groupName: string | null,
-    stencil: Stencil,
-  ) => boolean
-
-  export interface Group {
-    name: string
-    title?: string
-    collapsed?: boolean
-    collapsable?: boolean
-    nodeMovable?: boolean
-
-    graphWidth?: number
-    graphHeight?: number
-    graphPadding?: number
-    graphOptions?: Graph.Options
-    layout?: (this: Stencil, model: Model, group?: Group | null) => any
-    layoutOptions?: any
-  }
-
-  export const defaultOptions: Partial<Options> = {
-    stencilGraphWidth: 200,
-    stencilGraphHeight: 800,
-    title: 'Stencil',
-    collapsable: false,
-    placeholder: 'Search',
-    notFoundText: 'No matches found',
-
-    layout(model, group) {
-      const options = {
-        columnWidth: (this.options.stencilGraphWidth as number) / 2 - 10,
-        columns: 2,
-        rowHeight: 80,
-        resizeToFit: false,
-        dx: 10,
-        dy: 10,
-      }
-
-      grid(model, {
-        ...options,
-        ...this.options.layoutOptions,
-        ...(group ? group.layoutOptions : {}),
-      })
-    },
-    ...Dnd.defaults,
-  }
-}
-
-export namespace ClassNames {
-  export const base = 'widget-stencil'
-  export const title = `${base}-title`
-  export const search = `${base}-search`
-  export const searchText = `${search}-text`
-  export const content = `${base}-content`
-  export const group = `${base}-group`
-  export const groupTitle = `${group}-title`
-  export const groupContent = `${group}-content`
-}
-
-namespace Private {
-  export const defaultGroupName = '__default__'
 }

@@ -1,5 +1,6 @@
 import { Graph } from '../../graph'
-import { Snapline } from './index'
+import type { Snapline } from './index'
+import type { SnaplineFilter } from './type'
 
 declare module '../../graph/graph' {
   interface Graph {
@@ -8,7 +9,7 @@ declare module '../../graph/graph' {
     disableSnapline: () => Graph
     toggleSnapline: (enabled?: boolean) => Graph
     hideSnapline: () => Graph
-    setSnaplineFilter: (filter?: Snapline.Filter) => Graph
+    setSnaplineFilter: (filter?: SnaplineFilter) => Graph
     isSnaplineOnResizingEnabled: () => boolean
     enableSnaplineOnResizing: () => Graph
     disableSnaplineOnResizing: () => Graph
@@ -62,7 +63,7 @@ Graph.prototype.hideSnapline = function () {
   return this
 }
 
-Graph.prototype.setSnaplineFilter = function (filter?: Snapline.Filter) {
+Graph.prototype.setSnaplineFilter = function (filter?: SnaplineFilter) {
   const snapline = this.getPlugin('snapline') as Snapline
   if (snapline) {
     snapline.setFilter(filter)
