@@ -1,4 +1,5 @@
 import { ObjectExt } from '../common'
+import { Point } from '../geometry'
 import type { Cell, Node } from '../model'
 import type { MarkupType } from '../view/markup'
 import { Base, BaseBodyAttr } from './base'
@@ -75,4 +76,22 @@ export function createShape(
   return base.define(
     ObjectExt.merge(defaults, config, { shape }),
   ) as typeof Base
+}
+
+export function pointsToString(
+  points: Point.PointLike[] | Point.PointData[] | string,
+) {
+  return typeof points === 'string'
+    ? points
+    : (points as Point.PointLike[])
+        .map((p) => {
+          if (Array.isArray(p)) {
+            return p.join(',')
+          }
+          if (Point.isPointLike(p)) {
+            return `${p.x}, ${p.y}`
+          }
+          return ''
+        })
+        .join(' ')
 }

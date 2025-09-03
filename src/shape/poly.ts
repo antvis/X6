@@ -1,25 +1,8 @@
 import { ObjectExt } from '../common'
-import { Point } from '../geometry'
+import type { Point } from '../geometry'
 import type { Node } from '../model/node'
 import { Base } from './base'
-
-function pointsToString(
-  points: Point.PointLike[] | Point.PointData[] | string,
-) {
-  return typeof points === 'string'
-    ? points
-    : (points as Point.PointLike[])
-        .map((p) => {
-          if (Array.isArray(p)) {
-            return p.join(',')
-          }
-          if (Point.isPointLike(p)) {
-            return `${p.x}, ${p.y}`
-          }
-          return ''
-        })
-        .join(' ')
-}
+import { pointsToString } from './util'
 
 export class Poly extends Base {
   get points() {
