@@ -1,17 +1,32 @@
 import { Basecoat, disposable } from '../../common'
 import type { Graph } from '../../graph'
 import type { Cell } from '../../model'
-import { ClipboardImpl } from './clipboard'
+import type { ClipboardImpl } from './clipboard'
+import type {
+  ClipboardImplCopyOptions,
+  ClipboardImplOptions,
+  ClipboardImplPasteOptions,
+} from './type'
 import './api'
 
+interface ClipboardEventArgs {
+  'clipboard:changed': {
+    cells: Cell[]
+  }
+}
+
+interface Options extends ClipboardImplOptions {
+  enabled?: boolean
+}
+
 export class Clipboard
-  extends Basecoat<Clipboard.EventArgs>
+  extends Basecoat<ClipboardEventArgs>
   implements Graph.Plugin
 {
   public name = 'clipboard'
   private clipboardImpl: ClipboardImpl
   private graph: Graph
-  public options: Clipboard.Options
+  public options: Options
 
   get disabled() {
     return this.options.enabled !== true
@@ -21,7 +36,7 @@ export class Clipboard
     return this.clipboardImpl.cells
   }
 
-  constructor(options: Clipboard.Options = {}) {
+  constructor(options: Options = {}) {
     super()
     this.options = { enabled: true, ...options }
   }
@@ -59,7 +74,7 @@ export class Clipboard
     return this
   }
 
-  isEmpty(options: Clipboard.Options = {}) {
+  isEmpty(options: Options = {}) {
     return this.clipboardImpl.isEmpty(options)
   }
 
@@ -75,7 +90,7 @@ export class Clipboard
     return this
   }
 
-  copy(cells: Cell[], options: Clipboard.CopyOptions = {}) {
+  copy(cells: Cell[], options: ClipboardImplCopyOptions = {}) {
     if (!this.disabled) {
       this.clipboardImpl.copy(cells, this.graph, {
         ...this.commonOptions,
@@ -86,7 +101,7 @@ export class Clipboard
     return this
   }
 
-  cut(cells: Cell[], options: Clipboard.CopyOptions = {}) {
+  cut(cells: Cell[], options: ClipboardImplCopyOptions = {}) {
     if (!this.disabled) {
       this.clipboardImpl.cut(cells, this.graph, {
         ...this.commonOptions,
@@ -97,7 +112,7 @@ export class Clipboard
     return this
   }
 
-  paste(options: Clipboard.PasteOptions = {}, graph: Graph = this.graph) {
+  paste(options: ClipboardImplPasteOptions = {}, graph: Graph = this.graph) {
     if (!this.disabled) {
       return this.clipboardImpl.paste(graph, {
         ...this.commonOptions,
@@ -114,9 +129,9 @@ export class Clipboard
     return others
   }
 
-  protected notify<K extends keyof Clipboard.EventArgs>(
+  protected notify<K extends keyof ClipboardEventArgs>(
     name: K,
-    args: Clipboard.EventArgs[K],
+    args: ClipboardEventArgs[K],
   ) {
     this.trigger(name, args)
     this.graph.trigger(name, args)
@@ -127,19 +142,4 @@ export class Clipboard
     this.clean(true)
     this.off()
   }
-}
-
-export namespace Clipboard {
-  export interface EventArgs {
-    'clipboard:changed': {
-      cells: Cell[]
-    }
-  }
-
-  export interface Options extends ClipboardImpl.Options {
-    enabled?: boolean
-  }
-
-  export interface CopyOptions extends ClipboardImpl.CopyOptions {}
-  export interface PasteOptions extends ClipboardImpl.PasteOptions {}
 }
