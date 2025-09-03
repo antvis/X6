@@ -1,6 +1,7 @@
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
 import { Graph } from '../../graph'
-import { History } from './index'
+import type { History } from '.'
+import type { HistoryArgs, HistoryCommand } from './type'
 
 declare module '../../graph/graph' {
   interface Graph {
@@ -23,13 +24,13 @@ declare module '../../graph/graph' {
 
 declare module '../../graph/events' {
   interface EventArgs {
-    'history:undo': History.Args
-    'history:redo': History.Args
-    'history:cancel': History.Args
-    'history:add': History.Args
-    'history:clean': History.Args<null>
-    'history:change': History.Args<null>
-    'history:batch': { cmd: History.Command; options: KeyValue }
+    'history:undo': HistoryArgs
+    'history:redo': HistoryArgs
+    'history:cancel': HistoryArgs
+    'history:add': HistoryArgs
+    'history:clean': HistoryArgs<null>
+    'history:change': HistoryArgs<null>
+    'history:batch': { cmd: HistoryCommand; options: KeyValue }
   }
 }
 

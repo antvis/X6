@@ -2,13 +2,18 @@ import { Disposable, disposable } from '../../common'
 import type { Graph } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'
+import type {
+  KeyboardImplAction,
+  KeyboardImplHandler,
+  KeyboardImplOptions,
+} from './type'
 
 export class Keyboard extends Disposable implements Graph.Plugin {
   public name = 'keyboard'
   private keyboardImpl: KeyboardImpl
-  public options: KeyboardImpl.Options
+  public options: KeyboardImplOptions
 
-  constructor(options: KeyboardImpl.Options = {}) {
+  constructor(options: KeyboardImplOptions = {}) {
     super()
     this.options = { enabled: true, ...options }
   }
@@ -45,14 +50,14 @@ export class Keyboard extends Disposable implements Graph.Plugin {
 
   bindKey(
     keys: string | string[],
-    callback: KeyboardImpl.Handler,
-    action?: KeyboardImpl.Action,
+    callback: KeyboardImplHandler,
+    action?: KeyboardImplAction,
   ) {
     this.keyboardImpl.on(keys, callback, action)
     return this
   }
 
-  trigger(key: string, action?: KeyboardImpl.Action) {
+  trigger(key: string, action?: KeyboardImplAction) {
     this.keyboardImpl.trigger(key, action)
     return this
   }
@@ -62,7 +67,7 @@ export class Keyboard extends Disposable implements Graph.Plugin {
     return this
   }
 
-  unbindKey(keys: string | string[], action?: KeyboardImpl.Action) {
+  unbindKey(keys: string | string[], action?: KeyboardImplAction) {
     this.keyboardImpl.off(keys, action)
     return this
   }

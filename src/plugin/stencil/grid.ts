@@ -1,6 +1,66 @@
-import { Model, Node } from '../../model'
+import { Model, type Node } from '../../model'
 
-export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
+interface GridLayoutOptions extends Node.SetPositionOptions {
+  columns?: number
+  columnWidth?: number | 'auto' | 'compact'
+  rowHeight?: number | 'auto' | 'compact'
+  dx?: number
+  dy?: number
+  marginX?: number
+  marginY?: number
+  /**
+   * Positions the elements in the center of a grid cell.
+   *
+   * Default: true
+   */
+  center?: boolean
+  /**
+   * Resizes the elements to fit a grid cell, preserving the aspect ratio.
+   *
+   * Default: false
+   */
+  resizeToFit?: boolean
+}
+
+export function getMaxDim(nodes: Node[], name: 'width' | 'height') {
+  return nodes.reduce((memo, node) => Math.max(node?.getSize()[name], memo), 0)
+}
+
+export function getNodesInRow(
+  nodes: Node[],
+  rowIndex: number,
+  columnCount: number,
+) {
+  const res: Node[] = []
+  for (let i = columnCount * rowIndex, ii = i + columnCount; i < ii; i += 1) {
+    if (nodes[i]) res.push(nodes[i])
+  }
+  return res
+}
+
+export function getNodesInColumn(
+  nodes: Node[],
+  columnIndex: number,
+  columnCount: number,
+) {
+  const res: Node[] = []
+  for (let i = columnIndex, ii = nodes.length; i < ii; i += columnCount) {
+    if (nodes[i]) res.push(nodes[i])
+  }
+  return res
+}
+
+export function accumulate(items: number[], start: number) {
+  return items.reduce(
+    (memo, item, i) => {
+      memo.push(memo[i] + item)
+      return memo
+    },
+    [start || 0],
+  )
+}
+
+export function grid(cells: Node[] | Model, options: GridLayoutOptions = {}) {
   const model = Model.isModel(cells)
     ? cells
     : new Model().resetCells(cells, {
@@ -23,12 +83,12 @@ export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
 
   if (columnWidth === 'compact') {
     for (let j = 0; j < columns; j += 1) {
-      const items = GridLayout.getNodesInColumn(nodes, j, columns)
-      columnWidths.push(GridLayout.getMaxDim(items, 'width') + dx)
+      const items = getNodesInColumn(nodes, j, columns)
+      columnWidths.push(getMaxDim(items, 'width') + dx)
     }
   } else {
     if (columnWidth == null || columnWidth === 'auto') {
-      columnWidth = GridLayout.getMaxDim(nodes, 'width') + dx
+      columnWidth = getMaxDim(nodes, 'width') + dx
     }
 
     for (let i = 0; i < columns; i += 1) {
@@ -36,25 +96,25 @@ export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
     }
   }
 
-  const columnLefts = GridLayout.accumulate(columnWidths, marginX)
+  const columnLefts = accumulate(columnWidths, marginX)
 
   const rowHeights: number[] = []
   let rowHeight = options.rowHeight
   if (rowHeight === 'compact') {
     for (let i = 0; i < rows; i += 1) {
-      const items = GridLayout.getNodesInRow(nodes, i, columns)
-      rowHeights.push(GridLayout.getMaxDim(items, 'height') + dy)
+      const items = getNodesInRow(nodes, i, columns)
+      rowHeights.push(getMaxDim(items, 'height') + dy)
     }
   } else {
     if (rowHeight == null || rowHeight === 'auto') {
-      rowHeight = GridLayout.getMaxDim(nodes, 'height') + dy
+      rowHeight = getMaxDim(nodes, 'height') + dy
     }
 
     for (let i = 0; i < rows; i += 1) {
       rowHeights.push(rowHeight)
     }
   }
-  const rowTops = GridLayout.accumulate(rowHeights, marginY)
+  const rowTops = accumulate(rowHeights, marginY)
 
   model.startBatch('layout')
 
@@ -98,69 +158,4 @@ export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
   })
 
   model.stopBatch('layout')
-}
-
-namespace GridLayout {
-  export interface Options extends Node.SetPositionOptions {
-    columns?: number
-    columnWidth?: number | 'auto' | 'compact'
-    rowHeight?: number | 'auto' | 'compact'
-    dx?: number
-    dy?: number
-    marginX?: number
-    marginY?: number
-    /**
-     * Positions the elements in the center of a grid cell.
-     *
-     * Default: true
-     */
-    center?: boolean
-    /**
-     * Resizes the elements to fit a grid cell, preserving the aspect ratio.
-     *
-     * Default: false
-     */
-    resizeToFit?: boolean
-  }
-
-  export function getMaxDim(nodes: Node[], name: 'width' | 'height') {
-    return nodes.reduce(
-      (memo, node) => Math.max(node?.getSize()[name], memo),
-      0,
-    )
-  }
-
-  export function getNodesInRow(
-    nodes: Node[],
-    rowIndex: number,
-    columnCount: number,
-  ) {
-    const res: Node[] = []
-    for (let i = columnCount * rowIndex, ii = i + columnCount; i < ii; i += 1) {
-      if (nodes[i]) res.push(nodes[i])
-    }
-    return res
-  }
-
-  export function getNodesInColumn(
-    nodes: Node[],
-    columnIndex: number,
-    columnCount: number,
-  ) {
-    const res: Node[] = []
-    for (let i = columnIndex, ii = nodes.length; i < ii; i += columnCount) {
-      if (nodes[i]) res.push(nodes[i])
-    }
-    return res
-  }
-
-  export function accumulate(items: number[], start: number) {
-    return items.reduce(
-      (memo, item, i) => {
-        memo.push(memo[i] + item)
-        return memo
-      },
-      [start || 0],
-    )
-  }
 }

@@ -1,6 +1,7 @@
 import { Graph } from '../../graph'
-import { Keyboard } from './index'
+import type { Keyboard } from './index'
 import { KeyboardImpl } from './keyboard'
+import type { KeyboardImplAction, KeyboardImplHandler } from './type'
 
 declare module '../../graph/graph' {
   interface Graph {
@@ -10,12 +11,12 @@ declare module '../../graph/graph' {
     toggleKeyboard: (enabled?: boolean) => Graph
     bindKey: (
       keys: string | string[],
-      callback: KeyboardImpl.Handler,
-      action?: KeyboardImpl.Action,
+      callback: KeyboardImplHandler,
+      action?: KeyboardImplAction,
     ) => Graph
-    unbindKey: (keys: string | string[], action?: KeyboardImpl.Action) => Graph
+    unbindKey: (keys: string | string[], action?: KeyboardImplAction) => Graph
     clearKeys: () => Graph
-    triggerKey: (key: string, action: KeyboardImpl.Action) => Graph
+    triggerKey: (key: string, action: KeyboardImplAction) => Graph
   }
 }
 
@@ -53,8 +54,8 @@ Graph.prototype.toggleKeyboard = function (enabled?: boolean) {
 
 Graph.prototype.bindKey = function (
   keys: string | string[],
-  callback: KeyboardImpl.Handler,
-  action?: KeyboardImpl.Action,
+  callback: KeyboardImplHandler,
+  action?: KeyboardImplAction,
 ) {
   const keyboard = this.getPlugin('keyboard') as Keyboard
   if (keyboard) {
@@ -65,7 +66,7 @@ Graph.prototype.bindKey = function (
 
 Graph.prototype.unbindKey = function (
   keys: string | string[],
-  action?: KeyboardImpl.Action,
+  action?: KeyboardImplAction,
 ) {
   const keyboard = this.getPlugin('keyboard') as Keyboard
   if (keyboard) {
@@ -84,7 +85,7 @@ Graph.prototype.clearKeys = function () {
 
 Graph.prototype.triggerKey = function (
   key: string,
-  action: KeyboardImpl.Action,
+  action: KeyboardImplAction,
 ) {
   const keyboard = this.getPlugin('keyboard') as Keyboard
   if (keyboard) {

@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Graph, Shape, Stencil } from '../../src'
 import { Dom } from '../../src/common/dom'
-import { ClassNames } from '../../src/plugin/stencil'
+import { ClassNames, DefaultOptions } from '../../src/plugin/stencil'
 import { grid } from '../../src/plugin/stencil/grid'
+import type { StencilOptions } from '../../src/plugin/stencil/type'
 import { createDivElement } from '../utils/dom'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
@@ -18,7 +19,7 @@ describe('plugin/stencil', () => {
     )
     const stencil = graph.getPlugin('stencil') as Stencil
 
-    expect(stencil.options).toMatchObject(Stencil.defaultOptions)
+    expect(stencil.options).toMatchObject(DefaultOptions)
     expect(stencil.name).toBe('stencil')
 
     cleanup()
@@ -400,7 +401,7 @@ describe('plugin/stencil/grid', () => {
 
   const createLayoutFn = (
     lOptions?: any,
-    sOptions?: Partial<Stencil.Options>,
+    sOptions?: Partial<StencilOptions>,
   ) => {
     const layoutFn = vi.fn()
 

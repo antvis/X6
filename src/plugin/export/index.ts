@@ -6,14 +6,20 @@ import {
   FunctionExt,
   type KeyValue,
   NumberExt,
-  type Size,
   Vector,
 } from '../../common'
 import { Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
+import type {
+  ExportEventArgs,
+  ExportToDataURLOptions,
+  ExportToImageOptions,
+  ExportToSVGCallback,
+  ExportToSVGOptions,
+} from './type'
 import './api'
 
-export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
+export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
   public name = 'export'
   private graph: Graph
 
@@ -29,25 +35,25 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     this.graph = graph
   }
 
-  exportPNG(fileName = 'chart', options: Export.ToImageOptions = {}) {
+  exportPNG(fileName = 'chart', options: ExportToImageOptions = {}) {
     this.toPNG((dataUri) => {
       DataUri.downloadDataUri(dataUri, fileName)
     }, options)
   }
 
-  exportJPEG(fileName = 'chart', options: Export.ToImageOptions = {}) {
+  exportJPEG(fileName = 'chart', options: ExportToImageOptions = {}) {
     this.toJPEG((dataUri) => {
       DataUri.downloadDataUri(dataUri, fileName)
     }, options)
   }
 
-  exportSVG(fileName = 'chart', options: Export.ToSVGOptions = {}) {
+  exportSVG(fileName = 'chart', options: ExportToSVGOptions = {}) {
     this.toSVG((svg: string) => {
       DataUri.downloadDataUri(DataUri.svgToDataUrl(svg), fileName)
     }, options)
   }
 
-  toSVG(callback: Export.ToSVGCallback, options: Export.ToSVGOptions = {}) {
+  toSVG(callback: ExportToSVGCallback, options: ExportToSVGOptions = {}) {
     this.notify('before:export', options)
 
     // to keep pace with it's doc description witch, the default value should be true.
@@ -226,7 +232,7 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     }
   }
 
-  toDataURL(callback: Export.ToSVGCallback, options: Export.ToDataURLOptions) {
+  toDataURL(callback: ExportToSVGCallback, options: ExportToDataURLOptions) {
     let viewBox = options.viewBox || this.graph.getContentBBox()
 
     const padding = NumberExt.normalizeSides(options.padding)
@@ -318,23 +324,23 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
     )
   }
 
-  toPNG(callback: Export.ToSVGCallback, options: Export.ToImageOptions = {}) {
+  toPNG(callback: ExportToSVGCallback, options: ExportToImageOptions = {}) {
     this.toDataURL(callback, {
       ...options,
       type: 'image/png',
     })
   }
 
-  toJPEG(callback: Export.ToSVGCallback, options: Export.ToImageOptions = {}) {
+  toJPEG(callback: ExportToSVGCallback, options: ExportToImageOptions = {}) {
     this.toDataURL(callback, {
       ...options,
       type: 'image/jpeg',
     })
   }
 
-  protected notify<K extends keyof Export.EventArgs>(
+  protected notify<K extends keyof ExportEventArgs>(
     name: K,
-    args: Export.EventArgs[K],
+    args: ExportEventArgs[K],
   ) {
     this.trigger(name, args)
     this.graph.trigger(name, args)
@@ -343,67 +349,5 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
   @disposable()
   dispose(): void {
     this.off()
-  }
-}
-
-export namespace Export {
-  export interface EventArgs {
-    'before:export': Export.ToSVGOptions
-    'after:export': Export.ToSVGOptions
-  }
-
-  export type ToSVGCallback = (dataUri: string) => any
-
-  export interface ToSVGOptions {
-    /**
-     * By default, the resulting SVG has set width and height to `100%`.
-     * If you'd like to have the dimensions to be set to the actual content
-     * width and height, set `preserveDimensions` to `true`. An object with
-     * `width` and `height` properties can be also used here if you need to
-     * define the export size explicitely.
-     */
-    preserveDimensions?: boolean | Size
-
-    viewBox?: Rectangle.RectangleLike
-
-    /**
-     * When set to `true` all the styles from external stylesheets are copied
-     * to the resulting SVG export. Note this requires a lot of computations
-     * and it might significantly affect the export time.
-     */
-    copyStyles?: boolean
-
-    stylesheet?: string
-
-    /**
-     * Converts all contained images into Data URI format.
-     */
-    serializeImages?: boolean
-
-    /**
-     * A function called before the XML serialization. It may be used to
-     * modify the exported SVG before it is converted to a string. The
-     * function can also return a new SVGDocument.
-     */
-    beforeSerialize?: (this: Graph, svg: SVGSVGElement) => any
-  }
-
-  export interface ToImageOptions extends ToSVGOptions {
-    /**
-     * The width of the image in pixels.
-     */
-    width?: number
-    /**
-     * The height of the image in pixels.
-     */
-    height?: number
-    ratio?: string
-    backgroundColor?: string
-    padding?: NumberExt.SideOptions
-    quality?: number
-  }
-
-  export interface ToDataURLOptions extends ToImageOptions {
-    type: 'image/png' | 'image/jpeg'
   }
 }
