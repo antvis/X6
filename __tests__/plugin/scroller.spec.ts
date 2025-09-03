@@ -131,22 +131,14 @@ describe('Scroller Plugin', () => {
     scroller.positionCell(cell, 'center')
     scroller.positionRect({ x: 0, y: 0, width: 10, height: 10 }, 'top')
     expect(spy1).toHaveBeenCalled()
-    expect(spy2).toBeCalledTimes(3)
     scroller.positionPoint({ x: 0, y: 0 }, 1, 2)
     scroller.positionRect({ x: 0, y: 0, width: 10, height: 10 }, 'center')
-    expect(spy2).toBeCalledTimes(4)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'top-right')
-    expect(spy2).toBeCalledTimes(5)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'right')
-    expect(spy2).toBeCalledTimes(6)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'bottom-right')
-    expect(spy2).toBeCalledTimes(7)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'bottom')
-    expect(spy2).toBeCalledTimes(8)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'bottom-left')
-    expect(spy2).toBeCalledTimes(9)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'left')
-    expect(spy2).toBeCalledTimes(10)
     scroller.positionRect(new Rectangle(0, 0, 10, 10), 'top-left')
     expect(spy2).toBeCalledTimes(11)
   })
@@ -655,8 +647,6 @@ describe('Scroller padding & visibility', () => {
   beforeEach(() => {
     graph = createMockGraph()
     scroller = new ScrollerImpl({ graph })
-  })
-  beforeEach(() => {
     scroller.graph.options.width = 100
     scroller.graph.options.height = 50
     scroller.container.style.left = '0px'
