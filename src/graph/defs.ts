@@ -1,6 +1,11 @@
 import { Dom, StringExt, Vector } from '../common'
-import type { SimpleAttrs } from '../registry'
-import { Filter, type Marker } from '../registry'
+import {
+  type FilterManualItem,
+  type FilterNativeItem,
+  filterRegistry,
+  type MarkerResult,
+  type SimpleAttrs,
+} from '../registry'
 import { Markup } from '../view'
 import { Base } from './base'
 
@@ -31,9 +36,9 @@ export class DefsManager extends Base {
     }
 
     if (!this.isDefined(filterId)) {
-      const fn = Filter.registry.get(name)
+      const fn = filterRegistry.get(name)
       if (fn == null) {
-        return Filter.registry.onNotFound(name)
+        return filterRegistry.onNotFound(name)
       }
 
       const markup = fn(options.args || {})
@@ -145,7 +150,7 @@ export class DefsManager extends Base {
 }
 
 export namespace DefsManager {
-  export type MarkerOptions = Marker.Result
+  export type MarkerOptions = MarkerResult
 
   export interface GradientOptions {
     id?: string
@@ -158,7 +163,7 @@ export namespace DefsManager {
     attrs?: SimpleAttrs
   }
 
-  export type FilterOptions = (Filter.NativeItem | Filter.ManaualItem) & {
+  export type FilterOptions = (FilterNativeItem | FilterManualItem) & {
     id?: string
     attrs?: SimpleAttrs
   }

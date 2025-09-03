@@ -1,61 +1,57 @@
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
+import type { CellView } from '../../view'
 import { Registry } from '../registry'
-import { CellView } from '../../view'
 import * as highlighters from './main'
 
-export namespace Highlighter {
-  export interface Definition<T> {
-    highlight: (cellView: CellView, magnet: Element, options: T) => void
-    unhighlight: (cellView: CellView, magnet: Element, options: T) => void
-  }
-
-  export type CommonDefinition = Highlighter.Definition<KeyValue>
+export interface HighlighterDefinition<T> {
+  highlight: (cellView: CellView, magnet: Element, options: T) => void
+  unhighlight: (cellView: CellView, magnet: Element, options: T) => void
 }
 
-export namespace Highlighter {
-  export function check(
-    name: string,
-    highlighter: Highlighter.CommonDefinition,
-  ) {
-    if (typeof highlighter.highlight !== 'function') {
-      throw new Error(
-        `Highlighter '${name}' is missing required \`highlight()\` method`,
-      )
-    }
+export type HighlighterCommonDefinition = HighlighterDefinition<KeyValue>
 
-    if (typeof highlighter.unhighlight !== 'function') {
-      throw new Error(
-        `Highlighter '${name}' is missing required \`unhighlight()\` method`,
-      )
-    }
+export function highlighterCheck(
+  name: string,
+  highlighter: HighlighterCommonDefinition,
+) {
+  if (typeof highlighter.highlight !== 'function') {
+    throw new Error(
+      `Highlighter '${name}' is missing required \`highlight()\` method`,
+    )
+  }
+
+  if (typeof highlighter.unhighlight !== 'function') {
+    throw new Error(
+      `Highlighter '${name}' is missing required \`unhighlight()\` method`,
+    )
   }
 }
 
-export namespace Highlighter {
-  export type Presets = (typeof Highlighter)['presets']
+type Presets = typeof presets
 
-  export type OptionsMap = {
-    readonly [K in keyof Presets]-?: Parameters<Presets[K]['highlight']>[2]
-  }
-
-  export type NativeNames = keyof Presets
-
-  export interface NativeItem<T extends NativeNames = NativeNames> {
-    name: T
-    args?: OptionsMap[T]
-  }
-
-  export interface ManaualItem {
-    name: Exclude<string, NativeNames>
-    args?: KeyValue
-  }
+type OptionsMap = {
+  readonly [K in keyof Presets]-?: Parameters<Presets[K]['highlight']>[2]
 }
 
-export namespace Highlighter {
-  export const presets = highlighters
-  export const registry = Registry.create<CommonDefinition, Presets>({
-    type: 'highlighter',
-  })
+type NativeNames = keyof Presets
 
-  registry.register(presets, true)
+export interface HighlighterNativeItem<T extends NativeNames = NativeNames> {
+  name: T
+  args?: OptionsMap[T]
 }
+
+export interface HighlighterManualItem {
+  name: Exclude<string, NativeNames>
+  args?: KeyValue
+}
+
+const presets = highlighters
+
+export const highlighterRegistry = Registry.create<
+  HighlighterCommonDefinition,
+  Presets
+>({
+  type: 'highlighter',
+})
+
+highlighterRegistry.register(presets, true)

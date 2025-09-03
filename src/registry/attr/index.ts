@@ -22,77 +22,75 @@ export type ComplexAttrs = { [name: string]: ComplexAttrValue }
 
 export type CellAttrs = { [selector: string]: ComplexAttrs }
 
-export interface QualifyOptions {
+interface QualifyOptions {
   elem: Element
   attrs: ComplexAttrs
   cell: Cell
   view: CellView
 }
 
-export type QualifyFucntion = (
+export type QualifyFunction = (
   this: CellView,
   val: ComplexAttrValue,
   options: QualifyOptions,
 ) => boolean
 
-export interface Options extends QualifyOptions {
+export interface AttrOptions extends QualifyOptions {
   refBBox: Rectangle
 }
 
-export type SetFunction = (
+export type AttrSetFunction = (
   this: CellView,
   val: ComplexAttrValue,
-  options: Options,
+  options: AttrOptions,
 ) => SimpleAttrValue | SimpleAttrs | void
 
-export type OffsetFunction = (
+export type AttrOffsetFunction = (
   this: CellView,
   val: ComplexAttrValue,
-  options: Options,
+  options: AttrOptions,
 ) => Point.PointLike
 
-export type PositionFunction = (
+export type AttrPositionFunction = (
   this: CellView,
   val: ComplexAttrValue,
-  options: Options,
+  options: AttrOptions,
 ) => Point.PointLike | undefined | null
 
-export interface Qualify {
-  qualify?: QualifyFucntion
+interface Qualify {
+  qualify?: QualifyFunction
 }
 
 export interface SetDefinition extends Qualify {
-  set: SetFunction
+  set: AttrSetFunction
 }
 
 export interface OffsetDefinition extends Qualify {
-  offset: OffsetFunction
+  offset: AttrOffsetFunction
 }
 
-export interface PositionDefinition extends Qualify {
+export interface AttrPositionDefinition extends Qualify {
   /**
    * Returns a point from the reference bounding box.
    */
-  position: PositionFunction
+  position: AttrPositionFunction
 }
 
-export type Definition =
+export type AttrDefinition =
   | string
   | Qualify
   | SetDefinition
   | OffsetDefinition
-  | PositionDefinition
+  | AttrPositionDefinition
 
-export type Definitions = { [attrName: string]: Definition }
-
-export type GetDefinition = (name: string) => Definition | null | undefined
+export type AttrDefinitions = { [attrName: string]: AttrDefinition }
 
 export function isValidDefinition(
   this: CellView,
-  def: Definition | undefined | null,
+  def: AttrDefinition | undefined | null,
   val: ComplexAttrValue,
   options: QualifyOptions,
-): def is Definition {
+): def is AttrDefinition {
   if (def != null) {
     if (typeof def === 'string') {
       return true
@@ -109,16 +107,17 @@ export function isValidDefinition(
   return false
 }
 
-export type Presets = typeof presets
-export type NativeNames = keyof Presets
+type Presets = typeof attrPresets
 
-export const presets: Definitions = {
+export type AttrNativeNames = keyof Presets
+
+export const attrPresets: AttrDefinitions = {
   ...raw,
   ...attrs,
 }
 
-export const registry = Registry.create<Definition, Presets>({
+export const attrRegistry = Registry.create<AttrDefinition, Presets>({
   type: 'attribute definition',
 })
 
-registry.register(presets, true)
+attrRegistry.register(attrPresets, true)

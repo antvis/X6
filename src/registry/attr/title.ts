@@ -1,7 +1,7 @@
 import { Dom } from '../../common'
-import type { Definition } from './index'
+import type { AttrDefinition } from './index'
 
-export const title: Definition = {
+export const title: AttrDefinition = {
   qualify(title, { elem }) {
     // HTMLElement title is specified via an attribute (i.e. not an element)
     return elem instanceof SVGElement

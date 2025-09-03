@@ -1,6 +1,11 @@
 import { disposable, ObjectExt } from '../common'
 import { Rectangle } from '../geometry'
-import { Background } from '../registry'
+import {
+  type BackgroundManualItem,
+  type BackgroundNativeItem,
+  type BackgroundOptions,
+  backgroundRegistry,
+} from '../registry'
 import { Base } from './base'
 
 export class BackgroundManager extends Base {
@@ -74,9 +79,9 @@ export class BackgroundManager extends Base {
     const backgroundSize: any = options.size
     let backgroundRepeat = options.repeat || 'no-repeat'
 
-    const pattern = Background.registry.get(backgroundRepeat)
+    const pattern = backgroundRegistry.get(backgroundRepeat)
     if (typeof pattern === 'function') {
-      const quality = (options as Background.ManaualItem).quality || 1
+      const quality = (options as BackgroundManualItem).quality || 1
       img.width *= quality
       img.height *= quality
       const canvas = pattern(img, options)
@@ -121,8 +126,8 @@ export class BackgroundManager extends Base {
       typeof options.size === 'object' &&
       options.image === cache.image &&
       options.repeat === cache.repeat &&
-      (options as Background.ManaualItem).quality ===
-        (cache as Background.ManaualItem).quality
+      (options as BackgroundManualItem).quality ===
+        (cache as BackgroundManualItem).quality
     ) {
       cache.size = ObjectExt.clone(options.size)
     }
@@ -179,7 +184,7 @@ export class BackgroundManager extends Base {
 
 export namespace BackgroundManager {
   export type Options =
-    | Background.Options
-    | Background.NativeItem
-    | Background.ManaualItem
+    | BackgroundOptions
+    | BackgroundNativeItem
+    | BackgroundManualItem
 }

@@ -1,6 +1,6 @@
-import { Background } from './index'
+import type { BackgroundDefinition } from './index'
 
-export const flipX: Background.Definition = function (img) {
+export const flipX: BackgroundDefinition = (img) => {
   // d b
   // d b
 

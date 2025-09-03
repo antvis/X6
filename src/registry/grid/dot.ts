@@ -1,9 +1,9 @@
 import { Dom } from '../../common'
-import { Grid } from './index'
+import type { GridDefinition, GridOptions } from './index'
 
-export interface DotOptions extends Grid.Options {}
+export interface DotOptions extends GridOptions {}
 
-export const dot: Grid.Definition<DotOptions> = {
+export const dot: GridDefinition<DotOptions> = {
   color: '#aaaaaa',
   thickness: 1,
   markup: 'rect',

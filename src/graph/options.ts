@@ -5,11 +5,16 @@ import type { Graph } from '../graph'
 import type { Cell, Edge, Model, Node } from '../model'
 import type { PortManager } from '../model/port'
 import type {
-  ConnectionPoint,
-  Connector,
-  EdgeAnchor,
-  NodeAnchor,
-  Router,
+  ConnectionPointManualItem,
+  ConnectionPointNativeItem,
+  ConnectorManualItem,
+  ConnectorNativeItem,
+  EdgeAnchorManualItem,
+  EdgeAnchorNativeItem,
+  NodeAnchorManualItem,
+  NodeAnchorNativeItem,
+  RouterManualItem,
+  RouterNativeItem,
 } from '../registry'
 import { Edge as StandardEdge } from '../shape'
 import { type CellView, type EdgeView, Markup, type NodeView } from '../view'
@@ -96,18 +101,12 @@ export namespace Options {
 export namespace Options {
   type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
 
-  type NodeAnchorOptions =
-    | string
-    | NodeAnchor.NativeItem
-    | NodeAnchor.ManaualItem
-  type EdgeAnchorOptions =
-    | string
-    | EdgeAnchor.NativeItem
-    | EdgeAnchor.ManaualItem
+  type NodeAnchorOptions = string | NodeAnchorNativeItem | NodeAnchorManualItem
+  type EdgeAnchorOptions = string | EdgeAnchorNativeItem | EdgeAnchorManualItem
   type ConnectionPointOptions =
     | string
-    | ConnectionPoint.NativeItem
-    | ConnectionPoint.ManaualItem
+    | ConnectionPointNativeItem
+    | ConnectionPointManualItem
 
   export interface Connecting {
     /**
@@ -179,8 +178,8 @@ export namespace Options {
     sourceConnectionPoint?: ConnectionPointOptions
     targetConnectionPoint?: ConnectionPointOptions
 
-    router: string | Router.NativeItem | Router.ManaualItem
-    connector: string | Connector.NativeItem | Connector.ManaualItem
+    router: string | RouterNativeItem | RouterManualItem
+    connector: string | ConnectorNativeItem | ConnectorManualItem
 
     createEdge?: (
       this: Graph,

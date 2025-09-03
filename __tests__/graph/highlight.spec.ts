@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HighlightManager } from '../../src/graph/highlight'
 import { Graph } from '../../src/graph'
-import { Highlighter } from '../../src/registry'
+import { highlighterRegistry } from '../../src/registry'
 
 describe('HighlightManager', () => {
   let graph: Graph
@@ -21,8 +21,7 @@ describe('HighlightManager', () => {
       unhighlight: vi.fn(),
     }
     // mock registry
-    vi.spyOn(Highlighter.registry, 'get').mockReturnValue(highlighter)
-    vi.spyOn(Highlighter, 'check').mockImplementation(() => {})
+    vi.spyOn(highlighterRegistry, 'get').mockReturnValue(highlighter)
   })
 
   it('init should start listening', () => {

@@ -1,9 +1,9 @@
-import { Point, Rectangle, Angle } from '../../../geometry'
 import { NumberExt } from '../../../common'
-import { Node, Edge } from '../../../model'
-import { EdgeView } from '../../../view'
+import { Angle, Point, type Rectangle } from '../../../geometry'
+import type { Edge, Node } from '../../../model'
+import type { EdgeView } from '../../../view'
+import type { RouterDefinition } from '../index'
 import { orth } from '../orth'
-import { Router } from '../index'
 
 export type Direction = 'top' | 'right' | 'bottom' | 'left'
 type Callable<T> = T | ((this: ManhattanRouterOptions) => T)
@@ -108,7 +108,7 @@ export interface ResolvedOptions {
    */
   paddingBox: Rectangle.RectangleLike
 
-  fallbackRouter: Router.Definition<any>
+  fallbackRouter: RouterDefinition<any>
 
   draggingRouter?:
     | ((

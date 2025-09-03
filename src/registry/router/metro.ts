@@ -1,8 +1,8 @@
-import { Point, Line, Angle } from '../../geometry'
 import { FunctionExt } from '../../common'
-import { ManhattanRouterOptions, resolve } from './manhattan/options'
+import { Angle, Line, Point } from '../../geometry'
+import type { RouterDefinition } from './index'
 import { manhattan } from './manhattan/index'
-import { Router } from './index'
+import { type ManhattanRouterOptions, resolve } from './manhattan/options'
 
 export interface MetroRouterOptions extends ManhattanRouterOptions {}
 
@@ -73,7 +73,7 @@ const defaults: Partial<MetroRouterOptions> = {
   },
 }
 
-export const metro: Router.Definition<Partial<MetroRouterOptions>> = function (
+export const metro: RouterDefinition<Partial<MetroRouterOptions>> = function (
   vertices,
   options,
   linkView,

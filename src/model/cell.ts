@@ -13,12 +13,12 @@ import {
 import { Point, Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import {
+  type AttrDefinitions,
+  attrRegistry,
   type CellAttrs,
   type ComplexAttrValue,
-  type Definitions,
-  registry,
 } from '../registry'
-import { type CellView, Markup } from '../view'
+import type { CellView } from '../view'
 import type { MarkupType } from '../view/markup'
 import { Animation } from './animation'
 import type { Edge } from './edge'
@@ -34,7 +34,7 @@ export class Cell<
 
   protected static markup: MarkupType
   protected static defaults: Cell.Defaults = {}
-  protected static attrHooks: Definitions = {}
+  protected static attrHooks: AttrDefinitions = {}
   protected static propHooks: Cell.PropHook[] = []
 
   public static config<C extends Cell.Config = Cell.Config>(presets: C) {
@@ -576,10 +576,10 @@ export class Cell<
 
     const ctor = this.constructor as typeof Cell
     const hooks = ctor.getAttrHooks() || {}
-    let definition = hooks[attrName] || registry.get(attrName)
+    let definition = hooks[attrName] || attrRegistry.get(attrName)
     if (!definition) {
       const name = StringExt.camelCase(attrName)
-      definition = hooks[name] || registry.get(name)
+      definition = hooks[name] || attrRegistry.get(name)
     }
 
     return definition || null
@@ -1855,7 +1855,7 @@ export namespace Cell {
     constructorName?: string
     overwrite?: boolean
     propHooks?: PropHooks<M, C>
-    attrHooks?: Definitions
+    attrHooks?: AttrDefinitions
   }
 }
 

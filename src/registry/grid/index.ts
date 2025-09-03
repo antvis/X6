@@ -1,4 +1,4 @@
-import { Dom, Vector, KeyValue } from '../../common'
+import { Dom, type KeyValue, Vector } from '../../common'
 import { Registry } from '../registry'
 import * as patterns from './main'
 
@@ -42,61 +42,58 @@ export class Grid {
   }
 }
 
-export namespace Grid {
-  export interface Options {
-    color: string
-    thickness: number
-  }
-
-  interface BaseDefinition<T extends Options = Options> extends Options {
-    markup: string
-    update: (
-      elem: Element,
-      options: {
-        sx: number
-        sy: number
-        ox: number
-        oy: number
-        width: number
-        height: number
-      } & T,
-    ) => void
-  }
-
-  export type Definition<T extends Options = Options> = T & BaseDefinition<T>
-  export type CommonDefinition =
-    | Definition<Grid.Options>
-    | Definition<Grid.Options>[]
+export interface GridOptions {
+  color: string
+  thickness: number
 }
 
-export namespace Grid {
-  export const presets = patterns
-  export const registry = Registry.create<CommonDefinition, Presets>({
-    type: 'grid',
-  })
-
-  registry.register(presets, true)
+interface BaseDefinition<T extends GridOptions = GridOptions>
+  extends GridOptions {
+  markup: string
+  update: (
+    elem: Element,
+    options: {
+      sx: number
+      sy: number
+      ox: number
+      oy: number
+      width: number
+      height: number
+    } & T,
+  ) => void
 }
 
-export namespace Grid {
-  export type Presets = (typeof Grid)['presets']
+export type GridDefinition<T extends GridOptions = GridOptions> = T &
+  BaseDefinition<T>
 
-  export type OptionsMap = {
-    dot: patterns.DotOptions
-    fixedDot: patterns.FixedDotOptions
-    mesh: patterns.MeshOptions
-    doubleMesh: patterns.DoubleMeshOptions[]
-  }
+type CommonDefinition =
+  | GridDefinition<GridOptions>
+  | GridDefinition<GridOptions>[]
 
-  export type NativeNames = keyof Presets
+export const gridPresets = patterns
+export const gridRegistry = Registry.create<CommonDefinition, Presets>({
+  type: 'grid',
+})
 
-  export interface NativeItem<T extends NativeNames = NativeNames> {
-    type: T
-    args?: OptionsMap[T]
-  }
+gridRegistry.register(gridPresets, true)
 
-  export interface ManaualItem {
-    type: Exclude<string, NativeNames>
-    args?: KeyValue
-  }
+type Presets = typeof gridPresets
+
+export type GridOptionsMap = {
+  dot: patterns.DotOptions
+  fixedDot: patterns.FixedDotOptions
+  mesh: patterns.MeshOptions
+  doubleMesh: patterns.DoubleMeshOptions[]
+}
+
+export type GridNativeNames = keyof Presets
+
+export interface GridNativeItem<T extends GridNativeNames = GridNativeNames> {
+  type: T
+  args?: GridOptionsMap[T]
+}
+
+export interface GridManualItem {
+  type: Exclude<string, GridNativeNames>
+  args?: KeyValue
 }

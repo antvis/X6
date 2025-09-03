@@ -9,22 +9,22 @@ import {
 import { Angle, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Options as GraphOptions } from '../../graph/options'
-import type { Cell } from '../../model/cell'
 import { Edge } from '../../model/edge'
 import {
-  ConnectionPoint,
-  Connector,
-  EdgeAnchor,
-  NodeAnchor,
-  Router,
+  type ConnectionPointManualItem,
+  type ConnectorBaseOptions,
+  type ConnectorDefinition,
+  connectionPointRegistry,
+  connectorPresets,
+  connectorRegistry,
+  edgeAnchorRegistry,
+  type NodeAnchorManualItem,
+  nodeAnchorRegistry,
+  type RouterDefinition,
+  routerPresets,
+  routerRegistry,
 } from '../../registry'
 import { CellView } from '../cell'
-import type {
-  CellViewHighlightOptions,
-  CellViewMouseDeltaEventArgs,
-  CellViewOptions,
-  CellViewPositionEventArgs,
-} from '../cell/type'
 import {
   Markup,
   type MarkupJSONMarkup,
@@ -676,7 +676,7 @@ export class EdgeView<
   }
 
   protected getAnchor(
-    def: NodeAnchor.ManaualItem | string | undefined,
+    def: NodeAnchorManualItem | string | undefined,
     cellView: CellView,
     magnet: Element | null,
     ref: Point | Element | null,
@@ -705,9 +705,9 @@ export class EdgeView<
 
     const name = config.name
     if (isEdge) {
-      const fn = EdgeAnchor.registry.get(name)
+      const fn = edgeAnchorRegistry.get(name)
       if (typeof fn !== 'function') {
-        return EdgeAnchor.registry.onNotFound(name)
+        return edgeAnchorRegistry.onNotFound(name)
       }
       anchor = FunctionExt.call(
         fn,
@@ -719,9 +719,9 @@ export class EdgeView<
         terminalType,
       )
     } else {
-      const fn = NodeAnchor.registry.get(name)
+      const fn = nodeAnchorRegistry.get(name)
       if (typeof fn !== 'function') {
-        return NodeAnchor.registry.onNotFound(name)
+        return nodeAnchorRegistry.onNotFound(name)
       }
 
       anchor = FunctionExt.call(
@@ -740,13 +740,13 @@ export class EdgeView<
 
   protected findRoutePoints(vertices: Point.PointLike[] = []): Point[] {
     const defaultRouter =
-      this.graph.options.connecting.router || Router.presets.normal
+      this.graph.options.connecting.router || routerPresets.normal
     const router = this.cell.getRouter() || defaultRouter
     let routePoints
 
     if (typeof router === 'function') {
       routePoints = FunctionExt.call(
-        router as Router.Definition<any>,
+        router as RouterDefinition<any>,
         this,
         vertices,
         {},
@@ -755,9 +755,9 @@ export class EdgeView<
     } else {
       const name = typeof router === 'string' ? router : router.name
       const args = typeof router === 'string' ? {} : router.args || {}
-      const fn = name ? Router.registry.get(name) : Router.presets.normal
+      const fn = name ? routerRegistry.get(name) : routerPresets.normal
       if (typeof fn !== 'function') {
-        return Router.registry.onNotFound(name!)
+        return routerRegistry.onNotFound(name as string)
       }
 
       routePoints = FunctionExt.call(fn, this, vertices, args, this)
@@ -831,7 +831,7 @@ export class EdgeView<
   }
 
   protected getConnectionPoint(
-    def: string | ConnectionPoint.ManaualItem | undefined,
+    def: string | ConnectionPointManualItem | undefined,
     view: CellView,
     magnet: Element,
     line: Line,
@@ -844,9 +844,9 @@ export class EdgeView<
 
     const name = typeof def === 'string' ? def : def.name
     const args = typeof def === 'string' ? {} : def.args
-    const fn = ConnectionPoint.registry.get(name)
+    const fn = connectionPointRegistry.get(name)
     if (typeof fn !== 'function') {
-      return ConnectionPoint.registry.onNotFound(name)
+      return connectionPointRegistry.onNotFound(name)
     }
 
     const connectionPoint = FunctionExt.call(
@@ -921,8 +921,8 @@ export class EdgeView<
       this.cell.getConnector() || this.graph.options.connecting.connector
 
     let name: string | undefined
-    let args: Connector.BaseOptions | undefined
-    let fn: Connector.Definition
+    let args: ConnectorBaseOptions | undefined
+    let fn: ConnectorDefinition
 
     if (typeof def === 'string') {
       name = def
@@ -932,13 +932,13 @@ export class EdgeView<
     }
 
     if (name) {
-      const method = Connector.registry.get(name)
+      const method = connectorRegistry.get(name)
       if (typeof method !== 'function') {
-        return Connector.registry.onNotFound(name)
+        return connectorRegistry.onNotFound(name)
       }
       fn = method
     } else {
-      fn = Connector.presets.normal
+      fn = connectorPresets.normal
     }
 
     const path = FunctionExt.call(

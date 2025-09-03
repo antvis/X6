@@ -1,7 +1,7 @@
+import { type KeyValue, NumberExt } from '../../common'
 import { Path } from '../../geometry'
-import { NumberExt, KeyValue } from '../../common'
+import type { MarkerFactory } from './index'
 import { normalize } from './util'
-import { Marker } from './index'
 
 interface Common {
   size?: number
@@ -18,7 +18,7 @@ export interface ClassicMarkerOptions extends Common, KeyValue {
   factor?: number
 }
 
-export const block: Marker.Factory<BlockMarkerOptions> = ({
+export const block: MarkerFactory<BlockMarkerOptions> = ({
   size,
   width,
   height,
@@ -35,7 +35,7 @@ export const block: Marker.Factory<BlockMarkerOptions> = ({
   )
 }
 
-export const classic: Marker.Factory<ClassicMarkerOptions> = ({
+export const classic: MarkerFactory<ClassicMarkerOptions> = ({
   size,
   width,
   height,

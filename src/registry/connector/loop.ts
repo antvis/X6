@@ -1,16 +1,16 @@
 import { Path, Point } from '../../geometry'
-import { Connector } from './index'
+import type { ConnectorBaseOptions, ConnectorDefinition } from './index'
 
-export interface LoopConnectorOptions extends Connector.BaseOptions {
+export interface LoopConnectorOptions extends ConnectorBaseOptions {
   split?: boolean | number
 }
 
-export const loop: Connector.Definition<LoopConnectorOptions> = function (
+export const loop: ConnectorDefinition<LoopConnectorOptions> = (
   sourcePoint,
   targetPoint,
   routePoints,
   options = {},
-) {
+) => {
   const fix = routePoints.length === 3 ? 0 : 1
   const p1 = Point.create(routePoints[0 + fix])
   const p2 = Point.create(routePoints[2 + fix])

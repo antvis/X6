@@ -1,4 +1,4 @@
-import { Router } from './index'
+import type { RouterDefinition } from './index'
 
 export interface ErRouterOptions {
   min?: number
@@ -6,11 +6,11 @@ export interface ErRouterOptions {
   direction?: 'T' | 'B' | 'L' | 'R' | 'H' | 'V'
 }
 
-export const er: Router.Definition<ErRouterOptions> = function (
+export const er: RouterDefinition<ErRouterOptions> = (
   vertices,
   options,
   edgeView,
-) {
+) => {
   const offsetRaw = options.offset || 32
   const min = options.min == null ? 16 : options.min
 

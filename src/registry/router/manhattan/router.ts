@@ -1,15 +1,15 @@
+import { FunctionExt, type KeyValue } from '../../../common'
 import { Point, Rectangle } from '../../../geometry'
-import { FunctionExt, KeyValue } from '../../../common'
-import { EdgeView } from '../../../view'
-import { Router } from '../index'
-import { SortedSet } from './sorted-set'
+import type { EdgeView } from '../../../view'
+import type { RouterDefinition } from '../index'
 import { ObstacleMap } from './obstacle-map'
-import * as util from './util'
 import {
+  type ManhattanRouterOptions,
+  type ResolvedOptions,
   resolveOptions,
-  ResolvedOptions,
-  ManhattanRouterOptions,
 } from './options'
+import { SortedSet } from './sorted-set'
+import * as util from './util'
 
 /**
  * Finds the route between two points (`from`, `to`).
@@ -111,7 +111,7 @@ function findRoute(
     let directionChange
     const directions = util.getGridOffsets(grid, options)
     const numDirections = directions.length
-    // @ts-ignore
+    // @ts-expect-error
     const endPointsKeys = endPoints.reduce<string[]>((res, endPoint) => {
       const key = util.getKey(endPoint)
       res.push(key)
@@ -292,7 +292,7 @@ function snap(vertices: Point[], gridSize = 10) {
   return vertices
 }
 
-export const router: Router.Definition<ManhattanRouterOptions> = function (
+export const router: RouterDefinition<ManhattanRouterOptions> = function (
   vertices,
   optionsRaw,
   edgeView,

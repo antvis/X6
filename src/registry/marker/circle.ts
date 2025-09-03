@@ -1,6 +1,6 @@
 import { Path } from '../../geometry'
 import type { SimpleAttrs } from '../attr'
-import type { Marker } from './index'
+import type { MarkerFactory } from './index'
 import { normalize } from './util'
 
 export interface CircleMarkerOptions extends SimpleAttrs {
@@ -9,10 +9,7 @@ export interface CircleMarkerOptions extends SimpleAttrs {
 
 export interface CirclePlusMarkerOptions extends CircleMarkerOptions {}
 
-export const circle: Marker.Factory<CircleMarkerOptions> = ({
-  r,
-  ...attrs
-}) => {
+export const circle: MarkerFactory<CircleMarkerOptions> = ({ r, ...attrs }) => {
   const radius = r || 5
   return {
     cx: radius,
@@ -22,7 +19,7 @@ export const circle: Marker.Factory<CircleMarkerOptions> = ({
   }
 }
 
-export const circlePlus: Marker.Factory<CircleMarkerOptions> = ({
+export const circlePlus: MarkerFactory<CircleMarkerOptions> = ({
   r,
   ...attrs
 }) => {
