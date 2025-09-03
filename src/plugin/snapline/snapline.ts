@@ -9,9 +9,10 @@ import { Angle, Point, Rectangle } from '../../geometry'
 import type { EventArgs, Graph } from '../../graph'
 import type { Model, Node } from '../../model'
 import { type CellView, type NodeView, View } from '../../view'
+import type { SnaplineImplFilter, SnaplineImplOptions } from './type'
 
 export class SnaplineImpl extends View implements IDisablable {
-  public readonly options: SnaplineImpl.Options
+  public readonly options: SnaplineImplOptions
   protected readonly graph: Graph
   protected offset: Point.PointLike
   protected timer: number | null
@@ -37,7 +38,7 @@ export class SnaplineImpl extends View implements IDisablable {
     return `${this.containerClassName}-horizontal`
   }
 
-  constructor(options: SnaplineImpl.Options & { graph: Graph }) {
+  constructor(options: SnaplineImplOptions & { graph: Graph }) {
     super()
 
     const { graph, ...others } = options
@@ -68,7 +69,7 @@ export class SnaplineImpl extends View implements IDisablable {
     }
   }
 
-  setFilter(filter?: SnaplineImpl.Filter) {
+  setFilter(filter?: SnaplineImplFilter) {
     this.options.filter = filter
   }
 
@@ -664,23 +665,4 @@ export class SnaplineImpl extends View implements IDisablable {
   dispose() {
     this.remove()
   }
-}
-
-export namespace SnaplineImpl {
-  export interface Options {
-    enabled?: boolean
-    className?: string
-    tolerance?: number
-    sharp?: boolean
-    /**
-     * Specify if snap on node resizing or not.
-     */
-    resizing?: boolean
-    clean?: boolean | number
-    filter?: Filter
-  }
-
-  export type Filter = null | (string | { id: string })[] | FilterFunction
-
-  export type FilterFunction = (this: Graph, node: Node) => boolean
 }
