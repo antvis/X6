@@ -1,15 +1,15 @@
 import { Dom, FunctionExt, NumberExt } from '../../common'
 import { Path, Point, Polyline, type Rectangle } from '../../geometry'
 import type {
+  AttrDefinition,
+  AttrOptions,
+  AttrPositionFunction,
+  AttrSetFunction,
   ComplexAttrValue,
-  Definition,
-  Options,
-  PositionFunction,
-  SetFunction,
   SimpleAttrs,
 } from './index'
 
-export const ref: Definition = {
+export const ref: AttrDefinition = {
   // We do not set `ref` attribute directly on an element.
   // The attribute itself does not qualify for relative positioning.
 }
@@ -18,22 +18,22 @@ export const ref: Definition = {
 // if `refX` is < 0 then `refX`'s absolute values is the right coordinate of the bounding box
 // otherwise, `refX` is the left coordinate of the bounding box
 
-export const refX: Definition = {
+export const refX: AttrDefinition = {
   position: positionWrapper('x', 'width', 'origin'),
 }
 
-export const refY: Definition = {
+export const refY: AttrDefinition = {
   position: positionWrapper('y', 'height', 'origin'),
 }
 
 // `ref-dx` and `ref-dy` define the offset of the subelement relative to the right and/or bottom
 // coordinate of the reference element.
 
-export const refDx: Definition = {
+export const refDx: AttrDefinition = {
   position: positionWrapper('x', 'width', 'corner'),
 }
 
-export const refDy: Definition = {
+export const refDy: AttrDefinition = {
   position: positionWrapper('y', 'height', 'corner'),
 }
 
@@ -41,24 +41,24 @@ export const refDy: Definition = {
 // the reference element size
 // val in 0..1         ref-width = 0.75 sets the width to 75% of the ref. el. width
 // val < 0 || val > 1  ref-height = -20 sets the height to the ref. el. height shorter by 20
-export const refWidth: Definition = {
+export const refWidth: AttrDefinition = {
   set: setWrapper('width', 'width'),
 }
 
-export const refHeight: Definition = {
+export const refHeight: AttrDefinition = {
   set: setWrapper('height', 'height'),
 }
 
-export const refRx: Definition = {
+export const refRx: AttrDefinition = {
   set: setWrapper('rx', 'width'),
 }
 
-export const refRy: Definition = {
+export const refRy: AttrDefinition = {
   set: setWrapper('ry', 'height'),
 }
 
-export const refRInscribed: Definition = {
-  set: ((attrName): SetFunction => {
+export const refRInscribed: AttrDefinition = {
+  set: ((attrName): AttrSetFunction => {
     const widthFn = setWrapper(attrName, 'width')
     const heightFn = setWrapper(attrName, 'height')
     return function (value, options) {
@@ -69,7 +69,7 @@ export const refRInscribed: Definition = {
   })('r'),
 }
 
-export const refRCircumscribed: Definition = {
+export const refRCircumscribed: AttrDefinition = {
   set(val, { refBBox }) {
     let value = parseFloat(val as string)
     const percentage = NumberExt.isPercentage(val)
@@ -94,27 +94,27 @@ export const refRCircumscribed: Definition = {
   },
 }
 
-export const refCx: Definition = {
+export const refCx: AttrDefinition = {
   set: setWrapper('cx', 'width'),
 }
 
-export const refCy: Definition = {
+export const refCy: AttrDefinition = {
   set: setWrapper('cy', 'height'),
 }
 
-export const refDResetOffset: Definition = {
+export const refDResetOffset: AttrDefinition = {
   set: dWrapper({ resetOffset: true }),
 }
 
-export const refDKeepOffset: Definition = {
+export const refDKeepOffset: AttrDefinition = {
   set: dWrapper({ resetOffset: false }),
 }
 
-export const refPointsResetOffset: Definition = {
+export const refPointsResetOffset: AttrDefinition = {
   set: pointsWrapper({ resetOffset: true }),
 }
 
-export const refPointsKeepOffset: Definition = {
+export const refPointsKeepOffset: AttrDefinition = {
   set: pointsWrapper({ resetOffset: false }),
 }
 
@@ -137,7 +137,7 @@ function positionWrapper(
   axis: 'x' | 'y',
   dimension: 'width' | 'height',
   origin: 'origin' | 'corner',
-): PositionFunction {
+): AttrPositionFunction {
   return (val, { refBBox }) => {
     if (val == null) {
       return null
@@ -168,7 +168,7 @@ function positionWrapper(
 function setWrapper(
   attrName: string,
   dimension: 'width' | 'height',
-): SetFunction {
+): AttrSetFunction {
   return (val, { refBBox }) => {
     let value = parseFloat(val as string)
     const percentage = NumberExt.isPercentage(val)
@@ -193,7 +193,7 @@ function setWrapper(
 function shapeWrapper(
   shapeConstructor: (value: ComplexAttrValue) => any,
   options: { resetOffset: boolean },
-): <T>(value: ComplexAttrValue, options: Options) => T {
+): <T>(value: ComplexAttrValue, options: AttrOptions) => T {
   const cacheName = 'x6-shape'
   const resetOffset = options && options.resetOffset
 
@@ -233,7 +233,7 @@ function shapeWrapper(
 }
 
 // `d` attribute for SVGPaths
-function dWrapper(options: { resetOffset: boolean }): SetFunction {
+function dWrapper(options: { resetOffset: boolean }): AttrSetFunction {
   function pathConstructor(value: string) {
     return Path.parse(value)
   }
@@ -249,7 +249,7 @@ function dWrapper(options: { resetOffset: boolean }): SetFunction {
 }
 
 // `points` attribute for SVGPolylines and SVGPolygons
-function pointsWrapper(options: { resetOffset: boolean }): SetFunction {
+function pointsWrapper(options: { resetOffset: boolean }): AttrSetFunction {
   const shape = shapeWrapper((points) => new Polyline(points as any), options)
   return (value, args) => {
     const polyline = shape<Polyline>(value, args)

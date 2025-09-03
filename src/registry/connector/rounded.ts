@@ -1,16 +1,16 @@
-import { Point, Path } from '../../geometry'
-import { Connector } from './index'
+import { Path, Point } from '../../geometry'
+import type { ConnectorBaseOptions, ConnectorDefinition } from './index'
 
-export interface RoundedConnectorOptions extends Connector.BaseOptions {
+export interface RoundedConnectorOptions extends ConnectorBaseOptions {
   radius?: number
 }
 
-export const rounded: Connector.Definition<RoundedConnectorOptions> = function (
+export const rounded: ConnectorDefinition<RoundedConnectorOptions> = (
   sourcePoint,
   targetPoint,
   routePoints,
   options = {},
-) {
+) => {
   const path = new Path()
 
   path.appendSegment(Path.createSegment('M', sourcePoint))

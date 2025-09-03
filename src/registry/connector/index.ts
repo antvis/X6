@@ -1,49 +1,45 @@
-import { Point, Path } from '../../geometry'
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
+import type { Path, Point } from '../../geometry'
+import type { EdgeView } from '../../view'
 import { Registry } from '../registry'
-import { EdgeView } from '../../view'
 import * as connectors from './main'
 
-export namespace Connector {
-  export interface BaseOptions {
-    raw?: boolean
-  }
-
-  export type Definition<T extends BaseOptions = BaseOptions> = (
-    this: EdgeView,
-    sourcePoint: Point.PointLike,
-    targetPoint: Point.PointLike,
-    routePoints: Point.PointLike[],
-    options: T,
-    edgeView: EdgeView,
-  ) => Path | string
+export interface ConnectorBaseOptions {
+  raw?: boolean
 }
 
-export namespace Connector {
-  export type Presets = (typeof Connector)['presets']
+export type ConnectorDefinition<
+  T extends ConnectorBaseOptions = ConnectorBaseOptions,
+> = (
+  this: EdgeView,
+  sourcePoint: Point.PointLike,
+  targetPoint: Point.PointLike,
+  routePoints: Point.PointLike[],
+  options: T,
+  edgeView: EdgeView,
+) => Path | string
 
-  export type OptionsMap = {
-    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
-  }
+type Presets = typeof connectorPresets
 
-  export type NativeNames = keyof Presets
-
-  export interface NativeItem<T extends NativeNames = NativeNames> {
-    name: T
-    args?: OptionsMap[T]
-  }
-
-  export interface ManaualItem {
-    name: Exclude<string, NativeNames>
-    args?: KeyValue
-  }
+type OptionsMap = {
+  readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
 }
 
-export namespace Connector {
-  export const presets = connectors
-  export const registry = Registry.create<Definition, Presets>({
-    type: 'connector',
-  })
+type NativeNames = keyof Presets
 
-  registry.register(presets, true)
+export interface ConnectorNativeItem<T extends NativeNames = NativeNames> {
+  name: T
+  args?: OptionsMap[T]
 }
+
+export interface ConnectorManualItem {
+  name: Exclude<string, NativeNames>
+  args?: KeyValue
+}
+
+export const connectorPresets = connectors
+export const connectorRegistry = Registry.create<ConnectorDefinition, Presets>({
+  type: 'connector',
+})
+
+connectorRegistry.register(connectorPresets, true)

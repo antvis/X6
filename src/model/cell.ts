@@ -13,12 +13,12 @@ import {
 import { Point, Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import {
+  type AttrDefinitions,
+  attrRegistry,
   type CellAttrs,
   type ComplexAttrValue,
-  type Definitions,
-  registry,
 } from '../registry'
-import { type CellView, Markup } from '../view'
+import type { CellView } from '../view'
 import type { MarkupType } from '../view/markup'
 import { Animation } from './animation'
 import type { Edge } from './edge'
@@ -34,57 +34,57 @@ export class Cell<
 
   protected static markup: MarkupType
   protected static defaults: Cell.Defaults = {}
-  protected static attrHooks: Definitions = {}
+  protected static attrHooks: AttrDefinitions = {}
   protected static propHooks: Cell.PropHook[] = []
 
   public static config<C extends Cell.Config = Cell.Config>(presets: C) {
     const { markup, propHooks, attrHooks, ...others } = presets
 
     if (markup != null) {
-      this.markup = markup
+      Cell.markup = markup
     }
 
     if (propHooks) {
-      this.propHooks = this.propHooks.slice()
+      Cell.propHooks = Cell.propHooks.slice()
       if (Array.isArray(propHooks)) {
-        this.propHooks.push(...propHooks)
+        Cell.propHooks.push(...propHooks)
       } else if (typeof propHooks === 'function') {
-        this.propHooks.push(propHooks)
+        Cell.propHooks.push(propHooks)
       } else {
         Object.values(propHooks).forEach((hook) => {
           if (typeof hook === 'function') {
-            this.propHooks.push(hook)
+            Cell.propHooks.push(hook)
           }
         })
       }
     }
 
     if (attrHooks) {
-      this.attrHooks = { ...this.attrHooks, ...attrHooks }
+      Cell.attrHooks = { ...Cell.attrHooks, ...attrHooks }
     }
 
-    this.defaults = ObjectExt.merge({}, this.defaults, others)
+    Cell.defaults = ObjectExt.merge({}, Cell.defaults, others)
   }
 
   public static getMarkup() {
-    return this.markup
+    return Cell.markup
   }
 
   public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
     raw?: boolean,
   ): T {
-    return (raw ? this.defaults : ObjectExt.cloneDeep(this.defaults)) as T
+    return (raw ? Cell.defaults : ObjectExt.cloneDeep(Cell.defaults)) as T
   }
 
   public static getAttrHooks() {
-    return this.attrHooks
+    return Cell.attrHooks
   }
 
   public static applyPropHooks(
     cell: Cell,
     metadata: Cell.Metadata,
   ): Cell.Metadata {
-    return this.propHooks.reduce((memo, hook) => {
+    return Cell.propHooks.reduce((memo, hook) => {
       return hook ? FunctionExt.call(hook, cell, memo) : memo
     }, metadata)
   }
@@ -576,10 +576,10 @@ export class Cell<
 
     const ctor = this.constructor as typeof Cell
     const hooks = ctor.getAttrHooks() || {}
-    let definition = hooks[attrName] || registry.get(attrName)
+    let definition = hooks[attrName] || attrRegistry.get(attrName)
     if (!definition) {
       const name = StringExt.camelCase(attrName)
-      definition = hooks[name] || registry.get(name)
+      definition = hooks[name] || attrRegistry.get(name)
     }
 
     return definition || null
@@ -1272,8 +1272,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-    ? Edge.Properties
-    : Properties {
+      ? Edge.Properties
+      : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1855,7 +1855,7 @@ export namespace Cell {
     constructorName?: string
     overwrite?: boolean
     propHooks?: PropHooks<M, C>
-    attrHooks?: Definitions
+    attrHooks?: AttrDefinitions
   }
 }
 

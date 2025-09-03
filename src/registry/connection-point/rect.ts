@@ -1,15 +1,18 @@
 import { FunctionExt } from '../../common'
 import { bbox } from './bbox'
-import { offset, getStrokeWidth } from './util'
-import { ConnectionPoint } from './index'
+import type {
+  ConnectionPointDefinition,
+  ConnectionPointStrokedOptions,
+} from './index'
+import { getStrokeWidth, offset } from './util'
 
-export interface RectangleOptions extends ConnectionPoint.StrokedOptions {}
+export interface RectangleOptions extends ConnectionPointStrokedOptions {}
 
 /**
  * Places the connection point at the intersection between the
  * link path end segment and the element's unrotated bbox.
  */
-export const rect: ConnectionPoint.Definition<RectangleOptions> = function (
+export const rect: ConnectionPointDefinition<RectangleOptions> = function (
   line,
   view,
   magnet,

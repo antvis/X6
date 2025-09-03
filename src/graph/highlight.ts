@@ -1,5 +1,11 @@
 import { Dom, disposable, type KeyValue } from '../common'
-import { Highlighter } from '../registry'
+import {
+  type HighlighterDefinition,
+  type HighlighterManualItem,
+  type HighlighterNativeItem,
+  highlighterCheck,
+  highlighterRegistry,
+} from '../registry'
 import type { CellView } from '../view'
 import type { CellViewHighlightOptions } from '../view/cell/type'
 import { Base } from './base'
@@ -61,7 +67,7 @@ export class HighlightManager extends Base {
 
   protected resolveHighlighter(options: CellViewHighlightOptions) {
     const graphOptions = this.options
-    let highlighterDef: string | undefined | Highlighter.ManaualItem =
+    let highlighterDef: string | undefined | HighlighterManualItem =
       options.highlighter
 
     if (highlighterDef == null) {
@@ -76,7 +82,7 @@ export class HighlightManager extends Base {
       return null
     }
 
-    const def: Highlighter.ManaualItem =
+    const def: HighlighterManualItem =
       typeof highlighterDef === 'string'
         ? {
             name: highlighterDef,
@@ -84,12 +90,12 @@ export class HighlightManager extends Base {
         : highlighterDef
 
     const name = def.name
-    const highlighter = Highlighter.registry.get(name)
+    const highlighter = highlighterRegistry.get(name)
     if (highlighter == null) {
-      return Highlighter.registry.onNotFound(name)
+      return highlighterRegistry.onNotFound(name)
     }
 
-    Highlighter.check(name, highlighter)
+    highlighterCheck(name, highlighter)
 
     return {
       name,
@@ -130,11 +136,11 @@ export class HighlightManager extends Base {
 
 export namespace HighlightManager {
   export interface Cache {
-    highlighter: Highlighter.Definition<KeyValue>
+    highlighter: HighlighterDefinition<KeyValue>
     cellView: CellView
     magnet: Element
     args: KeyValue
   }
 
-  export type Options = Highlighter.NativeItem | Highlighter.ManaualItem
+  export type Options = HighlighterNativeItem | HighlighterManualItem
 }

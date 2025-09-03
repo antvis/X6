@@ -1,11 +1,11 @@
 import { Dom } from '../../common'
-import { Grid } from './index'
+import type { GridDefinition, GridOptions } from './index'
 
-export interface DoubleMeshOptions extends Grid.Options {
+export interface DoubleMeshOptions extends GridOptions {
   factor?: number
 }
 
-export const doubleMesh: Grid.Definition<DoubleMeshOptions>[] = [
+export const doubleMesh: GridDefinition<DoubleMeshOptions>[] = [
   {
     color: 'rgba(224,224,224,1)',
     thickness: 1,

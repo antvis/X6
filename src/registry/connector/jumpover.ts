@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 
-import { Point, Line, Path } from '../../geometry'
-import { Edge } from '../../model'
-import { EdgeView } from '../../view'
-import { Connector } from './index'
+import { Line, Path, Point } from '../../geometry'
+import type { Edge } from '../../model'
+import type { EdgeView } from '../../view'
+import type { ConnectorBaseOptions, ConnectorDefinition } from './index'
 
 // takes care of math. error for case when jump is too close to end of line
 const CLOSE_PROXIMITY_PADDING = 1
@@ -283,7 +283,7 @@ function buildRoundedSegment(
 
 export type JumpType = 'arc' | 'gap' | 'cubic'
 
-export interface JumpoverConnectorOptions extends Connector.BaseOptions {
+export interface JumpoverConnectorOptions extends ConnectorBaseOptions {
   size?: number
   radius?: number
   type?: JumpType
@@ -293,7 +293,7 @@ export interface JumpoverConnectorOptions extends Connector.BaseOptions {
 let jumppedLines: Line[]
 let skippedPoints: Point[]
 
-export const jumpover: Connector.Definition<JumpoverConnectorOptions> =
+export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
   function (sourcePoint, targetPoint, routePoints, options = {}) {
     jumppedLines = []
     skippedPoints = []

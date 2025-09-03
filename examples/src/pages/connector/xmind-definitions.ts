@@ -1,13 +1,12 @@
-import { Graph, Path, Point, Registry } from '../../../../src'
-
-const { Connector } = Registry
+import { Graph, Path, Point } from '../../../../src'
+import type { ConnectorBaseOptions } from '../../../../src/registry'
 
 export const connectors = {
   root: 'xmind-root-curve',
   branch: 'xmind-branch-curve',
 }
 
-interface RootCurveOptions extends Connector.BaseOptions {
+interface RootCurveOptions extends ConnectorBaseOptions {
   strokeWidth?: number
 }
 

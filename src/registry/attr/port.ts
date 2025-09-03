@@ -1,6 +1,6 @@
-import type { Definition } from './index'
+import type { AttrDefinition } from './index'
 
-export const port: Definition = {
+export const port: AttrDefinition = {
   set(port) {
     if (port != null && typeof port === 'object' && port.id) {
       return port.id as string

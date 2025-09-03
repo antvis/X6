@@ -1,5 +1,5 @@
 import type { SimpleAttrs } from '../attr'
-import type { Marker } from './index'
+import type { MarkerFactory } from './index'
 import { normalize } from './util'
 
 export interface PathMarkerOptions extends SimpleAttrs {
@@ -8,7 +8,7 @@ export interface PathMarkerOptions extends SimpleAttrs {
   offsetY?: number
 }
 
-export const path: Marker.Factory<PathMarkerOptions> = ({
+export const path: MarkerFactory<PathMarkerOptions> = ({
   d,
   offsetX,
   offsetY,

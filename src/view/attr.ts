@@ -9,19 +9,18 @@ import {
 } from '../common'
 import { Point, type Rectangle } from '../geometry'
 import {
+  type AttrDefinition,
+  type AttrPositionDefinition,
   type CellAttrs,
   type ComplexAttrs,
-  type Definition,
   isValidDefinition,
   type OffsetDefinition,
-  type PositionDefinition,
   type SetDefinition,
   type SimpleAttrs,
   type SimpleAttrValue,
 } from '../registry/attr'
 import type { CellView } from './cell'
 import type { MarkupSelectors } from './markup'
-import { View } from './view'
 import { viewFind } from './view/util'
 
 export interface AttrManagerUpdateOptions {
@@ -50,7 +49,7 @@ export class AttrManager {
     return this.view.cell
   }
 
-  protected getDefinition(attrName: string): Definition | null {
+  protected getDefinition(attrName: string): AttrDefinition | null {
     return this.cell.getAttrDefinition(attrName)
   }
 
@@ -63,7 +62,7 @@ export class AttrManager {
     let offset: ComplexAttrs | undefined
     let position: ComplexAttrs | undefined
 
-    const specials: { name: string; definition: Definition }[] = []
+    const specials: { name: string; definition: AttrDefinition }[] = []
 
     // divide the attributes between normal and special
     Object.keys(raw).forEach((name) => {
@@ -121,7 +120,7 @@ export class AttrManager {
         offset[name] = val
       }
 
-      const positionDefine = definition as PositionDefinition
+      const positionDefine = definition as AttrPositionDefinition
       if (typeof positionDefine.position === 'function') {
         if (position == null) {
           position = {}
@@ -318,7 +317,7 @@ export class AttrManager {
         const def = this.getDefinition(name)
         if (def != null) {
           const ts = FunctionExt.call(
-            (def as PositionDefinition).position,
+            (def as AttrPositionDefinition).position,
             this.view,
             val,
             getOptions(),

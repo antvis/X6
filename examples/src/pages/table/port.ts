@@ -1,8 +1,7 @@
-import { Dom, Graph, Markup, Point, Registry } from '../../../../src'
+import { Dom, Graph, type Point } from '../../../../src'
+import type { PortLayoutCommonArgs } from '../../../../src/registry'
 
-const { PortLayout } = Registry
-
-export interface PortArgs extends PortLayout.CommonArgs {
+export interface PortArgs extends PortLayoutCommonArgs {
   offset?: number
 }
 
@@ -37,7 +36,7 @@ Graph.registerPortLayout(
   true,
 )
 
-function getPortMarkup(isLeft: boolean): Markup {
+function getPortMarkup(isLeft: boolean) {
   return [
     {
       tagName: 'circle',

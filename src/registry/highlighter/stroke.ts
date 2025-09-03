@@ -2,7 +2,7 @@ import { Dom, ObjectExt, Util, Vector } from '../../common'
 import { Config } from '../../config'
 import type { EdgeView } from '../../view'
 import type { SimpleAttrs } from '../attr'
-import type { Highlighter } from './index'
+import type { HighlighterDefinition } from './index'
 
 export interface StrokeHighlighterOptions {
   padding?: number
@@ -21,7 +21,7 @@ const defaultOptions: StrokeHighlighterOptions = {
   },
 }
 
-export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
+export const stroke: HighlighterDefinition<StrokeHighlighterOptions> = {
   highlight(cellView, magnet, options) {
     const id = Private.getHighlighterId(magnet, options)
     if (Private.hasCache(id)) {

@@ -1,6 +1,6 @@
-import { Point, Rectangle } from '../../geometry'
 import { NumberExt } from '../../common'
-import { PortLayout } from './index'
+import { Point, type Rectangle } from '../../geometry'
+import type { PortLayoutResult } from './index'
 
 export function normalizePoint(
   bbox: Rectangle,
@@ -19,7 +19,7 @@ export function toResult<T>(
   point: Point,
   angle?: number,
   rawArgs?: T,
-): PortLayout.Result {
+): PortLayoutResult {
   return {
     angle,
     position: point.toJSON(),

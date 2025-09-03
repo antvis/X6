@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Rectangle } from '../../src'
 import { PortManager } from '../../src/model/port'
-import { PortLayout } from '../../src/registry'
+import { portLayoutRegistry } from '../../src/registry'
 
 describe('Port', () => {
   describe('constructor', () => {
@@ -181,7 +181,7 @@ describe('Port', () => {
       expect(layouts.map((l) => l.portId)).toEqual(['port1', 'port3'])
     })
 
-    it('should call PortLayout.registry.onNotFound if the layout function is not found', () => {
+    it('should call portLayoutRegistry.onNotFound if the layout function is not found', () => {
       const data = {
         groups: {
           group1: {
@@ -194,7 +194,7 @@ describe('Port', () => {
       }
       const portManager = new PortManager(data)
       const elemBBox = new Rectangle(0, 0, 100, 100)
-      const onNotFoundSpy = vi.spyOn(PortLayout.registry, 'onNotFound')
+      const onNotFoundSpy = vi.spyOn(portLayoutRegistry, 'onNotFound')
 
       onNotFoundSpy.mockImplementation(() => {})
 

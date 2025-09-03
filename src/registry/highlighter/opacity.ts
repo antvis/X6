@@ -1,12 +1,12 @@
 import { Dom } from '../../common'
 import { Config } from '../../config'
-import { Highlighter } from './index'
+import type { HighlighterDefinition } from './index'
 
-export interface OpacityHighlighterOptions {}
+export type OpacityHighlighterOptions = {}
 
 const className = Config.prefix('highlight-opacity')
 
-export const opacity: Highlighter.Definition<OpacityHighlighterOptions> = {
+export const opacity: HighlighterDefinition<OpacityHighlighterOptions> = {
   highlight(cellView, magnet) {
     Dom.addClass(magnet, className)
   },

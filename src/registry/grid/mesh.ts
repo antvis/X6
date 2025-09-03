@@ -1,9 +1,9 @@
 import { Dom } from '../../common'
-import { Grid } from './index'
+import type { GridDefinition, GridOptions } from './index'
 
-export interface MeshOptions extends Grid.Options {}
+export interface MeshOptions extends GridOptions {}
 
-export const mesh: Grid.Definition<MeshOptions> = {
+export const mesh: GridDefinition<MeshOptions> = {
   color: 'rgba(224,224,224,1)',
   thickness: 1,
   markup: 'path',

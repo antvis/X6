@@ -1,9 +1,12 @@
-import { Path, Rectangle, Ellipse, Segment } from '../../geometry'
-import { ObjectExt, Dom, Util } from '../../common'
-import { offset, getStrokeWidth, findShapeNode } from './util'
-import { ConnectionPoint } from './index'
+import { Dom, ObjectExt, Util } from '../../common'
+import { Ellipse, Path, Rectangle, type Segment } from '../../geometry'
+import type {
+  ConnectionPointDefinition,
+  ConnectionPointStrokedOptions,
+} from './index'
+import { findShapeNode, getStrokeWidth, offset } from './util'
 
-export interface BoundaryOptions extends ConnectionPoint.StrokedOptions {
+export interface BoundaryOptions extends ConnectionPointStrokedOptions {
   selector?: string | string[]
   insideout?: boolean
   precision?: number
@@ -20,12 +23,12 @@ export interface BoundaryCache {
  * Places the connection point at the intersection between the
  * edge path end segment and the actual shape of the target magnet.
  */
-export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
+export const boundary: ConnectionPointDefinition<BoundaryOptions> = (
   line,
   view,
   magnet,
   options,
-) {
+) => {
   let node
   let intersection
   const anchor = line.end

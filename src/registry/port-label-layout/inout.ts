@@ -1,30 +1,33 @@
-import { Point, Rectangle } from '../../geometry'
-import { PortLabelLayout } from './index'
+import type { Point, Rectangle } from '../../geometry'
+import type {
+  PortLabelLayoutCommonOptions,
+  PortLabelLayoutDefinition,
+} from './index'
 import { toResult } from './util'
 
-export interface InOutArgs extends PortLabelLayout.CommonOptions {
+export interface InOutArgs extends PortLabelLayoutCommonOptions {
   offset?: number
 }
 
-export const outside: PortLabelLayout.Definition<InOutArgs> = (
+export const outside: PortLabelLayoutDefinition<InOutArgs> = (
   portPosition,
   elemBBox,
   args,
 ) => outsideLayout(portPosition, elemBBox, false, args)
 
-export const outsideOriented: PortLabelLayout.Definition<InOutArgs> = (
+export const outsideOriented: PortLabelLayoutDefinition<InOutArgs> = (
   portPosition,
   elemBBox,
   args,
 ) => outsideLayout(portPosition, elemBBox, true, args)
 
-export const inside: PortLabelLayout.Definition<InOutArgs> = (
+export const inside: PortLabelLayoutDefinition<InOutArgs> = (
   portPosition,
   elemBBox,
   args,
 ) => insideLayout(portPosition, elemBBox, false, args)
 
-export const insideOriented: PortLabelLayout.Definition<InOutArgs> = (
+export const insideOriented: PortLabelLayoutDefinition<InOutArgs> = (
   portPosition,
   elemBBox,
   args,

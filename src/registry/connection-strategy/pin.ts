@@ -1,7 +1,7 @@
 import { Point } from '../../geometry'
-import { Node, Edge } from '../../model'
-import { EdgeView, NodeView } from '../../view'
-import { ConnectionStrategy } from './index'
+import type { Edge, Node } from '../../model'
+import type { EdgeView, NodeView } from '../../view'
+import type { ConnectionStrategyDefinition } from './index'
 
 function toPercentage(value: number, max: number) {
   if (max === 0) {
@@ -12,7 +12,7 @@ function toPercentage(value: number, max: number) {
 }
 
 function pin(relative: boolean) {
-  const strategy: ConnectionStrategy.Definition = (
+  const strategy: ConnectionStrategyDefinition = (
     terminal,
     view,
     magnet,

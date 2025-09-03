@@ -1,9 +1,7 @@
-import { Router } from './index'
+import type { RouterDefinition } from './index'
 
-export interface NormalRouterOptions {}
+export type NormalRouterOptions = {}
 
-export const normal: Router.Definition<NormalRouterOptions> = function (
-  vertices,
-) {
-  return [...vertices]
-}
+export const normal: RouterDefinition<NormalRouterOptions> = (vertices) => [
+  ...vertices,
+]

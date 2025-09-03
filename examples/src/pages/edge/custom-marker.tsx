@@ -1,8 +1,7 @@
 import React from 'react'
-import { Graph, Registry } from '../../../../src'
+import { Graph } from '../../../../src'
+import { makerNormalize } from '../../../../src/registry'
 import '../index.less'
-
-const { Marker } = Registry
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -182,7 +181,7 @@ export default class Example extends React.Component {
           sourceMarker: {
             stroke: '#31d0c6',
             fill: '#31d0c6',
-            d: Marker.normalize(
+            d: makerNormalize(
               'M5.5,15.499,15.8,21.447,15.8,15.846,25.5,21.447,25.5,9.552,15.8,15.152,15.8,9.552z',
             ),
           },
@@ -212,14 +211,14 @@ export default class Example extends React.Component {
           sourceMarker: {
             fill: '#4b4a67',
             stroke: '#4b4a67',
-            d: Marker.normalize(
+            d: makerNormalize(
               'M5.5,15.499,15.8,21.447,15.8,15.846,25.5,21.447,25.5,9.552,15.8,15.152,15.8,9.552z',
             ),
           },
           targetMarker: {
             fill: '#4b4a67',
             stroke: '#4b4a67',
-            d: Marker.normalize(
+            d: makerNormalize(
               'M5.5,15.499,15.8,21.447,15.8,15.846,25.5,21.447,25.5,9.552,15.8,15.152,15.8,9.552z',
             ),
           },
@@ -249,14 +248,14 @@ export default class Example extends React.Component {
           sourceMarker: {
             stroke: '#7c68fc',
             fill: '#7c68fc',
-            d: Marker.normalize(
+            d: makerNormalize(
               'M24.316,5.318,9.833,13.682,9.833,5.5,5.5,5.5,5.5,25.5,9.833,25.5,9.833,17.318,24.316,25.682z',
             ),
           },
           targetMarker: {
             stroke: '#feb663',
             fill: '#feb663',
-            d: Marker.normalize(
+            d: makerNormalize(
               'M14.615,4.928c0.487-0.986,1.284-0.986,1.771,0l2.249,4.554c0.486,0.986,1.775,1.923,2.864,2.081l5.024,0.73c1.089,0.158,1.335,0.916,0.547,1.684l-3.636,3.544c-0.788,0.769-1.28,2.283-1.095,3.368l0.859,5.004c0.186,1.085-0.459,1.553-1.433,1.041l-4.495-2.363c-0.974-0.512-2.567-0.512-3.541,0l-4.495,2.363c-0.974,0.512-1.618,0.044-1.432-1.041l0.858-5.004c0.186-1.085-0.307-2.6-1.094-3.368L3.93,13.977c-0.788-0.768-0.542-1.525,0.547-1.684l5.026-0.73c1.088-0.158,2.377-1.095,2.864-2.081L14.615,4.928z',
             ),
           },

@@ -7,7 +7,24 @@ import {
 } from '../common'
 import { Point, Rectangle } from '../geometry'
 import { Cell, type Collection, Edge, Model, Node } from '../model'
-import * as Registry from '../registry'
+import {
+  attrRegistry,
+  type BackgroundOptions,
+  backgroundRegistry,
+  connectionPointRegistry,
+  connectorRegistry,
+  edgeAnchorRegistry,
+  edgeToolRegistry,
+  filterRegistry,
+  gridRegistry,
+  highlighterRegistry,
+  makerRegistry,
+  nodeAnchorRegistry,
+  nodeToolRegistry,
+  portLabelLayoutRegistry,
+  portLayoutRegistry,
+  routerRegistry,
+} from '../registry'
 import { Renderer as ViewRenderer } from '../renderer'
 import { CellView } from '../view'
 import { BackgroundManager as Background } from './background'
@@ -1089,7 +1106,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawBackground(options?: Background.Options, onGraph?: boolean) {
+  drawBackground(options?: BackgroundOptions, onGraph?: boolean) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller != null && (this.options.background == null || !onGraph)) {
       scroller.drawBackground(options, onGraph)
@@ -1373,46 +1390,42 @@ export namespace Graph {
   export const registerNode = Node.registry.register
   export const registerEdge = Edge.registry.register
   export const registerView = CellView.registry.register
-  export const registerAttr = Registry.registry.register
-  export const registerGrid = Registry.Grid.registry.register
-  export const registerFilter = Registry.Filter.registry.register
-  export const registerNodeTool = Registry.NodeTool.registry.register
-  export const registerEdgeTool = Registry.EdgeTool.registry.register
-  export const registerBackground = Registry.Background.registry.register
-  export const registerHighlighter = Registry.Highlighter.registry.register
-  export const registerPortLayout = Registry.PortLayout.registry.register
-  export const registerPortLabelLayout =
-    Registry.PortLabelLayout.registry.register
-  export const registerMarker = Registry.Marker.registry.register
-  export const registerRouter = Registry.Router.registry.register
-  export const registerConnector = Registry.Connector.registry.register
-  export const registerAnchor = Registry.NodeAnchor.registry.register
-  export const registerEdgeAnchor = Registry.EdgeAnchor.registry.register
-  export const registerConnectionPoint =
-    Registry.ConnectionPoint.registry.register
+  export const registerAttr = attrRegistry.register
+  export const registerGrid = gridRegistry.register
+  export const registerFilter = filterRegistry.register
+  export const registerNodeTool = nodeToolRegistry.register
+  export const registerEdgeTool = edgeToolRegistry.register
+  export const registerBackground = backgroundRegistry.register
+  export const registerHighlighter = highlighterRegistry.register
+  export const registerPortLayout = portLayoutRegistry.register
+  export const registerPortLabelLayout = portLabelLayoutRegistry.register
+  export const registerMarker = makerRegistry.register
+  export const registerRouter = routerRegistry.register
+  export const registerConnector = connectorRegistry.register
+  export const registerAnchor = nodeAnchorRegistry.register
+  export const registerEdgeAnchor = edgeAnchorRegistry.register
+  export const registerConnectionPoint = connectionPointRegistry.register
 }
 
 export namespace Graph {
   export const unregisterNode = Node.registry.unregister
   export const unregisterEdge = Edge.registry.unregister
   export const unregisterView = CellView.registry.unregister
-  export const unregisterAttr = Registry.registry.unregister
-  export const unregisterGrid = Registry.Grid.registry.unregister
-  export const unregisterFilter = Registry.Filter.registry.unregister
-  export const unregisterNodeTool = Registry.NodeTool.registry.unregister
-  export const unregisterEdgeTool = Registry.EdgeTool.registry.unregister
-  export const unregisterBackground = Registry.Background.registry.unregister
-  export const unregisterHighlighter = Registry.Highlighter.registry.unregister
-  export const unregisterPortLayout = Registry.PortLayout.registry.unregister
-  export const unregisterPortLabelLayout =
-    Registry.PortLabelLayout.registry.unregister
-  export const unregisterMarker = Registry.Marker.registry.unregister
-  export const unregisterRouter = Registry.Router.registry.unregister
-  export const unregisterConnector = Registry.Connector.registry.unregister
-  export const unregisterAnchor = Registry.NodeAnchor.registry.unregister
-  export const unregisterEdgeAnchor = Registry.EdgeAnchor.registry.unregister
-  export const unregisterConnectionPoint =
-    Registry.ConnectionPoint.registry.unregister
+  export const unregisterAttr = attrRegistry.unregister
+  export const unregisterGrid = gridRegistry.unregister
+  export const unregisterFilter = filterRegistry.unregister
+  export const unregisterNodeTool = nodeToolRegistry.unregister
+  export const unregisterEdgeTool = edgeToolRegistry.unregister
+  export const unregisterBackground = backgroundRegistry.unregister
+  export const unregisterHighlighter = highlighterRegistry.unregister
+  export const unregisterPortLayout = portLayoutRegistry.unregister
+  export const unregisterPortLabelLayout = portLabelLayoutRegistry.unregister
+  export const unregisterMarker = makerRegistry.unregister
+  export const unregisterRouter = routerRegistry.unregister
+  export const unregisterConnector = connectorRegistry.unregister
+  export const unregisterAnchor = nodeAnchorRegistry.unregister
+  export const unregisterEdgeAnchor = edgeAnchorRegistry.unregister
+  export const unregisterConnectionPoint = connectionPointRegistry.unregister
 }
 
 export namespace Graph {
