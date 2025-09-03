@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Graph } from '@/graph'
-import { History } from '@/plugin/history'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { Graph } from '../../../src/graph'
+import type { History } from '../../../src/plugin/history'
 import '@/plugin/history/api'
 
 describe('Graph History API', () => {

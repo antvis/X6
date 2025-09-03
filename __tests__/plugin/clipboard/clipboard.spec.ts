@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { Clipboard, type Node } from '../../src/'
-import { createTestGraph } from '../utils/graph-helpers'
+import { Clipboard, type Node } from '../../../src'
+import { createTestGraph } from '../../utils/graph-helpers'
 
 describe('plugin/clipboard', () => {
   it('method and options', () => {
