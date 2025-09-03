@@ -6,6 +6,11 @@ import {
   type IDisablable,
 } from '../../common'
 import type { EventArgs, Graph } from '../../graph'
+import type {
+  KeyboardImplAction,
+  KeyboardImplHandler,
+  KeyboardImplOptions,
+} from './type'
 import { formatKey, isGraphEvent, isInputEvent } from './util'
 
 /**
@@ -37,7 +42,7 @@ export class KeyboardImpl extends Disposable implements IDisablable {
   }
 
   constructor(
-    private readonly options: KeyboardImpl.Options & { graph: Graph },
+    private readonly options: KeyboardImplOptions & { graph: Graph },
   ) {
     super()
     const scroller = this.graph.getPlugin('scroller') as any
@@ -84,13 +89,13 @@ export class KeyboardImpl extends Disposable implements IDisablable {
 
   on(
     keys: string | string[],
-    callback: KeyboardImpl.Handler,
-    action?: KeyboardImpl.Action,
+    callback: KeyboardImplHandler,
+    action?: KeyboardImplAction,
   ) {
     this.mousetrap.bind(this.getKeys(keys), callback, action)
   }
 
-  off(keys: string | string[], action?: KeyboardImpl.Action) {
+  off(keys: string | string[], action?: KeyboardImplAction) {
     this.mousetrap.unbind(this.getKeys(keys), action)
   }
 
@@ -98,7 +103,7 @@ export class KeyboardImpl extends Disposable implements IDisablable {
     this.mousetrap.reset()
   }
 
-  trigger(key: string, action?: KeyboardImpl.Action) {
+  trigger(key: string, action?: KeyboardImplAction) {
     this.mousetrap.trigger(
       formatKey(key, this.options.format, this.graph),
       action,
@@ -140,24 +145,5 @@ export class KeyboardImpl extends Disposable implements IDisablable {
   @disposable()
   dispose() {
     this.mousetrap.reset()
-  }
-}
-
-export namespace KeyboardImpl {
-  export type Action = 'keypress' | 'keydown' | 'keyup'
-  export type Handler = (e: KeyboardEvent) => void
-
-  export interface Options {
-    enabled?: boolean
-
-    /**
-     * Specifies if keyboard event should bind on docuemnt or on container.
-     *
-     * Default is `false` that will bind keyboard event on the container.
-     */
-    global?: boolean
-
-    format?: (this: Graph, key: string) => string
-    guard?: (this: Graph, e: KeyboardEvent) => boolean
   }
 }
