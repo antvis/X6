@@ -7,7 +7,7 @@ export interface MiniMapViewGeometry extends Record<string, number> {
   height: number
 }
 
-export interface MinimapEventData {
+export interface MiniMapEventData {
   frameId?: number
   action: 'zooming' | 'panning'
   clientX: number

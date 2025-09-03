@@ -1,4 +1,4 @@
-import type { Edge, Node } from '../../model'
+import type { Cell, Edge, Node } from '../../model'
 
 export interface ClipboardImplOptions {
   useLocalStorage?: boolean
@@ -26,4 +26,14 @@ export interface ClipboardImplPasteOptions extends ClipboardImplOptions {
    * and `dy` attributes. It defaults to `{ dx: 20, dy: 20 }`.
    */
   offset?: number | { dx: number; dy: number }
+}
+
+export interface ClipboardEventArgs {
+  'clipboard:changed': {
+    cells: Cell[]
+  }
+}
+
+export interface ClipboardOptions extends ClipboardImplOptions {
+  enabled?: boolean
 }

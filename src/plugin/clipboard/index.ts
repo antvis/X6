@@ -1,23 +1,14 @@
 import { Basecoat, disposable } from '../../common'
 import type { Graph } from '../../graph'
 import type { Cell } from '../../model'
-import type { ClipboardImpl } from './clipboard'
+import { ClipboardImpl } from './clipboard'
 import type {
+  ClipboardEventArgs,
   ClipboardImplCopyOptions,
-  ClipboardImplOptions,
   ClipboardImplPasteOptions,
+  ClipboardOptions,
 } from './type'
 import './api'
-
-interface ClipboardEventArgs {
-  'clipboard:changed': {
-    cells: Cell[]
-  }
-}
-
-interface Options extends ClipboardImplOptions {
-  enabled?: boolean
-}
 
 export class Clipboard
   extends Basecoat<ClipboardEventArgs>
@@ -26,7 +17,7 @@ export class Clipboard
   public name = 'clipboard'
   private clipboardImpl: ClipboardImpl
   private graph: Graph
-  public options: Options
+  public options: ClipboardOptions
 
   get disabled() {
     return this.options.enabled !== true
@@ -36,7 +27,7 @@ export class Clipboard
     return this.clipboardImpl.cells
   }
 
-  constructor(options: Options = {}) {
+  constructor(options: ClipboardOptions = {}) {
     super()
     this.options = { enabled: true, ...options }
   }
@@ -74,7 +65,7 @@ export class Clipboard
     return this
   }
 
-  isEmpty(options: Options = {}) {
+  isEmpty(options: ClipboardOptions = {}) {
     return this.clipboardImpl.isEmpty(options)
   }
 

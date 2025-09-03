@@ -1,4 +1,5 @@
 import type { Graph } from '../../graph'
+import type { Node } from '../../model'
 
 export type SnaplineImplFilterFunction = (this: Graph, node: Node) => boolean
 
