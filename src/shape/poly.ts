@@ -3,7 +3,7 @@ import { Point } from '../geometry'
 import type { Node } from '../model/node'
 import { Base } from './base'
 
-function pointsToString(
+export function pointsToString(
   points: Point.PointLike[] | Point.PointData[] | string,
 ) {
   return typeof points === 'string'
