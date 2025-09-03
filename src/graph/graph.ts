@@ -18,7 +18,7 @@ import {
   filterRegistry,
   gridRegistry,
   highlighterRegistry,
-  makerRegistry,
+  markerRegistry,
   nodeAnchorRegistry,
   nodeToolRegistry,
   portLabelLayoutRegistry,
@@ -1399,7 +1399,7 @@ export namespace Graph {
   export const registerHighlighter = highlighterRegistry.register
   export const registerPortLayout = portLayoutRegistry.register
   export const registerPortLabelLayout = portLabelLayoutRegistry.register
-  export const registerMarker = makerRegistry.register
+  export const registerMarker = markerRegistry.register
   export const registerRouter = routerRegistry.register
   export const registerConnector = connectorRegistry.register
   export const registerAnchor = nodeAnchorRegistry.register
@@ -1420,7 +1420,7 @@ export namespace Graph {
   export const unregisterHighlighter = highlighterRegistry.unregister
   export const unregisterPortLayout = portLayoutRegistry.unregister
   export const unregisterPortLabelLayout = portLabelLayoutRegistry.unregister
-  export const unregisterMarker = makerRegistry.unregister
+  export const unregisterMarker = markerRegistry.unregister
   export const unregisterRouter = routerRegistry.unregister
   export const unregisterConnector = connectorRegistry.unregister
   export const unregisterAnchor = nodeAnchorRegistry.unregister

@@ -1,6 +1,6 @@
 import { type JSONObject, type KeyValue, ObjectExt } from '../../common'
 import type { CellView } from '../../view'
-import { makerRegistry } from '../marker'
+import { markerRegistry } from '../marker'
 import type { AttrDefinition, ComplexAttrs, SimpleAttrs } from './index'
 
 function qualify(value: any) {
@@ -42,11 +42,11 @@ function createMarker(
   let preset = others
 
   if (name && typeof name === 'string') {
-    const fn = makerRegistry.get(name)
+    const fn = markerRegistry.get(name)
     if (fn) {
       preset = fn({ ...others, ...(args as KeyValue) })
     } else {
-      return makerRegistry.onNotFound(name)
+      return markerRegistry.onNotFound(name)
     }
   }
 

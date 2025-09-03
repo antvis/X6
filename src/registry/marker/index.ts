@@ -37,9 +37,9 @@ export interface ManualItem {
 
 const presets = markers
 
-export const makerRegistry = Registry.create<MarkerFactory, Presets>({
+export const markerRegistry = Registry.create<MarkerFactory, Presets>({
   type: 'marker',
 })
-makerRegistry.register(presets, true)
+markerRegistry.register(presets, true)
 
-export const makerNormalize = normalizeMarker
+export const markerNormalize = normalizeMarker
