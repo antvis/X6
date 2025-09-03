@@ -2,8 +2,13 @@ import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { type EventArgs, Graph } from '../../graph'
 import { View } from '../../view'
 import { content } from './style/raw'
+import type {
+  MiniMapEventData,
+  MiniMapOptions,
+  MiniMapViewGeometry,
+} from './type'
 
-const DefaultOptions: Partial<MiniMap.Options> = {
+const DefaultOptions: Partial<MiniMapOptions> = {
   width: 300,
   height: 200,
   padding: 10,
@@ -28,13 +33,13 @@ const ZoomClassName = `${ViewportClassName}-zoom`
 export class MiniMap extends View implements Graph.Plugin {
   public name = 'minimap'
   private graph: Graph
-  public readonly options: MiniMap.Options
+  public readonly options: MiniMapOptions
   public declare container: HTMLDivElement
   protected zoomHandle: HTMLDivElement
   protected viewport: HTMLElement
   protected sourceGraph: Graph
   protected targetGraph: Graph
-  protected geometry: Util.ViewGeometry
+  protected geometry: MiniMapViewGeometry
   protected ratio: number
   // Marks whether targetGraph is being transformed or scaled
   // If yes we update updateViewport only
@@ -51,13 +56,13 @@ export class MiniMap extends View implements Graph.Plugin {
     return this.graph.container
   }
 
-  constructor(options: Partial<MiniMap.Options>) {
+  constructor(options: Partial<MiniMapOptions>) {
     super()
 
     this.options = {
       ...DefaultOptions,
       ...options,
-    } as MiniMap.Options
+    } as MiniMapOptions
 
     CssLoader.ensure(this.name, content)
   }
@@ -238,7 +243,7 @@ export class MiniMap extends View implements Graph.Plugin {
     const e = this.normalizeEvent(evt)
     const action = e.target === this.zoomHandle ? 'zooming' : 'panning'
     const { tx, ty } = this.sourceGraph.translate()
-    const eventData: Util.EventData = {
+    const eventData: MiniMapEventData = {
       action,
       clientX: e.clientX,
       clientY: e.clientY,
@@ -258,7 +263,7 @@ export class MiniMap extends View implements Graph.Plugin {
     const e = this.normalizeEvent(evt)
     const clientX = e.clientX
     const clientY = e.clientY
-    const data = e.data as Util.EventData
+    const data = e.data as MiniMapEventData
     switch (data.action) {
       case 'panning': {
         const scale = this.sourceGraph.transform.getScale()
@@ -333,42 +338,5 @@ export class MiniMap extends View implements Graph.Plugin {
   dispose() {
     this.remove()
     CssLoader.clean(this.name)
-  }
-}
-
-export namespace MiniMap {
-  export interface Options {
-    container: HTMLElement
-    width: number
-    height: number
-    padding: number
-    scalable?: boolean
-    minScale?: number
-    maxScale?: number
-    createGraph?: (options: Graph.Options) => Graph
-    graphOptions?: Graph.Options
-  }
-}
-
-namespace Util {
-  export interface ViewGeometry extends Record<string, number> {
-    top: number
-    left: number
-    width: number
-    height: number
-  }
-
-  export interface EventData {
-    frameId?: number
-    action: 'zooming' | 'panning'
-    clientX: number
-    clientY: number
-    scrollLeft: number
-    scrollTop: number
-    zoom: number
-    scale: { sx: number; sy: number }
-    geometry: ViewGeometry
-    translateX: number
-    translateY: number
   }
 }
