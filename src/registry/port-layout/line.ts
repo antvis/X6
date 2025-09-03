@@ -1,8 +1,8 @@
-import { Point, Line } from '../../geometry'
+import { Line, type Point } from '../../geometry'
+import type { PortLayoutCommonArgs, PortLayoutDefinition } from './index'
 import { normalizePoint, toResult } from './util'
-import { PortLayout } from './index'
 
-export interface SideArgs extends PortLayout.CommonArgs {
+export interface SideArgs extends PortLayoutCommonArgs {
   strict?: boolean
 }
 
@@ -11,7 +11,7 @@ export interface LineArgs extends SideArgs {
   end?: Point.PointLike
 }
 
-export const line: PortLayout.Definition<LineArgs> = (
+export const line: PortLayoutDefinition<LineArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,
@@ -28,7 +28,7 @@ export const line: PortLayout.Definition<LineArgs> = (
   return lineLayout(portsPositionArgs, start, end, groupPositionArgs)
 }
 
-export const left: PortLayout.Definition<SideArgs> = (
+export const left: PortLayoutDefinition<SideArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,
@@ -41,7 +41,7 @@ export const left: PortLayout.Definition<SideArgs> = (
   )
 }
 
-export const right: PortLayout.Definition<SideArgs> = (
+export const right: PortLayoutDefinition<SideArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,
@@ -54,7 +54,7 @@ export const right: PortLayout.Definition<SideArgs> = (
   )
 }
 
-export const top: PortLayout.Definition<SideArgs> = (
+export const top: PortLayoutDefinition<SideArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,
@@ -67,7 +67,7 @@ export const top: PortLayout.Definition<SideArgs> = (
   )
 }
 
-export const bottom: PortLayout.Definition<SideArgs> = (
+export const bottom: PortLayoutDefinition<SideArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,

@@ -1,8 +1,8 @@
-import { Rectangle, Ellipse } from '../../geometry'
-import { PortLayout } from './index'
+import { Ellipse, type Rectangle } from '../../geometry'
+import type { PortLayoutCommonArgs, PortLayoutDefinition } from './index'
 import { toResult } from './util'
 
-export interface EllipseArgs extends PortLayout.CommonArgs {
+export interface EllipseArgs extends PortLayoutCommonArgs {
   start?: number
   step?: number
   compensateRotate?: boolean
@@ -12,7 +12,7 @@ export interface EllipseArgs extends PortLayout.CommonArgs {
   dr?: number
 }
 
-export const ellipse: PortLayout.Definition<EllipseArgs> = (
+export const ellipse: PortLayoutDefinition<EllipseArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,
@@ -28,7 +28,7 @@ export const ellipse: PortLayout.Definition<EllipseArgs> = (
   )
 }
 
-export const ellipseSpread: PortLayout.Definition<EllipseArgs> = (
+export const ellipseSpread: PortLayoutDefinition<EllipseArgs> = (
   portsPositionArgs,
   elemBBox,
   groupPositionArgs,

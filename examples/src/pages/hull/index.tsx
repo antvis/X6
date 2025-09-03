@@ -1,16 +1,7 @@
 import React from 'react'
-import {
-  Node,
-  Graph,
-  Vector,
-  Point,
-  Line,
-  Polyline,
-  Registry,
-} from '../../../../src'
+import { Node, Graph, Vector, Point, Line, Polyline } from '../../../../src'
+import { connectorPresets } from '../../../../src/registry'
 import '../index.less'
-
-const { Connector } = Registry
 
 function random(max: number, min: number) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -112,7 +103,7 @@ export default class Example extends React.Component {
 
     function createData(points: Point[], radius?: number) {
       var origin = new Line(points[0], points[points.length - 1]).getCenter()
-      return Connector.presets.rounded.call(this, origin, origin, points, {
+      return connectorPresets.rounded.call(this, origin, origin, points, {
         radius: radius || 30,
       })
     }

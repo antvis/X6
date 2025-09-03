@@ -722,7 +722,7 @@ node.attr({
 Before continuing to introduce attribute definitions, let's understand the attribute qualification `qualify` function. Only attribute values that pass the qualification function's judgment will be processed by special attributes. For example, the [`stroke`](#stroke) attribute is only treated as a special attribute (using gradient color to fill the border) when its value is of `Object` type. Let's look at the definition of the qualification function.
 
 ```ts
-type QualifyFucntion = (
+type QualifyFunction = (
   this: CellView, // View of the node/edge
   val: ComplexAttrValue, // Current attribute value
   options: {
@@ -754,7 +754,7 @@ Sets the attribute definition, suitable for most scenarios.
 
 ```ts
 export interface SetDefinition {
-  qualify?: QualifyFucntion // Qualification function
+  qualify?: QualifyFunction // Qualification function
   set: (
     this: CellView, // View of the node/edge
     val: ComplexAttrValue, // Current attribute value
@@ -820,7 +820,7 @@ Offset property definition.
 
 ```ts
 export interface OffsetDefinition {
-  qualify?: QualifyFucntion // Qualification function
+  qualify?: QualifyFunction // Qualification function
   offset: (
     this: CellView, // View of the node/edge
     val: ComplexAttrValue, // Current attribute value
@@ -853,7 +853,7 @@ Position attribute definition.
 
 ```ts
 export interface PositionDefinition {
-  qualify?: QualifyFucntion // Qualification function
+  qualify?: QualifyFunction // Qualification function
   offset: (
     this: CellView, // View of the node/edge
     val: ComplexAttrValue, // Current attribute value

@@ -1,10 +1,13 @@
-import { Line } from '../../geometry'
-import { ConnectionPoint } from './index'
+import type { Line } from '../../geometry'
+import type {
+  ConnectionPointBaseOptions,
+  ConnectionPointDefinition,
+} from './index'
 import { offset } from './util'
 
 type Align = 'top' | 'right' | 'bottom' | 'left'
 
-export interface AnchorOptions extends ConnectionPoint.BaseOptions {
+export interface AnchorOptions extends ConnectionPointBaseOptions {
   align?: Align
   alignOffset?: number
 }
@@ -60,12 +63,12 @@ function alignLine(line: Line, type: Align, offset = 0) {
 /**
  * Places the connection point at the edge's endpoint.
  */
-export const anchor: ConnectionPoint.Definition<AnchorOptions> = function (
+export const anchor: ConnectionPointDefinition<AnchorOptions> = (
   line,
   view,
   magnet,
   options,
-) {
+) => {
   const { alignOffset, align } = options
   if (align) {
     alignLine(line, align, alignOffset)

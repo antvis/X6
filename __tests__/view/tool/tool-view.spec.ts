@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Dom } from '../../../src/common'
-import { EdgeTool, NodeTool } from '../../../src/registry/tool'
+import { edgeToolRegistry, nodeToolRegistry } from '../../../src/registry/tool'
 import { CellView } from '../../../src/view/cell'
 import { ToolItem } from '../../../src/view/tool/tool-item'
 import {
@@ -239,12 +239,12 @@ describe('ToolsView', () => {
         container: document.createElement('div'),
       }))
 
-      vi.spyOn(NodeTool.registry, 'get').mockReturnValue(mockConstructor)
+      vi.spyOn(nodeToolRegistry, 'get').mockReturnValue(mockConstructor)
       vi.spyOn(ToolItem, 'isToolItem').mockReturnValue(false)
 
       toolsView.config({ view: mockCellView, items: ['test-tool'] })
 
-      expect(NodeTool.registry.get).toHaveBeenCalledWith('test-tool')
+      expect(nodeToolRegistry.get).toHaveBeenCalledWith('test-tool')
       expect(mockConstructor).toHaveBeenCalledWith({})
     })
 
@@ -256,14 +256,14 @@ describe('ToolsView', () => {
         container: document.createElement('div'),
       }))
 
-      vi.spyOn(NodeTool.registry, 'get').mockReturnValue(mockConstructor)
+      vi.spyOn(nodeToolRegistry, 'get').mockReturnValue(mockConstructor)
       vi.spyOn(ToolItem, 'isToolItem').mockReturnValue(false)
 
       const toolDef = { name: 'test-tool', args: { param: 'value' } }
       // @ts-expect-error
       toolsView.config({ view: mockCellView, items: [toolDef] })
 
-      expect(NodeTool.registry.get).toHaveBeenCalledWith('test-tool')
+      expect(nodeToolRegistry.get).toHaveBeenCalledWith('test-tool')
       expect(mockConstructor).toHaveBeenCalledWith({ param: 'value' })
     })
 
@@ -278,19 +278,19 @@ describe('ToolsView', () => {
         container: document.createElement('div'),
       }))
 
-      vi.spyOn(EdgeTool.registry, 'get').mockReturnValue(mockConstructor)
+      vi.spyOn(edgeToolRegistry, 'get').mockReturnValue(mockConstructor)
       vi.spyOn(ToolItem, 'isToolItem').mockReturnValue(false)
 
       toolsView.config({ view: mockCellView, items: ['edge-tool'] })
 
-      expect(EdgeTool.registry.get).toHaveBeenCalledWith('edge-tool')
+      expect(edgeToolRegistry.get).toHaveBeenCalledWith('edge-tool')
     })
 
     it('should handle tool not found for nodes', () => {
       // @ts-expect-error
-      vi.spyOn(NodeTool.registry, 'get').mockReturnValue(undefined)
+      vi.spyOn(nodeToolRegistry, 'get').mockReturnValue(undefined)
       // @ts-expect-error
-      vi.spyOn(NodeTool.registry, 'onNotFound').mockReturnValue(undefined)
+      vi.spyOn(nodeToolRegistry, 'onNotFound').mockReturnValue(undefined)
       vi.spyOn(ToolItem, 'isToolItem').mockReturnValue(false)
 
       const result = toolsView.config({
@@ -298,7 +298,7 @@ describe('ToolsView', () => {
         items: ['unknown-tool'],
       })
 
-      expect(NodeTool.registry.onNotFound).toHaveBeenCalledWith('unknown-tool')
+      expect(nodeToolRegistry.onNotFound).toHaveBeenCalledWith('unknown-tool')
       expect(result).toBeUndefined()
     })
 
@@ -307,9 +307,9 @@ describe('ToolsView', () => {
       mockCell.isNode.mockReturnValue(false)
 
       // @ts-expect-error
-      vi.spyOn(EdgeTool.registry, 'get').mockReturnValue(undefined)
+      vi.spyOn(edgeToolRegistry, 'get').mockReturnValue(undefined)
       // @ts-expect-error
-      vi.spyOn(EdgeTool.registry, 'onNotFound').mockReturnValue(undefined)
+      vi.spyOn(edgeToolRegistry, 'onNotFound').mockReturnValue(undefined)
       vi.spyOn(ToolItem, 'isToolItem').mockReturnValue(false)
 
       const result = toolsView.config({
@@ -317,7 +317,7 @@ describe('ToolsView', () => {
         items: ['unknown-tool'],
       })
 
-      expect(EdgeTool.registry.onNotFound).toHaveBeenCalledWith('unknown-tool')
+      expect(edgeToolRegistry.onNotFound).toHaveBeenCalledWith('unknown-tool')
       expect(result).toBeUndefined()
     })
 

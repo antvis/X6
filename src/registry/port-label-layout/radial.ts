@@ -1,18 +1,21 @@
 import { Point } from '../../geometry'
-import { PortLabelLayout } from './index'
+import type {
+  PortLabelLayoutCommonOptions,
+  PortLabelLayoutDefinition,
+} from './index'
 import { toResult } from './util'
 
-export interface RadialArgs extends PortLabelLayout.CommonOptions {
+export interface RadialArgs extends PortLabelLayoutCommonOptions {
   offset?: number
 }
 
-export const radial: PortLabelLayout.Definition<RadialArgs> = (
+export const radial: PortLabelLayoutDefinition<RadialArgs> = (
   portPosition,
   elemBBox,
   args,
 ) => radialLayout(portPosition.diff(elemBBox.getCenter()), false, args)
 
-export const radialOriented: PortLabelLayout.Definition<RadialArgs> = (
+export const radialOriented: PortLabelLayoutDefinition<RadialArgs> = (
   portPosition,
   elemBBox,
   args,

@@ -1,6 +1,21 @@
 import { type JSONObject, type KeyValue, ObjectExt, type Size } from '../common'
 import { Point, type Rectangle } from '../geometry'
-import { type CellAttrs, PortLabelLayout, PortLayout } from '../registry'
+import {
+  type CellAttrs,
+  type PortLabelLayoutManualItem,
+  type PortLabelLayoutNativeItem,
+  type PortLabelLayoutNativeNames,
+  type PortLabelLayoutResult,
+  type PortLayoutDefinition,
+  type PortLayoutManualItem,
+  type PortLayoutNativeItem,
+  type PortLayoutNativeNames,
+  type PortLayoutResult,
+  portLabelLayoutPresets,
+  portLabelLayoutRegistry,
+  portLayoutPresets,
+  portLayoutRegistry,
+} from '../registry'
 import type { MarkupType } from '../view/markup'
 
 export class PortManager {
@@ -33,16 +48,16 @@ export class PortManager {
     const groupPosition = group ? group.position : null
     const groupPositionName = groupPosition ? groupPosition.name : null
 
-    let layoutFn: PortLayout.Definition<any>
+    let layoutFn: PortLayoutDefinition<any>
 
     if (groupPositionName != null) {
-      const fn = PortLayout.registry.get(groupPositionName)
+      const fn = portLayoutRegistry.get(groupPositionName)
       if (fn == null) {
-        return PortLayout.registry.onNotFound(groupPositionName)
+        return portLayoutRegistry.onNotFound(groupPositionName)
       }
       layoutFn = fn
     } else {
-      layoutFn = PortLayout.presets.left
+      layoutFn = portLayoutPresets.left
     }
 
     const portsArgs = ports.map(
@@ -203,7 +218,7 @@ export class PortManager {
     const name = port.label.position.name || 'left'
     const args = port.label.position.args || {}
     const layoutFn =
-      PortLabelLayout.registry.get(name) || PortLabelLayout.presets.left
+      portLabelLayoutRegistry.get(name) || portLabelLayoutPresets.left
     if (layoutFn) {
       return layoutFn(portPosition, elemBBox, args)
     }
@@ -219,22 +234,22 @@ export namespace PortManager {
   }
 
   export type PortPosition =
-    | Partial<PortLayout.NativeItem>
-    | Partial<PortLayout.ManaualItem>
+    | Partial<PortLayoutNativeItem>
+    | Partial<PortLayoutManualItem>
 
   export type PortPositionMetadata =
-    | PortLayout.NativeNames
-    | Exclude<string, PortLayout.NativeNames>
+    | PortLayoutNativeNames
+    | Exclude<string, PortLayoutNativeNames>
     | Point.PointData // absolute layout
     | PortPosition
 
   export type PortLabelPosition =
-    | Partial<PortLabelLayout.NativeItem>
-    | Partial<PortLabelLayout.ManaualItem>
+    | Partial<PortLabelLayoutNativeItem>
+    | Partial<PortLabelLayoutManualItem>
 
   export type PortLabelPositionMetadata =
-    | PortLabelLayout.NativeNames
-    | Exclude<string, PortLabelLayout.NativeNames>
+    | PortLabelLayoutNativeNames
+    | Exclude<string, PortLabelLayoutNativeNames>
     | PortLabelPosition
 
   export interface LabelMetadata {
@@ -287,8 +302,8 @@ export namespace PortManager {
     portId: string
     portAttrs?: CellAttrs
     portSize?: Size
-    portLayout: PortLayout.Result
+    portLayout: PortLayoutResult
     labelSize?: Size
-    labelLayout: PortLabelLayout.Result | null
+    labelLayout: PortLabelLayoutResult | null
   }
 }

@@ -1,55 +1,49 @@
-import { Point } from '../../geometry'
-import { KeyValue } from '../../common'
+import type { KeyValue } from '../../common'
+import type { Point } from '../../geometry'
+import type { Edge } from '../../model/edge'
+import type { EdgeView } from '../../view'
 import { Registry } from '../registry'
-import { Edge } from '../../model/edge'
-import { EdgeView } from '../../view'
 import * as anchors from './main'
 
-export namespace EdgeAnchor {
-  export type Definition<T> = (
-    this: EdgeView,
-    view: EdgeView,
-    magnet: SVGElement,
-    ref: Point | Point.PointLike | SVGElement,
-    options: T,
-    type: Edge.TerminalType,
-  ) => Point
+export type EdgeAnchorDefinition<T> = (
+  this: EdgeView,
+  view: EdgeView,
+  magnet: SVGElement,
+  ref: Point | Point.PointLike | SVGElement,
+  options: T,
+  type: Edge.TerminalType,
+) => Point
 
-  export type CommonDefinition = Definition<KeyValue>
+export type CommonDefinition = EdgeAnchorDefinition<KeyValue>
 
-  export type ResolvedDefinition<T> = (
-    this: EdgeView,
-    view: EdgeView,
-    magnet: SVGElement,
-    refPoint: Point,
-    options: T,
-  ) => Point
+export type EdgeAnchorResolvedDefinition<T> = (
+  this: EdgeView,
+  view: EdgeView,
+  magnet: SVGElement,
+  refPoint: Point,
+  options: T,
+) => Point
+
+type Presets = typeof presets
+
+type OptionsMap = {
+  readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
 }
 
-export namespace EdgeAnchor {
-  export type Presets = (typeof EdgeAnchor)['presets']
+type NativeNames = keyof Presets
 
-  export type OptionsMap = {
-    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
-  }
-
-  export type NativeNames = keyof Presets
-
-  export interface NativeItem<T extends NativeNames = NativeNames> {
-    name: T
-    args?: OptionsMap[T]
-  }
-
-  export interface ManaualItem {
-    name: Exclude<string, NativeNames>
-    args?: KeyValue
-  }
+export interface EdgeAnchorNativeItem<T extends NativeNames = NativeNames> {
+  name: T
+  args?: OptionsMap[T]
 }
 
-export namespace EdgeAnchor {
-  export const presets = anchors
-  export const registry = Registry.create<CommonDefinition, Presets>({
-    type: 'edge endpoint',
-  })
-  registry.register(presets, true)
+export interface EdgeAnchorManualItem {
+  name: Exclude<string, NativeNames>
+  args?: KeyValue
 }
+
+const presets = anchors
+export const edgeAnchorRegistry = Registry.create<CommonDefinition, Presets>({
+  type: 'edge endpoint',
+})
+edgeAnchorRegistry.register(presets, true)

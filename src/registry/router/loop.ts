@@ -1,5 +1,5 @@
-import { Angle, Point, Line } from '../../geometry'
-import { Router } from './index'
+import { Angle, Line, Point } from '../../geometry'
+import type { RouterDefinition } from './index'
 
 export interface LoopRouterOptions {
   width?: number
@@ -24,11 +24,11 @@ function rollup(points: Point.PointLike[], merge?: boolean | number) {
   return points
 }
 
-export const loop: Router.Definition<LoopRouterOptions> = function (
+export const loop: RouterDefinition<LoopRouterOptions> = (
   vertices,
   options,
   edgeView,
-) {
+) => {
   const width = options.width || 50
   const height = options.height || 80
   const halfHeight = height / 2

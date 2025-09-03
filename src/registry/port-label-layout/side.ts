@@ -1,15 +1,18 @@
-import { PortLabelLayout } from './index'
+import type {
+  PortLabelLayoutCommonOptions,
+  PortLabelLayoutDefinition,
+} from './index'
 import { toResult } from './util'
 
-export interface SideArgs extends PortLabelLayout.CommonOptions {}
+export interface SideArgs extends PortLabelLayoutCommonOptions {}
 
-export const manual: PortLabelLayout.Definition<SideArgs> = (
+export const manual: PortLabelLayoutDefinition<SideArgs> = (
   portPosition,
   elemBBox,
   args,
 ) => toResult({ position: elemBBox.getTopLeft() }, args)
 
-export const left: PortLabelLayout.Definition<SideArgs> = (
+export const left: PortLabelLayoutDefinition<SideArgs> = (
   portPosition,
   elemBBox,
   args,
@@ -22,7 +25,7 @@ export const left: PortLabelLayout.Definition<SideArgs> = (
     args,
   )
 
-export const right: PortLabelLayout.Definition<SideArgs> = (
+export const right: PortLabelLayoutDefinition<SideArgs> = (
   portPosition,
   elemBBox,
   args,
@@ -35,7 +38,7 @@ export const right: PortLabelLayout.Definition<SideArgs> = (
     args,
   )
 
-export const top: PortLabelLayout.Definition<SideArgs> = (
+export const top: PortLabelLayoutDefinition<SideArgs> = (
   portPosition,
   elemBBox,
   args,
@@ -48,7 +51,7 @@ export const top: PortLabelLayout.Definition<SideArgs> = (
     args,
   )
 
-export const bottom: PortLabelLayout.Definition<SideArgs> = (
+export const bottom: PortLabelLayoutDefinition<SideArgs> = (
   portPosition,
   elemBBox,
   args,

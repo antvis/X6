@@ -1,4 +1,4 @@
-import { PortLayout } from './index'
+import type { PortLayoutDefinition } from './index'
 import { normalizePoint, toResult } from './util'
 
 export interface AbsoluteArgs {
@@ -7,7 +7,7 @@ export interface AbsoluteArgs {
   angle?: number
 }
 
-export const absolute: PortLayout.Definition<AbsoluteArgs> = (
+export const absolute: PortLayoutDefinition<AbsoluteArgs> = (
   portsPositionArgs,
   elemBBox,
 ) => {

@@ -1,6 +1,6 @@
 import { NumberExt } from '../../common'
-import { PaddingOptions } from './util'
-import { Router } from './index'
+import type { RouterDefinition } from './index'
+import type { PaddingOptions } from './util'
 
 export interface OneSideRouterOptions extends PaddingOptions {
   side?: 'left' | 'top' | 'right' | 'bottom'
@@ -9,11 +9,11 @@ export interface OneSideRouterOptions extends PaddingOptions {
 /**
  * Routes the edge always to/from a certain side
  */
-export const oneSide: Router.Definition<OneSideRouterOptions> = function (
+export const oneSide: RouterDefinition<OneSideRouterOptions> = (
   vertices,
   options,
   edgeView,
-) {
+) => {
   const side = options.side || 'bottom'
   const padding = NumberExt.normalizeSides(options.padding || 40)
   const sourceBBox = edgeView.sourceBBox

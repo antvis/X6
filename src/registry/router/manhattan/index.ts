@@ -1,9 +1,9 @@
 import { FunctionExt } from '../../../common'
-import { Router } from '../index'
+import type { RouterDefinition } from '../index'
+import { defaults, type ManhattanRouterOptions } from './options'
 import { router } from './router'
-import { defaults, ManhattanRouterOptions } from './options'
 
-export const manhattan: Router.Definition<Partial<ManhattanRouterOptions>> =
+export const manhattan: RouterDefinition<Partial<ManhattanRouterOptions>> =
   function (vertices, options, edgeView) {
     return FunctionExt.call(
       router,

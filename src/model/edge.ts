@@ -1,12 +1,17 @@
 import { type KeyValue, ObjectExt, type Size, StringExt } from '../common'
 import { Point, Polyline } from '../geometry'
 import type {
-  ConnectionPoint,
-  Connector,
-  EdgeAnchor,
-  NodeAnchor,
-  Router,
   CellAttrs,
+  ConnectionPointManualItem,
+  ConnectionPointNativeItem,
+  ConnectorManualItem,
+  ConnectorNativeItem,
+  EdgeAnchorManualItem,
+  EdgeAnchorNativeItem,
+  NodeAnchorManualItem,
+  NodeAnchorNativeItem,
+  RouterManualItem,
+  RouterNativeItem,
 } from '../registry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
@@ -534,8 +539,8 @@ export class Edge<
             return null
           })
         : current
-        ? [...current]
-        : []
+          ? [...current]
+          : []
 
     const removed =
       previous && current
@@ -551,8 +556,8 @@ export class Edge<
             return null
           })
         : previous
-        ? [...previous]
-        : []
+          ? [...previous]
+          : []
 
     if (added.length > 0) {
       this.notify('labels:added', { added, cell: this, edge: this })
@@ -652,8 +657,8 @@ export class Edge<
             return null
           })
         : current
-        ? [...current]
-        : []
+          ? [...current]
+          : []
 
     const removed =
       previous && current
@@ -664,8 +669,8 @@ export class Edge<
             return null
           })
         : previous
-        ? [...previous]
-        : []
+          ? [...previous]
+          : []
 
     if (added.length > 0) {
       this.notify('vertexs:added', { added, cell: this, edge: this })
@@ -853,8 +858,8 @@ export class Edge<
 }
 
 export namespace Edge {
-  export type RouterData = Router.NativeItem | Router.ManaualItem
-  export type ConnectorData = Connector.NativeItem | Connector.ManaualItem
+  export type RouterData = RouterNativeItem | RouterManualItem
+  export type ConnectorData = ConnectorNativeItem | ConnectorManualItem
 }
 
 export namespace Edge {
@@ -920,19 +925,19 @@ export namespace Edge {
     magnet?: string
     connectionPoint?:
       | string
-      | ConnectionPoint.NativeItem
-      | ConnectionPoint.ManaualItem
+      | ConnectionPointNativeItem
+      | ConnectionPointManualItem
   }
 
   export type NodeAnchorItem =
     | string
-    | NodeAnchor.NativeItem
-    | NodeAnchor.ManaualItem
+    | NodeAnchorNativeItem
+    | NodeAnchorManualItem
 
   export type EdgeAnchorItem =
     | string
-    | EdgeAnchor.NativeItem
-    | EdgeAnchor.ManaualItem
+    | EdgeAnchorNativeItem
+    | EdgeAnchorManualItem
 
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string

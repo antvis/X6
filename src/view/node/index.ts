@@ -6,7 +6,7 @@ import { Cell } from '../../model/cell'
 import type { Edge } from '../../model/edge'
 import type { Node } from '../../model/node'
 import type { PortManager } from '../../model/port'
-import type { CellAttrs, PortLayout, SimpleAttrs } from '../../registry'
+import type { CellAttrs, PortLayoutResult } from '../../registry'
 import type { AttrManagerUpdateOptions } from '../attr'
 import { CellView } from '../cell'
 import type { EdgeView } from '../edge'
@@ -466,7 +466,7 @@ export class NodeView<
 
   protected applyPortTransform(
     element: Element,
-    layout: PortLayout.Result,
+    layout: PortLayoutResult,
     initialAngle = 0,
   ) {
     const angle = layout.angle

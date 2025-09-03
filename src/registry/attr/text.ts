@@ -6,9 +6,9 @@ import {
   ObjectExt,
   type Text,
 } from '../../common'
-import type { Definition, QualifyFucntion } from './index'
+import type { AttrDefinition, QualifyFunction } from './index'
 
-export const text: Definition = {
+export const text: AttrDefinition = {
   qualify(text, { attrs }) {
     return attrs.textWrap == null || !ObjectExt.isPlainObject(attrs.textWrap)
   },
@@ -67,7 +67,7 @@ export const text: Definition = {
   },
 }
 
-export const textWrap: Definition = {
+export const textWrap: AttrDefinition = {
   qualify: ObjectExt.isPlainObject,
   set(val, { view, elem, attrs, refBBox }) {
     const info = val as JSONObject
@@ -133,30 +133,30 @@ export const textWrap: Definition = {
   },
 }
 
-const isTextInUse: QualifyFucntion = (val, { attrs }) => {
+const isTextInUse: QualifyFunction = (val, { attrs }) => {
   return attrs.text !== undefined
 }
 
-export const lineHeight: Definition = {
+export const lineHeight: AttrDefinition = {
   qualify: isTextInUse,
 }
 
-export const textVerticalAnchor: Definition = {
+export const textVerticalAnchor: AttrDefinition = {
   qualify: isTextInUse,
 }
 
-export const textPath: Definition = {
+export const textPath: AttrDefinition = {
   qualify: isTextInUse,
 }
 
-export const annotations: Definition = {
+export const annotations: AttrDefinition = {
   qualify: isTextInUse,
 }
 
-export const eol: Definition = {
+export const eol: AttrDefinition = {
   qualify: isTextInUse,
 }
 
-export const displayEmpty: Definition = {
+export const displayEmpty: AttrDefinition = {
   qualify: isTextInUse,
 }
