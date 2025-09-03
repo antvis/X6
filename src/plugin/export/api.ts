@@ -1,32 +1,34 @@
 import { Graph } from '../../graph'
-import { Export } from './index'
+import type { Export } from './index'
+import type {
+  ExportToImageOptions,
+  ExportToSVGCallback,
+  ExportToSVGOptions,
+} from './type'
 
 declare module '../../graph/graph' {
   interface Graph {
-    toSVG: (
-      callback: Export.ToSVGCallback,
-      options?: Export.ToSVGOptions,
-    ) => void
-    toSVGAsync: (options?: Export.ToSVGOptions) => Promise<string>
+    toSVG: (callback: ExportToSVGCallback, options?: ExportToSVGOptions) => void
+    toSVGAsync: (options?: ExportToSVGOptions) => Promise<string>
     toPNG: (
-      callback: Export.ToSVGCallback,
-      options?: Export.ToImageOptions,
+      callback: ExportToSVGCallback,
+      options?: ExportToImageOptions,
     ) => void
-    toPNGAsync: (options?: Export.ToImageOptions) => Promise<string>
+    toPNGAsync: (options?: ExportToImageOptions) => Promise<string>
     toJPEG: (
-      callback: Export.ToSVGCallback,
-      options?: Export.ToImageOptions,
+      callback: ExportToSVGCallback,
+      options?: ExportToImageOptions,
     ) => void
-    toJPEGAsync: (options?: Export.ToImageOptions) => Promise<string>
-    exportPNG: (fileName?: string, options?: Export.ToImageOptions) => void
-    exportJPEG: (fileName?: string, options?: Export.ToImageOptions) => void
-    exportSVG: (fileName?: string, options?: Export.ToSVGOptions) => void
+    toJPEGAsync: (options?: ExportToImageOptions) => Promise<string>
+    exportPNG: (fileName?: string, options?: ExportToImageOptions) => void
+    exportJPEG: (fileName?: string, options?: ExportToImageOptions) => void
+    exportSVG: (fileName?: string, options?: ExportToSVGOptions) => void
   }
 }
 
 Graph.prototype.toSVG = function (
-  callback: Export.ToSVGCallback,
-  options?: Export.ToSVGOptions,
+  callback: ExportToSVGCallback,
+  options?: ExportToSVGOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -34,15 +36,15 @@ Graph.prototype.toSVG = function (
   }
 }
 
-Graph.prototype.toSVGAsync = async function (options?: Export.ToSVGOptions) {
+Graph.prototype.toSVGAsync = async function (options?: ExportToSVGOptions) {
   return new Promise((resolve) => {
     this.toSVG(resolve, options)
   })
 }
 
 Graph.prototype.toPNG = function (
-  callback: Export.ToSVGCallback,
-  options?: Export.ToImageOptions,
+  callback: ExportToSVGCallback,
+  options?: ExportToImageOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -50,15 +52,15 @@ Graph.prototype.toPNG = function (
   }
 }
 
-Graph.prototype.toPNGAsync = async function (options?: Export.ToImageOptions) {
+Graph.prototype.toPNGAsync = async function (options?: ExportToImageOptions) {
   return new Promise((resolve) => {
     this.toPNG(resolve, options)
   })
 }
 
 Graph.prototype.toJPEG = function (
-  callback: Export.ToSVGCallback,
-  options?: Export.ToImageOptions,
+  callback: ExportToSVGCallback,
+  options?: ExportToImageOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -66,7 +68,7 @@ Graph.prototype.toJPEG = function (
   }
 }
 
-Graph.prototype.toJPEGAsync = async function (options?: Export.ToImageOptions) {
+Graph.prototype.toJPEGAsync = async function (options?: ExportToImageOptions) {
   return new Promise((resolve) => {
     this.toJPEG(resolve, options)
   })
@@ -74,7 +76,7 @@ Graph.prototype.toJPEGAsync = async function (options?: Export.ToImageOptions) {
 
 Graph.prototype.exportPNG = function (
   fileName?: string,
-  options?: Export.ToImageOptions,
+  options?: ExportToImageOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -84,7 +86,7 @@ Graph.prototype.exportPNG = function (
 
 Graph.prototype.exportJPEG = function (
   fileName?: string,
-  options?: Export.ToImageOptions,
+  options?: ExportToImageOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
@@ -94,7 +96,7 @@ Graph.prototype.exportJPEG = function (
 
 Graph.prototype.exportSVG = function (
   fileName?: string,
-  options?: Export.ToSVGOptions,
+  options?: ExportToSVGOptions,
 ) {
   const instance = this.getPlugin('export') as Export
   if (instance) {
