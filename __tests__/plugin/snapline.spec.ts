@@ -12,8 +12,9 @@ describe('plugin/snapline', () => {
   let cleanup: () => void
 
   beforeEach(() => {
-    graph = createTestGraph().graph
-    cleanup = createTestGraph().cleanup
+    const { graph: g, cleanup: c } = createTestGraph()
+    graph = g
+    cleanup = c
   })
 
   afterEach(() => {
