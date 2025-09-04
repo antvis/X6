@@ -1,5 +1,9 @@
 import { Path, Polyline } from '../../geometry'
-import type { ConnectorDefinition } from './index'
+import type { ConnectorBaseOptions, ConnectorDefinition } from './index'
+
+export interface NormalConnectorOptions extends ConnectorBaseOptions {
+  split?: boolean | number
+}
 
 export const normal: ConnectorDefinition = (
   sourcePoint,
