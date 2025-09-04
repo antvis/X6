@@ -1,5 +1,9 @@
 import { Basecoat, disposable, FunctionExt, type KeyValue } from '../common'
-import { Dijkstra } from '../common/algorithm'
+import {
+  type DijkstraAdjacencyList,
+  type DijkstraWeight,
+  dijkstra,
+} from '../common/algorithm'
 import { type Point, Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import { Cell } from './cell'
@@ -1203,7 +1207,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     target: Cell | string,
     options: Model.GetShortestPathOptions = {},
   ) {
-    const adjacencyList: Dijkstra.AdjacencyList = {}
+    const adjacencyList: DijkstraAdjacencyList = {}
     this.getEdges().forEach((edge) => {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
@@ -1223,7 +1227,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
 
     const sourceId = typeof source === 'string' ? source : source.id
-    const previous = Dijkstra.run(adjacencyList, sourceId, options.weight)
+    const previous = dijkstra(adjacencyList, sourceId, options.weight)
 
     const path = []
     let targetId = typeof target === 'string' ? target : target.id
@@ -1405,7 +1409,7 @@ export namespace Model {
 
   export interface GetShortestPathOptions {
     directed?: boolean
-    weight?: Dijkstra.Weight
+    weight?: DijkstraWeight
   }
 
   export interface GetPredecessorsOptions extends Cell.GetDescendantsOptions {

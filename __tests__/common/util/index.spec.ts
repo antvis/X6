@@ -1,7 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Point, Line, Rectangle, Polyline, Ellipse } from '@/geometry'
-import { Dom } from '@/common/dom'
-import { Util } from '@/common/util'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { Util } from '../../../src/common'
+import { Dom } from '../../../src/common/dom'
+import {
+  Ellipse,
+  Line,
+  Point,
+  Polyline,
+  Rectangle,
+} from '../../../src/geometry'
 
 describe('Util', () => {
   beforeEach(() => {
@@ -90,7 +96,9 @@ describe('Util', () => {
       'polygon',
     )
     vi.spyOn(Dom, 'getPointsFromSvgElement').mockReturnValue([
+      // @ts-expect-error
       new Point(0, 0),
+      // @ts-expect-error
       new Point(1, 1),
     ])
     const result = Util.toGeometryShape(poly) as Polyline
@@ -102,6 +110,7 @@ describe('Util', () => {
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
     svg.appendChild(rect)
     vi.spyOn(Util, 'getBBox').mockReturnValue(new Rectangle(0, 0, 10, 10))
+    // @ts-expect-error
     vi.spyOn(Dom, 'scale').mockReturnValue({ sx: 1, sy: 1 })
     vi.spyOn(Dom, 'getTransformToElement').mockReturnValue(new DOMMatrix())
     vi.spyOn(Dom, 'matrixToTransformString').mockReturnValue('matrix(...)')
