@@ -7,9 +7,7 @@ class MockImage {
   height = 80
   src = ''
   onload?: () => void
-  constructor() {
-    setTimeout(() => this.onload?.(), 50)
-  }
+  constructor() {}
 }
 
 // 模拟 Canvas 和 Context

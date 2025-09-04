@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Angle } from '../../../src/geometry'
 import { watermark } from '../../../src/registry/background/watermark'
 
@@ -32,6 +32,10 @@ beforeEach(() => {
   vi.clearAllMocks()
   vi.stubGlobal('document', { createElement: mockCreateElement })
   vi.stubGlobal('Image', MockImage as any)
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
 })
 
 describe('watermark', () => {
