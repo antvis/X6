@@ -3,7 +3,7 @@ import type { Edge, Node } from '../../model'
 import type { EdgeView, NodeView } from '../../view'
 import type { ConnectionStrategyDefinition } from './index'
 
-function toPercentage(value: number, max: number) {
+export function toPercentage(value: number, max: number) {
   if (max === 0) {
     return '0%'
   }
@@ -11,13 +11,8 @@ function toPercentage(value: number, max: number) {
   return `${Math.round((value / max) * 100)}%`
 }
 
-function pin(relative: boolean) {
-  const strategy: ConnectionStrategyDefinition = (
-    terminal,
-    view,
-    magnet,
-    coords,
-  ) => {
+export function pin(relative: boolean) {
+  const strategy = (terminal, view, magnet, coords) => {
     return view.isEdgeElement(magnet)
       ? pinEdgeTerminal(relative, terminal, view as EdgeView, magnet, coords)
       : pinNodeTerminal(relative, terminal, view as NodeView, magnet, coords)
@@ -26,7 +21,7 @@ function pin(relative: boolean) {
   return strategy
 }
 
-function pinNodeTerminal(
+export function pinNodeTerminal(
   relative: boolean,
   data: Edge.TerminalCellData,
   view: NodeView,
@@ -59,7 +54,7 @@ function pinNodeTerminal(
   return data
 }
 
-function pinEdgeTerminal(
+export function pinEdgeTerminal(
   relative: boolean,
   end: Edge.TerminalCellData,
   view: EdgeView,
