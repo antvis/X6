@@ -1,11 +1,11 @@
 import * as Dom from '../dom/main'
-import { Translation, Rotation, Scale } from '../types'
+import type { Rotation, Scale, Translation } from '../types'
 
 export class Vector {
   public node: SVGElement
 
   protected get [Symbol.toStringTag]() {
-    return Vector.toStringTag
+    return VectorToStringTag
   }
 
   public get type() {
@@ -18,6 +18,78 @@ export class Vector {
 
   public set id(id: string) {
     this.node.id = id
+  }
+
+  public static isVector(instance: any): instance is Vector {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Vector) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const vector = instance as Vector
+
+    if (
+      (tag == null || tag === VectorToStringTag) &&
+      vector.node instanceof SVGElement &&
+      typeof vector.sample === 'function' &&
+      typeof vector.toPath === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+
+  public static create(
+    elem: Vector | SVGElement | string,
+    attrs?: Dom.Attributes,
+    children?: SVGElement | Vector | (SVGElement | Vector)[],
+  ) {
+    return new Vector(elem, attrs, children)
+  }
+
+  public static createVectors(markup: string) {
+    if (markup[0] === '<') {
+      const svgDoc = Dom.createSvgDocument(markup)
+      const vels: Vector[] = []
+      for (let i = 0, ii = svgDoc.childNodes.length; i < ii; i += 1) {
+        const childNode = svgDoc.childNodes[i]!
+        vels.push(
+          Vector.create(document.importNode(childNode, true) as SVGElement),
+        )
+      }
+
+      return vels
+    }
+
+    return [Vector.create(markup)]
+  }
+
+  public static toNode<T extends SVGElement = SVGElement>(
+    elem: SVGElement | DocumentFragment | Vector,
+  ): T {
+    if (Vector.isVector(elem)) {
+      return elem.node as T
+    }
+    return elem as T
+  }
+
+  public static toNodes(
+    elems:
+      | SVGElement
+      | DocumentFragment
+      | Vector
+      | (SVGElement | DocumentFragment | Vector)[],
+  ) {
+    if (Array.isArray(elems)) {
+      return elems.map((elem) => Vector.toNode(elem))
+    }
+
+    return [Vector.toNode(elems)]
   }
 
   constructor(
@@ -465,76 +537,4 @@ export class Vector {
   }
 }
 
-export namespace Vector {
-  export const toStringTag = `X6.${Vector.name}`
-
-  export function isVector(instance: any): instance is Vector {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Vector) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const vector = instance as Vector
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      vector.node instanceof SVGElement &&
-      typeof vector.sample === 'function' &&
-      typeof vector.toPath === 'function'
-    ) {
-      return true
-    }
-
-    return false
-  }
-
-  export function create(
-    elem: Vector | SVGElement | string,
-    attrs?: Dom.Attributes,
-    children?: SVGElement | Vector | (SVGElement | Vector)[],
-  ) {
-    return new Vector(elem, attrs, children)
-  }
-
-  export function createVectors(markup: string) {
-    if (markup[0] === '<') {
-      const svgDoc = Dom.createSvgDocument(markup)
-      const vels: Vector[] = []
-      for (let i = 0, ii = svgDoc.childNodes.length; i < ii; i += 1) {
-        const childNode = svgDoc.childNodes[i]!
-        vels.push(create(document.importNode(childNode, true) as SVGElement))
-      }
-
-      return vels
-    }
-
-    return [create(markup)]
-  }
-
-  export function toNode<T extends SVGElement = SVGElement>(
-    elem: SVGElement | DocumentFragment | Vector,
-  ): T {
-    if (isVector(elem)) {
-      return elem.node as T
-    }
-    return elem as T
-  }
-
-  export function toNodes(
-    elems:
-      | SVGElement
-      | DocumentFragment
-      | Vector
-      | (SVGElement | DocumentFragment | Vector)[],
-  ) {
-    if (Array.isArray(elems)) {
-      return elems.map((elem) => toNode(elem))
-    }
-
-    return [toNode(elems)]
-  }
-}
+export const VectorToStringTag = `X6.${Vector.name}`

@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, afterEach, vi } from 'vitest'
-import { Vector } from '@/common/vector'
-import { Dom } from '@/common/dom'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { Dom } from '../../../src/common/dom'
+import { Vector } from '../../../src/common/vector'
 
 describe('Vector', () => {
   let rect: Vector
