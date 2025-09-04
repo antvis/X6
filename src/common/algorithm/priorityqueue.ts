@@ -1,3 +1,20 @@
+interface DataItem<T> {
+  priority: number
+  value: T
+  id?: string
+}
+
+type Data<T> = DataItem<T>[]
+
+export interface PriorityQueueOptions<T> {
+  comparator?: Comparator
+  data?: Data<T>
+}
+
+type Comparator = (a: number, b: number) => number
+
+const DefaultComparator: Comparator = (a, b) => a - b
+
 /**
  * An implementation of the Priority Queue abstract data type.
  *
@@ -17,12 +34,12 @@
  * - peekPriority: `O(1)`
  */
 export class PriorityQueue<T> {
-  protected readonly comparator: PriorityQueue.Comparator
+  protected readonly comparator: Comparator
   protected index: { [key: string]: number }
-  protected data: PriorityQueue.Data<T>
+  protected data: Data<T>
 
-  constructor(options: PriorityQueue.Options<T> = {}) {
-    this.comparator = options.comparator || PriorityQueue.defaultComparator
+  constructor(options: PriorityQueueOptions<T> = {}) {
+    this.comparator = options.comparator || DefaultComparator
     this.index = {}
     this.data = options.data || []
     this.heapify()
@@ -44,7 +61,7 @@ export class PriorityQueue<T> {
    * @param id
    */
   insert(priority: number, value: T, id?: string) {
-    const item: PriorityQueue.DataItem<T> = { priority, value }
+    const item: DataItem<T> = { priority, value }
     const index = this.data.length
     if (id) {
       item.id = id
@@ -96,7 +113,7 @@ export class PriorityQueue<T> {
     const data = this.data
     const peek = data[0]
     const last = data.pop()!
-    if (peek.id) {
+    if (peek?.id) {
       delete this.index[peek.id]
     }
 
@@ -186,24 +203,4 @@ export class PriorityQueue<T> {
       }
     }
   }
-}
-
-export namespace PriorityQueue {
-  export interface Options<T> {
-    comparator?: Comparator
-    data?: Data<T>
-  }
-
-  export type Data<T> = DataItem<T>[]
-
-  export interface DataItem<T> {
-    priority: number
-    value: T
-    id?: string
-  }
-
-  export type Comparator = (a: number, b: number) => number
-}
-export namespace PriorityQueue {
-  export const defaultComparator: Comparator = (a, b) => a - b
 }
