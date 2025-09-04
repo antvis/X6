@@ -87,5 +87,5 @@ export function pinEdgeTerminal(
   return end
 }
 
-export const pinRelative = pin(true)
-export const pinAbsolute = pin(false)
+export const pinRelative: ConnectionStrategyDefinition = pin(true)
+export const pinAbsolute: ConnectionStrategyDefinition = pin(false)
