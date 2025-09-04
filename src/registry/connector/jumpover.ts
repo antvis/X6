@@ -10,7 +10,10 @@ const CLOSE_PROXIMITY_PADDING = 1
 const F13 = 1 / 3
 const F23 = 2 / 3
 
-function setupUpdating(view: EdgeView) {
+let jumppedLines: Line[] = []
+let skippedPoints: Point[] = []
+
+export function setupUpdating(view: EdgeView) {
   let updateList = (view.graph as any)._jumpOverUpdateList
 
   // first time setup for this paper
@@ -45,7 +48,7 @@ function setupUpdating(view: EdgeView) {
   }
 }
 
-function createLines(
+export function createLines(
   sourcePoint: Point.PointLike,
   targetPoint: Point.PointLike,
   route: Point.PointLike[] = [],
@@ -63,7 +66,7 @@ function createLines(
   return lines
 }
 
-function findLineIntersections(line: Line, crossCheckLines: Line[]) {
+export function findLineIntersections(line: Line, crossCheckLines: Line[]) {
   const intersections: Point[] = []
   crossCheckLines.forEach((crossCheckLine) => {
     const intersection = line.intersectsWithLine(crossCheckLine)
@@ -86,14 +89,18 @@ function findLineIntersections(line: Line, crossCheckLines: Line[]) {
   return intersections
 }
 
-function getDistence(p1: Point, p2: Point) {
+export function getDistence(p1: Point, p2: Point) {
   return new Line(p1, p2).squaredLength()
 }
 
 /**
  * Split input line into multiple based on intersection points.
  */
-function createJumps(line: Line, intersections: Point[], jumpSize: number) {
+export function createJumps(
+  line: Line,
+  intersections: Point[],
+  jumpSize: number,
+) {
   return intersections.reduce<Line[]>((memo, point, idx) => {
     // skipping points that were merged with the previous line
     // to make bigger arc over multiple lines that are close to each other
@@ -151,7 +158,7 @@ function createJumps(line: Line, intersections: Point[], jumpSize: number) {
   }, [])
 }
 
-function buildPath(
+export function buildPath(
   lines: Line[],
   jumpSize: number,
   jumpType: JumpType,
@@ -248,7 +255,7 @@ function buildPath(
   return path
 }
 
-function buildRoundedSegment(
+export function buildRoundedSegment(
   offset: number,
   path: Path,
   curr: Point,
@@ -289,9 +296,6 @@ export interface JumpoverConnectorOptions extends ConnectorBaseOptions {
   type?: JumpType
   ignoreConnectors?: string[]
 }
-
-let jumppedLines: Line[]
-let skippedPoints: Point[]
 
 export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
   function (sourcePoint, targetPoint, routePoints, options = {}) {

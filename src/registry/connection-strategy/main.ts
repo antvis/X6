@@ -1,2 +1,2 @@
-export * from './noop'
-export * from './pin'
+export { noop } from './noop'
+export { pinAbsolute, pinRelative } from './pin'
