@@ -8,7 +8,7 @@ describe('util functions', () => {
       expect(getString('', 'default')).toBe('')
     })
 
-    it('should return the value when it is a number (converted to string)', () => {
+    it('should return the value when it is a number', () => {
       expect(getString(123 as any, 'default')).toBe(123)
     })
 
@@ -20,7 +20,7 @@ describe('util functions', () => {
       expect(getString(undefined, 'default')).toBe('default')
     })
 
-    it('should return default value when value is empty string and treatEmptyAsDefault is true', () => {
+    it('should return empty string when value is empty string', () => {
       expect(getString('', 'default')).toBe('')
     })
   })
@@ -56,7 +56,7 @@ describe('util functions', () => {
       expect(getNumber([] as any, 100)).toBe(100)
     })
 
-    it('should handle string numbers that can be converted', () => {
+    it('should return default value for string numbers', () => {
       expect(getNumber('42' as any, 0)).toBe(0)
     })
   })
