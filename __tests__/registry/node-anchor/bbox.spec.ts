@@ -2,18 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { BBoxEndpointOptions } from '../../../src/registry/node-anchor/bbox'
 import * as bboxModule from '../../../src/registry/node-anchor/bbox'
 
-// Mock 相关依赖
-vi.mock('../../../src/common', () => ({
-  NumberExt: {
-    normalizePercentage: vi.fn((value, base) => {
-      if (typeof value === 'string' && value.endsWith('%')) {
-        return (parseFloat(value) / 100) * base
-      }
-      return Number(value) || 0
-    }),
-  },
-}))
-
 vi.mock('../../../src/geometry', () => ({
   Point: {
     prototype: {

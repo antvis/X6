@@ -10,13 +10,6 @@ import {
 describe('Port Label Layout - InOut', () => {
   // 测试用的矩形和点
   const testBBox = new Rectangle(0, 0, 100, 100)
-  const center = testBBox.getCenter()
-
-  describe('getBBoxAngles', () => {
-    it('应该正确计算矩形的角度', () => {
-      const angles = [45, 135, 225, 315]
-    })
-  })
 
   describe('outside layout', () => {
     it('应该在右侧端口位置正确布局', () => {

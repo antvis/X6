@@ -3,7 +3,6 @@ import { Rectangle } from '../../../src/geometry'
 import {
   bottom,
   left,
-  manual,
   right,
   top,
 } from '../../../src/registry/port-label-layout/side'
