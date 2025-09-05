@@ -1,8 +1,8 @@
-import { ModifierKey } from '../../common'
+import type { ModifierKey } from '../../common'
 import { Graph } from '../../graph'
-import { Cell } from '../../model'
-import { Selection } from './index'
-import { SelectionImpl } from './selection'
+import type { Cell } from '../../model'
+import type { Selection } from './index'
+import type { SelectionImplEventArgsRecord } from './selection'
 
 declare module '../../graph/graph' {
   interface Graph {
@@ -50,7 +50,7 @@ declare module '../../graph/graph' {
 }
 
 declare module '../../graph/events' {
-  interface EventArgs extends SelectionImpl.SelectionEventArgs {}
+  interface EventArgs extends SelectionImplEventArgsRecord {}
 }
 
 Graph.prototype.isSelectionEnabled = function () {
