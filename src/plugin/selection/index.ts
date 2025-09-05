@@ -7,12 +7,22 @@ import {
 } from '../../common'
 import type { EventArgs, Graph } from '../../graph'
 import type { Cell } from '../../model'
-import { SelectionImpl } from './selection'
+import {
+  SelectionImpl,
+  type SelectionImplAddOptions,
+  type SelectionImplCommonOptions,
+  type SelectionImplContent,
+  type SelectionImplEventArgs,
+  type SelectionImplFilter,
+  type SelectionImplOptions,
+  type SelectionImplRemoveOptions,
+  type SelectionImplSetOptions,
+} from './selection'
 import { content } from './style/raw'
 import './api'
 
 export class Selection
-  extends Basecoat<SelectionImpl.EventArgs>
+  extends Basecoat<SelectionImplEventArgs>
   implements Graph.Plugin
 {
   public name = 'selection'
@@ -398,7 +408,7 @@ export class Selection
   protected onBoxMouseDown({
     e,
     cell,
-  }: SelectionImpl.EventArgs['box:mousedown']) {
+  }: SelectionImplEventArgs['box:mousedown']) {
     if (!this.disabled) {
       if (this.allowMultipleSelection(e)) {
         this.unselect(cell)
@@ -461,19 +471,19 @@ export class Selection
 }
 
 export namespace Selection {
-  export interface EventArgs extends SelectionImpl.EventArgs {}
-  export interface Options extends SelectionImpl.CommonOptions {
+  export interface EventArgs extends SelectionImplEventArgs {}
+  export interface Options extends SelectionImplCommonOptions {
     enabled?: boolean
   }
 
-  export type Filter = SelectionImpl.Filter
-  export type Content = SelectionImpl.Content
+  export type Filter = SelectionImplFilter
+  export type Content = SelectionImplContent
 
-  export type SetOptions = SelectionImpl.SetOptions
-  export type AddOptions = SelectionImpl.AddOptions
-  export type RemoveOptions = SelectionImpl.RemoveOptions
+  export type SetOptions = SelectionImplSetOptions
+  export type AddOptions = SelectionImplAddOptions
+  export type RemoveOptions = SelectionImplRemoveOptions
 
-  export const defaultOptions: Partial<SelectionImpl.Options> = {
+  export const defaultOptions: Partial<SelectionImplOptions> = {
     rubberband: false,
     rubberNode: true,
     rubberEdge: false, // next version will set to true
