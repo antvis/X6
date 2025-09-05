@@ -2,7 +2,7 @@ import { Dom } from '../../common'
 import { Point } from '../../geometry'
 import type { Edge } from '../../model/edge'
 import type { EdgeView } from '../../view/edge'
-import { ToolItem, type ToolItemOptions, ToolsView } from '../../view/tool'
+import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
 
 class Arrowhead extends ToolItem<EdgeView, Arrowhead.Options> {
