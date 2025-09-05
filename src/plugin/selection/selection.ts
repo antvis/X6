@@ -10,8 +10,8 @@ import type { Graph } from '../../graph'
 import { Cell, Collection, type Edge, type Model, type Node } from '../../model'
 import { type CellView, View } from '../../view'
 
-export class SelectionImpl extends View<SelectionImpl.EventArgs> {
-  public readonly options: SelectionImpl.Options
+export class SelectionImpl extends View<SelectionImplEventArgs> {
+  public readonly options: SelectionImplOptions
   protected readonly collection: Collection
   protected selectionContainer: HTMLElement
   protected selectionContent: HTMLElement
@@ -23,7 +23,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected get boxClassName() {
-    return this.prefixClassName(Private.classNames.box)
+    return this.prefixClassName(classNames.box)
   }
 
   protected get $boxes() {
@@ -34,7 +34,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     return this.options
   }
 
-  constructor(options: SelectionImpl.Options) {
+  constructor(options: SelectionImplOptions) {
     super()
     this.options = options
 
@@ -46,7 +46,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       this.collection = this.options.collection
     } else {
       this.collection = new Collection([], {
-        comparator: Private.depthComparator,
+        comparator: depthComparator,
       })
       this.options.collection = this.collection
     }
@@ -165,21 +165,21 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     return this.collection.toArray()
   }
 
-  select(cells: Cell | Cell[], options: SelectionImpl.AddOptions = {}) {
+  select(cells: Cell | Cell[], options: SelectionImplAddOptions = {}) {
     options.dryrun = true
     const items = this.filter(Array.isArray(cells) ? cells : [cells])
     this.collection.add(items, options)
     return this
   }
 
-  unselect(cells: Cell | Cell[], options: SelectionImpl.RemoveOptions = {}) {
+  unselect(cells: Cell | Cell[], options: SelectionImplRemoveOptions = {}) {
     // dryrun to prevent cell be removed from graph
     options.dryrun = true
     this.collection.remove(Array.isArray(cells) ? cells : [cells], options)
     return this
   }
 
-  reset(cells?: Cell | Cell[], options: SelectionImpl.SetOptions = {}) {
+  reset(cells?: Cell | Cell[], options: SelectionImplSetOptions = {}) {
     if (cells) {
       if (options.batch) {
         const filterCells = this.filter(Array.isArray(cells) ? cells : [cells])
@@ -224,7 +224,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     return this.clean(options)
   }
 
-  clean(options: SelectionImpl.SetOptions = {}) {
+  clean(options: SelectionImplSetOptions = {}) {
     if (this.length) {
       if (options.batch === false) {
         this.unselect(this.cells, options)
@@ -235,11 +235,11 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     return this
   }
 
-  setFilter(filter?: SelectionImpl.Filter) {
+  setFilter(filter?: SelectionImplFilter) {
     this.options.filter = filter
   }
 
-  setContent(content?: SelectionImpl.Content) {
+  setContent(content?: SelectionImplContent) {
     this.options.content = content
   }
 
@@ -273,7 +273,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       height: 1,
     })
 
-    this.setEventData<EventData.Selecting>(evt, {
+    this.setEventData<SelectingEventData>(evt, {
       action: 'selecting',
       clientX: evt.clientX,
       clientY: evt.clientY,
@@ -284,7 +284,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       moving: false,
     })
 
-    this.delegateDocumentEvents(Private.documentEvents, evt.data)
+    this.delegateDocumentEvents(documentEvents, evt.data)
   }
 
   filter(cells: Cell[]) {
@@ -309,7 +309,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
   protected stopSelecting(evt: Dom.MouseUpEvent) {
     const graph = this.graph
-    const eventData = this.getEventData<EventData.Common>(evt)
+    const eventData = this.getEventData<CommonEventData>(evt)
     const action = eventData.action
     switch (action) {
       case 'selecting': {
@@ -330,7 +330,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
       case 'translating': {
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
         if (!this.options.following) {
-          const data = eventData as EventData.Translating
+          const data = eventData as TranslatingEventData
           this.updateSelectedNodesPosition({
             dx: data.clientX - data.originX,
             dy: data.clientY - data.originY,
@@ -349,7 +349,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected onMouseUp(evt: Dom.MouseUpEvent) {
-    const action = this.getEventData<EventData.Common>(evt).action
+    const action = this.getEventData<CommonEventData>(evt).action
     if (action) {
       this.stopSelecting(evt)
       this.undelegateDocumentEvents()
@@ -368,16 +368,16 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     }
 
     const activeView = this.getCellViewFromElem(e.target)!
-    this.setEventData<EventData.SelectionBox>(e, { activeView })
+    this.setEventData<SelectionBoxEventData>(e, { activeView })
     const client = this.graph.snapToGrid(e.clientX, e.clientY)
     this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
-    this.delegateDocumentEvents(Private.documentEvents, e.data)
+    this.delegateDocumentEvents(documentEvents, e.data)
   }
 
   protected startTranslating(evt: Dom.MouseDownEvent) {
     this.graph.model.startBatch('move-selection')
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
-    this.setEventData<EventData.Translating>(evt, {
+    this.setEventData<TranslatingEventData>(evt, {
       action: 'translating',
       clientX: client.x,
       clientY: client.y,
@@ -404,7 +404,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     return area || null
   }
 
-  protected getSelectionOffset(client: Point, data: EventData.Translating) {
+  protected getSelectionOffset(client: Point, data: TranslatingEventData) {
     let dx = client.x - data.clientX
     let dy = client.y - data.clientY
     const restrict = this.getRestrictArea()
@@ -491,11 +491,11 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
   protected adjustSelection(evt: Dom.MouseMoveEvent) {
     const e = this.normalizeEvent(evt)
-    const eventData = this.getEventData<EventData.Common>(e)
+    const eventData = this.getEventData<CommonEventData>(e)
     const action = eventData.action
     switch (action) {
       case 'selecting': {
-        const data = eventData as EventData.Selecting
+        const data = eventData as SelectingEventData
         if (data.moving !== true) {
           Dom.appendTo(this.container, this.graph.container)
           this.showRubberband()
@@ -525,7 +525,7 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
 
       case 'translating': {
         const client = this.graph.snapToGrid(e.clientX, e.clientY)
-        const data = eventData as EventData.Translating
+        const data = eventData as TranslatingEventData
         const offset = this.getSelectionOffset(client, data)
         if (this.options.following) {
           this.updateSelectedNodesPosition(offset)
@@ -625,10 +625,10 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   protected notifyBoxEvent<
-    K extends keyof SelectionImpl.BoxEventArgs,
+    K extends keyof SelectionImplBoxEventArgsRecord,
     T extends Dom.EventObject,
   >(name: K, e: T, x: number, y: number) {
-    const data = this.getEventData<EventData.SelectionBox>(e)
+    const data = this.getEventData<SelectionBoxEventData>(e)
     const view = data.activeView
     this.trigger(name, { e, view, x, y, cell: view.cell })
   }
@@ -672,41 +672,26 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 
   hide() {
-    Dom.removeClass(
-      this.container,
-      this.prefixClassName(Private.classNames.rubberband),
-    )
-    Dom.removeClass(
-      this.container,
-      this.prefixClassName(Private.classNames.selected),
-    )
+    Dom.removeClass(this.container, this.prefixClassName(classNames.rubberband))
+    Dom.removeClass(this.container, this.prefixClassName(classNames.selected))
   }
 
   protected showRubberband() {
-    Dom.addClass(
-      this.container,
-      this.prefixClassName(Private.classNames.rubberband),
-    )
+    Dom.addClass(this.container, this.prefixClassName(classNames.rubberband))
   }
 
   protected hideRubberband() {
-    Dom.removeClass(
-      this.container,
-      this.prefixClassName(Private.classNames.rubberband),
-    )
+    Dom.removeClass(this.container, this.prefixClassName(classNames.rubberband))
   }
 
   protected showSelected() {
     Dom.removeAttribute(this.container, 'style')
-    Dom.addClass(
-      this.container,
-      this.prefixClassName(Private.classNames.selected),
-    )
+    Dom.addClass(this.container, this.prefixClassName(classNames.selected))
   }
 
   protected createContainer() {
     this.container = document.createElement('div')
-    Dom.addClass(this.container, this.prefixClassName(Private.classNames.root))
+    Dom.addClass(this.container, this.prefixClassName(classNames.root))
     if (this.options.className) {
       Dom.addClass(this.container, this.options.className)
     }
@@ -714,13 +699,13 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
     this.selectionContainer = document.createElement('div')
     Dom.addClass(
       this.selectionContainer,
-      this.prefixClassName(Private.classNames.inner),
+      this.prefixClassName(classNames.inner),
     )
 
     this.selectionContent = document.createElement('div')
     Dom.addClass(
       this.selectionContent,
-      this.prefixClassName(Private.classNames.content),
+      this.prefixClassName(classNames.content),
     )
 
     Dom.append(this.selectionContainer, this.selectionContent)
@@ -962,169 +947,163 @@ export class SelectionImpl extends View<SelectionImpl.EventArgs> {
   }
 }
 
-export namespace SelectionImpl {
-  type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown'
+type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown'
 
-  export interface CommonOptions {
-    model?: Model
-    collection?: Collection
-    className?: string
-    strict?: boolean
-    filter?: Filter
-    modifiers?: string | ModifierKey[] | null
-    multiple?: boolean
-    multipleSelectionModifiers?: string | ModifierKey[] | null
+export interface SelectionImplCommonOptions {
+  model?: Model
+  collection?: Collection
+  className?: string
+  strict?: boolean
+  filter?: SelectionImplFilter
+  modifiers?: string | ModifierKey[] | null
+  multiple?: boolean
+  multipleSelectionModifiers?: string | ModifierKey[] | null
 
-    selectCellOnMoved?: boolean
-    selectNodeOnMoved?: boolean
-    selectEdgeOnMoved?: boolean
+  selectCellOnMoved?: boolean
+  selectNodeOnMoved?: boolean
+  selectEdgeOnMoved?: boolean
 
-    showEdgeSelectionBox?: boolean
-    showNodeSelectionBox?: boolean
-    movable?: boolean
-    following?: boolean
-    content?: Content
+  showEdgeSelectionBox?: boolean
+  showNodeSelectionBox?: boolean
+  movable?: boolean
+  following?: boolean
+  content?: SelectionImplContent
 
-    // Can select node or edge when rubberband
-    rubberband?: boolean
-    rubberNode?: boolean
-    rubberEdge?: boolean
+  // Can select node or edge when rubberband
+  rubberband?: boolean
+  rubberNode?: boolean
+  rubberEdge?: boolean
 
-    // Whether to respond event on the selectionBox
-    pointerEvents?: 'none' | 'auto' | ((cells: Cell[]) => 'none' | 'auto')
+  // Whether to respond event on the selectionBox
+  pointerEvents?: 'none' | 'auto' | ((cells: Cell[]) => 'none' | 'auto')
 
-    // with which mouse button the selection can be started
-    eventTypes?: SelectionEventType[]
-  }
-
-  export interface Options extends CommonOptions {
-    graph: Graph
-  }
-
-  export type Content =
-    | null
-    | false
-    | string
-    | ((
-        this: Graph,
-        selection: SelectionImpl,
-        contentElement: HTMLElement,
-      ) => string)
-
-  export type Filter =
-    | null
-    | (string | { id: string })[]
-    | ((this: Graph, cell: Cell) => boolean)
-
-  export interface SetOptions extends Collection.SetOptions {
-    batch?: boolean
-  }
-
-  export interface AddOptions extends Collection.AddOptions {}
-
-  export interface RemoveOptions extends Collection.RemoveOptions {}
+  // with which mouse button the selection can be started
+  eventTypes?: SelectionEventType[]
 }
 
-export namespace SelectionImpl {
-  interface SelectionBoxEventArgs<T> {
-    e: T
-    view: CellView
-    cell: Cell
-    x: number
-    y: number
-  }
-
-  export interface BoxEventArgs {
-    'box:mousedown': SelectionBoxEventArgs<Dom.MouseDownEvent>
-    'box:mousemove': SelectionBoxEventArgs<Dom.MouseMoveEvent>
-    'box:mouseup': SelectionBoxEventArgs<Dom.MouseUpEvent>
-  }
-
-  export interface SelectionEventArgs {
-    'cell:selected': { cell: Cell; options: Model.SetOptions }
-    'node:selected': { cell: Cell; node: Node; options: Model.SetOptions }
-    'edge:selected': { cell: Cell; edge: Edge; options: Model.SetOptions }
-    'cell:unselected': { cell: Cell; options: Model.SetOptions }
-    'node:unselected': { cell: Cell; node: Node; options: Model.SetOptions }
-    'edge:unselected': { cell: Cell; edge: Edge; options: Model.SetOptions }
-    'selection:changed': {
-      added: Cell[]
-      removed: Cell[]
-      selected: Cell[]
-      options: Model.SetOptions
-    }
-  }
-
-  export interface EventArgs extends BoxEventArgs, SelectionEventArgs {}
+export interface SelectionImplOptions extends SelectionImplCommonOptions {
+  graph: Graph
 }
+
+export type SelectionImplContent =
+  | null
+  | false
+  | string
+  | ((
+      this: Graph,
+      selection: SelectionImpl,
+      contentElement: HTMLElement,
+    ) => string)
+
+export type SelectionImplFilter =
+  | null
+  | (string | { id: string })[]
+  | ((this: Graph, cell: Cell) => boolean)
+
+export interface SelectionImplSetOptions extends Collection.SetOptions {
+  batch?: boolean
+}
+
+export interface SelectionImplAddOptions extends Collection.AddOptions {}
+
+export interface SelectionImplRemoveOptions extends Collection.RemoveOptions {}
+
+interface BaseSelectionBoxEventArgs<T> {
+  e: T
+  view: CellView
+  cell: Cell
+  x: number
+  y: number
+}
+
+export interface SelectionImplBoxEventArgsRecord {
+  'box:mousedown': BaseSelectionBoxEventArgs<Dom.MouseDownEvent>
+  'box:mousemove': BaseSelectionBoxEventArgs<Dom.MouseMoveEvent>
+  'box:mouseup': BaseSelectionBoxEventArgs<Dom.MouseUpEvent>
+}
+
+export interface SelectionImplEventArgsRecord {
+  'cell:selected': { cell: Cell; options: Model.SetOptions }
+  'node:selected': { cell: Cell; node: Node; options: Model.SetOptions }
+  'edge:selected': { cell: Cell; edge: Edge; options: Model.SetOptions }
+  'cell:unselected': { cell: Cell; options: Model.SetOptions }
+  'node:unselected': { cell: Cell; node: Node; options: Model.SetOptions }
+  'edge:unselected': { cell: Cell; edge: Edge; options: Model.SetOptions }
+  'selection:changed': {
+    added: Cell[]
+    removed: Cell[]
+    selected: Cell[]
+    options: Model.SetOptions
+  }
+}
+
+export interface SelectionImplEventArgs
+  extends SelectionImplBoxEventArgsRecord,
+    SelectionImplEventArgsRecord {}
 
 // private
 // -------
-namespace Private {
-  const base = 'widget-selection'
+const baseClassName = 'widget-selection'
 
-  export const classNames = {
-    root: base,
-    inner: `${base}-inner`,
-    box: `${base}-box`,
-    content: `${base}-content`,
-    rubberband: `${base}-rubberband`,
-    selected: `${base}-selected`,
-  }
-
-  export const documentEvents = {
-    mousemove: 'adjustSelection',
-    touchmove: 'adjustSelection',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  }
-
-  export function depthComparator(cell: Cell) {
-    return cell.getAncestors().length
-  }
+export const classNames = {
+  root: baseClassName,
+  inner: `${baseClassName}-inner`,
+  box: `${baseClassName}-box`,
+  content: `${baseClassName}-content`,
+  rubberband: `${baseClassName}-rubberband`,
+  selected: `${baseClassName}-selected`,
 }
 
-namespace EventData {
-  export interface Common {
-    action: 'selecting' | 'translating'
-  }
+export const documentEvents = {
+  mousemove: 'adjustSelection',
+  touchmove: 'adjustSelection',
+  mouseup: 'onMouseUp',
+  touchend: 'onMouseUp',
+  touchcancel: 'onMouseUp',
+}
 
-  export interface Selecting extends Common {
-    action: 'selecting'
-    moving?: boolean
-    clientX: number
-    clientY: number
-    offsetX: number
-    offsetY: number
-    scrollerX: number
-    scrollerY: number
-  }
+export function depthComparator(cell: Cell) {
+  return cell.getAncestors().length
+}
 
-  export interface Translating extends Common {
-    action: 'translating'
-    clientX: number
-    clientY: number
-    originX: number
-    originY: number
-  }
+export interface CommonEventData {
+  action: 'selecting' | 'translating'
+}
 
-  export interface SelectionBox {
-    activeView: CellView
-  }
+export interface SelectingEventData extends CommonEventData {
+  action: 'selecting'
+  moving?: boolean
+  clientX: number
+  clientY: number
+  offsetX: number
+  offsetY: number
+  scrollerX: number
+  scrollerY: number
+}
 
-  export interface Rotation {
-    rotated?: boolean
-    center: Point.PointLike
-    start: number
-    angles: { [id: string]: number }
-  }
+export interface TranslatingEventData extends CommonEventData {
+  action: 'translating'
+  clientX: number
+  clientY: number
+  originX: number
+  originY: number
+}
 
-  export interface Resizing {
-    resized?: boolean
-    bbox: Rectangle
-    cells: Cell[]
-    minWidth: number
-    minHeight: number
-  }
+export interface SelectionBoxEventData {
+  activeView: CellView
+}
+
+export interface RotationEventData {
+  rotated?: boolean
+  center: Point.PointLike
+  start: number
+  angles: { [id: string]: number }
+}
+
+export interface ResizingEventData {
+  resized?: boolean
+  bbox: Rectangle
+  cells: Cell[]
+  minWidth: number
+  minHeight: number
 }
