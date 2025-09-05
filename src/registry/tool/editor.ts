@@ -7,7 +7,7 @@ import { createViewElement } from '../../view/view/util'
 
 export class CellEditor extends ToolItem<
   NodeView | EdgeView,
-  CellEditor.CellEditorOptions & { event: Dom.EventObject }
+  CellEditorOptions & { event: Dom.EventObject }
 > {
   private editor: HTMLDivElement | null
   private labelIndex = -1
@@ -276,79 +276,73 @@ export class CellEditor extends ToolItem<
   }
 }
 
-export namespace CellEditor {
-  export interface CellEditorOptions extends ToolItemOptions {
-    x?: number | string
-    y?: number | string
-    width?: number
-    height?: number
-    attrs: {
-      fontSize: number
-      fontFamily: string
-      color: string
-      backgroundColor: string
-    }
-    labelAddable?: boolean
-    getText:
-      | ((
-          this: CellView,
-          args: {
-            cell: Cell
-            index?: number
-          },
-        ) => string)
-      | string
-    setText:
-      | ((
-          this: CellView,
-          args: {
-            cell: Cell
-            value: string | null
-            index?: number
-            distance?: number
-          },
-        ) => void)
-      | string
+interface CellEditorOptions extends ToolItemOptions {
+  x?: number | string
+  y?: number | string
+  width?: number
+  height?: number
+  attrs: {
+    fontSize: number
+    fontFamily: string
+    color: string
+    backgroundColor: string
   }
+  labelAddable?: boolean
+  getText:
+    | ((
+        this: CellView,
+        args: {
+          cell: Cell
+          index?: number
+        },
+      ) => string)
+    | string
+  setText:
+    | ((
+        this: CellView,
+        args: {
+          cell: Cell
+          value: string | null
+          index?: number
+          distance?: number
+        },
+      ) => void)
+    | string
 }
 
-export namespace CellEditor {
-  CellEditor.config({
-    tagName: 'div',
-    isSVGElement: false,
-    events: {
-      mousedown: 'onMouseDown',
-      touchstart: 'onMouseDown',
-    },
-    documentEvents: {
-      mouseup: 'onDocumentMouseUp',
-      touchend: 'onDocumentMouseUp',
-      touchcancel: 'onDocumentMouseUp',
-    },
-  })
-}
+CellEditor.config({
+  tagName: 'div',
+  isSVGElement: false,
+  events: {
+    mousedown: 'onMouseDown',
+    touchstart: 'onMouseDown',
+  },
+  documentEvents: {
+    mouseup: 'onDocumentMouseUp',
+    touchend: 'onDocumentMouseUp',
+    touchcancel: 'onDocumentMouseUp',
+  },
+})
 
-export namespace CellEditor {
-  export const NodeEditor = CellEditor.define<CellEditorOptions>({
-    attrs: {
-      fontSize: 14,
-      fontFamily: 'Arial, helvetica, sans-serif',
-      color: '#000',
-      backgroundColor: '#fff',
-    },
-    getText: 'text/text',
-    setText: 'text/text',
-  })
+export const NodeEditor = CellEditor.define<CellEditorOptions>({
+  attrs: {
+    fontSize: 14,
+    fontFamily: 'Arial, helvetica, sans-serif',
+    color: '#000',
+    backgroundColor: '#fff',
+  },
+  getText: 'text/text',
+  setText: 'text/text',
+})
 
-  export const EdgeEditor = CellEditor.define<CellEditorOptions>({
-    attrs: {
-      fontSize: 14,
-      fontFamily: 'Arial, helvetica, sans-serif',
-      color: '#000',
-      backgroundColor: '#fff',
-    },
-    labelAddable: true,
-    getText: 'label/text',
-    setText: 'label/text',
-  })
-}
+export const EdgeEditor = CellEditor.define<CellEditorOptions>({
+  attrs: {
+    fontSize: 14,
+    fontFamily: 'Arial, helvetica, sans-serif',
+    color: '#000',
+    backgroundColor: '#fff',
+  },
+  labelAddable: true,
+  getText: 'label/text',
+  setText: 'label/text',
+})
