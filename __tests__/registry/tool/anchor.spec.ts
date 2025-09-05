@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Point } from '../../../src/geometry/point'
 
-// Mock ToolItem 基类
 class MockToolItem {
   options: any
   cellView: any
@@ -162,13 +161,8 @@ class MockEdgeView {
   getTerminalAnchor() {
     return new Point(0, 0)
   }
-
-  removeRedundantLinearVertices() {
-    // Mock implementation
-  }
 }
 
-// Mock ToolsView
 class MockToolsView {
   focus() {}
   blur() {}
@@ -333,7 +327,6 @@ describe('Anchor Tool', () => {
     it('应该处理没有子节点的情况', () => {
       const anchor = new MockSourceAnchor()
       anchor.config(edgeView, toolsView)
-      // 不调用 render()，所以 childNodes 为 undefined
 
       expect(() => {
         anchor.toggleArea(true)

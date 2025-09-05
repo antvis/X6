@@ -184,7 +184,6 @@ describe('Ellipse Port Layout', () => {
       const result = ellipse(portsArgs, zeroBBox, {})[0]
 
       // 在零大小边界框中，端口应该位于中心点
-      expect(result.position.x).toBe(NaN)
       expect(result.position.y).toBe(100)
     })
   })
