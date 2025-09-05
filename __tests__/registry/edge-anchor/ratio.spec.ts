@@ -100,7 +100,7 @@ describe('ratio edge anchor', () => {
     expect(result).toEqual({ x: 100, y: 100 })
   })
 
-  it('should return first point when getPointAtRatio returns null', () => {
+  it('should return null when getPointAtRatio returns null', () => {
     const mockView = {
       getPointAtRatio: vi.fn(() => null),
     }
