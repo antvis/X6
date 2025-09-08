@@ -65,8 +65,8 @@ export default class Example extends React.Component {
         delay: 5000,
         duration: 2000,
         interp: (
-          start: { text: String; fontSize: number },
-          end: { text: String; fontSize: number },
+          start: { text: string; fontSize: number },
+          end: { text: string; fontSize: number },
         ) => {
           return function (time: number) {
             return {

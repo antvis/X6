@@ -1,9 +1,9 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 import { Table } from 'antd'
 import './index.less'
 
 const dataSource = [
-  // graph
+  // ========= graph =========
   {
     example: 'graph',
     description: '画布',
@@ -20,7 +20,7 @@ const dataSource = [
     example: 'auto-resize',
     description: '画布大小自适应',
   },
-  // node
+  // ========= node =========
   {
     example: 'html',
     description: 'HTML 节点',
@@ -45,7 +45,7 @@ const dataSource = [
     example: 'react/portal',
     description: 'Portal 使用方式',
   },
-  // port
+  // ========= port =========
   {
     example: 'ports/defaults',
     description: '连接桩增删',
@@ -54,7 +54,7 @@ const dataSource = [
     example: 'ports/connected',
     description: '定义连接桩形状',
   },
-  // edge
+  // ========= edge =========
   {
     example: 'edge',
     description: '连线',
@@ -99,12 +99,12 @@ const dataSource = [
     example: 'connector/xmind-curve',
     description: '脑图连接器',
   },
-  // tools
+  // ========= tools =========
   {
     example: 'tools/clean',
     description: '常用工具',
   },
-  // case
+  // ========= case =========
   {
     example: 'case/bpmn',
     description: 'BPMN 图',
@@ -137,7 +137,7 @@ const dataSource = [
     example: 'org',
     description: '组织架构图',
   },
-  // plugin
+  // ========= plugin =========
   {
     example: 'snapline',
     description: '对齐线',
@@ -174,7 +174,7 @@ const dataSource = [
     example: 'undo',
     description: '撤销重做',
   },
-  // animation
+  // ========= animation ========
   {
     example: 'animation/transition',
     description: '动画',
@@ -191,9 +191,9 @@ const columns = [
     dataIndex: 'example',
     render(text: string) {
       return (
-        <a href={`./${text}`} target="_blank" rel="noreferrer">
+        <Link to={`/${text}`} target="_blank" rel="noreferrer">
           {text}
-        </a>
+        </Link>
       )
     },
   },
@@ -203,7 +203,7 @@ const columns = [
   },
 ]
 
-export default function () {
+export const ExampleList = () => {
   return (
     <div className="home">
       <Table
