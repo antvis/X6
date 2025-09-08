@@ -46,10 +46,10 @@ export class Segments extends ToolItem<EdgeView, Options> {
     index: number,
   ) {
     const handle = this.options.createHandle!({
-      ...this.options,
       index,
       graph: this.graph,
       guard: (evt) => this.guard(evt),
+      attrs: this.options.attrs || {},
     })
 
     if (this.options.processHandle) {
@@ -130,7 +130,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     return position
   }
 
-  protected onHandleChanging({ handle, e }: EventArgs['changing']) {
+  protected onHandleChanging({ handle, e }: HandleEventArgs['changing']) {
     const graph = this.graph
     const options = this.options
     const edgeView = this.cellView
@@ -255,7 +255,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleChange({ handle, e }: EventArgs['change']) {
+  protected onHandleChange({ handle, e }: HandleEventArgs['change']) {
     const options = this.options
     const handles = this.handles
     const edgeView = this.cellView
@@ -295,7 +295,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleChanged({ e }: EventArgs['changed']) {
+  protected onHandleChanged({ e }: HandleEventArgs['changed']) {
     const options = this.options
     const edgeView = this.cellView
     if (options.removeRedundancies) {
@@ -369,7 +369,7 @@ interface Options extends ToolItemOptions {
     edgeView: EdgeView,
     toolView: Segments,
   ) => Edge.TerminalCellData['anchor']
-  createHandle?: (options: Options) => Handle
+  createHandle?: (options: HandleOptions) => Handle
   processHandle?: (handle: Handle) => void
   onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
 }
@@ -381,10 +381,10 @@ interface EventData {
   targetAnchorDef: Edge.TerminalCellData['anchor']
 }
 
-class Handle extends View<EventArgs> {
+class Handle extends View<HandleEventArgs> {
   public container: SVGRectElement
 
-  constructor(public options: Options) {
+  constructor(public options: HandleOptions) {
     super()
     this.render()
     this.delegateEvents({
@@ -469,7 +469,7 @@ class Handle extends View<EventArgs> {
   }
 }
 
-interface Options {
+interface HandleOptions {
   graph: Graph
   guard: (evt: Dom.EventObject) => boolean
   attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
@@ -477,7 +477,7 @@ interface Options {
   axis?: 'x' | 'y'
 }
 
-interface EventArgs {
+interface HandleEventArgs {
   change: { e: Dom.MouseDownEvent; handle: Handle }
   changing: { e: Dom.MouseMoveEvent; handle: Handle }
   changed: { e: Dom.MouseUpEvent; handle: Handle }
