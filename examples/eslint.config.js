@@ -5,19 +5,23 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-export default tseslint.config([
+export default tseslint.config(
   globalIgnores(['dist']),
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    plugins: {
+      ...reactHooks.configs['recommended-latest'].plugins,
+      ...reactRefresh.configs.vite.plugins,
+    },
+    rules: {
+      ...reactHooks.configs['recommended-latest'].rules,
+      ...reactRefresh.configs.vite.rules,
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
   },
-])
+)
