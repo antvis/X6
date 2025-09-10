@@ -81,7 +81,7 @@ export class BackgroundCard extends React.Component<
       <Card
         title="Background"
         size="small"
-        bordered={false}
+        variant="outlined"
         style={{ width: 320 }}
       >
         <Row type="flex" align="middle">

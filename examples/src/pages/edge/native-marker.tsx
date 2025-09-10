@@ -14,7 +14,7 @@ const markers = [
   'async',
 ]
 
-export default class Example extends React.Component {
+export class NativeMarkerExample extends React.Component {
   private container: HTMLDivElement
   private edge1: Edge
   private edge2: Edge

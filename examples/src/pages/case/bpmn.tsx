@@ -211,7 +211,7 @@ const data = [
   },
 ]
 
-export default class Example extends React.Component {
+export class CaseBpmnExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

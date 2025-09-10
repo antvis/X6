@@ -1,11 +1,9 @@
 import React from 'react'
-import '@antv/x6-react-shape'
-import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons'
 import { Graph, Node } from '../../../../src'
 import { Group } from './shape'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class GroupExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
@@ -114,35 +112,6 @@ export default class Example extends React.Component {
           node.show()
         }
       })
-    })
-
-    graph.addNode({
-      shape: 'react-shape',
-      x: 320,
-      y: 420,
-      width: 160,
-      height: 60,
-      component: (node: Node) => {
-        const data = node.getData<any>() || {}
-        const collapsed = data.collapsed === true
-        return (
-          <div style={{ background: '#f5f5f5', width: '100%', height: '100%' }}>
-            {collapsed ? (
-              <PlusSquareOutlined
-                style={{ cursor: 'pointer' }}
-                event="react:collapse"
-              />
-            ) : (
-              <MinusSquareOutlined
-                style={{ cursor: 'pointer' }}
-                event="react:collapse"
-              />
-            )}
-
-            {node.attr('body/fill')}
-          </div>
-        )
-      },
     })
 
     graph.on('react:collapse', ({ node }: { node: Node }) => {

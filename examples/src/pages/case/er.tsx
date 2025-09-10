@@ -294,7 +294,7 @@ const data = [
   },
 ]
 
-export default class Example extends React.Component {
+export class CaseErExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

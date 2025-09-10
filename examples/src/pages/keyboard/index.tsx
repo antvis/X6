@@ -3,7 +3,7 @@ import { Button } from 'antd'
 import { Graph, Keyboard, Selection } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class KeyboardExample extends React.Component {
   private container: HTMLDivElement
   private graph: Graph
 

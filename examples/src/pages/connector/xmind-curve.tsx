@@ -3,7 +3,7 @@ import { connectors } from './xmind-definitions'
 import { Graph } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class XmindCurveExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

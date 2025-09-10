@@ -3,10 +3,7 @@ import { Button } from 'antd'
 import { Graph, History } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component<
-  Example.Props,
-  Example.State
-> {
+export class UndoExample extends React.Component<Example.Props, Example.State> {
   private container: HTMLDivElement
   private history: History
 

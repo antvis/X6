@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph, Cell, Point, Timing, Interp } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class TransitionExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

@@ -97,7 +97,7 @@ Graph.registerNode(
   true,
 )
 
-export default class Example extends React.Component {
+export class PortsConnectedExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
