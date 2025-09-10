@@ -26,15 +26,8 @@ interface State {
 
 export class GraphExample extends React.Component<Props, State> {
   private container!: HTMLDivElement
-  private graph: Graph
-  private effect: ReturnType<typeof createEffect>
-
-  constructor(props: Props) {
-    super(props)
-    this.container = null!
-    this.graph = null!
-    this.effect = null!
-  }
+  private graph!: Graph
+  private effect!: ReturnType<typeof createEffect>
 
   state = {
     contentBBox: new Rectangle(),
