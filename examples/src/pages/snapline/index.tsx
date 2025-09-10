@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph, Snapline } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class SnaplineExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

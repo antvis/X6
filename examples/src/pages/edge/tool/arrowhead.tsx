@@ -51,7 +51,7 @@ const magnetAvailabilityHighlighter = {
   },
 }
 
-export default class Example extends React.Component {
+export class ToolArrowheadExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

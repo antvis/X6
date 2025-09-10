@@ -4,7 +4,7 @@ import { Graph, Export, Selection, MiniMap, Scroller } from '../../../../src'
 import '../index.less'
 import './index.less'
 
-export default class Example extends React.Component {
+export class ScrollerExample extends React.Component {
   private graph: Graph
   private graphContainer: HTMLDivElement
   private minimapContainer: HTMLDivElement

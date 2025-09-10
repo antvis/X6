@@ -44,7 +44,7 @@ export class ScaleContentToFitCard extends React.Component<
       <Card
         title="Scale Content To Fit"
         size="small"
-        bordered={false}
+        variant="outlined"
         style={{ width: 320 }}
       >
         <Row type="flex" align="middle">

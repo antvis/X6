@@ -35,7 +35,7 @@ Graph.registerConnector(
   true,
 )
 
-export default class Example extends React.Component {
+export class CustomConnectorExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

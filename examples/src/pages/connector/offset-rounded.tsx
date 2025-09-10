@@ -77,7 +77,7 @@ function offsetRounded(
 }
 Graph.registerConnector('offsetRounded', offsetRounded, true)
 
-export default class Example extends React.Component {
+export class OffsetRoundedExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

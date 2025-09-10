@@ -315,7 +315,7 @@ const nodeStatusList = [
     },
   ],
 ]
-export default class Example extends React.Component {
+export class CaseDagExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

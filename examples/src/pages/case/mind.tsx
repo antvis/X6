@@ -170,7 +170,7 @@ const data: MindMapData = {
   ],
 }
 
-export default class Example extends React.Component {
+export class CaseMindExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

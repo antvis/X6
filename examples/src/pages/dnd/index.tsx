@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph, Node, Dnd } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class DndExample extends React.Component {
   private graph: Graph
   private dnd: Dnd
   private container: HTMLDivElement

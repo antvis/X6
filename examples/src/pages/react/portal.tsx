@@ -30,7 +30,7 @@ register({
   component: NodeComponent,
 })
 
-export default class Example extends React.Component {
+export class ReactPortalExample extends React.Component {
   private container: HTMLDivElement
 
   state = {

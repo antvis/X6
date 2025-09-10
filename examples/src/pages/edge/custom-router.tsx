@@ -26,7 +26,7 @@ routerRegistry.register(
   true,
 )
 
-export default class Example extends React.Component {
+export class CustomRouterExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

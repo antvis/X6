@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph, Transform } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class TransformExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
