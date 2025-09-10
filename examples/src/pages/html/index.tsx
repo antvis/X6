@@ -16,7 +16,7 @@ Shape.HTML.register({
     return div
   },
 })
-export default class Example extends React.Component {
+export class HtmlExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

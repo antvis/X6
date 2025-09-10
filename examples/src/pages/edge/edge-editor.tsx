@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph, Node, Edge, EdgeView } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class EdgeEditorExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

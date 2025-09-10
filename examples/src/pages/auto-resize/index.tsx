@@ -5,7 +5,7 @@ import { Graph, Scroller } from '../../../../src'
 import '../index.less'
 import './index.less'
 
-export default class Example extends React.Component {
+export class AutoResizeExample extends React.Component {
   private graphContainer1: HTMLDivElement
   private graphContainer2: HTMLDivElement
   private graphContainer3: HTMLDivElement

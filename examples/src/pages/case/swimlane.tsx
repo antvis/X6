@@ -305,7 +305,7 @@ const data = [
   },
 ]
 
-export default class Example extends React.Component {
+export class CaseSwimlaneExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
