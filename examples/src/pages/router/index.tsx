@@ -3,7 +3,7 @@ import { Radio } from 'antd'
 import { Graph, Edge, EdgeView } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component<
+export class RouterExample extends React.Component<
   Example.Props,
   Example.State
 > {

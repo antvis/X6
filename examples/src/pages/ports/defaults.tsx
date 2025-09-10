@@ -3,7 +3,7 @@ import { Button } from 'antd'
 import { Graph, Node } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class PortsDefaultsExample extends React.Component {
   private container: HTMLDivElement
   private rect: Node
 

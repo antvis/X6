@@ -37,7 +37,7 @@ export class FitToContentCard extends React.Component<
       <Card
         title="Fit To Content"
         size="small"
-        bordered={false}
+        variant="outlined"
         style={{ width: 320 }}
       >
         <Row type="flex" align="middle">

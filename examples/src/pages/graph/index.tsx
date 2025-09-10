@@ -11,13 +11,30 @@ import { ScaleContentToFitCard } from './scale-card'
 import '../index.less'
 import './index.less'
 
-export default class Example extends React.Component<
-  Example.Props,
-  Example.State
-> {
-  private container: HTMLDivElement
+type Props = Record<string, never>
+interface State {
+  attrs: {
+    width: number
+    height: number
+    originX: number
+    originY: number
+    scaleX: number
+    scaleY: number
+  }
+  contentBBox: Rectangle
+}
+
+export class GraphExample extends React.Component<Props, State> {
+  private container!: HTMLDivElement
   private graph: Graph
   private effect: ReturnType<typeof createEffect>
+
+  constructor(props: Props) {
+    super(props)
+    this.container = null!
+    this.graph = null!
+    this.effect = null!
+  }
 
   state = {
     contentBBox: new Rectangle(),
@@ -58,13 +75,13 @@ export default class Example extends React.Component<
     }))
 
     let attrs = {}
-    const getAttrs = (partial: Partial<Example.State['attrs']>) => {
+    const getAttrs = (partial: Partial<State['attrs']>) => {
       attrs = {
         ...this.state.attrs,
         ...attrs,
         ...partial,
       }
-      return attrs as Example.State['attrs']
+      return attrs as State['attrs']
     }
 
     this.graph
@@ -149,7 +166,6 @@ export default class Example extends React.Component<
     if (!options.allowNewOrigin) {
       delete options.allowNewOrigin
     }
-
     this.effect.removeAll()
     this.graph.fitToContent(options)
     this.effect.afterFit(this.graph, options)
@@ -177,6 +193,7 @@ export default class Example extends React.Component<
             height={this.state.contentBBox.height}
           />
         </div>
+        <div ref={this.refContainer} className="x6-graph" />
         <div className="right-side">
           <AttributeCard
             attrs={this.state.attrs}
@@ -187,24 +204,7 @@ export default class Example extends React.Component<
           <FitToContentCard onChange={this.onFitOptionsChanged} />
           <ScaleContentToFitCard onChange={this.onScaleContentChanged} />
         </div>
-        <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
-  }
-}
-
-// eslint-disable-next-line
-namespace Example {
-  export interface Props {}
-  export interface State {
-    attrs: {
-      width: number
-      height: number
-      originX: number
-      originY: number
-      scaleX: number
-      scaleY: number
-    }
-    contentBBox: Rectangle
   }
 }

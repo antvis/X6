@@ -3,7 +3,7 @@ import { Graph } from '../../../../src'
 import { markerNormalize } from '../../../../src/registry'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class CustomMarkerExample extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

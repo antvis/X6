@@ -74,7 +74,7 @@ interface Position {
   y: number
 }
 
-export default class Example extends React.Component {
+export class CaseElkExample extends React.Component {
   private container: HTMLDivElement
   private portIdToNodeIdMap: Record<string, string> = {}
   private cells: Cell[] = []

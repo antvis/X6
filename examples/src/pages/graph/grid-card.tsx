@@ -86,7 +86,7 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
 
   render() {
     return (
-      <Card title="Grid" size="small" bordered={false} style={{ width: 320 }}>
+      <Card title="Grid" size="small" variant="outlined" style={{ width: 320 }}>
         <Row type="flex" align="middle">
           <Col span={6}>Grid Type</Col>
           <Col span={14}>

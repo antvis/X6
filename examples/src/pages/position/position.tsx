@@ -3,7 +3,7 @@ import { Button } from 'antd'
 import { Graph, Scroller } from '../../../../src'
 import '../index.less'
 
-export default class Example extends React.Component {
+export class PositionExample extends React.Component {
   private container1: HTMLDivElement
   private container2: HTMLDivElement
 

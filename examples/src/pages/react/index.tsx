@@ -26,7 +26,7 @@ register({
   component: NodeComponent,
 })
 
-export default class Example extends React.Component {
+export class ReactExample extends React.Component {
   private container: HTMLDivElement
   private count = 0
 

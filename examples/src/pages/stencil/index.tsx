@@ -3,7 +3,7 @@ import { Graph, Shape, Stencil } from '../../../../src'
 import '../index.less'
 import './index.less'
 
-export default class Example extends React.Component {
+export class StencilExample extends React.Component {
   private container: HTMLDivElement
   private stencilContainer: HTMLDivElement
 

@@ -7,7 +7,7 @@ export class BBoxCard extends React.Component<GridCard.Props> {
       <Card
         title="Content Boundary Box"
         size="small"
-        bordered={false}
+        variant="outlined"
         style={{ width: 320 }}
       >
         <div style={{ fontSize: 12, textAlign: 'center' }}>
