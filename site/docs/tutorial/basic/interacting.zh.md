@@ -18,7 +18,7 @@ redirect_from:
 
 ## 连线
 
-连线交互规则都是通过 `connecting` 配置来完成，完整的配置参考 [API](/api/interacting/interacting#连线)。下面介绍一些常用的功能。
+连线交互规则都是通过 `connecting` 配置来完成，完整的配置参考 [API](/api/model/interaction#连线)。下面介绍一些常用的功能。
 
 ### allowXXX
 
