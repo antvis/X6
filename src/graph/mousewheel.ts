@@ -1,4 +1,10 @@
-import { Disposable, Dom, disposable, ModifierKey, NumberExt } from '../common'
+import {
+  Dom,
+  disposable,
+  isModifierKeyMatch,
+  type ModifierKey,
+  NumberExt,
+} from '../common'
 import { Base } from './base'
 
 export class MouseWheel extends Base {
@@ -51,7 +57,7 @@ export class MouseWheel extends Base {
 
     return (
       (guard == null || guard(e)) &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers)
+      isModifierKeyMatch(e, this.widgetOptions.modifiers)
     )
   }
 
@@ -60,7 +66,7 @@ export class MouseWheel extends Base {
 
     if (
       (guard == null || guard(e)) &&
-      ModifierKey.isMatch(e, this.widgetOptions.modifiers)
+      isModifierKeyMatch(e, this.widgetOptions.modifiers)
     ) {
       const factor = this.widgetOptions.factor || 1.2
 

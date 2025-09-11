@@ -1,4 +1,11 @@
-import { Basecoat, CssLoader, Dom, disposable, ModifierKey } from '../../common'
+import {
+  Basecoat,
+  CssLoader,
+  Dom,
+  disposable,
+  isModifierKeyMatch,
+  type ModifierKey,
+} from '../../common'
 import { Config } from '../../config'
 import type { Point, Rectangle } from '../../geometry'
 import type { BackgroundManager, Graph, TransformManager } from '../../graph'
@@ -373,7 +380,7 @@ export class Scroller
 
   protected allowPanning(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
-      this.pannable && ModifierKey.isMatch(e, this.options.modifiers, strict)
+      this.pannable && isModifierKeyMatch(e, this.options.modifiers, strict)
     )
   }
 

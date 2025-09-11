@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { FunctionExt } from '../../../src/common/function'
+import { describe, expect, it } from 'vitest'
+import { FunctionExt } from '../../../src/common'
 
 describe('async', () => {
   describe('#toDeferredBoolean', () => {
