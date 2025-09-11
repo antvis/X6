@@ -1,4 +1,5 @@
-import { type Dom, type Nilable, ObjectExt } from '../common'
+import { ObjectExt } from '../common'
+import type { Dom, Nilable } from '../common'
 import { Config } from '../config'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
@@ -17,7 +18,7 @@ import type {
   RouterNativeItem,
 } from '../registry'
 import { Edge as StandardEdge } from '../shape'
-import { type CellView, type EdgeView, Markup, type NodeView } from '../view'
+import type { CellView, EdgeView, NodeView } from '../view'
 import type { CellViewInteracting } from '../view/cell/type'
 import type { MarkupSelectors } from '../view/markup'
 import type { BackgroundManager } from './background'
