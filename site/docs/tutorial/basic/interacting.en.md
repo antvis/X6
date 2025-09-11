@@ -18,7 +18,7 @@ redirect_from:
 
 ## Connection
 
-Connection interaction rules are all completed through the `connecting` configuration. For a complete configuration, refer to [API](/en/api/interacting/interacting#connection). Below, we introduce some commonly used functions.
+Connection interaction rules are all completed through the `connecting` configuration. For a complete configuration, refer to [API](/en/api/model/interaction#connecting). Below, we introduce some commonly used functions.
 
 ### allowXXX
 
