@@ -1,15 +1,15 @@
-import { call } from './util'
-import { FunctionExt } from '../function'
-import {
-  Handler,
+import { type AsyncBoolean, toAsyncBoolean } from '../function'
+import type {
   EventArgs,
   EventNames,
-  OtherNames,
-  UnknownNames,
-  OptionalNormalNames,
-  RequiredNormalNames,
+  Handler,
   NamesWithArrayArgs,
+  OptionalNormalNames,
+  OtherNames,
+  RequiredNormalNames,
+  UnknownNames,
 } from './types'
+import { call } from './util'
 
 export class Events<Args extends EventArgs = any> {
   private listeners: { [name: string]: any[] } = {}
@@ -115,31 +115,29 @@ export class Events<Args extends EventArgs = any> {
     return this
   }
 
-  trigger<Name extends OptionalNormalNames<Args>>(
-    name: Name,
-  ): FunctionExt.AsyncBoolean
+  trigger<Name extends OptionalNormalNames<Args>>(name: Name): AsyncBoolean
   trigger<Name extends RequiredNormalNames<Args>>(
     name: Name,
     args: Args[Name],
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   trigger<Name extends NamesWithArrayArgs<Args>>(
     name: Name,
     ...args: Args[Name]
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   trigger<Name extends OtherNames<Args>>(
     name: Name,
     args?: Args[Name],
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   trigger<Name extends OtherNames<Args>>(
     name: Name,
     ...args: Args[Name]
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   trigger<Name extends UnknownNames<Args>>(
     name: Name,
     ...args: any[]
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   trigger<Name extends EventNames<Args>>(name: Name, ...args: any[]) {
-    let returned: FunctionExt.AsyncBoolean = true
+    let returned: AsyncBoolean = true
     if (name !== '*') {
       const list = this.listeners[name]
       if (list != null) {
@@ -149,10 +147,7 @@ export class Events<Args extends EventArgs = any> {
 
     const list = this.listeners['*']
     if (list != null) {
-      return FunctionExt.toAsyncBoolean([
-        returned,
-        call([...list], [name, ...args]),
-      ])
+      return toAsyncBoolean([returned, call([...list], [name, ...args])])
     }
 
     return returned
@@ -164,23 +159,23 @@ export class Events<Args extends EventArgs = any> {
    */
   protected emit<Name extends OptionalNormalNames<Args>>(
     name: Name,
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   protected emit<Name extends RequiredNormalNames<Args>>(
     name: Name,
     args: Args[Name],
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   protected emit<Name extends NamesWithArrayArgs<Args>>(
     name: Name,
     ...args: Args[Name]
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   protected emit<Name extends OtherNames<Args>>(
     name: Name,
     args?: Args[Name],
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   protected emit<Name extends OtherNames<Args>>(
     name: Name,
     ...args: Args[Name]
-  ): FunctionExt.AsyncBoolean
+  ): AsyncBoolean
   protected emit(name: any, ...args: any[]) {
     return this.trigger(name, ...args)
   }

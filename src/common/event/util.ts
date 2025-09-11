@@ -1,4 +1,4 @@
-import { FunctionExt } from '../function'
+import { apply, toAsyncBoolean } from '../function'
 
 export function call(list: any[], args?: any[]) {
   const results: any[] = []
@@ -6,9 +6,9 @@ export function call(list: any[], args?: any[]) {
     const handler = list[i]
     const context = list[i + 1]
     const params = Array.isArray(args) ? args : [args]
-    const ret = FunctionExt.apply(handler, context, params)
+    const ret = apply(handler, context, params)
     results.push(ret)
   }
 
-  return FunctionExt.toAsyncBoolean(results)
+  return toAsyncBoolean(results)
 }

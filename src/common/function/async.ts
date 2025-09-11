@@ -1,3 +1,5 @@
+export type AsyncBoolean = boolean | Promise<boolean>
+
 export function isAsyncLike<T>(obj: any): obj is Promise<T> {
   return typeof obj === 'object' && obj.then && typeof obj.then === 'function'
 }
@@ -5,8 +7,6 @@ export function isAsyncLike<T>(obj: any): obj is Promise<T> {
 export function isAsync<T>(obj: any): obj is Promise<T> {
   return obj != null && (obj instanceof Promise || isAsyncLike(obj))
 }
-
-export type AsyncBoolean = boolean | Promise<boolean>
 
 export function toAsyncBoolean(...inputs: (any | any[])[]): AsyncBoolean {
   const results: any[] = []

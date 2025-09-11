@@ -1,4 +1,9 @@
-import { Dom, disposable, ModifierKey } from '../common'
+import {
+  Dom,
+  disposable,
+  isModifierKeyMatch,
+  type ModifierKey,
+} from '../common'
 import { Base } from './base'
 
 export class PanningManager extends Base {
@@ -59,11 +64,7 @@ export class PanningManager extends Base {
     ;(e as any).spaceKey = this.isSpaceKeyPressed
     return (
       this.pannable &&
-      ModifierKey.isMatch(
-        e,
-        this.widgetOptions.modifiers as ModifierKey,
-        strict,
-      )
+      isModifierKeyMatch(e, this.widgetOptions.modifiers as ModifierKey, strict)
     )
   }
 

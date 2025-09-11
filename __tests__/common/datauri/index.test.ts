@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
 import sinon from 'sinon'
-import { DataUri } from '@/common/datauri'
+import { describe, expect, it } from 'vitest'
+import { DataUri } from '../../../src/common'
 
 describe('DataUri', () => {
   describe('#isDataUrl', () => {
