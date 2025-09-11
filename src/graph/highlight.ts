@@ -1,10 +1,10 @@
-import { Dom, disposable, type KeyValue } from '../common'
-import {
-  type HighlighterDefinition,
-  type HighlighterManualItem,
-  type HighlighterNativeItem,
-  highlighterCheck,
-  highlighterRegistry,
+import { Dom, disposable } from '../common'
+import type { KeyValue } from '../common'
+import { highlighterCheck, highlighterRegistry } from '../registry'
+import type {
+  HighlighterDefinition,
+  HighlighterManualItem,
+  HighlighterNativeItem,
 } from '../registry'
 import type { CellView } from '../view'
 import type { CellViewHighlightOptions } from '../view/cell/type'

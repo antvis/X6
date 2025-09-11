@@ -2,7 +2,8 @@ import { Dom, disposable, FunctionExt } from '../common'
 import { Config } from '../config'
 import type { Graph } from '../graph'
 import { Cell } from '../model'
-import { type CellView, Markup, View } from '../view'
+import { Markup, View } from '../view'
+import type { CellView } from '../view'
 import type { MarkupJSONMarkup } from '../view/markup'
 
 export class GraphView extends View {
