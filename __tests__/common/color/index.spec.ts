@@ -1,158 +1,263 @@
-import { describe, expect, it } from 'vitest'
-import { Color } from '../../../src/common/color'
+import { describe, expect, it, vi } from 'vitest'
+import {
+  darken,
+  hex2rgb,
+  hsla2rgba,
+  hue2rgb,
+  invert,
+  lighten,
+  lum,
+  named,
+  randomHex,
+  rgb2hex,
+  rgba2hsla,
+} from '../../../src/common/color'
 
-describe('Color', () => {
-  describe('constructor', () => {
-    it('should default to white when no args', () => {
-      const c = new Color()
-      expect(c.toHex()).toBe('#ffffff')
-    })
+describe('named colors', () => {
+  it('should contain standard color names', () => {
+    expect(named.red).toBe('#ff0000')
+    expect(named.blue).toBe('#0000ff')
+    expect(named.green).toBe('#008000')
+    expect(named.white).toBe('#ffffff')
+    expect(named.black).toBe('#000000')
+  })
+})
 
-    it('should accept rgba numbers', () => {
-      const c = new Color(10, 20, 30, 0.5)
-      expect(c.toRGBA()).toEqual([10, 20, 30, 0.5])
-    })
-
-    it('should accept rgba array', () => {
-      const c = new Color([1, 2, 3, 0.7])
-      expect(c.toRGBA()).toEqual([1, 2, 3, 0.7])
-    })
-
-    it('should accept rgba object', () => {
-      const c = new Color({ r: 5, g: 6, b: 7, a: 0.8 })
-      expect(c.toRGBA()).toEqual([5, 6, 7, 0.8])
-    })
-
-    it('should accept hex string', () => {
-      const c = new Color('#ff0000')
-      expect(c.toHex()).toBe('#ff0000')
-    })
-
-    it('should accept rgb string', () => {
-      const c = new Color('rgb(255,0,0)')
-      expect(c.toHex()).toBe('#ff0000')
-    })
-
-    it('should accept named color', () => {
-      const c = new Color('blue')
-      expect(c.toHex()).toBe('#0000ff')
-    })
+describe('hue2rgb', () => {
+  it('should handle h < 0', () => {
+    const result = hue2rgb(0.2, 0.8, -0.5)
+    expect(result).toBe(0.8)
   })
 
-  describe('methods', () => {
-    it('blend should interpolate between colors', () => {
-      const c = new Color()
-      c.blend(new Color(0, 0, 0, 1), new Color(255, 255, 255, 0), 0.5)
-      expect(c.toRGBA()).toEqual([128, 128, 128, 0.5])
-    })
-
-    it('lighten and darken should adjust brightness', () => {
-      const c = new Color('#888888')
-      const before = c.toHex()
-      c.lighten(10)
-      expect(c.toHex()).not.toBe(before)
-      c.darken(10)
-      expect(c.toHex()).toBe(before)
-    })
-
-    it('set with clamping values', () => {
-      const c = new Color()
-      c.set(300, -10, 100, 2)
-      expect(c.toRGBA()).toEqual([255, 0, 100, 1])
-    })
-
-    it('toHex should return hex string', () => {
-      const c = new Color(255, 0, 255, 1)
-      expect(c.toHex()).toBe('#ff00ff')
-    })
-
-    it('toHSLA should convert correctly', () => {
-      const c = new Color(255, 0, 0, 1)
-      const hsla = c.toHSLA()
-      expect(hsla[0]).toBeGreaterThanOrEqual(0)
-      expect(hsla[0]).toBeLessThanOrEqual(1)
-    })
-
-    it('toCSS should format correctly', () => {
-      const c = new Color(1, 2, 3, 0.4)
-      expect(c.toCSS()).toContain('rgba')
-      expect(c.toCSS(true)).toContain('rgb')
-    })
-
-    it('toGrey should return grey color', () => {
-      const c = new Color(10, 20, 30, 0.5)
-      const grey = c.toGrey()
-      expect(grey.r).toBe(grey.g)
-      expect(grey.g).toBe(grey.b)
-    })
+  it('should handle h > 1', () => {
+    const result = hue2rgb(0.2, 0.8, 1.5)
+    expect(result).toBe(0.8)
   })
 
-  describe('static methods', () => {
-    it('fromArray should create from array', () => {
-      const c = Color.fromArray([1, 2, 3, 0.5])
-      expect(c.toRGBA()).toEqual([1, 2, 3, 0.5])
-    })
+  it('should handle h6 < 1', () => {
+    const result = hue2rgb(0.2, 0.8, 0.1)
+    expect(result).toBe(0.56)
+  })
 
-    it('fromHex should create from hex', () => {
-      const c = Color.fromHex('#00ff00')
-      expect(c.toHex()).toBe('#00ff00')
-    })
+  it('should handle 2*h < 1', () => {
+    const result = hue2rgb(0.2, 0.8, 0.4)
+    expect(result).toBe(0.8)
+  })
 
-    it('fromRGBA should parse rgba string', () => {
-      const c = Color.fromRGBA('rgba(1,2,3,0.5)')
-      expect(c?.toRGBA()[0]).toBe(1)
-    })
+  it('should handle 3*h < 2', () => {
+    const result = hue2rgb(0.2, 0.8, 0.6)
+    expect(result).toBeCloseTo(0.44)
+  })
 
-    it('fromHSLA should return valid color', () => {
-      expect(Color.fromHSLA('hsla(0, 100%, 100%, 1)').toString()).toBe(
-        'rgba(255,255,255,1)',
-      )
-    })
+  it('should return m1 for other cases', () => {
+    const result = hue2rgb(0.2, 0.8, 0.8)
+    expect(result).toBe(0.2)
+  })
+})
 
-    it('fromHSLA should return null for invalid string', () => {
-      expect(Color.fromHSLA('invalid').toString()).toBe('rgba(255,255,255,1)')
-    })
+describe('rgba2hsla', () => {
+  it('should convert rgba array to hsla', () => {
+    const result = rgba2hsla([255, 0, 0, 1])
+    expect(result).toEqual([0, -1.007905138339921, 127.5, 1])
+  })
 
-    it('fromString should parse hex format', () => {
-      const c = Color.fromString('#ff0000')
-      expect(c.r).toBe(255)
-      expect(c.g).toBe(0)
-      expect(c.b).toBe(0)
-    })
+  it('should convert rgba parameters to hsla', () => {
+    const result = rgba2hsla(255, 0, 0, 1)
+    expect(result).toEqual([0, -1.007905138339921, 127.5, 1])
+  })
 
-    it('fromString should parse rgb format', () => {
-      const c = Color.fromString('rgb(0, 128, 255)')
-      expect(c.r).toBe(0)
-      expect(c.g).toBe(128)
-      expect(c.b).toBe(255)
-    })
+  it('should handle grayscale colors', () => {
+    const result = rgba2hsla(128, 128, 128, 0.5)
+    expect(result).toEqual([0, 0, 128, 0.5])
+  })
 
-    it('fromString should parse rgba format', () => {
-      const c = Color.fromString('rgba(0, 128, 255, 0.5)')
-      expect(c.r).toBe(0)
-      expect(c.g).toBe(128)
-      expect(c.b).toBe(255)
-    })
+  it('should handle green max case', () => {
+    const result = rgba2hsla(0, 255, 0, 1)
+    expect(result[0]).toBeCloseTo(0.3333, 4)
+  })
 
-    it('makeGrey should return grey color', () => {
-      const c = Color.makeGrey(50, 0.5)
-      expect(c.r).toBe(50)
-      expect(c.g).toBe(50)
-    })
+  it('should handle blue max case', () => {
+    const result = rgba2hsla(0, 0, 255, 1)
+    expect(result[0]).toBeCloseTo(0.6667, 4)
+  })
 
-    it('random should return valid color', () => {
-      const c = Color.random()
-      expect(c.r).toBeGreaterThanOrEqual(0)
-      expect(c.r).toBeLessThanOrEqual(255)
-    })
+  it('should handle g < b case for red max', () => {
+    const result = rgba2hsla(255, 0, 128, 1)
+    expect(result[0]).toBeCloseTo(0.9163, 4)
+  })
 
-    it('randomRGBA should return css string', () => {
-      const str = Color.randomRGBA()
-      expect(str).toContain('rgb')
-    })
+  it('should default alpha to 1 when not provided', () => {
+    const result = rgba2hsla(255, 0, 0)
+    expect(result[3]).toBe(1)
+  })
+})
 
-    it('should throw on invalid hex', () => {
-      expect(() => new Color('#xyz')).toThrow()
-    })
+describe('hsla2rgba', () => {
+  it('should convert hsla array to rgba', () => {
+    const result = hsla2rgba([0, 1, 0.5, 1])
+    expect(result[0]).toBeCloseTo(256, 0)
+    expect(result[1]).toBeCloseTo(0, 0)
+    expect(result[2]).toBeCloseTo(0, 0)
+    expect(result[3]).toBe(1)
+  })
+
+  it('should convert hsla parameters to rgba', () => {
+    const result = hsla2rgba(0, 1, 0.5, 1)
+    expect(result[0]).toBeCloseTo(256, 0)
+    expect(result[1]).toBeCloseTo(0, 0)
+    expect(result[2]).toBeCloseTo(0, 0)
+    expect(result[3]).toBe(1)
+  })
+
+  it('should handle l > 0.5 case', () => {
+    const result = hsla2rgba(0, 0.5, 0.8, 1)
+    expect(result).toBeDefined()
+  })
+
+  it('should default alpha to 1 when not provided', () => {
+    const result = hsla2rgba(0, 1, 0.5)
+    expect(result[3]).toBe(1)
+  })
+})
+
+describe('randomHex', () => {
+  it('should generate random hex color', () => {
+    const mathSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    const result = randomHex()
+    expect(result).toBe('#888888')
+    mathSpy.mockRestore()
+  })
+
+  it('should always start with #', () => {
+    const result = randomHex()
+    expect(result).toMatch(/^#[0-9A-F]{6}$/)
+  })
+})
+
+describe('invert', () => {
+  it('should invert hex color string with #', () => {
+    const result = invert('#ff0000', false)
+    expect(result).toBe('#00ffff')
+  })
+
+  it('should invert hex color string without #', () => {
+    const result = invert('ff0000', false)
+    expect(result).toBe('00ffff')
+  })
+
+  it('should return black/white for hex when bw=true (bright color)', () => {
+    const result = invert('#ffffff', true)
+    expect(result).toBe('#000000')
+  })
+
+  it('should return black/white for hex when bw=true (dark color)', () => {
+    const result = invert('#000000', true)
+    expect(result).toBe('#ffffff')
+  })
+
+  it('should invert rgba array', () => {
+    const result = invert([255, 0, 0, 1], false)
+    expect(result).toEqual([0, 255, 255, 1])
+  })
+
+  it('should return black/white for rgba when bw=true (bright)', () => {
+    const result = invert([255, 255, 255, 0.5], true)
+    expect(result).toEqual([0, 0, 0, 0.5])
+  })
+
+  it('should return black/white for rgba when bw=true (dark)', () => {
+    const result = invert([0, 0, 0, 0.5], true)
+    expect(result).toEqual([255, 255, 255, 0.5])
+  })
+})
+
+describe('hex2rgb', () => {
+  it('should convert 6-digit hex to rgb', () => {
+    const result = hex2rgb('#ff0000')
+    expect(result).toEqual([255, 0, 0])
+  })
+
+  it('should convert 6-digit hex without # to rgb', () => {
+    const result = hex2rgb('ff0000')
+    expect(result).toEqual([255, 0, 0])
+  })
+
+  it('should convert 3-digit hex to rgb', () => {
+    const result = hex2rgb('#f00')
+    expect(result).toEqual([255, 0, 0])
+  })
+
+  it('should throw error for invalid hex length', () => {
+    expect(() => hex2rgb('#ff00')).toThrow('Invalid hex color.')
+  })
+
+  it('should throw error for invalid hex characters', () => {
+    expect(() => hex2rgb('#gggggg')).toThrow('Invalid hex color.')
+  })
+})
+
+describe('rgb2hex', () => {
+  it('should convert rgb to hex', () => {
+    const result = rgb2hex(255, 0, 0)
+    expect(result).toBe('ff0000')
+  })
+
+  it('should pad single digit values', () => {
+    const result = rgb2hex(1, 2, 3)
+    expect(result).toBe('010203')
+  })
+})
+
+describe('lum', () => {
+  it('should adjust luminosity of hex string with #', () => {
+    const result = lum('#808080', 50)
+    expect(typeof result).toBe('string')
+    expect(result).toMatch(/^#/)
+  })
+
+  it('should adjust luminosity of hex string without #', () => {
+    const result = lum('808080', 50)
+    expect(typeof result).toBe('string')
+    expect(result).not.toMatch(/^#/)
+  })
+
+  it('should clamp values at boundaries', () => {
+    const result = lum('#ffffff', 50)
+    expect(result).toBe('#ffffff')
+  })
+
+  it('should adjust luminosity of rgba array', () => {
+    const result = lum([128, 128, 128, 0.5], 50)
+    expect(Array.isArray(result)).toBe(true)
+    expect((result as number[])[3]).toBe(0.5)
+  })
+
+  it('should handle negative adjustments', () => {
+    const result = lum([200, 200, 200, 1], -50)
+    expect(Array.isArray(result)).toBe(true)
+  })
+})
+
+describe('lighten', () => {
+  it('should lighten hex color', () => {
+    const result = lighten('#808080', 50)
+    expect(typeof result).toBe('string')
+  })
+
+  it('should lighten rgba color', () => {
+    const result = lighten([128, 128, 128, 1], 50)
+    expect(Array.isArray(result)).toBe(true)
+  })
+})
+
+describe('darken', () => {
+  it('should darken hex color', () => {
+    const result = darken('#808080', 50)
+    expect(typeof result).toBe('string')
+  })
+
+  it('should darken rgba color', () => {
+    const result = darken([128, 128, 128, 1], 50)
+    expect(Array.isArray(result)).toBe(true)
   })
 })
