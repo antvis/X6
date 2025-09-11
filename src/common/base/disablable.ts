@@ -1,6 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-
-import { EventArgs } from '../event/types'
+import type { EventArgs } from '../event/types'
 import { Basecoat } from './basecoat'
 
 export interface IDisablable {

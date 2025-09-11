@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
-import { Unit } from '@/common'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { Unit } from '../../../src/common'
 
 describe('Unit', () => {
   beforeAll(() => {
@@ -71,7 +71,7 @@ describe('Unit', () => {
       ;(Unit as any).setMillimeterSize(undefined)
       // 模拟 Node 环境：没有 document
       const oldDoc = global.document
-      // @ts-ignore
+      // @ts-expect-error
       delete global.document
 
       const px = Unit.toPx(1, 'mm')
@@ -126,9 +126,11 @@ describe('Unit', () => {
         .mockReturnValue(mockDiv)
       const appendSpy = vi
         .spyOn(document.body, 'appendChild')
+        // @ts-expect-error mock
         .mockImplementation(() => {})
       const removeSpy = vi
         .spyOn(document.body, 'removeChild')
+        // @ts-expect-error mock
         .mockImplementation(() => {})
 
       const size = Unit.measure('10', '20', 'px')

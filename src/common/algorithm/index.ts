@@ -1,2 +1,6 @@
-export * from './priorityqueue'
-export * from './dijkstra'
+export {
+  type DijkstraAdjacencyList,
+  type DijkstraWeight,
+  dijkstra,
+} from './dijkstra'
+export { PriorityQueue } from './priorityqueue'

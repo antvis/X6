@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
 import sinon from 'sinon'
-import { FunctionExt } from '../../../src/common/function'
+import { describe, expect, it } from 'vitest'
+import { FunctionExt } from '../../../src/common'
 
 describe('FunctionExt', () => {
   describe('#call', () => {
