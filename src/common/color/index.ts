@@ -105,11 +105,11 @@ export class Color {
     } else if (typeof color === 'number') {
       this.set(color, g as number, b as number, a)
     } else if (typeof color === 'string') {
-      Color.fromString(color) || this
+      this.set(Color.fromString(color).toRGBA())
     } else if (Array.isArray(color)) {
       this.set(color)
     } else if (ObjectExt.isObject(color)) {
-      this.set(color.r, color.g, color.b, color.a)
+      this.set(color.r, color.g, color.b, NumberExt.clamp(color.a, 0, 1))
     } else {
       this.set(255, 255, 255, 1)
     }

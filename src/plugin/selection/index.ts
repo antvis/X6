@@ -3,7 +3,8 @@ import {
   CssLoader,
   type Dom,
   disposable,
-  ModifierKey,
+  isModifierKeyMatch,
+  type ModifierKey,
 } from '../../common'
 import type { EventArgs, Graph } from '../../graph'
 import type { Cell } from '../../model'
@@ -360,14 +361,14 @@ export class Selection
   protected allowRubberband(e: Dom.MouseDownEvent, strict?: boolean) {
     return (
       !this.rubberbandDisabled &&
-      ModifierKey.isMatch(e, this.options.modifiers, strict)
+      isModifierKeyMatch(e, this.options.modifiers, strict)
     )
   }
 
   protected allowMultipleSelection(e: Dom.MouseDownEvent | Dom.MouseUpEvent) {
     return (
       this.isMultiple() &&
-      ModifierKey.isMatch(e, this.options.multipleSelectionModifiers)
+      isModifierKeyMatch(e, this.options.multipleSelectionModifiers)
     )
   }
 

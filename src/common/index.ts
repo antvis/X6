@@ -5,13 +5,18 @@ export * from './animation'
 export * as ArrayExt from './array'
 export * from './base'
 export * from './color'
-export * from './css-loader'
-export * from './datauri'
+export * as CssLoader from './css-loader'
+export * as DataUri from './datauri'
 export * from './dictionary'
 export * from './dom'
 export * from './event'
-export * from './function'
-export * from './modifier'
+export * as FunctionExt from './function'
+export {
+  isModifierKeyEqual,
+  isModifierKeyMatch,
+  type ModifierKey,
+  parseModifierKey,
+} from './modifier'
 export * from './number'
 export * from './object'
 export * from './platform'

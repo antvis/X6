@@ -1,4 +1,4 @@
-import { type Dom, ModifierKey } from '../../common'
+import { type Dom, isModifierKeyMatch, type ModifierKey } from '../../common'
 import { Config } from '../../config'
 import { Point } from '../../geometry'
 import type { Graph } from '../../graph'
@@ -251,7 +251,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     const guard = this.guard(e)
     const addable = this.options.addable && this.cellView.can('vertexAddable')
     const matchModifiers = this.options.modifiers
-      ? ModifierKey.isMatch(e, this.options.modifiers)
+      ? isModifierKeyMatch(e, this.options.modifiers)
       : true
     return !guard && addable && matchModifiers
   }
