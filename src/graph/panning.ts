@@ -1,9 +1,5 @@
-import {
-  Dom,
-  disposable,
-  isModifierKeyMatch,
-  type ModifierKey,
-} from '../common'
+import { Dom, disposable, isModifierKeyMatch } from '../common'
+import type { ModifierKey } from '../common'
 import { Base } from './base'
 
 export class PanningManager extends Base {

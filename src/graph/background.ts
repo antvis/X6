@@ -1,10 +1,10 @@
 import { disposable, ObjectExt } from '../common'
 import { Rectangle } from '../geometry'
-import {
-  type BackgroundManualItem,
-  type BackgroundNativeItem,
-  type BackgroundOptions,
-  backgroundRegistry,
+import { backgroundRegistry } from '../registry'
+import type {
+  BackgroundManualItem,
+  BackgroundNativeItem,
+  BackgroundOptions,
 } from '../registry'
 import { Base } from './base'
 

@@ -1,10 +1,10 @@
 import { Dom, StringExt, Vector } from '../common'
-import {
-  type FilterManualItem,
-  type FilterNativeItem,
-  filterRegistry,
-  type MarkerResult,
-  type SimpleAttrs,
+import { filterRegistry } from '../registry'
+import type {
+  FilterManualItem,
+  FilterNativeItem,
+  MarkerResult,
+  SimpleAttrs,
 } from '../registry'
 import { Markup } from '../view'
 import { Base } from './base'
