@@ -33,7 +33,7 @@ jobs:
 
       - name: 🚀　Build site
         run: |
-          pnpm run build:site
+          cd ./site && pnpm run build
           cp ./CNAME ./dist/CNAME
 
       - name: 👩‍⚕️　Verify build output
