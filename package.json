@@ -32,7 +32,9 @@
     "build": "run-p -s build:*",
     "test:watch": "vitest",
     "test": "vitest --watch=false",
-    "test:coverage": "vitest run --coverage --watch=false"
+    "test:coverage": "vitest run --coverage --watch=false",
+    "start:example": "cd examples && pnpm run dev",
+    "start:site": "cd site && pnpm run start"
   },
   "dependencies": {
     "dom-align": "^1.12.4",
