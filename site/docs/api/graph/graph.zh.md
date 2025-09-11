@@ -24,7 +24,7 @@ new Graph(options: Options)
 | [mousewheel](/api/graph/mousewheel) | `boolean \| MouseWheel.Options` |  | 鼠标滚轮缩放，默认禁用。 | `false` |
 | [grid](/api/graph/grid) | `boolean \| number \| GridManager.Options` |  | 网格，默认使用 `10px` 的网格，但不绘制网格背景。 | `false` |
 | [background](/api/graph/background) | `false \| BackgroundManager.Options` |  | 背景，默认不绘制背景。 | `false` |
-| [translating](/api/model/interaction#移动范围) | `Translating.Options` |  | 限制节点移动、移动节点重叠时自动偏移。 | `{ restrict: false， autoOffset: true }` |
+| [translating](/api/model/interaction#移动范围) | `Translating.Options` |  | 限制节点移动、移动节点重叠时自动偏移。 | `{ restrict: false, autoOffset: true }` |
 | [embedding](/api/model/interaction#组合) | `boolean \| Embedding.Options` |  | 嵌套节点，默认禁用。 | `false` |
 | [connecting](/api/model/interaction#connecting) | `Connecting.Options` |  | 连线选项。 | `{ snap: false, ... }` |
 | [highlighting](/api/model/interaction#高亮) | `Highlighting.Options` |  | 高亮选项。 | `{...}` |

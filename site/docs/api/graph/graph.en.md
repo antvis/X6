@@ -24,7 +24,7 @@ new Graph(options: Options)
 | [mousewheel](/en/api/graph/mousewheel) | `boolean \| MouseWheel.Options` |  | Whether the mouse wheel can zoom, defaults to disabled. | `false` |
 | [grid](/en/api/graph/grid) | `boolean \| number \| GridManager.Options` |  | The grid, defaults to a 10px grid but does not draw the grid background. | `false` |
 | [background](/en/api/graph/background) | `false \| BackgroundManager.Options` |  | The background, defaults to not drawing the background. | `false` |
-| [translating](/en/api/model/interaction#movement-range) | `Translating.Options` |  | Restricts node movement. After a node is moved, automatically offset when it overlaps with other nodes.  | `{ restrict: false， autoOffset: true }` |
+| [translating](/en/api/model/interaction#movement-range) | `Translating.Options` |  | Restricts node movement. After a node is moved, automatically offset when it overlaps with other nodes.  | `{ restrict: false, autoOffset: true }` |
 | [embedding](/en/api/model/interaction#embedding) | `boolean \| Embedding.Options` |  | Whether to enable nested nodes, defaults to disabled. | `false` |
 | [connecting](/en/api/model/interaction#connecting) | `Connecting.Options` |  | The connection options. | `{ snap: false, ... }` |
 | [highlighting](/en/api/model/interaction#highlighting) | `Highlighting.Options` |  | The highlighting options. | `{...}` |
