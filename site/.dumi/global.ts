@@ -1,5 +1,5 @@
 if (typeof window !== 'undefined' && window) {
-  const X6 = require('../../src')
+  const X6 = require('@antv/x6')
   ;(window as any).react = require('react')
   ;(window as any).reactDom = require('react-dom')
   ;(window as any).client = require('react-dom/client')
