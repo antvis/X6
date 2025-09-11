@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Color } from '../../../../src'
+import { Graph, Node, Color } from '@antv/x6'
 import '../index.less'
 
 export class EmbedDndExample extends React.Component {

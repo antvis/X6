@@ -1387,6 +1387,9 @@ export namespace Graph {
 }
 
 export namespace Graph {
+  export const createTest = (name) => {
+    console.log('This is a test function for Graph namespace.', name)
+  }
   export const registerNode = Node.registry.register
   export const registerEdge = Edge.registry.register
   export const registerView = CellView.registry.register

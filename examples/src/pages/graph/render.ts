@@ -1,4 +1,4 @@
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 
 const path1 = 'M 20 0 L 100 0 100 40 20 40 0 20 Z'
 const path2 = 'M 20 0 L 100 0 80 20 100 40 20 40 0 20 Z'

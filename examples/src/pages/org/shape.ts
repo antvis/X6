@@ -1,4 +1,4 @@
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 
 Graph.registerNode(
   'org-node',

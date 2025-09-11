@@ -1,5 +1,5 @@
 import { ReactShapeView } from '@antv/x6-react-shape'
-import { Edge, Graph } from '../../../../src'
+import { Edge, Graph } from '@antv/x6'
 import { generateData, parsePorts } from './data'
 
 export class TableNodeView extends ReactShapeView {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Point, Path } from '../../../../src'
+import { Graph, Point, Path } from '@antv/x6'
 import '../index.less'
 
 export interface OffsetRoundedArgs {

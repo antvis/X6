@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Point } from '../../../../src'
+import { Graph, Point } from '@antv/x6'
 import { routerRegistry } from '../../../../src/registry'
 import '../index.less'
 

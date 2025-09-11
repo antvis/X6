@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, History, Keyboard, Selection } from '../../../../src'
+import { Graph, History, Keyboard, Selection } from '@antv/x6'
 import '../index.less'
 
 export class HistoryExample extends React.Component {

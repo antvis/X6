@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Keyboard, Selection } from '../../../../src'
+import { Graph, Keyboard, Selection } from '@antv/x6'
 import '../index.less'
 
 export class SelectionExample extends React.Component {

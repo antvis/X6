@@ -1,6 +1,6 @@
 import React from 'react'
 import { register } from '@antv/x6-react-shape'
-import { Node } from '../../../../src'
+import { Node } from '@antv/x6'
 import { generateData, parsePorts } from './data'
 import './component.less'
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 import { markerNormalize } from '../../../../src/registry'
 import '../index.less'
 

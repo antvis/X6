@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox } from 'antd'
-import { Graph, Node, Edge } from '../../../../src'
+import { Graph, Node, Edge } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component<

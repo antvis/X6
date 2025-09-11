@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, Export, Selection, MiniMap, Scroller } from '../../../../src'
+import { Graph, Export, Selection, MiniMap, Scroller } from '@antv/x6'
 import '../index.less'
 import './index.less'
 

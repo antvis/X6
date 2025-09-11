@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Button } from 'antd'
-import { Graph, Dom } from '../../../../src'
+import { Graph, Dom } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

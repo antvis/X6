@@ -1,6 +1,6 @@
 import React from 'react'
 import { register } from '@antv/x6-react-shape'
-import { Graph, Node, Cell, Path, Selection, Snapline } from '../../../../src'
+import { Graph, Node, Cell, Path, Selection, Snapline } from '@antv/x6'
 import '../index.less'
 import './index.less'
 interface NodeStatus {

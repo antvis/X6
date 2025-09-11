@@ -25,11 +25,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: install pnpm
-        run: npm i pnpm@latest -g
-
-      - name: 📦　Install dependencies
-        run: pnpm install
+      - name: 🚧　Install
+        run: |
+          npm i pnpm@latest -g
+          pnpm install
 
       - name: 🚀　Build site
         run: |

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Select } from 'antd'
 import dagre from 'dagre'
-import { Graph, Cell, Node, Color, Dom } from '../../../../src'
+import { Graph, Cell, Node, Color, Dom } from '@antv/x6'
 import './shape'
 import '../index.less'
 import './index.less'

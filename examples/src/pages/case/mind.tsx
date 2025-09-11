@@ -1,6 +1,6 @@
 import React from 'react'
 import Hierarchy from '@antv/hierarchy'
-import { Graph, Node, Keyboard } from '../../../../src'
+import { Graph, Node, Keyboard } from '@antv/x6'
 import { connectors } from '../connector/xmind-definitions'
 import '../index.less'
 import './mind.less'
