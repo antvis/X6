@@ -1,15 +1,10 @@
-import {
-  Basecoat,
-  type Dom,
-  disposable,
-  type KeyValue,
-  type NumberExt,
-} from '../common'
+import { Basecoat, disposable } from '../common'
+import type { Dom, KeyValue, NumberExt } from '../common'
 import { Point, Rectangle } from '../geometry'
-import { Cell, type Collection, Edge, Model, Node } from '../model'
+import { Cell, Edge, Model, Node } from '../model'
+import type { Collection } from '../model'
 import {
   attrRegistry,
-  type BackgroundOptions,
   backgroundRegistry,
   connectionPointRegistry,
   connectorRegistry,
@@ -25,6 +20,7 @@ import {
   portLayoutRegistry,
   routerRegistry,
 } from '../registry'
+import type { BackgroundOptions } from '../registry'
 import { Renderer as ViewRenderer } from '../renderer'
 import { CellView } from '../view'
 import { BackgroundManager as Background } from './background'

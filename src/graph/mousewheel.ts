@@ -1,10 +1,5 @@
-import {
-  Dom,
-  disposable,
-  isModifierKeyMatch,
-  type ModifierKey,
-  NumberExt,
-} from '../common'
+import { Dom, disposable, isModifierKeyMatch, NumberExt } from '../common'
+import type { ModifierKey } from '../common'
 import { Base } from './base'
 
 export class MouseWheel extends Base {

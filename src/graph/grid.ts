@@ -1,13 +1,11 @@
 import { Dom, disposable, Vector } from '../common'
-import {
-  Grid,
-  type GridDefinition,
-  type GridManualItem,
-  type GridNativeItem,
-  type GridOptions,
-  type GridOptionsMap,
-  gridPresets,
-  gridRegistry,
+import { Grid, gridPresets, gridRegistry } from '../registry'
+import type {
+  GridDefinition,
+  GridManualItem,
+  GridNativeItem,
+  GridOptions,
+  GridOptionsMap,
 } from '../registry'
 import { Base } from './base'
 
