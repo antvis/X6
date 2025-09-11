@@ -19,14 +19,14 @@ jobs:
         with:
           node-version: 20
 
-      - name: 🚧　Install
-        run: npm install --legacy-peer-deps
+      - name: install pnpm
+        run: npm i pnpm@latest -g
 
       - name: 🚀　Build
-        run: npm run build
+        run: pnpm run build
 
       - name: ✅　Test
-        run: npm run test:coverage
+        run: pnpm run test:coverage
 
       - name: 💡 Upload coverage to Codecov
         uses: codecov/codecov-action@v5

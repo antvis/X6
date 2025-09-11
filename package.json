@@ -34,7 +34,8 @@
     "test": "vitest --watch=false",
     "test:coverage": "vitest run --coverage --watch=false",
     "start:example": "cd examples && pnpm run dev",
-    "start:site": "cd site && pnpm run start"
+    "start:site": "cd site && pnpm run start",
+    "build:site": "cd site && pnpm run build"
   },
   "dependencies": {
     "dom-align": "^1.12.4",

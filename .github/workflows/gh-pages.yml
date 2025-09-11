@@ -25,15 +25,12 @@ jobs:
         with:
           node-version: 20
 
-      - name: 🚧　Install
-        run: |
-          npm install --legacy-peer-deps
-          cd site && npm install --legacy-peer-deps
+      - name: install pnpm
+        run: npm i pnpm@latest -g
 
       - name: 🚀　Build site
         run: |
-          cd site
-          npm run build
+          pnpm run build:site
           cp ./CNAME ./dist/CNAME
 
       - name: 👩‍⚕️　Verify build output
