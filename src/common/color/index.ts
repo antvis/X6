@@ -182,10 +182,14 @@ export function rgba2hsla(
   arg2?: number,
   arg3?: number,
 ): HSLA {
-  const r = Array.isArray(arg0) ? arg0[0] : (arg0 as number)
-  const g = Array.isArray(arg0) ? arg0[1] : (arg1 as number)
-  const b = Array.isArray(arg0) ? arg0[2] : (arg2 as number)
+  const r255 = Array.isArray(arg0) ? arg0[0] : (arg0 as number)
+  const g255 = Array.isArray(arg0) ? arg0[1] : (arg1 as number)
+  const b255 = Array.isArray(arg0) ? arg0[2] : (arg2 as number)
   const a = Array.isArray(arg0) ? arg0[3] : (arg3 as number)
+
+  const r = r255 / 255
+  const g = g255 / 255
+  const b = b255 / 255
 
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
@@ -228,13 +232,12 @@ export function hsla2rgba(
   const s = Array.isArray(arg0) ? arg0[1] : (arg1 as number)
   const l = Array.isArray(arg0) ? arg0[2] : (arg2 as number)
   const a = Array.isArray(arg0) ? arg0[3] : (arg3 as number)
-
   const m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s
   const m1 = 2 * l - m2
   return [
-    hue2rgb(m1, m2, h + 1 / 3) * 256,
-    hue2rgb(m1, m2, h) * 256,
-    hue2rgb(m1, m2, h - 1 / 3) * 256,
+    Math.round(hue2rgb(m1, m2, h + 1 / 3) * 255),
+    Math.round(hue2rgb(m1, m2, h) * 255),
+    Math.round(hue2rgb(m1, m2, h - 1 / 3) * 255),
     a == null ? 1 : a,
   ]
 }

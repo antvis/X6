@@ -58,17 +58,17 @@ describe('hue2rgb', () => {
 describe('rgba2hsla', () => {
   it('should convert rgba array to hsla', () => {
     const result = rgba2hsla([255, 0, 0, 1])
-    expect(result).toEqual([0, -1.007905138339921, 127.5, 1])
+    expect(result).toEqual([0, 1, 0.5, 1])
   })
 
   it('should convert rgba parameters to hsla', () => {
     const result = rgba2hsla(255, 0, 0, 1)
-    expect(result).toEqual([0, -1.007905138339921, 127.5, 1])
+    expect(result).toEqual([0, 1, 0.5, 1])
   })
 
   it('should handle grayscale colors', () => {
     const result = rgba2hsla(128, 128, 128, 0.5)
-    expect(result).toEqual([0, 0, 128, 0.5])
+    expect(result).toEqual([0, 0, 0.5019607843137255, 0.5])
   })
 
   it('should handle green max case', () => {
@@ -95,7 +95,7 @@ describe('rgba2hsla', () => {
 describe('hsla2rgba', () => {
   it('should convert hsla array to rgba', () => {
     const result = hsla2rgba([0, 1, 0.5, 1])
-    expect(result[0]).toBeCloseTo(256, 0)
+    expect(result[0]).toBeCloseTo(255, 0)
     expect(result[1]).toBeCloseTo(0, 0)
     expect(result[2]).toBeCloseTo(0, 0)
     expect(result[3]).toBe(1)
@@ -103,7 +103,7 @@ describe('hsla2rgba', () => {
 
   it('should convert hsla parameters to rgba', () => {
     const result = hsla2rgba(0, 1, 0.5, 1)
-    expect(result[0]).toBeCloseTo(256, 0)
+    expect(result[0]).toBeCloseTo(255, 0)
     expect(result[1]).toBeCloseTo(0, 0)
     expect(result[2]).toBeCloseTo(0, 0)
     expect(result[3]).toBe(1)
