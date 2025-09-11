@@ -1,3 +1,10 @@
-import * as ArrayExt from './array'
-
-export { ArrayExt }
+export {
+  difference,
+  groupBy,
+  max,
+  sortBy,
+  sortedIndex,
+  sortedIndexBy,
+  union,
+  uniq,
+} from 'lodash-es'

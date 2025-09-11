@@ -2,7 +2,7 @@ import './polyfill'
 
 export * from './algorithm'
 export * from './animation'
-export * from './array'
+export * as ArrayExt from './array'
 export * from './base'
 export * from './color'
 export * from './css-loader'

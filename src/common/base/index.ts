@@ -1,3 +1,3 @@
-export * from './disposable'
-export * from './disablable'
-export * from './basecoat'
+export { Basecoat } from './basecoat'
+export { Disablable, type IDisablable } from './disablable'
+export { Disposable, disposable } from './disposable'
