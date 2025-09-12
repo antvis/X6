@@ -1,6 +1,6 @@
 import React from 'react'
 import { connectors } from './xmind-definitions'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 import '../index.less'
 
 export class XmindCurveExample extends React.Component {

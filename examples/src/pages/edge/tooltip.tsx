@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
-import { Graph, Markup, ToolsView, EdgeView } from '../../../../src'
+import { Graph, Markup, ToolsView, EdgeView } from '@antv/x6'
 import '../index.less'
 
 class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {

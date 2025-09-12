@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Shape } from '../../../../src'
+import { Graph, Shape } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {

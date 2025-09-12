@@ -1,6 +1,6 @@
 import React from 'react'
-import { Node, Graph, Vector, Point, Line, Polyline } from '../../../../src'
-import { connectorPresets } from '../../../../src/registry'
+import { Node, Graph, Vector, Point, Line, Polyline } from '@antv/x6'
+import { connectorPresets } from '@antv/x6/registry'
 import '../index.less'
 
 function random(max: number, min: number) {

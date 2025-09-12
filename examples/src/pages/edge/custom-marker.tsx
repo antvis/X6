@@ -1,6 +1,6 @@
 import React from 'react'
-import { Graph } from '../../../../src'
-import { markerNormalize } from '../../../../src/registry'
+import { Graph } from '@antv/x6'
+import { markerNormalize } from '@antv/x6'
 import '../index.less'
 
 export class CustomMarkerExample extends React.Component {

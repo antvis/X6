@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Transform } from '../../../../src'
+import { Graph, Transform } from '@antv/x6'
 import '../index.less'
 
 export class TransformExample extends React.Component {

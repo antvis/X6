@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell, ObjectExt } from '../../../../src'
+import { Graph, Cell, ObjectExt } from '@antv/x6'
 import '../index.less'
 
 Graph.registerNode(

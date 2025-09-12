@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input, Select, Slider, Card, Row, Col } from 'antd'
-import { GridNativeNames } from '../../../../src/registry'
+import { GridNativeNames } from '@antv/x6/registry'
 
 export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
   state: GridCard.State = {

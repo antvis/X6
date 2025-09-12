@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tooltip } from 'antd'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 import '../index.less'
 
 const registerPortTooltip = (container: Element, text: string) => {

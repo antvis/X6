@@ -1,6 +1,6 @@
 import React from 'react'
 import { Radio } from 'antd'
-import { Graph, Edge, EdgeView } from '../../../../src'
+import { Graph, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
 export class RouterExample extends React.Component<

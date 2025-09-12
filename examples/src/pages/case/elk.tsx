@@ -1,7 +1,7 @@
 import React from 'react'
 import ELK, { ElkNode, ElkExtendedEdge, ElkEdge } from 'elkjs/lib/elk-api.js'
 import elkWorker from 'elkjs/lib/elk-worker.js'
-import { Graph, Cell } from '../../../../src'
+import { Graph, Cell } from '@antv/x6'
 import elkdata from './elkdata.json'
 import '../index.less'
 

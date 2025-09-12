@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Shape, Stencil } from '../../../../src'
+import { Graph, Shape, Stencil } from '@antv/x6'
 import '../index.less'
 import './index.less'
 

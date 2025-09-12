@@ -1,4 +1,4 @@
-import { FunctionExt, Graph, Rectangle, Vector } from '../../../../src'
+import { FunctionExt, Graph, Rectangle, Vector } from '@antv/x6'
 import { FitToContentCard } from './fit-card'
 import { ScaleContentToFitCard } from './scale-card'
 

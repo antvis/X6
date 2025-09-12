@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Edge, Line } from '../../../../src'
+import { Graph, Edge, Line } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
