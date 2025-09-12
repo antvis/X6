@@ -31,7 +31,7 @@ register({
 })
 
 export class ReactPortalExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   state = {
     theme: 'light',

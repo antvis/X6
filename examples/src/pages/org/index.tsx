@@ -12,7 +12,7 @@ const female =
   'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*f6hhT75YjkIAAAAAAAAAAAAAARQnAQ'
 
 export class OrgExample extends React.Component<Example.Props, Example.State> {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
 
   state: Example.State = {

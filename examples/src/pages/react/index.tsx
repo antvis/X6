@@ -27,7 +27,7 @@ register({
 })
 
 export class ReactExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private count = 0
 
   componentDidMount() {

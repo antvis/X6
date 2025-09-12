@@ -5,7 +5,7 @@ import { generateData, parsePorts } from './data'
 import './component.less'
 
 export class Component extends React.Component<Component.Props> {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   get node() {
     return this.props.node!

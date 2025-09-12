@@ -27,7 +27,7 @@ routerRegistry.register(
 )
 
 export class CustomRouterExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

@@ -295,7 +295,7 @@ const data = [
 ]
 
 export class CaseErExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

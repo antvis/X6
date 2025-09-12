@@ -316,7 +316,7 @@ const nodeStatusList = [
   ],
 ]
 export class CaseDagExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph: Graph = new Graph({

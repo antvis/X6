@@ -3,7 +3,7 @@ import { Graph, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
 
   componentDidMount() {

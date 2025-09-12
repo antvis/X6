@@ -12,7 +12,7 @@ Node.registry.register(
 )
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

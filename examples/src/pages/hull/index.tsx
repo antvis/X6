@@ -1,6 +1,6 @@
 import React from 'react'
 import { Node, Graph, Vector, Point, Line, Polyline } from '@antv/x6'
-import { connectorPresets } from '@antv/x6/registry'
+import { connectorPresets } from '@antv/x6'
 import '../index.less'
 
 function random(max: number, min: number) {
@@ -8,7 +8,7 @@ function random(max: number, min: number) {
 }
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

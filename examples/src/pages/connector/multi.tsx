@@ -3,7 +3,7 @@ import { Graph, Edge, Line } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

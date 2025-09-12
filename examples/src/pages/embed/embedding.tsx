@@ -21,7 +21,7 @@ Node.registry.register('embedding.parent', Parent, true)
 Node.registry.register('embedding.child', Child, true)
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const EMBEDDING_OFFSET = 59

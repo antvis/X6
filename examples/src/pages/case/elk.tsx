@@ -75,7 +75,7 @@ interface Position {
 }
 
 export class CaseElkExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private portIdToNodeIdMap: Record<string, string> = {}
   private cells: Cell[] = []
   private graph: Graph
