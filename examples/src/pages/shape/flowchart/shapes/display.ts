@@ -1,4 +1,4 @@
-import { Path, Shape } from '../../../../../../src'
+import { Path, Shape } from '@antv/x6'
 
 Shape.Path.define({
   shape: 'flowchart_display',

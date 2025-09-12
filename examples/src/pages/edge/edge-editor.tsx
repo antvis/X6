@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Edge, EdgeView } from '../../../../src'
+import { Graph, Node, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
 export class EdgeEditorExample extends React.Component {

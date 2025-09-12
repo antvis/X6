@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Path } from '../../../../src'
+import { Graph, Node, Path } from '@antv/x6'
 import '../index.less'
 
 Graph.registerConnector(

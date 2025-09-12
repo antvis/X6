@@ -1,6 +1,6 @@
 import React from 'react'
-import { Graph, Point } from '../../../../src'
-import { routerRegistry } from '../../../../src/registry'
+import { Graph, Point } from '@antv/x6'
+import { routerRegistry } from '@antv/x6'
 import '../index.less'
 
 routerRegistry.register(

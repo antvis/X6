@@ -1,4 +1,4 @@
-import { Shape } from '../../../../../../src'
+import { Shape } from '@antv/x6'
 
 Shape.Ellipse.define({
   title: 'On Page Reference',

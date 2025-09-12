@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { register, Portal } from '@antv/x6-react-shape'
 import { Button } from 'antd'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 import '../index.less'
 import './index.less'
 

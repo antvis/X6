@@ -1,6 +1,6 @@
 import React from 'react'
 import { Select } from 'antd'
-import { Graph, Edge } from '../../../../src'
+import { Graph, Edge } from '@antv/x6'
 import '../index.less'
 
 const markers = [

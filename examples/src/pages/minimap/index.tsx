@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Radio } from 'antd'
-import { Graph, MiniMap, Scroller } from '../../../../src'
+import { Graph, MiniMap, Scroller } from '@antv/x6'
 import { SimpleNodeView } from './simple-view'
 import './index.less'
 

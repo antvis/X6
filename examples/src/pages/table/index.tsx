@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Graph, Color } from '../../../../src'
+import { Graph, Color } from '@antv/x6'
 import { generateData, parsePorts } from './data'
 import { getPortsDefinition } from './port'
 import './view'

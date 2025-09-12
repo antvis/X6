@@ -1,4 +1,4 @@
-import { JSONObject, NumberExt, Path, Shape } from '../../../../../../src'
+import { JSONObject, NumberExt, Path, Shape } from '@antv/x6'
 
 interface KnobsAttrValue extends JSONObject {
   tail: number

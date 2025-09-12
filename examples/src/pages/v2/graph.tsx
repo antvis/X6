@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Path } from '../../../../src'
+import { Graph, Path } from '@antv/x6'
 import data from './data'
 
 Graph.registerConnector(
