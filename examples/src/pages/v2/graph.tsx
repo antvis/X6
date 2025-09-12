@@ -76,7 +76,7 @@ interface Props {
 }
 
 export default class Canvas extends React.Component<Props> {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
 
   componentDidMount() {

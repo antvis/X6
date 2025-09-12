@@ -171,7 +171,7 @@ const data: MindMapData = {
 }
 
 export class CaseMindExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

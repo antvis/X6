@@ -7,7 +7,7 @@ export class RouterExample extends React.Component<
   Example.Props,
   Example.State
 > {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private edge: Edge
 
   state = {

@@ -4,7 +4,7 @@ import '../index.less'
 import './index.less'
 
 export class StencilExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private stencilContainer: HTMLDivElement
 
   componentDidMount() {
