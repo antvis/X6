@@ -1,4 +1,4 @@
-import { NodeView } from '../../../../src'
+import { NodeView } from '@antv/x6'
 
 export class SimpleNodeView extends NodeView {
   protected renderMarkup() {

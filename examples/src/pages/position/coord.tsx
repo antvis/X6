@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 import '../index.less'
 
 export class CoordExample extends React.Component {

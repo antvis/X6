@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell, Point, Timing, Interp } from '../../../../src'
+import { Graph, Cell, Point, Timing, Interp } from '@antv/x6'
 import '../index.less'
 
 export class TransitionExample extends React.Component {

@@ -1,11 +1,4 @@
-import {
-  JSONObject,
-  Line,
-  NumberExt,
-  Path,
-  Point,
-  Shape,
-} from '../../../../../../src'
+import { JSONObject, Line, NumberExt, Path, Point, Shape } from '@antv/x6'
 
 interface KnobsAttrValue extends JSONObject {
   round: boolean | string | number

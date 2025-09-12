@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Shape } from '../../../../src'
+import { Graph, Node, Shape } from '@antv/x6'
 import '../index.less'
 
 const Parent = Shape.Rect.define({

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, Scroller } from '../../../../src'
+import { Graph, Scroller } from '@antv/x6'
 import '../index.less'
 
 export class PositionExample extends React.Component {

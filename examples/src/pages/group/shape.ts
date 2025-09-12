@@ -1,4 +1,4 @@
-import { Node } from '../../../../src'
+import { Node } from '@antv/x6'
 
 export class Group extends Node {
   private collapsed: boolean = false

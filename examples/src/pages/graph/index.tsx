@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Rectangle } from '../../../../src'
+import { Graph, Rectangle } from '@antv/x6'
 import { render } from './render'
 import { createEffect } from './effect'
 import { GridCard } from './grid-card'

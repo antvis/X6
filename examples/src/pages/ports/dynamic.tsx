@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Edge, NodeView, Shape } from '../../../../src'
+import { Graph, Edge, NodeView, Shape } from '@antv/x6'
 import '../index.less'
 
 class MyShape extends Shape.Rect {

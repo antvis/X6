@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node } from '../../../../src'
+import { Graph, Node } from '@antv/x6'
 import '../index.less'
 
 Node.registry.register(

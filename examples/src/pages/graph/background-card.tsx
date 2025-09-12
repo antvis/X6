@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input, Checkbox, Select, Slider, Card, Row, Col } from 'antd'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 
 export class BackgroundCard extends React.Component<
   BackgroundCard.Props,

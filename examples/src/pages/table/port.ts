@@ -1,5 +1,5 @@
-import { Dom, Graph, type Point } from '../../../../src'
-import type { PortLayoutCommonArgs } from '../../../../src/registry'
+import { Dom, Graph, type Point } from '@antv/x6'
+import type { PortLayoutCommonArgs } from '@antv/x6/registry'
 
 export interface PortArgs extends PortLayoutCommonArgs {
   offset?: number

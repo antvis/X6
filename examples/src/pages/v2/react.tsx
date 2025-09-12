@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { register } from '@antv/x6-react-shape'
-import { Graph } from '../../../../src'
+import { Graph } from '@antv/x6'
 import data from './data'
 import './index.less'
 

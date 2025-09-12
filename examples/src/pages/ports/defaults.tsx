@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, Node } from '../../../../src'
+import { Graph, Node } from '@antv/x6'
 import '../index.less'
 
 export class PortsDefaultsExample extends React.Component {
