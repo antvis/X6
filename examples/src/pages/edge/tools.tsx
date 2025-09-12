@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, Timing } from '@antv/x6'
-import { markerNormalize } from '@antv/x6/registry'
+import { Graph, Timing, markerNormalize } from '@antv/x6'
 import '../index.less'
 
 function registerEdgeTool(name: string, inherit: string, options: any) {

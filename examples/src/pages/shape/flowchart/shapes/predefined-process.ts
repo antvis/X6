@@ -1,4 +1,4 @@
-import { NumberExt, Shape } from '../../@antv/x6'
+import { NumberExt, Shape } from '@antv/x6'
 
 Shape.Path.define({
   title: 'Predefined Process',

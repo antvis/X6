@@ -1,4 +1,4 @@
-import { Shape } from '../../@antv/x6'
+import { Shape } from '@antv/x6'
 
 Shape.Path.define({
   shape: 'flowchart_or',

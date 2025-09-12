@@ -1,4 +1,4 @@
-import { Path, Shape } from '../../@antv/x6'
+import { Path, Shape } from '@antv/x6'
 
 Shape.Path.define({
   title: 'Terminator',

@@ -1,5 +1,5 @@
 import * as Shape from './shape'
-import * as Registry from './registry'
+export * from './registry'
 
 export * from './model'
 export * from './view'
@@ -9,4 +9,4 @@ export * from './plugin'
 export * from './common'
 export * from './geometry'
 
-export { Shape, Registry }
+export { Shape }

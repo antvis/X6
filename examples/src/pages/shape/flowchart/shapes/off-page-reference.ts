@@ -1,4 +1,4 @@
-import { NumberExt, Path, Point, Shape } from '../../@antv/x6'
+import { NumberExt, Path, Point, Shape } from '@antv/x6'
 
 Shape.Path.define({
   title: 'Off Page Reference',

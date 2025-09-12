@@ -1,4 +1,4 @@
-import { NumberExt, Path, Shape } from '../../@antv/x6'
+import { NumberExt, Path, Shape } from '@antv/x6'
 
 Shape.Path.define({
   title: 'Paper Tape',

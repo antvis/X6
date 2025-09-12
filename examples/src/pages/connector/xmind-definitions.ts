@@ -1,5 +1,7 @@
 import { Graph, Path, Point } from '@antv/x6'
-import type { ConnectorBaseOptions } from '@antv/x6/registry'
+export interface ConnectorBaseOptions {
+  raw?: boolean
+}
 
 export const connectors = {
   root: 'xmind-root-curve',
