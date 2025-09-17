@@ -36,7 +36,7 @@ Graph.registerConnector(
 )
 
 export class CustomConnectorExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

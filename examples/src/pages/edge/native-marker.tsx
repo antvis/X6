@@ -15,7 +15,7 @@ const markers = [
 ]
 
 export class NativeMarkerExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private edge1: Edge
   private edge2: Edge
 

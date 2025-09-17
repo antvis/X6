@@ -338,7 +338,7 @@ const data = [
 ]
 
 export class CaseClassExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

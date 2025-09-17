@@ -7,7 +7,7 @@ export default class Example extends React.Component<
   Example.Props,
   Example.State
 > {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private parent: Node
   private edge1: Edge
   private edge2: Edge

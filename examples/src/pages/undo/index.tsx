@@ -4,7 +4,7 @@ import { Graph, History } from '@antv/x6'
 import '../index.less'
 
 export class UndoExample extends React.Component<Example.Props, Example.State> {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private history: History
 
   state: Example.State = {

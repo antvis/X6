@@ -4,7 +4,7 @@ import { Graph, Node, Util, Dom, Rectangle } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
   private source: Node
 

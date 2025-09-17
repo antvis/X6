@@ -306,7 +306,7 @@ const data = [
 ]
 
 export class CaseSwimlaneExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

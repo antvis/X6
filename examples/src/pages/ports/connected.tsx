@@ -98,7 +98,7 @@ Graph.registerNode(
 )
 
 export class PortsConnectedExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({
