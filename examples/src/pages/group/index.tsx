@@ -4,7 +4,7 @@ import { Group } from './shape'
 import '../index.less'
 
 export class GroupExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

@@ -3,7 +3,7 @@ import { Graph, Cell, Point, Timing, Interp } from '@antv/x6'
 import '../index.less'
 
 export class TransitionExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({

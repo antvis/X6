@@ -5,7 +5,7 @@ import '../index.less'
 export class DndExample extends React.Component {
   private graph: Graph
   private dnd: Dnd
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = (this.graph = new Graph({

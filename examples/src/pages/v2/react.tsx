@@ -26,7 +26,7 @@ register({
 })
 
 export default class Canvas extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
 
   componentDidMount() {

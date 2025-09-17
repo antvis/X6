@@ -17,7 +17,7 @@ Shape.HTML.register({
   },
 })
 export class HtmlExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({
