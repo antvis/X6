@@ -4,7 +4,7 @@ import { Graph, Keyboard, Selection } from '@antv/x6'
 import '../index.less'
 
 export class KeyboardExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
 
   componentDidMount() {

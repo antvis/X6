@@ -4,7 +4,7 @@ import { Graph, History, Keyboard, Selection } from '@antv/x6'
 import '../index.less'
 
 export class HistoryExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private graph: Graph
 
   componentDidMount() {

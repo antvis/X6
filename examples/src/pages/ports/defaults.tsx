@@ -4,7 +4,7 @@ import { Graph, Node } from '@antv/x6'
 import '../index.less'
 
 export class PortsDefaultsExample extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
   private rect: Node
 
   componentDidMount() {

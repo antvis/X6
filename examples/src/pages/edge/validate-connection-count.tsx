@@ -2,7 +2,7 @@ import React from 'react'
 import { Graph, Edge, EdgeView } from '@antv/x6'
 
 export default class Example extends React.Component {
-  private container: HTMLDivElement
+  private container!: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph({
