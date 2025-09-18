@@ -5,7 +5,7 @@ import '../index.less'
 
 export class PortsDefaultsExample extends React.Component {
   private container!: HTMLDivElement
-  private rect: Node
+  private rect!: Node
 
   componentDidMount() {
     const graph = new Graph({

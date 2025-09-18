@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import { Group } from './shape'
 import '../index.less'
 
@@ -104,21 +104,6 @@ export class GroupExample extends React.Component {
     graph.on('node:collapse', ({ node }: { node: Group }) => {
       node.toggleCollapse()
       const collapsed = node.isCollapsed()
-      const cells = node.getDescendants()
-      cells.forEach((node) => {
-        if (collapsed) {
-          node.hide()
-        } else {
-          node.show()
-        }
-      })
-    })
-
-    graph.on('react:collapse', ({ node }: { node: Node }) => {
-      const data = node.getData<any>() || {}
-      const collapsed = !(data.collapsed === true)
-      node.updateData({ collapsed })
-      node.resize(collapsed ? 80 : 160, collapsed ? 30 : 60)
       const cells = node.getDescendants()
       cells.forEach((node) => {
         if (collapsed) {

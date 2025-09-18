@@ -3,7 +3,7 @@ import { Graph, Node, Dnd } from '@antv/x6'
 import '../index.less'
 
 export class DndExample extends React.Component {
-  private graph: Graph
+  private graph!: Graph
   private dnd: Dnd
   private container!: HTMLDivElement
 

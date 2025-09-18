@@ -78,7 +78,7 @@ export class CaseElkExample extends React.Component {
   private container!: HTMLDivElement
   private portIdToNodeIdMap: Record<string, string> = {}
   private cells: Cell[] = []
-  private graph: Graph
+  private graph!: Graph
 
   componentDidMount() {
     this.graph = new Graph({
