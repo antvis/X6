@@ -1321,10 +1321,16 @@ Set the associated data and trigger the `change:data` event and canvas redraw.
 #### getData()
 
 ```ts
-getData(): any
+getData(options?: Cell.GetDataOptions): any
 ```
 
 Get the associated data.
+
+By default, it returns a reference to the original object.
+
+| Name              | Type    | Required | Default | Description                                                                                   |
+|-------------------|---------|:----:|---------|----------------------------------------------------------------------------------------|
+| options.reference | boolean |      | `true` | When `true`, it returns a reference to the original object             |
 
 #### setData(...)
 

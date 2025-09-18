@@ -125,6 +125,16 @@ describe('Cell core API', () => {
     expect(c.isVisible()).toBe(true)
   })
 
+  it('data API: getData options reference', () => {
+    const c = new Cell({ data: { n: 1 } })
+
+    expect(c.getData()).toEqual({ n: 1 })
+    expect(c.getData({ reference: true })).toEqual(c.getData())
+    expect(c.getData({ reference: false })).toEqual(c.getData())
+    expect(c.getData({ reference: true })).toBe(c.getData())
+    expect(c.getData({ reference: false })).not.toBe(c.getData())
+  })
+
   it('data API: setData, replaceData, updateData, removeData', () => {
     const c = new Cell({ data: { n: 1 } })
     expect(c.getData()).toEqual({ n: 1 })
