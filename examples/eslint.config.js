@@ -18,6 +18,8 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs['recommended-latest'].rules,
       ...reactRefresh.configs.vite.rules,
+      '@typescript-eslint/no-explicit-any': 0,
+      'react-refresh/only-export-components': 0,
     },
     languageOptions: {
       ecmaVersion: 2020,

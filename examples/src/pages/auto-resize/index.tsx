@@ -6,9 +6,9 @@ import '../index.less'
 import './index.less'
 
 export class AutoResizeExample extends React.Component {
-  private graphContainer1: HTMLDivElement
-  private graphContainer2: HTMLDivElement
-  private graphContainer3: HTMLDivElement
+  private graphContainer1!: HTMLDivElement
+  private graphContainer2!: HTMLDivElement
+  private graphContainer3!: HTMLDivElement
 
   componentDidMount() {
     new Graph({

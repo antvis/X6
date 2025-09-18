@@ -5,8 +5,8 @@ import '../index.less'
 
 export class ClipboardExample extends React.Component {
   private container!: HTMLDivElement
-  private selection: Selection
-  private clipboard: Clipboard
+  private selection!: Selection
+  private clipboard!: Clipboard
 
   componentDidMount() {
     const graph = new Graph({

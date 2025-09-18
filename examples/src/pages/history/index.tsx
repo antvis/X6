@@ -5,7 +5,7 @@ import '../index.less'
 
 export class HistoryExample extends React.Component {
   private container!: HTMLDivElement
-  private graph: Graph
+  private graph!: Graph
 
   componentDidMount() {
     const graph = new Graph({

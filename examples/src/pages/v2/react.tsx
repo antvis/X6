@@ -27,7 +27,7 @@ register({
 
 export default class Canvas extends React.Component {
   private container!: HTMLDivElement
-  private graph: Graph
+  private graph!: Graph
 
   componentDidMount() {
     const graph = new Graph({

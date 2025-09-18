@@ -5,7 +5,7 @@ import '../index.less'
 import './index.less'
 
 export class ScrollerExample extends React.Component {
-  private graph: Graph
+  private graph!: Graph
   private graphContainer: HTMLDivElement
   private minimapContainer: HTMLDivElement
   private scroller: Scroller
