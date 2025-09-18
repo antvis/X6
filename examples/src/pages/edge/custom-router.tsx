@@ -9,7 +9,7 @@ routerRegistry.register(
     const BOUNCES = args.bounces || 20
     const points = vertices.map((p) => Point.create(p))
 
-    for (var i = 0; i < BOUNCES; i++) {
+    for (let i = 0; i < BOUNCES; i++) {
       const sourceCorner = view.sourceBBox.getCenter()
       const targetCorner = view.targetBBox.getCenter()
       const randomPoint = Point.random(
