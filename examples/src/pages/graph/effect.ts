@@ -103,7 +103,7 @@ export function createEffect(graph: Graph) {
 
         if (paddings.length) {
           vSvg.append(paddings)
-          vElements.push(...vElements, ...paddings)
+          vElements.push(...paddings)
         }
       }
 

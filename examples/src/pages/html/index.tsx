@@ -8,9 +8,7 @@ Shape.HTML.register({
   width: 160,
   height: 80,
   effect: ['data'],
-  html(cell: Cell, ...args: any[]) {
-    console.log(cell, args)
-
+  html(cell: Cell) {
     const data = cell.getData()
     const div = document.createElement('div')
     div.className = 'custom-html'
