@@ -13,7 +13,7 @@ const female =
 
 export class OrgExample extends React.Component<Example.Props, Example.State> {
   private container!: HTMLDivElement
-  private graph: Graph
+  private graph!: Graph
 
   state: Example.State = {
     dir: 'LR',

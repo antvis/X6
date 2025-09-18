@@ -3,12 +3,9 @@ import { Radio } from 'antd'
 import { Graph, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
-export class RouterExample extends React.Component<
-  Example.Props,
-  Example.State
-> {
+export class RouterExample extends React.Component {
   private container!: HTMLDivElement
-  private edge: Edge
+  private edge!: Edge
 
   state = {
     router: 'manhattan',
@@ -69,7 +66,7 @@ export class RouterExample extends React.Component<
       },
     })
 
-    var obstacle = source
+    const obstacle = source
       .clone()
       .translate(300, 100)
       .setAttrs({
@@ -188,15 +185,5 @@ export class RouterExample extends React.Component<
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
-  }
-}
-
-// eslint-disable-next-line
-export namespace Example {
-  export interface Props {}
-
-  export interface State {
-    router: string
-    connector: string
   }
 }
