@@ -2,7 +2,7 @@ import React from 'react'
 import { Vector, Point } from '@antv/x6'
 import '../index.less'
 
-var size = {
+const size = {
   x: 2000,
   y: 1000,
 }

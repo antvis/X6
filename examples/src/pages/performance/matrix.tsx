@@ -5,7 +5,7 @@ import '../index.less'
 
 export default class Example extends React.Component {
   private container!: HTMLDivElement
-  private graph: Graph
+  private graph!: Graph
   private source: Node
 
   componentDidMount() {

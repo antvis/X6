@@ -26,7 +26,6 @@
   ],
   "scripts": {
     "start:examples": "pnpm run build:esm && cd examples && pnpm run start",
-    "watch": "chokidar 'src/**/*.{ts,tsx}' -c 'tsc --module esnext --target es6 --outDir es --incremental'",
     "build:esm": "rimraf es && tsc --module esnext --target es6 --outDir ./es",
     "build:cjs": "rimraf lib && tsc --module commonjs --target es6 --outDir ./lib",
     "build:umd": "rimraf dist && rollup -c && npm run size",
@@ -45,8 +44,6 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "chokidar": "^4.0.3",
-    "chokidar-cli": "^3.0.0",
     "@biomejs/biome": "^2.2.2",
     "@commitlint/config-conventional": "^19.8.1",
     "@napi-rs/canvas": "^0.1.77",

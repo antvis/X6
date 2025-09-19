@@ -11,8 +11,8 @@ const options = [
 
 export default class Example extends React.Component {
   private container!: HTMLDivElement
-  private minimapContainer: HTMLDivElement
-  private graph: Graph
+  private minimapContainer!: HTMLDivElement
+  private graph!: Graph
 
   componentDidMount() {
     this.graph = new Graph({
