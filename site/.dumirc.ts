@@ -71,12 +71,27 @@ export default defineConfig({
         order: 2,
       },
       {
-        slug: 'https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy',
         title: {
           zh: '常见问题',
           en: 'Q&A',
         },
         order: 3,
+        dropdownItems: [
+          {
+            url: 'https://www.yuque.com/sxd_panda/antv/x6',
+            name: {
+              zh: '社区FAQ',
+              en: 'Community FAQ',
+            },
+          },
+          {
+            url: 'https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy',
+            name: {
+              zh: '官方FAQ',
+              en: 'Official FAQ',
+            },
+          },
+        ],
       },
       {
         slug: 'https://www.yuque.com/antv/x6/bbfu6r',
