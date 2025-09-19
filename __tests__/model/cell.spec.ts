@@ -129,9 +129,11 @@ describe('Cell core API', () => {
     const c = new Cell({ data: { n: 1 } })
 
     expect(c.getData()).toEqual({ n: 1 })
-    expect(c.getData({ reference: true })).toEqual(c.getData())
-    expect(c.getData({ reference: false })).toEqual(c.getData())
+
+    expect(c.getData()).toBe(c.getData())
     expect(c.getData({ reference: true })).toBe(c.getData())
+
+    expect(c.getData({ reference: false })).toEqual(c.getData())
     expect(c.getData({ reference: false })).not.toBe(c.getData())
   })
 

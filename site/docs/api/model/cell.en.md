@@ -1330,8 +1330,7 @@ By default, it returns a reference to the original object.
 
 | Name              | Type    | Required | Default | Description                                                                                   |
 |-------------------|---------|:----:|---------|----------------------------------------------------------------------------------------|
-| options.reference | boolean |      | `true` | When `true`, it returns a reference to the original object             |
-
+| options.reference | boolean |      | `true` | When `true`, it returns a reference to the original object, otherwise returns a deep copy. |
 #### setData(...)
 
 ```ts
