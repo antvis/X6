@@ -25,14 +25,18 @@
     "antv"
   ],
   "scripts": {
+    "prestart:examples": "node ./scripts/check-node-version.js",
     "start:examples": "pnpm run build:esm && cd examples && pnpm run start",
     "build:esm": "rimraf es && tsc --module esnext --target es6 --outDir ./es",
     "build:cjs": "rimraf lib && tsc --module commonjs --target es6 --outDir ./lib",
     "build:umd": "rimraf dist && rollup -c && npm run size",
     "size": "limit-size",
     "build": "run-p -s build:*",
+    "pretest:watch": "node ./scripts/check-node-version.js",
     "test:watch": "vitest",
+    "pretest": "node ./scripts/check-node-version.js",
     "test": "vitest --watch=false",
+    "pretest:coverage": "node ./scripts/check-node-version.js",
     "test:coverage": "vitest run --coverage --watch=false",
     "start:site": "cd site && pnpm run start"
   },
