@@ -1,10 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createTestGraph } from '../utils'
 
-let observeMock: any
-let disconnectMock: any
-let instances: Array<{ cb: (entries: any[], observer: any) => void }>
-
 class MockResizeObserver {
   cb: (entries: any[], observer: any) => void
   constructor(cb: (entries: any[], observer: any) => void) {
@@ -14,6 +10,11 @@ class MockResizeObserver {
   observe = (...args: any[]) => observeMock(...args)
   disconnect = (...args: any[]) => disconnectMock(...args)
 }
+
+let observeMock: vi.Mock
+let disconnectMock: vi.Mock
+let instances: MockResizeObserver[]
+
 
 describe('SizeManager', () => {
   beforeEach(() => {
