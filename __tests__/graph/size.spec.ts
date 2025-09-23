@@ -1,55 +1,64 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { SizeSensor } from '../../src'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createTestGraph } from '../utils'
 
+class MockResizeObserver {
+  cb: (entries: any[], observer: any) => void
+  constructor(cb: (entries: any[], observer: any) => void) {
+    this.cb = cb
+    instances.push(this)
+  }
+  observe = (...args: any[]) => observeMock(...args)
+  disconnect = (...args: any[]) => disconnectMock(...args)
+}
+
+let observeMock: vi.Mock
+let disconnectMock: vi.Mock
+let instances: MockResizeObserver[]
+
+
 describe('SizeManager', () => {
-  let bindSpy: any
-  let clearSpy: any
-
   beforeEach(() => {
-    bindSpy = vi
-      .spyOn(SizeSensor, 'bind')
-      .mockImplementation((_el, cb: any) => {
-        return cb
-      })
-    clearSpy = vi.spyOn(SizeSensor, 'clear').mockImplementation(() => {})
+    observeMock = vi.fn()
+    disconnectMock = vi.fn()
+    instances = []
+    // @ts-expect-error - inject mock into global
+    globalThis.ResizeObserver = MockResizeObserver
   })
 
-  it('should bind SizeSensor when autoResize = true', () => {
-    createTestGraph({
-      autoResize: true,
-    })
-    expect(bindSpy).toHaveBeenCalled()
+  afterEach(() => {
+    // @ts-expect-error - cleanup mock
+    delete globalThis.ResizeObserver
   })
 
-  it('should not bind SizeSensor when autoResize = false', () => {
-    createTestGraph({
-      autoResize: false,
-    })
-    expect(bindSpy).not.toHaveBeenCalled()
+  it('should observe when autoResize = true', () => {
+    createTestGraph({ autoResize: true })
+    expect(observeMock).toHaveBeenCalledTimes(1)
+    const target = observeMock.mock.calls[0][0]
+    expect(target).toBeInstanceOf(HTMLElement)
   })
 
-  it('should bind SizeSensor when autoResize is HTMLElement', () => {
+  it('should not observe when autoResize = false', () => {
+    createTestGraph({ autoResize: false })
+    expect(observeMock).not.toHaveBeenCalled()
+  })
+
+  it('should observe when autoResize is HTMLElement', () => {
     const customEl = document.createElement('div')
-    createTestGraph({
-      autoResize: customEl,
-    })
-    expect(bindSpy).toHaveBeenCalledWith(customEl, expect.any(Function))
+    Object.defineProperty(customEl, 'offsetWidth', { value: 400 })
+    Object.defineProperty(customEl, 'offsetHeight', { value: 200 })
+    createTestGraph({ autoResize: customEl })
+    expect(observeMock).toHaveBeenCalledWith(customEl)
   })
 
-  it('should call graph.transform.resize if no scroller', () => {
-    const { graph } = createTestGraph({
-      autoResize: true,
-    })
+  it('should delegate to graph.transform.resize if no scroller', () => {
+    const { graph } = createTestGraph({ autoResize: true })
     const resizeSpy = vi.spyOn(graph.transform, 'resize')
-    graph.transform.resize(200, 100)
+    graph.size.resize(200, 100)
     expect(resizeSpy).toHaveBeenCalledWith(200, 100)
   })
 
   it('should call scroller.resize if scroller exists', () => {
-    const { graph } = createTestGraph({
-      autoResize: true,
-    })
+    const { graph } = createTestGraph({ autoResize: true })
     const resizeSpy = vi.fn()
     graph.getPlugin = vi.fn().mockReturnValue({
       options: { enabled: true },
@@ -60,23 +69,18 @@ describe('SizeManager', () => {
     expect(resizeSpy).toHaveBeenCalledWith(300, 150)
   })
 
-  it('should trigger resize when sensor callback fired', () => {
-    const { graph } = createTestGraph({
-      autoResize: true,
-    })
+  it('should trigger resize when observer callback fired', () => {
+    const { graph } = createTestGraph({ autoResize: true })
     const resizeSpy = vi.spyOn(graph.size, 'resize')
-    const el = document.createElement('div')
-    Object.defineProperty(el, 'offsetWidth', { value: 400 })
-    Object.defineProperty(el, 'offsetHeight', { value: 200 })
-    bindSpy.mock.calls[0][1]()
-    expect(resizeSpy).toHaveBeenCalled()
+    const ro = instances[0]
+    expect(ro).toBeDefined()
+    ro.cb([{ contentRect: { width: 400, height: 200 } }] as any, {} as any)
+    expect(resizeSpy).toHaveBeenCalledWith(400, 200)
   })
 
-  it('should clear sensor on dispose', () => {
-    const { graph } = createTestGraph({
-      autoResize: true,
-    })
+  it('should disconnect observer on dispose', () => {
+    const { graph } = createTestGraph({ autoResize: true })
     graph.size.dispose()
-    expect(clearSpy).toHaveBeenCalledWith(graph.container)
+    expect(disconnectMock).toHaveBeenCalled()
   })
 })

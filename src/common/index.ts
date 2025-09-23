@@ -20,7 +20,6 @@ export {
 export * from './number'
 export * from './object'
 export * from './platform'
-export * from './size-sensor'
 export * from './string'
 export * from './text'
 export * from './types'
