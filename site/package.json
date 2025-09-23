@@ -4,6 +4,7 @@
   "version": "1.6.5",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
+    "prestart": "node ../scripts/check-node-version.js",
     "start": "dumi dev",
     "build": "dumi build",
     "clean": ""
@@ -31,6 +32,9 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^11.5.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "repository": "https://github.com/antvis/x6"
 }

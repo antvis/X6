@@ -3,7 +3,9 @@
   "name": "@antv/x6-examples",
   "version": "2.1.1",
   "scripts": {
+    "prestart": "node ../scripts/check-node-version.js",
     "start": "vite",
+    "predev": "node ../scripts/check-node-version.js",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -37,7 +39,7 @@
     "vite": "^7.1.2"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=20.0.0"
   },
   "repository": "git@github.com:antvis/X6.git"
 }
