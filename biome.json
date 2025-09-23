@@ -17,30 +17,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
-      "complexity": {
-        "useLiteralKeys": "off",
-        "noBannedTypes": "off",
-        "noUselessThisAlias": "off",
-        "noArguments": "off",
-        "useOptionalChain": "off"
-      },
-      "suspicious": {
-        "noExplicitAny": "off",
-        "noConfusingVoidType": "off",
-        "useIterableCallbackReturn": "off",
-        "noImplicitAnyLet": "off",
-        "useAdjacentOverloadSignatures": "off",
-        "noAssignInExpressions": "off",
-        "noShadowRestrictedNames": "off"
-      },
-      "correctness": {
-        "noUnusedFunctionParameters": "off",
-        "noUnusedVariables": "off"
-      },
-      "style": {
-        "noNonNullAssertion": "off"
-      }
+      "recommended": true
     }
   },
   "javascript": {
