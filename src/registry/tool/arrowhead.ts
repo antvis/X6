@@ -5,7 +5,7 @@ import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
 
-class Arrowhead extends ToolItem<EdgeView, Options> {
+class Arrowhead extends ToolItem<EdgeView, Arrowhead.Options> {
   protected get type() {
     return this.options.type!
   }
@@ -111,29 +111,33 @@ class Arrowhead extends ToolItem<EdgeView, Options> {
   }
 }
 
-interface Options extends ToolItemOptions {
-  attrs?: SimpleAttrs
-  type?: Edge.TerminalType
-  ratio?: number
+namespace Arrowhead {
+  export interface Options extends ToolItemOptions {
+    attrs?: SimpleAttrs
+    type?: Edge.TerminalType
+    ratio?: number
+  }
 }
 
-Arrowhead.config({
-  tagName: 'path',
-  isSVGElement: true,
-  events: {
-    mousedown: 'onMouseDown',
-    touchstart: 'onMouseDown',
-  },
-  documentEvents: {
-    mousemove: 'onMouseMove',
-    touchmove: 'onMouseMove',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  },
-})
+namespace Arrowhead {
+  Arrowhead.config({
+    tagName: 'path',
+    isSVGElement: true,
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+    },
+    documentEvents: {
+      mousemove: 'onMouseMove',
+      touchmove: 'onMouseMove',
+      mouseup: 'onMouseUp',
+      touchend: 'onMouseUp',
+      touchcancel: 'onMouseUp',
+    },
+  })
+}
 
-export const SourceArrowhead = Arrowhead.define<Options>({
+export const SourceArrowhead = Arrowhead.define<Arrowhead.Options>({
   name: 'source-arrowhead',
   type: 'source',
   ratio: 0,
@@ -146,7 +150,7 @@ export const SourceArrowhead = Arrowhead.define<Options>({
   },
 })
 
-export const TargetArrowhead = Arrowhead.define<Options>({
+export const TargetArrowhead = Arrowhead.define<Arrowhead.Options>({
   name: 'target-arrowhead',
   type: 'target',
   ratio: 1,

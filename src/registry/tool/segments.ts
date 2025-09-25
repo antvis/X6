@@ -10,8 +10,8 @@ import { createViewElement } from '../../view/view/util'
 import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
-export class Segments extends ToolItem<EdgeView, Options> {
-  protected handles: Handle[] = []
+export class Segments extends ToolItem<EdgeView, Segments.Options> {
+  protected handles: Segments.Handle[] = []
 
   protected get vertices() {
     return this.cellView.cell.getVertices()
@@ -62,13 +62,13 @@ export class Segments extends ToolItem<EdgeView, Options> {
     return handle
   }
 
-  protected startHandleListening(handle: Handle) {
+  protected startHandleListening(handle: Segments.Handle) {
     handle.on('change', this.onHandleChange, this)
     handle.on('changing', this.onHandleChanging, this)
     handle.on('changed', this.onHandleChanged, this)
   }
 
-  protected stopHandleListening(handle: Handle) {
+  protected stopHandleListening(handle: Segments.Handle) {
     handle.off('change', this.onHandleChange, this)
     handle.off('changing', this.onHandleChanging, this)
     handle.off('changed', this.onHandleChanged, this)
@@ -110,9 +110,9 @@ export class Segments extends ToolItem<EdgeView, Options> {
   }
 
   protected snapHandle(
-    handle: Handle,
+    handle: Segments.Handle,
     position: Point.PointLike,
-    data: EventData,
+    data: Segments.EventData,
   ) {
     const axis = handle.options.axis!
     const index = handle.options.index!
@@ -130,7 +130,10 @@ export class Segments extends ToolItem<EdgeView, Options> {
     return position
   }
 
-  protected onHandleChanging({ handle, e }: HandleEventArgs['changing']) {
+  protected onHandleChanging({
+    handle,
+    e,
+  }: Segments.Handle.EventArgs['changing']) {
     const graph = this.graph
     const options = this.options
     const edgeView = this.cellView
@@ -139,7 +142,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     const axis = handle.options.axis!
     const index = handle.options.index! - 1
 
-    const data = this.getEventData<EventData>(e)
+    const data = this.getEventData<Segments.EventData>(e)
     const evt = this.normalizeEvent(e)
     const coords = graph.snapToGrid(evt.clientX, evt.clientY)
     const position = this.snapHandle(handle, coords.clone(), data)
@@ -255,7 +258,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleChange({ handle, e }: HandleEventArgs['change']) {
+  protected onHandleChange({ handle, e }: Segments.Handle.EventArgs['change']) {
     const options = this.options
     const handles = this.handles
     const edgeView = this.cellView
@@ -272,7 +275,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     }
 
     this.focus()
-    this.setEventData<EventData>(e, {
+    this.setEventData<Segments.EventData>(e, {
       sourceAnchor: edgeView.sourceAnchor.clone(),
       targetAnchor: edgeView.targetAnchor.clone(),
       sourceAnchorDef: ObjectExt.cloneDeep(
@@ -295,7 +298,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleChanged({ e }: HandleEventArgs['changed']) {
+  protected onHandleChanged({ e }: Segments.Handle.EventArgs['changed']) {
     const options = this.options
     const edgeView = this.cellView
     if (options.removeRedundancies) {
@@ -321,7 +324,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
   }
 
   protected updateHandle(
-    handle: Handle,
+    handle: Segments.Handle,
     vertex: Point.PointLike,
     nextVertex: Point.PointLike,
     offset = 0,
@@ -353,154 +356,162 @@ export class Segments extends ToolItem<EdgeView, Options> {
   }
 }
 
-interface Options extends ToolItemOptions {
-  threshold: number
-  precision?: number
-  snapRadius: number
-  stopPropagation: boolean
-  removeRedundancies: boolean
-  attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
-  anchor?: (
-    this: EdgeView,
-    pos: Point,
-    terminalView: CellView,
-    terminalMagnet: Element | null,
-    terminalType: Edge.TerminalType,
-    edgeView: EdgeView,
-    toolView: Segments,
-  ) => Edge.TerminalCellData['anchor']
-  createHandle?: (options: HandleOptions) => Handle
-  processHandle?: (handle: Handle) => void
-  onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
-}
-
-interface EventData {
-  sourceAnchor: Point
-  targetAnchor: Point
-  sourceAnchorDef: Edge.TerminalCellData['anchor']
-  targetAnchorDef: Edge.TerminalCellData['anchor']
-}
-
-class Handle extends View<HandleEventArgs> {
-  public container: SVGRectElement
-
-  constructor(public options: HandleOptions) {
-    super()
-    this.render()
-    this.delegateEvents({
-      mousedown: 'onMouseDown',
-      touchstart: 'onMouseDown',
-    })
+export namespace Segments {
+  export interface Options extends ToolItemOptions {
+    threshold: number
+    precision?: number
+    snapRadius: number
+    stopPropagation: boolean
+    removeRedundancies: boolean
+    attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
+    anchor?: (
+      this: EdgeView,
+      pos: Point,
+      terminalView: CellView,
+      terminalMagnet: Element | null,
+      terminalType: Edge.TerminalType,
+      edgeView: EdgeView,
+      toolView: Segments,
+    ) => Edge.TerminalCellData['anchor']
+    createHandle?: (options: Handle.Options) => Handle
+    processHandle?: (handle: Handle) => void
+    onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
   }
 
-  render() {
-    this.container = createViewElement('rect', true) as SVGRectElement
-    const attrs = this.options.attrs
-    if (typeof attrs === 'function') {
-      const defaults = Segments.getDefaults<Options>()
-      this.setAttrs({
-        ...defaults.attrs,
-        ...attrs(this),
+  export interface EventData {
+    sourceAnchor: Point
+    targetAnchor: Point
+    sourceAnchorDef: Edge.TerminalCellData['anchor']
+    targetAnchorDef: Edge.TerminalCellData['anchor']
+  }
+}
+
+export namespace Segments {
+  export class Handle extends View<Handle.EventArgs> {
+    public container: SVGRectElement
+
+    constructor(public options: Handle.Options) {
+      super()
+      this.render()
+      this.delegateEvents({
+        mousedown: 'onMouseDown',
+        touchstart: 'onMouseDown',
       })
-    } else {
-      this.setAttrs(attrs)
     }
-    this.addClass(this.prefixClassName('edge-tool-segment'))
-  }
 
-  updatePosition(x: number, y: number, angle: number, view: EdgeView) {
-    const p = view.getClosestPoint(new Point(x, y)) || new Point(x, y)
-    let matrix = Dom.createSVGMatrix().translate(p.x, p.y)
-    if (!p.equals({ x, y })) {
-      const line = new Line(x, y, p.x, p.y)
-      let deg = line.vector().vectorAngle(new Point(1, 0))
-      if (deg !== 0) {
-        deg += 90
+    render() {
+      this.container = createViewElement('rect', true) as SVGRectElement
+      const attrs = this.options.attrs
+      if (typeof attrs === 'function') {
+        const defaults = Segments.getDefaults<Segments.Options>()
+        this.setAttrs({
+          ...defaults.attrs,
+          ...attrs(this),
+        })
+      } else {
+        this.setAttrs(attrs)
       }
-      matrix = matrix.rotate(deg)
-    } else {
-      matrix = matrix.rotate(angle)
+      this.addClass(this.prefixClassName('edge-tool-segment'))
     }
 
-    this.setAttrs({
-      transform: Dom.matrixToTransformString(matrix),
-      cursor: angle % 180 === 0 ? 'row-resize' : 'col-resize',
-    })
-  }
+    updatePosition(x: number, y: number, angle: number, view: EdgeView) {
+      const p = view.getClosestPoint(new Point(x, y)) || new Point(x, y)
+      let matrix = Dom.createSVGMatrix().translate(p.x, p.y)
+      if (!p.equals({ x, y })) {
+        const line = new Line(x, y, p.x, p.y)
+        let deg = line.vector().vectorAngle(new Point(1, 0))
+        if (deg !== 0) {
+          deg += 90
+        }
+        matrix = matrix.rotate(deg)
+      } else {
+        matrix = matrix.rotate(angle)
+      }
 
-  protected onMouseDown(evt: Dom.MouseDownEvent) {
-    if (this.options.guard(evt)) {
-      return
+      this.setAttrs({
+        transform: Dom.matrixToTransformString(matrix),
+        cursor: angle % 180 === 0 ? 'row-resize' : 'col-resize',
+      })
     }
 
-    this.trigger('change', { e: evt, handle: this })
+    protected onMouseDown(evt: Dom.MouseDownEvent) {
+      if (this.options.guard(evt)) {
+        return
+      }
 
-    evt.stopPropagation()
-    evt.preventDefault()
-    this.options.graph.view.undelegateEvents()
-    this.delegateDocumentEvents(
-      {
-        mousemove: 'onMouseMove',
-        touchmove: 'onMouseMove',
-        mouseup: 'onMouseUp',
-        touchend: 'onMouseUp',
-        touchcancel: 'onMouseUp',
-      },
-      evt.data,
-    )
+      this.trigger('change', { e: evt, handle: this })
+
+      evt.stopPropagation()
+      evt.preventDefault()
+      this.options.graph.view.undelegateEvents()
+      this.delegateDocumentEvents(
+        {
+          mousemove: 'onMouseMove',
+          touchmove: 'onMouseMove',
+          mouseup: 'onMouseUp',
+          touchend: 'onMouseUp',
+          touchcancel: 'onMouseUp',
+        },
+        evt.data,
+      )
+    }
+
+    protected onMouseMove(evt: Dom.MouseMoveEvent) {
+      this.emit('changing', { e: evt, handle: this })
+    }
+
+    protected onMouseUp(evt: Dom.MouseUpEvent) {
+      this.emit('changed', { e: evt, handle: this })
+      this.undelegateDocumentEvents()
+      this.options.graph.view.delegateEvents()
+    }
+
+    show() {
+      this.container.style.display = ''
+    }
+
+    hide() {
+      this.container.style.display = 'none'
+    }
   }
 
-  protected onMouseMove(evt: Dom.MouseMoveEvent) {
-    this.emit('changing', { e: evt, handle: this })
-  }
+  export namespace Handle {
+    export interface Options {
+      graph: Graph
+      guard: (evt: Dom.EventObject) => boolean
+      attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
+      index?: number
+      axis?: 'x' | 'y'
+    }
 
-  protected onMouseUp(evt: Dom.MouseUpEvent) {
-    this.emit('changed', { e: evt, handle: this })
-    this.undelegateDocumentEvents()
-    this.options.graph.view.delegateEvents()
-  }
-
-  show() {
-    this.container.style.display = ''
-  }
-
-  hide() {
-    this.container.style.display = 'none'
+    export interface EventArgs {
+      change: { e: Dom.MouseDownEvent; handle: Handle }
+      changing: { e: Dom.MouseMoveEvent; handle: Handle }
+      changed: { e: Dom.MouseUpEvent; handle: Handle }
+    }
   }
 }
 
-interface HandleOptions {
-  graph: Graph
-  guard: (evt: Dom.EventObject) => boolean
-  attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
-  index?: number
-  axis?: 'x' | 'y'
+export namespace Segments {
+  Segments.config<Options>({
+    name: 'segments',
+    precision: 0.5,
+    threshold: 40,
+    snapRadius: 10,
+    stopPropagation: true,
+    removeRedundancies: true,
+    attrs: {
+      width: 20,
+      height: 8,
+      x: -10,
+      y: -4,
+      rx: 4,
+      ry: 4,
+      fill: '#333',
+      stroke: '#fff',
+      'stroke-width': 2,
+    },
+    createHandle: (options) => new Handle(options),
+    anchor: Util.getAnchor,
+  })
 }
-
-interface HandleEventArgs {
-  change: { e: Dom.MouseDownEvent; handle: Handle }
-  changing: { e: Dom.MouseMoveEvent; handle: Handle }
-  changed: { e: Dom.MouseUpEvent; handle: Handle }
-}
-
-Segments.config<Options>({
-  name: 'segments',
-  precision: 0.5,
-  threshold: 40,
-  snapRadius: 10,
-  stopPropagation: true,
-  removeRedundancies: true,
-  attrs: {
-    width: 20,
-    height: 8,
-    x: -10,
-    y: -4,
-    rx: 4,
-    ry: 4,
-    fill: '#333',
-    stroke: '#fff',
-    'stroke-width': 2,
-  },
-  createHandle: (options) => new Handle(options),
-  anchor: Util.getAnchor,
-})
