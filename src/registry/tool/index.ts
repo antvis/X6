@@ -8,8 +8,8 @@ import { Registry } from '../registry'
 import { SourceAnchor, TargetAnchor } from './anchor'
 import { SourceArrowhead, TargetArrowhead } from './arrowhead'
 import { Boundary } from './boundary'
-import { Button, Remove } from './button'
-import { EdgeEditor, NodeEditor } from './editor'
+import { Button } from './button'
+import { CellEditor } from './editor'
 import { Segments } from './segments'
 import { Vertices } from './vertices'
 
@@ -19,8 +19,8 @@ import { Vertices } from './vertices'
 export const nodeToolPresets = {
   boundary: Boundary,
   button: Button,
-  'button-remove': Remove,
-  'node-editor': NodeEditor,
+  'button-remove': Button.Remove,
+  'node-editor': CellEditor.NodeEditor,
 }
 
 export type NodeToolDefinition = ToolItemDefinition
@@ -87,12 +87,12 @@ export const edgeToolPresets = {
   vertices: Vertices,
   segments: Segments,
   button: Button,
-  'button-remove': Remove,
+  'button-remove': Button.Remove,
   'source-anchor': SourceAnchor,
   'target-anchor': TargetAnchor,
   'source-arrowhead': SourceArrowhead,
   'target-arrowhead': TargetArrowhead,
-  'edge-editor': EdgeEditor,
+  'edge-editor': CellEditor.EdgeEditor,
 }
 
 export type EdgeToolDefinition = NodeToolDefinition
