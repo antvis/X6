@@ -45,11 +45,37 @@ export class Segments extends ToolItem<EdgeView, Options> {
     return this
   }
 
+  public getPoints() {
+    const edgeView = this.cellView
+    const points = edgeView.routePoints
+    if (points.length <= 2) return points
+
+    const result: Point[] = [points[0]]
+
+    for (let i = 1; i < points.length - 1; i++) {
+      const prev = result[result.length - 1]
+      const curr = points[i]
+      const next = points[i + 1]
+
+      const cross =
+        (curr.x - prev.x) * (next.y - prev.y) -
+        (curr.y - prev.y) * (next.x - prev.x)
+
+      if (cross !== 0) {
+        result.push(curr)
+      }
+    }
+
+    result.push(points[points.length - 1])
+
+    return result
+  }
+
   protected onRender() {
     Dom.addClass(this.container, this.prefixClassName('edge-tool-segments'))
     this.resetHandles()
     const edgeView = this.cellView
-    const vertices = [...this.vertices]
+    const vertices = [...this.getPoints()]
     vertices.unshift(edgeView.sourcePoint)
     vertices.push(edgeView.targetPoint)
 
