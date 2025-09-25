@@ -17,6 +17,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected selectionContent: HTMLElement
   protected boxCount: number
   protected boxesUpdated: boolean
+  protected updateThrottleTimer: ReturnType<typeof setTimeout> | null = null
+  protected isDragging: boolean = false
 
   public get graph() {
     return this.options.graph
@@ -132,19 +134,21 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     if (allowTranslating && (translateByUi || snapped)) {
       this.translating = true
       const current = node.position()
-      const previous = node.previous('position')!
-      const dx = current.x - previous.x
-      const dy = current.y - previous.y
+      const previous = node.previous('position')
+      if (previous) {
+        const dx = current.x - previous.x
+        const dy = current.y - previous.y
 
-      if (dx !== 0 || dy !== 0) {
-        this.translateSelectedNodes(dx, dy, node, options)
+        if (dx !== 0 || dy !== 0) {
+          this.translateSelectedNodes(dx, dy, node, options)
+        }
       }
       this.translating = false
     }
   }
 
   protected onModelUpdated({ removed }: Collection.EventArgs['updated']) {
-    if (removed && removed.length) {
+    if (removed?.length) {
       this.unselect(removed)
     }
   }
@@ -191,8 +195,13 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       const next = this.filter(Array.isArray(cells) ? cells : [cells])
       const prevMap: KeyValue<Cell> = {}
       const nextMap: KeyValue<Cell> = {}
-      prev.forEach((cell) => (prevMap[cell.id] = cell))
-      next.forEach((cell) => (nextMap[cell.id] = cell))
+      for (const cell of prev) {
+        prevMap[cell.id] = cell
+      }
+      for (const cell of next) {
+        nextMap[cell.id] = cell
+      }
+
       const added: Cell[] = []
       const removed: Cell[] = []
       next.forEach((cell) => {
@@ -248,8 +257,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     evt = this.normalizeEvent(evt) // eslint-disable-line
     this.clean()
-    let x
-    let y
+    let x: number
+    let y: number
     const graphContainer = this.graph.container
     if (
       evt.offsetX != null &&
@@ -308,6 +317,14 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected stopSelecting(evt: Dom.MouseUpEvent) {
+    // 重置拖拽状态和清理定时器
+    this.isDragging = false
+    this.boxesUpdated = false
+    if (this.updateThrottleTimer) {
+      clearTimeout(this.updateThrottleTimer)
+      this.updateThrottleTimer = null
+    }
+
     const graph = this.graph
     const eventData = this.getEventData<CommonEventData>(evt)
     const action = eventData.action
@@ -338,6 +355,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         }
         this.graph.model.stopBatch('move-selection')
         this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
+        // 拖拽结束后，重新创建选择框确保位置正确
+        this.updateSelectionBoxes()
         break
       }
 
@@ -346,13 +365,22 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         break
       }
     }
+
+    this.undelegateDocumentEvents()
   }
 
   protected onMouseUp(evt: Dom.MouseUpEvent) {
-    const action = this.getEventData<CommonEventData>(evt).action
-    if (action) {
+    this.isDragging = false
+
+    if (this.updateThrottleTimer) {
+      clearTimeout(this.updateThrottleTimer)
+      this.updateThrottleTimer = null
+    }
+
+    const e = this.normalizeEvent(evt)
+    const eventData = this.getEventData<CommonEventData>(e)
+    if (eventData) {
       this.stopSelecting(evt)
-      this.undelegateDocumentEvents()
     }
   }
 
@@ -367,11 +395,13 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       this.startTranslating(e)
     }
 
-    const activeView = this.getCellViewFromElem(e.target)!
-    this.setEventData<SelectionBoxEventData>(e, { activeView })
-    const client = this.graph.snapToGrid(e.clientX, e.clientY)
-    this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
-    this.delegateDocumentEvents(documentEvents, e.data)
+    const activeView = this.getCellViewFromElem(e.target)
+    if (activeView) {
+      this.setEventData<SelectionBoxEventData>(e, { activeView })
+      const client = this.graph.snapToGrid(e.clientX, e.clientY)
+      this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      this.delegateDocumentEvents(documentEvents, e.data)
+    }
   }
 
   protected startTranslating(evt: Dom.MouseDownEvent) {
@@ -457,33 +487,27 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected updateSelectedNodesPosition(offset: { dx: number; dy: number }) {
-    const { dx, dy } = offset
-    if (dx || dy) {
-      if ((this.translateSelectedNodes(dx, dy), this.boxesUpdated)) {
-        if (this.collection.length > 1) {
-          this.updateSelectionBoxes()
-        }
-      } else {
-        const scale = this.graph.transform.getScale()
-        for (
-          let i = 0, $boxes = this.$boxes, len = $boxes.length;
-          i < len;
-          i += 1
-        ) {
-          this.updateElementPosition($boxes[i], dx * scale.sx, dy * scale.sy)
-        }
-        this.updateElementPosition(
-          this.selectionContainer,
-          dx * scale.sx,
-          dy * scale.sy,
-        )
-      }
-    }
+    this.translateSelectedNodes(offset.dx, offset.dy)
+
+    // 立即同步更新选择框位置，确保与节点位置一致，需要考虑画布的缩放比例
+    const scale = this.graph.transform.getScale()
+    this.$boxes.forEach((box) => {
+      this.updateElementPosition(
+        box,
+        offset.dx * scale.sx,
+        offset.dy * scale.sy,
+      )
+    })
+    this.updateContainer()
+
+    // 标记选择框已更新，避免重复更新
+    this.boxesUpdated = true
+    this.isDragging = true
   }
 
   protected autoScrollGraph(x: number, y: number) {
-    const scroller = this.graph.getPlugin<any>('scroller')
-    if (scroller) {
+    const scroller = this.graph.getPlugin('scroller') as any
+    if (scroller && scroller.autoScroll) {
       return scroller.autoScroll(x, y)
     }
     return { scrollerX: 0, scrollerY: 0 }
@@ -524,6 +548,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       }
 
       case 'translating': {
+        this.isDragging = true
         const client = this.graph.snapToGrid(e.clientX, e.clientY)
         const data = eventData as TranslatingEventData
         const offset = this.getSelectionOffset(client, data)
@@ -567,7 +592,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         map[child.id] = true
       })
     })
-    if (otherOptions && otherOptions.translateBy) {
+    if (otherOptions?.translateBy) {
       const currentCell = this.graph.getCellById(otherOptions.translateBy)
       if (currentCell) {
         map[currentCell.id] = true
@@ -664,7 +689,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected destroyAllSelectionBoxes(cells: Cell[]) {
-    cells.forEach((cell) => this.removeCellUnSelectedClassName(cell))
+    cells.forEach((cell) => {
+      this.removeCellUnSelectedClassName(cell)
+    })
 
     this.hide()
     Dom.remove(this.$boxes)
@@ -837,33 +864,32 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   protected updateSelectionBoxes() {
     if (this.collection.length > 0) {
-      this.boxesUpdated = true
-      this.confirmUpdate()
-      // this.graph.renderer.requestViewUpdate(this as any, 1, options)
+      if (this.isDragging) {
+        return
+      }
+
+      if (this.updateThrottleTimer) {
+        clearTimeout(this.updateThrottleTimer)
+      }
+
+      // 节流：限制更新频率到60fps
+      this.updateThrottleTimer = setTimeout(() => {
+        this.refreshSelectionBoxes()
+        this.updateThrottleTimer = null
+      }, 16)
     }
   }
 
-  confirmUpdate() {
-    if (this.boxCount) {
-      this.hide()
-      for (
-        let i = 0, $boxes = this.$boxes, len = $boxes.length;
-        i < len;
-        i += 1
-      ) {
-        const box = $boxes[i]
-        const cellId = Dom.attr(box, 'data-cell-id')
-        Dom.remove(box)
-        this.boxCount -= 1
-        const cell = this.collection.get(cellId)
-        if (cell) {
-          this.createSelectionBox(cell)
-        }
-      }
+  protected refreshSelectionBoxes() {
+    this.$boxes.forEach((box) => {
+      Dom.remove(box)
+    })
 
-      this.updateContainer()
-    }
-    return 0
+    this.collection.toArray().forEach((cell) => {
+      this.createSelectionBox(cell)
+    })
+
+    this.updateContainer()
   }
 
   protected getCellViewFromElem(elem: Element) {
