@@ -180,6 +180,22 @@ const dataSource = [
     description: '动画',
   },
   {
+    example: 'animation/animate',
+    description: '动画',
+  },
+  {
+    example: 'animation/animateTransform',
+    description: '动画',
+  },
+  {
+    example: 'animation/animateAlongPath',
+    description: '动画',
+  },
+  {
+    example: 'animation/sendToken',
+    description: '动画',
+  },
+  {
     example: 'history',
     description: '时光回溯',
   },

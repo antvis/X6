@@ -399,3 +399,108 @@ export function getBBoxV2(elem: SVGElement) {
 
   return bbox
 }
+
+export interface AnimateCallbacks {
+  start?: (e: Event) => void
+  repeat?: (e: Event) => void
+  complete?: (e: Event) => void
+}
+
+export type AnimationOptions = AnimateCallbacks & {
+  [name: string]: any
+}
+
+export function animate(elem: SVGElement, options: AnimationOptions) {
+  return createAnimation(elem, options, 'animate')
+}
+
+export function animateTransform(elem: SVGElement, options: AnimationOptions) {
+  return createAnimation(elem, options, 'animateTransform')
+}
+
+function createAnimation(
+  elem: SVGElement,
+  options: AnimationOptions,
+  type: 'animate' | 'animateTransform',
+) {
+  // @see
+  // https://www.w3.org/TR/SVG11/animate.html#AnimateElement
+  // https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimateElement
+  // https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimateTransformElement
+
+  const animate = Dom.createSvgElement<SVGAnimationElement>(type)
+  elem.appendChild(animate)
+  try {
+    return setupAnimation(animate, options)
+  } catch (error) {
+    // pass
+  }
+
+  return () => {}
+}
+
+function setupAnimation(
+  animate: SVGAnimationElement,
+  options: AnimationOptions,
+) {
+  const { start, complete, repeat, ...attrs } = options
+
+  Dom.attr(animate, attrs)
+  start && animate.addEventListener('beginEvent', start)
+  complete && animate.addEventListener('endEvent', complete)
+  repeat && animate.addEventListener('repeatEvent', repeat)
+  const ani = animate as any
+
+  requestAnimationFrame(() => {
+    ani.beginElement()
+  })
+
+  return () => ani.endElement()
+}
+
+/**
+ * Animate the element along the path SVG element (or Vector object).
+ * `attrs` contain Animation Timing attributes describing the animation.
+ */
+export function animateAlongPath(
+  elem: SVGElement,
+  options: AnimationOptions,
+  path: SVGPathElement,
+): () => void {
+  const id = Dom.ensureId(path)
+  // https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement
+  const animate = Dom.createSvgElement<SVGAnimateMotionElement>('animateMotion')
+  const mpath = Dom.createSvgElement('mpath')
+  Dom.attr(mpath, { 'xlink:href': `#${id}` })
+
+  animate.appendChild(mpath)
+  elem.appendChild(animate)
+
+  try {
+    return setupAnimation(animate, options)
+  } catch (e) {
+    // Fallback for IE 9.
+    if (document.documentElement.getAttribute('smiling') === 'fake') {
+      // Register the animation. (See `https://answers.launchpad.net/smil/+question/203333`)
+      const ani = animate as any
+      ani.animators = []
+
+      const win = window as any
+      const animationID = ani.getAttribute('id')
+      if (animationID) {
+        win.id2anim[animationID] = ani
+      }
+
+      const targets = win.getTargets(ani)
+      for (let i = 0, ii = targets.length; i < ii; i += 1) {
+        const target = targets[i]
+        const animator = new win.Animator(ani, target, i)
+        win.animators.push(animator)
+        ani.animators[i] = animator
+        animator.register()
+      }
+    }
+  }
+
+  return () => {}
+}

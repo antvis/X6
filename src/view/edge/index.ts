@@ -6,6 +6,7 @@ import {
   ObjectExt,
   Vector,
 } from '../../common'
+import { type AnimationOptions, animateAlongPath } from '../../common/util'
 import { Angle, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Options as GraphOptions } from '../../graph/options'
@@ -174,6 +175,7 @@ export class EdgeView<
     this.update()
     this.renderTools()
 
+    this.notify('view:render', { view: this })
     return this
   }
 
@@ -2421,6 +2423,125 @@ export class EdgeView<
   stopLabelDragging(e: Dom.MouseUpEvent, x: number, y: number) {}
 
   // #endregion
+
+  sendToken(
+    token: string | SVGElement,
+    options?:
+      | number
+      | ({
+          duration?: number
+          reversed?: boolean
+          selector?: string
+          // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rotate
+          rotate?: boolean | number | 'auto' | 'auto-reverse'
+          // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/calcMode
+          timing?: 'linear' | 'discrete' | 'paced' | 'spline'
+        } & AnimationOptions),
+    callback?: () => void,
+  ) {
+    let duration
+    let reversed
+    let selector
+    let rotate
+    let timing = 'linear'
+    if (typeof options === 'object') {
+      duration = options.duration
+      reversed = options.reversed === true
+      selector = options.selector
+      if (options.rotate === false) {
+        rotate = ''
+      } else if (options.rotate === true) {
+        rotate = 'auto'
+      } else if (options.rotate != null) {
+        rotate = `${options.rotate}`
+      }
+
+      if (options.timing) {
+        timing = options.timing
+      }
+    } else {
+      duration = options
+      reversed = false
+      selector = null
+    }
+
+    duration = duration || 1000
+
+    const attrs: AnimationOptions = {
+      dur: `${duration}ms`,
+      repeatCount: '1',
+      calcMode: timing,
+      fill: 'freeze',
+    }
+
+    if (rotate) {
+      attrs.rotate = rotate
+    }
+
+    if (reversed) {
+      attrs.keyPoints = '1;0'
+      attrs.keyTimes = '0;1'
+    }
+
+    if (typeof options === 'object') {
+      const { duration, reversed, selector, rotate, timing, ...others } =
+        options
+      Object.keys(others).forEach((key) => {
+        attrs[key] = others[key]
+      })
+    }
+
+    let path
+    if (typeof selector === 'string') {
+      path = this.findOne(selector, this.container, this.selectors)
+    } else if (this.selectors.line) {
+      path = this.selectors.line
+    } else if (this.selectors.lines) {
+      path = this.selectors.lines[0]
+    } else {
+      path = this.container.querySelector('path')
+    }
+
+    if (!(path instanceof SVGPathElement)) {
+      throw new Error('Token animation requires a valid connection path.')
+    }
+
+    const target = typeof token === 'string' ? this.findOne(token) : token
+    if (target == null) {
+      throw new Error('Token animation requires a valid token element.')
+    }
+
+    const revert = () => {
+      if (!target.parentNode) {
+        Dom.remove(target)
+      }
+    }
+
+    if (!target.parentNode) {
+      Dom.appendTo(target, this.graph.view.stage)
+    }
+
+    const onComplete = attrs.complete
+
+    attrs.complete = (e: Event) => {
+      revert()
+
+      if (callback) {
+        callback()
+      }
+
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    const stop = animateAlongPath(target as SVGElement, attrs, path)
+
+    return () => {
+      revert()
+      stop()
+    }
+  }
 }
 
 export const EdgeViewToStringTag = `X6.${EdgeView.name}`
