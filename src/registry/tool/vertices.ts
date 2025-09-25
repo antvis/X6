@@ -9,9 +9,44 @@ import { View } from '../../view/view'
 import { createViewElement } from '../../view/view/util'
 import type { SimpleAttrs } from '../attr'
 
+const pathClassName = Config.prefix('edge-tool-vertex-path')
 export class Vertices extends ToolItem<EdgeView, Options> {
-  protected handles: Handle[] = []
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.getDefaults(),
+    name: 'vertices',
+    snapRadius: 20,
+    addable: true,
+    removable: true,
+    removeRedundancies: true,
+    stopPropagation: true,
+    attrs: {
+      r: 6,
+      fill: '#333',
+      stroke: '#fff',
+      cursor: 'move',
+      'stroke-width': 2,
+    },
+    createHandle: (options) => new Handle(options),
+    markup: [
+      {
+        tagName: 'path',
+        selector: 'connection',
+        className: pathClassName,
+        attrs: {
+          fill: 'none',
+          stroke: 'transparent',
+          'stroke-width': 10,
+          cursor: 'pointer',
+        },
+      },
+    ],
+    events: {
+      [`mousedown .${pathClassName}`]: 'onPathMouseDown',
+      [`touchstart .${pathClassName}`]: 'onPathMouseDown',
+    },
+  }
 
+  protected handles: Handle[] = []
   protected get vertices() {
     return this.cellView.cell.getVertices()
   }
@@ -385,39 +420,3 @@ interface EventArgs {
   changed: { e: Dom.MouseUpEvent; handle: Handle }
   remove: { e: Dom.DoubleClickEvent; handle: Handle }
 }
-
-const pathClassName = Config.prefix('edge-tool-vertex-path')
-
-Vertices.config<Options>({
-  name: 'vertices',
-  snapRadius: 20,
-  addable: true,
-  removable: true,
-  removeRedundancies: true,
-  stopPropagation: true,
-  attrs: {
-    r: 6,
-    fill: '#333',
-    stroke: '#fff',
-    cursor: 'move',
-    'stroke-width': 2,
-  },
-  createHandle: (options) => new Handle(options),
-  markup: [
-    {
-      tagName: 'path',
-      selector: 'connection',
-      className: pathClassName,
-      attrs: {
-        fill: 'none',
-        stroke: 'transparent',
-        'stroke-width': 10,
-        cursor: 'pointer',
-      },
-    },
-  ],
-  events: {
-    [`mousedown .${pathClassName}`]: 'onPathMouseDown',
-    [`touchstart .${pathClassName}`]: 'onPathMouseDown',
-  },
-})

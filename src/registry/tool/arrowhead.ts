@@ -6,6 +6,23 @@ import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
 
 class Arrowhead extends ToolItem<EdgeView, Options> {
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.getDefaults(),
+    tagName: 'path',
+    isSVGElement: true,
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+    },
+    documentEvents: {
+      mousemove: 'onMouseMove',
+      touchmove: 'onMouseMove',
+      mouseup: 'onMouseUp',
+      touchend: 'onMouseUp',
+      touchcancel: 'onMouseUp',
+    },
+  }
+
   protected get type() {
     return this.options.type!
   }
@@ -116,22 +133,6 @@ interface Options extends ToolItemOptions {
   type?: Edge.TerminalType
   ratio?: number
 }
-
-Arrowhead.config({
-  tagName: 'path',
-  isSVGElement: true,
-  events: {
-    mousedown: 'onMouseDown',
-    touchstart: 'onMouseDown',
-  },
-  documentEvents: {
-    mousemove: 'onMouseMove',
-    touchmove: 'onMouseMove',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  },
-})
 
 export const SourceArrowhead = Arrowhead.define<Options>({
   name: 'source-arrowhead',

@@ -12,6 +12,74 @@ class Anchor extends ToolItem<EdgeView, Options> {
   protected get type() {
     return this.options.type!
   }
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.getDefaults(),
+    tagName: 'g',
+    markup: [
+      {
+        tagName: 'circle',
+        selector: 'anchor',
+        attrs: {
+          cursor: 'pointer',
+        },
+      },
+      {
+        tagName: 'rect',
+        selector: 'area',
+        attrs: {
+          'pointer-events': 'none',
+          fill: 'none',
+          stroke: '#33334F',
+          'stroke-dasharray': '2,4',
+          rx: 5,
+          ry: 5,
+        },
+      },
+    ],
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+      dblclick: 'onDblClick',
+    },
+    documentEvents: {
+      mousemove: 'onMouseMove',
+      touchmove: 'onMouseMove',
+      mouseup: 'onMouseUp',
+      touchend: 'onMouseUp',
+      touchcancel: 'onMouseUp',
+    },
+    customAnchorAttrs: {
+      'stroke-width': 4,
+      stroke: '#33334F',
+      fill: '#FFFFFF',
+      r: 5,
+    },
+    defaultAnchorAttrs: {
+      'stroke-width': 2,
+      stroke: '#FFFFFF',
+      fill: '#33334F',
+      r: 6,
+    },
+    areaPadding: 6,
+    snapRadius: 10,
+    resetAnchor: true,
+    restrictArea: true,
+    removeRedundancies: true,
+    anchor: Util.getAnchor,
+    snap(pos, terminalView, terminalMagnet, terminalType, edgeView, toolView) {
+      const snapRadius = toolView.options.snapRadius || 0
+      const isSource = terminalType === 'source'
+      const refIndex = isSource ? 0 : -1
+      const ref =
+        this.cell.getVertexAt(refIndex) ||
+        this.getTerminalAnchor(isSource ? 'target' : 'source')
+      if (ref) {
+        if (Math.abs(ref.x - pos.x) < snapRadius) pos.x = ref.x
+        if (Math.abs(ref.y - pos.y) < snapRadius) pos.y = ref.y
+      }
+      return pos
+    },
+  }
 
   protected onRender() {
     Dom.addClass(
@@ -283,74 +351,6 @@ interface Options extends ToolItemOptions {
     toolView: Anchor,
   ) => Edge.TerminalCellData['anchor']
 }
-
-Anchor.config<Options>({
-  tagName: 'g',
-  markup: [
-    {
-      tagName: 'circle',
-      selector: 'anchor',
-      attrs: {
-        cursor: 'pointer',
-      },
-    },
-    {
-      tagName: 'rect',
-      selector: 'area',
-      attrs: {
-        'pointer-events': 'none',
-        fill: 'none',
-        stroke: '#33334F',
-        'stroke-dasharray': '2,4',
-        rx: 5,
-        ry: 5,
-      },
-    },
-  ],
-  events: {
-    mousedown: 'onMouseDown',
-    touchstart: 'onMouseDown',
-    dblclick: 'onDblClick',
-  },
-  documentEvents: {
-    mousemove: 'onMouseMove',
-    touchmove: 'onMouseMove',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  },
-  customAnchorAttrs: {
-    'stroke-width': 4,
-    stroke: '#33334F',
-    fill: '#FFFFFF',
-    r: 5,
-  },
-  defaultAnchorAttrs: {
-    'stroke-width': 2,
-    stroke: '#FFFFFF',
-    fill: '#33334F',
-    r: 6,
-  },
-  areaPadding: 6,
-  snapRadius: 10,
-  resetAnchor: true,
-  restrictArea: true,
-  removeRedundancies: true,
-  anchor: Util.getAnchor,
-  snap(pos, terminalView, terminalMagnet, terminalType, edgeView, toolView) {
-    const snapRadius = toolView.options.snapRadius || 0
-    const isSource = terminalType === 'source'
-    const refIndex = isSource ? 0 : -1
-    const ref =
-      this.cell.getVertexAt(refIndex) ||
-      this.getTerminalAnchor(isSource ? 'target' : 'source')
-    if (ref) {
-      if (Math.abs(ref.x - pos.x) < snapRadius) pos.x = ref.x
-      if (Math.abs(ref.y - pos.y) < snapRadius) pos.y = ref.y
-    }
-    return pos
-  },
-})
 
 export const SourceAnchor = Anchor.define<Options>({
   name: 'source-anchor',

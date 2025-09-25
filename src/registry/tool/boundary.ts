@@ -6,6 +6,21 @@ import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 export class Boundary extends ToolItem<EdgeView | NodeView, Options> {
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.getDefaults(),
+    name: 'boundary',
+    tagName: 'rect',
+    padding: 10,
+    useCellGeometry: true,
+    attrs: {
+      fill: 'none',
+      stroke: '#333',
+      'stroke-width': 0.5,
+      'stroke-dasharray': '5, 5',
+      'pointer-events': 'none',
+    },
+  }
+
   protected onRender() {
     Dom.addClass(this.container, this.prefixClassName('cell-tool-boundary'))
 
@@ -58,17 +73,3 @@ interface Options extends ToolItemOptions {
   useCellGeometry?: boolean
   attrs?: SimpleAttrs
 }
-
-Boundary.config<Options>({
-  name: 'boundary',
-  tagName: 'rect',
-  padding: 10,
-  useCellGeometry: true,
-  attrs: {
-    fill: 'none',
-    stroke: '#333',
-    'stroke-width': 0.5,
-    'stroke-dasharray': '5, 5',
-    'pointer-events': 'none',
-  },
-})

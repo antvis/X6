@@ -15,13 +15,12 @@ export interface ToolItemOptions {
   events?: View.Events | null
   documentEvents?: View.Events | null
   focusOpacity?: number
+  [keyLike: string]: any
 }
 
 export type ToolItemDefinition =
   | typeof ToolItem
-  | (new (
-      options: ToolItemOptions,
-    ) => ToolItem)
+  | (new (options: ToolItemOptions) => ToolItem)
 
 export class ToolItem<
   TargetView extends CellView = CellView,
@@ -31,7 +30,7 @@ export class ToolItem<
 
   public static toStringTag = `X6.${ToolItem.name}`
 
-  protected static defaults: ToolItemOptions = {
+  public static defaults: ToolItemOptions = {
     isSVGElement: true,
     tagName: 'g',
   }
@@ -77,20 +76,20 @@ export class ToolItem<
   }
 
   public static getDefaults<T extends ToolItemOptions>() {
-    return ToolItem.defaults as T
+    return this.defaults as T
   }
 
   public static config<T extends ToolItemOptions = ToolItemOptions>(
     options: Partial<T>,
   ) {
-    ToolItem.defaults = ToolItem.getOptions(options)
+    this.defaults = this.getOptions(options)
   }
 
   public static getOptions<T extends ToolItemOptions = ToolItemOptions>(
     options: Partial<T>,
   ): T {
     return ObjectExt.merge(
-      ObjectExt.cloneDeep(ToolItem.getDefaults()),
+      ObjectExt.cloneDeep(this.getDefaults()),
       options,
     ) as T
   }

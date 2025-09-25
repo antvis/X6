@@ -8,6 +8,16 @@ import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { getViewBBox } from './util'
 
 export class Button extends ToolItem<EdgeView | NodeView, Options> {
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.getDefaults(),
+    name: 'button',
+    useCellGeometry: true,
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+    },
+  }
+
   protected onRender() {
     Dom.addClass(this.container, this.prefixClassName('cell-tool-button'))
     this.update()
@@ -137,15 +147,6 @@ interface Options extends ToolItemOptions {
     },
   ) => any
 }
-
-Button.config<Options>({
-  name: 'button',
-  useCellGeometry: true,
-  events: {
-    mousedown: 'onMouseDown',
-    touchstart: 'onMouseDown',
-  },
-})
 
 export const Remove = Button.define<Options>({
   name: 'button-remove',

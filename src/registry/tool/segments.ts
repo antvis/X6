@@ -11,6 +11,29 @@ import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 export class Segments extends ToolItem<EdgeView, Options> {
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.defaults,
+    name: 'segments',
+    precision: 0.5,
+    threshold: 40,
+    snapRadius: 10,
+    stopPropagation: true,
+    removeRedundancies: true,
+    attrs: {
+      width: 20,
+      height: 8,
+      x: -10,
+      y: -4,
+      rx: 4,
+      ry: 4,
+      fill: '#333',
+      stroke: '#fff',
+      'stroke-width': 2,
+    },
+    createHandle: (options) => new Handle(options),
+    anchor: Util.getAnchor,
+  }
+
   protected handles: Handle[] = []
 
   protected get vertices() {
@@ -482,25 +505,3 @@ interface HandleEventArgs {
   changing: { e: Dom.MouseMoveEvent; handle: Handle }
   changed: { e: Dom.MouseUpEvent; handle: Handle }
 }
-
-Segments.config<Options>({
-  name: 'segments',
-  precision: 0.5,
-  threshold: 40,
-  snapRadius: 10,
-  stopPropagation: true,
-  removeRedundancies: true,
-  attrs: {
-    width: 20,
-    height: 8,
-    x: -10,
-    y: -4,
-    rx: 4,
-    ry: 4,
-    fill: '#333',
-    stroke: '#fff',
-    'stroke-width': 2,
-  },
-  createHandle: (options) => new Handle(options),
-  anchor: Util.getAnchor,
-})

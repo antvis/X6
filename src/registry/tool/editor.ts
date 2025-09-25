@@ -9,6 +9,20 @@ export class CellEditor extends ToolItem<
   NodeView | EdgeView,
   CellEditorOptions & { event: Dom.EventObject }
 > {
+  public static defaults: ToolItemOptions = {
+    ...ToolItem.getDefaults(),
+    tagName: 'div',
+    isSVGElement: false,
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+    },
+    documentEvents: {
+      mouseup: 'onDocumentMouseUp',
+      touchend: 'onDocumentMouseUp',
+      touchcancel: 'onDocumentMouseUp',
+    },
+  }
   private editor: HTMLDivElement | null
   private labelIndex = -1
   private distance = 0.5
@@ -309,20 +323,6 @@ interface CellEditorOptions extends ToolItemOptions {
       ) => void)
     | string
 }
-
-CellEditor.config({
-  tagName: 'div',
-  isSVGElement: false,
-  events: {
-    mousedown: 'onMouseDown',
-    touchstart: 'onMouseDown',
-  },
-  documentEvents: {
-    mouseup: 'onDocumentMouseUp',
-    touchend: 'onDocumentMouseUp',
-    touchcancel: 'onDocumentMouseUp',
-  },
-})
 
 export const NodeEditor = CellEditor.define<CellEditorOptions>({
   attrs: {
