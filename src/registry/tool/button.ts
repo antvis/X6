@@ -7,7 +7,17 @@ import type { NodeView } from '../../view/node'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { getViewBBox } from './util'
 
-export class Button extends ToolItem<EdgeView | NodeView, Button.Options> {
+export class Button extends ToolItem<EdgeView | NodeView, Options> {
+  public static defaults: Options = {
+    ...ToolItem.getDefaults(),
+    name: 'button',
+    useCellGeometry: true,
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+    },
+  }
+
   protected onRender() {
     Dom.addClass(this.container, this.prefixClassName('cell-tool-button'))
     this.update()
@@ -120,68 +130,53 @@ export class Button extends ToolItem<EdgeView | NodeView, Button.Options> {
   }
 }
 
-export namespace Button {
-  export interface Options extends ToolItemOptions {
-    x?: number | string
-    y?: number | string
-    distance?: number | string
-    offset?: number | Point.PointLike
-    rotate?: boolean
-    useCellGeometry?: boolean
-    onClick?: (
-      this: CellView,
-      args: {
-        e: Dom.MouseDownEvent
-        cell: Cell
-        view: CellView
-        btn: Button
-      },
-    ) => any
-  }
+interface Options extends ToolItemOptions {
+  x?: number | string
+  y?: number | string
+  distance?: number | string
+  offset?: number | Point.PointLike
+  rotate?: boolean
+  useCellGeometry?: boolean
+  onClick?: (
+    this: CellView,
+    args: {
+      e: Dom.MouseDownEvent
+      cell: Cell
+      view: CellView
+      btn: Button
+    },
+  ) => any
 }
 
-export namespace Button {
-  Button.config<Button.Options>({
-    name: 'button',
-    useCellGeometry: true,
-    events: {
-      mousedown: 'onMouseDown',
-      touchstart: 'onMouseDown',
-    },
-  })
-}
-
-export namespace Button {
-  export const Remove = Button.define<Button.Options>({
-    name: 'button-remove',
-    markup: [
-      {
-        tagName: 'circle',
-        selector: 'button',
-        attrs: {
-          r: 7,
-          fill: '#FF1D00',
-          cursor: 'pointer',
-        },
+export const Remove = Button.define<Options>({
+  name: 'button-remove',
+  markup: [
+    {
+      tagName: 'circle',
+      selector: 'button',
+      attrs: {
+        r: 7,
+        fill: '#FF1D00',
+        cursor: 'pointer',
       },
-      {
-        tagName: 'path',
-        selector: 'icon',
-        attrs: {
-          d: 'M -3 -3 3 3 M -3 3 3 -3',
-          fill: 'none',
-          stroke: '#FFFFFF',
-          'stroke-width': 2,
-          'pointer-events': 'none',
-        },
-      },
-    ],
-    distance: 60,
-    offset: 0,
-    useCellGeometry: true,
-    onClick({ view, btn }) {
-      btn.parent.remove()
-      view.cell.remove({ ui: true, toolId: btn.cid })
     },
-  })
-}
+    {
+      tagName: 'path',
+      selector: 'icon',
+      attrs: {
+        d: 'M -3 -3 3 3 M -3 3 3 -3',
+        fill: 'none',
+        stroke: '#FFFFFF',
+        'stroke-width': 2,
+        'pointer-events': 'none',
+      },
+    },
+  ],
+  distance: 60,
+  offset: 0,
+  useCellGeometry: true,
+  onClick({ view, btn }) {
+    btn.parent.remove()
+    view.cell.remove({ ui: true, toolId: btn.cid })
+  },
+})
