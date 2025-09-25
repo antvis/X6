@@ -43,6 +43,7 @@ import { TransformExample } from './pages/transform'
 import { UndoExample } from './pages/undo'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
+import { SegmentsExample } from './pages/edge/tool/segments'
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
       <Route path="/router" element={<RouterExample />} />
       <Route path="/edge/tool/arrowhead" element={<ToolArrowheadExample />} />
       <Route path="/edge/tool/button" element={<ToolButtonExample />} />
+      <Route path="/edge/tool/segments" element={<SegmentsExample />} />
       <Route
         path="/edge/custom-connector"
         element={<CustomConnectorExample />}
