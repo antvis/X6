@@ -54,6 +54,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
 
     this.boxCount = 0
+    this.boxesUpdated = false
 
     this.createContainer()
     this.startListening()
@@ -370,13 +371,6 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected onMouseUp(evt: Dom.MouseUpEvent) {
-    this.isDragging = false
-
-    if (this.updateThrottleTimer) {
-      clearTimeout(this.updateThrottleTimer)
-      this.updateThrottleTimer = null
-    }
-
     const e = this.normalizeEvent(evt)
     const eventData = this.getEventData<CommonEventData>(e)
     if (eventData) {
@@ -487,6 +481,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected updateSelectedNodesPosition(offset: { dx: number; dy: number }) {
+    if (offset.dx === 0 && offset.dy === 0) {
+      return
+    }
+
     this.translateSelectedNodes(offset.dx, offset.dy)
 
     // 立即同步更新选择框位置，确保与节点位置一致，需要考虑画布的缩放比例
@@ -881,15 +879,15 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected refreshSelectionBoxes() {
-    this.$boxes.forEach((box) => {
-      Dom.remove(box)
-    })
+    Dom.remove(this.$boxes)
+    this.boxCount = 0
 
     this.collection.toArray().forEach((cell) => {
       this.createSelectionBox(cell)
     })
 
     this.updateContainer()
+    this.boxesUpdated = true
   }
 
   protected getCellViewFromElem(elem: Element) {

@@ -1026,7 +1026,7 @@ describe('Selection plugin', () => {
       expect(selection['selectionImpl'].isEmpty()).toBe(true)
     })
 
-    it('should update selection boxes', () => {
+    it('should update selection boxes', async () => {
       graph.use(
         new Selection({
           rubberband: true,
@@ -1039,13 +1039,16 @@ describe('Selection plugin', () => {
       const node = graph.addNode({ shape: 'rect' })
       selection.select(node)
 
-      // Mock boxCount to test confirmUpdate
-      selection['selectionImpl']['boxCount'] = 1
+      // Reset boxesUpdated to false to test the update
+      selection['selectionImpl']['boxesUpdated'] = false
 
-      // Call updateSelectionBoxes
+      // Call updateSelectionBoxes which should trigger refreshSelectionBoxes after throttle
       selection['selectionImpl']['updateSelectionBoxes']()
 
-      // Check that boxesUpdated is true
+      // Wait for throttle to complete
+      await sleep(100)
+
+      // Check that boxesUpdated is true after the update
       expect(selection['selectionImpl']['boxesUpdated']).toBe(true)
     })
 
