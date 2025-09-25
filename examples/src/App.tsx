@@ -42,7 +42,11 @@ import { StencilExample } from './pages/stencil'
 import { TransformExample } from './pages/transform'
 import { UndoExample } from './pages/undo'
 import { TransitionExample } from './pages/animation/transition'
+import { AnimateExample } from './pages/animation/animate'
+import { SendTokenExample } from './pages/animation/sendToken'
 import { HistoryExample } from './pages/history'
+import { AnimateTransformExample } from './pages/animation/animateTransform'
+import { AnimateAlongPathExample } from './pages/animation/animateAlongPath'
 
 function App() {
   return (
@@ -96,6 +100,16 @@ function App() {
       <Route path="/transform" element={<TransformExample />} />
       <Route path="/undo" element={<UndoExample />} />
       <Route path="/animation/transition" element={<TransitionExample />} />
+      <Route path="/animation/animate" element={<AnimateExample />} />
+      <Route
+        path="/animation/animateTransform"
+        element={<AnimateTransformExample />}
+      />
+      <Route
+        path="/animation/animateAlongPath"
+        element={<AnimateAlongPathExample />}
+      />
+      <Route path="/animation/sendToken" Component={SendTokenExample} />
       <Route path="/history" element={<HistoryExample />} />
     </Routes>
   )

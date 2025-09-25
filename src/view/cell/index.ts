@@ -581,6 +581,112 @@ export class CellView<
     return magnet
   }
 
+  // #region animate
+
+  animate(elem: SVGElement | string, options: Util.AnimationOptions) {
+    const target = typeof elem === 'string' ? this.findOne(elem) : elem
+    if (target == null) {
+      throw new Error('Invalid animation element.')
+    }
+
+    const revert = () => {
+      if (!target.parentNode) {
+        Dom.remove(target)
+      }
+    }
+
+    if (!target.parentNode) {
+      Dom.appendTo(target, this.graph.view.stage)
+    }
+
+    const onComplete = options.complete
+    options.complete = (e: Event) => {
+      revert()
+
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    return Util.animate(target as SVGElement, options)
+  }
+
+  animateTransform(elem: SVGElement | string, options: Util.AnimationOptions) {
+    const target = typeof elem === 'string' ? this.findOne(elem) : elem
+    if (target == null) {
+      throw new Error('Invalid animation element.')
+    }
+
+    const revert = () => {
+      if (!target.parentNode) {
+        Dom.remove(target)
+      }
+    }
+
+    if (!target.parentNode) {
+      Dom.appendTo(target, this.graph.view.stage)
+    }
+
+    const onComplete = options.complete
+    options.complete = (e: Event) => {
+      revert()
+
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    return Util.animateTransform(target as SVGElement, options)
+  }
+
+  animateAlongPath(
+    elem: SVGElement | string,
+    options: {
+      selector?: string
+    } & Util.AnimationOptions,
+  ) {
+    const target = typeof elem === 'string' ? this.findOne(elem) : elem
+    if (target == null) {
+      throw new Error('Invalid animation element.')
+    }
+
+    let path
+    const { selector } = options
+
+    if (typeof selector === 'string') {
+      path = this.findOne(selector, this.container, this.selectors)
+    } else {
+      path = this.container.querySelector('path')
+    }
+
+    if (!(path instanceof SVGPathElement)) {
+      throw new Error('Token animation requires a valid connection path.')
+    }
+
+    const revert = () => {
+      if (!target.parentNode) {
+        Dom.remove(target)
+      }
+    }
+
+    if (!target.parentNode) {
+      Dom.appendTo(target, this.graph.view.stage)
+    }
+
+    const onComplete = options.complete
+    options.complete = (e: Event) => {
+      revert()
+
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    return Util.animateAlongPath(target as SVGElement, options, path)
+  }
+
+  // #endregion
+
   // #region tools
 
   protected tools: ToolsView | null
