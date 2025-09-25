@@ -6,7 +6,7 @@ import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
 
 class Arrowhead extends ToolItem<EdgeView, Options> {
-  public static defaults: ToolItemOptions = {
+  public static defaults: Options = {
     ...ToolItem.getDefaults(),
     tagName: 'path',
     isSVGElement: true,

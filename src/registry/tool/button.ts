@@ -8,7 +8,7 @@ import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import { getViewBBox } from './util'
 
 export class Button extends ToolItem<EdgeView | NodeView, Options> {
-  public static defaults: ToolItemOptions = {
+  public static defaults: Options = {
     ...ToolItem.getDefaults(),
     name: 'button',
     useCellGeometry: true,

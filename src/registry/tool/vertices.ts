@@ -11,7 +11,7 @@ import type { SimpleAttrs } from '../attr'
 
 const pathClassName = Config.prefix('edge-tool-vertex-path')
 export class Vertices extends ToolItem<EdgeView, Options> {
-  public static defaults: ToolItemOptions = {
+  public static defaults: Options = {
     ...ToolItem.getDefaults(),
     name: 'vertices',
     snapRadius: 20,

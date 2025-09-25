@@ -15,7 +15,6 @@ export interface ToolItemOptions {
   events?: View.Events | null
   documentEvents?: View.Events | null
   focusOpacity?: number
-  [keyLike: string]: any
 }
 
 export type ToolItemDefinition =

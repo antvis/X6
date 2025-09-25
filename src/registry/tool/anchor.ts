@@ -12,7 +12,7 @@ class Anchor extends ToolItem<EdgeView, Options> {
   protected get type() {
     return this.options.type!
   }
-  public static defaults: ToolItemOptions = {
+  public static defaults: Options = {
     ...ToolItem.getDefaults(),
     tagName: 'g',
     markup: [

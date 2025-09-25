@@ -11,7 +11,7 @@ import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 export class Segments extends ToolItem<EdgeView, Options> {
-  public static defaults: ToolItemOptions = {
+  public static defaults: Options = {
     ...ToolItem.defaults,
     name: 'segments',
     precision: 0.5,

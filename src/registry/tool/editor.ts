@@ -9,7 +9,7 @@ export class CellEditor extends ToolItem<
   NodeView | EdgeView,
   CellEditorOptions & { event: Dom.EventObject }
 > {
-  public static defaults: ToolItemOptions = {
+  public static defaults: CellEditorOptions = {
     ...ToolItem.getDefaults(),
     tagName: 'div',
     isSVGElement: false,

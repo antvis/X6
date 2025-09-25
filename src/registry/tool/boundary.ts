@@ -6,7 +6,7 @@ import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
 export class Boundary extends ToolItem<EdgeView | NodeView, Options> {
-  public static defaults: ToolItemOptions = {
+  public static defaults: Options = {
     ...ToolItem.getDefaults(),
     name: 'boundary',
     tagName: 'rect',
