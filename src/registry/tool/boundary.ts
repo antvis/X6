@@ -5,7 +5,22 @@ import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
-export class Boundary extends ToolItem<EdgeView | NodeView, Boundary.Options> {
+export class Boundary extends ToolItem<EdgeView | NodeView, Options> {
+  public static defaults: Options = {
+    ...ToolItem.getDefaults(),
+    name: 'boundary',
+    tagName: 'rect',
+    padding: 10,
+    useCellGeometry: true,
+    attrs: {
+      fill: 'none',
+      stroke: '#333',
+      'stroke-width': 0.5,
+      'stroke-dasharray': '5, 5',
+      'pointer-events': 'none',
+    },
+  }
+
   protected onRender() {
     Dom.addClass(this.container, this.prefixClassName('cell-tool-boundary'))
 
@@ -52,27 +67,9 @@ export class Boundary extends ToolItem<EdgeView | NodeView, Boundary.Options> {
   }
 }
 
-export namespace Boundary {
-  export interface Options extends ToolItemOptions {
-    padding?: NumberExt.SideOptions
-    rotate?: boolean
-    useCellGeometry?: boolean
-    attrs?: SimpleAttrs
-  }
-}
-
-export namespace Boundary {
-  Boundary.config<Boundary.Options>({
-    name: 'boundary',
-    tagName: 'rect',
-    padding: 10,
-    useCellGeometry: true,
-    attrs: {
-      fill: 'none',
-      stroke: '#333',
-      'stroke-width': 0.5,
-      'stroke-dasharray': '5, 5',
-      'pointer-events': 'none',
-    },
-  })
+interface Options extends ToolItemOptions {
+  padding?: NumberExt.SideOptions
+  rotate?: boolean
+  useCellGeometry?: boolean
+  attrs?: SimpleAttrs
 }
