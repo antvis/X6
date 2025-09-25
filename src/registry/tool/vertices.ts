@@ -9,8 +9,8 @@ import { View } from '../../view/view'
 import { createViewElement } from '../../view/view/util'
 import type { SimpleAttrs } from '../attr'
 
-export class Vertices extends ToolItem<EdgeView, Options> {
-  protected handles: Handle[] = []
+export class Vertices extends ToolItem<EdgeView, Vertices.Options> {
+  protected handles: Vertices.Handle[] = []
 
   protected get vertices() {
     return this.cellView.cell.getVertices()
@@ -96,7 +96,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected startHandleListening(handle: Handle) {
+  protected startHandleListening(handle: Vertices.Handle) {
     const edgeView = this.cellView
     if (edgeView.can('vertexMovable')) {
       handle.on('change', this.onHandleChange, this)
@@ -109,7 +109,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected stopHandleListening(handle: Handle) {
+  protected stopHandleListening(handle: Vertices.Handle) {
     const edgeView = this.cellView
     if (edgeView.can('vertexMovable')) {
       handle.off('change', this.onHandleChange, this)
@@ -140,7 +140,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     return { e, x, y }
   }
 
-  protected onHandleChange({ e }: EventArgs['change']) {
+  protected onHandleChange({ e }: Vertices.Handle.EventArgs['change']) {
     this.focus()
     const edgeView = this.cellView
     edgeView.cell.startBatch('move-vertex', { ui: true, toolId: this.cid })
@@ -151,7 +151,10 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleChanging({ handle, e }: EventArgs['changing']) {
+  protected onHandleChanging({
+    handle,
+    e,
+  }: Vertices.Handle.EventArgs['changing']) {
     const edgeView = this.cellView
     const index = handle.options.index
     const { e: evt, x, y } = this.getMouseEventArgs(e)
@@ -171,7 +174,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleChanged({ e }: EventArgs['changed']) {
+  protected onHandleChanged({ e }: Vertices.Handle.EventArgs['changed']) {
     const options = this.options
     const edgeView = this.cellView
 
@@ -235,7 +238,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected onHandleRemove({ handle, e }: EventArgs['remove']) {
+  protected onHandleRemove({ handle, e }: Vertices.Handle.EventArgs['remove']) {
     if (this.options.removable) {
       const index = handle.options.index
       const edgeView = this.cellView
@@ -286,138 +289,146 @@ export class Vertices extends ToolItem<EdgeView, Options> {
   }
 }
 
-interface Options extends ToolItemOptions {
-  snapRadius?: number
-  addable?: boolean
-  removable?: boolean
-  removeRedundancies?: boolean
-  stopPropagation?: boolean
-  modifiers?: string | ModifierKey[]
-  attrs?: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
-  createHandle?: (options: HandleOptions) => Handle
-  processHandle?: (handle: Handle) => void
-  onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
+export namespace Vertices {
+  export interface Options extends ToolItemOptions {
+    snapRadius?: number
+    addable?: boolean
+    removable?: boolean
+    removeRedundancies?: boolean
+    stopPropagation?: boolean
+    modifiers?: string | ModifierKey[]
+    attrs?: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
+    createHandle?: (options: Handle.Options) => Handle
+    processHandle?: (handle: Handle) => void
+    onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
+  }
 }
 
-export class Handle extends View<EventArgs> {
-  protected get graph() {
-    return this.options.graph
-  }
+export namespace Vertices {
+  export class Handle extends View<Handle.EventArgs> {
+    protected get graph() {
+      return this.options.graph
+    }
 
-  constructor(public readonly options: HandleOptions) {
-    super()
-    this.render()
-    this.delegateEvents({
-      mousedown: 'onMouseDown',
-      touchstart: 'onMouseDown',
-      dblclick: 'onDoubleClick',
-    })
-  }
-
-  render() {
-    this.container = createViewElement('circle', true)
-    const attrs = this.options.attrs
-    if (typeof attrs === 'function') {
-      const defaults = Vertices.getDefaults<Options>()
-      this.setAttrs({
-        ...defaults.attrs,
-        ...attrs(this),
+    constructor(public readonly options: Handle.Options) {
+      super()
+      this.render()
+      this.delegateEvents({
+        mousedown: 'onMouseDown',
+        touchstart: 'onMouseDown',
+        dblclick: 'onDoubleClick',
       })
-    } else {
-      this.setAttrs(attrs)
     }
 
-    this.addClass(this.prefixClassName('edge-tool-vertex'))
-  }
+    render() {
+      this.container = createViewElement('circle', true)
+      const attrs = this.options.attrs
+      if (typeof attrs === 'function') {
+        const defaults = Vertices.getDefaults<Vertices.Options>()
+        this.setAttrs({
+          ...defaults.attrs,
+          ...attrs(this),
+        })
+      } else {
+        this.setAttrs(attrs)
+      }
 
-  updatePosition(x: number, y: number) {
-    this.setAttrs({ cx: x, cy: y })
-  }
-
-  onMouseDown(evt: Dom.MouseDownEvent) {
-    if (this.options.guard(evt)) {
-      return
+      this.addClass(this.prefixClassName('edge-tool-vertex'))
     }
 
-    evt.stopPropagation()
-    evt.preventDefault()
-    this.graph.view.undelegateEvents()
+    updatePosition(x: number, y: number) {
+      this.setAttrs({ cx: x, cy: y })
+    }
 
-    this.delegateDocumentEvents(
-      {
-        mousemove: 'onMouseMove',
-        touchmove: 'onMouseMove',
-        mouseup: 'onMouseUp',
-        touchend: 'onMouseUp',
-        touchcancel: 'onMouseUp',
-      },
-      evt.data,
-    )
+    onMouseDown(evt: Dom.MouseDownEvent) {
+      if (this.options.guard(evt)) {
+        return
+      }
 
-    this.emit('change', { e: evt, handle: this })
+      evt.stopPropagation()
+      evt.preventDefault()
+      this.graph.view.undelegateEvents()
+
+      this.delegateDocumentEvents(
+        {
+          mousemove: 'onMouseMove',
+          touchmove: 'onMouseMove',
+          mouseup: 'onMouseUp',
+          touchend: 'onMouseUp',
+          touchcancel: 'onMouseUp',
+        },
+        evt.data,
+      )
+
+      this.emit('change', { e: evt, handle: this })
+    }
+
+    protected onMouseMove(evt: Dom.MouseMoveEvent) {
+      this.emit('changing', { e: evt, handle: this })
+    }
+
+    protected onMouseUp(evt: Dom.MouseUpEvent) {
+      this.emit('changed', { e: evt, handle: this })
+      this.undelegateDocumentEvents()
+      this.graph.view.delegateEvents()
+    }
+
+    protected onDoubleClick(evt: Dom.DoubleClickEvent) {
+      this.emit('remove', { e: evt, handle: this })
+    }
   }
 
-  protected onMouseMove(evt: Dom.MouseMoveEvent) {
-    this.emit('changing', { e: evt, handle: this })
-  }
+  export namespace Handle {
+    export interface Options {
+      graph: Graph
+      index: number
+      guard: (evt: Dom.EventObject) => boolean
+      attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
+    }
 
-  protected onMouseUp(evt: Dom.MouseUpEvent) {
-    this.emit('changed', { e: evt, handle: this })
-    this.undelegateDocumentEvents()
-    this.graph.view.delegateEvents()
-  }
-
-  protected onDoubleClick(evt: Dom.DoubleClickEvent) {
-    this.emit('remove', { e: evt, handle: this })
+    export interface EventArgs {
+      change: { e: Dom.MouseDownEvent; handle: Handle }
+      changing: { e: Dom.MouseMoveEvent; handle: Handle }
+      changed: { e: Dom.MouseUpEvent; handle: Handle }
+      remove: { e: Dom.DoubleClickEvent; handle: Handle }
+    }
   }
 }
 
-interface HandleOptions {
-  graph: Graph
-  index: number
-  guard: (evt: Dom.EventObject) => boolean
-  attrs: SimpleAttrs | ((handle: Handle) => SimpleAttrs)
-}
+export namespace Vertices {
+  const pathClassName = Config.prefix('edge-tool-vertex-path')
 
-interface EventArgs {
-  change: { e: Dom.MouseDownEvent; handle: Handle }
-  changing: { e: Dom.MouseMoveEvent; handle: Handle }
-  changed: { e: Dom.MouseUpEvent; handle: Handle }
-  remove: { e: Dom.DoubleClickEvent; handle: Handle }
-}
-
-const pathClassName = Config.prefix('edge-tool-vertex-path')
-
-Vertices.config<Options>({
-  name: 'vertices',
-  snapRadius: 20,
-  addable: true,
-  removable: true,
-  removeRedundancies: true,
-  stopPropagation: true,
-  attrs: {
-    r: 6,
-    fill: '#333',
-    stroke: '#fff',
-    cursor: 'move',
-    'stroke-width': 2,
-  },
-  createHandle: (options) => new Handle(options),
-  markup: [
-    {
-      tagName: 'path',
-      selector: 'connection',
-      className: pathClassName,
-      attrs: {
-        fill: 'none',
-        stroke: 'transparent',
-        'stroke-width': 10,
-        cursor: 'pointer',
-      },
+  Vertices.config<Vertices.Options>({
+    name: 'vertices',
+    snapRadius: 20,
+    addable: true,
+    removable: true,
+    removeRedundancies: true,
+    stopPropagation: true,
+    attrs: {
+      r: 6,
+      fill: '#333',
+      stroke: '#fff',
+      cursor: 'move',
+      'stroke-width': 2,
     },
-  ],
-  events: {
-    [`mousedown .${pathClassName}`]: 'onPathMouseDown',
-    [`touchstart .${pathClassName}`]: 'onPathMouseDown',
-  },
-})
+    createHandle: (options) => new Handle(options),
+    markup: [
+      {
+        tagName: 'path',
+        selector: 'connection',
+        className: pathClassName,
+        attrs: {
+          fill: 'none',
+          stroke: 'transparent',
+          'stroke-width': 10,
+          cursor: 'pointer',
+        },
+      },
+    ],
+    events: {
+      [`mousedown .${pathClassName}`]: 'onPathMouseDown',
+      [`touchstart .${pathClassName}`]: 'onPathMouseDown',
+    },
+  })
+}
