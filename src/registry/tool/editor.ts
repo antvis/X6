@@ -324,25 +324,37 @@ interface CellEditorOptions extends ToolItemOptions {
     | string
 }
 
-export const NodeEditor = CellEditor.define<CellEditorOptions>({
-  attrs: {
-    fontSize: 14,
-    fontFamily: 'Arial, helvetica, sans-serif',
-    color: '#000',
-    backgroundColor: '#fff',
-  },
-  getText: 'text/text',
-  setText: 'text/text',
-})
+export class NodeEditor extends CellEditor {
+  public static defaults: CellEditorOptions = ObjectExt.merge(
+    {},
+    CellEditor.defaults,
+    {
+      attrs: {
+        fontSize: 14,
+        fontFamily: 'Arial, helvetica, sans-serif',
+        color: '#000',
+        backgroundColor: '#fff',
+      },
+      getText: 'text/text',
+      setText: 'text/text',
+    },
+  )
+}
 
-export const EdgeEditor = CellEditor.define<CellEditorOptions>({
-  attrs: {
-    fontSize: 14,
-    fontFamily: 'Arial, helvetica, sans-serif',
-    color: '#000',
-    backgroundColor: '#fff',
-  },
-  labelAddable: true,
-  getText: 'label/text',
-  setText: 'label/text',
-})
+export class EdgeEditor extends CellEditor {
+  public static defaults: CellEditorOptions = ObjectExt.merge(
+    {},
+    CellEditor.defaults,
+    {
+      attrs: {
+        fontSize: 14,
+        fontFamily: 'Arial, helvetica, sans-serif',
+        color: '#000',
+        backgroundColor: '#fff',
+      },
+      labelAddable: true,
+      getText: 'label/text',
+      setText: 'label/text',
+    },
+  )
+}
