@@ -8,7 +8,7 @@ import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
 import * as Util from './util'
 
-class Anchor extends ToolItem<EdgeView, Options> {
+class Anchor extends ToolItem<EdgeView, Anchor.Options> {
   protected get type() {
     return this.options.type!
   }
@@ -255,109 +255,113 @@ class Anchor extends ToolItem<EdgeView, Options> {
   }
 }
 
-interface Options extends ToolItemOptions {
-  type?: Edge.TerminalType
-  snapRadius?: number
-  areaPadding?: number
-  restrictArea?: boolean
-  resetAnchor?: boolean | Edge.TerminalCellData['anchor']
-  removeRedundancies?: boolean
-  defaultAnchorAttrs?: SimpleAttrs
-  customAnchorAttrs?: SimpleAttrs
-  snap?: (
-    this: EdgeView,
-    pos: Point,
-    terminalView: CellView,
-    terminalMagnet: Element | null,
-    terminalType: Edge.TerminalType,
-    edgeView: EdgeView,
-    toolView: Anchor,
-  ) => Point.PointLike
-  anchor?: (
-    this: EdgeView,
-    pos: Point,
-    terminalView: CellView,
-    terminalMagnet: Element | null,
-    terminalType: Edge.TerminalType,
-    edgeView: EdgeView,
-    toolView: Anchor,
-  ) => Edge.TerminalCellData['anchor']
+namespace Anchor {
+  export interface Options extends ToolItemOptions {
+    type?: Edge.TerminalType
+    snapRadius?: number
+    areaPadding?: number
+    restrictArea?: boolean
+    resetAnchor?: boolean | Edge.TerminalCellData['anchor']
+    removeRedundancies?: boolean
+    defaultAnchorAttrs?: SimpleAttrs
+    customAnchorAttrs?: SimpleAttrs
+    snap?: (
+      this: EdgeView,
+      pos: Point,
+      terminalView: CellView,
+      terminalMagnet: Element | null,
+      terminalType: Edge.TerminalType,
+      edgeView: EdgeView,
+      toolView: Anchor,
+    ) => Point.PointLike
+    anchor?: (
+      this: EdgeView,
+      pos: Point,
+      terminalView: CellView,
+      terminalMagnet: Element | null,
+      terminalType: Edge.TerminalType,
+      edgeView: EdgeView,
+      toolView: Anchor,
+    ) => Edge.TerminalCellData['anchor']
+  }
 }
 
-Anchor.config<Options>({
-  tagName: 'g',
-  markup: [
-    {
-      tagName: 'circle',
-      selector: 'anchor',
-      attrs: {
-        cursor: 'pointer',
+namespace Anchor {
+  Anchor.config<Anchor.Options>({
+    tagName: 'g',
+    markup: [
+      {
+        tagName: 'circle',
+        selector: 'anchor',
+        attrs: {
+          cursor: 'pointer',
+        },
       },
-    },
-    {
-      tagName: 'rect',
-      selector: 'area',
-      attrs: {
-        'pointer-events': 'none',
-        fill: 'none',
-        stroke: '#33334F',
-        'stroke-dasharray': '2,4',
-        rx: 5,
-        ry: 5,
+      {
+        tagName: 'rect',
+        selector: 'area',
+        attrs: {
+          'pointer-events': 'none',
+          fill: 'none',
+          stroke: '#33334F',
+          'stroke-dasharray': '2,4',
+          rx: 5,
+          ry: 5,
+        },
       },
+    ],
+    events: {
+      mousedown: 'onMouseDown',
+      touchstart: 'onMouseDown',
+      dblclick: 'onDblClick',
     },
-  ],
-  events: {
-    mousedown: 'onMouseDown',
-    touchstart: 'onMouseDown',
-    dblclick: 'onDblClick',
-  },
-  documentEvents: {
-    mousemove: 'onMouseMove',
-    touchmove: 'onMouseMove',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  },
-  customAnchorAttrs: {
-    'stroke-width': 4,
-    stroke: '#33334F',
-    fill: '#FFFFFF',
-    r: 5,
-  },
-  defaultAnchorAttrs: {
-    'stroke-width': 2,
-    stroke: '#FFFFFF',
-    fill: '#33334F',
-    r: 6,
-  },
-  areaPadding: 6,
-  snapRadius: 10,
-  resetAnchor: true,
-  restrictArea: true,
-  removeRedundancies: true,
-  anchor: Util.getAnchor,
-  snap(pos, terminalView, terminalMagnet, terminalType, edgeView, toolView) {
-    const snapRadius = toolView.options.snapRadius || 0
-    const isSource = terminalType === 'source'
-    const refIndex = isSource ? 0 : -1
-    const ref =
-      this.cell.getVertexAt(refIndex) ||
-      this.getTerminalAnchor(isSource ? 'target' : 'source')
-    if (ref) {
-      if (Math.abs(ref.x - pos.x) < snapRadius) pos.x = ref.x
-      if (Math.abs(ref.y - pos.y) < snapRadius) pos.y = ref.y
-    }
-    return pos
-  },
-})
+    documentEvents: {
+      mousemove: 'onMouseMove',
+      touchmove: 'onMouseMove',
+      mouseup: 'onMouseUp',
+      touchend: 'onMouseUp',
+      touchcancel: 'onMouseUp',
+    },
+    customAnchorAttrs: {
+      'stroke-width': 4,
+      stroke: '#33334F',
+      fill: '#FFFFFF',
+      r: 5,
+    },
+    defaultAnchorAttrs: {
+      'stroke-width': 2,
+      stroke: '#FFFFFF',
+      fill: '#33334F',
+      r: 6,
+    },
+    areaPadding: 6,
+    snapRadius: 10,
+    resetAnchor: true,
+    restrictArea: true,
+    removeRedundancies: true,
+    anchor: Util.getAnchor,
+    snap(pos, terminalView, terminalMagnet, terminalType, edgeView, toolView) {
+      const snapRadius = toolView.options.snapRadius || 0
+      const isSource = terminalType === 'source'
+      const refIndex = isSource ? 0 : -1
+      const ref =
+        this.cell.getVertexAt(refIndex) ||
+        this.getTerminalAnchor(isSource ? 'target' : 'source')
+      if (ref) {
+        if (Math.abs(ref.x - pos.x) < snapRadius) pos.x = ref.x
+        if (Math.abs(ref.y - pos.y) < snapRadius) pos.y = ref.y
+      }
+      return pos
+    },
+  })
+}
 
-export const SourceAnchor = Anchor.define<Options>({
+export const SourceAnchor = Anchor.define<Anchor.Options>({
   name: 'source-anchor',
   type: 'source',
 })
 
-export const TargetAnchor = Anchor.define<Options>({
+export const TargetAnchor = Anchor.define<Anchor.Options>({
   name: 'target-anchor',
   type: 'target',
 })

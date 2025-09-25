@@ -23,8 +23,8 @@ const defaultOptions: StrokeHighlighterOptions = {
 
 export const stroke: HighlighterDefinition<StrokeHighlighterOptions> = {
   highlight(cellView, magnet, options) {
-    const id = getHighlighterId(magnet, options)
-    if (hasCache(id)) {
+    const id = Private.getHighlighterId(magnet, options)
+    if (Private.hasCache(id)) {
       return
     }
 
@@ -97,7 +97,7 @@ export const stroke: HighlighterDefinition<StrokeHighlighterOptions> = {
     Dom.addClass(path, Config.prefix('highlight-stroke'))
 
     const cell = cellView.cell
-    const removeHandler = () => removeHighlighter(id)
+    const removeHandler = () => Private.removeHighlighter(id)
 
     cell.on('removed', removeHandler)
     if (cell.model) {
@@ -105,33 +105,38 @@ export const stroke: HighlighterDefinition<StrokeHighlighterOptions> = {
     }
 
     cellView.container.appendChild(path)
-    setCache(id, path)
+    Private.setCache(id, path)
   },
 
   unhighlight(cellView, magnet, opt) {
-    removeHighlighter(getHighlighterId(magnet, opt))
+    Private.removeHighlighter(Private.getHighlighterId(magnet, opt))
   },
 }
 
-function getHighlighterId(magnet: Element, options: StrokeHighlighterOptions) {
-  Dom.ensureId(magnet)
-  return magnet.id + JSON.stringify(options)
-}
+namespace Private {
+  export function getHighlighterId(
+    magnet: Element,
+    options: StrokeHighlighterOptions,
+  ) {
+    Dom.ensureId(magnet)
+    return magnet.id + JSON.stringify(options)
+  }
 
-const cache: { [id: string]: Element } = {}
+  const cache: { [id: string]: Element } = {}
 
-function setCache(id: string, elem: Element) {
-  cache[id] = elem
-}
+  export function setCache(id: string, elem: Element) {
+    cache[id] = elem
+  }
 
-function hasCache(id: string) {
-  return cache[id] != null
-}
+  export function hasCache(id: string) {
+    return cache[id] != null
+  }
 
-function removeHighlighter(id: string) {
-  const elem = cache[id]
-  if (elem) {
-    Dom.remove(elem)
-    delete cache[id]
+  export function removeHighlighter(id: string) {
+    const elem = cache[id]
+    if (elem) {
+      Dom.remove(elem)
+      delete cache[id]
+    }
   }
 }
