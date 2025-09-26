@@ -706,8 +706,13 @@ export class Cell<
     this.setData(val)
   }
 
-  getData<T = Properties['data']>(): T {
-    return this.store.get<T>('data')
+  getData<T = Properties['data']>(options: Cell.GetDataOptions = {}): T {
+    const result = this.store.get<T>('data')
+
+    if (options.reference === false) {
+      return ObjectExt.cloneDeep(result)
+    }
+    return result
   }
 
   setData<T = Properties['data']>(data: T, options: Cell.SetDataOptions = {}) {
@@ -1568,6 +1573,10 @@ export namespace Cell {
   export interface CloneOptions {
     deep?: boolean
     keepId?: boolean
+  }
+
+  export interface GetDataOptions {
+    reference?: boolean
   }
 }
 
