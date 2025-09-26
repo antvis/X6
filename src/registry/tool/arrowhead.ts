@@ -134,28 +134,34 @@ interface Options extends ToolItemOptions {
   ratio?: number
 }
 
-export const SourceArrowhead = Arrowhead.define<Options>({
-  name: 'source-arrowhead',
-  type: 'source',
-  ratio: 0,
-  attrs: {
-    d: 'M 10 -8 -10 0 10 8 Z',
-    fill: '#333',
-    stroke: '#fff',
-    'stroke-width': 2,
-    cursor: 'move',
-  },
-})
+export class SourceArrowhead extends Arrowhead {
+  public static defaults: Options = {
+    ...Arrowhead.getDefaults(),
+    name: 'source-arrowhead',
+    type: 'source',
+    ratio: 0,
+    attrs: {
+      d: 'M 10 -8 -10 0 10 8 Z',
+      fill: '#333',
+      stroke: '#fff',
+      'stroke-width': 2,
+      cursor: 'move',
+    },
+  }
+}
 
-export const TargetArrowhead = Arrowhead.define<Options>({
-  name: 'target-arrowhead',
-  type: 'target',
-  ratio: 1,
-  attrs: {
-    d: 'M -10 -8 10 0 -10 8 Z',
-    fill: '#333',
-    stroke: '#fff',
-    'stroke-width': 2,
-    cursor: 'move',
-  },
-})
+export class TargetArrowhead extends Arrowhead {
+  public static defaults: Options = {
+    ...Arrowhead.getDefaults(),
+    name: 'target-arrowhead',
+    type: 'target',
+    ratio: 1,
+    attrs: {
+      d: 'M -10 -8 10 0 -10 8 Z',
+      fill: '#333',
+      stroke: '#fff',
+      'stroke-width': 2,
+      cursor: 'move',
+    },
+  }
+}
