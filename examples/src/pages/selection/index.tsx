@@ -8,13 +8,11 @@ export class SelectionExample extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      width: 800,
-      height: 600,
+      width: 1200,
+      height: 800,
       grid: true,
-      panning: {
-        enabled: true,
-        eventTypes: ['mouseWheelDown'],
-      },
+      scaling: { min: 0.5, max: 2 },
+      mousewheel: true,
     })
 
     const keyboard = new Keyboard()
@@ -23,51 +21,84 @@ export class SelectionExample extends React.Component {
       multiple: true,
       strict: true,
       showNodeSelectionBox: true,
-      selectCellOnMoved: false,
-      filter(cell) {
-        return cell !== a
-      },
     })
     graph.use(keyboard)
     graph.use(selection)
 
-    const a = graph.addNode({
-      x: 50,
-      y: 50,
-      width: 100,
-      height: 40,
-      attrs: { label: { text: 'A' } },
-    })
+    // 生成500个节点
+    const nodes = []
+    const nodeWidth = 80
+    const nodeHeight = 30
+    const cols = 25 // 每行25个节点
+    const spacingX = 120
+    const spacingY = 50
 
-    const b = graph.addNode({
-      x: 250,
-      y: 50,
-      width: 100,
-      height: 40,
-      attrs: { label: { text: 'B' } },
-      ports: [{ id: 'port' }],
-    })
+    for (let i = 0; i < 500; i++) {
+      const row = Math.floor(i / cols)
+      const col = i % cols
+      const x = 50 + col * spacingX
+      const y = 50 + row * spacingY
 
-    const c = graph.addNode({
-      x: 350,
-      y: 150,
-      width: 100,
-      height: 40,
-      attrs: { label: { text: 'C' } },
-    })
+      const node = graph.addNode({
+        x,
+        y,
+        width: nodeWidth,
+        height: nodeHeight,
+        attrs: {
+          label: {
+            text: `Node ${i + 1}`,
+            fontSize: 12,
+          },
+          body: {
+            fill: i % 2 === 0 ? '#f0f0f0' : '#e6f7ff',
+            stroke: '#d9d9d9',
+            strokeWidth: 1,
+          },
+        },
+      })
+      nodes.push(node)
+    }
 
-    graph.addEdge({ source: a, target: b })
-    graph.addEdge({ source: b, target: c })
+    // 为所有相邻节点添加连接边（水平和垂直相邻）
+    for (let i = 0; i < 500; i++) {
+      const col = i % cols
+
+      // 连接右侧相邻节点
+      if (col < cols - 1) {
+        const rightIndex = i + 1
+        if (rightIndex < nodes.length) {
+          graph.addEdge({
+            source: nodes[i],
+            target: nodes[rightIndex],
+            attrs: {
+              line: {
+                stroke: '#ccc',
+                strokeWidth: 1,
+              },
+            },
+          })
+        }
+      }
+
+      // 连接下方相邻节点
+      const bottomIndex = i + cols
+      if (bottomIndex < nodes.length) {
+        graph.addEdge({
+          source: nodes[i],
+          target: nodes[bottomIndex],
+          attrs: {
+            line: {
+              stroke: '#ccc',
+              strokeWidth: 1,
+            },
+          },
+        })
+      }
+    }
 
     keyboard.bindKey('backspace', () => {
-      graph.removeCells(selection.getSelectedCells())
-    })
-
-    selection.select(a)
-    selection.select([b, c])
-
-    selection.on('selection:changed', ({ added }) => {
-      console.log('added', added)
+      const selectedCells = selection.getSelectedCells()
+      graph.removeCells(selectedCells)
     })
   }
 
