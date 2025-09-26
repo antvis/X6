@@ -44,6 +44,7 @@ import { UndoExample } from './pages/undo'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
 import { SegmentsExample } from './pages/edge/tool/segments'
+import { GraphFromJSONExample } from './pages/graph/from-json'
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
       <Route path="/ports/connected" element={<PortsConnectedExample />} />
       <Route path="/edge" element={<EdgeExample />} />
       <Route path="/router" element={<RouterExample />} />
+      <Route path="/graph/from-json" element={<GraphFromJSONExample />} />
       <Route path="/edge/tool/arrowhead" element={<ToolArrowheadExample />} />
       <Route path="/edge/tool/button" element={<ToolButtonExample />} />
       <Route path="/edge/tool/segments" element={<SegmentsExample />} />
