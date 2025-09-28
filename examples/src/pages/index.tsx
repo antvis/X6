@@ -147,7 +147,7 @@ const dataSource = [
     description: '剪切板',
   },
   {
-    example: 'keyboard',
+    example: 'plugins/keyboard',
     description: '快捷键',
   },
   {
