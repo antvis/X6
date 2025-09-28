@@ -39,8 +39,8 @@ import { DndExample } from './pages/plugins/dnd'
 import { ScrollerExample } from './pages/plugins/scroller'
 import { SelectionExample } from './pages/plugins/selection'
 import { StencilExample } from './pages/plugins/stencil'
-import { TransformExample } from './pages/transform'
-import { UndoExample } from './pages/undo'
+import { TransformExample } from './pages/plugins/transform'
+import { UndoExample } from './pages/plugins/undo'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
 import { SegmentsExample } from './pages/edge/tool/segments'
@@ -97,9 +97,9 @@ function App() {
       <Route path="/plugins/scroller" element={<ScrollerExample />} />
       <Route path="/plugins/selection" element={<SelectionExample />} />
       <Route path="/plugins/stencil" element={<StencilExample />} />
+      <Route path="/plugins/transform" element={<TransformExample />} />
+      <Route path="/plugins/undo" element={<UndoExample />} />
 
-      <Route path="/transform" element={<TransformExample />} />
-      <Route path="/undo" element={<UndoExample />} />
       <Route path="/animation/transition" element={<TransitionExample />} />
       <Route path="/history" element={<HistoryExample />} />
     </Routes>

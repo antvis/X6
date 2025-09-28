@@ -167,11 +167,11 @@ const dataSource = [
     description: 'Stencil',
   },
   {
-    example: 'transform',
+    example: 'plugins/transform',
     description: '调整节点形状',
   },
   {
-    example: 'undo',
+    example: 'plugins/undo',
     description: '撤销重做',
   },
   // ========= animation ========
