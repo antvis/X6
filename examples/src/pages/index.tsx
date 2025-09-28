@@ -163,7 +163,7 @@ const dataSource = [
     description: '框选',
   },
   {
-    example: 'stencil',
+    example: 'plugins/stencil',
     description: 'Stencil',
   },
   {
