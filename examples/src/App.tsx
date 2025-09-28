@@ -35,7 +35,7 @@ import { OrgExample } from './pages/org'
 import { SnaplineExample } from './pages/snapline'
 import { ClipboardExample } from './pages/clipboard'
 import { KeyboardExample } from './pages/keyboard'
-import { DndExample } from './pages/dnd'
+import { DndExample } from './pages/plugins/dnd'
 import { ScrollerExample } from './pages/scroller'
 import { SelectionExample } from './pages/selection'
 import { StencilExample } from './pages/stencil'
@@ -91,7 +91,7 @@ function App() {
       <Route path="/snapline" element={<SnaplineExample />} />
       <Route path="/clipboard" element={<ClipboardExample />} />
       <Route path="/keyboard" element={<KeyboardExample />} />
-      <Route path="/dnd" element={<DndExample />} />
+      <Route path="/plugins/dnd" element={<DndExample />} />
       <Route path="/scroller" element={<ScrollerExample />} />
       <Route path="/selection" element={<SelectionExample />} />
       <Route path="/stencil" element={<StencilExample />} />

@@ -137,7 +137,7 @@ const dataSource = [
     example: 'org',
     description: '组织架构图',
   },
-  // ========= plugin =========
+  // ========= plugins =========
   {
     example: 'snapline',
     description: '对齐线',
@@ -151,7 +151,7 @@ const dataSource = [
     description: '快捷键',
   },
   {
-    example: 'dnd',
+    example: 'plugins/dnd',
     description: 'Dnd',
   },
   {
