@@ -90,10 +90,10 @@ function App() {
       <Route path="/org" element={<OrgExample />} />
 
       {/* Plugins Example */}
-      <Route path="/plugins/dnd" element={<DndExample />} />
       <Route path="/plugins/snapline" element={<SnaplineExample />} />
       <Route path="/plugins/clipboard" element={<ClipboardExample />} />
       <Route path="/plugins/keyboard" element={<KeyboardExample />} />
+      <Route path="/plugins/dnd" element={<DndExample />} />
       <Route path="/plugins/scroller" element={<ScrollerExample />} />
       <Route path="/plugins/selection" element={<SelectionExample />} />
       <Route path="/plugins/stencil" element={<StencilExample />} />
