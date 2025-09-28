@@ -32,7 +32,7 @@ import { CaseErExample } from './pages/case/er'
 import { CaseMindExample } from './pages/case/mind'
 import { CaseSwimlaneExample } from './pages/case/swimlane'
 import { OrgExample } from './pages/org'
-import { SnaplineExample } from './pages/snapline'
+import { SnaplineExample } from './pages/plugins/snapline'
 import { ClipboardExample } from './pages/clipboard'
 import { KeyboardExample } from './pages/keyboard'
 import { DndExample } from './pages/plugins/dnd'
@@ -88,10 +88,13 @@ function App() {
       <Route path="/case/mind" element={<CaseMindExample />} />
       <Route path="/case/swimlane" element={<CaseSwimlaneExample />} />
       <Route path="/org" element={<OrgExample />} />
-      <Route path="/snapline" element={<SnaplineExample />} />
       <Route path="/clipboard" element={<ClipboardExample />} />
       <Route path="/keyboard" element={<KeyboardExample />} />
+
+      {/* Plugins Example */}
       <Route path="/plugins/dnd" element={<DndExample />} />
+      <Route path="/plugins/snapline" element={<SnaplineExample />} />
+
       <Route path="/scroller" element={<ScrollerExample />} />
       <Route path="/selection" element={<SelectionExample />} />
       <Route path="/stencil" element={<StencilExample />} />

@@ -139,7 +139,7 @@ const dataSource = [
   },
   // ========= plugins =========
   {
-    example: 'snapline',
+    example: 'plugins/snapline',
     description: '对齐线',
   },
   {
