@@ -155,7 +155,7 @@ const dataSource = [
     description: 'Dnd',
   },
   {
-    example: 'scroller',
+    example: 'plugins/scroller',
     description: '滚动画布',
   },
   {

@@ -36,7 +36,7 @@ import { SnaplineExample } from './pages/plugins/snapline'
 import { ClipboardExample } from './pages/plugins/clipboard'
 import { KeyboardExample } from './pages/plugins/keyboard'
 import { DndExample } from './pages/plugins/dnd'
-import { ScrollerExample } from './pages/scroller'
+import { ScrollerExample } from './pages/plugins/scroller'
 import { SelectionExample } from './pages/selection'
 import { StencilExample } from './pages/stencil'
 import { TransformExample } from './pages/transform'
@@ -94,8 +94,8 @@ function App() {
       <Route path="/plugins/snapline" element={<SnaplineExample />} />
       <Route path="/plugins/clipboard" element={<ClipboardExample />} />
       <Route path="/plugins/keyboard" element={<KeyboardExample />} />
+      <Route path="/plugins/scroller" element={<ScrollerExample />} />
 
-      <Route path="/scroller" element={<ScrollerExample />} />
       <Route path="/selection" element={<SelectionExample />} />
       <Route path="/stencil" element={<StencilExample />} />
       <Route path="/transform" element={<TransformExample />} />
