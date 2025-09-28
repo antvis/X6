@@ -143,7 +143,7 @@ const dataSource = [
     description: '对齐线',
   },
   {
-    example: 'clipboard',
+    example: 'plugins/clipboard',
     description: '剪切板',
   },
   {
