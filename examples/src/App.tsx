@@ -37,7 +37,7 @@ import { ClipboardExample } from './pages/plugins/clipboard'
 import { KeyboardExample } from './pages/plugins/keyboard'
 import { DndExample } from './pages/plugins/dnd'
 import { ScrollerExample } from './pages/plugins/scroller'
-import { SelectionExample } from './pages/selection'
+import { SelectionExample } from './pages/plugins/selection'
 import { StencilExample } from './pages/stencil'
 import { TransformExample } from './pages/transform'
 import { UndoExample } from './pages/undo'
@@ -95,8 +95,8 @@ function App() {
       <Route path="/plugins/clipboard" element={<ClipboardExample />} />
       <Route path="/plugins/keyboard" element={<KeyboardExample />} />
       <Route path="/plugins/scroller" element={<ScrollerExample />} />
+      <Route path="/plugins/selection" element={<SelectionExample />} />
 
-      <Route path="/selection" element={<SelectionExample />} />
       <Route path="/stencil" element={<StencilExample />} />
       <Route path="/transform" element={<TransformExample />} />
       <Route path="/undo" element={<UndoExample />} />

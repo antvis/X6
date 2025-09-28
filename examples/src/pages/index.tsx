@@ -159,7 +159,7 @@ const dataSource = [
     description: '滚动画布',
   },
   {
-    example: 'selection',
+    example: 'plugins/selection',
     description: '框选',
   },
   {
