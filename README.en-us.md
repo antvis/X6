@@ -97,7 +97,6 @@ If everything goes smoothly, you will get a simple flowchart canvas as shown bel
 $ pnpm install
 
 # Start examples to view results
-cd examples
 pnpm run start:examples
 ```
 
