@@ -96,9 +96,9 @@ graph.addEdge({
 # 安装项目依赖和初始化构建
 $ pnpm install
 
-# 启动 example 查看效果
+# 启动 examples 查看效果
 cd examples
-pnpm run start
+pnpm run start:examples
 ```
 
 ## 📮 贡献

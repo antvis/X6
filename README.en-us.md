@@ -96,9 +96,9 @@ If everything goes smoothly, you will get a simple flowchart canvas as shown bel
 # Install project dependencies and initialize build
 $ pnpm install
 
-# Start example to view results
+# Start examples to view results
 cd examples
-pnpm run start
+pnpm run start:examples
 ```
 
 ## 📮 Contribution
