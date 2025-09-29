@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph, Snapline } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 
 export class SnaplineExample extends React.Component {
   private container!: HTMLDivElement
