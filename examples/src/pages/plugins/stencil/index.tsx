@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph, Shape, Stencil } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 import './index.less'
 
 export class StencilExample extends React.Component {

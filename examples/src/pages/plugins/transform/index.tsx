@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph, Transform } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 
 export class TransformExample extends React.Component {
   private container!: HTMLDivElement
