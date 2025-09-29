@@ -352,12 +352,18 @@ interface Options extends ToolItemOptions {
   ) => Edge.TerminalCellData['anchor']
 }
 
-export const SourceAnchor = Anchor.define<Options>({
-  name: 'source-anchor',
-  type: 'source',
-})
+export class SourceAnchor extends Anchor {
+  public static defaults: Options = {
+    ...Anchor.getDefaults(),
+    name: 'source-anchor',
+    type: 'source',
+  }
+}
 
-export const TargetAnchor = Anchor.define<Options>({
-  name: 'target-anchor',
-  type: 'target',
-})
+export class TargetAnchor extends Anchor {
+  public static defaults: Options = {
+    ...Anchor.getDefaults(),
+    name: 'target-anchor',
+    type: 'target',
+  }
+}
