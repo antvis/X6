@@ -137,41 +137,41 @@ const dataSource = [
     example: 'org',
     description: '组织架构图',
   },
-  // ========= plugin =========
+  // ========= plugins =========
   {
-    example: 'snapline',
+    example: 'plugins/snapline',
     description: '对齐线',
   },
   {
-    example: 'clipboard',
+    example: 'plugins/clipboard',
     description: '剪切板',
   },
   {
-    example: 'keyboard',
+    example: 'plugins/keyboard',
     description: '快捷键',
   },
   {
-    example: 'dnd',
+    example: 'plugins/dnd',
     description: 'Dnd',
   },
   {
-    example: 'scroller',
+    example: 'plugins/scroller',
     description: '滚动画布',
   },
   {
-    example: 'selection',
+    example: 'plugins/selection',
     description: '框选',
   },
   {
-    example: 'stencil',
+    example: 'plugins/stencil',
     description: 'Stencil',
   },
   {
-    example: 'transform',
+    example: 'plugins/transform',
     description: '调整节点形状',
   },
   {
-    example: 'undo',
+    example: 'plugins/undo',
     description: '撤销重做',
   },
   // ========= animation ========

@@ -32,15 +32,15 @@ import { CaseErExample } from './pages/case/er'
 import { CaseMindExample } from './pages/case/mind'
 import { CaseSwimlaneExample } from './pages/case/swimlane'
 import { OrgExample } from './pages/org'
-import { SnaplineExample } from './pages/snapline'
-import { ClipboardExample } from './pages/clipboard'
-import { KeyboardExample } from './pages/keyboard'
-import { DndExample } from './pages/dnd'
-import { ScrollerExample } from './pages/scroller'
-import { SelectionExample } from './pages/selection'
-import { StencilExample } from './pages/stencil'
-import { TransformExample } from './pages/transform'
-import { UndoExample } from './pages/undo'
+import { SnaplineExample } from './pages/plugins/snapline'
+import { ClipboardExample } from './pages/plugins/clipboard'
+import { KeyboardExample } from './pages/plugins/keyboard'
+import { DndExample } from './pages/plugins/dnd'
+import { ScrollerExample } from './pages/plugins/scroller'
+import { SelectionExample } from './pages/plugins/selection'
+import { StencilExample } from './pages/plugins/stencil'
+import { TransformExample } from './pages/plugins/transform'
+import { UndoExample } from './pages/plugins/undo'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
 import { SegmentsExample } from './pages/edge/tool/segments'
@@ -88,15 +88,18 @@ function App() {
       <Route path="/case/mind" element={<CaseMindExample />} />
       <Route path="/case/swimlane" element={<CaseSwimlaneExample />} />
       <Route path="/org" element={<OrgExample />} />
-      <Route path="/snapline" element={<SnaplineExample />} />
-      <Route path="/clipboard" element={<ClipboardExample />} />
-      <Route path="/keyboard" element={<KeyboardExample />} />
-      <Route path="/dnd" element={<DndExample />} />
-      <Route path="/scroller" element={<ScrollerExample />} />
-      <Route path="/selection" element={<SelectionExample />} />
-      <Route path="/stencil" element={<StencilExample />} />
-      <Route path="/transform" element={<TransformExample />} />
-      <Route path="/undo" element={<UndoExample />} />
+
+      {/* Plugins Example */}
+      <Route path="/plugins/snapline" element={<SnaplineExample />} />
+      <Route path="/plugins/clipboard" element={<ClipboardExample />} />
+      <Route path="/plugins/keyboard" element={<KeyboardExample />} />
+      <Route path="/plugins/dnd" element={<DndExample />} />
+      <Route path="/plugins/scroller" element={<ScrollerExample />} />
+      <Route path="/plugins/selection" element={<SelectionExample />} />
+      <Route path="/plugins/stencil" element={<StencilExample />} />
+      <Route path="/plugins/transform" element={<TransformExample />} />
+      <Route path="/plugins/undo" element={<UndoExample />} />
+
       <Route path="/animation/transition" element={<TransitionExample />} />
       <Route path="/history" element={<HistoryExample />} />
     </Routes>

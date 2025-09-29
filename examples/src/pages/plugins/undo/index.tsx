@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph, History } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 
 export class UndoExample extends React.Component<Example.Props, Example.State> {
   private container!: HTMLDivElement

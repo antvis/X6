@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph, Keyboard, Clipboard, Selection } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 
 export class ClipboardExample extends React.Component {
   private container!: HTMLDivElement
