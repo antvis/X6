@@ -97,7 +97,6 @@ graph.addEdge({
 $ pnpm install
 
 # 启动 examples 查看效果
-cd examples
 pnpm run start:examples
 ```
 
