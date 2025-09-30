@@ -534,11 +534,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         const dx = e.clientX - data.clientX + data.scrollerX
         const dy = e.clientY - data.clientY + data.scrollerY
 
-        const left = parseInt(Dom.css(this.container, 'left') || '0', 10)
-        const top = parseInt(Dom.css(this.container, 'top') || '0', 10)
         Dom.css(this.container, {
-          left: dx < 0 ? data.offsetX + dx : left,
-          top: dy < 0 ? data.offsetY + dy : top,
+          left: dx < 0 ? data.offsetX + dx : data.offsetX,
+          top: dy < 0 ? data.offsetY + dy : data.offsetY,
           width: Math.abs(dx),
           height: Math.abs(dy),
         })
