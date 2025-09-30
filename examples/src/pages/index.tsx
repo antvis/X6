@@ -174,6 +174,10 @@ const dataSource = [
     example: 'plugins/undo',
     description: '撤销重做',
   },
+  {
+    example: 'plugins/export',
+    description: '导出',
+  },
   // ========= animation ========
   {
     example: 'animation/transition',
