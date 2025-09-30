@@ -306,6 +306,18 @@ export class Scroller
     return this.scrollerImpl.clientToLocalPoint(x, y)
   }
 
+  getVisibleArea(): Rectangle {
+    return this.scrollerImpl.getVisibleArea()
+  }
+
+  isCellVisible(cell: Cell, options: { strict?: boolean } = {}) {
+    return this.scrollerImpl.isCellVisible(cell, options)
+  }
+
+  isPointVisible(point: Point.PointLike) {
+    return this.scrollerImpl.isPointVisible(point)
+  }
+
   // #endregion
 
   protected setup() {

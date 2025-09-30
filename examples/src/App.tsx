@@ -41,10 +41,12 @@ import { SelectionExample } from './pages/plugins/selection'
 import { StencilExample } from './pages/plugins/stencil'
 import { TransformExample } from './pages/plugins/transform'
 import { UndoExample } from './pages/plugins/undo'
+import { ExportExample } from './pages/plugins/export'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
 import { SegmentsExample } from './pages/edge/tool/segments'
-import { ExportExample } from './pages/plugins/export'
+import { VirtualRenderExample } from './pages/virtual-render'
+import './App.less'
 
 function App() {
   return (
@@ -104,6 +106,7 @@ function App() {
 
       <Route path="/animation/transition" element={<TransitionExample />} />
       <Route path="/history" element={<HistoryExample />} />
+      <Route path="/virtual-render" element={<VirtualRenderExample />} />
     </Routes>
   )
 }
