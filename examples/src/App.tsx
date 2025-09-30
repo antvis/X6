@@ -44,6 +44,7 @@ import { UndoExample } from './pages/plugins/undo'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
 import { SegmentsExample } from './pages/edge/tool/segments'
+import { ExportExample } from './pages/plugins/export'
 
 function App() {
   return (
@@ -99,6 +100,7 @@ function App() {
       <Route path="/plugins/stencil" element={<StencilExample />} />
       <Route path="/plugins/transform" element={<TransformExample />} />
       <Route path="/plugins/undo" element={<UndoExample />} />
+      <Route path="/plugins/export" element={<ExportExample />} />
 
       <Route path="/animation/transition" element={<TransitionExample />} />
       <Route path="/history" element={<HistoryExample />} />
