@@ -1229,13 +1229,24 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region plugin
 
+  handleScrollerPluginStateChange(
+    plugin: Graph.Plugin,
+    isBeingEnabled: boolean,
+  ) {
+    if (plugin.name === 'scroller') {
+      if (isBeingEnabled) {
+        this.virtualRender.onScrollerReady(plugin)
+      } else {
+        this.virtualRender.unbindScroller()
+      }
+    }
+  }
+
   use(plugin: Graph.Plugin, ...options: any[]) {
     if (!this.installedPlugins.has(plugin)) {
       this.installedPlugins.add(plugin)
       plugin.init(this, ...options)
-      if (plugin.name === 'scroller') {
-        this.virtualRender.onScrollerReady(plugin)
-      }
+      this.handleScrollerPluginStateChange(plugin, true)
     }
     return this
   }
@@ -1260,9 +1271,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin?.enable?.()
-      if (plugin.name === 'scroller') {
-        this.virtualRender.onScrollerReady(plugin)
-      }
+      this.handleScrollerPluginStateChange(plugin, true)
     })
     return this
   }
@@ -1275,9 +1284,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin?.disable?.()
-      if (plugin.name === 'scroller') {
-        this.virtualRender.unbindScroller()
-      }
+      this.handleScrollerPluginStateChange(plugin, false)
     })
     return this
   }
@@ -1295,9 +1302,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin.dispose()
-      if (plugin.name === 'scroller') {
-        this.virtualRender.unbindScroller()
-      }
+      this.handleScrollerPluginStateChange(plugin, false)
       this.installedPlugins.delete(plugin)
     })
     return this

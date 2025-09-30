@@ -19,6 +19,23 @@ export class VirtualRenderManager extends Base {
     this.startListening()
   }
 
+  private bindScrollerEvents(scroller: any) {
+    this.scrollerRef = scroller
+    if (typeof scroller.on === 'function') {
+      scroller.on('pan:start', this.resetRenderArea, this)
+      scroller.on('panning', this.resetRenderArea, this)
+      scroller.on('pan:stop', this.resetRenderArea, this)
+    }
+
+    const container = scroller.container
+    if (container) {
+      this.scrollerScrollHandler = (_e) => {
+        this.resetRenderArea()
+      }
+      Dom.Event.on(container, 'scroll', this.scrollerScrollHandler)
+    }
+  }
+
   protected startListening() {
     this.graph.on('translate', this.resetRenderArea, this)
     this.graph.on('scale', this.resetRenderArea, this)
@@ -26,20 +43,7 @@ export class VirtualRenderManager extends Base {
 
     const scroller = this.graph.getPlugin<any>('scroller')
     if (scroller) {
-      this.scrollerRef = scroller
-      if (typeof scroller.on === 'function') {
-        scroller.on('pan:start', this.resetRenderArea, this)
-        scroller.on('panning', this.resetRenderArea, this)
-        scroller.on('pan:stop', this.resetRenderArea, this)
-      }
-
-      const container = scroller.container
-      if (container) {
-        this.scrollerScrollHandler = (_e) => {
-          this.resetRenderArea()
-        }
-        Dom.Event.on(container, 'scroll', this.scrollerScrollHandler)
-      }
+      this.bindScrollerEvents(scroller)
     }
   }
 
@@ -56,20 +60,7 @@ export class VirtualRenderManager extends Base {
 
     this.unbindScroller()
 
-    this.scrollerRef = scroller
-    if (typeof scroller.on === 'function') {
-      scroller.on('pan:start', this.resetRenderArea, this)
-      scroller.on('panning', this.resetRenderArea, this)
-      scroller.on('pan:stop', this.resetRenderArea, this)
-    }
-
-    const container = scroller.container
-    if (container) {
-      this.scrollerScrollHandler = (_e) => {
-        this.resetRenderArea()
-      }
-      Dom.Event.on(container, 'scroll', this.scrollerScrollHandler)
-    }
+    this.bindScrollerEvents(scroller)
 
     this.resetRenderArea()
   }
