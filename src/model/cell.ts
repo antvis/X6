@@ -1512,6 +1512,14 @@ export namespace Cell {
       return raw as Tools
     }
 
+    if (Reflect.has(raw, 'local')) {
+      const { local, ...resetItem } = raw as Tools
+      return {
+        local,
+        items: [resetItem as ToolItem],
+      }
+    }
+
     return {
       items: [raw as ToolItem],
     }
