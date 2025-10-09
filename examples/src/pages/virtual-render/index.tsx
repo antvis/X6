@@ -14,7 +14,6 @@ export const VirtualRenderExample: React.FC = () => {
       width: 1200,
       height: 800,
       grid: true,
-      panning: true,
       mousewheel: true,
       virtual: true,
     })
@@ -22,6 +21,7 @@ export const VirtualRenderExample: React.FC = () => {
     graph.use(
       new Scroller({
         enabled: true,
+        pannable: true,
       }),
     )
 
