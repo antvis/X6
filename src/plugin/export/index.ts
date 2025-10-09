@@ -4,12 +4,13 @@ import {
   Dom,
   disposable,
   FunctionExt,
-  type KeyValue,
   NumberExt,
   Vector,
 } from '../../common'
+import type { KeyValue } from '../../common'
 import { Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
+import { kebabCase } from 'lodash-es'
 import type {
   ExportEventArgs,
   ExportToDataURLOptions,
@@ -136,8 +137,10 @@ export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
         // by that next step when all the stylesheets are re-enabled again.
         const defaultComputedStyle: KeyValue<string> = {}
         Object.keys(computedStyle).forEach((property) => {
-          defaultComputedStyle[property] =
-            computedStyle.getPropertyValue(property)
+          const propertyValue = computedStyle.getPropertyValue(
+            kebabCase(property),
+          )
+          defaultComputedStyle[property] = propertyValue
         })
 
         defaultComputedStyles[index] = defaultComputedStyle
@@ -161,12 +164,14 @@ export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
         const customStyle: KeyValue<string> = {}
 
         Object.keys(computedStyle).forEach((property) => {
+          const propertyValue = computedStyle.getPropertyValue(
+            kebabCase(property),
+          )
           if (
             !NumberExt.isNumber(property) &&
-            computedStyle.getPropertyValue(property) !==
-              defaultComputedStyle[property]
+            propertyValue !== defaultComputedStyle[property]
           ) {
-            customStyle[property] = computedStyle.getPropertyValue(property)
+            customStyle[property] = propertyValue
           }
         })
 
