@@ -30,7 +30,18 @@ export class ToolsCleanExample extends React.Component {
       width: 80,
       height: 30,
       label: 'Target',
-      tools: ['button-remove'],
+      tools: {
+        items: [
+          {
+            name: 'button-remove',
+            args: {
+              x: '100%',
+              y: 0,
+            },
+          },
+        ],
+        local: true,
+      },
     })
 
     graph.addEdge({
