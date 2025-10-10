@@ -15,7 +15,7 @@ Whether the canvas is rendered asynchronously. Asynchronous rendering does not b
 
 ### virtual
 
-Whether to render only the elements in the visible area, default is `false`. If set to `true`, the initial screen load will only render elements in the current visible area. When dragging or zooming the canvas, the remaining elements will be automatically loaded based on the canvas window size. This significantly improves performance in scenarios with a large number of elements.
+Whether to render only the elements in the visible area, default is `false`. If set to `true`, the initial screen load will only render elements in the current visible area. When dragging, zooming the canvas, or moving the scrollbar in a scrolling canvas, the remaining elements will be automatically loaded based on the canvas window size. This significantly improves performance in scenarios with a large number of elements.
 
 ### magnetThreshold
 

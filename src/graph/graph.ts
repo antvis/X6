@@ -1,8 +1,9 @@
-import { Basecoat, disposable } from '../common'
 import type { Dom, KeyValue, NumberExt } from '../common'
+import { Basecoat, disposable } from '../common'
 import { Point, Rectangle } from '../geometry'
-import { Cell, Edge, Model, Node } from '../model'
 import type { Collection } from '../model'
+import { Cell, Edge, Model, Node } from '../model'
+import type { BackgroundOptions } from '../registry'
 import {
   attrRegistry,
   backgroundRegistry,
@@ -20,7 +21,6 @@ import {
   portLayoutRegistry,
   routerRegistry,
 } from '../registry'
-import type { BackgroundOptions } from '../registry'
 import { Renderer as ViewRenderer } from '../renderer'
 import { CellView } from '../view'
 import { BackgroundManager as Background } from './background'
@@ -686,6 +686,11 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   getGraphArea() {
+    const scroller = this.getPlugin<any>('scroller')
+    if (scroller) {
+      const area = scroller.getVisibleArea?.()
+      if (area) return area
+    }
     return this.transform.getGraphArea()
   }
 
@@ -1224,10 +1229,24 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region plugin
 
+  handleScrollerPluginStateChange(
+    plugin: Graph.Plugin,
+    isBeingEnabled: boolean,
+  ) {
+    if (plugin.name === 'scroller') {
+      if (isBeingEnabled) {
+        this.virtualRender.onScrollerReady(plugin)
+      } else {
+        this.virtualRender.unbindScroller()
+      }
+    }
+  }
+
   use(plugin: Graph.Plugin, ...options: any[]) {
     if (!this.installedPlugins.has(plugin)) {
       this.installedPlugins.add(plugin)
       plugin.init(this, ...options)
+      this.handleScrollerPluginStateChange(plugin, true)
     }
     return this
   }
@@ -1252,6 +1271,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin?.enable?.()
+      this.handleScrollerPluginStateChange(plugin, true)
     })
     return this
   }
@@ -1264,6 +1284,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin?.disable?.()
+      this.handleScrollerPluginStateChange(plugin, false)
     })
     return this
   }
@@ -1281,6 +1302,7 @@ export class Graph extends Basecoat<EventArgs> {
     const aboutToChangePlugins = this.getPlugins(postPlugins)
     aboutToChangePlugins?.forEach((plugin) => {
       plugin.dispose()
+      this.handleScrollerPluginStateChange(plugin, false)
       this.installedPlugins.delete(plugin)
     })
     return this
