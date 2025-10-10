@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { Dom } from '../../src/common'
 import { VirtualRenderManager } from '../../src/graph/virtual-render'
 
 vi.mock('../../src/common', async () => {
@@ -24,6 +25,7 @@ describe('VirtualRenderManager', () => {
       getGraphArea: vi.fn(() => ({ x: 1, y: 2, width: 100, height: 200 })),
       on: vi.fn(),
       off: vi.fn(),
+      getPlugin: vi.fn(() => undefined),
     }
     manager = new VirtualRenderManager(graph as any)
   })
@@ -96,5 +98,69 @@ describe('VirtualRenderManager', () => {
       expect.any(Function),
       manager,
     )
+  })
+
+  it('should bind to scroller events and scroll handler when scroller present', () => {
+    const container = document.createElement('div')
+    const scrollerMock = {
+      on: vi.fn(),
+      off: vi.fn(),
+      container,
+    }
+    const graph2: any = {
+      options: { virtual: false },
+      renderer: { setRenderArea: vi.fn() },
+      getGraphArea: vi.fn(() => ({ x: 0, y: 0, width: 10, height: 10 })),
+      on: vi.fn(),
+      off: vi.fn(),
+      getPlugin: vi.fn(() => scrollerMock),
+    }
+
+    const onSpy = vi.spyOn(Dom.Event, 'on')
+    const mgr = new VirtualRenderManager(graph2)
+
+    expect(scrollerMock.on).toHaveBeenCalledWith(
+      'pan:start',
+      expect.any(Function),
+      mgr,
+    )
+    expect(scrollerMock.on).toHaveBeenCalledWith(
+      'panning',
+      expect.any(Function),
+      mgr,
+    )
+    expect(scrollerMock.on).toHaveBeenCalledWith(
+      'pan:stop',
+      expect.any(Function),
+      mgr,
+    )
+    expect(onSpy).toHaveBeenCalledWith(
+      container,
+      'scroll',
+      expect.any(Function),
+    )
+  })
+
+  it('onScrollerReady should rebind and reset render area', () => {
+    const containerA = document.createElement('div')
+    const scrollerA = { on: vi.fn(), off: vi.fn(), container: containerA }
+    graph.getPlugin.mockReturnValue(scrollerA)
+    const mgr = new VirtualRenderManager(graph)
+
+    const containerB = document.createElement('div')
+    const scrollerB = { on: vi.fn(), off: vi.fn(), container: containerB }
+    const offSpy = vi.spyOn(scrollerA, 'off')
+    const onSpy = vi.spyOn(scrollerB, 'on')
+    const resetSpy = vi.spyOn(mgr, 'resetRenderArea')
+
+    mgr.onScrollerReady(scrollerB as any)
+
+    expect(offSpy).toHaveBeenCalledWith('pan:start', expect.any(Function), mgr)
+    expect(offSpy).toHaveBeenCalledWith('panning', expect.any(Function), mgr)
+    expect(offSpy).toHaveBeenCalledWith('pan:stop', expect.any(Function), mgr)
+    expect(onSpy).toHaveBeenCalledWith('pan:start', expect.any(Function), mgr)
+    expect(onSpy).toHaveBeenCalledWith('panning', expect.any(Function), mgr)
+    expect(onSpy).toHaveBeenCalledWith('pan:stop', expect.any(Function), mgr)
+    expect(resetSpy).toHaveBeenCalled()
   })
 })
