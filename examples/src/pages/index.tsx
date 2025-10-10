@@ -187,6 +187,10 @@ const dataSource = [
     example: 'history',
     description: '时光回溯',
   },
+  {
+    example: 'virtual-render',
+    description: '虚拟渲染',
+  },
 ].map((item, index) => ({ key: index, ...item }))
 
 const columns = [
