@@ -45,6 +45,7 @@ import { ExportExample } from './pages/plugins/export'
 import { TransitionExample } from './pages/animation/transition'
 import { HistoryExample } from './pages/history'
 import { SegmentsExample } from './pages/edge/tool/segments'
+import { GraphFromJSONExample } from './pages/graph/from-json'
 import { VirtualRenderExample } from './pages/virtual-render'
 import './App.less'
 
@@ -66,6 +67,7 @@ function App() {
       <Route path="/ports/connected" element={<PortsConnectedExample />} />
       <Route path="/edge" element={<EdgeExample />} />
       <Route path="/router" element={<RouterExample />} />
+      <Route path="/graph/from-json" element={<GraphFromJSONExample />} />
       <Route path="/edge/tool/arrowhead" element={<ToolArrowheadExample />} />
       <Route path="/edge/tool/button" element={<ToolButtonExample />} />
       <Route path="/edge/tool/segments" element={<SegmentsExample />} />

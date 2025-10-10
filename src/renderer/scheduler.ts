@@ -56,11 +56,16 @@ export class Scheduler extends Disposable {
     this.model.off('cell:change:visible', this.onCellVisibleChanged, this)
   }
 
-  protected onModelReseted({ options }: Model.EventArgs['reseted']) {
-    this.queue.clearJobs()
-    this.removeZPivots()
-    this.resetViews()
-    const cells = this.model.getCells()
+  protected onModelReseted({ options, previous }: Model.EventArgs['reseted']) {
+    let cells = this.model.getCells()
+    if (!options?.diff) {
+      this.queue.clearJobs()
+      this.removeZPivots()
+      this.resetViews()
+    } else {
+      const previousSet = new Set(previous)
+      cells = cells.filter((cell) => !previousSet.has(cell))
+    }
     this.renderViews(cells, { ...options, queue: cells.map((cell) => cell.id) })
   }
 

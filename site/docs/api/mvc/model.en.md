@@ -695,4 +695,4 @@ fromJSON(
 ): this
 ```
 
-When `options.silent` is `true`, it does not trigger `cell:added`, `node:added`, and `edge:added` events or canvas redrawing.
+When `options.silent` is `true`, it does not trigger `cell:added`, `node:added`, and `edge:added` events or canvas redrawing, when `options.diff` is `true`, will incremental updates by `id`.

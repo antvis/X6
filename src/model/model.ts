@@ -1290,7 +1290,26 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   fromJSON(data: Model.FromJSONData, options: Model.FromJSONOptions = {}) {
-    const cells = this.parseJSON(data)
+    let cells: Cell[] = []
+    if (!options.diff) {
+      cells = this.parseJSON(data)
+    } else {
+      const {
+        nodes = [],
+        edges = [],
+        ...rest
+      } = data as {
+        nodes?: Node.Metadata[]
+        edges?: Edge.Metadata[]
+      }
+      const updateNodes = nodes.filter((node) => !this.nodes[node.id]) || []
+      const updateEdges = edges.filter((edge) => !this.edges[edge.id]) || []
+      cells = this.parseJSON({
+        ...rest,
+        nodes: updateNodes,
+        edges: updateEdges,
+      })
+    }
     this.resetCells(cells, options)
     return this
   }
@@ -1366,7 +1385,10 @@ export namespace Model {
   export interface SetOptions extends Collection.SetOptions {}
   export interface AddOptions extends Collection.AddOptions {}
   export interface RemoveOptions extends Collection.RemoveOptions {}
-  export interface FromJSONOptions extends Collection.SetOptions {}
+  export interface FromJSONOptions extends Collection.SetOptions {
+    // whether to perform a diff update
+    diff?: boolean
+  }
 
   export type FromJSONData =
     | (Node.Metadata | Edge.Metadata)[]
