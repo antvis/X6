@@ -1,13 +1,23 @@
 import React from 'react'
-import { Button } from 'antd'
+import { Button, Space } from 'antd'
 import { Graph, History } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 
-export class UndoExample extends React.Component<Example.Props, Example.State> {
+interface UndoExampleProps {}
+
+interface UndoExampleState {
+  canUndo: boolean
+  canRedo: boolean
+}
+
+export class UndoExample extends React.Component<
+  UndoExampleProps,
+  UndoExampleState
+> {
   private container!: HTMLDivElement
-  private history: History
+  private history!: History
 
-  state: Example.State = {
+  state: UndoExampleState = {
     canRedo: false,
     canUndo: false,
   }
@@ -79,27 +89,17 @@ export class UndoExample extends React.Component<Example.Props, Example.State> {
       <div className="x6-graph-wrap">
         <h1>Default Settings</h1>
         <div className="x6-graph-tools">
-          <Button.Group>
+          <Space.Compact>
             <Button onClick={this.onUndo} disabled={!this.state.canUndo}>
               Undo
             </Button>
             <Button onClick={this.onRedo} disabled={!this.state.canRedo}>
               Redo
             </Button>
-          </Button.Group>
+          </Space.Compact>
         </div>
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
-  }
-}
-
-// eslint-disable-next-line
-export namespace Example {
-  export interface Props {}
-
-  export interface State {
-    canUndo: boolean
-    canRedo: boolean
   }
 }

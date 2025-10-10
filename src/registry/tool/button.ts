@@ -62,10 +62,16 @@ export class Button extends ToolItem<EdgeView | NodeView, Options> {
     x = NumberExt.normalizePercentage(x, bbox.width)
     y = NumberExt.normalizePercentage(y, bbox.height)
 
-    let matrix = Dom.createSVGMatrix().translate(
-      bbox.x + bbox.width / 2,
-      bbox.y + bbox.height / 2,
-    )
+    let matrix = Dom.createSVGMatrix()
+
+    if (this.parent.options.local) {
+      matrix = matrix.translate(bbox.width / 2, bbox.height / 2)
+    } else {
+      matrix = matrix.translate(
+        bbox.x + bbox.width / 2,
+        bbox.y + bbox.height / 2,
+      )
+    }
 
     if (rotate) {
       matrix = matrix.rotate(angle)
@@ -148,35 +154,38 @@ interface Options extends ToolItemOptions {
   ) => any
 }
 
-export const Remove = Button.define<Options>({
-  name: 'button-remove',
-  markup: [
-    {
-      tagName: 'circle',
-      selector: 'button',
-      attrs: {
-        r: 7,
-        fill: '#FF1D00',
-        cursor: 'pointer',
+export class Remove extends Button {
+  public static defaults: Options = {
+    ...Button.getDefaults(),
+    name: 'button-remove',
+    markup: [
+      {
+        tagName: 'circle',
+        selector: 'button',
+        attrs: {
+          r: 7,
+          fill: '#FF1D00',
+          cursor: 'pointer',
+        },
       },
-    },
-    {
-      tagName: 'path',
-      selector: 'icon',
-      attrs: {
-        d: 'M -3 -3 3 3 M -3 3 3 -3',
-        fill: 'none',
-        stroke: '#FFFFFF',
-        'stroke-width': 2,
-        'pointer-events': 'none',
+      {
+        tagName: 'path',
+        selector: 'icon',
+        attrs: {
+          d: 'M -3 -3 3 3 M -3 3 3 -3',
+          fill: 'none',
+          stroke: '#FFFFFF',
+          'stroke-width': 2,
+          'pointer-events': 'none',
+        },
       },
+    ],
+    distance: 60,
+    offset: 0,
+    useCellGeometry: true,
+    onClick({ view, btn }) {
+      btn.parent.remove()
+      view.cell.remove({ ui: true, toolId: btn.cid })
     },
-  ],
-  distance: 60,
-  offset: 0,
-  useCellGeometry: true,
-  onClick({ view, btn }) {
-    btn.parent.remove()
-    view.cell.remove({ ui: true, toolId: btn.cid })
-  },
-})
+  }
+}

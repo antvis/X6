@@ -1,10 +1,10 @@
 import React from 'react'
 import { Graph, Node, Dnd } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 
 export class DndExample extends React.Component {
   private graph!: Graph
-  private dnd: Dnd
+  private dnd!: Dnd
   private container!: HTMLDivElement
 
   componentDidMount() {

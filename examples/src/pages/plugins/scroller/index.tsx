@@ -1,16 +1,16 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph, Export, Selection, MiniMap, Scroller } from '@antv/x6'
-import '../index.less'
+import '../../index.less'
 import './index.less'
 
 export class ScrollerExample extends React.Component {
   private graph!: Graph
-  private graphContainer: HTMLDivElement
-  private minimapContainer: HTMLDivElement
-  private scroller: Scroller
-  private selection: Selection
-  private exportInstance: Export
+  private graphContainer!: HTMLDivElement
+  private minimapContainer!: HTMLDivElement
+  private scroller!: Scroller
+  private selection!: Selection
+  private exportInstance!: Export
 
   componentDidMount() {
     this.graph = new Graph({

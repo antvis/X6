@@ -16,6 +16,7 @@ export class CellEditor extends ToolItem<
     events: {
       mousedown: 'onMouseDown',
       touchstart: 'onMouseDown',
+      mouseleave: 'onMouseLeave',
     },
     documentEvents: {
       mouseup: 'onDocumentMouseUp',
@@ -174,14 +175,22 @@ export class CellEditor extends ToolItem<
     style.transform = `scale(${scale.sx}, ${scale.sy}) translate(-50%, -50%)`
   }
 
+  updateCell() {
+    const value = this.editor.innerText.replace(/\n$/, '') || ''
+    // set value, when value is null, we will remove label in edge
+    this.setCellText(value !== '' ? value : null)
+    // remove tool
+    this.removeElement()
+  }
+
   onDocumentMouseUp(e: Dom.MouseDownEvent) {
     if (this.editor && e.target !== this.editor) {
-      const value = this.editor.innerText.replace(/\n$/, '') || ''
-      // set value, when value is null, we will remove label in edge
-      this.setCellText(value !== '' ? value : null)
-      // remove tool
-      this.removeElement()
+      this.updateCell()
     }
+  }
+
+  onMouseLeave() {
+    if (this.editor) this.updateCell()
   }
 
   onCellDblClick({ e }: { e: Dom.DoubleClickEvent }) {
@@ -324,25 +333,37 @@ interface CellEditorOptions extends ToolItemOptions {
     | string
 }
 
-export const NodeEditor = CellEditor.define<CellEditorOptions>({
-  attrs: {
-    fontSize: 14,
-    fontFamily: 'Arial, helvetica, sans-serif',
-    color: '#000',
-    backgroundColor: '#fff',
-  },
-  getText: 'text/text',
-  setText: 'text/text',
-})
+export class NodeEditor extends CellEditor {
+  public static defaults: CellEditorOptions = ObjectExt.merge(
+    {},
+    CellEditor.defaults,
+    {
+      attrs: {
+        fontSize: 14,
+        fontFamily: 'Arial, helvetica, sans-serif',
+        color: '#000',
+        backgroundColor: '#fff',
+      },
+      getText: 'text/text',
+      setText: 'text/text',
+    },
+  )
+}
 
-export const EdgeEditor = CellEditor.define<CellEditorOptions>({
-  attrs: {
-    fontSize: 14,
-    fontFamily: 'Arial, helvetica, sans-serif',
-    color: '#000',
-    backgroundColor: '#fff',
-  },
-  labelAddable: true,
-  getText: 'label/text',
-  setText: 'label/text',
-})
+export class EdgeEditor extends CellEditor {
+  public static defaults: CellEditorOptions = ObjectExt.merge(
+    {},
+    CellEditor.defaults,
+    {
+      attrs: {
+        fontSize: 14,
+        fontFamily: 'Arial, helvetica, sans-serif',
+        color: '#000',
+        backgroundColor: '#fff',
+      },
+      labelAddable: true,
+      getText: 'label/text',
+      setText: 'label/text',
+    },
+  )
+}
