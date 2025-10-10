@@ -1385,7 +1385,10 @@ export namespace Model {
   export interface SetOptions extends Collection.SetOptions {}
   export interface AddOptions extends Collection.AddOptions {}
   export interface RemoveOptions extends Collection.RemoveOptions {}
-  export interface FromJSONOptions extends Collection.SetOptions {}
+  export interface FromJSONOptions extends Collection.SetOptions {
+    // whether to perform a diff update
+    diff?: boolean
+  }
 
   export type FromJSONData =
     | (Node.Metadata | Edge.Metadata)[]
