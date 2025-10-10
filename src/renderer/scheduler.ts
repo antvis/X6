@@ -153,6 +153,23 @@ export class Scheduler extends Disposable {
 
   setRenderArea(area?: Rectangle) {
     this.renderArea = area
+
+    // 当可视渲染区域变化时，卸载不在区域内且已挂载的视图
+    Object.values(this.views).forEach((viewItem) => {
+      if (!viewItem) return
+      const { view } = viewItem
+      if (viewItem.state === Scheduler.ViewState.MOUNTED) {
+        if (!this.isUpdatable(view)) {
+          // 卸载 DOM
+          view.remove()
+          // 切换到 WAITING 状态，等待重新进入区域时再插入
+          viewItem.state = Scheduler.ViewState.WAITING
+          // 确保重新进入可视区域后会重新插入
+          viewItem.flag |= Scheduler.FLAG_INSERT
+        }
+      }
+    })
+
     this.flushWaitingViews()
   }
 
@@ -229,11 +246,19 @@ export class Scheduler extends Disposable {
       result = this.updateView(view, flag, options)
       viewItem.flag = result
     } else {
+      // 视图不在当前可渲染区域内
       if (viewItem.state === Scheduler.ViewState.MOUNTED) {
-        result = this.updateView(view, flag, options)
-        viewItem.flag = result
-      } else {
+        // 将已挂载但不在可视区域的视图从 DOM 中卸载
+        view.remove()
+        // 标记为 WAITING 状态，以便在可视区域变化时重新渲染
         viewItem.state = Scheduler.ViewState.WAITING
+        // 确保重新进入可视区域时能够重新插入到 DOM
+        viewItem.flag = flag | Scheduler.FLAG_INSERT
+        result = 0
+      } else {
+        // 尚未挂载，保持 WAITING 状态，并确保重新进入可视区域时会插入
+        viewItem.state = Scheduler.ViewState.WAITING
+        viewItem.flag = flag | Scheduler.FLAG_INSERT
       }
     }
 
@@ -512,6 +537,14 @@ export class Scheduler extends Disposable {
 
     if (view.isEdgeView()) {
       const edge = view.cell
+      const intersects = this.renderArea
+        ? this.renderArea.isIntersectWithRect(edge.getBBox())
+        : true
+
+      if (this.graph.options.virtual) {
+        return intersects
+      }
+
       const sourceCell = edge.getSourceCell()
       const targetCell = edge.getTargetCell()
       if (this.renderArea && sourceCell && targetCell) {
