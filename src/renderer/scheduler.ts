@@ -250,16 +250,12 @@ export class Scheduler extends Disposable {
       if (viewItem.state === Scheduler.ViewState.MOUNTED) {
         // 将已挂载但不在可视区域的视图从 DOM 中卸载
         view.remove()
-        // 标记为 WAITING 状态，以便在可视区域变化时重新渲染
-        viewItem.state = Scheduler.ViewState.WAITING
-        // 确保重新进入可视区域时能够重新插入到 DOM
-        viewItem.flag = flag | Scheduler.FLAG_INSERT
         result = 0
-      } else {
-        // 尚未挂载，保持 WAITING 状态，并确保重新进入可视区域时会插入
-        viewItem.state = Scheduler.ViewState.WAITING
-        viewItem.flag = flag | Scheduler.FLAG_INSERT
       }
+      // 标记为 WAITING 状态，以便在可视区域变化时重新渲染
+      viewItem.state = Scheduler.ViewState.WAITING
+      // 确保重新进入可视区域时能够重新插入到 DOM
+      viewItem.flag = flag | Scheduler.FLAG_INSERT
     }
 
     if (result) {
