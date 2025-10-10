@@ -62,10 +62,16 @@ export class Button extends ToolItem<EdgeView | NodeView, Options> {
     x = NumberExt.normalizePercentage(x, bbox.width)
     y = NumberExt.normalizePercentage(y, bbox.height)
 
-    let matrix = Dom.createSVGMatrix().translate(
-      bbox.x + bbox.width / 2,
-      bbox.y + bbox.height / 2,
-    )
+    let matrix = Dom.createSVGMatrix()
+
+    if (this.parent.options.local) {
+      matrix = matrix.translate(bbox.width / 2, bbox.height / 2)
+    } else {
+      matrix = matrix.translate(
+        bbox.x + bbox.width / 2,
+        bbox.y + bbox.height / 2,
+      )
+    }
 
     if (rotate) {
       matrix = matrix.rotate(angle)
