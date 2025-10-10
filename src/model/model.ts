@@ -1298,8 +1298,8 @@ export class Model extends Basecoat<Model.EventArgs> {
         nodes?: Node.Metadata[]
         edges?: Edge.Metadata[]
       }
-      const updateNodes = nodes.filter((node) => !this.nodes[node.id])
-      const updateEdges = edges.filter((edge) => !this.edges[edge.id])
+      const updateNodes = nodes.filter((node) => !this.nodes[node.id]) || []
+      const updateEdges = edges.filter((edge) => !this.edges[edge.id]) || []
       cells = this.parseJSON({
         ...rest,
         nodes: updateNodes,

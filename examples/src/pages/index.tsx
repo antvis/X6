@@ -183,6 +183,11 @@ const dataSource = [
     example: 'history',
     description: '时光回溯',
   },
+  // ======== other ========
+  {
+    example: 'graph/from-json',
+    description: '增量更新',
+  },
 ].map((item, index) => ({ key: index, ...item }))
 
 const columns = [

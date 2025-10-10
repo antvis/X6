@@ -63,9 +63,8 @@ export class Scheduler extends Disposable {
       this.removeZPivots()
       this.resetViews()
     } else {
-      cells = cells.filter((cell) => {
-        return !previous || previous.indexOf(cell) === -1
-      })
+      const previousSet = new Set(previous)
+      cells = cells.filter((cell) => !previousSet.has(cell))
     }
     this.renderViews(cells, { ...options, queue: cells.map((cell) => cell.id) })
   }
