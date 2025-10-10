@@ -1294,7 +1294,11 @@ export class Model extends Basecoat<Model.EventArgs> {
     if (!options.diff) {
       cells = this.parseJSON(data)
     } else {
-      const { nodes, edges, ...rest } = data as {
+      const {
+        nodes = [],
+        edges = [],
+        ...rest
+      } = data as {
         nodes?: Node.Metadata[]
         edges?: Edge.Metadata[]
       }
