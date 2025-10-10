@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Transform } from '@antv/x6'
 import '../index.less'
 
 export class ToolsCleanExample extends React.Component {
@@ -15,13 +15,30 @@ export class ToolsCleanExample extends React.Component {
       },
       panning: true,
     })
+
+    graph.use(new Transform({ rotating: true }))
+
     const source = graph.addNode({
       x: 40,
       y: 40,
       width: 80,
       height: 30,
       label: 'Source',
-      tools: ['button-remove'],
+      tools: [
+        'button-remove',
+        {
+          name: 'boundary',
+          args: {
+            padding: 5,
+            attrs: {
+              fill: '#7c68fc',
+              stroke: '#333',
+              'stroke-width': 1,
+              'fill-opacity': 0.2,
+            },
+          },
+        },
+      ],
     })
 
     const target = graph.addNode({
@@ -35,8 +52,20 @@ export class ToolsCleanExample extends React.Component {
           {
             name: 'button-remove',
             args: {
-              x: '100%',
+              x: 80,
               y: 0,
+            },
+          },
+          {
+            name: 'boundary',
+            args: {
+              padding: 5,
+              attrs: {
+                fill: '#7c68fc',
+                stroke: '#333',
+                'stroke-width': 1,
+                'fill-opacity': 0.2,
+              },
             },
           },
         ],

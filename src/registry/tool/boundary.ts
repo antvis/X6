@@ -39,7 +39,16 @@ export class Boundary extends ToolItem<EdgeView | NodeView, Options> {
     const options = this.options
     const { useCellGeometry, rotate } = options
     const padding = NumberExt.normalizeSides(options.padding)
-    let bbox = Util.getViewBBox(view, useCellGeometry).moveAndExpand({
+    let bbox = Util.getViewBBox(view, useCellGeometry)
+
+    if (this.parent.options.local) {
+      bbox = bbox.translate({
+        x: -bbox.x,
+        y: -bbox.y,
+      })
+    }
+
+    bbox = bbox.moveAndExpand({
       x: -padding.left,
       y: -padding.top,
       width: padding.left + padding.right,
@@ -49,13 +58,13 @@ export class Boundary extends ToolItem<EdgeView | NodeView, Options> {
     const cell = view.cell
     if (cell.isNode()) {
       const angle = cell.getAngle()
-      if (angle) {
-        if (rotate) {
+      if (angle != null) {
+        if (rotate && !this.parent.options.local) {
           const origin = cell.getBBox().getCenter()
           Dom.rotate(this.container, angle, origin.x, origin.y, {
             absolute: true,
           })
-        } else {
+        } else if (!rotate) {
           bbox = bbox.bbox(angle)
         }
       }
