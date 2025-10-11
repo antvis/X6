@@ -94,7 +94,14 @@ export class VirtualRenderManager extends Base {
   resetRenderArea() {
     if (this.options.virtual) {
       const renderArea = this.graph.getGraphArea()
-      this.graph.renderer.setRenderArea(renderArea)
+      if (renderArea) {
+        // 在开启虚拟渲染时，为可视区域增加固定缓冲边距
+        const VIRTUAL_RENDER_MARGIN = 120
+        const eff = renderArea.clone()
+        eff.inflate(VIRTUAL_RENDER_MARGIN, VIRTUAL_RENDER_MARGIN)
+        this.graph.renderer.setRenderArea(eff)
+        return
+      }
     }
   }
 

@@ -1,0 +1,93 @@
+@pulse-opacity-max: 1;
+@keyframes x6Pulse {
+  0% {
+    transform: scale(1);
+    opacity: @pulse-opacity-max;
+  }
+  25% {
+    transform: scale(1.06);
+    opacity: @pulse-opacity-max;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75% {
+    transform: scale(0.95);
+    opacity: @pulse-opacity-max;
+  }
+  100% {
+    transform: scale(1);
+    opacity: @pulse-opacity-max;
+  }
+}
+
+@color-breathe-light: 92%;
+@keyframes x6ColorBreathe {
+  0% {
+    fill: hsl(var(--x6-hue), 70%, @color-breathe-light);
+  }
+  50% {
+    fill: hsl(var(--x6-hue), 70%, 82%);
+  }
+  100% {
+    fill: hsl(var(--x6-hue), 70%, @color-breathe-light);
+  }
+}
+
+@keyframes x6StrokeBreathe {
+  0% {
+    stroke-width: 1;
+  }
+  50% {
+    stroke-width: 2.2;
+  }
+  100% {
+    stroke-width: 1;
+  }
+}
+
+@glow-color: rgba(24, 144, 255, 0.6);
+@keyframes x6Glow {
+  0% {
+    filter: drop-shadow(0 0 0px @glow-color);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px @glow-color);
+  }
+  100% {
+    filter: drop-shadow(0 0 0px @glow-color);
+  }
+}
+
+.x6-node-anim {
+  animation: x6Pulse var(--pulse-duration, 1.8s) ease-in-out
+      var(--pulse-delay, 0s) infinite,
+    x6ColorBreathe var(--color-duration, 2.5s) ease-in-out
+      var(--color-delay, 0s) infinite,
+    x6StrokeBreathe var(--stroke-duration, 2.2s) ease-in-out
+      var(--stroke-delay, 0s) infinite,
+    x6Glow var(--glow-duration, 3s) ease-in-out var(--glow-delay, 0s) infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes x6Ants {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+.x6-ants {
+  stroke-dasharray: 6 6;
+  animation: x6Ants 1.5s linear infinite;
+}
+.x6-ants-d0 {
+  animation-delay: 0s;
+}
+.loop-ants (@i) when (@i > 0) {
+  .x6-ants-d@{i} {
+    animation-delay: (0.12s * @i);
+  }
+  .loop-ants(@i - 1);
+}
+.loop-ants(10);
