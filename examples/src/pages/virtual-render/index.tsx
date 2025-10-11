@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Graph, Cell, Scroller } from '@antv/x6'
 import '../index.less'
+import './index.less'
 
 export const VirtualRenderExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -43,6 +44,7 @@ export const VirtualRenderExample: React.FC = () => {
         const x = startX + c * (nodeWidth + gapX)
         const y = startY + r * (nodeHeight + gapY)
         const hue = Math.floor(Math.random() * 360)
+        const delayVariant = Math.floor(Math.random() * 10)
 
         cells.push(
           graph.createNode({
@@ -58,6 +60,12 @@ export const VirtualRenderExample: React.FC = () => {
                 strokeWidth: 1,
                 rx: 4,
                 ry: 4,
+                class: `x6-node-anim`,
+                style: {
+                  '--x6-hue': `${hue}`,
+                  '--pulse-delay': `${(delayVariant * 0.12).toFixed(2)}s`,
+                  '--glow-delay': `${(delayVariant * 0.15).toFixed(2)}s`,
+                },
               },
               label: {
                 fontSize: 10,
@@ -90,6 +98,7 @@ export const VirtualRenderExample: React.FC = () => {
                 line: {
                   stroke: '#A2B1C3',
                   strokeWidth: 1,
+                  class: `x6-ants x6-ants-d${Math.floor(Math.random() * 10)}`,
                 },
               },
             }),
@@ -108,6 +117,7 @@ export const VirtualRenderExample: React.FC = () => {
                 line: {
                   stroke: '#A2B1C3',
                   strokeWidth: 1,
+                  class: `x6-ants x6-ants-d${Math.floor(Math.random() * 10)}`,
                 },
               },
             }),

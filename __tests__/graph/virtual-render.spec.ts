@@ -14,6 +14,28 @@ vi.mock('../../src/common', async () => {
   }
 })
 
+const createRect = (x: number, y: number, width: number, height: number) => ({
+  x,
+  y,
+  width,
+  height,
+  clone() {
+    const eff: any = {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+    }
+    eff.inflate = (dx: number, dy: number) => {
+      eff.x -= dx
+      eff.y -= dy
+      eff.width += dx * 2
+      eff.height += dy * 2
+    }
+    return eff
+  },
+})
+
 describe('VirtualRenderManager', () => {
   let graph: any
   let manager: VirtualRenderManager
@@ -22,7 +44,7 @@ describe('VirtualRenderManager', () => {
     graph = {
       options: { virtual: false },
       renderer: { setRenderArea: vi.fn() },
-      getGraphArea: vi.fn(() => ({ x: 1, y: 2, width: 100, height: 200 })),
+      getGraphArea: vi.fn(() => createRect(1, 2, 100, 200)),
       on: vi.fn(),
       off: vi.fn(),
       getPlugin: vi.fn(() => undefined),
@@ -73,12 +95,14 @@ describe('VirtualRenderManager', () => {
     graph.options.virtual = true
     manager.resetRenderArea()
     expect(graph.getGraphArea).toHaveBeenCalled()
-    expect(graph.renderer.setRenderArea).toHaveBeenCalledWith({
-      x: 1,
-      y: 2,
-      width: 100,
-      height: 200,
-    })
+    expect(graph.renderer.setRenderArea).toHaveBeenCalledWith(
+      expect.objectContaining({
+        x: -119,
+        y: -118,
+        width: 340,
+        height: 440,
+      }),
+    )
   })
 
   it('dispose should stop listening', () => {
@@ -110,7 +134,7 @@ describe('VirtualRenderManager', () => {
     const graph2: any = {
       options: { virtual: false },
       renderer: { setRenderArea: vi.fn() },
-      getGraphArea: vi.fn(() => ({ x: 0, y: 0, width: 10, height: 10 })),
+      getGraphArea: vi.fn(() => createRect(0, 0, 10, 10)),
       on: vi.fn(),
       off: vi.fn(),
       getPlugin: vi.fn(() => scrollerMock),
