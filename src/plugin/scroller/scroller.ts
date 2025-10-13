@@ -741,7 +741,7 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     }
 
     this.beforeManipulation()
-    this.graph.transform.scale(sx, sy)
+    this.graph.transform.scale(sx, sy, cx, cy, false)
     this.centerPoint(cx, cy)
     this.afterManipulation()
 
