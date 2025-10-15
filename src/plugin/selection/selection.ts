@@ -480,42 +480,42 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected prepareTranslatingCache() {
     const selectedNodes = this.collection
       .toArray()
-      .filter((cell) => cell.isNode()) as Node[]
+      .filter((cell): cell is Node => cell.isNode())
     const nodeIdSet = new Set(selectedNodes.map((n) => n.id))
+    const selectedEdges = this.collection
+      .toArray()
+      .filter((cell): cell is Edge => cell.isEdge())
 
-    const edgesToTranslate: Edge[] = []
+    const edgesToTranslateSet = new Set<Edge>()
+    const needsTranslate = (edge: Edge) =>
+      edge.getVertices().length > 0 ||
+      !edge.getSourceCellId() ||
+      !edge.getTargetCellId()
+
     // 邻接边：仅当需要位移（有顶点或点端点）时加入缓存
     this.graph.model.getEdges().forEach((edge) => {
       const srcId = edge.getSourceCellId()
       const tgtId = edge.getTargetCellId()
-      const connectedSelected =
-        (srcId ? nodeIdSet.has(srcId) : false) ||
-        (tgtId ? nodeIdSet.has(tgtId) : false)
-      if (connectedSelected) {
-        const hasVertices = edge.getVertices().length > 0
-        const pointEndpoint = !srcId || !tgtId
-        if (hasVertices || pointEndpoint) {
-          edgesToTranslate.push(edge)
-        }
+      const isConnectedToSelectedNode =
+        (srcId != null && nodeIdSet.has(srcId)) ||
+        (tgtId != null && nodeIdSet.has(tgtId))
+      if (isConnectedToSelectedNode && needsTranslate(edge)) {
+        edgesToTranslateSet.add(edge)
       }
     })
 
     // 选中的边（不一定与选中节点相邻）也需要考虑
-    const selectedEdges = this.collection
-      .toArray()
-      .filter((cell) => cell.isEdge()) as Edge[]
-    const edgeIdSet = new Set(edgesToTranslate.map((e) => e.id))
     selectedEdges.forEach((edge) => {
-      if (!edgeIdSet.has(edge.id)) {
-        const hasVertices = edge.getVertices().length > 0
-        const pointEndpoint = !edge.getSourceCellId() || !edge.getTargetCellId()
-        if (hasVertices || pointEndpoint) {
-          edgesToTranslate.push(edge)
-        }
+      if (needsTranslate(edge)) {
+        edgesToTranslateSet.add(edge)
       }
     })
 
-    this.translatingCache = { selectedNodes, nodeIdSet, edgesToTranslate }
+    this.translatingCache = {
+      selectedNodes,
+      nodeIdSet,
+      edgesToTranslate: Array.from(edgesToTranslateSet),
+    }
   }
 
   protected getSelectionOffset(client: Point, data: TranslatingEventData) {
@@ -704,13 +704,13 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     // 边移动缓存：仅移动需要位移的边（有顶点或点端点）
     const cachedEdges = this.translatingCache?.edgesToTranslate
+    const edgesToTranslate = new Set<Edge>()
     if (cachedEdges) {
       cachedEdges.forEach((edge) => {
-        edge.translate(dx, dy, options)
+        edgesToTranslate.add(edge)
       })
     } else {
       const selectedNodeIdSet = new Set(selectedNodes.map((n) => n.id))
-      const handled = new Set<string>()
       this.graph.model.getEdges().forEach((edge) => {
         const srcId = edge.getSourceCellId()
         const tgtId = edge.getTargetCellId()
@@ -719,9 +719,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         if (srcSelected || tgtSelected) {
           const hasVertices = edge.getVertices().length > 0
           const pointEndpoint = !srcId || !tgtId
-          if ((hasVertices || pointEndpoint) && !handled.has(edge.id)) {
-            handled.add(edge.id)
-            edge.translate(dx, dy, options)
+          if (hasVertices || pointEndpoint) {
+            edgesToTranslate.add(edge)
           }
         }
       })
@@ -730,18 +729,17 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     // 若选择了边（仅边、无节点），确保其也被移动（过滤无顶点且两端为节点的情况）
     const selectedEdges = this.collection
       .toArray()
-      .filter((cell) => cell.isEdge() && !map[cell.id]) as Edge[]
-    const cachedSet = new Set(
-      (this.translatingCache?.edgesToTranslate ?? []).map((e) => e.id),
-    )
+      .filter((cell): cell is Edge => cell.isEdge() && !map[cell.id])
     selectedEdges.forEach((edge) => {
-      if (!cachedSet.has(edge.id)) {
-        const hasVertices = edge.getVertices().length > 0
-        const pointEndpoint = !edge.getSourceCellId() || !edge.getTargetCellId()
-        if (hasVertices || pointEndpoint) {
-          edge.translate(dx, dy, options)
-        }
+      const hasVertices = edge.getVertices().length > 0
+      const pointEndpoint = !edge.getSourceCellId() || !edge.getTargetCellId()
+      if (hasVertices || pointEndpoint) {
+        edgesToTranslate.add(edge)
       }
+    })
+
+    edgesToTranslate.forEach((edge) => {
+      edge.translate(dx, dy, options)
     })
   }
 
