@@ -109,6 +109,7 @@ describe('Graph: 基础节点/边操作', () => {
           stroke: '#5F95FF',
           fill: '#EFF4FF',
           strokeWidth: 1,
+          color: '#000000',
         },
       },
     })
