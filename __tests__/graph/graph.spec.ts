@@ -114,13 +114,18 @@ describe('Graph: 基础节点/边操作', () => {
     })
 
     graph.addEdge({
-      id: 'e1',
-      source: 'a',
-      target: 'b',
+      source: { x: 540, y: 40 },
+      target: { x: 580, y: 180 },
+      vertices: [{ x: 540, y: 140 }],
+      connector: { name: 'smooth' },
       attrs: {
         line: {
-          stroke: '#A2B1C3',
-          strokeWidth: 2,
+          stroke: '#1890ff',
+          strokeDasharray: 5,
+          targetMarker: 'classic',
+          style: {
+            animation: 'ant-line 30s infinite linear',
+          },
         },
       },
     })
