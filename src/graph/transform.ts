@@ -90,14 +90,17 @@ export class TransformManager extends Base {
     return Dom.matrixToScale(this.getMatrix())
   }
 
-  scale(sx: number, sy: number = sx, ox = 0, oy = 0) {
+  scale(sx: number, sy: number = sx, ox = 0, oy = 0, translate = true) {
     sx = this.clampScale(sx) // eslint-disable-line
     sy = this.clampScale(sy) // eslint-disable-line
 
-    if (ox || oy) {
+    if (translate && (ox || oy)) {
       const ts = this.getTranslation()
-      const tx = ts.tx - ox * (sx - 1)
-      const ty = ts.ty - oy * (sy - 1)
+      const scale = this.getScale()
+
+      const tx = ox - (ox - ts.tx) * (sx / scale.sx)
+      const ty = oy - (oy - ts.ty) * (sy / scale.sy)
+
       if (tx !== ts.tx || ty !== ts.ty) {
         this.translate(tx, ty)
       }
@@ -159,16 +162,7 @@ export class TransformManager extends Base {
     sx = this.clampScale(sx)
     sy = this.clampScale(sy)
 
-    if (cx || cy) {
-      const ts = this.getTranslation()
-      const tx = cx - (cx - ts.tx) * (sx / scale.sx)
-      const ty = cy - (cy - ts.ty) * (sy / scale.sy)
-      if (tx !== ts.tx || ty !== ts.ty) {
-        this.translate(tx, ty)
-      }
-    }
-
-    this.scale(sx, sy)
+    this.scale(sx, sy, cx, cy)
 
     return this
   }
