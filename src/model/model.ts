@@ -35,7 +35,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     name: Key,
     args: Model.EventArgs[Key],
   ): this
-  notify(name: Exclude<string, keyof Model.EventArgs>, args: any): this
+  notify(name: Exclude<string, keyof Model.EventArgs>, args: unknown): this
   notify<Key extends keyof Model.EventArgs>(
     name: Key,
     args: Model.EventArgs[Key],
@@ -114,7 +114,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
       const source = cell.getSource() as Edge.TerminalCellData
       const target = cell.getTarget() as Edge.TerminalCellData
-      if (source && source.cell) {
+      if (source?.cell) {
         const cache = this.outgoings[source.cell]
         const index = cache ? cache.indexOf(cellId) : -1
         if (index >= 0) {
@@ -125,7 +125,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         }
       }
 
-      if (target && target.cell) {
+      if (target?.cell) {
         const cache = this.incomings[target.cell]
         const index = cache ? cache.indexOf(cellId) : -1
         if (index >= 0) {
@@ -157,14 +157,16 @@ export class Model extends Basecoat<Model.EventArgs> {
     this.edges = {}
     this.outgoings = {}
     this.incomings = {}
-    cells.forEach((cell) => this.onCellAdded(cell))
+    cells.forEach((cell) => {
+      this.onCellAdded(cell)
+    })
   }
 
   protected onEdgeTerminalChanged(edge: Edge, type: Edge.TerminalType) {
     const ref = type === 'source' ? this.outgoings : this.incomings
     const prev = edge.previous<Edge.TerminalCellLooseData>(type)
 
-    if (prev && prev.cell) {
+    if (prev?.cell) {
       const cellId = Cell.isCell(prev.cell) ? prev.cell.id : prev.cell
       const cache = ref[cellId]
       const index = cache ? cache.indexOf(edge.id) : -1
@@ -177,7 +179,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
 
     const terminal = edge.getTerminal(type) as Edge.TerminalCellLooseData
-    if (terminal && terminal.cell) {
+    if (terminal?.cell) {
       const terminalId = Cell.isCell(terminal.cell)
         ? terminal.cell.id
         : terminal.cell
@@ -320,9 +322,9 @@ export class Model extends Basecoat<Model.EventArgs> {
       return this.batchUpdate(
         'update',
         () => {
-          Object.entries(prop).forEach(([key, val]) =>
-            existing.setProp(key, val, options),
-          )
+          Object.entries(prop).forEach(([key, val]) => {
+            existing.setProp(key, val, options)
+          })
           return true
         },
         prop,
@@ -501,7 +503,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return cellIds
       ? cellIds
           .map((id) => this.getCell(id) as Edge)
-          .filter((cell) => cell && cell.isEdge())
+          .filter((cell) => cell?.isEdge())
       : null
   }
 
@@ -514,7 +516,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return cellIds
       ? cellIds
           .map((id) => this.getCell(id) as Edge)
-          .filter((cell) => cell && cell.isEdge())
+          .filter((cell) => cell?.isEdge())
       : null
   }
 
@@ -569,7 +571,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         const terminal = isOutgoing
           ? cell.getTargetCell()
           : cell.getSourceCell()
-        if (terminal && terminal.isEdge()) {
+        if (terminal?.isEdge()) {
           if (!cache[terminal.id]) {
             result.push(terminal)
             collect(terminal, isOutgoing)
@@ -745,13 +747,13 @@ export class Model extends Basecoat<Model.EventArgs> {
     if (cell.isEdge()) {
       if (incoming) {
         const sourceCell = cell.getSourceCell()
-        if (sourceCell && sourceCell.isNode() && !map[sourceCell.id]) {
+        if (sourceCell?.isNode() && !map[sourceCell.id]) {
           map[sourceCell.id] = sourceCell
         }
       }
       if (outgoing) {
         const targetCell = cell.getTargetCell()
-        if (targetCell && targetCell.isNode() && !map[targetCell.id]) {
+        if (targetCell?.isNode() && !map[targetCell.id]) {
           map[targetCell.id] = targetCell
         }
       }
@@ -937,7 +939,9 @@ export class Model extends Basecoat<Model.EventArgs> {
       collect(cell)
       if (options.deep) {
         const descendants = cell.getDescendants({ deep: true })
-        descendants.forEach((descendant) => collect(descendant))
+        descendants.forEach((descendant) => {
+          collect(descendant)
+        })
       }
     })
 
@@ -1041,9 +1045,10 @@ export class Model extends Basecoat<Model.EventArgs> {
         : Rectangle.create(x)
     const opts =
       typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
-    const strict = opts && opts.strict
+    const strict = opts?.strict
     return this.getNodes().filter((node) => {
-      const bbox = node.getBBox()
+      const angle = node.angle()
+      const bbox = node.getBBox().bbox(angle)
       return strict ? rect.containsRect(bbox) : rect.isIntersectWithRect(bbox)
     })
   }
@@ -1076,7 +1081,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         : Rectangle.create(x)
     const opts =
       typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
-    const strict = opts && opts.strict
+    const strict = opts?.strict
     return this.getEdges().filter((edge) => {
       const bbox = edge.getBBox()
       if (bbox.width === 0) {
@@ -1235,8 +1240,10 @@ export class Model extends Basecoat<Model.EventArgs> {
       path.push(targetId)
     }
 
-    while ((targetId = previous[targetId])) {
-      path.unshift(targetId)
+    while (previous[targetId]) {
+      const prev = previous[targetId]
+      path.unshift(prev)
+      targetId = prev
     }
     return path
   }
@@ -1251,7 +1258,9 @@ export class Model extends Basecoat<Model.EventArgs> {
   translate(tx: number, ty: number, options: Cell.TranslateOptions) {
     this.getCells()
       .filter((cell) => !cell.hasParent())
-      .forEach((cell) => cell.translate(tx, ty, options))
+      .forEach((cell) => {
+        cell.translate(tx, ty, options)
+      })
 
     return this
   }
@@ -1271,7 +1280,9 @@ export class Model extends Basecoat<Model.EventArgs> {
       const sx = Math.max(width / bbox.width, 0)
       const sy = Math.max(height / bbox.height, 0)
       const origin = bbox.getOrigin()
-      cells.forEach((cell) => cell.scale(sx, sy, origin, options))
+      cells.forEach((cell) => {
+        cell.scale(sx, sy, origin, options)
+      })
     }
 
     return this
@@ -1357,7 +1368,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 export namespace Model {
   export const toStringTag = `X6.${Model.name}`
 
-  export function isModel(instance: any): instance is Model {
+  export function isModel(instance: unknown): instance is Model {
     if (instance == null) {
       return false
     }
@@ -1412,7 +1423,7 @@ export namespace Model {
     this: Model,
     cell: Cell,
     distance: number,
-  ) => any
+  ) => boolean | void
 
   export interface GetNeighborsOptions {
     deep?: boolean
