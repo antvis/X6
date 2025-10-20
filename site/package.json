@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites",
-  "version": "1.6.5",
+  "version": "2.19.0",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "prestart": "node ../scripts/check-node-version.js",
