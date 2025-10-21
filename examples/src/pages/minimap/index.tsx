@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { Radio } from 'antd'
 import { Graph, MiniMap, Scroller } from '@antv/x6'
+import { Radio } from 'antd'
+import * as React from 'react'
 import { SimpleNodeView } from './simple-view'
 import './index.less'
 
@@ -19,6 +19,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 600,
       height: 320,
+      panning: false,
       background: {
         color: '#F2F7FA',
       },

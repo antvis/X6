@@ -20,7 +20,7 @@ new Graph(options: Options)
 | height | `number` |  | 画布高度，默认使用容器高度。 | - |
 | scaling | `{ min?: number, max?: number }` |  | 画布的最小最大缩放级别。 | `{ min: 0.01, max: 16 }` |
 | [autoResize](/tutorial/basic/graph#画布大小) | `boolean \| Element \| Document` |  | 是否监听容器大小改变，并自动更新画布大小。 | `false` |
-| [panning](/api/graph/panning) | `boolean \| PanningManager.Options` |  | 画布是否可以拖拽平移，默认禁用。 | `false` |
+| [panning](/api/graph/panning) | `boolean \| PanningManager.Options` |  | 画布是否可以拖拽平移，默认启用。 | `true` |
 | [mousewheel](/api/graph/mousewheel) | `boolean \| MouseWheel.Options` |  | 鼠标滚轮缩放，默认禁用。 | `false` |
 | [grid](/api/graph/grid) | `boolean \| number \| GridManager.Options` |  | 网格，默认使用 `10px` 的网格，但不绘制网格背景。 | `false` |
 | [background](/api/graph/background) | `false \| BackgroundManager.Options` |  | 背景，默认不绘制背景。 | `false` |

@@ -387,6 +387,12 @@ export class Scroller
       this.updateClassName(true)
       this.scrollerImpl.startPanning(e)
       this.scrollerImpl.once('pan:stop', () => this.updateClassName(false))
+
+      if (this.graph.panning.pannable) {
+        console.warn(
+          'Detected that graph.panning and scroll panning are both enabled, which may cause unexpected behavior.',
+        )
+      }
     }
   }
 

@@ -72,6 +72,7 @@ export default class Example extends React.Component {
 
     const graph = new Graph({
       container: this.container,
+      panning: false,
       background: {
         color: '#F2F7FA',
       },

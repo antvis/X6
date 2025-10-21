@@ -1,5 +1,5 @@
-import { ObjectExt, KeyValue, Interp, Timing } from '../common'
-import { Cell } from './cell'
+import { Interp, type KeyValue, ObjectExt, Timing } from '../common'
+import type { Cell } from './cell'
 
 export class Animation {
   protected readonly ids: { [path: string]: number } = {}

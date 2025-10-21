@@ -1,5 +1,5 @@
-import React from 'react'
 import { SplitBox } from '@antv/x6-react-components'
+import React from 'react'
 import '@antv/x6-react-components/es/split-box/style/index.css'
 import { Graph, Scroller } from '@antv/x6'
 import '../index.less'

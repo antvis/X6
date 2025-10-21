@@ -1,5 +1,5 @@
-import { ObjectExt } from '../common'
 import type { Dom, Nilable } from '../common'
+import { ObjectExt } from '../common'
 import { Config } from '../config'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
@@ -417,7 +417,7 @@ export namespace Options {
     background: false,
 
     panning: {
-      enabled: false,
+      enabled: true,
       eventTypes: ['leftMouseDown'],
     },
     mousewheel: {

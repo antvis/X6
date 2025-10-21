@@ -1,6 +1,6 @@
-import React from 'react'
+import { Export, Graph, MiniMap, Scroller, Selection } from '@antv/x6'
 import { Button } from 'antd'
-import { Graph, Export, Selection, MiniMap, Scroller } from '@antv/x6'
+import React from 'react'
 import '../../index.less'
 import './index.less'
 
@@ -23,6 +23,7 @@ export class ScrollerExample extends React.Component {
       grid: {
         visible: true,
       },
+      panning: false,
       mousewheel: {
         enabled: true,
         // fixed: false,

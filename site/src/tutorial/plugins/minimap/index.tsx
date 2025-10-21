@@ -19,6 +19,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 600,
       height: 320,
+      panning: false,
       background: {
         color: '#F2F7FA',
       },
