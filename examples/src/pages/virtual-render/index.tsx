@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react'
-import { Graph, Cell, Scroller } from '@antv/x6'
+import { type Cell, Graph, Scroller } from '@antv/x6'
+import type React from 'react'
+import { useEffect, useRef } from 'react'
 import '../index.less'
 import './index.less'
 
@@ -16,6 +17,7 @@ export const VirtualRenderExample: React.FC = () => {
       height: 800,
       grid: true,
       mousewheel: true,
+      panning: false,
       virtual: true,
     })
 
