@@ -110,6 +110,7 @@ export class MiniMap extends View implements Graph.Plugin {
       grid: false,
       background: false,
       embedding: false,
+      panning: false,
     }
 
     this.targetGraph = this.options.createGraph
