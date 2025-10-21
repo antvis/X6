@@ -16,12 +16,12 @@ redirect_from:
 普通画布(未使用 `scroller` 插件)通过开启 `panning` 选项来支持拖拽平移。
 
 :::warning{title=注意}
-不要同时使用 `scroller` 和 `panning`，因为两种形式在交互上有冲突。 
+不要同时使用 `scroller` 和 `panning`，因为两种形式在交互上有冲突。从 2.19.0 版本开始，`panning` 配置默认值为 `true` 。
 :::
 
 ```ts
 const graph = new Graph({
-  panning: true,
+  panning: true, // 不传该选项时，默认值也为 true
 })
 
 // 等同于

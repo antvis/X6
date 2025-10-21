@@ -33,6 +33,7 @@ function createMockGraph() {
     container,
     view: { grid: document.createElement('div'), background: null },
     grid: { update: vi.fn(), draw: vi.fn(), clear: vi.fn() }, // ✅ mock grid
+    panning: { pannable: true },
     transform: {
       getScale: () => ({ sx: 1, sy: 1 }),
       resize: vi.fn(),
