@@ -1,2 +1,4 @@
-export * as Interp from './interp'
-export * as Timing from './timing'
+import * as Interp from './interp'
+import * as Timing from './timing'
+
+export { Interp, Timing }
