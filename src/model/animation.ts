@@ -35,28 +35,62 @@ export class Animation {
     let startTime = 0
     const key = Array.isArray(path) ? path.join(delim) : path
     const paths = Array.isArray(path) ? path : path.split(delim)
-    const iterate = () => {
-      const now = new Date().getTime()
-      if (startTime === 0) {
-        startTime = now
-      }
 
-      const elaspe = now - startTime
-      let progress = elaspe / localOptions.duration
-      if (progress < 1) {
-        this.ids[key] = requestAnimationFrame(iterate)
+    const calculateDirectionProgress = (
+      timeFraction: number,
+      iterationIndex: number,
+    ) => {
+      const isOdd = iterationIndex % 2 === 1
+      const dir = localOptions.direction
+
+      if (
+        dir === 'normal' ||
+        (dir === 'alternate' && !isOdd) ||
+        (dir === 'alternate-reverse' && isOdd)
+      ) {
+        return timeFraction
       } else {
-        progress = 1
+        return 1 - timeFraction
       }
+    }
 
+    const updateProgressState = (progress: number) => {
       const currentValue = interpolate(timing(progress)) as T
       this.cell.setPropByPath(paths, currentValue)
 
       if (options.progress) {
         options.progress({ progress, currentValue, ...this.getArgs<T>(key) })
       }
+    }
 
-      if (progress === 1) {
+    const iterate = () => {
+      const now = new Date().getTime()
+      if (startTime === 0) {
+        startTime = now
+      }
+
+      const elapsed = now - startTime
+      const iterationIndex = Math.floor(elapsed / localOptions.duration)
+      const localTime = elapsed % localOptions.duration
+      const timeFraction = localTime / localOptions.duration
+
+      let progress = calculateDirectionProgress(timeFraction, iterationIndex)
+
+      if (iterationIndex < localOptions.iterations) {
+        this.ids[key] = requestAnimationFrame(iterate)
+
+        updateProgressState(progress)
+      } else {
+        // 动画结束
+        if (localOptions.fill === 'forwards') {
+          progress = calculateDirectionProgress(1, iterationIndex - 1)
+        } else if (localOptions.fill === 'none') {
+          progress = 0
+        }
+        progress = Math.round(progress)
+
+        updateProgressState(progress)
+
         this.cell.notify('transition:complete', this.getArgs<T>(key))
         options.complete && options.complete(this.getArgs<T>(key))
 
@@ -169,6 +203,9 @@ export namespace Animation {
     delay: number
     duration: number
     timing: Timing.Names | Timing.Definition
+    iterations?: number
+    direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
+    fill?: 'none' | 'forwards'
   }
 
   export type TargetValue = string | number | KeyValue<number>
@@ -228,5 +265,8 @@ export namespace Animation {
     delay: 10,
     duration: 100,
     timing: 'linear',
+    iterations: 1,
+    direction: 'normal',
+    fill: 'none',
   }
 }

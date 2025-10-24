@@ -1,8 +1,8 @@
+import { Graph, Interp, type Point, Timing } from '@antv/x6'
 import React from 'react'
-import { Graph, Cell, Point, Timing, Interp } from '@antv/x6'
 import '../index.less'
 
-export class TransitionExample extends React.Component {
+export class ComplexTransitionExample extends React.Component {
   private container!: HTMLDivElement
 
   componentDidMount() {
@@ -68,12 +68,10 @@ export class TransitionExample extends React.Component {
           start: { text: string; fontSize: number },
           end: { text: string; fontSize: number },
         ) => {
-          return function (time: number) {
-            return {
-              text: end.text.substr(0, Math.ceil(end.text.length * time)),
-              fontSize: start.fontSize + (end.fontSize - start.fontSize) * time,
-            }
-          }
+          return (time: number) => ({
+            text: end.text.substr(0, Math.ceil(end.text.length * time)),
+            fontSize: start.fontSize + (end.fontSize - start.fontSize) * time,
+          })
         },
       },
     )
@@ -98,24 +96,15 @@ export class TransitionExample extends React.Component {
       },
     })
 
-    function fly(cell: Cell) {
-      cell.transition('position', 20, {
-        delay: 0,
-        duration: 5000,
-        interp: function (a: Point.PointLike, b: number) {
-          return function (t: number) {
-            return {
-              x: a.x + 10 * b * (Math.cos(t * 2 * Math.PI) - 1),
-              y: a.y - b * Math.sin(t * 2 * Math.PI),
-            }
-          }
-        },
-      })
-    }
-
-    fly(ufo)
-
-    ufo.on('transition:complete', ({ cell }) => fly(cell))
+    ufo.transition('position', 20, {
+      delay: 0,
+      duration: 5000,
+      iterations: Infinity,
+      interp: (a: Point.PointLike, b: number) => (t: number) => ({
+        x: a.x + 10 * b * (Math.cos(t * 2 * Math.PI) - 1),
+        y: a.y - b * Math.sin(t * 2 * Math.PI),
+      }),
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {

@@ -174,6 +174,8 @@ export class EdgeView<
     this.update()
     this.renderTools()
 
+    this.notify('view:render', { view: this })
+
     return this
   }
 

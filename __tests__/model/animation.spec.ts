@@ -80,6 +80,7 @@ describe('Animation', () => {
       delay: 0,
       duration: 100,
       timing: 'linear',
+      fill: 'forwards',
       start: startCb,
       progress: progressCb,
       complete: completeCb,
@@ -262,6 +263,7 @@ describe('Animation', () => {
     anim.start('v', 'end', {
       delay: 0,
       duration: 50,
+      fill: 'forwards',
       interp: interpFactory,
       progress: progressCb,
     })
