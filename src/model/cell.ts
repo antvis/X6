@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+/** biome-ignore-all lint/complexity/noThisInStatic: <存量的问题biome修了运行的实际效果就变了，所以先忽略> */
 import type { NonUndefined } from 'utility-types'
 import {
   ArrayExt,
@@ -193,6 +194,15 @@ export class Cell<
     this.store.on('changed', ({ options }) =>
       this.notify('changed', { options, cell: this }),
     )
+
+    this.on('added', ({ cell }) => {
+      const transition = this.store.get('transition')
+      if (!ObjectExt.isEmpty(transition)) {
+        transition.forEach((t) => {
+          cell.transition(...t)
+        })
+      }
+    })
   }
 
   notify<Key extends keyof Cell.EventArgs>(
@@ -1097,7 +1107,15 @@ export class Cell<
     options: Animation.StartOptions<T> = {},
     delim = '/',
   ) {
-    return this.animation.start(path, target, options, delim)
+    return this.animation.start(
+      path,
+      target,
+      {
+        fill: 'forwards',
+        ...options,
+      },
+      delim,
+    )
   }
 
   stopTransition<T extends Animation.TargetValue>(
@@ -1272,8 +1290,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-    ? Edge.Properties
-    : Properties {
+      ? Edge.Properties
+      : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1467,6 +1485,7 @@ export namespace Cell {
     zIndex?: number
     visible?: boolean
     data?: any
+    transition?: TransitionParams[]
   }
 
   export interface Defaults extends Common {}
@@ -1577,6 +1596,10 @@ export namespace Cell {
     deep?: boolean
     keepId?: boolean
   }
+
+  export type TransitionParams = Parameters<
+    InstanceType<typeof Cell>['transition']
+  >
 }
 
 export namespace Cell {
