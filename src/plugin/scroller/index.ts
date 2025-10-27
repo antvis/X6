@@ -14,12 +14,25 @@ import { ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 import './api'
 
+export interface ScrollerEventArgs extends ScrollerImpl.EventArgs {}
+
+interface Options extends ScrollerImpl.Options {
+  pannable?:
+    | boolean
+    | {
+        enabled: boolean
+        eventTypes: Array<'leftMouseDown' | 'rightMouseDown'>
+      }
+  modifiers?: string | ModifierKey[] | null // alt, ctrl, shift, meta
+}
+
+export type ScrollerOptions = Omit<Options, 'graph'>
 export class Scroller
-  extends Basecoat<Scroller.EventArgs>
+  extends Basecoat<ScrollerEventArgs>
   implements Graph.Plugin
 {
   public name = 'scroller'
-  public options: Scroller.Options
+  public options: ScrollerOptions
   private graph: Graph
   private scrollerImpl: ScrollerImpl
 
@@ -38,7 +51,7 @@ export class Scroller
     return this.scrollerImpl.container
   }
 
-  constructor(options: Scroller.Options = {}) {
+  constructor(options: ScrollerOptions = {}) {
     super()
     this.options = options
     CssLoader.ensure(this.name, content)
@@ -420,16 +433,4 @@ export class Scroller
     this.off()
     CssLoader.clean(this.name)
   }
-}
-
-export namespace Scroller {
-  export interface EventArgs extends ScrollerImpl.EventArgs {}
-
-  type EventType = 'leftMouseDown' | 'rightMouseDown'
-  interface ScrollerOptions extends ScrollerImpl.Options {
-    pannable?: boolean | { enabled: boolean; eventTypes: EventType[] }
-    modifiers?: string | ModifierKey[] | null // alt, ctrl, shift, meta
-  }
-
-  export type Options = Omit<ScrollerOptions, 'graph'>
 }

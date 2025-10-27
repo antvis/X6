@@ -1765,16 +1765,16 @@ export class EdgeView<
             ? candidateTerminal.port
             : null
           : edge
-            ? edge.getSourcePortId()
-            : null
+          ? edge.getSourcePortId()
+          : null
       const targetPort =
         terminalType === 'target'
           ? candidateTerminal
             ? candidateTerminal.port
             : null
           : edge
-            ? edge.getTargetPortId()
-            : null
+          ? edge.getTargetPortId()
+          : null
       return FunctionExt.call(validate, this.graph, {
         edge,
         edgeView,
@@ -2424,8 +2424,6 @@ export class EdgeView<
 }
 
 export const EdgeViewToStringTag = `X6.${EdgeView.name}`
-
-namespace EventData {}
 
 EdgeView.config<EdgeViewOptions>({
   isSvgElement: true,

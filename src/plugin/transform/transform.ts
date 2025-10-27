@@ -4,11 +4,95 @@ import { Angle, GeometryUtil, Point } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Node } from '../../model'
 import { type NodeView, View } from '../../view'
+import { DocumentEvents } from '@/constants'
 
-export class TransformImpl extends View<TransformImpl.EventArgs> {
+interface ResizeEventArgs<E> extends NodeViewPositionEventArgs<E> {}
+interface RotateEventArgs<E> extends NodeViewPositionEventArgs<E> {}
+export interface TransformImplEventArgs {
+  'node:resize': ResizeEventArgs<Dom.MouseDownEvent>
+  'node:resizing': ResizeEventArgs<Dom.MouseMoveEvent>
+  'node:resized': ResizeEventArgs<Dom.MouseUpEvent>
+  'node:rotate': RotateEventArgs<Dom.MouseDownEvent>
+  'node:rotating': RotateEventArgs<Dom.MouseMoveEvent>
+  'node:rotated': RotateEventArgs<Dom.MouseUpEvent>
+}
+
+export interface TransformImplOptions {
+  className?: string
+
+  minWidth?: number
+  maxWidth?: number
+  minHeight?: number
+  maxHeight?: number
+  resizable?: boolean
+
+  rotatable?: boolean
+  rotateGrid?: number
+  orthogonalResizing?: boolean
+  restrictedResizing?: boolean | number
+  autoScrollOnResizing?: boolean
+
+  /**
+   * Set to `true` if you want the resizing to preserve the
+   * aspect ratio of the node. Default is `false`.
+   */
+  preserveAspectRatio?: boolean
+  /**
+   * Reaching the minimum width or height is whether to allow control points to reverse
+   */
+  allowReverse?: boolean
+}
+
+interface EventDataResizing {
+  action: 'resizing'
+  selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
+  direction: Node.ResizeDirection
+  trueDirection: Node.ResizeDirection
+  relativeDirection: Node.ResizeDirection
+  resizeX: number
+  resizeY: number
+  angle: number
+  resized?: boolean
+}
+
+interface EventDataRotating {
+  action: 'rotating'
+  center: Point.PointLike
+  angle: number
+  start: number
+  rotated?: boolean
+}
+
+export const NODE_CLS = 'has-widget-transform'
+export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
+export const POSITIONS: Node.ResizeDirection[] = [
+  'top-left',
+  'top',
+  'top-right',
+  'right',
+  'bottom-right',
+  'bottom',
+  'bottom-left',
+  'left',
+]
+
+export const PrivateDefaultOptions: TransformImplOptions = {
+  minWidth: 0,
+  minHeight: 0,
+  maxWidth: Infinity,
+  maxHeight: Infinity,
+  rotateGrid: 15,
+  rotatable: true,
+  preserveAspectRatio: false,
+  orthogonalResizing: true,
+  restrictedResizing: false,
+  autoScrollOnResizing: true,
+  allowReverse: true,
+}
+export class TransformImpl extends View<TransformImplEventArgs> {
   private node: Node
   private graph: Graph
-  private options: TransformImpl.Options
+  private options: TransformImplOptions
   protected handle: Element | null
   protected prevShift: number
   public container: HTMLElement
@@ -33,14 +117,14 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     return `${this.containerClassName}-rotate`
   }
 
-  constructor(options: TransformImpl.Options, node: Node, graph: Graph) {
+  constructor(options: TransformImplOptions, node: Node, graph: Graph) {
     super()
 
     this.node = node
     this.graph = graph
 
     this.options = {
-      ...Private.defaultOptions,
+      ...PrivateDefaultOptions,
       ...options,
     }
 
@@ -89,7 +173,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     const rotate = knob.cloneNode(true) as Element
     Dom.addClass(rotate, this.rotateClassName)
 
-    const resizes = Private.POSITIONS.map((pos) => {
+    const resizes = POSITIONS.map((pos) => {
       const elem = knob.cloneNode(true) as Element
       Dom.addClass(elem, this.resizeClassName)
       Dom.attr(elem, 'data-position', pos)
@@ -103,7 +187,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     this.renderHandles()
 
     if (this.view) {
-      this.view.addClass(Private.NODE_CLS)
+      this.view.addClass(NODE_CLS)
     }
 
     Dom.addClass(this.container, this.containerClassName)
@@ -152,7 +236,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
 
   remove() {
     if (this.view) {
-      this.view.removeClass(Private.NODE_CLS)
+      this.view.removeClass(NODE_CLS)
     }
     return super.remove()
   }
@@ -171,11 +255,11 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     // the div originally pointed to north needs to be changed to point to south
     // if the node was rotated by 180 degrees.
     const angle = Angle.normalize(this.node.getAngle())
-    const shift = Math.floor(angle * (Private.DIRECTIONS.length / 360))
+    const shift = Math.floor(angle * (DIRECTIONS.length / 360))
     if (shift !== this.prevShift) {
       // Create the current directions array based on the calculated shift.
-      const directions = Private.DIRECTIONS.slice(shift).concat(
-        Private.DIRECTIONS.slice(0, shift),
+      const directions = DIRECTIONS.slice(shift).concat(
+        DIRECTIONS.slice(0, shift),
       )
 
       const className = (dir: string) =>
@@ -187,7 +271,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
       resizes.forEach((resize, index) => {
         Dom.removeClass(
           resize,
-          Private.DIRECTIONS.map((dir) => className(dir)).join(' '),
+          DIRECTIONS.map((dir) => className(dir)).join(' '),
         )
         Dom.addClass(resize, className(directions[index]))
       })
@@ -198,12 +282,12 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
 
   protected getTrueDirection(dir: Node.ResizeDirection) {
     const angle = Angle.normalize(this.node.getAngle())
-    let index = Private.POSITIONS.indexOf(dir)
+    let index = POSITIONS.indexOf(dir)
 
-    index += Math.floor(angle * (Private.POSITIONS.length / 360))
-    index %= Private.POSITIONS.length
+    index += Math.floor(angle * (POSITIONS.length / 360))
+    index %= POSITIONS.length
 
-    return Private.POSITIONS[index]
+    return POSITIONS[index]
   }
 
   protected toValidResizeDirection(dir: string): Node.ResizeDirection {
@@ -250,7 +334,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     )[direction]
     const angle = Angle.normalize(this.node.getAngle())
 
-    this.setEventData<EventData.Resizing>(evt, {
+    this.setEventData<EventDataResizing>(evt, {
       selector,
       direction,
       trueDirection,
@@ -270,7 +354,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     const center = this.node.getBBox().getCenter()
     const e = this.normalizeEvent(evt)
     const client = this.graph.snapToGrid(e.clientX, e.clientY)
-    this.setEventData<EventData.Rotating>(evt, {
+    this.setEventData<EventDataRotating>(evt, {
       center,
       action: 'rotating',
       angle: Angle.normalize(this.node.getAngle()),
@@ -281,7 +365,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
 
   protected onMouseMove(evt: Dom.MouseMoveEvent) {
     const view = this.graph.findViewByCell(this.node) as NodeView
-    let data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    let data = this.getEventData<EventDataResizing | EventDataRotating>(evt)
     if (data.action) {
       const e = this.normalizeEvent(evt)
       let clientX = e.clientX
@@ -306,7 +390,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
       const options = this.options
 
       if (data.action === 'resizing') {
-        data = data as EventData.Resizing
+        data = data as EventDataResizing
         if (!data.resized) {
           if (view) {
             view.addClass('node-resizing')
@@ -434,7 +518,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
           this.notify('node:resizing', evt, view)
         }
       } else if (data.action === 'rotating') {
-        data = data as EventData.Rotating
+        data = data as EventDataRotating
         if (!data.rotated) {
           if (view) {
             view.addClass('node-rotating')
@@ -460,7 +544,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
   }
 
   protected onMouseUp(evt: Dom.MouseUpEvent) {
-    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    const data = this.getEventData<EventDataResizing | EventDataRotating>(evt)
     if (data.action) {
       this.stopAction(evt)
       this.model.stopBatch(data.action === 'resizing' ? 'resize' : 'rotate', {
@@ -477,7 +561,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
 
       const pos = handle.getAttribute('data-position') as Node.ResizeDirection
       if (pos) {
-        const dir = Private.DIRECTIONS[Private.POSITIONS.indexOf(pos)]
+        const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
         Dom.addClass(this.container, `${this.containerClassName}-cursor-${dir}`)
       }
     }
@@ -493,7 +577,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
         'data-position',
       ) as Node.ResizeDirection
       if (pos) {
-        const dir = Private.DIRECTIONS[Private.POSITIONS.indexOf(pos)]
+        const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
         Dom.removeClass(
           this.container,
           `${this.containerClassName}-cursor-${dir}`,
@@ -507,7 +591,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
   protected startAction(evt: Dom.MouseDownEvent) {
     this.startHandle(evt.target)
     this.graph.view.undelegateEvents()
-    this.delegateDocumentEvents(Private.documentEvents, evt.data)
+    this.delegateDocumentEvents(DocumentEvents, evt.data)
   }
 
   protected stopAction(evt: Dom.MouseUpEvent) {
@@ -516,7 +600,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     this.graph.view.delegateEvents()
 
     const view = this.graph.findViewByCell(this.node) as NodeView
-    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    const data = this.getEventData<EventDataResizing | EventDataRotating>(evt)
 
     if (view) {
       view.removeClass(`node-${data.action}`)
@@ -529,7 +613,7 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
   }
 
   protected notify<
-    K extends keyof TransformImpl.EventArgs,
+    K extends keyof TransformImplEventArgs,
     T extends Dom.EventObject,
   >(name: K, evt: T, view: NodeView, args: KeyValue = {}) {
     if (view) {
@@ -554,104 +638,5 @@ export class TransformImpl extends View<TransformImpl.EventArgs> {
     this.stopListening()
     this.remove()
     this.off()
-  }
-}
-
-export namespace TransformImpl {
-  interface ResizeEventArgs<E> extends NodeViewPositionEventArgs<E> {}
-  interface RotateEventArgs<E> extends NodeViewPositionEventArgs<E> {}
-  export interface EventArgs {
-    'node:resize': ResizeEventArgs<Dom.MouseDownEvent>
-    'node:resizing': ResizeEventArgs<Dom.MouseMoveEvent>
-    'node:resized': ResizeEventArgs<Dom.MouseUpEvent>
-    'node:rotate': RotateEventArgs<Dom.MouseDownEvent>
-    'node:rotating': RotateEventArgs<Dom.MouseMoveEvent>
-    'node:rotated': RotateEventArgs<Dom.MouseUpEvent>
-  }
-
-  export type Direction = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
-
-  export interface Options {
-    className?: string
-
-    minWidth?: number
-    maxWidth?: number
-    minHeight?: number
-    maxHeight?: number
-    resizable?: boolean
-
-    rotatable?: boolean
-    rotateGrid?: number
-    orthogonalResizing?: boolean
-    restrictedResizing?: boolean | number
-    autoScrollOnResizing?: boolean
-
-    /**
-     * Set to `true` if you want the resizing to preserve the
-     * aspect ratio of the node. Default is `false`.
-     */
-    preserveAspectRatio?: boolean
-    /**
-     * Reaching the minimum width or height is whether to allow control points to reverse
-     */
-    allowReverse?: boolean
-  }
-}
-
-namespace Private {
-  export const NODE_CLS = 'has-widget-transform'
-  export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
-  export const POSITIONS: Node.ResizeDirection[] = [
-    'top-left',
-    'top',
-    'top-right',
-    'right',
-    'bottom-right',
-    'bottom',
-    'bottom-left',
-    'left',
-  ]
-
-  export const documentEvents = {
-    mousemove: 'onMouseMove',
-    touchmove: 'onMouseMove',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-  }
-
-  export const defaultOptions: TransformImpl.Options = {
-    minWidth: 0,
-    minHeight: 0,
-    maxWidth: Infinity,
-    maxHeight: Infinity,
-    rotateGrid: 15,
-    rotatable: true,
-    preserveAspectRatio: false,
-    orthogonalResizing: true,
-    restrictedResizing: false,
-    autoScrollOnResizing: true,
-    allowReverse: true,
-  }
-}
-
-namespace EventData {
-  export interface Resizing {
-    action: 'resizing'
-    selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
-    direction: Node.ResizeDirection
-    trueDirection: Node.ResizeDirection
-    relativeDirection: Node.ResizeDirection
-    resizeX: number
-    resizeY: number
-    angle: number
-    resized?: boolean
-  }
-
-  export interface Rotating {
-    action: 'rotating'
-    center: Point.PointLike
-    angle: number
-    start: number
-    rotated?: boolean
   }
 }

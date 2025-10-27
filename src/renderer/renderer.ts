@@ -31,8 +31,8 @@ export class Renderer extends Base {
       typeof elem === 'string'
         ? container.querySelector(elem)
         : elem instanceof Element
-          ? elem
-          : elem[0]
+        ? elem
+        : elem[0]
 
     if (target) {
       const id = this.graph.view.findAttr('data-cell-id', target)
@@ -127,11 +127,5 @@ export class Renderer extends Base {
   @disposable()
   dispose() {
     this.schedule.dispose()
-  }
-}
-
-export namespace Renderer {
-  export interface FindViewsInAreaOptions {
-    strict?: boolean
   }
 }
