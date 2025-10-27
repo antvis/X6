@@ -1,4 +1,4 @@
-import { Graph, Scroller } from '@antv/x6'
+import { Graph, type Node, Scroller } from '@antv/x6'
 import insertCss from 'insert-css'
 
 const host = document.getElementById('container')!
@@ -13,7 +13,7 @@ const graph = new Graph({
 
 graph.use(new Scroller({ enabled: true, pannable: true }))
 
-const nodes: any[] = []
+const nodes: Node[] = []
 const nodeWidth = 80
 const nodeHeight = 30
 const cols = 20

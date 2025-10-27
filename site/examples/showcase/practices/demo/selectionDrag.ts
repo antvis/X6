@@ -1,4 +1,4 @@
-import { Graph, Selection } from '@antv/x6'
+import { Graph, type Node, Selection } from '@antv/x6'
 import insertCss from 'insert-css'
 
 const host = document.getElementById('container')!
@@ -26,7 +26,7 @@ graph.use(
   }),
 )
 
-const nodes: any[] = []
+const nodes: Node[] = []
 const nodeWidth = 60
 const nodeHeight = 30
 const cols = 10
