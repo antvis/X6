@@ -95,6 +95,22 @@
         "en": "Expand/Collapse the Tree"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XDnNRqnj4WkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "virtualRender.ts",
+      "title": {
+        "zh": "多节点虚拟渲染",
+        "en": "Virtual Rendering for Multiple Nodes"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*dXlKS5AyvRYAAAAAYjAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "selectionDrag.ts",
+      "title": {
+        "zh": "框选批量拖拽多节点",
+        "en": "Batch Dragging Multiple Nodes with Selection"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*kxWSSLKG_tIAAAAAbkAAAAgAemJ7AQ/original"
     }
   ]
 }
