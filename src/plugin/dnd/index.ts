@@ -1,4 +1,5 @@
 import { alignPoint } from 'dom-align'
+import { DocumentEvents } from '@/constants'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { GeometryUtil, type Point, Rectangle } from '../../geometry'
 import { type EventArgs, Graph } from '../../graph'
@@ -51,14 +52,6 @@ export const DndDefaults: Partial<DndOptions> = {
   // animation: false,
   getDragNode: (sourceNode) => sourceNode.clone(),
   getDropNode: (draggingNode) => draggingNode.clone(),
-}
-
-export const DndDocumentEvents = {
-  mousemove: 'onDragging',
-  touchmove: 'onDragging',
-  mouseup: 'onDragEnd',
-  touchend: 'onDragEnd',
-  touchcancel: 'onDragEnd',
 }
 
 export class Dnd extends View implements Graph.Plugin {
@@ -152,7 +145,7 @@ export class Dnd extends View implements Graph.Plugin {
       this.draggingNode!.on('change:position', this.snap, this)
     }
 
-    this.delegateDocumentEvents(DndDocumentEvents, e.data)
+    this.delegateDocumentEvents(DocumentEvents, e.data)
   }
 
   protected isSnaplineEnabled() {

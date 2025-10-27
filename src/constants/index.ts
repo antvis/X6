@@ -3,4 +3,5 @@ export const DocumentEvents = {
   touchmove: 'onMouseMove',
   mouseup: 'onMouseUp',
   touchend: 'onMouseUp',
+  touchcancel: 'onDragEnd',
 }

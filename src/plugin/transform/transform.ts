@@ -76,7 +76,7 @@ export const POSITIONS: Node.ResizeDirection[] = [
   'left',
 ]
 
-export const PrivateDefaultOptions: TransformImplOptions = {
+const defaultOptions: TransformImplOptions = {
   minWidth: 0,
   minHeight: 0,
   maxWidth: Infinity,
@@ -124,7 +124,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     this.graph = graph
 
     this.options = {
-      ...PrivateDefaultOptions,
+      ...defaultOptions,
       ...options,
     }
 

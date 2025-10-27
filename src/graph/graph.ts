@@ -38,6 +38,9 @@ import { TransformManager as Transform } from './transform'
 import { GraphView } from './view'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
 
+type FindViewsInAreaOptions = {
+  strict?: boolean
+}
 export class Graph extends Basecoat<EventArgs> {
   private installedPlugins: Set<Graph.Plugin> = new Set()
   public model: Model
@@ -525,28 +528,18 @@ export class Graph extends Basecoat<EventArgs> {
     y: number,
     width: number,
     height: number,
-    options?: {
-      strict?: boolean
-    },
+    options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
     rect: Rectangle.RectangleLike,
-    options?: {
-      strict?: boolean
-    },
+    options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
     x: number | Rectangle.RectangleLike,
-    y?:
-      | number
-      | {
-          strict?: boolean
-        },
+    y?: number | FindViewsInAreaOptions,
     width?: number,
     height?: number,
-    options?: {
-      strict?: boolean
-    },
+    options?: FindViewsInAreaOptions,
   ) {
     const rect =
       typeof x === 'number'

@@ -33,7 +33,7 @@ export type SelectionSetOptions = SelectionImplSetOptions
 export type SelectionAddOptions = SelectionImplAddOptions
 export type SelectionRemoveOptions = SelectionImplRemoveOptions
 
-export const SelectionDefaultOptions: Partial<SelectionImplOptions> = {
+export const DefaultOptions: Partial<SelectionImplOptions> = {
   rubberband: false,
   rubberNode: true,
   rubberEdge: false, // next version will set to true
@@ -81,7 +81,7 @@ export class Selection
     super()
     this.options = {
       enabled: true,
-      ...SelectionDefaultOptions,
+      ...DefaultOptions,
       ...options,
     }
 

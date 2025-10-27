@@ -12,9 +12,8 @@ import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
 import { JOB_PRIORITY, JobQueue } from './queueJob'
 
-export const FLAG_INSERT = 1 << 30
-export const FLAG_REMOVE = 1 << 29
-export const FLAG_RENDER = (1 << 26) - 1
+const FLAG_INSERT = 1 << 30
+const FLAG_REMOVE = 1 << 29
 
 export enum SchedulerViewState {
   CREATED,
