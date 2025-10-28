@@ -1,11 +1,18 @@
-import { Graph, Model } from '@antv/x6'
-import { ForceLayout } from '@antv/layout'
+import {
+  ForceLayout,
+  type Edge as LayoutEdge,
+  type OutNode as LayoutNode,
+} from '@antv/layout'
+import { Graph, type Model, type Node } from '@antv/x6'
 
 const graph = new Graph({
   container: document.getElementById('container')!,
 })
 
-const originData = {
+const originData: {
+  nodes: LayoutNode[]
+  edges: LayoutEdge[]
+} = {
   nodes: [
     { id: 'node0', size: 50, x: 0, y: 0 },
     { id: 'node1', size: 30, x: 0, y: 0 },
@@ -54,8 +61,8 @@ const getModelFromOriginData = (data: typeof originData) => {
     model.nodes?.push({
       id: item.id,
       shape: 'circle',
-      width: item.size,
-      height: item.size,
+      width: item.size as number,
+      height: item.size as number,
       x: item.x,
       y: item.y,
       attrs: {
@@ -80,6 +87,14 @@ const getModelFromOriginData = (data: typeof originData) => {
     })
   })
   return model
+}
+
+// helper function to update node positions
+function update() {
+  for (const n of originData.nodes) {
+    const node: Node = graph.getCellById(n.id) as Node
+    node.position(n.x, n.y)
+  }
 }
 
 const forceLayout = new ForceLayout({
@@ -108,9 +123,26 @@ const forceLayout = new ForceLayout({
     }
     return 0.1
   },
-  tick: () => {
-    const model = getModelFromOriginData(originData)
-    graph.fromJSON(model)
-  },
+  tick: update,
 })
+
+// initial render
+const model = getModelFromOriginData(originData)
+graph.fromJSON(model)
+
+// run layout
 forceLayout.layout(originData)
+
+// rerun layout on node drag, keep the dragged node fixed
+graph.on('node:moved', (e) => {
+  for (const n of originData.nodes) {
+    if (n.id === e.cell.id) {
+      n.fx = e.x
+      n.fy = e.y
+    } else {
+      delete n.fx
+      delete n.fy
+    }
+  }
+  forceLayout.layout(originData)
+})
