@@ -134,7 +134,7 @@ graph.fromJSON(model)
 forceLayout.layout(originData)
 
 // rerun layout on node drag, keep the dragged node fixed
-graph.on('node:moved', (e) => {
+graph.on('node:moving', (e) => {
   for (const n of originData.nodes) {
     if (n.id === e.cell.id) {
       n.fx = e.x
