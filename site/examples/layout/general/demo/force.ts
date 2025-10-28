@@ -3,7 +3,7 @@ import {
   type Edge as LayoutEdge,
   type OutNode as LayoutNode,
 } from '@antv/layout'
-import { Graph, type Model, type Node } from '@antv/x6'
+import { FunctionExt, Graph, type Model, type Node } from '@antv/x6'
 
 const graph = new Graph({
   container: document.getElementById('container')!,
@@ -168,8 +168,11 @@ graph.fromJSON(model)
 // run initial layout
 scheduleLayout()
 
-// Debounce timer for node:moving events
-let movingTimer: number | null = null
+// Debounced layout function to prevent too frequent calls during dragging
+const debouncedScheduleLayout = FunctionExt.debounce(
+  () => scheduleLayout(),
+  16, // Wait 16ms (~1 frame at 60fps) after last movement before running layout
+)
 
 // rerun layout on node drag, keep the dragged node fixed
 graph.on('node:moving', (e) => {
@@ -184,27 +187,16 @@ graph.on('node:moving', (e) => {
     }
   }
 
-  // Debounce layout calls during dragging
-  // Only schedule layout if user pauses for 100ms
-  if (movingTimer !== null) {
-    clearTimeout(movingTimer)
-  }
-
-  movingTimer = window.setTimeout(() => {
-    scheduleLayout()
-    movingTimer = null
-  }, 60)
+  // Use debounced layout to avoid too frequent calls
+  debouncedScheduleLayout()
 })
 
 // When node drag ends, ensure layout runs one final time
 graph.on('node:moved', () => {
-  // Clear any pending debounced layout
-  if (movingTimer !== null) {
-    clearTimeout(movingTimer)
-    movingTimer = null
-  }
+  // Cancel any pending debounced layout
+  debouncedScheduleLayout.cancel?.()
 
-  // Always run final layout when drag ends
+  // Run final layout immediately when drag ends
   // This ensures the final state is correctly calculated
   scheduleLayout()
 })
