@@ -97,6 +97,9 @@ function update() {
   }
 }
 
+// Store the current layout promise to prevent concurrent executions
+let currentLayoutPromise: Promise<void> | null = null
+
 const forceLayout = new ForceLayout({
   type: 'force',
   center: [369, 180],
@@ -126,15 +129,44 @@ const forceLayout = new ForceLayout({
   tick: update,
 })
 
+// Helper function to run layout and return a promise
+function runLayout(): Promise<void> {
+  return new Promise((resolve) => {
+    // Set onLayoutEnd callback to resolve the promise
+    forceLayout.updateCfg({
+      onLayoutEnd: () => {
+        currentLayoutPromise = null
+        resolve()
+      },
+    } as any)
+
+    // Start the layout
+    forceLayout.layout(originData)
+  })
+}
+
+// Helper to ensure layout runs, chaining if one is already running
+async function scheduleLayout(): Promise<void> {
+  if (currentLayoutPromise) {
+    // Wait for current layout to finish, then run a new one
+    await currentLayoutPromise
+  }
+
+  // Start new layout
+  currentLayoutPromise = runLayout()
+  return currentLayoutPromise
+}
+
 // initial render
 const model = getModelFromOriginData(originData)
 graph.fromJSON(model)
 
-// run layout
-forceLayout.layout(originData)
+// run initial layout
+scheduleLayout()
 
 // rerun layout on node drag, keep the dragged node fixed
 graph.on('node:moving', (e) => {
+  // Update the fixed position immediately for responsive dragging
   for (const n of originData.nodes) {
     if (n.id === e.cell.id) {
       n.fx = e.x
@@ -144,5 +176,13 @@ graph.on('node:moving', (e) => {
       delete n.fy
     }
   }
-  forceLayout.layout(originData)
+
+  // Schedule layout - will wait for current one to finish if running
+  scheduleLayout()
+})
+
+// When node drag ends, ensure layout runs one final time
+graph.on('node:moved', () => {
+  // Schedule final layout - will chain after any running layout
+  scheduleLayout()
 })
