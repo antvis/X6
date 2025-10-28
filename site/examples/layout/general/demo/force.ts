@@ -104,6 +104,10 @@ const forceLayout = new ForceLayout({
   type: 'force',
   center: [369, 180],
   preventOverlap: true,
+  // Adjust alpha parameters for faster convergence
+  alpha: 0.5, // 初始"温度"，默认 0.3，提高到 0.5 使初始运动更快
+  alphaDecay: 0.05, // 温度衰减率，默认 0.028，增加到 0.05 使其更快收敛
+  alphaMin: 0.01, // 停止阈值，默认 0.001，增加到 0.01 使其更早停止
   linkDistance: (d) => {
     if (d.source.id === 'node0') {
       return 100
@@ -164,6 +168,9 @@ graph.fromJSON(model)
 // run initial layout
 scheduleLayout()
 
+// Debounce timer for node:moving events
+let movingTimer: number | null = null
+
 // rerun layout on node drag, keep the dragged node fixed
 graph.on('node:moving', (e) => {
   // Update the fixed position immediately for responsive dragging
@@ -177,12 +184,27 @@ graph.on('node:moving', (e) => {
     }
   }
 
-  // Schedule layout - will wait for current one to finish if running
-  scheduleLayout()
+  // Debounce layout calls during dragging
+  // Only schedule layout if user pauses for 100ms
+  if (movingTimer !== null) {
+    clearTimeout(movingTimer)
+  }
+
+  movingTimer = window.setTimeout(() => {
+    scheduleLayout()
+    movingTimer = null
+  }, 60)
 })
 
 // When node drag ends, ensure layout runs one final time
 graph.on('node:moved', () => {
-  // Schedule final layout - will chain after any running layout
+  // Clear any pending debounced layout
+  if (movingTimer !== null) {
+    clearTimeout(movingTimer)
+    movingTimer = null
+  }
+
+  // Always run final layout when drag ends
+  // This ensures the final state is correctly calculated
   scheduleLayout()
 })
