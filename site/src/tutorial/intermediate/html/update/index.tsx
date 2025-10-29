@@ -38,7 +38,7 @@ export default class Example extends React.Component {
 
     setInterval(() => {
       node.setData({
-        color: Color.random().toHex(),
+        color: Color.randomHex(),
       })
     }, 2000)
 
