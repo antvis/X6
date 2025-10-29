@@ -29,12 +29,6 @@ export interface DndOptions {
    */
   scaled?: boolean
   delegateGraphOptions?: Graph.Options
-  // animation?:
-  //   | boolean
-  //   | {
-  //       duration?: number
-  //       easing?: string
-  //     }
   draggingContainer?: HTMLElement
   /**
    * dnd tool box container.
