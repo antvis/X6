@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+/** biome-ignore-all lint/complexity/noThisInStatic: <存量的问题biome修了运行的实际效果就变了，所以先忽略> */
 import type { NonUndefined } from 'utility-types'
 import {
   ArrayExt,
@@ -20,7 +21,15 @@ import {
 } from '../registry'
 import type { CellView } from '../view'
 import type { MarkupType } from '../view/markup'
-import { Animation } from './animation'
+import {
+  Animation,
+  type AnimationCallbackArgs,
+  type AnimationProgressArgs,
+  type AnimationStartOptions,
+  type AnimationStopArgs,
+  type AnimationStopOptions,
+  type AnimationTargetValue,
+} from './animation'
 import type { Edge } from './edge'
 import type { Model } from './model'
 import type { Node } from './node'
@@ -193,6 +202,15 @@ export class Cell<
     this.store.on('changed', ({ options }) =>
       this.notify('changed', { options, cell: this }),
     )
+
+    this.on('added', ({ cell }) => {
+      const transition = this.store.get('transition')
+      if (!ObjectExt.isEmpty(transition)) {
+        transition.forEach((t) => {
+          cell.transition(...t)
+        })
+      }
+    })
   }
 
   notify<Key extends keyof Cell.EventArgs>(
@@ -1082,27 +1100,35 @@ export class Cell<
   transition<K extends keyof Properties>(
     path: K,
     target: Properties[K],
-    options?: Animation.StartOptions<Properties[K]>,
+    options?: AnimationStartOptions<Properties[K]>,
     delim?: string,
   ): () => void
-  transition<T extends Animation.TargetValue>(
+  transition<T extends AnimationTargetValue>(
     path: string | string[],
     target: T,
-    options?: Animation.StartOptions<T>,
+    options?: AnimationStartOptions<T>,
     delim?: string,
   ): () => void
-  transition<T extends Animation.TargetValue>(
+  transition<T extends AnimationTargetValue>(
     path: string | string[],
     target: T,
-    options: Animation.StartOptions<T> = {},
+    options: AnimationStartOptions<T> = {},
     delim = '/',
   ) {
-    return this.animation.start(path, target, options, delim)
+    return this.animation.start(
+      path,
+      target,
+      {
+        fill: 'forwards',
+        ...options,
+      },
+      delim,
+    )
   }
 
-  stopTransition<T extends Animation.TargetValue>(
+  stopTransition<T extends AnimationTargetValue>(
     path: string | string[],
-    options?: Animation.StopOptions<T>,
+    options?: AnimationStopOptions<T>,
     delim = '/',
   ) {
     this.animation.stop(path, options, delim)
@@ -1272,8 +1298,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-    ? Edge.Properties
-    : Properties {
+      ? Edge.Properties
+      : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1467,6 +1493,7 @@ export namespace Cell {
     zIndex?: number
     visible?: boolean
     data?: any
+    transition?: TransitionParams[]
   }
 
   export interface Defaults extends Common {}
@@ -1577,15 +1604,19 @@ export namespace Cell {
     deep?: boolean
     keepId?: boolean
   }
+
+  export type TransitionParams = Parameters<
+    InstanceType<typeof Cell>['transition']
+  >
 }
 
 export namespace Cell {
   export interface EventArgs {
-    'transition:start': Animation.CallbackArgs<Animation.TargetValue>
-    'transition:progress': Animation.ProgressArgs<Animation.TargetValue>
-    'transition:complete': Animation.CallbackArgs<Animation.TargetValue>
-    'transition:stop': Animation.StopArgs<Animation.TargetValue>
-    'transition:finish': Animation.CallbackArgs<Animation.TargetValue>
+    'transition:start': AnimationCallbackArgs<AnimationTargetValue>
+    'transition:progress': AnimationProgressArgs<AnimationTargetValue>
+    'transition:complete': AnimationCallbackArgs<AnimationTargetValue>
+    'transition:stop': AnimationStopArgs<AnimationTargetValue>
+    'transition:finish': AnimationCallbackArgs<AnimationTargetValue>
 
     // common
     'change:*': ChangeAnyKeyArgs

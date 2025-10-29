@@ -7,7 +7,7 @@ export class Animation {
     [path: string]: {
       startValue: any
       targetValue: any
-      options: Animation.StartOptions<any>
+      options: AnimationStartOptions<any>
     }
   } = {}
 
@@ -17,14 +17,14 @@ export class Animation {
     return Object.keys(this.ids)
   }
 
-  start<T extends Animation.TargetValue>(
+  start<T extends AnimationTargetValue>(
     path: string | string[],
     targetValue: T,
-    options: Animation.StartOptions<T> = {},
+    options: AnimationStartOptions<T> = {},
     delim = '/',
   ): () => void {
     const startValue = this.cell.getPropByPath<T>(path)
-    const localOptions = ObjectExt.defaults(options, Animation.defaultOptions)
+    const localOptions = ObjectExt.defaults(options, defaultOptions)
     const timing = this.getTiming(localOptions.timing)
     const interpolate = this.getInterp<T>(
       localOptions.interp,
@@ -35,28 +35,65 @@ export class Animation {
     let startTime = 0
     const key = Array.isArray(path) ? path.join(delim) : path
     const paths = Array.isArray(path) ? path : path.split(delim)
-    const iterate = () => {
-      const now = new Date().getTime()
-      if (startTime === 0) {
-        startTime = now
-      }
 
-      const elaspe = now - startTime
-      let progress = elaspe / localOptions.duration
-      if (progress < 1) {
-        this.ids[key] = requestAnimationFrame(iterate)
+    const calculateDirectionProgress = (
+      timeFraction: number,
+      iterationIndex: number,
+    ) => {
+      const isOdd = iterationIndex % 2 === 1
+      const dir = localOptions.direction
+
+      if (
+        dir === 'normal' ||
+        // alternate 时迭代次数为奇数时正向，偶数时反向
+        (dir === 'alternate' && !isOdd) ||
+        // alternate-reverse 时迭代次数为偶数时正向，奇数时反向
+        (dir === 'alternate-reverse' && isOdd)
+      ) {
+        return timeFraction
       } else {
-        progress = 1
+        return 1 - timeFraction
       }
+    }
 
+    const updateProgressState = (progress: number) => {
       const currentValue = interpolate(timing(progress)) as T
       this.cell.setPropByPath(paths, currentValue)
 
       if (options.progress) {
         options.progress({ progress, currentValue, ...this.getArgs<T>(key) })
       }
+    }
 
-      if (progress === 1) {
+    const iterate = () => {
+      const now = Date.now()
+      if (startTime === 0) {
+        startTime = now
+      }
+
+      const { duration, iterations, fill } = localOptions
+      const elapsed = now - startTime
+      const iterationIndex = Math.floor(elapsed / duration)
+      const localTime = elapsed % duration
+      const timeFraction = localTime / duration
+
+      let progress = calculateDirectionProgress(timeFraction, iterationIndex)
+
+      if (iterationIndex < iterations) {
+        this.ids[key] = requestAnimationFrame(iterate)
+
+        updateProgressState(progress)
+      } else {
+        // 动画结束
+        if (fill === 'forwards') {
+          progress = calculateDirectionProgress(1, iterationIndex - 1)
+        } else if (fill === 'none') {
+          progress = 0
+        }
+        progress = Math.round(progress)
+
+        updateProgressState(progress)
+
         this.cell.notify('transition:complete', this.getArgs<T>(key))
         options.complete && options.complete(this.getArgs<T>(key))
 
@@ -75,12 +112,12 @@ export class Animation {
       options.start && options.start(this.getArgs<T>(key))
     }, options.delay)
 
-    return this.stop.bind(this, path, delim, options)
+    return this.stop.bind(this, path, options, delim)
   }
 
-  stop<T extends Animation.TargetValue>(
+  stop<T extends AnimationTargetValue>(
     path: string | string[],
-    options: Animation.StopOptions<T> = {},
+    options: AnimationStopOptions<T> = {},
     delim = '/',
   ) {
     const paths = Array.isArray(path) ? path : path.split(delim)
@@ -124,7 +161,7 @@ export class Animation {
     return typeof timing === 'string' ? Timing[timing] : timing
   }
 
-  private getInterp<T extends Animation.TargetValue>(
+  private getInterp<T extends AnimationTargetValue>(
     interp: Interp.Definition<any> | undefined,
     startValue: T,
     targetValue: T,
@@ -151,9 +188,9 @@ export class Animation {
     )
   }
 
-  private getArgs<T extends Animation.TargetValue>(
+  private getArgs<T extends AnimationTargetValue>(
     key: string,
-  ): Animation.CallbackArgs<T> {
+  ): AnimationCallbackArgs<T> {
     const data = this.cache[key]
     return {
       path: key,
@@ -164,69 +201,73 @@ export class Animation {
   }
 }
 
-export namespace Animation {
-  export interface BaseOptions {
-    delay: number
-    duration: number
-    timing: Timing.Names | Timing.Definition
-  }
+export interface AnimationBaseOptions {
+  delay: number
+  duration: number
+  timing: Timing.Names | Timing.Definition
+  iterations?: number
+  direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
+  fill?: 'none' | 'forwards'
+}
 
-  export type TargetValue = string | number | KeyValue<number>
+export type AnimationTargetValue = string | number | KeyValue<number>
 
-  export interface CallbackArgs<T> {
-    cell: Cell
-    path: string
-    startValue: T
-    targetValue: T
-  }
+export interface AnimationCallbackArgs<T> {
+  cell: Cell
+  path: string
+  startValue: T
+  targetValue: T
+}
 
-  export interface ProgressArgs<T> extends CallbackArgs<T> {
-    progress: number
-    currentValue: T
-  }
+export interface AnimationProgressArgs<T> extends AnimationCallbackArgs<T> {
+  progress: number
+  currentValue: T
+}
 
-  export interface StopArgs<T> extends CallbackArgs<T> {
-    jumpedToEnd?: boolean
-  }
+export interface AnimationStopArgs<T> extends AnimationCallbackArgs<T> {
+  jumpedToEnd?: boolean
+}
 
-  export interface StartOptions<T>
-    extends Partial<BaseOptions>,
-      StopOptions<T> {
-    interp?: Interp.Definition<any>
-    /**
-     * A function to call when the animation begins.
-     */
-    start?: (options: CallbackArgs<T>) => void
-    /**
-     * A function to be called after each step of the animation, only once per
-     * animated element regardless of the number of animated properties.
-     */
-    progress?: (options: ProgressArgs<T>) => void
-  }
+export interface AnimationStartOptions<T>
+  extends Partial<AnimationBaseOptions>,
+    AnimationStopOptions<T> {
+  interp?: Interp.Definition<any>
+  /**
+   * A function to call when the animation begins.
+   */
+  start?: (options: AnimationCallbackArgs<T>) => void
+  /**
+   * A function to be called after each step of the animation, only once per
+   * animated element regardless of the number of animated properties.
+   */
+  progress?: (options: AnimationProgressArgs<T>) => void
+}
 
-  export interface StopOptions<T> {
-    /**
-     * A Boolean indicating whether to complete the animation immediately.
-     * Defaults to `false`.
-     */
-    jumpedToEnd?: boolean
-    /**
-     * A function that is called once the animation completes.
-     */
-    complete?: (options: CallbackArgs<T>) => void
-    /**
-     * A function to be called when the animation stops.
-     */
-    stop?: (options: StopArgs<T>) => void
-    /**
-     * A function to be called when the animation completes or stops.
-     */
-    finish?: (options: CallbackArgs<T>) => void
-  }
+export interface AnimationStopOptions<T> {
+  /**
+   * A Boolean indicating whether to complete the animation immediately.
+   * Defaults to `false`.
+   */
+  jumpedToEnd?: boolean
+  /**
+   * A function that is called once the animation completes.
+   */
+  complete?: (options: AnimationCallbackArgs<T>) => void
+  /**
+   * A function to be called when the animation stops.
+   */
+  stop?: (options: AnimationStopArgs<T>) => void
+  /**
+   * A function to be called when the animation completes or stops.
+   */
+  finish?: (options: AnimationCallbackArgs<T>) => void
+}
 
-  export const defaultOptions: BaseOptions = {
-    delay: 10,
-    duration: 100,
-    timing: 'linear',
-  }
+export const defaultOptions: AnimationBaseOptions = {
+  delay: 10,
+  duration: 100,
+  timing: 'linear',
+  iterations: 1,
+  direction: 'normal',
+  fill: 'none',
 }
