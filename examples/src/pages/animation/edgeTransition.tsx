@@ -1,4 +1,4 @@
-import { type EdgeView, Graph, Shape, Timing } from '@antv/x6'
+import { Graph, Shape, Timing } from '@antv/x6'
 import React from 'react'
 import '../index.less'
 
@@ -36,7 +36,7 @@ export class EdgeTransitionExample extends React.Component {
       ],
     })
 
-    const flyMarkEdge = graph.addEdge({
+    graph.addEdge({
       source: { x: 60, y: 120 },
       target: { x: 240, y: 120 },
       vertices: [{ x: 160, y: 140 }],
@@ -60,33 +60,19 @@ export class EdgeTransitionExample extends React.Component {
         },
         marker: {
           fill: '#C7D5F6',
+          atConnectionRatio: 0,
         },
       },
-    })
-    const flyMarkEdgeView = graph.findViewByCell(flyMarkEdge) as EdgeView
-
-    flyMarkEdgeView.once('view:render', () => {
-      const line = flyMarkEdgeView.findOne('line') as SVGPathElement
-      const len = line.getTotalLength()
-
-      flyMarkEdge.transition(
-        'attrs/marker',
-        {},
-        {
-          duration: 2000,
-          iterations: Infinity,
-          interp: (a) => {
-            return (t: number) => {
-              const point = flyMarkEdgeView.getPointAtLength(len * t)
-              return {
-                ...a,
-                cx: point?.x,
-                cy: point?.y,
-              }
-            }
+      transition: [
+        [
+          'attrs/marker/atConnectionRatio',
+          1,
+          {
+            duration: 2000,
+            iterations: Infinity,
           },
-        },
-      )
+        ],
+      ],
     })
 
     graph.addEdge({
