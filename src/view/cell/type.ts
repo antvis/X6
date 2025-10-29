@@ -103,6 +103,7 @@ export interface CellViewEventArgs
     options: CellViewHighlightOptions
   }
   'cell:unhighlight': CellViewEventArgs['cell:highlight']
+  'view:render': { view: CellView }
 }
 
 type CellViewClass = typeof CellView

@@ -201,6 +201,8 @@ export class NodeView<
 
     this.renderTools()
 
+    this.notify('view:render', { view: this })
+
     return this
   }
 

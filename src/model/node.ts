@@ -10,7 +10,7 @@ import {
 import { Angle, Point, Rectangle } from '../geometry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
-import type { Animation } from './animation'
+import type { AnimationStartOptions } from './animation'
 import { Cell } from './cell'
 import type { Edge } from './edge'
 import { PortManager } from './port'
@@ -1036,7 +1036,7 @@ export namespace Node {
   }
 
   export interface TranslateOptions extends Cell.TranslateOptions {
-    transition?: boolean | Animation.StartOptions<Point.PointLike>
+    transition?: boolean | AnimationStartOptions<Point.PointLike>
     restrict?: Rectangle.RectangleLike | null
     exclude?: Cell[]
   }
