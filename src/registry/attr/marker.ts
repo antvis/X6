@@ -75,21 +75,6 @@ function normalizeAttr(
     result.fill = stroke
   }
 
-  // Again the context 'fill-opacity' is ignored.
-  let strokeOpacity = attr.strokeOpacity
-  if (strokeOpacity == null) {
-    strokeOpacity = attr['stroke-opacity']
-  }
-
-  if (strokeOpacity == null) {
-    strokeOpacity = attr.opacity
-  }
-
-  if (strokeOpacity != null) {
-    result['stroke-opacity'] = strokeOpacity as number
-    result['fill-opacity'] = strokeOpacity as number
-  }
-
   if (type !== 'marker-mid') {
     const strokeWidth = parseFloat(
       (attr.strokeWidth || attr['stroke-width']) as string,
