@@ -108,7 +108,7 @@ export default class Example extends React.Component {
         break
       case 'attr':
         nodes.forEach((node) => {
-          const color = Color.random().toHex()
+          const color = Color.randomHex()
           node.attr('body/fill', color)
         })
         break
