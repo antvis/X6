@@ -112,7 +112,7 @@ export default class Example extends React.Component {
         }
         break
       case 'updatePort':
-        color = Color.random().toHex()
+        color = Color.randomHex()
         ports.forEach((port) => {
           node.portProp(port.id!, 'attrs/circle/stroke', color)
         })
