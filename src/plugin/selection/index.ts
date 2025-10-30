@@ -22,6 +22,33 @@ import {
 import { content } from './style/raw'
 import './api'
 
+export interface SelectionOptions extends SelectionImplCommonOptions {
+  enabled?: boolean
+}
+
+export type SelectionFilter = SelectionImplFilter
+export type SelectionContent = SelectionImplContent
+
+export type SelectionSetOptions = SelectionImplSetOptions
+export type SelectionAddOptions = SelectionImplAddOptions
+export type SelectionRemoveOptions = SelectionImplRemoveOptions
+
+export const DefaultOptions: Partial<SelectionImplOptions> = {
+  rubberband: false,
+  rubberNode: true,
+  rubberEdge: false, // next version will set to true
+  pointerEvents: 'auto',
+  multiple: true,
+  multipleSelectionModifiers: ['ctrl', 'meta'],
+  movable: true,
+  strict: false,
+  selectCellOnMoved: false,
+  selectNodeOnMoved: false,
+  selectEdgeOnMoved: false,
+  following: true,
+  content: null,
+  eventTypes: ['leftMouseDown', 'mouseWheelDown'],
+}
 export class Selection
   extends Basecoat<SelectionImplEventArgs>
   implements Graph.Plugin
@@ -30,7 +57,7 @@ export class Selection
 
   private graph: Graph
   private selectionImpl: SelectionImpl
-  private readonly options: Selection.Options
+  private readonly options: SelectionOptions
   private movedMap = new WeakMap<Cell, boolean>()
   private unselectMap = new WeakMap<Cell, boolean>()
 
@@ -50,11 +77,11 @@ export class Selection
     return this.selectionImpl.cells
   }
 
-  constructor(options: Selection.Options = {}) {
+  constructor(options: SelectionOptions = {}) {
     super()
     this.options = {
       enabled: true,
-      ...Selection.defaultOptions,
+      ...DefaultOptions,
       ...options,
     }
 
@@ -243,12 +270,12 @@ export class Selection
     this.setModifiers(modifiers)
   }
 
-  setSelectionFilter(filter?: Selection.Filter) {
+  setSelectionFilter(filter?: SelectionFilter) {
     this.setFilter(filter)
     return this
   }
 
-  setSelectionDisplayContent(content?: Selection.Content) {
+  setSelectionDisplayContent(content?: SelectionContent) {
     this.setContent(content)
     return this
   }
@@ -257,14 +284,14 @@ export class Selection
     return this.length <= 0
   }
 
-  clean(options: Selection.SetOptions = {}) {
+  clean(options: SelectionSetOptions = {}) {
     this.selectionImpl.clean(options)
     return this
   }
 
   reset(
     cells?: Cell | string | (Cell | string)[],
-    options: Selection.SetOptions = {},
+    options: SelectionSetOptions = {},
   ) {
     this.selectionImpl.reset(cells ? this.getCells(cells) : [], options)
     return this
@@ -284,7 +311,7 @@ export class Selection
 
   select(
     cells: Cell | string | (Cell | string)[],
-    options: Selection.AddOptions = {},
+    options: SelectionAddOptions = {},
   ) {
     const selected = this.getCells(cells)
     if (selected.length) {
@@ -299,7 +326,7 @@ export class Selection
 
   unselect(
     cells: Cell | string | (Cell | string)[],
-    options: Selection.RemoveOptions = {},
+    options: SelectionRemoveOptions = {},
   ) {
     this.selectionImpl.unselect(this.getCells(cells), options)
     return this
@@ -452,12 +479,12 @@ export class Selection
     return this
   }
 
-  protected setContent(content?: Selection.Content) {
+  protected setContent(content?: SelectionContent) {
     this.selectionImpl.setContent(content)
     return this
   }
 
-  protected setFilter(filter?: Selection.Filter) {
+  protected setFilter(filter?: SelectionFilter) {
     this.selectionImpl.setFilter(filter)
     return this
   }
@@ -468,36 +495,5 @@ export class Selection
     this.off()
     this.selectionImpl.dispose()
     CssLoader.clean(this.name)
-  }
-}
-
-export namespace Selection {
-  export interface EventArgs extends SelectionImplEventArgs {}
-  export interface Options extends SelectionImplCommonOptions {
-    enabled?: boolean
-  }
-
-  export type Filter = SelectionImplFilter
-  export type Content = SelectionImplContent
-
-  export type SetOptions = SelectionImplSetOptions
-  export type AddOptions = SelectionImplAddOptions
-  export type RemoveOptions = SelectionImplRemoveOptions
-
-  export const defaultOptions: Partial<SelectionImplOptions> = {
-    rubberband: false,
-    rubberNode: true,
-    rubberEdge: false, // next version will set to true
-    pointerEvents: 'auto',
-    multiple: true,
-    multipleSelectionModifiers: ['ctrl', 'meta'],
-    movable: true,
-    strict: false,
-    selectCellOnMoved: false,
-    selectNodeOnMoved: false,
-    selectEdgeOnMoved: false,
-    following: true,
-    content: null,
-    eventTypes: ['leftMouseDown', 'mouseWheelDown'],
   }
 }

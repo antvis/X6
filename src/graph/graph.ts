@@ -38,6 +38,9 @@ import { TransformManager as Transform } from './transform'
 import { GraphView } from './view'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
 
+type FindViewsInAreaOptions = {
+  strict?: boolean
+}
 export class Graph extends Basecoat<EventArgs> {
   private installedPlugins: Set<Graph.Plugin> = new Set()
   public model: Model
@@ -525,18 +528,18 @@ export class Graph extends Basecoat<EventArgs> {
     y: number,
     width: number,
     height: number,
-    options?: ViewRenderer.FindViewsInAreaOptions,
+    options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
     rect: Rectangle.RectangleLike,
-    options?: ViewRenderer.FindViewsInAreaOptions,
+    options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
     x: number | Rectangle.RectangleLike,
-    y?: number | ViewRenderer.FindViewsInAreaOptions,
+    y?: number | FindViewsInAreaOptions,
     width?: number,
     height?: number,
-    options?: ViewRenderer.FindViewsInAreaOptions,
+    options?: FindViewsInAreaOptions,
   ) {
     const rect =
       typeof x === 'number'
@@ -548,9 +551,7 @@ export class Graph extends Basecoat<EventArgs> {
           }
         : x
     const localOptions =
-      typeof x === 'number'
-        ? options
-        : (y as ViewRenderer.FindViewsInAreaOptions)
+      typeof x === 'number' ? options : (y as FindViewsInAreaOptions)
     return this.renderer.findViewsInArea(rect, localOptions)
   }
 
@@ -1341,7 +1342,6 @@ export class Graph extends Basecoat<EventArgs> {
 export namespace Graph {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   export import View = GraphView
-  export import Renderer = ViewRenderer
   export import MouseWheel = Wheel
   export import DefsManager = Defs
   export import GridManager = Grid

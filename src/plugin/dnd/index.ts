@@ -1,4 +1,5 @@
 import { alignPoint } from 'dom-align'
+import { DocumentEvents } from '@/constants'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { GeometryUtil, type Point, Rectangle } from '../../geometry'
 import { type EventArgs, Graph } from '../../graph'
@@ -6,6 +7,46 @@ import type { Cell, Node } from '../../model'
 import { type NodeView, View } from '../../view'
 
 import { content } from './style/raw'
+
+export interface GetDragNodeOptions {
+  sourceNode: Node
+  targetGraph: Graph
+  draggingGraph: Graph
+}
+
+export interface GetDropNodeOptions extends GetDragNodeOptions {
+  draggingNode: Node
+}
+
+export interface ValidateNodeOptions extends GetDropNodeOptions {
+  droppingNode: Node
+}
+
+export interface DndOptions {
+  target: Graph
+  /**
+   * Should scale the dragging node or not.
+   */
+  scaled?: boolean
+  delegateGraphOptions?: Graph.Options
+  draggingContainer?: HTMLElement
+  /**
+   * dnd tool box container.
+   */
+  dndContainer?: HTMLElement
+  getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
+  getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
+  validateNode?: (
+    droppingNode: Node,
+    options: ValidateNodeOptions,
+  ) => boolean | Promise<boolean>
+}
+
+export const DndDefaults: Partial<DndOptions> = {
+  // animation: false,
+  getDragNode: (sourceNode) => sourceNode.clone(),
+  getDropNode: (draggingNode) => draggingNode.clone(),
+}
 
 export class Dnd extends View implements Graph.Plugin {
   public name = 'dnd'
@@ -20,7 +61,7 @@ export class Dnd extends View implements Graph.Plugin {
   protected padding: number | null
   protected snapOffset: Point.PointLike | null
 
-  public options: Dnd.Options
+  public options: DndOptions
   public draggingGraph: Graph
 
   protected get targetScroller() {
@@ -43,12 +84,12 @@ export class Dnd extends View implements Graph.Plugin {
     return snapline
   }
 
-  constructor(options: Partial<Dnd.Options> & { target: Graph }) {
+  constructor(options: Partial<DndOptions> & { target: Graph }) {
     super()
     this.options = {
-      ...Dnd.defaults,
+      ...DndDefaults,
       ...options,
-    } as Dnd.Options
+    } as DndOptions
     this.init()
   }
 
@@ -98,7 +139,7 @@ export class Dnd extends View implements Graph.Plugin {
       this.draggingNode!.on('change:position', this.snap, this)
     }
 
-    this.delegateDocumentEvents(Dnd.documentEvents, e.data)
+    this.delegateDocumentEvents(DocumentEvents, e.data)
   }
 
   protected isSnaplineEnabled() {
@@ -464,61 +505,5 @@ export class Dnd extends View implements Graph.Plugin {
   dispose() {
     this.remove()
     CssLoader.clean(this.name)
-  }
-}
-
-export namespace Dnd {
-  export interface Options {
-    target: Graph
-    /**
-     * Should scale the dragging node or not.
-     */
-    scaled?: boolean
-    delegateGraphOptions?: Graph.Options
-    // animation?:
-    //   | boolean
-    //   | {
-    //       duration?: number
-    //       easing?: string
-    //     }
-    draggingContainer?: HTMLElement
-    /**
-     * dnd tool box container.
-     */
-    dndContainer?: HTMLElement
-    getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
-    getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
-    validateNode?: (
-      droppingNode: Node,
-      options: ValidateNodeOptions,
-    ) => boolean | Promise<boolean>
-  }
-
-  export interface GetDragNodeOptions {
-    sourceNode: Node
-    targetGraph: Graph
-    draggingGraph: Graph
-  }
-
-  export interface GetDropNodeOptions extends GetDragNodeOptions {
-    draggingNode: Node
-  }
-
-  export interface ValidateNodeOptions extends GetDropNodeOptions {
-    droppingNode: Node
-  }
-
-  export const defaults: Partial<Options> = {
-    // animation: false,
-    getDragNode: (sourceNode) => sourceNode.clone(),
-    getDropNode: (draggingNode) => draggingNode.clone(),
-  }
-
-  export const documentEvents = {
-    mousemove: 'onDragging',
-    touchmove: 'onDragging',
-    mouseup: 'onDragEnd',
-    touchend: 'onDragEnd',
-    touchcancel: 'onDragEnd',
   }
 }
