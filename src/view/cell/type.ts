@@ -4,7 +4,7 @@ import type { Graph } from '../../graph'
 import type { EdgeViewEventArgs } from '../edge/type'
 import type { FlagManagerActions } from '../flag'
 import type { NodeViewEventArgs } from '../node/type'
-import type { View } from '../view'
+import { ViewEvents } from '@/types'
 import type { CellView } from '.'
 
 export interface CellViewOptions {
@@ -14,8 +14,8 @@ export interface CellViewOptions {
   rootSelector: string
   bootstrap: FlagManagerActions
   actions: KeyValue<FlagManagerActions>
-  events?: View.Events | null
-  documentEvents?: View.Events | null
+  events?: ViewEvents | null
+  documentEvents?: ViewEvents | null
 }
 
 type Interactable = boolean | ((this: Graph, cellView: CellView) => boolean)

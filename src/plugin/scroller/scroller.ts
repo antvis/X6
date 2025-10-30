@@ -1,3 +1,4 @@
+import { ViewEvents } from '@/types'
 import {
   Dom,
   disposable,
@@ -167,7 +168,7 @@ export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
     }
   }
 
-  protected delegateBackgroundEvents(events?: View.Events) {
+  protected delegateBackgroundEvents(events?: ViewEvents) {
     const evts = events || GraphView.events
     this.delegatedHandlers = Object.keys(evts).reduce<{
       [name: string]: (...args: any) => any

@@ -1,3 +1,4 @@
+import { ViewEvents } from '@/types'
 import {
   Basecoat,
   Dom,
@@ -186,7 +187,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return Config.prefix(className)
   }
 
-  delegateEvents(events: View.Events, append?: boolean) {
+  delegateEvents(events: ViewEvents, append?: boolean) {
     if (events == null) {
       return this
     }
@@ -216,7 +217,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
     return this
   }
 
-  delegateDocumentEvents(events: View.Events, data?: KeyValue) {
+  delegateDocumentEvents(events: ViewEvents, data?: KeyValue) {
     this.addEventListeners(document, events, data)
     return this
   }
@@ -265,7 +266,7 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
 
   protected addEventListeners(
     elem: Element | Document,
-    events: View.Events,
+    events: ViewEvents,
     data?: KeyValue,
   ) {
     if (events == null) {
@@ -380,8 +381,4 @@ export abstract class View<A extends EventArgs = any> extends Basecoat<A> {
   dispose() {
     this.remove()
   }
-}
-
-export namespace View {
-  export type Events = KeyValue<string | Function>
 }

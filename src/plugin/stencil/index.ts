@@ -2,7 +2,7 @@ import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { type EventArgs, Graph } from '../../graph'
 import { type Cell, Model, Node } from '../../model'
 import { View } from '../../view'
-import { Dnd } from '../dnd'
+import { DndDefaults, Dnd } from '../dnd'
 import { grid } from './grid'
 import { content } from './style/raw'
 import type {
@@ -49,7 +49,7 @@ export const DefaultOptions: Partial<StencilOptions> = {
       ...(group ? group.layoutOptions : {}),
     })
   },
-  ...Dnd.defaults,
+  ...DndDefaults,
 }
 
 export class Stencil extends View implements Graph.Plugin {

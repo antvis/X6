@@ -1,6 +1,6 @@
 import { Graph } from '../../graph'
 import { Node } from '../../model'
-import { TransformImpl } from './transform'
+import { TransformImplEventArgs } from './transform'
 import { Transform } from './index'
 
 declare module '../../graph/graph' {
@@ -11,7 +11,7 @@ declare module '../../graph/graph' {
 }
 
 declare module '../../graph/events' {
-  interface EventArgs extends TransformImpl.EventArgs {}
+  interface EventArgs extends TransformImplEventArgs {}
 }
 
 Graph.prototype.createTransformWidget = function (node) {

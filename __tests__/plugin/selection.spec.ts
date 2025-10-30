@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Cell, Dom, type Graph } from '../../src'
-import { Selection } from '../../src/plugin/selection'
+import { Selection, DefaultOptions } from '../../src/plugin/selection'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
 
@@ -378,7 +378,7 @@ describe('Selection plugin', () => {
 
       expect(selection['options']).toEqual({
         enabled: true,
-        ...Selection.defaultOptions,
+        ...DefaultOptions,
       })
     })
   })

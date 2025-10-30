@@ -1,3 +1,4 @@
+import { FLAG_INSERT, FLAG_REMOVE } from '@/constants'
 import {
   Disposable,
   Dom,
@@ -12,9 +13,27 @@ import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
 import { JOB_PRIORITY, JobQueue } from './queueJob'
 
+export enum SchedulerViewState {
+  CREATED,
+  MOUNTED,
+  WAITING,
+}
+
+export interface SchedulerView {
+  view: CellView
+  flag: number
+  options: any
+  state: SchedulerViewState
+}
+
+export interface SchedulerEventArgs {
+  'view:mounted': { view: CellView }
+  'view:unmounted': { view: CellView }
+  'render:done': null
+}
 export class Scheduler extends Disposable {
-  public views: KeyValue<Scheduler.View> = {}
-  public willRemoveViews: KeyValue<Scheduler.View> = {}
+  public views: KeyValue<SchedulerView> = {}
+  public willRemoveViews: KeyValue<SchedulerView> = {}
   protected zPivots: KeyValue<Comment>
   private graph: Graph
   private renderArea?: Rectangle
@@ -85,7 +104,7 @@ export class Scheduler extends Disposable {
     if (viewItem) {
       this.requestViewUpdate(
         viewItem.view,
-        Scheduler.FLAG_INSERT,
+        FLAG_INSERT,
         options,
         JOB_PRIORITY.Update,
         true,
@@ -158,14 +177,14 @@ export class Scheduler extends Disposable {
     Object.values(this.views).forEach((viewItem) => {
       if (!viewItem) return
       const { view } = viewItem
-      if (viewItem.state === Scheduler.ViewState.MOUNTED) {
+      if (viewItem.state === SchedulerViewState.MOUNTED) {
         if (!this.isUpdatable(view)) {
           // 卸载 DOM
           view.remove()
           // 切换到 WAITING 状态，等待重新进入区域时再插入
-          viewItem.state = Scheduler.ViewState.WAITING
+          viewItem.state = SchedulerViewState.WAITING
           // 确保重新进入可视区域后会重新插入
-          viewItem.flag |= Scheduler.FLAG_INSERT
+          viewItem.flag |= FLAG_INSERT
         }
       }
     })
@@ -184,7 +203,7 @@ export class Scheduler extends Disposable {
       return false
     }
 
-    return viewItem.state === Scheduler.ViewState.MOUNTED
+    return viewItem.state === SchedulerViewState.MOUNTED
   }
 
   protected renderViews(cells: Cell[], options: any = {}) {
@@ -202,17 +221,17 @@ export class Scheduler extends Disposable {
       let viewItem = views[id]
 
       if (viewItem) {
-        flag = Scheduler.FLAG_INSERT
+        flag = FLAG_INSERT
       } else {
         const cellView = this.createCellView(cell)
         if (cellView) {
           cellView.graph = this.graph
-          flag = Scheduler.FLAG_INSERT | cellView.getBootstrapFlag()
+          flag = FLAG_INSERT | cellView.getBootstrapFlag()
           viewItem = {
             view: cellView,
             flag,
             options,
-            state: Scheduler.ViewState.CREATED,
+            state: SchedulerViewState.CREATED,
           }
           this.views[id] = viewItem
         }
@@ -247,15 +266,15 @@ export class Scheduler extends Disposable {
       viewItem.flag = result
     } else {
       // 视图不在当前可渲染区域内
-      if (viewItem.state === Scheduler.ViewState.MOUNTED) {
+      if (viewItem.state === SchedulerViewState.MOUNTED) {
         // 将已挂载但不在可视区域的视图从 DOM 中卸载
         view.remove()
         result = 0
       }
       // 标记为 WAITING 状态，以便在可视区域变化时重新渲染
-      viewItem.state = Scheduler.ViewState.WAITING
+      viewItem.state = SchedulerViewState.WAITING
       // 确保重新进入可视区域时能够重新插入到 DOM
-      viewItem.flag = flag | Scheduler.FLAG_INSERT
+      viewItem.flag = flag | FLAG_INSERT
     }
 
     if (result) {
@@ -304,7 +323,7 @@ export class Scheduler extends Disposable {
 
   protected flushWaitingViews() {
     Object.values(this.views).forEach((viewItem) => {
-      if (viewItem && viewItem.state === Scheduler.ViewState.WAITING) {
+      if (viewItem && viewItem.state === SchedulerViewState.WAITING) {
         const { view, flag, options } = viewItem
         this.requestViewUpdate(
           view,
@@ -325,14 +344,14 @@ export class Scheduler extends Disposable {
     }
 
     if (CellView.isCellView(view)) {
-      if (flag & Scheduler.FLAG_REMOVE) {
+      if (flag & FLAG_REMOVE) {
         this.removeView(view.cell as any)
         return 0
       }
 
-      if (flag & Scheduler.FLAG_INSERT) {
+      if (flag & FLAG_INSERT) {
         this.insertView(view)
-        flag ^= Scheduler.FLAG_INSERT // eslint-disable-line
+        flag ^= FLAG_INSERT // eslint-disable-line
       }
     }
 
@@ -354,7 +373,7 @@ export class Scheduler extends Disposable {
         this.toggleVisible(view.cell, false)
       }
 
-      viewItem.state = Scheduler.ViewState.MOUNTED
+      viewItem.state = SchedulerViewState.MOUNTED
       this.graph.trigger('view:mounted', { view })
     }
   }
@@ -568,30 +587,5 @@ export class Scheduler extends Disposable {
       this.views[id].view.dispose()
     })
     this.views = {}
-  }
-}
-export namespace Scheduler {
-  export const FLAG_INSERT = 1 << 30
-  export const FLAG_REMOVE = 1 << 29
-  export const FLAG_RENDER = (1 << 26) - 1
-}
-
-export namespace Scheduler {
-  export enum ViewState {
-    CREATED,
-    MOUNTED,
-    WAITING,
-  }
-  export interface View {
-    view: CellView
-    flag: number
-    options: any
-    state: ViewState
-  }
-
-  export interface EventArgs {
-    'view:mounted': { view: CellView }
-    'view:unmounted': { view: CellView }
-    'render:done': null
   }
 }

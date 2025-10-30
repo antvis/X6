@@ -1,7 +1,14 @@
 import type { ModifierKey } from '../../common'
 import { Graph } from '../../graph'
 import type { Cell } from '../../model'
-import type { Selection } from './index'
+import type {
+  SelectionFilter,
+  SelectionContent,
+  SelectionSetOptions,
+  SelectionAddOptions,
+  SelectionRemoveOptions,
+} from './index'
+import { Selection } from './index'
 import type { SelectionImplEventArgsRecord } from './selection'
 
 declare module '../../graph/graph' {
@@ -27,24 +34,24 @@ declare module '../../graph/graph' {
     disableStrictRubberband: () => Graph
     toggleStrictRubberband: (strict?: boolean) => Graph
     setRubberbandModifiers: (modifiers?: string | ModifierKey[] | null) => Graph
-    setSelectionFilter: (filter?: Selection.Filter) => Graph
-    setSelectionDisplayContent: (content?: Selection.Content) => Graph
+    setSelectionFilter: (filter?: SelectionFilter) => Graph
+    setSelectionDisplayContent: (content?: SelectionContent) => Graph
     isSelectionEmpty: () => boolean
-    cleanSelection: (options?: Selection.SetOptions) => Graph
+    cleanSelection: (options?: SelectionSetOptions) => Graph
     resetSelection: (
       cells?: Cell | string | (Cell | string)[],
-      options?: Selection.SetOptions,
+      options?: SelectionSetOptions,
     ) => Graph
     getSelectedCells: () => Cell[]
     getSelectedCellCount: () => number
     isSelected: (cell: Cell | string) => boolean
     select: (
       cells: Cell | string | (Cell | string)[],
-      options?: Selection.AddOptions,
+      options?: SelectionAddOptions,
     ) => Graph
     unselect: (
       cells: Cell | string | (Cell | string)[],
-      options?: Selection.RemoveOptions,
+      options?: SelectionRemoveOptions,
     ) => Graph
   }
 }
@@ -223,7 +230,7 @@ Graph.prototype.setRubberbandModifiers = function (
   return this
 }
 
-Graph.prototype.setSelectionFilter = function (filter?: Selection.Filter) {
+Graph.prototype.setSelectionFilter = function (filter?: SelectionFilter) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
     selection.setSelectionFilter(filter)
@@ -232,7 +239,7 @@ Graph.prototype.setSelectionFilter = function (filter?: Selection.Filter) {
 }
 
 Graph.prototype.setSelectionDisplayContent = function (
-  content?: Selection.Content,
+  content?: SelectionContent,
 ) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
@@ -249,7 +256,7 @@ Graph.prototype.isSelectionEmpty = function () {
   return true
 }
 
-Graph.prototype.cleanSelection = function (options?: Selection.SetOptions) {
+Graph.prototype.cleanSelection = function (options?: SelectionSetOptions) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
     selection.clean(options)
@@ -259,7 +266,7 @@ Graph.prototype.cleanSelection = function (options?: Selection.SetOptions) {
 
 Graph.prototype.resetSelection = function (
   cells?: Cell | string | (Cell | string)[],
-  options?: Selection.SetOptions,
+  options?: SelectionSetOptions,
 ) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
@@ -294,7 +301,7 @@ Graph.prototype.isSelected = function (cell: Cell | string) {
 
 Graph.prototype.select = function (
   cells: Cell | string | (Cell | string)[],
-  options?: Selection.AddOptions,
+  options?: SelectionAddOptions,
 ) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
@@ -305,7 +312,7 @@ Graph.prototype.select = function (
 
 Graph.prototype.unselect = function (
   cells: Cell | string | (Cell | string)[],
-  options?: Selection.RemoveOptions,
+  options?: SelectionRemoveOptions,
 ) {
   const selection = this.getPlugin('selection') as Selection
   if (selection) {
