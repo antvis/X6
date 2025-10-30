@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "node ../scripts/check-node-version.js",
     "start": "dumi dev",
-    "build": "NODE_OPTIONS='--max-old-space-size=8192' dumi build",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' dumi build",
     "clean": ""
   },
   "keywords": [
