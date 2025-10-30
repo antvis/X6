@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { FLAG_INSERT } from '../../src/constants'
 import { JOB_PRIORITY, JobQueue } from '../../src/renderer/queueJob'
 import { Scheduler } from '../../src/renderer/scheduler'
 import { createTestGraph } from '../utils/graph-helpers'
@@ -146,7 +147,7 @@ describe('Scheduler', () => {
 
       expect(requestViewUpdateSpy).toHaveBeenCalledWith(
         mockView,
-        Scheduler['FLAG_INSERT'],
+        FLAG_INSERT,
         {},
         JOB_PRIORITY.Update,
         true,

@@ -1,9 +1,9 @@
 import type { Graph } from '../../graph'
 import type { Model, Node } from '../../model'
-import type { Dnd } from '../dnd'
+import type { DndOptions } from '../dnd'
 import type { Stencil } from '.'
 
-export interface StencilOptions extends Dnd.Options {
+export interface StencilOptions extends DndOptions {
   title: string
   groups?: StencilGroup[]
   search?: StencilFilter
