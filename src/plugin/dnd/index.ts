@@ -1,6 +1,6 @@
 import { alignPoint } from 'dom-align'
-import { DocumentEvents } from '@/constants'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
+import { DocumentEvents } from '../../constants'
 import { GeometryUtil, type Point, Rectangle } from '../../geometry'
 import { type EventArgs, Graph } from '../../graph'
 import type { Cell, Node } from '../../model'

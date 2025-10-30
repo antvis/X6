@@ -1,4 +1,3 @@
-import { FLAG_INSERT, FLAG_REMOVE } from '@/constants'
 import {
   Disposable,
   Dom,
@@ -6,6 +5,7 @@ import {
   FunctionExt,
   type KeyValue,
 } from '../common'
+import { FLAG_INSERT, FLAG_REMOVE } from '../constants'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import type { Cell, Model } from '../model'
