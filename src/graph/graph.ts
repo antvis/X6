@@ -551,11 +551,7 @@ export class Graph extends Basecoat<EventArgs> {
           }
         : x
     const localOptions =
-      typeof x === 'number'
-        ? options
-        : (y as {
-            strict?: boolean
-          })
+      typeof x === 'number' ? options : (y as FindViewsInAreaOptions)
     return this.renderer.findViewsInArea(rect, localOptions)
   }
 
