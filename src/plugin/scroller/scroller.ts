@@ -1,4 +1,3 @@
-import { ViewEvents } from '@/types'
 import {
   Dom,
   disposable,
@@ -17,6 +16,7 @@ import {
   type TransformManager,
 } from '../../graph'
 import type { Cell } from '../../model'
+import type { ViewEvents } from '../../types'
 import { View } from '../../view'
 
 export class ScrollerImpl extends View<ScrollerImpl.EventArgs> {
