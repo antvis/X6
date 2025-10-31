@@ -27,10 +27,8 @@ export class JobQueue {
         }
       } else {
         const index = this.findInsertionIndex(job)
-        if (index >= 0) {
-          this.queue.splice(index, 0, job)
-          this.pendingJobs.set(job.id, job)
-        }
+        this.queue.splice(index, 0, job)
+        this.pendingJobs.set(job.id, job)
       }
     }
   }
@@ -151,7 +149,7 @@ export class JobQueue {
       'cancelAnimationFrame' in window
     ) {
       window.cancelAnimationFrame(this.scheduleId as number)
-    } else {
+    } else if (this.scheduleMode === 'timeout') {
       clearTimeout(this.scheduleId as number)
     }
     this.scheduleId = 0
