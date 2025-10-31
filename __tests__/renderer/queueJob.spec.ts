@@ -195,6 +195,7 @@ describe('JobQueue', () => {
       jobQueue['isFlushing'] = true
       jobQueue['isFlushPending'] = true
       jobQueue['scheduleId'] = 1
+      jobQueue['scheduleMode'] = 'idle'
 
       jobQueue.clearJobs()
 
@@ -293,7 +294,7 @@ describe('JobQueue', () => {
     })
 
     it('should handle errors in job callbacks', () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       const error = new Error('Test error')
       const job: Job = {
         id: '1',
@@ -376,6 +377,96 @@ describe('JobQueue', () => {
 
       const index = (jobQueue as any).findInsertionIndex(newJob)
       expect(index).toBe(1)
+    })
+  })
+
+  // Additional tests aligned with current JobQueue behavior
+  describe('queueJob - dedup and priority reorder', () => {
+    it('deduplicates by id and updates callback without growing queue', () => {
+      const cb1 = vi.fn()
+      const cb2 = vi.fn()
+      const job1: Job = { id: 'dup', priority: JOB_PRIORITY.Update, cb: cb1 }
+      const job2: Job = { id: 'dup', priority: JOB_PRIORITY.Update, cb: cb2 }
+
+      jobQueue.queueJob(job1)
+      jobQueue.queueJob(job2)
+
+      expect(jobQueue['queue'].length).toBe(1)
+      expect(jobQueue['queue'][0].cb).toBe(cb2)
+
+      jobQueue.flushJobsSync()
+      expect(cb1).not.toHaveBeenCalled()
+      expect(cb2).toHaveBeenCalled()
+    })
+
+    it('re-orders existing job when its priority changes', () => {
+      const cb = vi.fn()
+      const edgeJob: Job = {
+        id: 'e',
+        priority: JOB_PRIORITY.RenderEdge,
+        cb: vi.fn(),
+      }
+      const updateJob: Job = { id: 'u', priority: JOB_PRIORITY.Update, cb }
+
+      jobQueue.queueJob(edgeJob)
+      jobQueue.queueJob(updateJob)
+
+      const upgraded: Job = { id: 'u', priority: JOB_PRIORITY.RenderNode, cb }
+      jobQueue.queueJob(upgraded)
+
+      expect(jobQueue['queue'][0].id).toBe('u')
+      expect(jobQueue['queue'][0].priority).toBe(JOB_PRIORITY.RenderNode)
+      expect(jobQueue['queue'][1].id).toBe('e')
+    })
+  })
+
+  describe('flushJobs - idle deadline budget', () => {
+    it('caps budget using idle deadline timeRemaining', () => {
+      const mockCb1 = vi.fn()
+      const mockCb2 = vi.fn()
+      jobQueue.queueJob({ id: '1', priority: JOB_PRIORITY.Update, cb: mockCb1 })
+      jobQueue.queueJob({ id: '2', priority: JOB_PRIORITY.Update, cb: mockCb2 })
+
+      const fakeDeadline = { timeRemaining: () => 5 } as any
+      mockPerformanceNow
+        .mockImplementationOnce(() => 0)
+        .mockImplementationOnce(() => 6)
+
+      jobQueue.flushJobs(fakeDeadline)
+
+      expect(mockCb1).toHaveBeenCalled()
+      expect(mockCb2).not.toHaveBeenCalled()
+      expect(jobQueue['isFlushPending']).toBe(true)
+      expect(jobQueue['isFlushing']).toBe(false)
+    })
+  })
+
+  describe('cancelScheduleJob - modes', () => {
+    it('cancels RAF schedule when mode is raf', () => {
+      let cancelRAFSpy: any
+      if ('cancelAnimationFrame' in window) {
+        cancelRAFSpy = vi.spyOn(window, 'cancelAnimationFrame')
+      } else {
+        const mock = vi.fn()
+        Object.defineProperty(window, 'cancelAnimationFrame', { value: mock })
+        cancelRAFSpy = vi.spyOn(window, 'cancelAnimationFrame' as any)
+      }
+
+      jobQueue['scheduleMode'] = 'raf'
+      jobQueue['scheduleId'] = 1
+
+      jobQueue.clearJobs()
+
+      expect(cancelRAFSpy).toHaveBeenCalled()
+    })
+
+    it('cancels timeout schedule when mode is timeout', () => {
+      jobQueue['scheduleMode'] = 'timeout'
+      jobQueue['scheduleId'] = 1
+
+      jobQueue.clearJobs()
+
+      expect(mockClearTimeout).toHaveBeenCalled()
     })
   })
 
