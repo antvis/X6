@@ -1,3 +1,11 @@
+const SCHEDULE_MODE = {
+  idle: 'idle',
+  raf: 'raf',
+  timeout: 'timeout',
+} as const
+
+type ScheduleMode = (typeof SCHEDULE_MODE)[keyof typeof SCHEDULE_MODE]
+
 export class JobQueue {
   private isFlushing = false
   private isFlushPending = false
@@ -6,7 +14,7 @@ export class JobQueue {
   private frameInterval = 16
   private initialTime = Date.now()
   private pendingJobs = new Map<string, Job>()
-  private scheduleMode: 'idle' | 'raf' | 'timeout' | null = null
+  private scheduleMode: ScheduleMode | null = null
 
   queueJob(job: Job) {
     if (job.priority & JOB_PRIORITY.PRIOR) {
@@ -122,7 +130,7 @@ export class JobQueue {
       this.cancelScheduleJob()
     }
     if ('requestIdleCallback' in window) {
-      this.scheduleMode = 'idle'
+      this.scheduleMode = SCHEDULE_MODE.idle
       this.scheduleId = window.requestIdleCallback(
         (deadline: IdleDeadline) => this.flushJobs(deadline),
         {
@@ -130,27 +138,27 @@ export class JobQueue {
         },
       )
     } else if ('requestAnimationFrame' in window) {
-      this.scheduleMode = 'raf'
+      this.scheduleMode = SCHEDULE_MODE.raf
       this.scheduleId = (window as Window).requestAnimationFrame(() =>
         this.flushJobs(),
       )
     } else {
-      this.scheduleMode = 'timeout'
+      this.scheduleMode = SCHEDULE_MODE.timeout
       this.scheduleId = (window as Window).setTimeout(() => this.flushJobs())
     }
   }
 
   private cancelScheduleJob() {
     if (!this.scheduleId) return
-    if (this.scheduleMode === 'idle' && 'cancelIdleCallback' in window) {
-      window.cancelIdleCallback(this.scheduleId as number)
-    } else if (
-      this.scheduleMode === 'raf' &&
-      'cancelAnimationFrame' in window
-    ) {
-      window.cancelAnimationFrame(this.scheduleId as number)
-    } else if (this.scheduleMode === 'timeout') {
-      clearTimeout(this.scheduleId as number)
+    const cancelMethods: Partial<Record<ScheduleMode, (id: number) => void>> = {
+      [SCHEDULE_MODE.idle]: window?.cancelIdleCallback,
+      [SCHEDULE_MODE.raf]: window?.cancelAnimationFrame,
+      [SCHEDULE_MODE.timeout]: window?.clearTimeout,
+    }
+    const mode = this.scheduleMode
+    const cancelMethod = mode ? cancelMethods[mode] : undefined
+    if (typeof cancelMethod === 'function') {
+      cancelMethod(this.scheduleId as number)
     }
     this.scheduleId = 0
     this.scheduleMode = null
