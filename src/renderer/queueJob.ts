@@ -1,18 +1,42 @@
+const SCHEDULE_MODE = {
+  idle: 'idle',
+  raf: 'raf',
+  timeout: 'timeout',
+} as const
+
+type ScheduleMode = (typeof SCHEDULE_MODE)[keyof typeof SCHEDULE_MODE]
+
 export class JobQueue {
   private isFlushing = false
   private isFlushPending = false
   private scheduleId = 0
   private queue: Job[] = []
-  private frameInterval = 33
+  private frameInterval = 16
   private initialTime = Date.now()
+  private pendingJobs = new Map<string, Job>()
+  private scheduleMode: ScheduleMode | null = null
 
   queueJob(job: Job) {
     if (job.priority & JOB_PRIORITY.PRIOR) {
       job.cb()
     } else {
-      const index = this.findInsertionIndex(job)
-      if (index >= 0) {
+      const existing = this.pendingJobs.get(job.id)
+      if (existing) {
+        // 仅更新已有任务的回调与优先级
+        existing.cb = job.cb
+        if (job.priority !== existing.priority) {
+          existing.priority = job.priority
+          const idx = this.queue.indexOf(existing)
+          if (idx >= 0) {
+            this.queue.splice(idx, 1)
+            const newIndex = this.findInsertionIndex(existing)
+            this.queue.splice(newIndex, 0, existing)
+          }
+        }
+      } else {
+        const index = this.findInsertionIndex(job)
         this.queue.splice(index, 0, job)
+        this.pendingJobs.set(job.id, job)
       }
     }
   }
@@ -33,21 +57,29 @@ export class JobQueue {
 
   clearJobs() {
     this.queue.length = 0
+    this.pendingJobs.clear()
     this.isFlushing = false
     this.isFlushPending = false
     this.cancelScheduleJob()
   }
 
-  flushJobs() {
+  flushJobs(deadline?: IdleDeadline) {
     this.isFlushPending = false
     this.isFlushing = true
 
     const startTime = this.getCurrentTime()
+    let budget = this.frameInterval
+    if (deadline && typeof deadline.timeRemaining === 'function') {
+      const remain = deadline.timeRemaining()
+      // 防止过长占用单帧
+      budget = Math.max(0, Math.min(budget, remain))
+    }
 
-    let job
-    while ((job = this.queue.shift())) {
+    while (this.queue.length > 0) {
+      const job = this.queue.shift()!
       job.cb()
-      if (this.getCurrentTime() - startTime >= this.frameInterval) {
+      this.pendingJobs.delete(job.id)
+      if (this.getCurrentTime() - startTime >= budget) {
         break
       }
     }
@@ -63,14 +95,14 @@ export class JobQueue {
     this.isFlushPending = false
     this.isFlushing = true
 
-    let job
-    while ((job = this.queue.shift())) {
+    while (this.queue.length > 0) {
+      const job = this.queue.shift()!
       try {
         job.cb()
       } catch (error) {
-        // eslint-disable-next-line
-        console.log(error)
+        console.error(error)
       }
+      this.pendingJobs.delete(job.id)
     }
 
     this.isFlushing = false
@@ -94,33 +126,42 @@ export class JobQueue {
   }
 
   private scheduleJob() {
+    if (this.scheduleId) {
+      this.cancelScheduleJob()
+    }
     if ('requestIdleCallback' in window) {
-      if (this.scheduleId) {
-        this.cancelScheduleJob()
-      }
-      this.scheduleId = window.requestIdleCallback(this.flushJobs.bind(this), {
-        timeout: 100,
-      })
+      this.scheduleMode = SCHEDULE_MODE.idle
+      this.scheduleId = window.requestIdleCallback(
+        (deadline: IdleDeadline) => this.flushJobs(deadline),
+        {
+          timeout: 100,
+        },
+      )
+    } else if ('requestAnimationFrame' in window) {
+      this.scheduleMode = SCHEDULE_MODE.raf
+      this.scheduleId = (window as Window).requestAnimationFrame(() =>
+        this.flushJobs(),
+      )
     } else {
-      if (this.scheduleId) {
-        this.cancelScheduleJob()
-      }
-      this.scheduleId = (window as Window).setTimeout(this.flushJobs.bind(this))
+      this.scheduleMode = SCHEDULE_MODE.timeout
+      this.scheduleId = (window as Window).setTimeout(() => this.flushJobs())
     }
   }
 
   private cancelScheduleJob() {
-    if ('cancelIdleCallback' in window) {
-      if (this.scheduleId) {
-        window.cancelIdleCallback(this.scheduleId)
-      }
-      this.scheduleId = 0
-    } else {
-      if (this.scheduleId) {
-        clearTimeout(this.scheduleId)
-      }
-      this.scheduleId = 0
+    if (!this.scheduleId) return
+    const cancelMethods: Partial<Record<ScheduleMode, (id: number) => void>> = {
+      [SCHEDULE_MODE.idle]: window?.cancelIdleCallback,
+      [SCHEDULE_MODE.raf]: window?.cancelAnimationFrame,
+      [SCHEDULE_MODE.timeout]: window?.clearTimeout,
     }
+    const mode = this.scheduleMode
+    const cancelMethod = mode ? cancelMethods[mode] : undefined
+    if (typeof cancelMethod === 'function') {
+      cancelMethod(this.scheduleId as number)
+    }
+    this.scheduleId = 0
+    this.scheduleMode = null
   }
 
   private getCurrentTime() {
@@ -145,20 +186,3 @@ export enum JOB_PRIORITY {
   RenderNode = /**/ 1 << 3,
   PRIOR = /*     */ 1 << 20,
 }
-
-// function findInsertionIndex(job: Job) {
-//   let start = 0
-//   for (let i = 0, len = queue.length; i < len; i += 1) {
-//     const j = queue[i]
-//     if (j.id === job.id) {
-//       console.log('xx', j.bit, job.bit)
-//     }
-//     if (j.id === job.id && (job.bit ^ (job.bit & j.bit)) === 0) {
-//       return -1
-//     }
-//     if (j.priority <= job.priority) {
-//       start += 1
-//     }
-//   }
-//   return start
-// }
