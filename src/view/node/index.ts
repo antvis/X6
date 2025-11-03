@@ -1,6 +1,11 @@
 import { ArrayExt, Dom, FunctionExt } from '../../common'
 import { Config } from '../../config'
-import { GeometryUtil, Point, Rectangle } from '../../geometry'
+import {
+  snapToGrid,
+  Point,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
 import { Cell } from '../../model/cell'
 import type { Edge } from '../../model/edge'
 import type { Node } from '../../model/node'
@@ -21,6 +26,7 @@ import type {
   NodeViewPortCache,
   NodeViewPositionEventArgs,
 } from './type'
+import type { KeyPoint } from '@/types'
 
 export class NodeView<
   Entity extends Node = Node,
@@ -765,7 +771,7 @@ export class NodeView<
             )
           })
         : graph.model.getNodesUnderNode(cell, {
-            by: findParent as Rectangle.KeyPoint,
+            by: findParent as KeyPoint,
           })
 
     // Picks the node with the highest `z` index
@@ -1082,7 +1088,7 @@ export class NodeView<
     })
   }
 
-  protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+  protected getRestrictArea(view?: NodeView): RectangleLike | null {
     const restrict = this.graph.options.translating.restrict
     const area =
       typeof restrict === 'function'
@@ -1135,8 +1141,8 @@ export class NodeView<
 
     this.autoScrollGraph(e.clientX, e.clientY)
 
-    const posX = GeometryUtil.snapToGrid(x + offset.x, gridSize)
-    const posY = GeometryUtil.snapToGrid(y + offset.y, gridSize)
+    const posX = snapToGrid(x + offset.x, gridSize)
+    const posY = snapToGrid(y + offset.y, gridSize)
     node.setPosition(posX, posY, {
       restrict,
       deep: true,

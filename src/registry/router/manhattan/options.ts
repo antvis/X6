@@ -1,5 +1,10 @@
 import { NumberExt } from '../../../common'
-import { Angle, Point, type Rectangle, type PointLike } from '../../../geometry'
+import {
+  normalize,
+  Point,
+  type RectangleLike,
+  type PointLike,
+} from '../../../geometry'
 import type { Edge, Node } from '../../../model'
 import type { EdgeView } from '../../../view'
 import type { RouterDefinition } from '../index'
@@ -106,7 +111,7 @@ export interface ResolvedOptions {
   /**
    * The padding applied on the element bounding boxes.
    */
-  paddingBox: Rectangle.RectangleLike
+  paddingBox: RectangleLike
 
   fallbackRouter: RouterDefinition<any>
 
@@ -236,7 +241,7 @@ export function resolveOptions(options: ManhattanRouterOptions) {
   result.directions.forEach((direction) => {
     const point1 = new Point(0, 0)
     const point2 = new Point(direction.offsetX, direction.offsetY)
-    direction.angle = Angle.normalize(point1.theta(point2))
+    direction.angle = normalize(point1.theta(point2))
   })
 
   return result

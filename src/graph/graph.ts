@@ -1,6 +1,6 @@
 import type { Dom, KeyValue, NumberExt } from '../common'
 import { Basecoat, disposable } from '../common'
-import { Point, Rectangle } from '../geometry'
+import { Point, Rectangle, type RectangleLike } from '../geometry'
 import type { PointLike } from '../geometry/point'
 import type { Collection } from '../model'
 import { Cell, Edge, Model, Node } from '../model'
@@ -39,6 +39,7 @@ import { SizeManager as Size } from './size'
 import { TransformManager as Transform } from './transform'
 import { GraphView } from './view'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
+import type { KeyPoint } from '@/types'
 
 type FindViewsInAreaOptions = {
   strict?: boolean
@@ -387,11 +388,11 @@ export class Graph extends Basecoat<EventArgs> {
     options?: Model.GetCellsInAreaOptions,
   ): Node[]
   getNodesInArea(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options?: Model.GetCellsInAreaOptions,
   ): Node[]
   getNodesInArea(
-    x: number | Rectangle.RectangleLike,
+    x: number | RectangleLike,
     y?: number | Model.GetCellsInAreaOptions,
     w?: number,
     h?: number,
@@ -409,7 +410,7 @@ export class Graph extends Basecoat<EventArgs> {
   getNodesUnderNode(
     node: Node,
     options: {
-      by?: 'bbox' | Rectangle.KeyPoint
+      by?: 'bbox' | KeyPoint
     } = {},
   ) {
     return this.model.getNodesUnderNode(node, options)
@@ -494,7 +495,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.findViewByElem(ref)
   }
 
-  findViews(ref: PointLike | Rectangle.RectangleLike) {
+  findViews(ref: PointLike | RectangleLike) {
     if (Rectangle.isRectangleLike(ref)) {
       return this.findViewsInArea(ref)
     }
@@ -533,11 +534,11 @@ export class Graph extends Basecoat<EventArgs> {
     options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
-    x: number | Rectangle.RectangleLike,
+    x: number | RectangleLike,
     y?: number | FindViewsInAreaOptions,
     width?: number,
     height?: number,
@@ -631,7 +632,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   zoomToRect(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options: Transform.ScaleContentToFitOptions &
       Transform.ScaleContentToFitOptions = {},
   ) {
@@ -804,7 +805,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   positionRect(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     direction: Transform.Direction,
     options?: Transform.CenterOptions,
   ) {
@@ -857,12 +858,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.snapToGrid(x, y)
   }
 
-  pageToLocal(rect: Rectangle.RectangleLike): Rectangle
+  pageToLocal(rect: RectangleLike): Rectangle
   pageToLocal(x: number, y: number, width: number, height: number): Rectangle
   pageToLocal(p: PointLike): Point
   pageToLocal(x: number, y: number): Point
   pageToLocal(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -883,12 +884,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.pageToLocalPoint(x, y)
   }
 
-  localToPage(rect: Rectangle.RectangleLike): Rectangle
+  localToPage(rect: RectangleLike): Rectangle
   localToPage(x: number, y: number, width: number, height: number): Rectangle
   localToPage(p: PointLike): Point
   localToPage(x: number, y: number): Point
   localToPage(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -909,12 +910,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.localToPagePoint(x, y)
   }
 
-  clientToLocal(rect: Rectangle.RectangleLike): Rectangle
+  clientToLocal(rect: RectangleLike): Rectangle
   clientToLocal(x: number, y: number, width: number, height: number): Rectangle
   clientToLocal(p: PointLike): Point
   clientToLocal(x: number, y: number): Point
   clientToLocal(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -935,12 +936,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.clientToLocalPoint(x, y)
   }
 
-  localToClient(rect: Rectangle.RectangleLike): Rectangle
+  localToClient(rect: RectangleLike): Rectangle
   localToClient(x: number, y: number, width: number, height: number): Rectangle
   localToClient(p: PointLike): Point
   localToClient(x: number, y: number): Point
   localToClient(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -965,7 +966,7 @@ export class Graph extends Basecoat<EventArgs> {
    * Transform the rectangle `rect` defined in the local coordinate system to
    * the graph coordinate system.
    */
-  localToGraph(rect: Rectangle.RectangleLike): Rectangle
+  localToGraph(rect: RectangleLike): Rectangle
   /**
    * Transform the rectangle `x`, `y`, `width`, `height` defined in the local
    * coordinate system to the graph coordinate system.
@@ -982,7 +983,7 @@ export class Graph extends Basecoat<EventArgs> {
    */
   localToGraph(x: number, y: number): Point
   localToGraph(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -1003,12 +1004,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.localToGraphPoint(x, y)
   }
 
-  graphToLocal(rect: Rectangle.RectangleLike): Rectangle
+  graphToLocal(rect: RectangleLike): Rectangle
   graphToLocal(x: number, y: number, width: number, height: number): Rectangle
   graphToLocal(p: PointLike): Point
   graphToLocal(x: number, y: number): Point
   graphToLocal(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -1028,12 +1029,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.graphToLocalPoint(x, y)
   }
 
-  clientToGraph(rect: Rectangle.RectangleLike): Rectangle
+  clientToGraph(rect: RectangleLike): Rectangle
   clientToGraph(x: number, y: number, width: number, height: number): Rectangle
   clientToGraph(p: PointLike): Point
   clientToGraph(x: number, y: number): Point
   clientToGraph(
-    x: number | PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,

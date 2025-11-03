@@ -7,7 +7,7 @@ import {
   type ModifierKey,
 } from '../../common'
 import { Config } from '../../config'
-import type { Point, Rectangle, PointLike } from '../../geometry'
+import type { Point, Rectangle, PointLike, RectangleLike } from '../../geometry'
 import type { BackgroundManager, Graph, TransformManager } from '../../graph'
 import type { Cell } from '../../model'
 import { ScrollerImpl, getOptions } from './scroller'
@@ -110,7 +110,7 @@ export class Scroller
   }
 
   zoomToRect(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options: TransformManager.ScaleContentToFitOptions &
       TransformManager.ScaleContentToFitOptions = {},
   ) {
@@ -164,7 +164,7 @@ export class Scroller
   }
 
   positionRect(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     direction: Direction,
     options?: CenterOptions,
   ) {
@@ -282,10 +282,7 @@ export class Scroller
     return this
   }
 
-  transitionToRect(
-    rect: Rectangle.RectangleLike,
-    options: TransitionToRectOptions = {},
-  ) {
+  transitionToRect(rect: RectangleLike, options: TransitionToRectOptions = {}) {
     this.scrollerImpl.transitionToRect(rect, options)
     return this
   }

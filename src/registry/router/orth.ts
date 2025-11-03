@@ -1,6 +1,6 @@
 import { ArrayExt } from '../../common'
 import {
-  Angle,
+  toRad,
   Line,
   Point,
   type Rectangle,
@@ -310,7 +310,7 @@ function insideNode(
   if (p1.round().equals(p2.round())) {
     p2 = Point.fromPolar(
       boundary.width + boundary.height,
-      Angle.toRad(p1.theta(start)) + Math.PI / 2,
+      toRad(p1.theta(start)) + Math.PI / 2,
       end,
     )
     p2 = boundary.getNearestPointToPoint(p2).move(end, 1).round()

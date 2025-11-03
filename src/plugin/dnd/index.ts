@@ -2,7 +2,7 @@ import { alignPoint } from 'dom-align'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { DocumentEvents } from '@/constants'
 import {
-  GeometryUtil,
+  snapToGrid,
   type Point,
   Rectangle,
   type PointLike,
@@ -463,8 +463,8 @@ export class Dnd extends View implements Graph.Plugin {
       const gridSize = this.snapOffset ? 1 : targetGraph.getGridSize()
 
       droppingNode.position(
-        GeometryUtil.snapToGrid(local.x, gridSize),
-        GeometryUtil.snapToGrid(local.y, gridSize),
+        snapToGrid(local.x, gridSize),
+        snapToGrid(local.y, gridSize),
       )
 
       droppingNode.removeZIndex()

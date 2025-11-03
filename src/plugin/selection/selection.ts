@@ -5,7 +5,12 @@ import {
   type KeyValue,
   type ModifierKey,
 } from '../../common'
-import { type Point, Rectangle, type PointLike } from '../../geometry'
+import {
+  type Point,
+  Rectangle,
+  type PointLike,
+  type RectangleLike,
+} from '../../geometry'
 import type { Graph } from '../../graph'
 import { Cell, Collection, type Edge, type Model, type Node } from '../../model'
 import { type CellView, View } from '../../view'
@@ -458,7 +463,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     this.prepareTranslatingCache()
   }
 
-  private getRestrictArea(): Rectangle.RectangleLike | null {
+  private getRestrictArea(): RectangleLike | null {
     const restrict = this.graph.options.translating.restrict
     const area =
       typeof restrict === 'function'
