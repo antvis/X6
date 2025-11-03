@@ -31,10 +31,15 @@ import {
   type AnimationTargetValue,
 } from './animation'
 import type { Edge } from './edge'
-import type { Model } from './model'
+import type { Model, BatchName } from './model'
 import type { Node } from './node'
 import type { Port } from './port'
 import { Store } from './store'
+import type {
+  StoreMutateOptions,
+  StoreSetByPathOptions,
+  StoreSetOptions,
+} from './store'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties,
@@ -1435,7 +1440,7 @@ export class Cell<
   // #region batch
 
   startBatch(
-    name: Model.BatchName,
+    name: BatchName,
     data: KeyValue = {},
     model: Model | null = this.model,
   ) {
@@ -1449,7 +1454,7 @@ export class Cell<
   }
 
   stopBatch(
-    name: Model.BatchName,
+    name: BatchName,
     data: KeyValue = {},
     model: Model | null = this.model,
   ) {
@@ -1461,7 +1466,7 @@ export class Cell<
     return this
   }
 
-  batchUpdate<T>(name: Model.BatchName, execute: () => T, data?: KeyValue): T {
+  batchUpdate<T>(name: BatchName, execute: () => T, data?: KeyValue): T {
     // The model is null after cell was removed(remove batch).
     // So we should temp save model to trigger pairing batch event.
     const model = this.model
@@ -1554,9 +1559,9 @@ export namespace Cell {
 }
 
 export namespace Cell {
-  export interface SetOptions extends Store.SetOptions {}
+  export interface SetOptions extends StoreSetOptions {}
 
-  export interface MutateOptions extends Store.MutateOptions {}
+  export interface MutateOptions extends StoreMutateOptions {}
 
   export interface RemoveOptions extends SetOptions {
     deep?: boolean
@@ -1572,7 +1577,7 @@ export namespace Cell {
     overwrite?: boolean
   }
 
-  export interface SetByPathOptions extends Store.SetByPathOptions {}
+  export interface SetByPathOptions extends StoreSetByPathOptions {}
 
   export interface ToFrontOptions extends SetOptions {
     deep?: boolean
@@ -1682,13 +1687,13 @@ export namespace Cell {
     }
 
     'batch:start': {
-      name: Model.BatchName
+      name: BatchName
       data: KeyValue
       cell: Cell
     }
 
     'batch:stop': {
-      name: Model.BatchName
+      name: BatchName
       data: KeyValue
       cell: Cell
     }

@@ -1,13 +1,47 @@
 import type { Assign, NonUndefined } from 'utility-types'
 import { Basecoat, disposable, type KeyValue, ObjectExt } from '../common'
 
-export class Store<D> extends Basecoat<Store.EventArgs<D>> {
+export interface StoreSetOptions extends KeyValue {
+  silent?: boolean
+}
+
+export interface StoreMutateOptions extends StoreSetOptions {
+  unset?: boolean
+}
+
+export interface StoreSetByPathOptions extends StoreSetOptions {
+  rewrite?: boolean
+}
+
+type CommonArgs<D> = { store: Store<D> }
+
+export interface EventArgs<D, K extends keyof D = keyof D> {
+  'change:*': Assign<
+    {
+      key: K
+      current: D[K]
+      previous: D[K]
+      options: StoreMutateOptions
+    },
+    CommonArgs<D>
+  >
+  changed: Assign<
+    {
+      current: D
+      previous: D
+      options: StoreMutateOptions
+    },
+    CommonArgs<D>
+  >
+  disposed: CommonArgs<D>
+}
+export class Store<D> extends Basecoat<EventArgs<D>> {
   protected data: D
   protected previous: D
   protected changed: Partial<D>
   protected pending = false
   protected changing = false
-  protected pendingOptions: Store.MutateOptions | null
+  protected pendingOptions: StoreMutateOptions | null
 
   constructor(data: Partial<D> = {}) {
     super()
@@ -18,7 +52,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
 
   protected mutate<K extends keyof D>(
     data: Partial<D>,
-    options: Store.MutateOptions = {},
+    options: StoreMutateOptions = {},
   ) {
     const unset = options.unset === true
     const silent = options.silent === true
@@ -120,18 +154,18 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   set<K extends keyof D>(
     key: K,
     value: D[K] | null | undefined | void,
-    options?: Store.SetOptions,
+    options?: StoreSetOptions,
   ): this
-  set(key: string, value: any, options?: Store.SetOptions): this
-  set(data: D, options?: Store.SetOptions): this
+  set(key: string, value: any, options?: StoreSetOptions): this
+  set(data: D, options?: StoreSetOptions): this
   set<K extends keyof D>(
     key: K | Partial<D>,
-    value?: D[K] | null | undefined | void | Store.SetOptions,
-    options?: Store.SetOptions,
+    value?: D[K] | null | undefined | void | StoreSetOptions,
+    options?: StoreSetOptions,
   ): this {
     if (key != null) {
       if (typeof key === 'object') {
-        this.mutate(key, value as Store.SetOptions)
+        this.mutate(key, value as StoreSetOptions)
       } else {
         this.mutate({ [key]: value } as Partial<D>, options)
       }
@@ -140,15 +174,15 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     return this
   }
 
-  remove<K extends keyof D>(key: K | K[], options?: Store.SetOptions): this
-  remove(options?: Store.SetOptions): this
+  remove<K extends keyof D>(key: K | K[], options?: StoreSetOptions): this
+  remove(options?: StoreSetOptions): this
   remove<K extends keyof D>(
-    key: K | K[] | Store.SetOptions,
-    options?: Store.SetOptions,
+    key: K | K[] | StoreSetOptions,
+    options?: StoreSetOptions,
   ) {
     const empty = undefined
     const subset: Partial<D> = {}
-    let opts: Store.SetOptions | undefined
+    let opts: StoreSetOptions | undefined
 
     if (typeof key === 'string') {
       subset[key] = empty
@@ -161,7 +195,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
       for (const key in this.data) {
         subset[key] = empty
       }
-      opts = key as Store.SetOptions
+      opts = key as StoreSetOptions
     }
 
     this.mutate(subset, { ...opts, unset: true })
@@ -175,7 +209,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   setByPath<K extends keyof D>(
     path: string | string[],
     value: any,
-    options: Store.SetByPathOptions = {},
+    options: StoreSetByPathOptions = {},
   ) {
     const delim = '/'
     const pathArray = Array.isArray(path) ? [...path] : path.split(delim)
@@ -225,7 +259,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
 
   removeByPath<K extends keyof D>(
     path: string | string[],
-    options?: Store.SetOptions,
+    options?: StoreSetOptions,
   ) {
     const keys = Array.isArray(path) ? path : path.split('/')
     const key = keys[0] as K
@@ -301,42 +335,5 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     this.changing = false
     this.pendingOptions = null
     this.trigger('disposed', { store: this })
-  }
-}
-
-export namespace Store {
-  export interface SetOptions extends KeyValue {
-    silent?: boolean
-  }
-
-  export interface MutateOptions extends SetOptions {
-    unset?: boolean
-  }
-
-  export interface SetByPathOptions extends SetOptions {
-    rewrite?: boolean
-  }
-
-  type CommonArgs<D> = { store: Store<D> }
-
-  export interface EventArgs<D, K extends keyof D = keyof D> {
-    'change:*': Assign<
-      {
-        key: K
-        current: D[K]
-        previous: D[K]
-        options: MutateOptions
-      },
-      CommonArgs<D>
-    >
-    changed: Assign<
-      {
-        current: D
-        previous: D
-        options: MutateOptions
-      },
-      CommonArgs<D>
-    >
-    disposed: CommonArgs<D>
   }
 }

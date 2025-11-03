@@ -8,7 +8,7 @@ import {
 import { FLAG_INSERT, FLAG_REMOVE } from '../constants'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
-import type { Cell, Model } from '../model'
+import type { Cell, ModelEventArgs } from '../model'
 import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
 import { JOB_PRIORITY, JobQueue } from './queueJob'
@@ -75,7 +75,7 @@ export class Scheduler extends Disposable {
     this.model.off('cell:change:visible', this.onCellVisibleChanged, this)
   }
 
-  protected onModelReseted({ options, previous }: Model.EventArgs['reseted']) {
+  protected onModelReseted({ options, previous }: ModelEventArgs['reseted']) {
     let cells = this.model.getCells()
     if (!options?.diff) {
       this.queue.clearJobs()
@@ -88,18 +88,18 @@ export class Scheduler extends Disposable {
     this.renderViews(cells, { ...options, queue: cells.map((cell) => cell.id) })
   }
 
-  protected onCellAdded({ cell, options }: Model.EventArgs['cell:added']) {
+  protected onCellAdded({ cell, options }: ModelEventArgs['cell:added']) {
     this.renderViews([cell], options)
   }
 
-  protected onCellRemoved({ cell }: Model.EventArgs['cell:removed']) {
+  protected onCellRemoved({ cell }: ModelEventArgs['cell:removed']) {
     this.removeViews([cell])
   }
 
   protected onCellZIndexChanged({
     cell,
     options,
-  }: Model.EventArgs['cell:change:zIndex']) {
+  }: ModelEventArgs['cell:change:zIndex']) {
     const viewItem = this.views[cell.id]
     if (viewItem) {
       this.requestViewUpdate(
@@ -115,7 +115,7 @@ export class Scheduler extends Disposable {
   protected onCellVisibleChanged({
     cell,
     current,
-  }: Model.EventArgs['cell:change:visible']) {
+  }: ModelEventArgs['cell:change:visible']) {
     this.toggleVisible(cell, !!current)
   }
 

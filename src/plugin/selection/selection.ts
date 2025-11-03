@@ -12,7 +12,16 @@ import {
   type RectangleLike,
 } from '../../geometry'
 import type { Graph } from '../../graph'
-import { Cell, Collection, type Edge, type Model, type Node } from '../../model'
+import { Cell, Collection, type CollectionEventArgs } from '../../model'
+import type {
+  SetOptions,
+  Model,
+  Edge,
+  Node,
+  CollectionRemoveOptions,
+  CollectionSetOptions,
+  CollectionAddOptions,
+} from '../../model'
 import { type CellView, View } from '../../view'
 import type { Scroller } from '../scroller'
 
@@ -159,7 +168,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected onNodePositionChanged({
     node,
     options,
-  }: Collection.EventArgs['node:change:position']) {
+  }: CollectionEventArgs['node:change:position']) {
     const { showNodeSelectionBox, pointerEvents } = this.options
     const { ui, selection, translateBy, snapped } = options
 
@@ -188,7 +197,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
   }
 
-  protected onModelUpdated({ removed }: Collection.EventArgs['updated']) {
+  protected onModelUpdated({ removed }: CollectionEventArgs['updated']) {
     if (removed?.length) {
       this.unselect(removed)
     }
@@ -1064,12 +1073,12 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     return null
   }
 
-  protected onCellRemoved({ cell }: Collection.EventArgs['removed']) {
+  protected onCellRemoved({ cell }: CollectionEventArgs['removed']) {
     this.destroySelectionBox(cell)
     this.updateContainer()
   }
 
-  protected onReseted({ previous, current }: Collection.EventArgs['reseted']) {
+  protected onReseted({ previous, current }: CollectionEventArgs['reseted']) {
     this.destroyAllSelectionBoxes(previous)
     current.forEach((cell) => {
       this.listenCellRemoveEvent(cell)
@@ -1078,7 +1087,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     this.updateContainer()
   }
 
-  protected onCellAdded({ cell }: Collection.EventArgs['added']) {
+  protected onCellAdded({ cell }: CollectionEventArgs['added']) {
     // The collection do not known the cell was removed when cell was
     // removed by interaction(such as, by "delete" shortcut), so we should
     // manually listen to cell's remove event.
@@ -1096,7 +1105,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     added,
     removed,
     options,
-  }: Collection.EventArgs['updated']) {
+  }: CollectionEventArgs['updated']) {
     added.forEach((cell) => {
       this.trigger('cell:selected', { cell, options })
       if (cell.isNode()) {
@@ -1187,13 +1196,13 @@ export type SelectionImplFilter =
   | (string | { id: string })[]
   | ((this: Graph, cell: Cell) => boolean)
 
-export interface SelectionImplSetOptions extends Collection.SetOptions {
+export interface SelectionImplSetOptions extends CollectionSetOptions {
   batch?: boolean
 }
 
-export interface SelectionImplAddOptions extends Collection.AddOptions {}
+export interface SelectionImplAddOptions extends CollectionAddOptions {}
 
-export interface SelectionImplRemoveOptions extends Collection.RemoveOptions {}
+export interface SelectionImplRemoveOptions extends CollectionRemoveOptions {}
 
 interface BaseSelectionBoxEventArgs<T> {
   e: T
@@ -1210,17 +1219,17 @@ export interface SelectionImplBoxEventArgsRecord {
 }
 
 export interface SelectionImplEventArgsRecord {
-  'cell:selected': { cell: Cell; options: Model.SetOptions }
-  'node:selected': { cell: Cell; node: Node; options: Model.SetOptions }
-  'edge:selected': { cell: Cell; edge: Edge; options: Model.SetOptions }
-  'cell:unselected': { cell: Cell; options: Model.SetOptions }
-  'node:unselected': { cell: Cell; node: Node; options: Model.SetOptions }
-  'edge:unselected': { cell: Cell; edge: Edge; options: Model.SetOptions }
+  'cell:selected': { cell: Cell; options: SetOptions }
+  'node:selected': { cell: Cell; node: Node; options: SetOptions }
+  'edge:selected': { cell: Cell; edge: Edge; options: SetOptions }
+  'cell:unselected': { cell: Cell; options: SetOptions }
+  'node:unselected': { cell: Cell; node: Node; options: SetOptions }
+  'edge:unselected': { cell: Cell; edge: Edge; options: SetOptions }
   'selection:changed': {
     added: Cell[]
     removed: Cell[]
     selected: Cell[]
-    options: Model.SetOptions
+    options: SetOptions
   }
 }
 
