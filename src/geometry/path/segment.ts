@@ -1,8 +1,12 @@
 import { Geometry } from '../geometry'
 import { Line } from '../line'
-import { Point } from '../point'
+import { Point, PointOptions } from '../point'
 import { Rectangle } from '../rectangle'
 
+export interface SegmentOptions {
+  precision?: number
+  subdivisions?: Segment[]
+}
 export abstract class Segment extends Geometry {
   isVisible = true
   isSegment = true
@@ -32,17 +36,15 @@ export abstract class Segment extends Geometry {
 
   abstract bbox(): Rectangle | null
 
-  abstract closestPoint(p: Point.PointLike | Point.PointData): Point
+  abstract closestPoint(p: PointOptions): Point
 
-  abstract closestPointLength(p: Point.PointLike | Point.PointData): number
+  abstract closestPointLength(p: PointOptions): number
 
-  abstract closestPointNormalizedLength(
-    p: Point.PointLike | Point.PointData,
-  ): number
+  abstract closestPointNormalizedLength(p: PointOptions): number
 
   closestPointT(
-    p: Point.PointLike | Point.PointData,
-    options?: Segment.Options, // eslint-disable-line
+    p: PointOptions,
+    options?: SegmentOptions, // eslint-disable-line
   ) {
     if (this.closestPointNormalizedLength) {
       return this.closestPointNormalizedLength(p)
@@ -53,14 +55,12 @@ export abstract class Segment extends Geometry {
     )
   }
 
-  abstract closestPointTangent(
-    p: Point.PointLike | Point.PointData,
-  ): Line | null
+  abstract closestPointTangent(p: PointOptions): Line | null
 
-  abstract length(options?: Segment.Options): number
+  abstract length(options?: SegmentOptions): number
 
   // eslint-disable-next-line
-  lengthAtT(t: number, options?: Segment.Options) {
+  lengthAtT(t: number, options?: SegmentOptions) {
     if (t <= 0) {
       return 0
     }
@@ -73,14 +73,11 @@ export abstract class Segment extends Geometry {
     return length * t
   }
 
-  abstract divideAt(
-    ratio: number,
-    options?: Segment.Options,
-  ): [Segment, Segment]
+  abstract divideAt(ratio: number, options?: SegmentOptions): [Segment, Segment]
 
   abstract divideAtLength(
     length: number,
-    options?: Segment.Options,
+    options?: SegmentOptions,
   ): [Segment, Segment]
 
   divideAtT(t: number) {
@@ -91,11 +88,11 @@ export abstract class Segment extends Geometry {
     throw new Error('Neither `divideAtT` nor `divideAt` method is implemented.')
   }
 
-  abstract getSubdivisions(options?: Segment.Options): Segment[]
+  abstract getSubdivisions(options?: SegmentOptions): Segment[]
 
   abstract pointAt(ratio: number): Point
 
-  abstract pointAtLength(length: number, options?: Segment.Options): Point
+  abstract pointAtLength(length: number, options?: SegmentOptions): Point
 
   pointAtT(t: number): Point {
     if (this.pointAt) {
@@ -109,7 +106,7 @@ export abstract class Segment extends Geometry {
 
   abstract tangentAtLength(
     length: number,
-    options?: Segment.Options,
+    options?: SegmentOptions,
   ): Line | null
 
   tangentAtT(t: number): Line | null {
@@ -125,11 +122,4 @@ export abstract class Segment extends Geometry {
   abstract isDifferentiable(): boolean
 
   abstract clone(): Segment
-}
-
-export namespace Segment {
-  export interface Options {
-    precision?: number
-    subdivisions?: Segment[]
-  }
 }

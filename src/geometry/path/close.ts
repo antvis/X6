@@ -2,9 +2,12 @@ import { Line } from '../line'
 import { LineTo } from './lineto'
 import { Segment } from './segment'
 
-import { Point } from '../point'
+import type { PointOptions } from '../point'
 
 export class Close extends Segment {
+  static create(): Close {
+    return new Close()
+  }
   get end() {
     if (!this.subpathStartSegment) {
       throw new Error(
@@ -29,19 +32,19 @@ export class Close extends Segment {
     return this.line.bbox()
   }
 
-  closestPoint(p: Point.PointLike | Point.PointData) {
+  closestPoint(p: PointOptions) {
     return this.line.closestPoint(p)
   }
 
-  closestPointLength(p: Point.PointLike | Point.PointData) {
+  closestPointLength(p: PointOptions) {
     return this.line.closestPointLength(p)
   }
 
-  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: PointOptions) {
     return this.line.closestPointNormalizedLength(p)
   }
 
-  closestPointTangent(p: Point.PointLike | Point.PointData) {
+  closestPointTangent(p: PointOptions) {
     return this.line.closestPointTangent(p)
   }
 
@@ -128,11 +131,5 @@ export class Close extends Segment {
 
   serialize() {
     return this.type
-  }
-}
-
-export namespace Close {
-  export function create(): Close {
-    return new Close()
   }
 }

@@ -10,11 +10,12 @@ import type { EventArgs, Graph } from '../../graph'
 import type { Model, Node } from '../../model'
 import { type CellView, type NodeView, View } from '../../view'
 import type { SnaplineImplFilter, SnaplineImplOptions } from './type'
+import type { PointLike } from '@/types'
 
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImplOptions
   protected readonly graph: Graph
-  protected offset: Point.PointLike
+  protected offset: PointLike
   protected timer: number | null
 
   public container: SVGElement
@@ -280,10 +281,10 @@ export class SnaplineImpl extends View implements IDisablable {
             angle >= 0 && angle < 90
               ? 1
               : angle >= 90 && angle < 180
-                ? 4
-                : angle >= 180 && angle < 270
-                  ? 3
-                  : 2
+              ? 4
+              : angle >= 180 && angle < 270
+              ? 3
+              : 2
 
           if (horizontalTop != null && verticalLeft != null) {
             if (dx < dy) {

@@ -1,8 +1,76 @@
 import { Curve } from '../curve'
-import { Point } from '../point'
-import { Segment } from './segment'
+import { Point, PointOptions } from '../point'
+import { Segment, SegmentOptions } from './segment'
 
 export class CurveTo extends Segment {
+  static create(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x: number,
+    y: number,
+  ): CurveTo
+  static create(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x: number,
+    y: number,
+    ...coords: number[]
+  ): CurveTo[]
+  static create(c1: PointOptions, c2: PointOptions, p: PointOptions): CurveTo
+  static create(
+    c1: PointOptions,
+    c2: PointOptions,
+    p: PointOptions,
+    ...points: PointOptions[]
+  ): CurveTo[]
+  static create(...args: any[]): CurveTo | CurveTo[] {
+    const len = args.length
+    const arg0 = args[0]
+
+    // curve provided
+    if (Curve.isCurve(arg0)) {
+      return new CurveTo(arg0)
+    }
+
+    // points provided
+    if (Point.isPointLike(arg0)) {
+      if (len === 3) {
+        return new CurveTo(args[0], args[1], args[2])
+      }
+
+      // this is a poly-bezier segment
+      const segments: CurveTo[] = []
+      for (let i = 0; i < len; i += 3) {
+        segments.push(new CurveTo(args[i], args[i + 1], args[i + 2]))
+      }
+      return segments
+    }
+
+    // coordinates provided
+    if (len === 6) {
+      return new CurveTo(args[0], args[1], args[2], args[3], args[4], args[5])
+    }
+
+    // this is a poly-bezier segment
+    const segments: CurveTo[] = []
+    for (let i = 0; i < len; i += 6) {
+      segments.push(
+        new CurveTo(
+          args[i],
+          args[i + 1],
+          args[i + 2],
+          args[i + 3],
+          args[i + 4],
+          args[i + 5],
+        ),
+      )
+    }
+    return segments
+  }
   controlPoint1: Point
   controlPoint2: Point
 
@@ -15,15 +83,11 @@ export class CurveTo extends Segment {
     x: number,
     y: number,
   )
+  constructor(p1: PointOptions, p2: PointOptions, p3: PointOptions)
   constructor(
-    p1: Point.PointLike | Point.PointData,
-    p2: Point.PointLike | Point.PointData,
-    p3: Point.PointLike | Point.PointData,
-  )
-  constructor(
-    arg0: number | Curve | (Point.PointLike | Point.PointData),
-    arg1?: number | (Point.PointLike | Point.PointData),
-    arg2?: number | (Point.PointLike | Point.PointData),
+    arg0: number | Curve | PointOptions,
+    arg1?: number | PointOptions,
+    arg2?: number | PointOptions,
     arg3?: number,
     arg4?: number,
     arg5?: number,
@@ -62,19 +126,19 @@ export class CurveTo extends Segment {
     return this.curve.bbox()
   }
 
-  closestPoint(p: Point.PointLike | Point.PointData) {
+  closestPoint(p: PointOptions) {
     return this.curve.closestPoint(p)
   }
 
-  closestPointLength(p: Point.PointLike | Point.PointData) {
+  closestPointLength(p: PointOptions) {
     return this.curve.closestPointLength(p)
   }
 
-  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: PointOptions) {
     return this.curve.closestPointNormalizedLength(p)
   }
 
-  closestPointTangent(p: Point.PointLike | Point.PointData) {
+  closestPointTangent(p: PointOptions) {
     return this.curve.closestPointTangent(p)
   }
 
@@ -82,7 +146,7 @@ export class CurveTo extends Segment {
     return this.curve.length()
   }
 
-  divideAt(ratio: number, options: Segment.Options = {}): [Segment, Segment] {
+  divideAt(ratio: number, options: SegmentOptions = {}): [Segment, Segment] {
     // TODO: fix options
     const divided = this.curve.divideAt(ratio, options as any)
     return [new CurveTo(divided[0]), new CurveTo(divided[1])]
@@ -90,7 +154,7 @@ export class CurveTo extends Segment {
 
   divideAtLength(
     length: number,
-    options: Segment.Options = {},
+    options: SegmentOptions = {},
   ): [Segment, Segment] {
     // TODO: fix options
     const divided = this.curve.divideAtLength(length, options as any)
@@ -139,14 +203,14 @@ export class CurveTo extends Segment {
     )
   }
 
-  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
+  scale(sx: number, sy: number, origin?: PointOptions) {
     this.controlPoint1.scale(sx, sy, origin)
     this.controlPoint2.scale(sx, sy, origin)
     this.end.scale(sx, sy, origin)
     return this
   }
 
-  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: PointOptions) {
     this.controlPoint1.rotate(angle, origin)
     this.controlPoint2.rotate(angle, origin)
     this.end.rotate(angle, origin)
@@ -154,8 +218,8 @@ export class CurveTo extends Segment {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point.PointLike | Point.PointData): this
-  translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
+  translate(p: PointOptions): this
+  translate(tx: number | PointOptions, ty?: number): this {
     if (typeof tx === 'number') {
       this.controlPoint1.translate(tx, ty as number)
       this.controlPoint2.translate(tx, ty as number)
@@ -197,80 +261,5 @@ export class CurveTo extends Segment {
     const c2 = this.controlPoint2
     const end = this.end
     return [this.type, c1.x, c1.y, c2.x, c2.y, end.x, end.y].join(' ')
-  }
-}
-
-export namespace CurveTo {
-  export function create(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x: number,
-    y: number,
-  ): CurveTo
-  export function create(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x: number,
-    y: number,
-    ...coords: number[]
-  ): CurveTo[]
-  export function create(
-    c1: Point.PointLike,
-    c2: Point.PointLike,
-    p: Point.PointLike,
-  ): CurveTo
-  export function create(
-    c1: Point.PointLike,
-    c2: Point.PointLike,
-    p: Point.PointLike,
-    ...points: Point.PointLike[]
-  ): CurveTo[]
-  export function create(...args: any[]): CurveTo | CurveTo[] {
-    const len = args.length
-    const arg0 = args[0]
-
-    // curve provided
-    if (Curve.isCurve(arg0)) {
-      return new CurveTo(arg0)
-    }
-
-    // points provided
-    if (Point.isPointLike(arg0)) {
-      if (len === 3) {
-        return new CurveTo(args[0], args[1], args[2])
-      }
-
-      // this is a poly-bezier segment
-      const segments: CurveTo[] = []
-      for (let i = 0; i < len; i += 3) {
-        segments.push(new CurveTo(args[i], args[i + 1], args[i + 2]))
-      }
-      return segments
-    }
-
-    // coordinates provided
-    if (len === 6) {
-      return new CurveTo(args[0], args[1], args[2], args[3], args[4], args[5])
-    }
-
-    // this is a poly-bezier segment
-    const segments: CurveTo[] = []
-    for (let i = 0; i < len; i += 6) {
-      segments.push(
-        new CurveTo(
-          args[i],
-          args[i + 1],
-          args[i + 2],
-          args[i + 3],
-          args[i + 4],
-          args[i + 5],
-        ),
-      )
-    }
-    return segments
   }
 }

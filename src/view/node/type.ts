@@ -1,5 +1,5 @@
 import type { Dom } from '../../common'
-import type { Point, Rectangle } from '../../geometry'
+import type { PointLike, Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Node } from '../../model/node'
 import type { CellView } from '../cell'
@@ -127,7 +127,7 @@ export interface EventDataMoving {
 
 export interface EventDataMovingTargetNode {
   moving: boolean
-  offset: Point.PointLike
+  offset: PointLike
   restrict?: Rectangle.RectangleLike | null
   embedding?: boolean
   candidateEmbedView?: NodeView | null

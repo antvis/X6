@@ -1,4 +1,11 @@
-import { Point, Line, Angle, Rectangle, GeometryUtil } from '../../../geometry'
+import {
+  Point,
+  Line,
+  Angle,
+  Rectangle,
+  GeometryUtil,
+  type PointLike,
+} from '../../../geometry'
 import { KeyValue } from '../../../common'
 import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'
@@ -151,7 +158,7 @@ export function getKey(point: Point) {
   return point.toString()
 }
 
-export function normalizePoint(point: Point.PointLike) {
+export function normalizePoint(point: PointLike) {
   return new Point(
     point.x === 0 ? 0 : Math.abs(point.x) / point.x,
     point.y === 0 ? 0 : Math.abs(point.y) / point.y,
