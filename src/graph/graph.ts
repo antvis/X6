@@ -2,8 +2,23 @@ import type { Dom, KeyValue, NumberExt } from '../common'
 import { Basecoat, disposable } from '../common'
 import { Point, Rectangle, type RectangleLike } from '../geometry'
 import type { PointLike } from '../geometry/point'
-import type { Collection } from '../model'
+import type { CollectionRemoveOptions, CollectionSetOptions } from '../model'
 import { Cell, Edge, Model, Node } from '../model'
+import type {
+  AddOptions,
+  GetPredecessorsOptions,
+  ToJSONOptions,
+  FromJSONData,
+  FromJSONOptions,
+  GetConnectedEdgesOptions,
+  GetNeighborsOptions,
+  GetSubgraphOptions,
+  GetCellsInAreaOptions,
+  SearchIterator,
+  GetShortestPathOptions,
+  BatchName,
+  SearchOptions,
+} from '../model'
 import type { BackgroundOptions } from '../registry'
 import {
   attrRegistry,
@@ -107,7 +122,7 @@ export class Graph extends Basecoat<EventArgs> {
     return cell.isEdge()
   }
 
-  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
+  resetCells(cells: Cell[], options: CollectionSetOptions = {}) {
     this.model.resetCells(cells, options)
     return this
   }
@@ -117,15 +132,15 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  toJSON(options: Model.ToJSONOptions = {}) {
+  toJSON(options: ToJSONOptions = {}) {
     return this.model.toJSON(options)
   }
 
-  parseJSON(data: Model.FromJSONData) {
+  parseJSON(data: FromJSONData) {
     return this.model.parseJSON(data)
   }
 
-  fromJSON(data: Model.FromJSONData, options: Model.FromJSONOptions = {}) {
+  fromJSON(data: FromJSONData, options: FromJSONOptions = {}) {
     this.model.fromJSON(data, options)
     return this
   }
@@ -134,13 +149,13 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.getCell(id)
   }
 
-  addNode(metadata: Node.Metadata, options?: Model.AddOptions): Node
-  addNode(node: Node, options?: Model.AddOptions): Node
-  addNode(node: Node | Node.Metadata, options: Model.AddOptions = {}): Node {
+  addNode(metadata: Node.Metadata, options?: AddOptions): Node
+  addNode(node: Node, options?: AddOptions): Node
+  addNode(node: Node | Node.Metadata, options: AddOptions = {}): Node {
     return this.model.addNode(node, options)
   }
 
-  addNodes(nodes: (Node | Node.Metadata)[], options: Model.AddOptions = {}) {
+  addNodes(nodes: (Node | Node.Metadata)[], options: AddOptions = {}) {
     return this.addCell(
       nodes.map((node) => (Node.isNode(node) ? node : this.createNode(node))),
       options,
@@ -151,28 +166,28 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.createNode(metadata)
   }
 
-  removeNode(nodeId: string, options?: Collection.RemoveOptions): Node | null
-  removeNode(node: Node, options?: Collection.RemoveOptions): Node | null
-  removeNode(node: Node | string, options: Collection.RemoveOptions = {}) {
+  removeNode(nodeId: string, options?: CollectionRemoveOptions): Node | null
+  removeNode(node: Node, options?: CollectionRemoveOptions): Node | null
+  removeNode(node: Node | string, options: CollectionRemoveOptions = {}) {
     return this.model.removeCell(node as Node, options) as Node
   }
 
-  addEdge(metadata: Edge.Metadata, options?: Model.AddOptions): Edge
-  addEdge(edge: Edge, options?: Model.AddOptions): Edge
-  addEdge(edge: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
+  addEdge(metadata: Edge.Metadata, options?: AddOptions): Edge
+  addEdge(edge: Edge, options?: AddOptions): Edge
+  addEdge(edge: Edge | Edge.Metadata, options: AddOptions = {}): Edge {
     return this.model.addEdge(edge, options)
   }
 
-  addEdges(edges: (Edge | Edge.Metadata)[], options: Model.AddOptions = {}) {
+  addEdges(edges: (Edge | Edge.Metadata)[], options: AddOptions = {}) {
     return this.addCell(
       edges.map((edge) => (Edge.isEdge(edge) ? edge : this.createEdge(edge))),
       options,
     )
   }
 
-  removeEdge(edgeId: string, options?: Collection.RemoveOptions): Edge | null
-  removeEdge(edge: Edge, options?: Collection.RemoveOptions): Edge | null
-  removeEdge(edge: Edge | string, options: Collection.RemoveOptions = {}) {
+  removeEdge(edgeId: string, options?: CollectionRemoveOptions): Edge | null
+  removeEdge(edge: Edge, options?: CollectionRemoveOptions): Edge | null
+  removeEdge(edge: Edge | string, options: CollectionRemoveOptions = {}) {
     return this.model.removeCell(edge as Edge, options) as Edge
   }
 
@@ -180,14 +195,14 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.createEdge(metadata)
   }
 
-  addCell(cell: Cell | Cell[], options: Model.AddOptions = {}) {
+  addCell(cell: Cell | Cell[], options: AddOptions = {}) {
     this.model.addCell(cell, options)
     return this
   }
 
-  removeCell(cellId: string, options?: Collection.RemoveOptions): Cell | null
-  removeCell(cell: Cell, options?: Collection.RemoveOptions): Cell | null
-  removeCell(cell: Cell | string, options: Collection.RemoveOptions = {}) {
+  removeCell(cellId: string, options?: CollectionRemoveOptions): Cell | null
+  removeCell(cell: Cell, options?: CollectionRemoveOptions): Cell | null
+  removeCell(cell: Cell | string, options: CollectionRemoveOptions = {}) {
     return this.model.removeCell(cell as Cell, options)
   }
 
@@ -251,7 +266,7 @@ export class Graph extends Basecoat<EventArgs> {
    */
   getConnectedEdges(
     cell: Cell | string,
-    options: Model.GetConnectedEdgesOptions = {},
+    options: GetConnectedEdgesOptions = {},
   ) {
     return this.model.getConnectedEdges(cell, options)
   }
@@ -290,37 +305,29 @@ export class Graph extends Basecoat<EventArgs> {
    * Returns all the neighbors of node in the graph. Neighbors are all
    * the nodes connected to node via either incoming or outgoing edge.
    */
-  getNeighbors(cell: Cell, options: Model.GetNeighborsOptions = {}) {
+  getNeighbors(cell: Cell, options: GetNeighborsOptions = {}) {
     return this.model.getNeighbors(cell, options)
   }
 
   /**
    * Returns `true` if `cell2` is a neighbor of `cell1`.
    */
-  isNeighbor(
-    cell1: Cell,
-    cell2: Cell,
-    options: Model.GetNeighborsOptions = {},
-  ) {
+  isNeighbor(cell1: Cell, cell2: Cell, options: GetNeighborsOptions = {}) {
     return this.model.isNeighbor(cell1, cell2, options)
   }
 
-  getSuccessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+  getSuccessors(cell: Cell, options: GetPredecessorsOptions = {}) {
     return this.model.getSuccessors(cell, options)
   }
 
   /**
    * Returns `true` if `cell2` is a successor of `cell1`.
    */
-  isSuccessor(
-    cell1: Cell,
-    cell2: Cell,
-    options: Model.GetPredecessorsOptions = {},
-  ) {
+  isSuccessor(cell1: Cell, cell2: Cell, options: GetPredecessorsOptions = {}) {
     return this.model.isSuccessor(cell1, cell2, options)
   }
 
-  getPredecessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+  getPredecessors(cell: Cell, options: GetPredecessorsOptions = {}) {
     return this.model.getPredecessors(cell, options)
   }
 
@@ -330,7 +337,7 @@ export class Graph extends Basecoat<EventArgs> {
   isPredecessor(
     cell1: Cell,
     cell2: Cell,
-    options: Model.GetPredecessorsOptions = {},
+    options: GetPredecessorsOptions = {},
   ) {
     return this.model.isPredecessor(cell1, cell2, options)
   }
@@ -347,7 +354,7 @@ export class Graph extends Basecoat<EventArgs> {
    * outgoing edges if both the edge terminal (source/target) are in the
    * cells array.
    */
-  getSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  getSubGraph(cells: Cell[], options: GetSubgraphOptions = {}) {
     return this.model.getSubGraph(cells, options)
   }
 
@@ -358,7 +365,7 @@ export class Graph extends Basecoat<EventArgs> {
    *
    * Returns a map of the form: { [original cell ID]: [clone] }.
    */
-  cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  cloneSubGraph(cells: Cell[], options: GetSubgraphOptions = {}) {
     return this.model.cloneSubGraph(cells, options)
   }
 
@@ -385,18 +392,15 @@ export class Graph extends Basecoat<EventArgs> {
     y: number,
     w: number,
     h: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Node[]
-  getNodesInArea(
-    rect: RectangleLike,
-    options?: Model.GetCellsInAreaOptions,
-  ): Node[]
+  getNodesInArea(rect: RectangleLike, options?: GetCellsInAreaOptions): Node[]
   getNodesInArea(
     x: number | RectangleLike,
-    y?: number | Model.GetCellsInAreaOptions,
+    y?: number | GetCellsInAreaOptions,
     w?: number,
     h?: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Node[] {
     return this.model.getNodesInArea(
       x as number,
@@ -418,8 +422,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   searchCell(
     cell: Cell,
-    iterator: Model.SearchIterator,
-    options: Model.SearchOptions = {},
+    iterator: SearchIterator,
+    options: SearchOptions = {},
   ) {
     this.model.search(cell, iterator, options)
     return this
@@ -432,7 +436,7 @@ export class Graph extends Basecoat<EventArgs> {
   getShortestPath(
     source: Cell | string,
     target: Cell | string,
-    options: Model.GetShortestPathOptions = {},
+    options: GetShortestPathOptions = {},
   ) {
     return this.model.getShortestPath(source, target, options)
   }
@@ -451,22 +455,18 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.getCellsBBox(cells, options)
   }
 
-  startBatch(name: string | Model.BatchName, data: KeyValue = {}) {
-    this.model.startBatch(name as Model.BatchName, data)
+  startBatch(name: string | BatchName, data: KeyValue = {}) {
+    this.model.startBatch(name as BatchName, data)
   }
 
-  stopBatch(name: string | Model.BatchName, data: KeyValue = {}) {
-    this.model.stopBatch(name as Model.BatchName, data)
+  stopBatch(name: string | BatchName, data: KeyValue = {}) {
+    this.model.stopBatch(name as BatchName, data)
   }
 
   batchUpdate<T>(execute: () => T, data?: KeyValue): T
+  batchUpdate<T>(name: string | BatchName, execute: () => T, data?: KeyValue): T
   batchUpdate<T>(
-    name: string | Model.BatchName,
-    execute: () => T,
-    data?: KeyValue,
-  ): T
-  batchUpdate<T>(
-    arg1: string | Model.BatchName | (() => T),
+    arg1: string | BatchName | (() => T),
     arg2?: (() => T) | KeyValue,
     arg3?: KeyValue,
   ): T {
@@ -1380,17 +1380,11 @@ export namespace Graph {
 }
 
 export namespace Graph {
-  export function render(
-    options: Partial<Options>,
-    data?: Model.FromJSONData,
-  ): Graph
-  export function render(
-    container: HTMLElement,
-    data?: Model.FromJSONData,
-  ): Graph
+  export function render(options: Partial<Options>, data?: FromJSONData): Graph
+  export function render(container: HTMLElement, data?: FromJSONData): Graph
   export function render(
     options: Partial<Options> | HTMLElement,
-    data?: Model.FromJSONData,
+    data?: FromJSONData,
   ): Graph {
     const graph =
       options instanceof HTMLElement

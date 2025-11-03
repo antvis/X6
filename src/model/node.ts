@@ -21,7 +21,7 @@ import { Cell } from './cell'
 import type { Edge } from './edge'
 import { PortManager } from './port'
 import type { PortMetadata, Metadata } from './port'
-import { ShareRegistry } from './registry'
+import { exist, setNodeRegistry } from './registry'
 import type { Store } from './store'
 
 export class Node<
@@ -1112,7 +1112,7 @@ export namespace Node {
   >({
     type: 'node',
     process(shape, options) {
-      if (ShareRegistry.exist(shape, true)) {
+      if (exist(shape, true)) {
         throw new Error(
           `Node with name '${shape}' was registered by anthor Edge`,
         )
@@ -1148,7 +1148,7 @@ export namespace Node {
     },
   })
 
-  ShareRegistry.setNodeRegistry(registry)
+  setNodeRegistry(registry)
 }
 
 export namespace Node {
