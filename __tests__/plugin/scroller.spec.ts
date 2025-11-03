@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { Scroller } from '@/plugin/scroller'
 import { Dom } from '@/common/dom'
-import { ScrollerImpl } from '@/plugin/scroller/scroller'
+import {
+  ScrollerImpl,
+  transitionClassName,
+  transitionEventName,
+  ScrollerImplBackground,
+} from '@/plugin/scroller/scroller'
 import { Graph } from '@/graph'
 import { Cell } from '@/model'
 import { Rectangle } from '@/geometry'
@@ -478,7 +483,7 @@ describe('ScrollerImpl', () => {
   it('should initialize container, content, background, and backgroundManager', () => {
     expect(scroller.container).toBeInstanceOf(HTMLDivElement)
     expect(scroller.background).toBeInstanceOf(HTMLDivElement)
-    expect(scroller.backgroundManager).toBeInstanceOf(ScrollerImpl.Background)
+    expect(scroller.backgroundManager).toBeInstanceOf(ScrollerImplBackground)
   })
 
   it('should scroll to point correctly', () => {
@@ -624,12 +629,9 @@ describe('ScrollerImpl', () => {
 
     expect(addClassSpy).toHaveBeenCalledWith(
       scroller.container,
-      ScrollerImpl.transitionClassName,
+      transitionClassName,
     )
-    expect(offSpy).toHaveBeenCalledWith(
-      scroller.content,
-      ScrollerImpl.transitionEventName,
-    )
+    expect(offSpy).toHaveBeenCalledWith(scroller.content, transitionEventName)
     expect(cssSpy).toHaveBeenCalledWith(scroller.content, {
       transform: '',
       transformOrigin: '',

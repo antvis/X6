@@ -4,7 +4,7 @@ import { Config } from '../config'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import type { Cell, Edge, Model, Node } from '../model'
-import type { PortManager } from '../model/port'
+import type { Port } from '../model/port'
 import type {
   ConnectionPointManualItem,
   ConnectionPointNativeItem,
@@ -385,7 +385,7 @@ export namespace Options {
 export namespace Options {
   export interface OnPortRenderedArgs {
     node: Node
-    port: PortManager.Port
+    port: Port
     container: Element
     selectors?: MarkupSelectors
     labelContainer?: Element

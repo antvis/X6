@@ -1,5 +1,5 @@
 import { Dom, FunctionExt } from '../../common'
-import { Point } from '../../geometry'
+import { Point, type PointLike } from '../../geometry'
 import type { Edge } from '../../model/edge'
 import type { Node } from '../../model/node'
 import type { CellView } from '../../view/cell'
@@ -340,7 +340,7 @@ interface Options extends ToolItemOptions {
     terminalType: Edge.TerminalType,
     edgeView: EdgeView,
     toolView: Anchor,
-  ) => Point.PointLike
+  ) => PointLike
   anchor?: (
     this: EdgeView,
     pos: Point,

@@ -1,5 +1,5 @@
 import type { Dom, KeyValue } from '../../common'
-import type { Point } from '../../geometry'
+import type { PointLike } from '../../geometry'
 import type { Cell, Edge } from '../../model'
 import type { CellView } from '../cell'
 import type {
@@ -52,12 +52,12 @@ export interface EdgeViewEventArgs {
     previousCell?: Cell | null
     previousView?: CellView | null
     previousPort?: string | null
-    previousPoint?: Point.PointLike | null
+    previousPoint?: PointLike | null
     previousMagnet?: Element | null
     currentCell?: Cell | null
     currentView?: CellView | null
     currentPort?: string | null
-    currentPoint?: Point.PointLike | null
+    currentPoint?: PointLike | null
     currentMagnet?: Element | null
   }
 

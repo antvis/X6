@@ -1,5 +1,5 @@
 import { Line } from './line'
-import { Point } from './point'
+import { Point, PointOptions, PointLike } from './point'
 import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
 
@@ -59,11 +59,8 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * lying on the ellipse boundary and `n > 1` for points outside the ellipse.
    */
   normalizedDistance(x: number, y: number): number
-  normalizedDistance(p: Point.PointLike | Point.PointData): number
-  normalizedDistance(
-    x: number | Point.PointLike | Point.PointData,
-    y?: number,
-  ) {
+  normalizedDistance(p: PointOptions): number
+  normalizedDistance(x: number | PointOptions, y?: number) {
     const ref = Point.create(x, y)
     const dx = ref.x - this.x
     const dy = ref.y - this.y
@@ -78,8 +75,8 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * Returns `false` otherwise.
    */
   containsPoint(x: number, y: number): boolean
-  containsPoint(p: Point.PointLike | Point.PointData): boolean
-  containsPoint(x: number | Point.PointLike | Point.PointData, y?: number) {
+  containsPoint(p: PointOptions): boolean
+  containsPoint(x: number | PointOptions, y?: number) {
     return this.normalizedDistance(x as number, y as number) <= 1
   }
 
@@ -145,10 +142,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * If angle is specified, the intersection will take into account
    * the rotation of the ellipse by angle degrees around its center.
    */
-  intersectsWithLineFromCenterToPoint(
-    p: Point.PointLike | Point.PointData,
-    angle = 0,
-  ) {
+  intersectsWithLineFromCenterToPoint(p: PointOptions, angle = 0) {
     const ref = Point.clone(p)
     if (angle) {
       ref.rotate(angle, this.getCenter())
@@ -188,7 +182,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * Returns the angle between the x-axis and the tangent from a point. It is
    * valid for points lying on the ellipse boundary only.
    */
-  tangentTheta(p: Point.PointLike | Point.PointData) {
+  tangentTheta(p: PointOptions) {
     const ref = Point.clone(p)
     const x0 = ref.x
     const y0 = ref.y
@@ -228,7 +222,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     return this
   }
 
-  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: PointOptions) {
     const rect = Rectangle.fromEllipse(this)
     rect.rotate(angle, origin)
     const ellipse = Ellipse.fromRect(rect)
@@ -240,8 +234,8 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
   }
 
   translate(dx: number, dy: number): this
-  translate(p: Point.PointLike | Point.PointData): this
-  translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {
+  translate(p: PointOptions): this
+  translate(dx: number | PointOptions, dy?: number): this {
     const p = Point.create(dx, dy)
     this.x += p.x
     this.y += p.y
@@ -278,7 +272,7 @@ export namespace Ellipse {
 }
 
 export namespace Ellipse {
-  export interface EllipseLike extends Point.PointLike {
+  export interface EllipseLike extends PointLike {
     x: number
     y: number
     a: number

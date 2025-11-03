@@ -1,7 +1,12 @@
 import { alignPoint } from 'dom-align'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { DocumentEvents } from '../../constants'
-import { GeometryUtil, type Point, Rectangle } from '../../geometry'
+import { DocumentEvents } from '@/constants'
+import {
+  GeometryUtil,
+  type Point,
+  Rectangle,
+  type PointLike,
+} from '../../geometry'
 import { type EventArgs, Graph } from '../../graph'
 import type { Cell, Node } from '../../model'
 import { type NodeView, View } from '../../view'
@@ -60,7 +65,7 @@ export class Dnd extends View implements Graph.Plugin {
   protected candidateEmbedView: NodeView | null
   protected delta: Point | null
   protected padding: number | null
-  protected snapOffset: Point.PointLike | null
+  protected snapOffset: PointLike | null
 
   public options: DndOptions
   public draggingGraph: Graph
@@ -392,7 +397,7 @@ export class Dnd extends View implements Graph.Plugin {
     }
   }
 
-  protected isInsideValidArea(p: Point.PointLike) {
+  protected isInsideValidArea(p: PointLike) {
     let targetRect: Rectangle
     let dndRect: Rectangle | null = null
     const targetGraph = this.targetGraph
@@ -440,7 +445,7 @@ export class Dnd extends View implements Graph.Plugin {
     })
   }
 
-  protected drop(draggingNode: Node, pos: Point.PointLike) {
+  protected drop(draggingNode: Node, pos: PointLike) {
     if (this.isInsideValidArea(pos)) {
       const targetGraph = this.targetGraph
       const targetModel = targetGraph.model

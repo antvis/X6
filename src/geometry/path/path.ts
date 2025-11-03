@@ -1,7 +1,7 @@
 import { GeometryUtil } from '../util'
 import * as PathUtil from './util'
 import { Line } from '../line'
-import { Point } from '../point'
+import { Point, type PointLike, type PointOptions } from '../point'
 import { Curve } from '../curve'
 import { Polyline } from '../polyline'
 import { Rectangle } from '../rectangle'
@@ -13,7 +13,135 @@ import { CurveTo } from './curveto'
 import { normalizePathData } from './normalize'
 import { Segment } from './segment'
 
+export interface PathOptions {
+  precision?: number | null
+  segmentSubdivisions?: Segment[][] | null
+}
+
 export class Path extends Geometry {
+  static isPath(instance: any): instance is Path {
+    return instance != null && instance instanceof Path
+  }
+  static parse(pathData: string) {
+    if (!pathData) {
+      return new Path()
+    }
+
+    const path = new Path()
+    const commandRe =
+      /(?:[a-zA-Z] *)(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)? *,? *)|(?:-?\.\d+ *,? *))+|(?:[a-zA-Z] *)(?! |\d|-|\.)/g
+    const commands = normalizePathData(pathData).match(commandRe)
+    if (commands != null) {
+      for (let i = 0, ii = commands.length; i < ii; i += 1) {
+        const command = commands[i]
+        const argRe =
+          /(?:[a-zA-Z])|(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)?))|(?:(?:-?\.\d+))/g
+        const args = command.match(argRe) // [type, coordinate1, coordinate2...]
+        if (args != null) {
+          const type = args[0]
+          const coords = args.slice(1).map((a) => +a)
+          const segment = Path.createSegment.call(null, type, ...coords)
+          path.appendSegment(segment)
+        }
+      }
+    }
+
+    return path
+  }
+
+  static createSegment(type: 'M', x: number, y: number): MoveTo
+  static createSegment(type: 'M', point: PointOptions): MoveTo
+  static createSegment(type: 'M', line: Line): MoveTo
+  static createSegment(type: 'M', curve: Curve): MoveTo
+  static createSegment(
+    type: 'M',
+    point: PointOptions,
+    ...points: PointOptions[]
+  ): Segment[]
+  static createSegment(
+    type: 'M',
+    x: number,
+    y: number,
+    ...coords: number[]
+  ): Segment[]
+  static createSegment(type: 'L', x: number, y: number): LineTo
+  static createSegment(type: 'L', point: PointOptions): LineTo
+  static createSegment(type: 'L', line: Line): LineTo
+  static createSegment(
+    type: 'L',
+    point: PointOptions,
+    ...points: PointOptions[]
+  ): LineTo[]
+  static createSegment(
+    type: 'L',
+    x: number,
+    y: number,
+    ...coords: number[]
+  ): LineTo[]
+  static createSegment(
+    type: 'C',
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): CurveTo
+  static createSegment(
+    type: 'C',
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    ...coords: number[]
+  ): CurveTo[]
+  static createSegment(
+    type: 'C',
+    p1: PointOptions,
+    p2: PointOptions,
+    p3: PointOptions,
+  ): CurveTo
+  static createSegment(
+    type: 'C',
+    p1: PointOptions,
+    p2: PointOptions,
+    p3: PointOptions,
+    ...points: PointOptions[]
+  ): CurveTo[]
+  static createSegment(type: 'Z' | 'z'): Close
+  static createSegment(
+    type: 'M' | 'L' | 'C' | 'Z' | 'z',
+    ...args: any[]
+  ):
+    | MoveTo
+    | MoveTo[]
+    | LineTo
+    | LineTo[]
+    | CurveTo
+    | CurveTo[]
+    | Close
+    | Segment
+    | Segment[] {
+    if (type === 'M') {
+      return MoveTo.create.call(null, ...args)
+    }
+
+    if (type === 'L') {
+      return LineTo.create.call(null, ...args)
+    }
+
+    if (type === 'C') {
+      return CurveTo.create.call(null, ...args)
+    }
+
+    if (type === 'z' || type === 'Z') {
+      return Close.create()
+    }
+
+    throw new Error(`Invalid path segment type "${type}"`)
+  }
   protected readonly PRECISION: number = 3
   public segments: Segment[]
 
@@ -127,20 +255,20 @@ export class Path extends Geometry {
   }
 
   moveTo(x: number, y: number): this
-  moveTo(point: Point.PointLike): this
+  moveTo(point: PointOptions): this
   moveTo(line: Line): this
   moveTo(curve: Curve): this
-  moveTo(point: Point.PointLike, ...points: Point.PointLike[]): this
+  moveTo(point: PointOptions, ...points: PointOptions[]): this
   moveTo(x: number, y: number, ...coords: number[]): this
   moveTo(...args: any[]) {
     return this.appendSegment(MoveTo.create.call(null, ...args))
   }
 
   lineTo(x: number, y: number): this
-  lineTo(point: Point.PointLike): this
+  lineTo(point: PointOptions): this
   lineTo(line: Line): this
   lineTo(x: number, y: number, ...coords: number[]): this
-  lineTo(point: Point.PointLike, ...points: Point.PointLike[]): this
+  lineTo(point: PointOptions, ...points: PointOptions[]): this
   lineTo(...args: any[]) {
     return this.appendSegment(LineTo.create.call(null, ...args))
   }
@@ -162,12 +290,12 @@ export class Path extends Geometry {
     y2: number,
     ...coords: number[]
   ): this
-  curveTo(p1: Point.PointLike, p2: Point.PointLike, p3: Point.PointLike): this
+  curveTo(p1: PointOptions, p2: PointOptions, p3: PointOptions): this
   curveTo(
-    p1: Point.PointLike,
-    p2: Point.PointLike,
-    p3: Point.PointLike,
-    ...points: Point.PointLike[]
+    p1: PointOptions,
+    p2: PointOptions,
+    p3: PointOptions,
+    ...points: PointOptions[]
   ): this
   curveTo(...args: any[]) {
     return this.appendSegment(CurveTo.create.call(null, ...args))
@@ -188,7 +316,7 @@ export class Path extends Geometry {
     xAxisRotation: number,
     largeArcFlag: 0 | 1,
     sweepFlag: 0 | 1,
-    endPoint: Point.PointLike,
+    endPoint: PointLike,
   ): this
   arcTo(
     rx: number,
@@ -196,7 +324,7 @@ export class Path extends Geometry {
     xAxisRotation: number,
     largeArcFlag: 0 | 1,
     sweepFlag: 0 | 1,
-    endX: number | Point.PointLike,
+    endX: number | PointLike,
     endY?: number,
   ) {
     const start = this.end || new Point()
@@ -240,7 +368,7 @@ export class Path extends Geometry {
     return this
   }
 
-  quadTo(controlPoint: Point.PointLike, endPoint: Point.PointLike): this
+  quadTo(controlPoint: PointLike, endPoint: PointLike): this
   quadTo(
     controlPointX: number,
     controlPointY: number,
@@ -248,8 +376,8 @@ export class Path extends Geometry {
     endPointY: number,
   ): this
   quadTo(
-    x1: number | Point.PointLike,
-    y1: number | Point.PointLike,
+    x1: number | PointLike,
+    y1: number | PointLike,
     x?: number,
     y?: number,
   ) {
@@ -258,7 +386,7 @@ export class Path extends Geometry {
     if (typeof x1 === 'number') {
       data.push('Q', x1, y1 as number, x as number, y as number)
     } else {
-      const p = y1 as Point.PointLike
+      const p = y1 as PointLike
       data.push(`Q`, x1.x, x1.y, p.x, p.y)
     }
     const path = Path.parse(data.join(' '))
@@ -270,10 +398,7 @@ export class Path extends Geometry {
     return this.appendSegment(Close.create())
   }
 
-  drawPoints(
-    points: (Point.PointLike | Point.PointData)[],
-    options: PathUtil.DrawPointsOptions = {},
-  ) {
+  drawPoints(points: PointLike[], options: PathUtil.DrawPointsOptions = {}) {
     const raw = PathUtil.drawPoints(points, options)
     const sub = Path.parse(raw)
     if (sub && sub.segments) {
@@ -460,7 +585,7 @@ export class Path extends Geometry {
     return i
   }
 
-  segmentAt(ratio: number, options: Path.Options = {}) {
+  segmentAt(ratio: number, options: PathOptions = {}) {
     const index = this.segmentIndexAt(ratio, options)
     if (!index) {
       return null
@@ -469,14 +594,14 @@ export class Path extends Geometry {
     return this.getSegment(index)
   }
 
-  segmentAtLength(length: number, options: Path.Options = {}) {
+  segmentAtLength(length: number, options: PathOptions = {}) {
     const index = this.segmentIndexAtLength(length, options)
     if (!index) return null
 
     return this.getSegment(index)
   }
 
-  segmentIndexAt(ratio: number, options: Path.Options = {}) {
+  segmentIndexAt(ratio: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -488,7 +613,7 @@ export class Path extends Geometry {
     return this.segmentIndexAtLength(length, opt)
   }
 
-  segmentIndexAtLength(length: number, options: Path.Options = {}) {
+  segmentIndexAtLength(length: number, options: PathOptions = {}) {
     const count = this.segments.length
     if (count === 0) {
       return null
@@ -528,7 +653,7 @@ export class Path extends Geometry {
     return lastVisibleIndex
   }
 
-  getSegmentSubdivisions(options: Path.Options = {}): Segment[][] {
+  getSegmentSubdivisions(options: PathOptions = {}): Segment[][] {
     const precision = this.getPrecision(options)
     const segmentSubdivisions = []
     for (let i = 0, ii = this.segments.length; i < ii; i += 1) {
@@ -588,7 +713,7 @@ export class Path extends Geometry {
     return segment
   }
 
-  closestPoint(p: Point.PointLike, options: Path.Options = {}) {
+  closestPoint(p: PointLike, options: PathOptions = {}) {
     const t = this.closestPointT(p, options)
     if (!t) {
       return null
@@ -597,7 +722,7 @@ export class Path extends Geometry {
     return this.pointAtT(t)
   }
 
-  closestPointLength(p: Point.PointLike, options: Path.Options = {}) {
+  closestPointLength(p: PointLike, options: PathOptions = {}) {
     const opts = this.getOptions(options)
     const t = this.closestPointT(p, opts)
     if (!t) {
@@ -607,7 +732,7 @@ export class Path extends Geometry {
     return this.lengthAtT(t, opts)
   }
 
-  closestPointNormalizedLength(p: Point.PointLike, options: Path.Options = {}) {
+  closestPointNormalizedLength(p: PointLike, options: PathOptions = {}) {
     const opts = this.getOptions(options)
     const cpLength = this.closestPointLength(p, opts)
     if (cpLength === 0) {
@@ -622,7 +747,7 @@ export class Path extends Geometry {
     return cpLength / length
   }
 
-  closestPointT(p: Point.PointLike, options: Path.Options = {}) {
+  closestPointT(p: PointLike, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -661,7 +786,7 @@ export class Path extends Geometry {
     return { segmentIndex: this.segments.length - 1, value: 1 }
   }
 
-  closestPointTangent(p: Point.PointLike, options: Path.Options = {}) {
+  closestPointTangent(p: PointLike, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -700,7 +825,7 @@ export class Path extends Geometry {
     return null
   }
 
-  containsPoint(p: Point.PointLike, options: Path.Options = {}) {
+  containsPoint(p: PointOptions, options: PathOptions = {}) {
     const polylines = this.toPolylines(options)
     if (!polylines) {
       return false
@@ -718,7 +843,7 @@ export class Path extends Geometry {
     return numIntersections % 2 === 1
   }
 
-  pointAt(ratio: number, options: Path.Options = {}) {
+  pointAt(ratio: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -738,7 +863,7 @@ export class Path extends Geometry {
     return this.pointAtLength(length, opts)
   }
 
-  pointAtLength(length: number, options: Path.Options = {}) {
+  pointAtLength(length: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -809,7 +934,7 @@ export class Path extends Geometry {
     return segments[segmentIndex].pointAtT(tValue)
   }
 
-  divideAt(ratio: number, options: Path.Options = {}) {
+  divideAt(ratio: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -821,7 +946,7 @@ export class Path extends Geometry {
     return this.divideAtLength(length, opts)
   }
 
-  divideAtLength(length: number, options: Path.Options = {}) {
+  divideAtLength(length: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -939,7 +1064,7 @@ export class Path extends Geometry {
     return [firstPath, secondPath]
   }
 
-  intersectsWithLine(line: Line, options: Path.Options = {}) {
+  intersectsWithLine(line: Line, options: PathOptions = {}) {
     const polylines = this.toPolylines(options)
     if (polylines == null) {
       return null
@@ -981,7 +1106,7 @@ export class Path extends Geometry {
     return isValid
   }
 
-  length(options: Path.Options = {}) {
+  length(options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return 0
     }
@@ -1000,7 +1125,7 @@ export class Path extends Geometry {
 
   lengthAtT(
     t: { segmentIndex: number; value: number },
-    options: Path.Options = {},
+    options: PathOptions = {},
   ) {
     const count = this.segments.length
     if (count === 0) {
@@ -1035,7 +1160,7 @@ export class Path extends Geometry {
     return length
   }
 
-  tangentAt(ratio: number, options: Path.Options = {}) {
+  tangentAt(ratio: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -1047,7 +1172,7 @@ export class Path extends Geometry {
     return this.tangentAtLength(length, opts)
   }
 
-  tangentAtLength(length: number, options: Path.Options = {}) {
+  tangentAtLength(length: number, options: PathOptions = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -1115,11 +1240,11 @@ export class Path extends Geometry {
     return this.segments[segmentIndex].tangentAtT(tValue)
   }
 
-  protected getPrecision(options: Path.Options = {}) {
+  protected getPrecision(options: PathOptions = {}) {
     return options.precision == null ? this.PRECISION : options.precision
   }
 
-  protected getSubdivisions(options: Path.Options = {}) {
+  protected getSubdivisions(options: PathOptions = {}) {
     if (options.segmentSubdivisions == null) {
       const precision = this.getPrecision(options)
       return this.getSegmentSubdivisions({ precision })
@@ -1127,13 +1252,13 @@ export class Path extends Geometry {
     return options.segmentSubdivisions
   }
 
-  protected getOptions(options: Path.Options = {}) {
+  protected getOptions(options: PathOptions = {}) {
     const precision = this.getPrecision(options)
     const segmentSubdivisions = this.getSubdivisions(options)
     return { precision, segmentSubdivisions }
   }
 
-  toPoints(options: Path.Options = {}) {
+  toPoints(options: PathOptions = {}) {
     const segments = this.segments
     const count = segments.length
     if (count === 0) {
@@ -1169,7 +1294,7 @@ export class Path extends Geometry {
     return points
   }
 
-  toPolylines(options: Path.Options = {}) {
+  toPolylines(options: PathOptions = {}) {
     const points = this.toPoints(options)
     if (!points) {
       return null
@@ -1178,19 +1303,19 @@ export class Path extends Geometry {
     return points.map((arr) => new Polyline(arr))
   }
 
-  scale(sx: number, sy: number, origin?: Point.PointLike) {
+  scale(sx: number, sy: number, origin?: PointOptions) {
     this.segments.forEach((s) => s.scale(sx, sy, origin))
     return this
   }
 
-  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: PointOptions) {
     this.segments.forEach((segment) => segment.rotate(angle, origin))
     return this
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point.PointLike): this
-  translate(tx: number | Point.PointLike, ty?: number) {
+  translate(p: PointOptions): this
+  translate(tx: number | PointOptions, ty?: number) {
     if (typeof tx === 'number') {
       this.segments.forEach((s) => s.translate(tx, ty as number))
     } else {
@@ -1247,145 +1372,5 @@ export class Path extends Geometry {
 }
 
 export namespace Path {
-  export function isPath(instance: any): instance is Path {
-    return instance != null && instance instanceof Path
-  }
-}
-
-export namespace Path {
-  export interface Options {
-    precision?: number | null
-    segmentSubdivisions?: Segment[][] | null
-  }
-}
-
-export namespace Path {
-  export function parse(pathData: string) {
-    if (!pathData) {
-      return new Path()
-    }
-
-    const path = new Path()
-    const commandRe =
-      /(?:[a-zA-Z] *)(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)? *,? *)|(?:-?\.\d+ *,? *))+|(?:[a-zA-Z] *)(?! |\d|-|\.)/g
-    const commands = normalize(pathData).match(commandRe)
-    if (commands != null) {
-      for (let i = 0, ii = commands.length; i < ii; i += 1) {
-        const command = commands[i]
-        const argRe =
-          /(?:[a-zA-Z])|(?:(?:-?\d+(?:\.\d+)?(?:e[-+]?\d+)?))|(?:(?:-?\.\d+))/g
-        const args = command.match(argRe) // [type, coordinate1, coordinate2...]
-        if (args != null) {
-          const type = args[0]
-          const coords = args.slice(1).map((a) => +a)
-          const segment = createSegment.call(null, type, ...coords)
-          path.appendSegment(segment)
-        }
-      }
-    }
-
-    return path
-  }
-
-  export function createSegment(type: 'M', x: number, y: number): MoveTo
-  export function createSegment(type: 'M', point: Point.PointLike): MoveTo
-  export function createSegment(type: 'M', line: Line): MoveTo
-  export function createSegment(type: 'M', curve: Curve): MoveTo
-  export function createSegment(
-    type: 'M',
-    point: Point.PointLike,
-    ...points: Point.PointLike[]
-  ): Segment[]
-  export function createSegment(
-    type: 'M',
-    x: number,
-    y: number,
-    ...coords: number[]
-  ): Segment[]
-  export function createSegment(type: 'L', x: number, y: number): LineTo
-  export function createSegment(type: 'L', point: Point.PointLike): LineTo
-  export function createSegment(type: 'L', line: Line): LineTo
-  export function createSegment(
-    type: 'L',
-    point: Point.PointLike,
-    ...points: Point.PointLike[]
-  ): LineTo[]
-  export function createSegment(
-    type: 'L',
-    x: number,
-    y: number,
-    ...coords: number[]
-  ): LineTo[]
-  export function createSegment(
-    type: 'C',
-    x0: number,
-    y0: number,
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-  ): CurveTo
-  export function createSegment(
-    type: 'C',
-    x0: number,
-    y0: number,
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    ...coords: number[]
-  ): CurveTo[]
-  export function createSegment(
-    type: 'C',
-    p1: Point.PointLike,
-    p2: Point.PointLike,
-    p3: Point.PointLike,
-  ): CurveTo
-  export function createSegment(
-    type: 'C',
-    p1: Point.PointLike,
-    p2: Point.PointLike,
-    p3: Point.PointLike,
-    ...points: Point.PointLike[]
-  ): CurveTo[]
-  export function createSegment(type: 'Z' | 'z'): Close
-  export function createSegment(
-    type: 'M' | 'L' | 'C' | 'Z' | 'z',
-    ...args: any[]
-  ):
-    | MoveTo
-    | MoveTo[]
-    | LineTo
-    | LineTo[]
-    | CurveTo
-    | CurveTo[]
-    | Close
-    | Segment
-    | Segment[] {
-    if (type === 'M') {
-      return MoveTo.create.call(null, ...args)
-    }
-
-    if (type === 'L') {
-      return LineTo.create.call(null, ...args)
-    }
-
-    if (type === 'C') {
-      return CurveTo.create.call(null, ...args)
-    }
-
-    if (type === 'z' || type === 'Z') {
-      return Close.create()
-    }
-
-    throw new Error(`Invalid path segment type "${type}"`)
-  }
-}
-
-export namespace Path {
-  export const normalize = normalizePathData
   export const isValid = PathUtil.isValid
-  export const drawArc = PathUtil.drawArc
-  export const drawPoints = PathUtil.drawPoints
-  export const arcToCurves = PathUtil.arcToCurves
 }

@@ -1,4 +1,4 @@
-import { Dom, FunctionExt, ObjectExt, Platform } from '../common'
+import { Dom, FunctionExt, ObjectExt, SUPPORT_FOREIGNOBJECT } from '../common'
 import type { Node } from '../model'
 import { attrPresets, type SetDefinition, type SimpleAttrs } from '../registry'
 import { Base, BaseBodyAttr } from './base'
@@ -45,7 +45,7 @@ export const TextBlockConfig: Node.Config = {
       tagName: 'rect',
       selector: 'body',
     },
-    getTextBlockMarkup(Platform.SUPPORT_FOREIGNOBJECT),
+    getTextBlockMarkup(SUPPORT_FOREIGNOBJECT),
   ],
   attrs: {
     body: {

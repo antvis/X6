@@ -1,5 +1,5 @@
-import { Util } from './util'
-import { Store } from './store'
+import { returnFalse, returnTrue } from './util'
+import type { HandlerObject } from './store'
 import { EventRaw } from './alias'
 
 export class EventObject<
@@ -10,9 +10,9 @@ export class EventObject<
   TEvent extends Event = Event,
 > implements EventObject.Event
 {
-  isDefaultPrevented: () => boolean = Util.returnFalse
-  isPropagationStopped: () => boolean = Util.returnFalse
-  isImmediatePropagationStopped: () => boolean = Util.returnFalse
+  isDefaultPrevented: () => boolean = returnFalse
+  isPropagationStopped: () => boolean = returnFalse
+  isImmediatePropagationStopped: () => boolean = returnFalse
 
   type: string
   originalEvent: TEvent
@@ -26,7 +26,7 @@ export class EventObject<
   result: any
 
   timeStamp: number
-  handleObj: Store.HandlerObject
+  handleObj: HandlerObject
   namespace?: string
   rnamespace?: RegExp | null
   isSimulated = false
@@ -40,9 +40,7 @@ export class EventObject<
 
       // Events bubbling up the document may have been marked as prevented
       // by a handler lower down the tree; reflect the correct value.
-      this.isDefaultPrevented = e.defaultPrevented
-        ? Util.returnTrue
-        : Util.returnFalse
+      this.isDefaultPrevented = e.defaultPrevented ? returnTrue : returnFalse
 
       // Create target properties
       this.target = e.target as any as TTarget
@@ -65,7 +63,7 @@ export class EventObject<
   preventDefault = () => {
     const e = this.originalEvent
 
-    this.isDefaultPrevented = Util.returnTrue
+    this.isDefaultPrevented = returnTrue
 
     if (e && !this.isSimulated) {
       e.preventDefault()
@@ -75,7 +73,7 @@ export class EventObject<
   stopPropagation = () => {
     const e = this.originalEvent
 
-    this.isPropagationStopped = Util.returnTrue
+    this.isPropagationStopped = returnTrue
 
     if (e && !this.isSimulated) {
       e.stopPropagation()
@@ -85,7 +83,7 @@ export class EventObject<
   stopImmediatePropagation = () => {
     const e = this.originalEvent
 
-    this.isImmediatePropagationStopped = Util.returnTrue
+    this.isImmediatePropagationStopped = returnTrue
 
     if (e && !this.isSimulated) {
       e.stopImmediatePropagation()

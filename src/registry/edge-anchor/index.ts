@@ -1,5 +1,5 @@
 import type { KeyValue } from '../../common'
-import type { Point } from '../../geometry'
+import type { Point, PointLike } from '../../geometry'
 import type { Edge } from '../../model/edge'
 import type { EdgeView } from '../../view'
 import { Registry } from '../registry'
@@ -9,7 +9,7 @@ export type EdgeAnchorDefinition<T> = (
   this: EdgeView,
   view: EdgeView,
   magnet: SVGElement,
-  ref: Point | Point.PointLike | SVGElement,
+  ref: Point | PointLike | SVGElement,
   options: T,
   type: Edge.TerminalType,
 ) => Point

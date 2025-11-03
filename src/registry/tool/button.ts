@@ -1,5 +1,5 @@
 import { Dom, FunctionExt, NumberExt } from '../../common'
-import { Point } from '../../geometry'
+import { Point, type PointLike } from '../../geometry'
 import type { Cell } from '../../model'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
@@ -140,7 +140,7 @@ interface Options extends ToolItemOptions {
   x?: number | string
   y?: number | string
   distance?: number | string
-  offset?: number | Point.PointLike
+  offset?: number | PointLike
   rotate?: boolean
   useCellGeometry?: boolean
   onClick?: (

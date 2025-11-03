@@ -1,6 +1,6 @@
 import { type Dom, isModifierKeyMatch, type ModifierKey } from '../../common'
 import { Config } from '../../config'
-import { Point } from '../../geometry'
+import { Point, type PointLike } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Edge } from '../../model/edge'
 import type { EdgeView } from '../../view/edge'
@@ -250,7 +250,7 @@ export class Vertices extends ToolItem<EdgeView, Options> {
     options.onChanged && options.onChanged({ edge: edgeView.cell, edgeView })
   }
 
-  protected snapVertex(vertex: Point.PointLike, index: number) {
+  protected snapVertex(vertex: PointLike, index: number) {
     const snapRadius = this.options.snapRadius || 0
     if (snapRadius > 0) {
       const neighbors = this.getNeighborPoints(index)

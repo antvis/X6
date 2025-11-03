@@ -1,6 +1,6 @@
 /* eslint-disable default-param-last */
 
-import { Point } from '../point'
+import { Point, PointLike } from '../point'
 
 const regexSupportedData = new RegExp(`^[\\s\\dLMCZz,.]*$`) // eslint-disable-line prefer-regex-literals
 
@@ -29,7 +29,7 @@ export interface DrawPointsOptions {
 }
 
 function draw(
-  points: Point.PointLike[],
+  points: PointLike[],
   round?: number,
   initialMove?: boolean,
   close?: boolean,
@@ -125,10 +125,10 @@ function draw(
 }
 
 export function drawPoints(
-  points: (Point.PointLike | Point.PointData)[],
+  points: PointLike[],
   options: DrawPointsOptions = {},
 ) {
-  const pts: Point.PointLike[] = []
+  const pts: PointLike[] = []
   if (points && points.length) {
     points.forEach((p) => {
       if (Array.isArray(p)) {

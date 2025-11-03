@@ -1,13 +1,15 @@
 import { Ellipse, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
 import { normalize } from '../../registry/marker/util'
 import { Dom } from '../dom'
-import type { PointData, PointLike } from '../types'
+import { normalizePathData } from '@/geometry/path'
+import { isValid } from '@/geometry/path/util'
+import type { PointOptions, PointLike } from '@/types'
 
 export const normalizeMarker = normalize
 /**
  * Transforms point by an SVG transformation represented by `matrix`.
  */
-export function transformPoint(point: Point.PointLike, matrix: DOMMatrix) {
+export function transformPoint(point: PointLike, matrix: DOMMatrix) {
   const ret = Dom.createSVGPoint(point.x, point.y).matrixTransform(matrix)
   return new Point(ret.x, ret.y)
 }
@@ -275,8 +277,8 @@ export function toGeometryShape(elem: SVGElement) {
     }
     case 'path': {
       let d = elem.getAttribute('d') as string
-      if (!Path.isValid(d)) {
-        d = Path.normalize(d)
+      if (!isValid(d)) {
+        d = normalizePathData(d)
       }
       return Path.parse(d)
     }
@@ -293,8 +295,8 @@ export function toGeometryShape(elem: SVGElement) {
 
 export function translateAndAutoOrient(
   elem: SVGElement,
-  position: PointLike | PointData,
-  reference: PointLike | PointData,
+  position: PointOptions,
+  reference: PointOptions,
   target?: SVGElement,
 ) {
   const pos = Point.create(position)

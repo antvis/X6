@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '../geometry'
+import { Point, Rectangle, PointLike } from '../geometry'
 import { Dom, NumberExt, Util } from '../common'
 import { Base } from './base'
 import { Cell } from '../model'
@@ -466,11 +466,7 @@ export class TransformManager extends Base {
     return this.positionCell(cell, 'center')
   }
 
-  positionPoint(
-    point: Point.PointLike,
-    x: number | string,
-    y: number | string,
-  ) {
+  positionPoint(point: PointLike, x: number | string, y: number | string) {
     const clientSize = this.getComputedSize()
 
     // eslint-disable-next-line
@@ -575,7 +571,7 @@ export namespace TransformManager {
     minScale?: number
     maxScale?: number
     scaleGrid?: number
-    center?: Point.PointLike
+    center?: PointLike
   }
 
   export type Direction =

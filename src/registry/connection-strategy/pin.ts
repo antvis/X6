@@ -1,4 +1,4 @@
-import { Point } from '../../geometry'
+import { Point, type PointLike } from '../../geometry'
 import type { Edge, Node } from '../../model'
 import type { EdgeView, NodeView } from '../../view'
 import type { ConnectionStrategyDefinition } from './index'
@@ -26,7 +26,7 @@ export function pinNodeTerminal(
   data: Edge.TerminalCellData,
   view: NodeView,
   magnet: Element,
-  coords: Point.PointLike,
+  coords: PointLike,
 ) {
   const node = view.cell as Node
   const angle = node.getAngle()
@@ -59,7 +59,7 @@ export function pinEdgeTerminal(
   end: Edge.TerminalCellData,
   view: EdgeView,
   magnet: Element,
-  coords: Point.PointLike,
+  coords: PointLike,
 ) {
   const connection = view.getConnection()
   if (!connection) {

@@ -6,7 +6,15 @@ import {
   ObjectExt,
   Vector,
 } from '../../common'
-import { Angle, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
+import {
+  Angle,
+  Line,
+  Path,
+  Point,
+  Polyline,
+  Rectangle,
+  PointLike,
+} from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Options as GraphOptions } from '../../graph/options'
 import { Edge } from '../../model/edge'
@@ -597,7 +605,7 @@ export class EdgeView<
     this.cleanCache()
   }
 
-  protected findAnchors(vertices: Point.PointLike[]) {
+  protected findAnchors(vertices: PointLike[]) {
     const edge = this.cell
     const source = edge.source as Edge.TerminalCellData
     const target = edge.target as Edge.TerminalCellData
@@ -620,9 +628,9 @@ export class EdgeView<
 
   protected findAnchorsOrdered(
     firstType: Edge.TerminalType,
-    firstPoint: Point.PointLike,
+    firstPoint: PointLike,
     secondType: Edge.TerminalType,
-    secondPoint: Point.PointLike,
+    secondPoint: PointLike,
   ) {
     let firstAnchor: Point
     let secondAnchor: Point
@@ -716,7 +724,7 @@ export class EdgeView<
         this,
         cellView as EdgeView,
         magnet as SVGElement,
-        ref as Point.PointLike,
+        ref as PointLike,
         config.args || {},
         terminalType,
       )
@@ -731,7 +739,7 @@ export class EdgeView<
         this,
         cellView as NodeView,
         magnet as SVGElement,
-        ref as Point.PointLike,
+        ref as PointLike,
         config.args || {},
         terminalType,
       )
@@ -740,7 +748,7 @@ export class EdgeView<
     return anchor ? anchor.round(this.POINT_ROUNDING) : new Point()
   }
 
-  protected findRoutePoints(vertices: Point.PointLike[] = []): Point[] {
+  protected findRoutePoints(vertices: PointLike[] = []): Point[] {
     const defaultRouter =
       this.graph.options.connecting.router || routerPresets.normal
     const router = this.cell.getRouter() || defaultRouter
@@ -1181,7 +1189,7 @@ export class EdgeView<
     })
   }
 
-  getClosestPoint(point: Point.PointLike) {
+  getClosestPoint(point: PointLike) {
     if (this.path == null) {
       return null
     }
@@ -1191,7 +1199,7 @@ export class EdgeView<
     })
   }
 
-  getClosestPointLength(point: Point.PointLike) {
+  getClosestPointLength(point: PointLike) {
     if (this.path == null) {
       return null
     }
@@ -1201,7 +1209,7 @@ export class EdgeView<
     })
   }
 
-  getClosestPointRatio(point: Point.PointLike) {
+  getClosestPointRatio(point: PointLike) {
     if (this.path == null) {
       return null
     }

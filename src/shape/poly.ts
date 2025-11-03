@@ -1,5 +1,5 @@
 import { ObjectExt } from '../common'
-import type { Point } from '../geometry'
+import type { PointOptions } from '../geometry'
 import type { Node } from '../model/node'
 import { Base } from './base'
 import { pointsToString } from './util'
@@ -18,7 +18,7 @@ export class Poly extends Base {
   }
 
   setPoints(
-    points?: string | Point.PointLike[] | Point.PointData[] | null,
+    points?: string | PointOptions[] | null,
     options?: Node.SetOptions,
   ) {
     if (points == null) {

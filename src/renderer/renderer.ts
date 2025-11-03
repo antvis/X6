@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { disposable, Util } from '../common'
-import { type Point, Rectangle } from '../geometry'
+import { type PointLike, Rectangle } from '../geometry'
 import { Base } from '../graph/base'
 import { Cell } from '../model'
 import type { CellView, EdgeView } from '../view'
@@ -64,7 +64,7 @@ export class Renderer extends Base {
     return null
   }
 
-  findViewsFromPoint(p: Point.PointLike) {
+  findViewsFromPoint(p: PointLike) {
     const ref = { x: p.x, y: p.y }
     return this.model
       .getCells()
@@ -79,7 +79,7 @@ export class Renderer extends Base {
       }) as CellView[]
   }
 
-  findEdgeViewsFromPoint(p: Point.PointLike, threshold = 5) {
+  findEdgeViewsFromPoint(p: PointLike, threshold = 5) {
     return this.model
       .getEdges()
       .map((edge) => this.findViewByCell(edge))
