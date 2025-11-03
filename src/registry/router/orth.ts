@@ -1,5 +1,11 @@
 import { ArrayExt } from '../../common'
-import { Angle, Line, Point, type Rectangle } from '../../geometry'
+import {
+  Angle,
+  Line,
+  Point,
+  type Rectangle,
+  type PointLike,
+} from '../../geometry'
 import type { RouterDefinition } from './index'
 import * as Util from './util'
 
@@ -150,7 +156,7 @@ function getBBoxSize(bbox: Rectangle, bearing: Bearings) {
 
 type Bearings = ReturnType<typeof getBearing>
 
-function getBearing(from: Point.PointLike, to: Point.PointLike) {
+function getBearing(from: PointLike, to: PointLike) {
   if (from.x === to.x) {
     return from.y > to.y ? 'N' : 'S'
   }

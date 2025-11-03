@@ -1,5 +1,5 @@
 import { NumberExt } from '../../../common'
-import { Angle, Point, type Rectangle } from '../../../geometry'
+import { Angle, Point, type Rectangle, type PointLike } from '../../../geometry'
 import type { Edge, Node } from '../../../model'
 import type { EdgeView } from '../../../view'
 import type { RouterDefinition } from '../index'
@@ -65,10 +65,10 @@ export interface ResolvedOptions {
    * Specify the directions used above and what they mean
    */
   directionMap: {
-    top: Point.PointLike
-    right: Point.PointLike
-    bottom: Point.PointLike
-    left: Point.PointLike
+    top: PointLike
+    right: PointLike
+    bottom: PointLike
+    left: PointLike
   }
 
   /**
@@ -113,8 +113,8 @@ export interface ResolvedOptions {
   draggingRouter?:
     | ((
         this: EdgeView,
-        dragFrom: Point.PointLike,
-        dragTo: Point.PointLike,
+        dragFrom: PointLike,
+        dragTo: PointLike,
         options: ResolvedOptions,
       ) => Point[])
     | null

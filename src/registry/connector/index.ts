@@ -1,5 +1,5 @@
 import type { KeyValue } from '../../common'
-import type { Path, Point } from '../../geometry'
+import type { Path, PointLike } from '../../geometry'
 import type { EdgeView } from '../../view'
 import { Registry } from '../registry'
 import * as connectors from './main'
@@ -12,9 +12,9 @@ export type ConnectorDefinition<
   T extends ConnectorBaseOptions = ConnectorBaseOptions,
 > = (
   this: EdgeView,
-  sourcePoint: Point.PointLike,
-  targetPoint: Point.PointLike,
-  routePoints: Point.PointLike[],
+  sourcePoint: PointLike,
+  targetPoint: PointLike,
+  routePoints: PointLike[],
   options: T,
   edgeView: EdgeView,
 ) => Path | string

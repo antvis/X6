@@ -1,11 +1,14 @@
-import { Point } from './point'
+import { Point, PointOptions } from './point'
 import { Geometry } from './geometry'
 import { Rectangle } from './rectangle'
 import { Ellipse } from './ellipse'
-import { Path } from './path'
+import { Path, type PathOptions } from './path'
 import { Polyline } from './polyline'
 
 export class Line extends Geometry {
+  static isLine(instance: any): instance is Line {
+    return instance != null && instance instanceof Line
+  }
   public start: Point
   public end: Point
 
@@ -18,13 +21,10 @@ export class Line extends Geometry {
 
   constructor()
   constructor(x1: number, y1: number, x2: number, y2: number)
+  constructor(p1: PointOptions, p2: PointOptions)
   constructor(
-    p1: Point.PointLike | Point.PointData,
-    p2: Point.PointLike | Point.PointData,
-  )
-  constructor(
-    x1?: number | Point.PointLike | Point.PointData,
-    y1?: number | Point.PointLike | Point.PointData,
+    x1?: number | PointOptions,
+    y1?: number | PointOptions,
     x2?: number,
     y2?: number,
   ) {
@@ -52,8 +52,8 @@ export class Line extends Geometry {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point.PointLike | Point.PointData): this
-  translate(tx: number | Point.PointLike | Point.PointData, ty?: number) {
+  translate(p: PointOptions): this
+  translate(tx: number | PointOptions, ty?: number) {
     if (typeof tx === 'number') {
       this.start.translate(tx, ty as number)
       this.end.translate(tx, ty as number)
@@ -68,7 +68,7 @@ export class Line extends Geometry {
   /**
    * Rotate the line by `angle` around `origin`.
    */
-  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: PointOptions) {
     this.start.rotate(angle, origin)
     this.end.rotate(angle, origin)
     return this
@@ -78,7 +78,7 @@ export class Line extends Geometry {
    * Scale the line by `sx` and `sy` about the given `origin`. If origin is not
    * specified, the line is scaled around `0,0`.
    */
-  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
+  scale(sx: number, sy: number, origin?: PointOptions) {
     this.start.scale(sx, sy, origin)
     this.end.scale(sx, sy, origin)
     return this
@@ -177,14 +177,14 @@ export class Line extends Geometry {
   /**
    * Returns the point on the line that lies closest to point `p`.
    */
-  closestPoint(p: Point.PointLike | Point.PointData) {
+  closestPoint(p: PointOptions) {
     return this.pointAt(this.closestPointNormalizedLength(p))
   }
 
   /**
    * Returns the length of the line up to the point that lies closest to point `p`.
    */
-  closestPointLength(p: Point.PointLike | Point.PointData) {
+  closestPointLength(p: PointOptions) {
     return this.closestPointNormalizedLength(p) * this.length()
   }
 
@@ -192,7 +192,7 @@ export class Line extends Geometry {
    * Returns a line that is tangent to the line at the point that lies closest
    * to point `p`.
    */
-  closestPointTangent(p: Point.PointLike | Point.PointData) {
+  closestPointTangent(p: PointOptions) {
     return this.tangentAt(this.closestPointNormalizedLength(p))
   }
 
@@ -200,7 +200,7 @@ export class Line extends Geometry {
    * Returns the normalized length (distance from the start of the line / total
    * line length) of the line up to the point that lies closest to point.
    */
-  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: PointOptions) {
     const product = this.vector().dot(new Line(this.start, p).vector())
     const normalized = Math.min(1, Math.max(0, product / this.squaredLength()))
 
@@ -282,7 +282,7 @@ export class Line extends Geometry {
   /**
    * Returns `true` if the point `p` lies on the line. Return `false` otherwise.
    */
-  containsPoint(p: Point.PointLike | Point.PointData) {
+  containsPoint(p: PointOptions) {
     const start = this.start
     const end = this.end
 
@@ -309,10 +309,10 @@ export class Line extends Geometry {
    * geometry shape.
    */
   intersect(shape: Line | Rectangle | Polyline | Ellipse): Point[] | null
-  intersect(shape: Path, options?: Path.Options): Point[] | null
+  intersect(shape: Path, options?: PathOptions): Point[] | null
   intersect(
     shape: Line | Rectangle | Polyline | Ellipse | Path,
-    options?: Path.Options,
+    options?: PathOptions,
   ): Point[] | null {
     const ret = shape.intersectsWithLine(this, options)
     if (ret) {
@@ -377,7 +377,7 @@ export class Line extends Geometry {
    * if the point lies to the left of the line, and `0` if the point lies on
    * the line.
    */
-  pointOffset(p: Point.PointLike | Point.PointData) {
+  pointOffset(p: PointOptions) {
     const ref = Point.clone(p)
     const start = this.start
     const end = this.end
@@ -392,11 +392,8 @@ export class Line extends Geometry {
    * Returns the squared distance between the line and the point.
    */
   pointSquaredDistance(x: number, y: number): number
-  pointSquaredDistance(p: Point.PointLike | Point.PointData): number
-  pointSquaredDistance(
-    x: number | Point.PointLike | Point.PointData,
-    y?: number,
-  ) {
+  pointSquaredDistance(p: PointOptions): number
+  pointSquaredDistance(x: number | PointOptions, y?: number) {
     const p = Point.create(x, y)
     return this.closestPoint(p).squaredDistance(p)
   }
@@ -405,8 +402,8 @@ export class Line extends Geometry {
    * Returns the distance between the line and the point.
    */
   pointDistance(x: number, y: number): number
-  pointDistance(p: Point.PointLike | Point.PointData): number
-  pointDistance(x: number | Point.PointLike | Point.PointData, y?: number) {
+  pointDistance(p: PointOptions): number
+  pointDistance(x: number | PointOptions, y?: number) {
     const p = Point.create(x, y)
     return this.closestPoint(p).distance(p)
   }
@@ -459,8 +456,8 @@ export class Line extends Geometry {
    * @see https://softwareengineering.stackexchange.com/questions/165776/what-do-ptlinedist-and-relativeccw-do
    */
   relativeCcw(x: number, y: number): -1 | 0 | 1
-  relativeCcw(p: Point.PointLike | Point.PointData): -1 | 0 | 1
-  relativeCcw(x: number | Point.PointLike | Point.PointData, y?: number) {
+  relativeCcw(p: PointOptions): -1 | 0 | 1
+  relativeCcw(x: number | PointOptions, y?: number) {
     const ref = Point.create(x, y)
 
     let dx1 = ref.x - this.start.x
@@ -510,11 +507,5 @@ export class Line extends Geometry {
 
   serialize() {
     return [this.start.serialize(), this.end.serialize()].join(' ')
-  }
-}
-
-export namespace Line {
-  export function isLine(instance: any): instance is Line {
-    return instance != null && instance instanceof Line
   }
 }

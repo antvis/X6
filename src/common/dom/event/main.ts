@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { Core } from './core'
-import { Util } from './util'
+import { ensureHandlerId, returnFalse, setHandlerId } from './util'
 import { EventObject } from './object'
 import { TypeEventHandler, TypeEventHandlers } from './types'
 
@@ -262,7 +262,7 @@ namespace Private {
     }
 
     if (fn === false) {
-      fn = Util.returnFalse
+      fn = returnFalse
     } else if (!fn) {
       return
     }
@@ -276,7 +276,7 @@ namespace Private {
       }
 
       // Use same guid so caller can remove using origFn
-      Util.setHandlerId(fn, Util.ensureHandlerId(originHandler))
+      setHandlerId(fn, ensureHandlerId(originHandler))
     }
 
     Core.on(elem, types as string, fn, data, selector as string)
@@ -323,7 +323,7 @@ namespace Private {
     }
 
     if (fn === false) {
-      fn = Util.returnFalse
+      fn = returnFalse
     }
 
     // @ts-ignore

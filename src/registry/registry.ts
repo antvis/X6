@@ -1,4 +1,4 @@
-import { FunctionExt, type KeyValue, Platform, StringExt } from '../common'
+import { FunctionExt, type KeyValue, isApplyingHMR, StringExt } from '../common'
 
 export interface RegistryOptions<Entity> {
   type: string
@@ -63,7 +63,7 @@ export class Registry<
       return
     }
 
-    if (this.exist(name) && !force && !Platform.isApplyingHMR()) {
+    if (this.exist(name) && !force && !isApplyingHMR()) {
       this.onDuplicated(name)
     }
 

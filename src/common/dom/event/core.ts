@@ -1,6 +1,21 @@
-import { Util } from './util'
-import { EventHook } from './hook'
-import { Store } from './store'
+import {
+  isValidTarget,
+  removeHandlerId,
+  addEventListener,
+  ensureHandlerId,
+  splitType,
+  normalizeType,
+  removeEventListener,
+  getHandlerId,
+  isWindow,
+  setHandlerId,
+  getHandlerQueue,
+  stopPropagationCallback,
+} from './util'
+import { ensure, remove } from './store'
+import { get } from './hook'
+import { get as getStore } from './store'
+import type { EventTarget, HandlerObject } from './store'
 import { EventObject } from './object'
 import { EventHandler } from './types'
 import './special'
@@ -9,18 +24,18 @@ export namespace Core {
   let triggered: string | undefined
 
   export function on(
-    elem: Store.EventTarget,
+    elem: EventTarget,
     types: string,
     handler:
       | EventHandler<any, any>
       | ({
           handler: EventHandler<any, any>
           selector?: string
-        } & Partial<Store.HandlerObject>),
+        } & Partial<HandlerObject>),
     data?: any,
     selector?: string,
   ) {
-    if (!Util.isValidTarget(elem)) {
+    if (!isValidTarget(elem)) {
       return
     }
 
@@ -34,11 +49,11 @@ export namespace Core {
     }
 
     // Ensure that invalid selectors throw exceptions at attach time
-    // if (!Util.isValidSelector(elem, selector)) {
+    // if (!isValidSelector(elem, selector)) {
     //   throw new Error('Delegate event with invalid selector.')
     // }
 
-    const store = Store.ensure(elem)
+    const store = ensure(elem)
 
     // Ensure the main handle
     let mainHandler = store.handler
@@ -49,11 +64,11 @@ export namespace Core {
     }
 
     // Make sure that the handler has a unique ID, used to find/remove it later
-    const guid = Util.ensureHandlerId(handler)
+    const guid = ensureHandlerId(handler)
 
     // Handle multiple events separated by a space
-    Util.splitType(types).forEach((item) => {
-      const { originType, namespaces } = Util.normalizeType(item)
+    splitType(types).forEach((item) => {
+      const { originType, namespaces } = normalizeType(item)
 
       // There *must* be a type, no attaching namespace-only handlers
       if (!originType) {
@@ -61,16 +76,16 @@ export namespace Core {
       }
 
       let type = originType
-      let hook = EventHook.get(type)
+      let hook = get(type)
 
       // If selector defined, determine special event type, otherwise given type
       type = (selector ? hook.delegateType : hook.bindType) || type
 
       // Update hook based on newly reset type
-      hook = EventHook.get(type)
+      hook = get(type)
 
       // handleObj is passed to all event handlers
-      const handleObj: Store.HandlerObject = {
+      const handleObj: HandlerObject = {
         type,
         originType,
         data,
@@ -92,7 +107,7 @@ export namespace Core {
           !hook.setup ||
           hook.setup(elem, data, namespaces, mainHandler!) === false
         ) {
-          Util.addEventListener(
+          addEventListener(
             elem as Element,
             type,
             mainHandler as any as EventListener,
@@ -101,9 +116,9 @@ export namespace Core {
       }
 
       if (hook.add) {
-        Util.removeHandlerId(handleObj.handler)
+        removeHandlerId(handleObj.handler)
         hook.add(elem, handleObj)
-        Util.setHandlerId(handleObj.handler, guid)
+        setHandlerId(handleObj.handler, guid)
       }
 
       // Add to the element's handler list, delegates in front
@@ -117,13 +132,13 @@ export namespace Core {
   }
 
   export function off(
-    elem: Store.EventTarget,
+    elem: EventTarget,
     types: string,
     handler?: EventHandler<any, any>,
     selector?: string,
     mappedTypes?: boolean,
   ) {
-    const store = Store.get(elem)
+    const store = getStore(elem)
     if (!store) {
       return
     }
@@ -134,8 +149,8 @@ export namespace Core {
     }
 
     // Once for each type.namespace in types; type may be omitted
-    Util.splitType(types).forEach((item) => {
-      const { originType, namespaces } = Util.normalizeType(item)
+    splitType(types).forEach((item) => {
+      const { originType, namespaces } = normalizeType(item)
 
       // Unbind all events (on this namespace, if provided) for the element
       if (!originType) {
@@ -146,7 +161,7 @@ export namespace Core {
       }
 
       let type = originType
-      const hook = EventHook.get(type)
+      const hook = get(type)
       type = (selector ? hook.delegateType : hook.bindType) || type
       const bag = events[type]
       if (!bag) {
@@ -163,7 +178,7 @@ export namespace Core {
         const handleObj = bag.handlers[i]
         if (
           (mappedTypes || originType === handleObj.originType) &&
-          (!handler || Util.getHandlerId(handler) === handleObj.guid) &&
+          (!handler || getHandlerId(handler) === handleObj.guid) &&
           (rns == null ||
             (handleObj.namespace && rns.test(handleObj.namespace))) &&
           (selector == null ||
@@ -187,7 +202,7 @@ export namespace Core {
           !hook.teardown ||
           hook.teardown(elem, namespaces, store.handler!) === false
         ) {
-          Util.removeEventListener(
+          removeEventListener(
             elem as Element,
             type,
             store.handler as any as EventListener,
@@ -200,24 +215,24 @@ export namespace Core {
 
     // Remove data and the expando if it's no longer used
     if (Object.keys(events).length === 0) {
-      Store.remove(elem)
+      remove(elem)
     }
   }
 
   export function dispatch(
-    elem: Store.EventTarget,
+    elem: EventTarget,
     evt: Event | EventObject | string,
     ...args: any[]
   ) {
     const event = EventObject.create(evt)
     event.delegateTarget = elem as Element
 
-    const hook = EventHook.get(event.type)
+    const hook = get(event.type)
     if (hook.preDispatch && hook.preDispatch(elem, event) === false) {
       return
     }
 
-    const handlerQueue = Util.getHandlerQueue(elem, event)
+    const handlerQueue = getHandlerQueue(elem, event)
 
     // Run delegates first; they may want to stop propagation beneath us
     for (
@@ -243,10 +258,10 @@ export namespace Core {
           event.handleObj = handleObj
           event.data = handleObj.data
 
-          const hookHandle = EventHook.get(handleObj.originType).handle
+          const hookHandle = get(handleObj.originType).handle
 
           const result = hookHandle
-            ? hookHandle(matched.elem as Store.EventTarget, event, ...args)
+            ? hookHandle(matched.elem as EventTarget, event, ...args)
             : handleObj.handler.call(matched.elem, event, ...args)
           if (result !== undefined) {
             event.result = result
@@ -273,7 +288,7 @@ export namespace Core {
       | EventObject
       | string,
     eventArgs: any,
-    elem: Store.EventTarget,
+    elem: EventTarget,
     onlyHandlers?: boolean,
   ) {
     let eventObj = event as EventObject
@@ -322,7 +337,7 @@ export namespace Core {
       args.push(eventArgs)
     }
 
-    const hook = EventHook.get(type)
+    const hook = get(type)
     if (
       !onlyHandlers &&
       hook.trigger &&
@@ -336,7 +351,7 @@ export namespace Core {
     // Determine event propagation path in advance, per W3C events spec.
     // Bubble up to document, then to window; watch for a global ownerDocument
     const eventPath = [node]
-    if (!onlyHandlers && !hook.noBubble && !Util.isWindow(node)) {
+    if (!onlyHandlers && !hook.noBubble && !isWindow(node)) {
       bubbleType = hook.delegateType || type
 
       let last: Document | HTMLElement = node
@@ -370,7 +385,7 @@ export namespace Core {
       eventObj.type = i > 1 ? (bubbleType as string) : hook.bindType || type
 
       // Custom handler
-      const store = Store.get(currElement as Element)
+      const store = getStore(currElement as Element)
       if (store) {
         if (store.events[eventObj.type] && store.handler) {
           store.handler.call(currElement, ...args)
@@ -379,7 +394,7 @@ export namespace Core {
 
       // Native handler
       const handle = (ontype && currElement[ontype]) || null
-      if (handle && Util.isValidTarget(currElement)) {
+      if (handle && isValidTarget(currElement)) {
         eventObj.result = handle.call(currElement, ...args)
         if (eventObj.result === false) {
           eventObj.preventDefault()
@@ -395,14 +410,14 @@ export namespace Core {
       if (
         (preventDefault == null ||
           preventDefault(eventPath.pop()!, eventObj, eventArgs) === false) &&
-        Util.isValidTarget(node)
+        isValidTarget(node)
       ) {
         // Call a native DOM method on the target with the same name as the
         // event. Don't do default actions on window.
         if (
           ontype &&
           typeof node[type as 'click'] === 'function' &&
-          !Util.isWindow(node)
+          !isWindow(node)
         ) {
           // Don't re-trigger an onFOO event when we call its FOO() method
           const tmp = node[ontype]
@@ -414,13 +429,13 @@ export namespace Core {
           triggered = type
 
           if (eventObj.isPropagationStopped()) {
-            lastElement.addEventListener(type, Util.stopPropagationCallback)
+            lastElement.addEventListener(type, stopPropagationCallback)
           }
 
           node[type as 'click']()
 
           if (eventObj.isPropagationStopped()) {
-            lastElement.removeEventListener(type, Util.stopPropagationCallback)
+            lastElement.removeEventListener(type, stopPropagationCallback)
           }
 
           triggered = undefined

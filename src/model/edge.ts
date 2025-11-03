@@ -1,5 +1,6 @@
 import { type KeyValue, ObjectExt, type Size, StringExt } from '../common'
 import { Point, Polyline } from '../geometry'
+import type { PointOptions, PointLike } from '../geometry/point'
 import type {
   CellAttrs,
   ConnectionPointManualItem,
@@ -189,13 +190,13 @@ export class Edge<
     options?: Edge.SetOptions,
   ): this
   setSource(
-    point: Point | Point.PointLike,
+    point: Point | PointOptions,
     args?: Edge.SetTerminalCommonArgs,
     options?: Edge.SetOptions,
   ): this
   setSource(args: Edge.TerminalData, options?: Edge.SetOptions): this
   setSource(
-    source: Node | Edge | Point | Point.PointLike | Edge.TerminalData,
+    source: Node | Edge | Point | PointOptions | Edge.TerminalData,
     args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
     options: Edge.SetOptions = {},
   ) {
@@ -233,13 +234,13 @@ export class Edge<
     options?: Edge.SetOptions,
   ): this
   setTarget(
-    point: Point | Point.PointLike,
+    point: Point | PointOptions,
     args?: Edge.SetTerminalCommonArgs,
     options?: Edge.SetOptions,
   ): this
   setTarget(args: Edge.TerminalData, options?: Edge.SetOptions): this
   setTarget(
-    target: Node | Edge | Point | Point.PointLike | Edge.TerminalData,
+    target: Node | Edge | Point | PointOptions | Edge.TerminalData,
     args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
     options: Edge.SetOptions = {},
   ) {
@@ -252,7 +253,7 @@ export class Edge<
 
   setTerminal(
     type: Edge.TerminalType,
-    terminal: Node | Edge | Point | Point.PointLike | Edge.TerminalData,
+    terminal: Node | Edge | Point | PointOptions | Edge.TerminalData,
     args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
     options: Edge.SetOptions = {},
   ): this {
@@ -267,7 +268,7 @@ export class Edge<
     }
 
     // `terminal` is a point-like object
-    const p = terminal as Point.PointLike
+    const p = terminal as PointLike
     if (Point.isPoint(terminal) || (p.x != null && p.y != null)) {
       this.store.set(
         type,
@@ -539,8 +540,8 @@ export class Edge<
             return null
           })
         : current
-          ? [...current]
-          : []
+        ? [...current]
+        : []
 
     const removed =
       previous && current
@@ -556,8 +557,8 @@ export class Edge<
             return null
           })
         : previous
-          ? [...previous]
-          : []
+        ? [...previous]
+        : []
 
     if (added.length > 0) {
       this.notify('labels:added', { added, cell: this, edge: this })
@@ -575,7 +576,7 @@ export class Edge<
     return this.getVertices()
   }
 
-  set vertices(vertices: Point.PointLike | Point.PointLike[]) {
+  set vertices(vertices: PointOptions | PointOptions[]) {
     this.setVertices(vertices)
   }
 
@@ -584,7 +585,7 @@ export class Edge<
   }
 
   setVertices(
-    vertices: Point.PointLike | Point.PointLike[],
+    vertices: PointOptions | PointOptions[],
     options: Edge.SetOptions = {},
   ) {
     const points = Array.isArray(vertices) ? vertices : [vertices]
@@ -597,7 +598,7 @@ export class Edge<
   }
 
   insertVertex(
-    vertice: Point.PointLike,
+    vertice: PointOptions,
     index?: number,
     options: Edge.SetOptions = {},
   ) {
@@ -612,7 +613,7 @@ export class Edge<
     return this.setVertices(vertices, options)
   }
 
-  appendVertex(vertex: Point.PointLike, options: Edge.SetOptions = {}) {
+  appendVertex(vertex: PointOptions, options: Edge.SetOptions = {}) {
     return this.insertVertex(vertex, -1, options)
   }
 
@@ -626,7 +627,7 @@ export class Edge<
 
   setVertexAt(
     index: number,
-    vertice: Point.PointLike,
+    vertice: PointOptions,
     options: Edge.SetOptions = {},
   ) {
     if (index != null && Number.isFinite(index)) {
@@ -647,7 +648,7 @@ export class Edge<
   protected onVertexsChanged({
     previous,
     current,
-  }: Cell.ChangeArgs<Point.PointLike[]>) {
+  }: Cell.ChangeArgs<PointLike[]>) {
     const added =
       previous && current
         ? current.filter((p1) => {
@@ -657,8 +658,8 @@ export class Edge<
             return null
           })
         : current
-          ? [...current]
-          : []
+        ? [...current]
+        : []
 
     const removed =
       previous && current
@@ -669,8 +670,8 @@ export class Edge<
             return null
           })
         : previous
-          ? [...previous]
-          : []
+        ? [...previous]
+        : []
 
     if (added.length > 0) {
       this.notify('vertexs:added', { added, cell: this, edge: this })
@@ -721,7 +722,7 @@ export class Edge<
   scale(
     sx: number,
     sy: number,
-    origin?: Point | Point.PointLike,
+    origin?: Point | PointOptions,
     options: Edge.SetOptions = {},
   ) {
     return this.applyToPoints((p) => {
@@ -730,13 +731,13 @@ export class Edge<
   }
 
   protected applyToPoints(
-    worker: (p: Point.PointLike) => Point.PointLike,
+    worker: (p: PointLike) => PointLike,
     options: Edge.SetOptions = {},
   ) {
     const attrs: {
       source?: Edge.TerminalPointData
       target?: Edge.TerminalPointData
-      vertices?: Point.PointLike[]
+      vertices?: PointOptions[]
     } = {}
 
     const source = this.getSource()
@@ -870,29 +871,29 @@ export namespace Edge {
     connector?: ConnectorData
     labels?: Label[] | string[]
     defaultLabel?: Label
-    vertices?: (Point.PointLike | Point.PointData)[]
+    vertices?: PointOptions[]
     defaultMarkup?: MarkupType
   }
 
   interface TerminalOptions {
     sourceCell?: Cell | string
     sourcePort?: string
-    sourcePoint?: Point.PointLike | Point.PointData
+    sourcePoint?: PointOptions
     targetCell?: Cell | string
     targetPort?: string
-    targetPoint?: Point.PointLike | Point.PointData
+    targetPoint?: PointOptions
     source?:
       | string
       | Cell
-      | Point.PointLike
-      | Point.PointData
+      | PointOptions
+      | PointOptions
       | TerminalPointData
       | TerminalCellLooseData
     target?:
       | string
       | Cell
-      | Point.PointLike
-      | Point.PointData
+      | PointOptions
+      | PointOptions
       | TerminalPointData
       | TerminalCellLooseData
   }
@@ -949,9 +950,7 @@ export namespace Edge {
     anchor?: EdgeAnchorItem
   }
 
-  export interface TerminalPointData
-    extends SetTerminalCommonArgs,
-      Point.PointLike {}
+  export interface TerminalPointData extends SetTerminalCommonArgs, PointLike {}
 
   export interface TerminalCellData extends SetCellTerminalArgs {
     cell: string
