@@ -194,8 +194,8 @@ export class Animation {
     const data = this.cache[key]
     return {
       path: key,
-      startValue: data.startValue,
-      targetValue: data.targetValue,
+      startValue: data.startValue as T,
+      targetValue: data.targetValue as T,
       cell: this.cell,
     }
   }
