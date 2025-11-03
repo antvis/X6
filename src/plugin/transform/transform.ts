@@ -1,5 +1,6 @@
 import type { NodeViewPositionEventArgs } from '@/view/node/type'
 import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
+import { DocumentEvents } from '../../constants'
 import { Angle, GeometryUtil, Point } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Node } from '../../model'
