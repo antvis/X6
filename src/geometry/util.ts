@@ -1,4 +1,4 @@
-import { Point } from './point'
+import type { PointLike } from './point'
 import { Rectangle } from './rectangle'
 
 export namespace GeometryUtil {
@@ -58,7 +58,7 @@ export namespace GeometryUtil {
 
   export function containsPoint(
     rect: Rectangle.RectangleLike,
-    point: Point.PointLike,
+    point: PointLike,
   ) {
     return (
       point != null &&
@@ -70,7 +70,7 @@ export namespace GeometryUtil {
     )
   }
 
-  export function squaredLength(p1: Point.PointLike, p2: Point.PointLike) {
+  export function squaredLength(p1: PointLike, p2: PointLike) {
     const dx = p1.x - p2.x
     const dy = p1.y - p2.y
     return dx * dx + dy * dy

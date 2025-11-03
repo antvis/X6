@@ -17,12 +17,92 @@ import {
   portLayoutRegistry,
 } from '../registry'
 import type { MarkupType } from '../view/markup'
+import type { PointData } from '@/types'
+
+export interface Metadata {
+  groups?: { [name: string]: GroupMetadata }
+  items: PortMetadata[]
+}
+
+export type PortPosition =
+  | Partial<PortLayoutNativeItem>
+  | Partial<PortLayoutManualItem>
+
+export type PortPositionMetadata =
+  | PortLayoutNativeNames
+  | Exclude<string, PortLayoutNativeNames>
+  | PointData // absolute layout
+  | PortPosition
+
+export type PortLabelPosition =
+  | Partial<PortLabelLayoutNativeItem>
+  | Partial<PortLabelLayoutManualItem>
+
+export type PortLabelPositionMetadata =
+  | PortLabelLayoutNativeNames
+  | Exclude<string, PortLabelLayoutNativeNames>
+  | PortLabelPosition
+
+export interface LabelMetadata {
+  markup?: MarkupType
+  size?: Size
+  position?: PortLabelPositionMetadata
+}
+
+export interface Label {
+  markup: string
+  size?: Size
+  position: PortLabelPosition
+}
+
+interface Common {
+  markup: MarkupType
+  attrs: CellAttrs
+  zIndex: number | 'auto'
+  size?: Size
+}
+
+export interface GroupMetadata extends Partial<Common>, KeyValue {
+  label?: LabelMetadata
+  position?: PortPositionMetadata
+}
+
+export interface Group extends Partial<Common> {
+  label: Label
+  position: PortPosition
+}
+
+interface PortBase {
+  group?: string
+  /**
+   * Arguments for the port layout function.
+   */
+  args?: JSONObject
+}
+
+export interface PortMetadata extends Partial<Common>, PortBase, KeyValue {
+  id?: string
+  label?: LabelMetadata
+}
+
+export interface Port extends Group, PortBase {
+  id: string
+}
+
+export interface LayoutResult {
+  portId: string
+  portAttrs?: CellAttrs
+  portSize?: Size
+  portLayout: PortLayoutResult
+  labelSize?: Size
+  labelLayout: PortLabelLayoutResult | null
+}
 
 export class PortManager {
-  ports: PortManager.Port[]
-  groups: { [name: string]: PortManager.Group }
+  ports: Port[]
+  groups: { [name: string]: Group }
 
-  constructor(data: PortManager.Metadata) {
+  constructor(data: Metadata) {
     this.ports = []
     this.groups = {}
     this.init(ObjectExt.cloneDeep(data))
@@ -36,7 +116,7 @@ export class PortManager {
     return groupName != null ? this.groups[groupName] : null
   }
 
-  getPortsByGroup(groupName?: string): PortManager.Port[] {
+  getPortsByGroup(groupName?: string): Port[] {
     return this.ports.filter(
       (p) => p.group === groupName || (p.group == null && groupName == null),
     )
@@ -65,7 +145,7 @@ export class PortManager {
     )
     const groupArgs = (groupPosition && groupPosition.args) || {}
     const layouts = layoutFn(portsArgs, elemBBox, groupArgs)
-    return layouts.map<PortManager.LayoutResult>((portLayout, index) => {
+    return layouts.map<LayoutResult>((portLayout, index) => {
       const port = ports[index]
       return {
         portLayout,
@@ -82,7 +162,7 @@ export class PortManager {
     })
   }
 
-  protected init(data: PortManager.Metadata) {
+  protected init(data: Metadata) {
     const { groups, items } = data
 
     if (groups != null) {
@@ -93,22 +173,22 @@ export class PortManager {
 
     if (Array.isArray(items)) {
       items.forEach((item) => {
-        this.ports.push(this.parsePort(item))
+        this.ports.push(this.parsePort(item) as unknown as Port)
       })
     }
   }
 
-  protected parseGroup(group: PortManager.GroupMetadata) {
+  protected parseGroup(group: GroupMetadata) {
     return {
       ...group,
       label: this.getLabel(group, true),
       position: this.getPortPosition(group.position, true),
-    } as PortManager.Group
+    } as Group
   }
 
-  protected parsePort(port: PortManager.PortMetadata) {
-    const result = { ...port } as PortManager.Port
-    const group = this.getGroup(port.group) || ({} as PortManager.Group)
+  protected parsePort(port: PortMetadata) {
+    const result = { ...port }
+    const group = this.getGroup(port.group) || ({} as Group)
 
     result.markup = result.markup || group.markup
     result.attrs = ObjectExt.merge({}, group.attrs, result.attrs)
@@ -120,10 +200,7 @@ export class PortManager {
     return result
   }
 
-  protected getZIndex(
-    group: PortManager.Group,
-    port: PortManager.PortMetadata,
-  ) {
+  protected getZIndex(group: Group, port: PortMetadata) {
     if (typeof port.zIndex === 'number') {
       return port.zIndex
     }
@@ -135,10 +212,7 @@ export class PortManager {
     return 'auto'
   }
 
-  protected createPosition(
-    group: PortManager.Group,
-    port: PortManager.PortMetadata,
-  ) {
+  protected createPosition(group: Group, port: PortMetadata) {
     return ObjectExt.merge(
       {
         name: 'left',
@@ -146,13 +220,13 @@ export class PortManager {
       },
       group.position,
       { args: port.args },
-    ) as PortManager.PortPosition
+    ) as PortPosition
   }
 
   protected getPortPosition(
-    position?: PortManager.PortPositionMetadata,
+    position?: PortPositionMetadata,
     setDefault = false,
-  ): PortManager.PortPosition {
+  ): PortPosition {
     if (position == null) {
       if (setDefault) {
         return { name: 'left', args: {} }
@@ -181,9 +255,9 @@ export class PortManager {
   }
 
   protected getPortLabelPosition(
-    position?: PortManager.PortLabelPositionMetadata,
+    position?: PortLabelPositionMetadata,
     setDefault = false,
-  ): PortManager.PortLabelPosition {
+  ): PortLabelPosition {
     if (position == null) {
       if (setDefault) {
         return { name: 'left', args: {} }
@@ -204,14 +278,14 @@ export class PortManager {
     return { args: {} }
   }
 
-  protected getLabel(item: PortManager.GroupMetadata, setDefaults = false) {
+  protected getLabel(item: GroupMetadata, setDefaults = false) {
     const label = item.label || {}
     label.position = this.getPortLabelPosition(label.position, setDefaults)
-    return label as PortManager.Label
+    return label as Label
   }
 
   protected getPortLabelLayout(
-    port: PortManager.Port,
+    port: Port,
     portPosition: Point,
     elemBBox: Rectangle,
   ) {
@@ -224,86 +298,5 @@ export class PortManager {
     }
 
     return null
-  }
-}
-
-export namespace PortManager {
-  export interface Metadata {
-    groups?: { [name: string]: GroupMetadata }
-    items: PortMetadata[]
-  }
-
-  export type PortPosition =
-    | Partial<PortLayoutNativeItem>
-    | Partial<PortLayoutManualItem>
-
-  export type PortPositionMetadata =
-    | PortLayoutNativeNames
-    | Exclude<string, PortLayoutNativeNames>
-    | Point.PointData // absolute layout
-    | PortPosition
-
-  export type PortLabelPosition =
-    | Partial<PortLabelLayoutNativeItem>
-    | Partial<PortLabelLayoutManualItem>
-
-  export type PortLabelPositionMetadata =
-    | PortLabelLayoutNativeNames
-    | Exclude<string, PortLabelLayoutNativeNames>
-    | PortLabelPosition
-
-  export interface LabelMetadata {
-    markup?: MarkupType
-    size?: Size
-    position?: PortLabelPositionMetadata
-  }
-
-  export interface Label {
-    markup: string
-    size?: Size
-    position: PortLabelPosition
-  }
-
-  interface Common {
-    markup: MarkupType
-    attrs: CellAttrs
-    zIndex: number | 'auto'
-    size?: Size
-  }
-
-  export interface GroupMetadata extends Partial<Common>, KeyValue {
-    label?: LabelMetadata
-    position?: PortPositionMetadata
-  }
-
-  export interface Group extends Partial<Common> {
-    label: Label
-    position: PortPosition
-  }
-
-  interface PortBase {
-    group?: string
-    /**
-     * Arguments for the port layout function.
-     */
-    args?: JSONObject
-  }
-
-  export interface PortMetadata extends Partial<Common>, PortBase, KeyValue {
-    id?: string
-    label?: LabelMetadata
-  }
-
-  export interface Port extends Group, PortBase {
-    id: string
-  }
-
-  export interface LayoutResult {
-    portId: string
-    portAttrs?: CellAttrs
-    portSize?: Size
-    portLayout: PortLayoutResult
-    labelSize?: Size
-    labelLayout: PortLabelLayoutResult | null
   }
 }

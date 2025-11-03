@@ -4,12 +4,13 @@ import {
   type DijkstraWeight,
   dijkstra,
 } from '../common/algorithm'
-import { type Point, Rectangle } from '../geometry'
+import { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import { Cell } from './cell'
 import { Collection } from './collection'
 import { Edge } from './edge'
 import { Node } from './node'
+import type { PointLike } from '@/types'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
@@ -1009,8 +1010,8 @@ export class Model extends Basecoat<Model.EventArgs> {
    * Note that there can be more then one node as nodes might overlap.
    */
   getNodesFromPoint(x: number, y: number): Node[]
-  getNodesFromPoint(p: Point.PointLike): Node[]
-  getNodesFromPoint(x: number | Point.PointLike, y?: number) {
+  getNodesFromPoint(p: PointLike): Node[]
+  getNodesFromPoint(x: number | PointLike, y?: number) {
     const p = typeof x === 'number' ? { x, y: y || 0 } : x
     return this.getNodes().filter((node) => {
       return node.getBBox().containsPoint(p)

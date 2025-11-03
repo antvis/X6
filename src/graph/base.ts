@@ -24,5 +24,3 @@ export class Base extends Disposable {
 
   protected init() {}
 }
-
-export namespace Base {}

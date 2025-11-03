@@ -1,7 +1,7 @@
 import { GeometryUtil } from './util'
 import { Angle } from './angle'
 import { Line } from './line'
-import { Point } from './point'
+import { Point, PointLike, PointOptions } from './point'
 import { Geometry } from './geometry'
 import { Ellipse } from './ellipse'
 
@@ -267,19 +267,15 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point.PointLike | Point.PointData): this
-  translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
+  translate(p: PointOptions): this
+  translate(tx: number | PointOptions, ty?: number): this {
     const p = Point.create(tx, ty)
     this.x += p.x
     this.y += p.y
     return this
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin: Point.PointLike | Point.PointData = new Point(),
-  ) {
+  scale(sx: number, sy: number, origin: PointOptions = new Point()) {
     const pos = this.origin.scale(sx, sy, origin)
     this.x = pos.x
     this.y = pos.y
@@ -288,10 +284,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return this
   }
 
-  rotate(
-    degree: number,
-    center: Point.PointLike | Point.PointData = this.getCenter(),
-  ) {
+  rotate(degree: number, center: PointOptions = this.getCenter()) {
     if (degree !== 0) {
       const rad = Angle.toRad(degree)
       const cos = Math.cos(rad)
@@ -427,11 +420,8 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * Returns `false` otherwise.
    */
   containsPoint(x: number, y: number): boolean
-  containsPoint(point: Point.PointLike | Point.PointData): boolean
-  containsPoint(
-    x: number | Point.PointLike | Point.PointData,
-    y?: number,
-  ): boolean {
+  containsPoint(point: PointOptions): boolean
+  containsPoint(x: number | PointOptions, y?: number): boolean {
     return GeometryUtil.containsPoint(this, Point.create(x, y))
   }
 
@@ -498,10 +488,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * If `angle` is specified, the intersection will take into account the
    * rotation of the rectangle by `angle` degrees around its center.
    */
-  intersectsWithLineFromCenterToPoint(
-    p: Point.PointLike | Point.PointData,
-    angle?: number,
-  ) {
+  intersectsWithLineFromCenterToPoint(p: PointOptions, angle?: number) {
     const ref = Point.clone(p)
     const center = this.center
     let result: Point | null = null
@@ -644,7 +631,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * Returns a string ("top", "left", "right" or "bottom") denoting the side of
    * the rectangle which is nearest to the point `p`.
    */
-  getNearestSideToPoint(p: Point.PointLike | Point.PointData): Rectangle.Side {
+  getNearestSideToPoint(p: PointOptions): Rectangle.Side {
     const ref = Point.clone(p)
     const distLeft = ref.x - this.x
     const distRight = this.x + this.width - ref.x
@@ -673,7 +660,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   /**
    * Returns a point on the boundary of the rectangle nearest to the point `p`.
    */
-  getNearestPointToPoint(p: Point.PointLike | Point.PointData) {
+  getNearestPointToPoint(p: PointOptions) {
     const ref = Point.clone(p)
     if (this.containsPoint(ref)) {
       const side = this.getNearestSideToPoint(ref)
@@ -729,7 +716,7 @@ export namespace Rectangle {
 export namespace Rectangle {
   export type RectangleData = [number, number, number, number]
 
-  export interface RectangleLike extends Point.PointLike {
+  export interface RectangleLike extends PointLike {
     x: number
     y: number
     width: number
@@ -824,7 +811,7 @@ export namespace Rectangle {
     return new Rectangle(0, 0, size.width, size.height)
   }
 
-  export function fromPositionAndSize(pos: Point.PointLike, size: Size) {
+  export function fromPositionAndSize(pos: PointLike, size: Size) {
     return new Rectangle(pos.x, pos.y, size.width, size.height)
   }
 }

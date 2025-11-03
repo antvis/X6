@@ -1,4 +1,4 @@
-import { PointLike } from '../types'
+import { PointLike } from '@/types'
 import { createSvgElement } from './elem'
 
 const transformRegex = /(\w+)\(([^,)]+),?([^)]+)?\)/gi

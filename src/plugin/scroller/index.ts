@@ -7,16 +7,25 @@ import {
   type ModifierKey,
 } from '../../common'
 import { Config } from '../../config'
-import type { Point, Rectangle } from '../../geometry'
+import type { Point, Rectangle, PointLike } from '../../geometry'
 import type { BackgroundManager, Graph, TransformManager } from '../../graph'
 import type { Cell } from '../../model'
-import { ScrollerImpl } from './scroller'
+import { ScrollerImpl, getOptions } from './scroller'
+import type {
+  EventArgs,
+  Options as SOptions,
+  PositionContentOptions,
+  CenterOptions,
+  Direction,
+  TransitionOptions,
+  TransitionToRectOptions,
+} from './scroller'
 import { content } from './style/raw'
 import './api'
 
-export interface ScrollerEventArgs extends ScrollerImpl.EventArgs {}
+export interface ScrollerEventArgs extends EventArgs {}
 
-interface Options extends ScrollerImpl.Options {
+interface Options extends SOptions {
   pannable?:
     | boolean
     | {
@@ -59,7 +68,7 @@ export class Scroller
 
   public init(graph: Graph) {
     this.graph = graph
-    const options = ScrollerImpl.getOptions({
+    const options = getOptions({
       enabled: true,
       ...this.options,
       graph,
@@ -117,45 +126,37 @@ export class Scroller
     return this
   }
 
-  center(optons?: ScrollerImpl.CenterOptions) {
+  center(optons?: CenterOptions) {
     return this.centerPoint(optons)
   }
 
+  centerPoint(x: number, y: null | number, options?: CenterOptions): this
+  centerPoint(x: null | number, y: number, options?: CenterOptions): this
+  centerPoint(optons?: CenterOptions): this
   centerPoint(
-    x: number,
-    y: null | number,
-    options?: ScrollerImpl.CenterOptions,
-  ): this
-  centerPoint(
-    x: null | number,
-    y: number,
-    options?: ScrollerImpl.CenterOptions,
-  ): this
-  centerPoint(optons?: ScrollerImpl.CenterOptions): this
-  centerPoint(
-    x?: number | null | ScrollerImpl.CenterOptions,
+    x?: number | null | CenterOptions,
     y?: number | null,
-    options?: ScrollerImpl.CenterOptions,
+    options?: CenterOptions,
   ) {
     this.scrollerImpl.centerPoint(x as number, y as number, options)
     return this
   }
 
-  centerContent(options?: ScrollerImpl.PositionContentOptions) {
+  centerContent(options?: PositionContentOptions) {
     this.scrollerImpl.centerContent(options)
     return this
   }
 
-  centerCell(cell: Cell, options?: ScrollerImpl.CenterOptions) {
+  centerCell(cell: Cell, options?: CenterOptions) {
     this.scrollerImpl.centerCell(cell, options)
     return this
   }
 
   positionPoint(
-    point: Point.PointLike,
+    point: PointLike,
     x: number | string,
     y: number | string,
-    options: ScrollerImpl.CenterOptions = {},
+    options: CenterOptions = {},
   ) {
     this.scrollerImpl.positionPoint(point, x, y, options)
 
@@ -164,26 +165,19 @@ export class Scroller
 
   positionRect(
     rect: Rectangle.RectangleLike,
-    direction: ScrollerImpl.Direction,
-    options?: ScrollerImpl.CenterOptions,
+    direction: Direction,
+    options?: CenterOptions,
   ) {
     this.scrollerImpl.positionRect(rect, direction, options)
     return this
   }
 
-  positionCell(
-    cell: Cell,
-    direction: ScrollerImpl.Direction,
-    options?: ScrollerImpl.CenterOptions,
-  ) {
+  positionCell(cell: Cell, direction: Direction, options?: CenterOptions) {
     this.scrollerImpl.positionCell(cell, direction, options)
     return this
   }
 
-  positionContent(
-    pos: ScrollerImpl.Direction,
-    options?: ScrollerImpl.PositionContentOptions,
-  ) {
+  positionContent(pos: Direction, options?: PositionContentOptions) {
     this.scrollerImpl.positionContent(pos, options)
     return this
   }
@@ -277,19 +271,12 @@ export class Scroller
     return this
   }
 
+  transitionToPoint(p: PointLike, options?: TransitionOptions): this
+  transitionToPoint(x: number, y: number, options?: TransitionOptions): this
   transitionToPoint(
-    p: Point.PointLike,
-    options?: ScrollerImpl.TransitionOptions,
-  ): this
-  transitionToPoint(
-    x: number,
-    y: number,
-    options?: ScrollerImpl.TransitionOptions,
-  ): this
-  transitionToPoint(
-    x: number | Point.PointLike,
-    y?: number | ScrollerImpl.TransitionOptions,
-    options?: ScrollerImpl.TransitionOptions,
+    x: number | PointLike,
+    y?: number | TransitionOptions,
+    options?: TransitionOptions,
   ) {
     this.scrollerImpl.transitionToPoint(x as number, y as number, options)
     return this
@@ -297,7 +284,7 @@ export class Scroller
 
   transitionToRect(
     rect: Rectangle.RectangleLike,
-    options: ScrollerImpl.TransitionToRectOptions = {},
+    options: TransitionToRectOptions = {},
   ) {
     this.scrollerImpl.transitionToRect(rect, options)
     return this
@@ -327,7 +314,7 @@ export class Scroller
     return this.scrollerImpl.isCellVisible(cell, options)
   }
 
-  isPointVisible(point: Point.PointLike) {
+  isPointVisible(point: PointLike) {
     return this.scrollerImpl.isPointVisible(point)
   }
 

@@ -5,7 +5,7 @@ import {
   type KeyValue,
   type ModifierKey,
 } from '../../common'
-import { type Point, Rectangle } from '../../geometry'
+import { type Point, Rectangle, type PointLike } from '../../geometry'
 import type { Graph } from '../../graph'
 import { Cell, Collection, type Edge, type Model, type Node } from '../../model'
 import { type CellView, View } from '../../view'
@@ -1277,7 +1277,7 @@ export interface SelectionBoxEventData {
 
 export interface RotationEventData {
   rotated?: boolean
-  center: Point.PointLike
+  center: PointLike
   start: number
   angles: { [id: string]: number }
 }
