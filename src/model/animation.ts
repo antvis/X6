@@ -5,9 +5,9 @@ export class Animation {
   protected readonly ids: { [path: string]: number } = {}
   protected readonly cache: {
     [path: string]: {
-      startValue: any
-      targetValue: any
-      options: AnimationStartOptions<any>
+      startValue: AnimationTargetValue
+      targetValue: AnimationTargetValue
+      options: AnimationStartOptions<AnimationTargetValue>
     }
   } = {}
 
@@ -95,10 +95,10 @@ export class Animation {
         updateProgressState(progress)
 
         this.cell.notify('transition:complete', this.getArgs<T>(key))
-        options.complete && options.complete(this.getArgs<T>(key))
+        options.complete?.(this.getArgs<T>(key))
 
         this.cell.notify('transition:finish', this.getArgs<T>(key))
-        options.finish && options.finish(this.getArgs<T>(key))
+        options.finish?.(this.getArgs<T>(key))
         this.clean(key)
       }
     }
@@ -106,10 +106,10 @@ export class Animation {
     setTimeout(() => {
       this.stop(path, undefined, delim)
       this.cache[key] = { startValue, targetValue, options: localOptions }
-      this.ids[key] = requestAnimationFrame(iterate)
+      this.ids[key] = window.requestAnimationFrame(iterate)
 
       this.cell.notify('transition:start', this.getArgs<T>(key))
-      options.start && options.start(this.getArgs<T>(key))
+      options.start?.(this.getArgs<T>(key))
     }, options.delay)
 
     return this.stop.bind(this, path, options, delim)
@@ -136,15 +136,15 @@ export class Animation {
 
           this.cell.notify('transition:end', { ...commonArgs })
           this.cell.notify('transition:complete', { ...commonArgs })
-          localOptions.complete && localOptions.complete({ ...commonArgs })
+          localOptions.complete?.(commonArgs)
         }
 
         const stopArgs = { jumpedToEnd, ...commonArgs }
         this.cell.notify('transition:stop', { ...stopArgs })
-        localOptions.stop && localOptions.stop({ ...stopArgs })
+        localOptions.stop?.(stopArgs)
 
         this.cell.notify('transition:finish', { ...commonArgs })
-        localOptions.finish && localOptions.finish({ ...commonArgs })
+        localOptions.finish?.(commonArgs)
 
         this.clean(key)
       })
@@ -162,7 +162,7 @@ export class Animation {
   }
 
   private getInterp<T extends AnimationTargetValue>(
-    interp: Interp.Definition<any> | undefined,
+    interp: Interp.Definition<T> | undefined,
     startValue: T,
     targetValue: T,
   ) {
@@ -231,7 +231,7 @@ export interface AnimationStopArgs<T> extends AnimationCallbackArgs<T> {
 export interface AnimationStartOptions<T>
   extends Partial<AnimationBaseOptions>,
     AnimationStopOptions<T> {
-  interp?: Interp.Definition<any>
+  interp?: Interp.Definition<T>
   /**
    * A function to call when the animation begins.
    */
