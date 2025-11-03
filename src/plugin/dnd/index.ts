@@ -1,11 +1,12 @@
 import { alignPoint } from 'dom-align'
-import { DocumentEvents } from '@/constants'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
+import { DocumentEvents } from '../../constants'
 import { GeometryUtil, type Point, Rectangle } from '../../geometry'
 import { type EventArgs, Graph } from '../../graph'
 import type { Cell, Node } from '../../model'
 import { type NodeView, View } from '../../view'
-
+import type { Scroller } from '../scroller'
+import type { Snapline } from '../snapline'
 import { content } from './style/raw'
 
 export interface GetDragNodeOptions {
@@ -66,7 +67,7 @@ export class Dnd extends View implements Graph.Plugin {
 
   protected get targetScroller() {
     const target = this.options.target
-    const scroller = target.getPlugin<any>('scroller')
+    const scroller = target.getPlugin<Scroller>('scroller')
     return scroller
   }
 
@@ -80,7 +81,7 @@ export class Dnd extends View implements Graph.Plugin {
 
   protected get snapline() {
     const target = this.options.target
-    const snapline = target.getPlugin<any>('snapline')
+    const snapline = target.getPlugin<Snapline>('snapline')
     return snapline
   }
 
@@ -136,7 +137,7 @@ export class Dnd extends View implements Graph.Plugin {
         x: local.x,
         y: local.y,
       })
-      this.draggingNode!.on('change:position', this.snap, this)
+      this.draggingNode?.on('change:position', this.snap, this)
     }
 
     this.delegateDocumentEvents(DocumentEvents, e.data)
