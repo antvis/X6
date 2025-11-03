@@ -7,6 +7,7 @@
   "unpkg": "dist/x6.min.js",
   "jsdelivr": "dist/x6.min.js",
   "types": "lib/index.d.ts",
+  "type": "module",
   "files": [
     "dist",
     "es",

@@ -3,7 +3,49 @@ import { Point, PointOptions, PointLike } from './point'
 import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
 
-export class Ellipse extends Geometry implements Ellipse.EllipseLike {
+interface EllipseLike extends PointLike {
+  x: number
+  y: number
+  a: number
+  b: number
+}
+
+type EllipseData = [number, number, number, number]
+
+export class Ellipse extends Geometry implements EllipseLike {
+  static isEllipse(instance: any): instance is Ellipse {
+    return instance != null && instance instanceof Ellipse
+  }
+  static create(
+    x?: number | Ellipse | EllipseLike | EllipseData,
+    y?: number,
+    a?: number,
+    b?: number,
+  ): Ellipse {
+    if (x == null || typeof x === 'number') {
+      // @ts-ignore
+      return new Ellipse(x, y, a, b)
+    }
+
+    return Ellipse.parse(x)
+  }
+
+  static parse(e: Ellipse | EllipseLike | EllipseData) {
+    if (Ellipse.isEllipse(e)) {
+      return e.clone()
+    }
+
+    if (Array.isArray(e)) {
+      return new Ellipse(e[0], e[1], e[2], e[3])
+    }
+
+    return new Ellipse(e.x, e.y, e.a, e.b)
+  }
+
+  static fromRect(rect: Rectangle) {
+    const center = rect.center
+    return new Ellipse(center.x, center.y, rect.width / 2, rect.height / 2)
+  }
   public x: number
   public y: number
   public a: number
@@ -262,55 +304,5 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
 
   serialize() {
     return `${this.x} ${this.y} ${this.a} ${this.b}`
-  }
-}
-
-export namespace Ellipse {
-  export function isEllipse(instance: any): instance is Ellipse {
-    return instance != null && instance instanceof Ellipse
-  }
-}
-
-export namespace Ellipse {
-  export interface EllipseLike extends PointLike {
-    x: number
-    y: number
-    a: number
-    b: number
-  }
-
-  export type EllipseData = [number, number, number, number]
-}
-
-export namespace Ellipse {
-  export function create(
-    x?: number | Ellipse | EllipseLike | EllipseData,
-    y?: number,
-    a?: number,
-    b?: number,
-  ): Ellipse {
-    if (x == null || typeof x === 'number') {
-      // @ts-ignore
-      return new Ellipse(x, y, a, b)
-    }
-
-    return parse(x)
-  }
-
-  export function parse(e: Ellipse | EllipseLike | EllipseData) {
-    if (Ellipse.isEllipse(e)) {
-      return e.clone()
-    }
-
-    if (Array.isArray(e)) {
-      return new Ellipse(e[0], e[1], e[2], e[3])
-    }
-
-    return new Ellipse(e.x, e.y, e.a, e.b)
-  }
-
-  export function fromRect(rect: Rectangle) {
-    const center = rect.center
-    return new Ellipse(center.x, center.y, rect.width / 2, rect.height / 2)
   }
 }

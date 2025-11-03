@@ -4,13 +4,13 @@ import {
   type DijkstraWeight,
   dijkstra,
 } from '../common/algorithm'
-import { Rectangle } from '../geometry'
+import { Rectangle, type RectangleLike } from '../geometry'
 import type { Graph } from '../graph'
 import { Cell } from './cell'
 import { Collection } from './collection'
 import { Edge } from './edge'
 import { Node } from './node'
-import type { PointLike } from '@/types'
+import type { PointLike, KeyPoint } from '@/types'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
@@ -1030,11 +1030,11 @@ export class Model extends Basecoat<Model.EventArgs> {
     options?: Model.GetCellsInAreaOptions,
   ): Node[]
   getNodesInArea(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options?: Model.GetCellsInAreaOptions,
   ): Node[]
   getNodesInArea(
-    x: number | Rectangle.RectangleLike,
+    x: number | RectangleLike,
     y?: number | Model.GetCellsInAreaOptions,
     w?: number,
     h?: number,
@@ -1066,11 +1066,11 @@ export class Model extends Basecoat<Model.EventArgs> {
     options?: Model.GetCellsInAreaOptions,
   ): Edge[]
   getEdgesInArea(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options?: Model.GetCellsInAreaOptions,
   ): Edge[]
   getEdgesInArea(
-    x: number | Rectangle.RectangleLike,
+    x: number | RectangleLike,
     y?: number | Model.GetCellsInAreaOptions,
     w?: number,
     h?: number,
@@ -1097,7 +1097,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   getNodesUnderNode(
     node: Node,
     options: {
-      by?: 'bbox' | Rectangle.KeyPoint
+      by?: 'bbox' | KeyPoint
     } = {},
   ) {
     const bbox = node.getBBox()

@@ -1,4 +1,4 @@
-import { Point, PointLike, Rectangle } from '../geometry'
+import { Point, PointLike, Rectangle, type RectangleLike } from '../geometry'
 import { Dom, Util } from '../common'
 import { Base } from './base'
 
@@ -51,7 +51,7 @@ export class CoordManager extends Base {
   }
 
   localToGraphRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -61,7 +61,7 @@ export class CoordManager extends Base {
   }
 
   localToClientRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -71,7 +71,7 @@ export class CoordManager extends Base {
   }
 
   localToPageRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -108,7 +108,7 @@ export class CoordManager extends Base {
   }
 
   graphToLocalRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -118,7 +118,7 @@ export class CoordManager extends Base {
   }
 
   clientToLocalRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -128,7 +128,7 @@ export class CoordManager extends Base {
   }
 
   clientToGraphRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -141,7 +141,7 @@ export class CoordManager extends Base {
   }
 
   pageToLocalRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,

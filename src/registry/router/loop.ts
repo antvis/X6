@@ -1,4 +1,4 @@
-import { Angle, Line, Point, type PointLike } from '../../geometry'
+import { toRad, Line, Point, type PointLike } from '../../geometry'
 import type { RouterDefinition } from './index'
 
 export interface LoopRouterOptions {
@@ -41,7 +41,7 @@ export const loop: RouterDefinition<LoopRouterOptions> = (
 
   if (sourceAnchor.equals(targetAnchor)) {
     const getVertices = (angle: number) => {
-      const rad = Angle.toRad(angle)
+      const rad = toRad(angle)
       const sin = Math.sin(rad)
       const cos = Math.cos(rad)
 

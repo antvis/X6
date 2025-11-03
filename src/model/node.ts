@@ -6,7 +6,14 @@ import {
   type Size,
   StringExt,
 } from '../common'
-import { Angle, Point, Rectangle, type PointLike } from '../geometry'
+import {
+  toRad,
+  normalize,
+  Point,
+  Rectangle,
+  type PointLike,
+  type RectangleLike,
+} from '../geometry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
 import type { AnimationStartOptions } from './animation'
@@ -143,7 +150,7 @@ export class Node<
       }
 
       let quadrant = map[direction]
-      const angle = Angle.normalize(this.getAngle() || 0)
+      const angle = normalize(this.getAngle() || 0)
       if (options.absolute) {
         // We are taking the node's rotation into account
         quadrant += Math.floor((angle + 45) / 90)
@@ -204,7 +211,7 @@ export class Node<
 
       // Lastly we have to deduct the original angle the element was rotated
       // by and that's it.
-      alpha -= Angle.toRad(angle)
+      alpha -= toRad(angle)
 
       // With this angle and distance we can easily calculate the centre of
       // the un-rotated element.
@@ -1025,7 +1032,7 @@ export namespace Node {
 
   export interface TranslateOptions extends Cell.TranslateOptions {
     transition?: boolean | AnimationStartOptions<PointLike>
-    restrict?: Rectangle.RectangleLike | null
+    restrict?: RectangleLike | null
     exclude?: Cell[]
   }
 

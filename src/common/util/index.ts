@@ -1,4 +1,12 @@
-import { Ellipse, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
+import {
+  Ellipse,
+  Line,
+  Path,
+  Point,
+  Polyline,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
 import { normalize } from '../../registry/marker/util'
 import { Dom } from '../dom'
 import { normalizePathData } from '@/geometry/path'
@@ -36,10 +44,7 @@ export function transformPolyline(polyline: Polyline, matrix: DOMMatrix) {
   return new Polyline(points.map((p) => transformPoint(p, matrix)))
 }
 
-export function transformRectangle(
-  rect: Rectangle.RectangleLike,
-  matrix: DOMMatrix,
-) {
+export function transformRectangle(rect: RectangleLike, matrix: DOMMatrix) {
   const svgDocument = Dom.createSvgElement('svg') as SVGSVGElement
   const p = svgDocument.createSVGPoint()
 
