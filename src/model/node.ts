@@ -1,6 +1,5 @@
 import type { DeepPartial, Omit } from 'utility-types'
 import {
-  Interp,
   type KeyValue,
   NumberExt,
   ObjectExt,
@@ -386,7 +385,6 @@ export class Node<
 
       this.transition('position', translatedPosition, {
         ...options.transition,
-        interp: Interp.object,
       })
       this.eachChild((child) => {
         const excluded = options.exclude?.includes(child)
@@ -507,7 +505,9 @@ export class Node<
     this.startBatch('fit-embeds', options)
 
     if (options.deep) {
-      embeds.forEach((cell) => cell.fit(options))
+      embeds.forEach((cell) => {
+        cell.fit(options)
+      })
     }
 
     let { x, y, width, height } = Cell.getCellsBBox(embeds)!
@@ -831,7 +831,7 @@ export class Node<
     portsForRemoval?: (PortManager.PortMetadata | string)[] | Node.SetOptions,
     opt?: Node.SetOptions,
   ) {
-    let options
+    let options: Node.SetOptions
 
     if (Array.isArray(portsForRemoval)) {
       options = opt || {}
