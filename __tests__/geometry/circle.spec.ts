@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest'
+import type { Node } from '../../src/model/node'
 import { createTestGraph } from '../utils'
 
 describe('Geometry: circle', () => {
@@ -22,13 +23,13 @@ describe('Geometry: circle', () => {
         },
       },
     })
-    const circle = graph.getCellById('circle1') as any
+    const circle = graph.getCellById('circle1') as Node
     expect(circle).toBeTruthy()
     expect(circle.getPosition()).toEqual({ x: 40, y: 50 })
     expect(circle.getLabel()).toBe('Hello')
 
     await expect(graph).toMatchDOMSnapshot(__dirname, 'circle', {
-      copyStyles: true,
+      copyStyles: false,
     })
 
     cleanup()
