@@ -11,7 +11,7 @@ import {
   type Size,
   StringExt,
 } from '../common'
-import { Point, Rectangle } from '../geometry'
+import { Point, Rectangle, PointLike } from '../geometry'
 import type { Graph } from '../graph'
 import {
   type AttrDefinitions,
@@ -33,7 +33,7 @@ import {
 import type { Edge } from './edge'
 import type { Model } from './model'
 import type { Node } from './node'
-import type { PortManager } from './port'
+import type { Port } from './port'
 import { Store } from './store'
 
 export class Cell<
@@ -1151,7 +1151,7 @@ export class Cell<
   scale(
     sx: number, // eslint-disable-line
     sy: number, // eslint-disable-line
-    origin?: Point | Point.PointLike, // eslint-disable-line
+    origin?: Point | PointLike, // eslint-disable-line
     options?: Node.SetOptions, // eslint-disable-line
   ) {
     return this
@@ -1298,8 +1298,8 @@ export class Cell<
   ): this extends Node
     ? Node.Properties
     : this extends Edge
-      ? Edge.Properties
-      : Properties {
+    ? Edge.Properties
+    : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1633,20 +1633,20 @@ export namespace Cell {
     // node
     'change:size': NodeChangeArgs<Size>
     'change:angle': NodeChangeArgs<number>
-    'change:position': NodeChangeArgs<Point.PointLike>
-    'change:ports': NodeChangeArgs<PortManager.Port[]>
+    'change:position': NodeChangeArgs<PointLike>
+    'change:ports': NodeChangeArgs<Port[]>
     'change:portMarkup': NodeChangeArgs<MarkupType>
     'change:portLabelMarkup': NodeChangeArgs<MarkupType>
     'change:portContainerMarkup': NodeChangeArgs<MarkupType>
     'ports:removed': {
       cell: Cell
       node: Node
-      removed: PortManager.Port[]
+      removed: Port[]
     }
     'ports:added': {
       cell: Cell
       node: Node
-      added: PortManager.Port[]
+      added: Port[]
     }
 
     // edge
@@ -1657,18 +1657,18 @@ export namespace Cell {
     }
     'change:router': EdgeChangeArgs<Edge.RouterData>
     'change:connector': EdgeChangeArgs<Edge.ConnectorData>
-    'change:vertices': EdgeChangeArgs<Point.PointLike[]>
+    'change:vertices': EdgeChangeArgs<PointLike[]>
     'change:labels': EdgeChangeArgs<Edge.Label[]>
     'change:defaultLabel': EdgeChangeArgs<Edge.Label>
     'vertexs:added': {
       cell: Cell
       edge: Edge
-      added: Point.PointLike[]
+      added: PointLike[]
     }
     'vertexs:removed': {
       cell: Cell
       edge: Edge
-      removed: Point.PointLike[]
+      removed: PointLike[]
     }
     'labels:added': {
       cell: Cell

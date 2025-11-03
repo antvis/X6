@@ -7,13 +7,14 @@ import {
   type Size,
   StringExt,
 } from '../common'
-import { Angle, Point, Rectangle } from '../geometry'
+import { Angle, Point, Rectangle, type PointLike } from '../geometry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
 import type { AnimationStartOptions } from './animation'
 import { Cell } from './cell'
 import type { Edge } from './edge'
 import { PortManager } from './port'
+import type { PortMetadata, Metadata } from './port'
 import { ShareRegistry } from './registry'
 import type { Store } from './store'
 
@@ -230,7 +231,7 @@ export class Node<
   scale(
     sx: number,
     sy: number,
-    origin?: Point.PointLike | null,
+    origin?: PointLike | null,
     options: Node.SetOptions = {},
   ) {
     const scaledBBox = this.getBBox().scale(
@@ -251,7 +252,7 @@ export class Node<
   // #region position
 
   position(x: number, y: number, options?: Node.SetPositionOptions): this
-  position(options?: Node.GetPositionOptions): Point.PointLike
+  position(options?: Node.GetPositionOptions): PointLike
   position(
     arg0?: number | Node.GetPositionOptions,
     arg1?: number,
@@ -263,7 +264,7 @@ export class Node<
     return this.getPosition(arg0)
   }
 
-  getPosition(options: Node.GetPositionOptions = {}): Point.PointLike {
+  getPosition(options: Node.GetPositionOptions = {}): PointLike {
     if (options.relative) {
       const parent = this.getParent()
       if (parent != null && parent.isNode()) {
@@ -281,13 +282,10 @@ export class Node<
     return pos ? { ...pos } : { x: 0, y: 0 }
   }
 
-  setPosition(
-    p: Point | Point.PointLike,
-    options?: Node.SetPositionOptions,
-  ): this
+  setPosition(p: Point | PointLike, options?: Node.SetPositionOptions): this
   setPosition(x: number, y: number, options?: Node.SetPositionOptions): this
   setPosition(
-    arg0: number | Point | Point.PointLike,
+    arg0: number | Point | PointLike,
     arg1?: number | Node.SetPositionOptions,
     arg2: Node.SetPositionOptions = {},
   ) {
@@ -607,7 +605,7 @@ export class Node<
   }
 
   get ports() {
-    const res = this.store.get<PortManager.Metadata>('ports', { items: [] })
+    const res = this.store.get<Metadata>('ports', { items: [] })
     if (res.items == null) {
       res.items = []
     }
@@ -620,7 +618,7 @@ export class Node<
 
   getPortsByGroup(groupName: string) {
     return this.getPorts().filter(
-      (port: PortManager.PortMetadata) => port.group === groupName,
+      (port: PortMetadata) => port.group === groupName,
     )
   }
 
@@ -642,7 +640,7 @@ export class Node<
     return this.getPortIndex(portId) !== -1
   }
 
-  getPortIndex(port: PortManager.PortMetadata | string) {
+  getPortIndex(port: PortMetadata | string) {
     const portId = typeof port === 'string' ? port : port.id
     return portId != null
       ? this.ports.items.findIndex((item) => item.id === portId)
@@ -658,7 +656,7 @@ export class Node<
 
     return layouts.reduce<
       KeyValue<{
-        position: Point.PointLike
+        position: PointLike
         angle: number
       }>
     >((memo, item) => {
@@ -671,7 +669,7 @@ export class Node<
     }, {})
   }
 
-  getPortProp(portId: string): PortManager.PortMetadata
+  getPortProp(portId: string): PortMetadata
   getPortProp<T>(portId: string, path: string | string[]): T
   getPortProp(portId: string, path?: string | string[]) {
     return this.getPropByPath(this.prefixPortPath(portId, path))
@@ -685,12 +683,12 @@ export class Node<
   ): this
   setPortProp(
     portId: string,
-    value: DeepPartial<PortManager.PortMetadata>,
+    value: DeepPartial<PortMetadata>,
     options?: Node.SetOptions,
   ): this
   setPortProp(
     portId: string,
-    arg1: string | string[] | DeepPartial<PortManager.PortMetadata>,
+    arg1: string | string[] | DeepPartial<PortMetadata>,
     arg2: any | Node.SetOptions,
     arg3?: Node.SetOptions,
   ) {
@@ -701,7 +699,7 @@ export class Node<
     }
 
     const path = this.prefixPortPath(portId)
-    const value = arg1 as DeepPartial<PortManager.PortMetadata>
+    const value = arg1 as DeepPartial<PortMetadata>
     return this.setPropByPath(path, value, arg2 as Node.SetOptions)
   }
 
@@ -722,7 +720,7 @@ export class Node<
     return this.removePropByPath(this.prefixPortPath(portId), path)
   }
 
-  portProp(portId: string): PortManager.PortMetadata
+  portProp(portId: string): PortMetadata
   portProp<T>(portId: string, path: string | string[]): T
   portProp(
     portId: string,
@@ -732,12 +730,12 @@ export class Node<
   ): this
   portProp(
     portId: string,
-    value: DeepPartial<PortManager.PortMetadata>,
+    value: DeepPartial<PortMetadata>,
     options?: Node.SetOptions,
   ): this
   portProp(
     portId: string,
-    path?: string | string[] | DeepPartial<PortManager.PortMetadata>,
+    path?: string | string[] | DeepPartial<PortMetadata>,
     value?: any | Node.SetOptions,
     options?: Node.SetOptions,
   ) {
@@ -754,13 +752,13 @@ export class Node<
       return this.setPortProp(
         portId,
         path,
-        value as DeepPartial<PortManager.PortMetadata>,
+        value as DeepPartial<PortMetadata>,
         options,
       )
     }
     return this.setPortProp(
       portId,
-      path as DeepPartial<PortManager.PortMetadata>,
+      path as DeepPartial<PortMetadata>,
       value as Node.SetOptions,
     )
   }
@@ -782,33 +780,26 @@ export class Node<
     return `ports/items/${index}/${path}`
   }
 
-  addPort(port: PortManager.PortMetadata, options?: Node.SetOptions) {
+  addPort(port: PortMetadata, options?: Node.SetOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  addPorts(ports: PortManager.PortMetadata[], options?: Node.SetOptions) {
+  addPorts(ports: PortMetadata[], options?: Node.SetOptions) {
     this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
-  insertPort(
-    index: number,
-    port: PortManager.PortMetadata,
-    options?: Node.SetOptions,
-  ) {
+  insertPort(index: number, port: PortMetadata, options?: Node.SetOptions) {
     const ports = [...this.ports.items]
     ports.splice(index, 0, port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  removePort(
-    port: PortManager.PortMetadata | string,
-    options: Node.SetOptions = {},
-  ) {
+  removePort(port: PortMetadata | string, options: Node.SetOptions = {}) {
     return this.removePortAt(this.getPortIndex(port), options)
   }
 
@@ -824,11 +815,11 @@ export class Node<
 
   removePorts(options?: Node.SetOptions): this
   removePorts(
-    portsForRemoval: (PortManager.PortMetadata | string)[],
+    portsForRemoval: (PortMetadata | string)[],
     options?: Node.SetOptions,
   ): this
   removePorts(
-    portsForRemoval?: (PortManager.PortMetadata | string)[] | Node.SetOptions,
+    portsForRemoval?: (PortMetadata | string)[] | Node.SetOptions,
     opt?: Node.SetOptions,
   ) {
     let options
@@ -887,7 +878,7 @@ export class Node<
     })
 
     const removed: { [id: string]: boolean } = {}
-    const previous = this.store.getPrevious<PortManager.Metadata>('ports') || {
+    const previous = this.store.getPrevious<Metadata>('ports') || {
       items: [],
     }
 
@@ -946,10 +937,7 @@ export class Node<
     const err = this.validatePorts()
 
     if (err.length > 0) {
-      this.store.set(
-        'ports',
-        this.store.getPrevious<PortManager.Metadata>('ports'),
-      )
+      this.store.set('ports', this.store.getPrevious<Metadata>('ports'))
       throw new Error(err.join(' '))
     }
 
@@ -992,7 +980,7 @@ export namespace Node {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
     angle?: number
-    ports?: Partial<PortManager.Metadata> | PortManager.PortMetadata[]
+    ports?: Partial<Metadata> | PortMetadata[]
     portContainerMarkup?: MarkupType
     portMarkup?: MarkupType
     portLabelMarkup?: MarkupType
@@ -1036,14 +1024,14 @@ export namespace Node {
   }
 
   export interface TranslateOptions extends Cell.TranslateOptions {
-    transition?: boolean | AnimationStartOptions<Point.PointLike>
+    transition?: boolean | AnimationStartOptions<PointLike>
     restrict?: Rectangle.RectangleLike | null
     exclude?: Cell[]
   }
 
   export interface RotateOptions extends SetOptions {
     absolute?: boolean
-    center?: Point.PointLike | null
+    center?: PointLike | null
   }
 
   export type ResizeDirection =

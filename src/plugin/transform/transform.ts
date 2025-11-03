@@ -5,6 +5,7 @@ import type { Graph } from '../../graph'
 import type { Node } from '../../model'
 import { type NodeView, View } from '../../view'
 import { DocumentEvents } from '@/constants'
+import type { PointLike } from '@/types'
 
 interface ResizeEventArgs<E> extends NodeViewPositionEventArgs<E> {}
 interface RotateEventArgs<E> extends NodeViewPositionEventArgs<E> {}
@@ -57,7 +58,7 @@ interface EventDataResizing {
 
 interface EventDataRotating {
   action: 'rotating'
-  center: Point.PointLike
+  center: PointLike
   angle: number
   start: number
   rotated?: boolean

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-import { Line, Path, Point } from '../../geometry'
+import { Line, Path, Point, type PointLike } from '../../geometry'
 import type { Edge } from '../../model'
 import type { EdgeView } from '../../view'
 import type { ConnectorBaseOptions, ConnectorDefinition } from './index'
@@ -49,9 +49,9 @@ export function setupUpdating(view: EdgeView) {
 }
 
 export function createLines(
-  sourcePoint: Point.PointLike,
-  targetPoint: Point.PointLike,
-  route: Point.PointLike[] = [],
+  sourcePoint: PointLike,
+  targetPoint: PointLike,
+  route: PointLike[] = [],
 ) {
   const points = [sourcePoint, ...route, targetPoint]
   const lines: Line[] = []

@@ -1,10 +1,38 @@
 import { Line } from './line'
-import { Point } from './point'
+import { Point, PointOptions } from './point'
 import { Polyline } from './polyline'
 import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
 
 export class Curve extends Geometry {
+  static isCurve(instance: any): instance is Curve {
+    return instance != null && instance instanceof Curve
+  }
+  static throughPoints(points: PointOptions[]) {
+    if (points == null || (Array.isArray(points) && points.length < 2)) {
+      throw new Error('At least 2 points are required')
+    }
+
+    const controlPoints = getCurveControlPoints(points)
+
+    const curves = []
+    for (let i = 0, ii = controlPoints[0].length; i < ii; i += 1) {
+      const controlPoint1 = new Point(
+        controlPoints[0][i].x,
+        controlPoints[0][i].y,
+      )
+      const controlPoint2 = new Point(
+        controlPoints[1][i].x,
+        controlPoints[1][i].y,
+      )
+
+      curves.push(
+        new Curve(points[i], controlPoint1, controlPoint2, points[i + 1]),
+      )
+    }
+
+    return curves
+  }
   public start: Point
   public end: Point
   public controlPoint1: Point
@@ -13,10 +41,10 @@ export class Curve extends Geometry {
   public PRECISION = 3
 
   constructor(
-    start: Point.PointLike | Point.PointData,
-    controlPoint1: Point.PointLike | Point.PointData,
-    controlPoint2: Point.PointLike | Point.PointData,
-    end: Point.PointLike | Point.PointData,
+    start: PointOptions,
+    controlPoint1: PointOptions,
+    controlPoint2: PointOptions,
+    end: PointOptions,
   ) {
     super()
     this.start = Point.create(start)
@@ -140,25 +168,16 @@ export class Curve extends Geometry {
     return new Rectangle(left, top, right - left, bottom - top)
   }
 
-  closestPoint(
-    p: Point.PointLike | Point.PointData,
-    options: Curve.Options = {},
-  ) {
+  closestPoint(p: PointOptions, options: CurveOptions = {}) {
     return this.pointAtT(this.closestPointT(p, options))
   }
 
-  closestPointLength(
-    p: Point.PointLike | Point.PointData,
-    options: Curve.Options = {},
-  ) {
+  closestPointLength(p: PointOptions, options: CurveOptions = {}) {
     const opts = this.getOptions(options)
     return this.lengthAtT(this.closestPointT(p, opts), opts)
   }
 
-  closestPointNormalizedLength(
-    p: Point.PointLike | Point.PointData,
-    options: Curve.Options = {},
-  ) {
+  closestPointNormalizedLength(p: PointOptions, options: CurveOptions = {}) {
     const opts = this.getOptions(options)
     const cpLength = this.closestPointLength(p, opts)
     if (!cpLength) {
@@ -173,10 +192,7 @@ export class Curve extends Geometry {
     return cpLength / length
   }
 
-  closestPointT(
-    p: Point.PointLike | Point.PointData,
-    options: Curve.Options = {},
-  ) {
+  closestPointT(p: PointOptions, options: CurveOptions = {}) {
     const precision = this.getPrecision(options)
     const subdivisions = this.getDivisions(options)
     const precisionRatio = Math.pow(10, -precision) // eslint-disable-line
@@ -275,22 +291,16 @@ export class Curve extends Geometry {
     }
   }
 
-  closestPointTangent(
-    p: Point.PointLike | Point.PointData,
-    options: Curve.Options = {},
-  ) {
+  closestPointTangent(p: PointOptions, options: CurveOptions = {}) {
     return this.tangentAtT(this.closestPointT(p, options))
   }
 
-  containsPoint(
-    p: Point.PointLike | Point.PointData,
-    options: Curve.Options = {},
-  ) {
+  containsPoint(p: PointOptions, options: CurveOptions = {}) {
     const polyline = this.toPolyline(options)
     return polyline.containsPoint(p)
   }
 
-  divideAt(ratio: number, options: Curve.Options = {}): [Curve, Curve] {
+  divideAt(ratio: number, options: CurveOptions = {}): [Curve, Curve] {
     if (ratio <= 0) {
       return this.divideAtT(0)
     }
@@ -303,7 +313,7 @@ export class Curve extends Geometry {
     return this.divideAtT(t)
   }
 
-  divideAtLength(length: number, options: Curve.Options = {}): [Curve, Curve] {
+  divideAtLength(length: number, options: CurveOptions = {}): [Curve, Curve] {
     const t = this.tAtLength(length, options)
     return this.divideAtT(t)
   }
@@ -394,7 +404,7 @@ export class Curve extends Geometry {
     }
   }
 
-  getSubdivisions(options: Curve.Options = {}): Curve[] {
+  getSubdivisions(options: CurveOptions = {}): Curve[] {
     const precision = this.getPrecision(options)
     let subdivisions = [
       new Curve(this.start, this.controlPoint1, this.controlPoint2, this.end),
@@ -442,14 +452,14 @@ export class Curve extends Geometry {
     }
   }
 
-  length(options: Curve.Options = {}) {
+  length(options: CurveOptions = {}) {
     const divisions = this.getDivisions(options)
     return divisions.reduce((memo, c) => {
       return memo + c.endpointDistance()
     }, 0)
   }
 
-  lengthAtT(t: number, options: Curve.Options = {}) {
+  lengthAtT(t: number, options: CurveOptions = {}) {
     if (t <= 0) {
       return 0
     }
@@ -460,7 +470,7 @@ export class Curve extends Geometry {
     return subCurve.length({ precision })
   }
 
-  pointAt(ratio: number, options: Curve.Options = {}) {
+  pointAt(ratio: number, options: CurveOptions = {}) {
     if (ratio <= 0) {
       return this.start.clone()
     }
@@ -473,7 +483,7 @@ export class Curve extends Geometry {
     return this.pointAtT(t)
   }
 
-  pointAtLength(length: number, options: Curve.Options = {}) {
+  pointAtLength(length: number, options: CurveOptions = {}) {
     const t = this.tAtLength(length, options)
     return this.pointAtT(t)
   }
@@ -503,7 +513,7 @@ export class Curve extends Geometry {
     )
   }
 
-  tangentAt(ratio: number, options: Curve.Options = {}) {
+  tangentAt(ratio: number, options: CurveOptions = {}) {
     if (!this.isDifferentiable()) return null
 
     if (ratio < 0) {
@@ -516,7 +526,7 @@ export class Curve extends Geometry {
     return this.tangentAtT(t)
   }
 
-  tangentAtLength(length: number, options: Curve.Options = {}) {
+  tangentAtLength(length: number, options: CurveOptions = {}) {
     if (!this.isDifferentiable()) {
       return null
     }
@@ -549,11 +559,11 @@ export class Curve extends Geometry {
     return tangentLine
   }
 
-  protected getPrecision(options: Curve.Options = {}) {
+  protected getPrecision(options: CurveOptions = {}) {
     return options.precision == null ? this.PRECISION : options.precision
   }
 
-  protected getDivisions(options: Curve.Options = {}) {
+  protected getDivisions(options: CurveOptions = {}) {
     if (options.subdivisions != null) {
       return options.subdivisions
     }
@@ -562,13 +572,13 @@ export class Curve extends Geometry {
     return this.getSubdivisions({ precision })
   }
 
-  protected getOptions(options: Curve.Options = {}): Curve.Options {
+  protected getOptions(options: CurveOptions = {}): CurveOptions {
     const precision = this.getPrecision(options)
     const subdivisions = this.getDivisions(options)
     return { precision, subdivisions }
   }
 
-  protected tAt(ratio: number, options: Curve.Options = {}) {
+  protected tAt(ratio: number, options: CurveOptions = {}) {
     if (ratio <= 0) {
       return 0
     }
@@ -582,7 +592,7 @@ export class Curve extends Geometry {
     return this.tAtLength(length, opts)
   }
 
-  protected tAtLength(length: number, options: Curve.Options = {}) {
+  protected tAtLength(length: number, options: CurveOptions = {}) {
     let fromStart = true
     if (length < 0) {
       fromStart = false
@@ -686,18 +696,18 @@ export class Curve extends Geometry {
     }
   }
 
-  toPoints(options: Curve.Options = {}) {
+  toPoints(options: CurveOptions = {}) {
     const subdivisions = this.getDivisions(options)
     const points = [subdivisions[0].start.clone()]
     subdivisions.forEach((c) => points.push(c.end.clone()))
     return points
   }
 
-  toPolyline(options: Curve.Options = {}) {
+  toPolyline(options: CurveOptions = {}) {
     return new Polyline(this.toPoints(options))
   }
 
-  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
+  scale(sx: number, sy: number, origin?: PointOptions) {
     this.start.scale(sx, sy, origin)
     this.controlPoint1.scale(sx, sy, origin)
     this.controlPoint2.scale(sx, sy, origin)
@@ -705,7 +715,7 @@ export class Curve extends Geometry {
     return this
   }
 
-  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: PointOptions) {
     this.start.rotate(angle, origin)
     this.controlPoint1.rotate(angle, origin)
     this.controlPoint2.rotate(angle, origin)
@@ -714,8 +724,8 @@ export class Curve extends Geometry {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point.PointLike | Point.PointData): this
-  translate(tx: number | Point.PointLike | Point.PointData, ty?: number) {
+  translate(p: PointOptions): this
+  translate(tx: number | PointOptions, ty?: number) {
     if (typeof tx === 'number') {
       this.start.translate(tx, ty as number)
       this.controlPoint1.translate(tx, ty as number)
@@ -769,139 +779,98 @@ export class Curve extends Geometry {
   }
 }
 
-export namespace Curve {
-  export function isCurve(instance: any): instance is Curve {
-    return instance != null && instance instanceof Curve
+export interface CurveOptions {
+  precision?: number
+  subdivisions?: Curve[]
+}
+function getFirstControlPoints(rhs: number[]) {
+  const n = rhs.length
+  const x = [] // `x` is a solution vector.
+  const tmp = []
+  let b = 2.0
+
+  x[0] = rhs[0] / b
+
+  // Decomposition and forward substitution.
+  for (let i = 1; i < n; i += 1) {
+    tmp[i] = 1 / b
+    b = (i < n - 1 ? 4.0 : 3.5) - tmp[i]
+    x[i] = (rhs[i] - x[i - 1]) / b
   }
+
+  for (let i = 1; i < n; i += 1) {
+    // Backsubstitution.
+    x[n - i - 1] -= tmp[n - i] * x[n - i]
+  }
+
+  return x
 }
 
-export namespace Curve {
-  export interface Options {
-    precision?: number
-    subdivisions?: Curve[]
-  }
-}
-export namespace Curve {
-  function getFirstControlPoints(rhs: number[]) {
-    const n = rhs.length
-    const x = [] // `x` is a solution vector.
-    const tmp = []
-    let b = 2.0
+function getCurveControlPoints(points: PointOptions[]) {
+  const knots = points.map((p) => Point.clone(p))
+  const firstControlPoints = []
+  const secondControlPoints = []
+  const n = knots.length - 1
 
-    x[0] = rhs[0] / b
+  // Special case: Bezier curve should be a straight line.
+  if (n === 1) {
+    // 3P1 = 2P0 + P3
+    firstControlPoints[0] = new Point(
+      (2 * knots[0].x + knots[1].x) / 3,
+      (2 * knots[0].y + knots[1].y) / 3,
+    )
 
-    // Decomposition and forward substitution.
-    for (let i = 1; i < n; i += 1) {
-      tmp[i] = 1 / b
-      b = (i < n - 1 ? 4.0 : 3.5) - tmp[i]
-      x[i] = (rhs[i] - x[i - 1]) / b
-    }
-
-    for (let i = 1; i < n; i += 1) {
-      // Backsubstitution.
-      x[n - i - 1] -= tmp[n - i] * x[n - i]
-    }
-
-    return x
-  }
-
-  function getCurveControlPoints(
-    points: (Point.PointLike | Point.PointData)[],
-  ) {
-    const knots = points.map((p) => Point.clone(p))
-    const firstControlPoints = []
-    const secondControlPoints = []
-    const n = knots.length - 1
-
-    // Special case: Bezier curve should be a straight line.
-    if (n === 1) {
-      // 3P1 = 2P0 + P3
-      firstControlPoints[0] = new Point(
-        (2 * knots[0].x + knots[1].x) / 3,
-        (2 * knots[0].y + knots[1].y) / 3,
-      )
-
-      // P2 = 2P1 – P0
-      secondControlPoints[0] = new Point(
-        2 * firstControlPoints[0].x - knots[0].x,
-        2 * firstControlPoints[0].y - knots[0].y,
-      )
-
-      return [firstControlPoints, secondControlPoints]
-    }
-
-    // Calculate first Bezier control points.
-    // Right hand side vector.
-    const rhs = []
-
-    // Set right hand side X values.
-    for (let i = 1; i < n - 1; i += 1) {
-      rhs[i] = 4 * knots[i].x + 2 * knots[i + 1].x
-    }
-
-    rhs[0] = knots[0].x + 2 * knots[1].x
-    rhs[n - 1] = (8 * knots[n - 1].x + knots[n].x) / 2.0
-
-    // Get first control points X-values.
-    const x = getFirstControlPoints(rhs)
-
-    // Set right hand side Y values.
-    for (let i = 1; i < n - 1; i += 1) {
-      rhs[i] = 4 * knots[i].y + 2 * knots[i + 1].y
-    }
-
-    rhs[0] = knots[0].y + 2 * knots[1].y
-    rhs[n - 1] = (8 * knots[n - 1].y + knots[n].y) / 2.0
-
-    // Get first control points Y-values.
-    const y = getFirstControlPoints(rhs)
-
-    // Fill output arrays.
-    for (let i = 0; i < n; i += 1) {
-      // First control point.
-      firstControlPoints.push(new Point(x[i], y[i]))
-
-      // Second control point.
-      if (i < n - 1) {
-        secondControlPoints.push(
-          new Point(
-            2 * knots[i + 1].x - x[i + 1],
-            2 * knots[i + 1].y - y[i + 1],
-          ),
-        )
-      } else {
-        secondControlPoints.push(
-          new Point((knots[n].x + x[n - 1]) / 2, (knots[n].y + y[n - 1]) / 2),
-        )
-      }
-    }
+    // P2 = 2P1 – P0
+    secondControlPoints[0] = new Point(
+      2 * firstControlPoints[0].x - knots[0].x,
+      2 * firstControlPoints[0].y - knots[0].y,
+    )
 
     return [firstControlPoints, secondControlPoints]
   }
 
-  export function throughPoints(points: (Point.PointLike | Point.PointData)[]) {
-    if (points == null || (Array.isArray(points) && points.length < 2)) {
-      throw new Error('At least 2 points are required')
-    }
+  // Calculate first Bezier control points.
+  // Right hand side vector.
+  const rhs = []
 
-    const controlPoints = getCurveControlPoints(points)
-
-    const curves = []
-    for (let i = 0, ii = controlPoints[0].length; i < ii; i += 1) {
-      const controlPoint1 = new Point(
-        controlPoints[0][i].x,
-        controlPoints[0][i].y,
-      )
-      const controlPoint2 = new Point(
-        controlPoints[1][i].x,
-        controlPoints[1][i].y,
-      )
-
-      curves.push(
-        new Curve(points[i], controlPoint1, controlPoint2, points[i + 1]),
-      )
-    }
-
-    return curves
+  // Set right hand side X values.
+  for (let i = 1; i < n - 1; i += 1) {
+    rhs[i] = 4 * knots[i].x + 2 * knots[i + 1].x
   }
+
+  rhs[0] = knots[0].x + 2 * knots[1].x
+  rhs[n - 1] = (8 * knots[n - 1].x + knots[n].x) / 2.0
+
+  // Get first control points X-values.
+  const x = getFirstControlPoints(rhs)
+
+  // Set right hand side Y values.
+  for (let i = 1; i < n - 1; i += 1) {
+    rhs[i] = 4 * knots[i].y + 2 * knots[i + 1].y
+  }
+
+  rhs[0] = knots[0].y + 2 * knots[1].y
+  rhs[n - 1] = (8 * knots[n - 1].y + knots[n].y) / 2.0
+
+  // Get first control points Y-values.
+  const y = getFirstControlPoints(rhs)
+
+  // Fill output arrays.
+  for (let i = 0; i < n; i += 1) {
+    // First control point.
+    firstControlPoints.push(new Point(x[i], y[i]))
+
+    // Second control point.
+    if (i < n - 1) {
+      secondControlPoints.push(
+        new Point(2 * knots[i + 1].x - x[i + 1], 2 * knots[i + 1].y - y[i + 1]),
+      )
+    } else {
+      secondControlPoints.push(
+        new Point((knots[n].x + x[n - 1]) / 2, (knots[n].y + y[n - 1]) / 2),
+      )
+    }
+  }
+
+  return [firstControlPoints, secondControlPoints]
 }

@@ -9,6 +9,23 @@ import type {
 import { Markup } from '../view'
 import { Base } from './base'
 
+export type MarkerOptions = MarkerResult
+
+export interface GradientOptions {
+  id?: string
+  type: string
+  stops: {
+    offset: number
+    color: string
+    opacity?: number
+  }[]
+  attrs?: SimpleAttrs
+}
+
+export type FilterOptions = (FilterNativeItem | FilterManualItem) & {
+  id?: string
+  attrs?: SimpleAttrs
+}
 export class DefsManager extends Base {
   protected get cid() {
     return this.graph.view.cid
@@ -26,7 +43,7 @@ export class DefsManager extends Base {
     return this.svg.getElementById(id) != null
   }
 
-  filter(options: DefsManager.FilterOptions) {
+  filter(options: FilterOptions) {
     let filterId = options.id
     const name = options.name
     if (!filterId) {
@@ -60,7 +77,7 @@ export class DefsManager extends Base {
     return filterId
   }
 
-  gradient(options: DefsManager.GradientOptions) {
+  gradient(options: GradientOptions) {
     let id = options.id
     const type = options.type
     if (!id) {
@@ -88,7 +105,7 @@ export class DefsManager extends Base {
     return id
   }
 
-  marker(options: DefsManager.MarkerOptions) {
+  marker(options: MarkerOptions) {
     const {
       id,
       refX,
@@ -146,25 +163,5 @@ export class DefsManager extends Base {
     if (elem && elem.parentNode) {
       elem.parentNode.removeChild(elem)
     }
-  }
-}
-
-export namespace DefsManager {
-  export type MarkerOptions = MarkerResult
-
-  export interface GradientOptions {
-    id?: string
-    type: string
-    stops: {
-      offset: number
-      color: string
-      opacity?: number
-    }[]
-    attrs?: SimpleAttrs
-  }
-
-  export type FilterOptions = (FilterNativeItem | FilterManualItem) & {
-    id?: string
-    attrs?: SimpleAttrs
   }
 }

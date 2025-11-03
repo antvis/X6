@@ -1,15 +1,15 @@
 import type { KeyValue } from '../../common'
-import type { Point } from '../../geometry'
+import type { PointLike } from '../../geometry'
 import type { EdgeView } from '../../view'
 import { Registry } from '../registry'
 import * as routers from './main'
 
 export type RouterDefinition<T> = (
   this: EdgeView,
-  vertices: Point.PointLike[],
+  vertices: PointLike[],
   options: T,
   edgeView: EdgeView,
-) => Point.PointLike[]
+) => PointLike[]
 
 type CommonDefinition = RouterDefinition<KeyValue>
 
