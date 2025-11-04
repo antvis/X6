@@ -4,7 +4,7 @@ import type {
   GridDefinition,
   GridManualItem,
   GridNativeItem,
-  GridOptions,
+  GridOptions as O,
   GridOptionsMap,
 } from '../registry'
 import { Base } from './base'
@@ -66,7 +66,7 @@ export class GridManager extends Base {
     this.elem.style.backgroundImage = ''
   }
 
-  draw(options?: GridManager.DrawGridOptions) {
+  draw(options?: GridDrawOptions) {
     this.clear()
     this.instance = null
     Object.assign(this.grid, options)
@@ -74,7 +74,7 @@ export class GridManager extends Base {
     this.update()
   }
 
-  update(options: Partial<GridOptions> | Partial<GridOptions>[] = {}) {
+  update(options: Partial<O> | Partial<O>[] = {}) {
     const gridSize = this.grid.size
     if (gridSize <= 1 || !this.grid.visible) {
       return this.clear()
@@ -149,9 +149,7 @@ export class GridManager extends Base {
     return this.instance
   }
 
-  protected resolveGrid(
-    options?: GridManager.DrawGridOptions,
-  ): GridDefinition[] | never {
+  protected resolveGrid(options?: GridDrawOptions): GridDefinition[] | never {
     if (!options) {
       return []
     }
@@ -188,18 +186,16 @@ export class GridManager extends Base {
   }
 }
 
-export namespace GridManager {
-  export type DrawGridOptions =
-    | GridNativeItem
-    | GridManualItem
-    | {
-        args?: GridOptionsMap['dot']
-      }
+export type GridDrawOptions =
+  | GridNativeItem
+  | GridManualItem
+  | {
+      args?: GridOptionsMap['dot']
+    }
 
-  export interface CommonOptions {
-    size: number
-    visible: boolean
-  }
-
-  export type Options = CommonOptions & DrawGridOptions
+export interface GridCommonOptions {
+  size: number
+  visible: boolean
 }
+
+export type GridOptions = GridCommonOptions & GridDrawOptions

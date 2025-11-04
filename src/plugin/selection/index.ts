@@ -6,7 +6,7 @@ import {
   isModifierKeyMatch,
   type ModifierKey,
 } from '../../common'
-import type { EventArgs, Graph } from '../../graph'
+import type { EventArgs, Graph, GraphPlugin } from '../../graph'
 import type { Cell } from '../../model'
 import {
   SelectionImpl,
@@ -51,7 +51,7 @@ export const DefaultOptions: Partial<SelectionImplOptions> = {
 }
 export class Selection
   extends Basecoat<SelectionImplEventArgs>
-  implements Graph.Plugin
+  implements GraphPlugin
 {
   public name = 'selection'
 

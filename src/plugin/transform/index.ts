@@ -1,5 +1,5 @@
 import { Basecoat, CssLoader, disposable, type KeyValue } from '../../common'
-import type { EventArgs, Graph } from '../../graph'
+import type { EventArgs, Graph, GraphPlugin } from '../../graph'
 import type { Node } from '../../model'
 import { content } from './style/raw'
 import type { TransformImplOptions, TransformImplEventArgs } from './transform'
@@ -41,7 +41,7 @@ type Options = {
 
 export class Transform
   extends Basecoat<TransformImplEventArgs>
-  implements Graph.Plugin
+  implements GraphPlugin
 {
   public name = 'transform'
   public options: Options

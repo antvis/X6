@@ -1,4 +1,4 @@
-import type { Graph } from '../../graph'
+import type { Graph, Options } from '../../graph'
 
 export interface MiniMapViewGeometry extends Record<string, number> {
   top: number
@@ -29,6 +29,6 @@ export interface MiniMapOptions {
   scalable?: boolean
   minScale?: number
   maxScale?: number
-  createGraph?: (options: Graph.Options) => Graph
-  graphOptions?: Graph.Options
+  createGraph?: (options: Options) => Graph
+  graphOptions?: Options
 }

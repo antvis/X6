@@ -1,5 +1,5 @@
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { type EventArgs, Graph } from '../../graph'
+import { type EventArgs, Graph, GraphPlugin } from '../../graph'
 import { type Cell, Model, Node, NodeMetadata } from '../../model'
 import { View } from '../../view'
 import { DndDefaults, Dnd } from '../dnd'
@@ -52,7 +52,7 @@ export const DefaultOptions: Partial<StencilOptions> = {
   ...DndDefaults,
 }
 
-export class Stencil extends View implements Graph.Plugin {
+export class Stencil extends View implements GraphPlugin {
   public name = 'stencil'
   public options: StencilOptions
   public dnd: Dnd

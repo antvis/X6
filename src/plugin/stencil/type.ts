@@ -1,4 +1,4 @@
-import type { Graph } from '../../graph'
+import type { Options } from '../../graph'
 import type { Model, Node } from '../../model'
 import type { DndOptions } from '../dnd'
 import type { Stencil } from '.'
@@ -12,7 +12,7 @@ export interface StencilOptions extends DndOptions {
   collapsable?: boolean
   stencilGraphWidth: number
   stencilGraphHeight: number
-  stencilGraphOptions?: Graph.Options
+  stencilGraphOptions?: Options
   stencilGraphPadding?: number
   layout?: (this: Stencil, model: Model, group?: StencilGroup | null) => any
   layoutOptions?: any
@@ -40,7 +40,7 @@ export interface StencilGroup {
   graphWidth?: number
   graphHeight?: number
   graphPadding?: number
-  graphOptions?: Graph.Options
+  graphOptions?: Options
   layout?: (this: Stencil, model: Model, group?: StencilGroup | null) => any
   layoutOptions?: any
 }

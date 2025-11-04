@@ -2,6 +2,17 @@ import { Dom, disposable, isModifierKeyMatch } from '../common'
 import type { ModifierKey } from '../common'
 import { Base } from './base'
 
+type EventType =
+  | 'leftMouseDown'
+  | 'rightMouseDown'
+  | 'mouseWheel'
+  | 'mouseWheelDown'
+export interface PanningOptions {
+  enabled?: boolean
+  modifiers?: string | Array<ModifierKey | 'space'> | null
+  eventTypes?: EventType[]
+}
+
 export class PanningManager extends Base {
   private panning: boolean
   private clientX: number
@@ -228,18 +239,5 @@ export class PanningManager extends Base {
   @disposable()
   dispose() {
     this.stopListening()
-  }
-}
-
-export namespace PanningManager {
-  type EventType =
-    | 'leftMouseDown'
-    | 'rightMouseDown'
-    | 'mouseWheel'
-    | 'mouseWheelDown'
-  export interface Options {
-    enabled?: boolean
-    modifiers?: string | Array<ModifierKey | 'space'> | null
-    eventTypes?: EventType[]
   }
 }
