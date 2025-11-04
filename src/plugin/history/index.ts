@@ -5,7 +5,7 @@ import {
   type KeyValue,
   ObjectExt,
 } from '../../common'
-import type { Graph } from '../../graph'
+import type { Graph, GraphPlugin } from '../../graph'
 import { Model, type ModelEventArgs } from '../../model'
 import type {
   HistoryChangingData,
@@ -27,10 +27,7 @@ import {
 import { Validator, type ValidatorCallback } from './validator'
 import './api'
 
-export class History
-  extends Basecoat<HistoryEventArgs>
-  implements Graph.Plugin
-{
+export class History extends Basecoat<HistoryEventArgs> implements GraphPlugin {
   public name = 'history'
   public graph: Graph
   public model: Model

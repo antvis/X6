@@ -7,7 +7,7 @@ import {
   Rectangle,
   type PointLike,
 } from '../../geometry'
-import { type EventArgs, Graph } from '../../graph'
+import { type EventArgs, Graph, Options, GraphPlugin } from '../../graph'
 import type { TransitionEventArgs, Node } from '../../model'
 import { type NodeView, View } from '../../view'
 import type { Scroller } from '../scroller'
@@ -34,7 +34,7 @@ export interface DndOptions {
    * Should scale the dragging node or not.
    */
   scaled?: boolean
-  delegateGraphOptions?: Graph.Options
+  delegateGraphOptions?: Options
   draggingContainer?: HTMLElement
   /**
    * dnd tool box container.
@@ -54,7 +54,7 @@ export const DndDefaults: Partial<DndOptions> = {
   getDropNode: (draggingNode) => draggingNode.clone(),
 }
 
-export class Dnd extends View implements Graph.Plugin {
+export class Dnd extends View implements GraphPlugin {
   public name = 'dnd'
 
   protected sourceNode: Node | null

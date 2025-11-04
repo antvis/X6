@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import { Core } from './core'
+import * as Core from './core'
 import { ensureHandlerId, returnFalse, setHandlerId } from './util'
-import { EventObject } from './object'
+import { EventObject, type EventObjectEvent } from './object'
 import { TypeEventHandler, TypeEventHandlers } from './types'
 
 export namespace Event {
@@ -201,7 +201,7 @@ export namespace Event {
     event:
       | string
       | EventObject
-      | (Partial<EventObject.Event> & { type: string }),
+      | (Partial<EventObjectEvent> & { type: string }),
     args?: any[] | Record<string, any> | string | number | boolean,
     /**
      * When onlyHandlers is `true`
