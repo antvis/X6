@@ -5,9 +5,15 @@ import {
   type IDisablable,
   Vector,
 } from '../../common'
-import { Angle, Point, Rectangle } from '../../geometry'
+import {
+  toRad,
+  normalize,
+  Point,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
 import type { EventArgs, Graph } from '../../graph'
-import type { Model, Node } from '../../model'
+import type { ModelEventArgs, Node } from '../../model'
 import { type CellView, type NodeView, View } from '../../view'
 import type { SnaplineImplFilter, SnaplineImplOptions } from './type'
 import type { PointLike } from '@/types'
@@ -116,7 +122,7 @@ export class SnaplineImpl extends View implements IDisablable {
     this.undelegateDocumentEvents()
   }
 
-  protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
+  protected onBatchStop({ name, data }: ModelEventArgs['batch:stop']) {
     if (name === 'resize') {
       this.snapOnResizing(data.cell, data as Node.ResizeOptions)
     }
@@ -137,7 +143,7 @@ export class SnaplineImpl extends View implements IDisablable {
     return view && view.cell.isNode() && view.can('nodeMovable')
   }
 
-  protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+  protected getRestrictArea(view?: NodeView): RectangleLike | null {
     const restrict = this.graph.options.translating.restrict
     const area =
       typeof restrict === 'function'
@@ -169,7 +175,7 @@ export class SnaplineImpl extends View implements IDisablable {
         const nodeBBoxRotated = nodeBbox.bbox(node.getAngle())
         const nodeTopLeft = nodeBBoxRotated.getTopLeft()
         const nodeBottomRight = nodeBBoxRotated.getBottomRight()
-        const angle = Angle.normalize(node.getAngle())
+        const angle = normalize(node.getAngle())
         const tolerance = this.options.tolerance || 0
         let verticalLeft: number | undefined
         let verticalTop: number | undefined
@@ -296,7 +302,7 @@ export class SnaplineImpl extends View implements IDisablable {
             }
           }
 
-          const rad = Angle.toRad(angle % 90)
+          const rad = toRad(angle % 90)
           if (dx) {
             dWidth = quadrant === 3 ? dx / Math.cos(rad) : dx / Math.sin(rad)
           }

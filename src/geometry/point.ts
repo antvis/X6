@@ -1,6 +1,6 @@
-import { Rectangle } from './rectangle'
-import { GeometryUtil } from './util'
-import { Angle } from './angle'
+import { type RectangleLike } from './rectangle'
+import { round, random, snapToGrid, containsPoint } from './util'
+import * as Angle from './angle'
 import { Geometry } from './geometry'
 import type { PointLike, PointData, PointBearing, PointOptions } from '@/types'
 
@@ -133,7 +133,7 @@ export class Point extends Geometry implements PointLike {
    * `[x1, x2]` and `[y1, y2]`.
    */
   static random(x1: number, x2: number, y1: number, y2: number) {
-    return new Point(GeometryUtil.random(x1, x2), GeometryUtil.random(y1, y2))
+    return new Point(random(x1, x2), random(y1, y2))
   }
 
   static rotate(
@@ -184,8 +184,8 @@ export class Point extends Geometry implements PointLike {
    * Rounds the point to the given precision.
    */
   round(precision = 0) {
-    this.x = GeometryUtil.round(this.x, precision)
-    this.y = GeometryUtil.round(this.y, precision)
+    this.x = round(this.x, precision)
+    this.y = round(this.y, precision)
     return this
   }
 
@@ -384,8 +384,8 @@ export class Point extends Geometry implements PointLike {
    * If the point lies outside the rectangle `rect`, adjust the point so that
    * it becomes the nearest point on the boundary of `rect`.
    */
-  adhereToRect(rect: Rectangle.RectangleLike) {
-    if (!GeometryUtil.containsPoint(rect, this)) {
+  adhereToRect(rect: RectangleLike) {
+    if (!containsPoint(rect, this)) {
       this.x = Math.min(Math.max(this.x, rect.x), rect.x + rect.width)
       this.y = Math.min(Math.max(this.y, rect.y), rect.y + rect.height)
     }
@@ -509,8 +509,8 @@ export class Point extends Geometry implements PointLike {
   snapToGrid(gx: number, gy: number): this
   snapToGrid(gx: number, gy?: number): this
   snapToGrid(gx: number, gy?: number): this {
-    this.x = GeometryUtil.snapToGrid(this.x, gx)
-    this.y = GeometryUtil.snapToGrid(this.y, gy == null ? gx : gy)
+    this.x = snapToGrid(this.x, gx)
+    this.y = snapToGrid(this.y, gy == null ? gx : gy)
     return this
   }
 

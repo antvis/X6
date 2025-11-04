@@ -1,5 +1,5 @@
 import type { NumberExt, Size } from '../../common'
-import type { Rectangle } from '../../geometry'
+import type { RectangleLike } from '../../geometry'
 import type { Graph } from '../../graph'
 
 export interface ExportEventArgs {
@@ -19,7 +19,7 @@ export interface ExportToSVGOptions {
    */
   preserveDimensions?: boolean | Size
 
-  viewBox?: Rectangle.RectangleLike
+  viewBox?: RectangleLike
 
   /**
    * When set to `true` all the styles from external stylesheets are copied

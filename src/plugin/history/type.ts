@@ -1,16 +1,16 @@
 import type { KeyValue } from '../../common'
-import type { Cell, Model } from '../../model'
+import type { Cell, ModelEventArgs } from '../../model'
 import type { History } from '.'
 import type { ValidatorEventArgs } from './validator'
 
-export type HistoryModelEvents = keyof Model.EventArgs
+export type HistoryModelEvents = keyof ModelEventArgs
 
 export interface HistoryCommonOptions {
   enabled?: boolean
   ignoreAdd?: boolean
   ignoreRemove?: boolean
   ignoreChange?: boolean
-  eventNames?: (keyof Model.EventArgs)[]
+  eventNames?: (keyof ModelEventArgs)[]
   /**
    * A function evaluated before any command is added. If the function
    * returns `false`, the command does not get stored. This way you can
@@ -19,12 +19,12 @@ export interface HistoryCommonOptions {
   beforeAddCommand?: <T extends HistoryModelEvents>(
     this: History,
     event: T,
-    args: Model.EventArgs[T],
+    args: ModelEventArgs[T],
   ) => any
   afterAddCommand?: <T extends HistoryModelEvents>(
     this: History,
     event: T,
-    args: Model.EventArgs[T],
+    args: ModelEventArgs[T],
     cmd: HistoryCommand,
   ) => any
   executeCommand?: (

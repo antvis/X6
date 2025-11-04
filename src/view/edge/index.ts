@@ -7,7 +7,7 @@ import {
   Vector,
 } from '../../common'
 import {
-  Angle,
+  normalize,
   Line,
   Path,
   Point,
@@ -1367,7 +1367,7 @@ export class EdgeView<
       if (isKeepGradient) {
         angle = tangent.angle() + labelAngle
         if (isEnsureLegibility) {
-          angle = Angle.normalize(((angle + 90) % 180) - 90)
+          angle = normalize(((angle + 90) % 180) - 90)
         }
       }
     } else {

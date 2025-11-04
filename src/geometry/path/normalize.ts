@@ -1,4 +1,4 @@
-import { GeometryUtil } from '../util'
+import { round } from '../util'
 
 type Segment = [string, ...number[]]
 
@@ -493,9 +493,7 @@ function normalize(path: string) {
 export function normalizePathData(pathData: string) {
   return normalize(pathData)
     .map((segment: Segment) =>
-      segment.map((item) =>
-        typeof item === 'string' ? item : GeometryUtil.round(item, 2),
-      ),
+      segment.map((item) => (typeof item === 'string' ? item : round(item, 2))),
     )
     .join(',')
     .split(',')

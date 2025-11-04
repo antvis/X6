@@ -18,7 +18,7 @@ import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
 import { Cell } from './cell'
 import type { Node } from './node'
-import { ShareRegistry } from './registry'
+import { exist, setEdgeRegistry } from './registry'
 import type { Store } from './store'
 
 export class Edge<
@@ -1114,7 +1114,7 @@ export namespace Edge {
   >({
     type: 'edge',
     process(shape, options) {
-      if (ShareRegistry.exist(shape, false)) {
+      if (exist(shape, false)) {
         throw new Error(
           `Edge with name '${shape}' was registered by anthor Node`,
         )
@@ -1150,7 +1150,7 @@ export namespace Edge {
     },
   })
 
-  ShareRegistry.setEdgeRegistry(registry)
+  setEdgeRegistry(registry)
 }
 
 export namespace Edge {
