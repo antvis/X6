@@ -1,6 +1,6 @@
 import { FunctionExt } from '../../common'
 import type { PointLike } from '../../geometry'
-import type { Edge } from '../../model/edge'
+import type { TerminalCellData, TerminalType } from '../../model/edge'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
 import { connectionStrategyPresets } from '../connection-strategy'
@@ -10,12 +10,12 @@ export function getAnchor(
   pos: PointLike,
   terminalView: CellView,
   terminalMagnet: Element,
-  type: Edge.TerminalType,
+  type: TerminalType,
 ) {
   const end = FunctionExt.call(
     connectionStrategyPresets.pinRelative,
     this.graph,
-    {} as Edge.TerminalCellData,
+    {} as TerminalCellData,
     terminalView,
     terminalMagnet,
     pos,

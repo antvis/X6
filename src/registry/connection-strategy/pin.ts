@@ -1,5 +1,5 @@
 import { Point, type PointLike } from '../../geometry'
-import type { Edge, Node } from '../../model'
+import type { Edge, Node, TerminalCellData } from '../../model'
 import type { EdgeView, NodeView } from '../../view'
 import type { ConnectionStrategyDefinition } from './index'
 
@@ -23,7 +23,7 @@ export function pin(relative: boolean) {
 
 export function pinNodeTerminal(
   relative: boolean,
-  data: Edge.TerminalCellData,
+  data: TerminalCellData,
   view: NodeView,
   magnet: Element,
   coords: PointLike,
@@ -56,7 +56,7 @@ export function pinNodeTerminal(
 
 export function pinEdgeTerminal(
   relative: boolean,
-  end: Edge.TerminalCellData,
+  end: TerminalCellData,
   view: EdgeView,
   magnet: Element,
   coords: PointLike,

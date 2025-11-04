@@ -8,7 +8,7 @@ import {
   type PointLike,
 } from '../../geometry'
 import { type EventArgs, Graph } from '../../graph'
-import type { Cell, Node } from '../../model'
+import type { TransitionEventArgs, Node } from '../../model'
 import { type NodeView, View } from '../../view'
 import type { Scroller } from '../scroller'
 import type { Snapline } from '../snapline'
@@ -243,7 +243,7 @@ export class Dnd extends View implements Graph.Plugin {
     cell,
     current,
     options,
-  }: Cell.EventArgs['change:position']) {
+  }: TransitionEventArgs['change:position']) {
     const node = cell as Node
     if (options.snapped) {
       const bbox = this.draggingBBox

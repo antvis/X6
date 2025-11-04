@@ -17,7 +17,18 @@ import {
 } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Options as GraphOptions } from '../../graph/options'
-import { Edge } from '../../model/edge'
+import {
+  Edge,
+  EdgeSetOptions,
+  LabelPosition,
+  LabelPositionObject,
+  LabelPositionOptions,
+  SetCellTerminalArgs,
+  TerminalCellData,
+  TerminalData,
+  TerminalPointData,
+  TerminalType,
+} from '../../model/edge'
 import {
   type ConnectionPointManualItem,
   type ConnectorBaseOptions,
@@ -115,7 +126,7 @@ export class EdgeView<
   get sourceBBox() {
     const sourceView = this.sourceView
     if (!sourceView) {
-      const sourceDef = this.cell.getSource() as Edge.TerminalPointData
+      const sourceDef = this.cell.getSource() as TerminalPointData
       return new Rectangle(sourceDef.x, sourceDef.y)
     }
     const sourceMagnet = this.sourceMagnet
@@ -128,7 +139,7 @@ export class EdgeView<
   get targetBBox() {
     const targetView = this.targetView
     if (!targetView) {
-      const targetDef = this.cell.getTarget() as Edge.TerminalPointData
+      const targetDef = this.cell.getTarget() as TerminalPointData
       return new Rectangle(targetDef.x, targetDef.y)
     }
     const targetMagnet = this.targetMagnet
@@ -468,7 +479,7 @@ export class EdgeView<
     return this
   }
 
-  removeRedundantLinearVertices(options: Edge.SetOptions = {}) {
+  removeRedundantLinearVertices(options: EdgeSetOptions = {}) {
     const edge = this.cell
     const vertices = edge.getVertices()
     const routePoints = [this.sourceAnchor, ...vertices, this.targetAnchor]
@@ -491,7 +502,7 @@ export class EdgeView<
     return rawCount - simplifiedCount
   }
 
-  getTerminalView(type: Edge.TerminalType) {
+  getTerminalView(type: TerminalType) {
     switch (type) {
       case 'source':
         return this.sourceView || null
@@ -502,7 +513,7 @@ export class EdgeView<
     }
   }
 
-  getTerminalAnchor(type: Edge.TerminalType) {
+  getTerminalAnchor(type: TerminalType) {
     switch (type) {
       case 'source':
         return Point.create(this.sourceAnchor)
@@ -513,7 +524,7 @@ export class EdgeView<
     }
   }
 
-  getTerminalConnectionPoint(type: Edge.TerminalType) {
+  getTerminalConnectionPoint(type: TerminalType) {
     switch (type) {
       case 'source':
         return Point.create(this.sourcePoint)
@@ -524,7 +535,7 @@ export class EdgeView<
     }
   }
 
-  getTerminalMagnet(type: Edge.TerminalType, options: { raw?: boolean } = {}) {
+  getTerminalMagnet(type: TerminalType, options: { raw?: boolean } = {}) {
     switch (type) {
       case 'source': {
         if (options.raw) {
@@ -607,8 +618,8 @@ export class EdgeView<
 
   protected findAnchors(vertices: PointLike[]) {
     const edge = this.cell
-    const source = edge.source as Edge.TerminalCellData
-    const target = edge.target as Edge.TerminalCellData
+    const source = edge.source as TerminalCellData
+    const target = edge.target as TerminalCellData
     const firstVertex = vertices[0]
     const lastVertex = vertices[vertices.length - 1]
 
@@ -627,9 +638,9 @@ export class EdgeView<
   }
 
   protected findAnchorsOrdered(
-    firstType: Edge.TerminalType,
+    firstType: TerminalType,
     firstPoint: PointLike,
-    secondType: Edge.TerminalType,
+    secondType: TerminalType,
     secondPoint: PointLike,
   ) {
     let firstAnchor: Point
@@ -650,24 +661,24 @@ export class EdgeView<
       } else if (secondView) {
         firstRef = secondMagnet
       } else {
-        firstRef = Point.create(secondTerminal as Edge.TerminalPointData)
+        firstRef = Point.create(secondTerminal as TerminalPointData)
       }
 
       firstAnchor = this.getAnchor(
-        (firstTerminal as Edge.SetCellTerminalArgs).anchor,
+        (firstTerminal as SetCellTerminalArgs).anchor,
         firstView,
         firstMagnet,
         firstRef,
         firstType,
       )
     } else {
-      firstAnchor = Point.create(firstTerminal as Edge.TerminalPointData)
+      firstAnchor = Point.create(firstTerminal as TerminalPointData)
     }
 
     if (secondView) {
       const secondRef = Point.create(secondPoint || firstAnchor)
       secondAnchor = this.getAnchor(
-        (secondTerminal as Edge.SetCellTerminalArgs).anchor,
+        (secondTerminal as SetCellTerminalArgs).anchor,
         secondView,
         secondMagnet,
         secondRef,
@@ -690,7 +701,7 @@ export class EdgeView<
     cellView: CellView,
     magnet: Element | null,
     ref: Point | Element | null,
-    terminalType: Edge.TerminalType,
+    terminalType: TerminalType,
   ): Point {
     const isEdge = cellView.isEdgeElement(magnet)
     const connecting = this.graph.options.connecting
@@ -845,7 +856,7 @@ export class EdgeView<
     view: CellView,
     magnet: Element,
     line: Line,
-    endType: Edge.TerminalType,
+    endType: TerminalType,
   ) {
     const anchor = line.end
     if (def == null) {
@@ -877,7 +888,7 @@ export class EdgeView<
     sourcePoint: Point,
     targetPoint: Point,
   ) {
-    const getLineWidth = (type: Edge.TerminalType) => {
+    const getLineWidth = (type: TerminalType) => {
       const attrs = this.cell.getAttrs()
       const keys = Object.keys(attrs)
       for (let i = 0, l = keys.length; i < l; i += 1) {
@@ -991,7 +1002,7 @@ export class EdgeView<
 
     const defaultLabel = edge.getDefaultLabel()
     const defaultPosition = this.normalizeLabelPosition(
-      defaultLabel.position as Edge.LabelPosition,
+      defaultLabel.position as LabelPosition,
     )
 
     for (let i = 0, ii = labels.length; i < ii; i += 1) {
@@ -1003,7 +1014,7 @@ export class EdgeView<
       }
 
       const labelPosition = this.normalizeLabelPosition(
-        label.position as Edge.LabelPosition,
+        label.position as LabelPosition,
       )
       const pos = ObjectExt.merge({}, defaultPosition, labelPosition)
       const matrix = this.getLabelTransformationMatrix(pos)
@@ -1013,11 +1024,11 @@ export class EdgeView<
     return this
   }
 
-  updateTerminalProperties(type: Edge.TerminalType) {
+  updateTerminalProperties(type: TerminalType) {
     const edge = this.cell
     const graph = this.graph
     const terminal = edge[type]
-    const nodeId = terminal && (terminal as Edge.TerminalCellData).cell
+    const nodeId = terminal && (terminal as TerminalCellData).cell
     const viewKey = `${type}View` as 'sourceView' | 'targetView'
 
     // terminal is a point
@@ -1042,7 +1053,7 @@ export class EdgeView<
     return true
   }
 
-  updateTerminalMagnet(type: Edge.TerminalType) {
+  updateTerminalMagnet(type: TerminalType) {
     const propName = `${type}Magnet` as 'sourceMagnet' | 'targetMagnet'
     const terminalView = this.getTerminalView(type)
     if (terminalView) {
@@ -1084,8 +1095,8 @@ export class EdgeView<
   }
 
   protected mergeLabelPositionArgs(
-    labelPositionArgs?: Edge.LabelPositionOptions,
-    defaultLabelPositionArgs?: Edge.LabelPositionOptions,
+    labelPositionArgs?: LabelPositionOptions,
+    defaultLabelPositionArgs?: LabelPositionOptions,
   ) {
     if (labelPositionArgs === null) {
       return null
@@ -1222,21 +1233,21 @@ export class EdgeView<
   getLabelPosition(
     x: number,
     y: number,
-    options?: Edge.LabelPositionOptions | null,
-  ): Edge.LabelPositionObject
+    options?: LabelPositionOptions | null,
+  ): LabelPositionObject
   getLabelPosition(
     x: number,
     y: number,
     angle: number,
-    options?: Edge.LabelPositionOptions | null,
-  ): Edge.LabelPositionObject
+    options?: LabelPositionOptions | null,
+  ): LabelPositionObject
   getLabelPosition(
     x: number,
     y: number,
-    p3?: number | Edge.LabelPositionOptions | null,
-    p4?: Edge.LabelPositionOptions | null,
-  ): Edge.LabelPositionObject {
-    const pos: Edge.LabelPositionObject = { distance: 0 }
+    p3?: number | LabelPositionOptions | null,
+    p4?: LabelPositionOptions | null,
+  ): LabelPositionObject {
+    const pos: LabelPositionObject = { distance: 0 }
 
     // normalize data from the two possible signatures
     let angle = 0
@@ -1302,12 +1313,10 @@ export class EdgeView<
   }
 
   protected normalizeLabelPosition(): undefined
+  protected normalizeLabelPosition(pos: LabelPosition): LabelPositionObject
   protected normalizeLabelPosition(
-    pos: Edge.LabelPosition,
-  ): Edge.LabelPositionObject
-  protected normalizeLabelPosition(
-    pos?: Edge.LabelPosition,
-  ): Edge.LabelPositionObject | undefined {
+    pos?: LabelPosition,
+  ): LabelPositionObject | undefined {
     if (typeof pos === 'number') {
       return { distance: pos }
     }
@@ -1315,7 +1324,7 @@ export class EdgeView<
     return pos
   }
 
-  protected getLabelTransformationMatrix(labelPosition: Edge.LabelPosition) {
+  protected getLabelTransformationMatrix(labelPosition: LabelPosition) {
     const pos = this.normalizeLabelPosition(labelPosition)
     const options = pos.options || {}
     const labelAngle = pos.angle || 0
@@ -1646,7 +1655,7 @@ export class EdgeView<
   // #region drag arrowhead
 
   prepareArrowheadDragging(
-    type: Edge.TerminalType,
+    type: TerminalType,
     options: {
       x: number
       y: number
@@ -1663,7 +1672,7 @@ export class EdgeView<
       isNewEdge: options.isNewEdge === true,
       terminalType: type,
       initialMagnet: magnet,
-      initialTerminal: ObjectExt.clone(this.cell[type]) as Edge.TerminalData,
+      initialTerminal: ObjectExt.clone(this.cell[type]) as TerminalData,
       fallbackAction: options.fallbackAction || 'revert',
       getValidateConnectionArgs: this.createValidateConnectionArgs(type),
       options: options.options,
@@ -1674,13 +1683,13 @@ export class EdgeView<
     return data
   }
 
-  protected createValidateConnectionArgs(type: Edge.TerminalType) {
+  protected createValidateConnectionArgs(type: TerminalType) {
     const args: EventDataValidateConnectionArgs = [] as any
 
     args[4] = type
     args[5] = this
 
-    let opposite: Edge.TerminalType
+    let opposite: TerminalType
     let i = 0
     let j = 0
 
@@ -1693,7 +1702,7 @@ export class EdgeView<
     }
 
     const terminal = this.cell[opposite]
-    const cellId = (terminal as Edge.TerminalCellData).cell
+    const cellId = (terminal as TerminalCellData).cell
     if (cellId) {
       let magnet
       const view = (args[i] = this.graph.findViewByCell(cellId))
@@ -1745,9 +1754,9 @@ export class EdgeView<
     sourceMagnet: Element | null | undefined,
     targetView: CellView | null | undefined,
     targetMagnet: Element | null | undefined,
-    terminalType: Edge.TerminalType,
+    terminalType: TerminalType,
     edgeView?: EdgeView | null | undefined,
-    candidateTerminal?: Edge.TerminalCellData | null | undefined,
+    candidateTerminal?: TerminalCellData | null | undefined,
   ) {
     const options = this.graph.options.connecting
     const allowLoop = options.allowLoop
@@ -1847,11 +1856,11 @@ export class EdgeView<
       const source =
         terminalType === 'source'
           ? candidateTerminal
-          : (edge.getSource() as Edge.TerminalCellData)
+          : (edge.getSource() as TerminalCellData)
       const target =
         terminalType === 'target'
           ? candidateTerminal
-          : (edge.getTarget() as Edge.TerminalCellData)
+          : (edge.getTarget() as TerminalCellData)
       const terminalCell = candidateTerminal
         ? this.graph.getCellById(candidateTerminal.cell)
         : null
@@ -1870,8 +1879,8 @@ export class EdgeView<
           if (connectedEdges.length) {
             if (allowMulti === 'withPort') {
               const exist = connectedEdges.some((link) => {
-                const s = link.getSource() as Edge.TerminalCellData
-                const t = link.getTarget() as Edge.TerminalCellData
+                const s = link.getSource() as TerminalCellData
+                const t = link.getTarget() as TerminalCellData
                 return (
                   s &&
                   t &&
@@ -1888,8 +1897,8 @@ export class EdgeView<
               }
             } else if (!allowMulti) {
               const exist = connectedEdges.some((link) => {
-                const s = link.getSource() as Edge.TerminalCellData
-                const t = link.getTarget() as Edge.TerminalCellData
+                const s = link.getSource() as TerminalCellData
+                const t = link.getTarget() as TerminalCellData
                 return (
                   s && t && s.cell === source.cell && t.cell === target.cell
                 )
@@ -1940,8 +1949,8 @@ export class EdgeView<
 
   protected validateEdge(
     edge: Edge,
-    type: Edge.TerminalType,
-    initialTerminal: Edge.TerminalData,
+    type: TerminalType,
+    initialTerminal: TerminalData,
   ) {
     const graph = this.graph
     if (!this.allowConnectToBlank(edge)) {
@@ -2225,7 +2234,7 @@ export class EdgeView<
 
     if (changed) {
       const graph = this.graph
-      const previous = initialTerminal as Edge.TerminalCellData
+      const previous = initialTerminal as TerminalCellData
       const previousCell = previous.cell
         ? graph.getCellById(previous.cell)
         : null
@@ -2236,15 +2245,15 @@ export class EdgeView<
       const previousPoint =
         previousCell || data.isNewEdge
           ? null
-          : Point.create(initialTerminal as Edge.TerminalPointData).toJSON()
+          : Point.create(initialTerminal as TerminalPointData).toJSON()
 
-      const current = currentTerminal as Edge.TerminalCellData
+      const current = currentTerminal as TerminalCellData
       const currentCell = current.cell ? graph.getCellById(current.cell) : null
       const currentPort = current.port
       const currentView = currentCell ? graph.findViewByCell(currentCell) : null
       const currentPoint = currentCell
         ? null
-        : Point.create(currentTerminal as Edge.TerminalPointData).toJSON()
+        : Point.create(currentTerminal as TerminalPointData).toJSON()
 
       this.notify('edge:connected', {
         e,
@@ -2342,7 +2351,7 @@ export class EdgeView<
     }
 
     const elem = e.target
-    const type = elem.getAttribute('data-terminal') as Edge.TerminalType
+    const type = elem.getAttribute('data-terminal') as TerminalType
     const data = this.prepareArrowheadDragging(type, { x, y })
     this.setEventData<EventDataArrowheadDragging>(e, data)
   }

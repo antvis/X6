@@ -1,6 +1,6 @@
 import type { KeyValue } from '../../common'
 import type { Point } from '../../geometry'
-import type { Edge } from '../../model'
+import type { TerminalType } from '../../model'
 import type { EdgeView, NodeView } from '../../view'
 import { Registry } from '../registry'
 import * as anchors from './main'
@@ -27,7 +27,7 @@ export type NodeAnchorDefinition<T> = (
    */
   ref: Point | PointLike | SVGElement,
   args: T,
-  type: Edge.TerminalType,
+  type: TerminalType,
 ) => Point
 
 type CommonDefinition = NodeAnchorDefinition<KeyValue>

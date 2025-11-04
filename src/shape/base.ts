@@ -1,5 +1,5 @@
 import { ObjectExt } from '../common'
-import { Node } from '../model'
+import { Node, NodeProperties, NodeSetOptions } from '../model'
 
 export const BaseBodyAttr = {
   fill: '#ffffff',
@@ -18,7 +18,7 @@ export const BaseLabelAttr = {
 }
 
 export class Base<
-  Properties extends Node.Properties = Node.Properties,
+  Properties extends NodeProperties = NodeProperties,
 > extends Node<Properties> {
   get label() {
     return this.getLabel()
@@ -32,7 +32,7 @@ export class Base<
     return this.getAttrByPath<string>('text/text')
   }
 
-  setLabel(label?: string | null, options?: Node.SetOptions) {
+  setLabel(label?: string | null, options?: NodeSetOptions) {
     if (label == null) {
       this.removeLabel()
     } else {

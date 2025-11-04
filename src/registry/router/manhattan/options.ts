@@ -5,7 +5,7 @@ import {
   type RectangleLike,
   type PointLike,
 } from '../../../geometry'
-import type { Edge, Node } from '../../../model'
+import type { Edge, Node, TerminalType } from '../../../model'
 import type { EdgeView } from '../../../view'
 import type { RouterDefinition } from '../index'
 import { orth } from '../orth'
@@ -44,7 +44,7 @@ export interface ResolvedOptions {
   /**
    * Should the source and/or target not be considered as obstacles?
    */
-  excludeTerminals: Edge.TerminalType[]
+  excludeTerminals: TerminalType[]
 
   /**
    * Should certain nodes not be considered as obstacles?

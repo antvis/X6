@@ -13,7 +13,7 @@ import {
   type RectangleLike,
 } from '../../geometry'
 import type { EventArgs, Graph } from '../../graph'
-import type { ModelEventArgs, Node } from '../../model'
+import type { ModelEventArgs, Node, ResizeOptions } from '../../model'
 import { type CellView, type NodeView, View } from '../../view'
 import type { SnaplineImplFilter, SnaplineImplOptions } from './type'
 import type { PointLike } from '@/types'
@@ -124,7 +124,7 @@ export class SnaplineImpl extends View implements IDisablable {
 
   protected onBatchStop({ name, data }: ModelEventArgs['batch:stop']) {
     if (name === 'resize') {
-      this.snapOnResizing(data.cell, data as Node.ResizeOptions)
+      this.snapOnResizing(data.cell, data as ResizeOptions)
     }
   }
 
@@ -161,7 +161,7 @@ export class SnaplineImpl extends View implements IDisablable {
     return area || null
   }
 
-  protected snapOnResizing(node: Node, options: Node.ResizeOptions) {
+  protected snapOnResizing(node: Node, options: ResizeOptions) {
     if (
       this.options.resizing &&
       !options.snapped &&

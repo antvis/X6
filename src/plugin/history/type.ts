@@ -1,5 +1,5 @@
 import type { KeyValue } from '../../common'
-import type { Cell, ModelEventArgs } from '../../model'
+import type { CellProperties, ModelEventArgs } from '../../model'
 import type { History } from '.'
 import type { ValidatorEventArgs } from './validator'
 
@@ -58,7 +58,7 @@ interface Data {
 export interface HistoryCreationData extends Data {
   edge?: boolean
   node?: boolean
-  props: Cell.Properties
+  props: CellProperties
 }
 
 export interface HistoryChangingData extends Data {
