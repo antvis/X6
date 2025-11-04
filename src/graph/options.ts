@@ -1,7 +1,7 @@
 import type { Dom, Nilable } from '../common'
 import { ObjectExt } from '../common'
 import { Config } from '../config'
-import type { Rectangle } from '../geometry'
+import type { RectangleLike } from '../geometry'
 import type { Graph } from '../graph'
 import type { Cell, Edge, Model, Node } from '../model'
 import type { Port } from '../model/port'
@@ -249,7 +249,7 @@ export namespace Options {
      */
     restrict:
       | boolean
-      | OptionItem<CellView | null, Rectangle.RectangleLike | number | null>
+      | OptionItem<CellView | null, RectangleLike | number | null>
     /**
      * After a node is moved, if it overlaps with other nodes, it will be
      * automatically offset (by default, no offset occurs).

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { Point, Rectangle, GeometryUtil } from '@/geometry'
+import { Point, type RectangleLike } from '@/geometry'
+import * as GeometryUtil from '@/geometry/util'
 
 describe('GeometryUtil', () => {
   describe('round', () => {
@@ -74,7 +75,7 @@ describe('GeometryUtil', () => {
   })
 
   describe('containsPoint', () => {
-    const rect: Rectangle.RectangleLike = { x: 0, y: 0, width: 10, height: 20 }
+    const rect: RectangleLike = { x: 0, y: 0, width: 10, height: 20 }
     it('should return true if point is inside rect', () => {
       const pt: Point.PointLike = { x: 5, y: 10 }
       expect(GeometryUtil.containsPoint(rect, pt)).toBe(true)

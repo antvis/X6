@@ -1,4 +1,4 @@
-import { GeometryUtil } from '../util'
+import { clamp, squaredLength } from '../util'
 import * as PathUtil from './util'
 import { Line } from '../line'
 import { Point, type PointLike, type PointOptions } from '../point'
@@ -606,7 +606,7 @@ export class Path extends Geometry {
       return null
     }
 
-    const rate = GeometryUtil.clamp(ratio, 0, 1)
+    const rate = clamp(ratio, 0, 1)
     const opt = this.getOptions(options)
     const len = this.length(opt)
     const length = len * rate
@@ -767,10 +767,7 @@ export class Path extends Geometry {
           subdivisions,
         })
         const segmentClosestPoint = segment.pointAtT(segmentClosestPointT)
-        const squaredDistance = GeometryUtil.squaredLength(
-          segmentClosestPoint,
-          p,
-        )
+        const squaredDistance = squaredLength(segmentClosestPoint, p)
 
         if (squaredDistance < minSquaredDistance) {
           closestPointT = { segmentIndex: i, value: segmentClosestPointT }
@@ -806,10 +803,7 @@ export class Path extends Geometry {
           subdivisions,
         })
         const segmentClosestPoint = segment.pointAtT(segmentClosestPointT)
-        const squaredDistance = GeometryUtil.squaredLength(
-          segmentClosestPoint,
-          p,
-        )
+        const squaredDistance = squaredLength(segmentClosestPoint, p)
 
         if (squaredDistance < minSquaredDistance) {
           closestPointTangent = segment.tangentAtT(segmentClosestPointT)
@@ -930,7 +924,7 @@ export class Path extends Geometry {
       return segments[numSegments - 1].pointAtT(1)
     }
 
-    const tValue = GeometryUtil.clamp(t.value, 0, 1)
+    const tValue = clamp(t.value, 0, 1)
     return segments[segmentIndex].pointAtT(tValue)
   }
 
@@ -939,7 +933,7 @@ export class Path extends Geometry {
       return null
     }
 
-    const rate = GeometryUtil.clamp(ratio, 0, 1)
+    const rate = clamp(ratio, 0, 1)
     const opts = this.getOptions(options)
     const len = this.length(opts)
     const length = len * rate
@@ -1137,7 +1131,7 @@ export class Path extends Geometry {
       return 0
     }
 
-    let tValue = GeometryUtil.clamp(t.value, 0, 1)
+    let tValue = clamp(t.value, 0, 1)
     if (segmentIndex >= count) {
       segmentIndex = count - 1
       tValue = 1
@@ -1165,7 +1159,7 @@ export class Path extends Geometry {
       return null
     }
 
-    const rate = GeometryUtil.clamp(ratio, 0, 1)
+    const rate = clamp(ratio, 0, 1)
     const opts = this.getOptions(options)
     const len = this.length(opts)
     const length = len * rate
@@ -1236,7 +1230,7 @@ export class Path extends Geometry {
       return this.segments[count - 1].tangentAtT(1)
     }
 
-    const tValue = GeometryUtil.clamp(t.value, 0, 1)
+    const tValue = clamp(t.value, 0, 1)
     return this.segments[segmentIndex].tangentAtT(tValue)
   }
 
@@ -1369,8 +1363,4 @@ export class Path extends Geometry {
   toString() {
     return this.serialize()
   }
-}
-
-export namespace Path {
-  export const isValid = PathUtil.isValid
 }
