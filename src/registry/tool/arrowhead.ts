@@ -1,6 +1,6 @@
 import { Dom } from '../../common'
 import { Point } from '../../geometry'
-import type { Edge } from '../../model/edge'
+import type { Edge, TerminalType } from '../../model/edge'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
 import type { SimpleAttrs } from '../attr'
@@ -130,7 +130,7 @@ class Arrowhead extends ToolItem<EdgeView, Options> {
 
 interface Options extends ToolItemOptions {
   attrs?: SimpleAttrs
-  type?: Edge.TerminalType
+  type?: TerminalType
   ratio?: number
 }
 

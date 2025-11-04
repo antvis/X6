@@ -1,4 +1,10 @@
-import type { Cell, Edge, Node } from '../../model'
+import type {
+  Cell,
+  Edge,
+  EdgeProperties,
+  Node,
+  NodeProperties,
+} from '../../model'
 
 export interface ClipboardImplOptions {
   useLocalStorage?: boolean
@@ -13,12 +19,12 @@ export interface ClipboardImplPasteOptions extends ClipboardImplOptions {
    * Set of properties to be set on each copied node on every `paste()` call.
    * It is defined as an object. e.g. `{ zIndex: 1 }`.
    */
-  nodeProps?: Node.Properties
+  nodeProps?: NodeProperties
   /**
    * Set of properties to be set on each copied edge on every `paste()` call.
    * It is defined as an object. e.g. `{ zIndex: 1 }`.
    */
-  edgeProps?: Edge.Properties
+  edgeProps?: EdgeProperties
 
   /**
    * An increment that is added to the pasted cells position on every

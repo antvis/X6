@@ -1,6 +1,6 @@
-import { Model, type Node } from '../../model'
+import { Model, type Node, type SetPositionOptions } from '../../model'
 
-interface GridLayoutOptions extends Node.SetPositionOptions {
+interface GridLayoutOptions extends SetPositionOptions {
   columns?: number
   columnWidth?: number | 'auto' | 'compact'
   rowHeight?: number | 'auto' | 'compact'

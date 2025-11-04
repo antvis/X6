@@ -2,7 +2,16 @@ import type { Dom, KeyValue, NumberExt } from '../common'
 import { Basecoat, disposable } from '../common'
 import { Point, Rectangle, type RectangleLike } from '../geometry'
 import type { PointLike } from '../geometry/point'
-import type { CollectionRemoveOptions, CollectionSetOptions } from '../model'
+import type {
+  CellGetCellsBBoxOptions,
+  CellRemoveOptions,
+  CellSetOptions,
+  CollectionRemoveOptions,
+  CollectionSetOptions,
+  EdgeMetadata,
+  EdgeSetOptions,
+  NodeMetadata,
+} from '../model'
 import { Cell, Edge, Model, Node } from '../model'
 import type {
   AddOptions,
@@ -127,7 +136,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  clearCells(options: Cell.SetOptions = {}) {
+  clearCells(options: CellSetOptions = {}) {
     this.model.clear(options)
     return this
   }
@@ -149,20 +158,20 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.getCell(id)
   }
 
-  addNode(metadata: Node.Metadata, options?: AddOptions): Node
+  addNode(metadata: NodeMetadata, options?: AddOptions): Node
   addNode(node: Node, options?: AddOptions): Node
-  addNode(node: Node | Node.Metadata, options: AddOptions = {}): Node {
+  addNode(node: Node | NodeMetadata, options: AddOptions = {}): Node {
     return this.model.addNode(node, options)
   }
 
-  addNodes(nodes: (Node | Node.Metadata)[], options: AddOptions = {}) {
+  addNodes(nodes: (Node | NodeMetadata)[], options: AddOptions = {}) {
     return this.addCell(
       nodes.map((node) => (Node.isNode(node) ? node : this.createNode(node))),
       options,
     )
   }
 
-  createNode(metadata: Node.Metadata) {
+  createNode(metadata: NodeMetadata) {
     return this.model.createNode(metadata)
   }
 
@@ -172,13 +181,13 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.removeCell(node as Node, options) as Node
   }
 
-  addEdge(metadata: Edge.Metadata, options?: AddOptions): Edge
+  addEdge(metadata: EdgeMetadata, options?: AddOptions): Edge
   addEdge(edge: Edge, options?: AddOptions): Edge
-  addEdge(edge: Edge | Edge.Metadata, options: AddOptions = {}): Edge {
+  addEdge(edge: Edge | EdgeMetadata, options: AddOptions = {}): Edge {
     return this.model.addEdge(edge, options)
   }
 
-  addEdges(edges: (Edge | Edge.Metadata)[], options: AddOptions = {}) {
+  addEdges(edges: (Edge | EdgeMetadata)[], options: AddOptions = {}) {
     return this.addCell(
       edges.map((edge) => (Edge.isEdge(edge) ? edge : this.createEdge(edge))),
       options,
@@ -191,7 +200,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.removeCell(edge as Edge, options) as Edge
   }
 
-  createEdge(metadata: Edge.Metadata) {
+  createEdge(metadata: EdgeMetadata) {
     return this.model.createEdge(metadata)
   }
 
@@ -206,15 +215,15 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.removeCell(cell as Cell, options)
   }
 
-  removeCells(cells: (Cell | string)[], options: Cell.RemoveOptions = {}) {
+  removeCells(cells: (Cell | string)[], options: CellRemoveOptions = {}) {
     return this.model.removeCells(cells, options)
   }
 
-  removeConnectedEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
+  removeConnectedEdges(cell: Cell | string, options: CellRemoveOptions = {}) {
     return this.model.removeConnectedEdges(cell, options)
   }
 
-  disconnectConnectedEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
+  disconnectConnectedEdges(cell: Cell | string, options: EdgeSetOptions = {}) {
     this.model.disconnectConnectedEdges(cell, options)
     return this
   }
@@ -451,7 +460,7 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Returns the bounding box that surrounds all the given cells.
    */
-  getCellsBBox(cells: Cell[], options: Cell.GetCellsBBoxOptions = {}) {
+  getCellsBBox(cells: Cell[], options: CellGetCellsBBoxOptions = {}) {
     return this.model.getCellsBBox(cells, options)
   }
 
