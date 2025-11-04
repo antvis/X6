@@ -1,4 +1,4 @@
-import { Point, Rectangle, PointLike } from '../geometry'
+import { Point, Rectangle, PointLike, type RectangleLike } from '../geometry'
 import { Dom, NumberExt, Util } from '../common'
 import { Base } from './base'
 import { Cell } from '../model'
@@ -408,7 +408,7 @@ export class TransformManager extends Base {
   }
 
   zoomToRect(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options: TransformManager.ScaleContentToFitOptions = {},
   ) {
     const area = Rectangle.create(rect)
@@ -491,7 +491,7 @@ export class TransformManager extends Base {
     }
   }
 
-  positionRect(rect: Rectangle.RectangleLike, pos: TransformManager.Direction) {
+  positionRect(rect: RectangleLike, pos: TransformManager.Direction) {
     const bbox = Rectangle.create(rect)
     switch (pos) {
       case 'center':
@@ -537,7 +537,7 @@ export namespace TransformManager {
     minHeight?: number
     maxWidth?: number
     maxHeight?: number
-    contentArea?: Rectangle | Rectangle.RectangleLike
+    contentArea?: Rectangle | RectangleLike
     border?: number
     allowNewOrigin?: 'negative' | 'positive' | 'any'
   }
@@ -557,8 +557,8 @@ export namespace TransformManager {
     maxScaleX?: number
     maxScaleY?: number
     scaleGrid?: number
-    contentArea?: Rectangle.RectangleLike
-    viewportArea?: Rectangle.RectangleLike
+    contentArea?: RectangleLike
+    viewportArea?: RectangleLike
     preserveAspectRatio?: boolean
   }
 

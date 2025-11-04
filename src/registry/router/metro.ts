@@ -1,5 +1,5 @@
 import { FunctionExt } from '../../common'
-import { Angle, Line, Point } from '../../geometry'
+import { toRad, normalize, Line, Point } from '../../geometry'
 import type { RouterDefinition } from './index'
 import { manhattan } from './manhattan/index'
 import { type ManhattanRouterOptions, resolve } from './manhattan/options'
@@ -51,7 +51,7 @@ const defaults: Partial<MetroRouterOptions> = {
 
     const alpha = 90 * Math.ceil(theta / 90)
 
-    const p2 = Point.fromPolar(l1.squaredLength(), Angle.toRad(alpha + 135), p1)
+    const p2 = Point.fromPolar(l1.squaredLength(), toRad(alpha + 135), p1)
     const l2 = new Line(to, p2)
 
     const intersectionPoint = l1.intersectsWithLine(l2)
@@ -61,7 +61,7 @@ const defaults: Partial<MetroRouterOptions> = {
 
     const quadrant = 360 / options.directions.length
     const angleTheta = directionFrom.theta(to)
-    const normalizedAngle = Angle.normalize(angleTheta + quadrant / 2)
+    const normalizedAngle = normalize(angleTheta + quadrant / 2)
     const directionAngle = quadrant * Math.floor(normalizedAngle / quadrant)
 
     options.previousDirectionAngle = directionAngle

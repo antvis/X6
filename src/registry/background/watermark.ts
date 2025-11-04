@@ -1,4 +1,4 @@
-import { Angle } from '../../geometry'
+import { toRad } from '../../geometry'
 import type { BackgroundCommonOptions, BackgroundDefinition } from './index'
 
 export interface WatermarkOptions extends BackgroundCommonOptions {
@@ -18,7 +18,7 @@ export const watermark: BackgroundDefinition<WatermarkOptions> = (
 
   const ctx = canvas.getContext('2d')!
   const angle = options.angle != null ? -options.angle : -20
-  const radians = Angle.toRad(angle)
+  const radians = toRad(angle)
   const stepX = canvas.width / 4
   const stepY = canvas.height / 4
 

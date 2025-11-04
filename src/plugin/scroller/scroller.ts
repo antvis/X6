@@ -9,7 +9,12 @@ import {
   IS_IE,
   Util,
 } from '../../common'
-import { Point, Rectangle, type PointLike } from '../../geometry'
+import {
+  Point,
+  Rectangle,
+  type PointLike,
+  type RectangleLike,
+} from '../../geometry'
 import {
   BackgroundManager,
   type EventArgs as TEventArgs,
@@ -701,11 +706,7 @@ export class ScrollerImpl extends View<EventArgs> {
     return this.positionRect(bbox, pos, options)
   }
 
-  positionRect(
-    rect: Rectangle.RectangleLike,
-    pos: Direction,
-    options?: CenterOptions,
-  ) {
+  positionRect(rect: RectangleLike, pos: Direction, options?: CenterOptions) {
     const bbox = Rectangle.create(rect)
     switch (pos) {
       case 'center':
@@ -839,7 +840,7 @@ export class ScrollerImpl extends View<EventArgs> {
   }
 
   zoomToRect(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options: TransformManager.ScaleContentToFitOptions = {},
   ) {
     const area = Rectangle.create(rect)
@@ -963,7 +964,7 @@ export class ScrollerImpl extends View<EventArgs> {
   }
 
   transitionToRect(
-    rectangle: Rectangle.RectangleLike,
+    rectangle: RectangleLike,
     options: TransitionToRectOptions = {},
   ) {
     const rect = Rectangle.create(rectangle)

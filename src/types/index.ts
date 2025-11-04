@@ -20,3 +20,16 @@ export type PointData = [number, number]
 export type PointBearing = 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW' | 'N'
 
 export type PointOptions = PointLike | PointData
+
+export type KeyPoint =
+  | 'center'
+  | 'origin'
+  | 'corner'
+  | 'topLeft'
+  | 'topCenter'
+  | 'topRight'
+  | 'bottomLeft'
+  | 'bottomCenter'
+  | 'bottomRight'
+  | 'rightMiddle'
+  | 'leftMiddle'

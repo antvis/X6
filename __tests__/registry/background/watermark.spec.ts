@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Angle } from '../../../src/geometry'
+import * as Angle from '../../../src/geometry/angle'
 import { watermark } from '../../../src/registry/background/watermark'
 
 // Mock HTMLCanvasElement 和 Image

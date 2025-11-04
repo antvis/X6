@@ -1,6 +1,7 @@
 import type { NodeViewPositionEventArgs } from '@/view/node/type'
 import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
-import { Angle, GeometryUtil, Point } from '../../geometry'
+import { snapToGrid, Point } from '../../geometry'
+import * as Angle from '../../geometry/angle'
 import type { Graph } from '../../graph'
 import type { Node } from '../../model'
 import { type NodeView, View } from '../../view'
@@ -416,8 +417,8 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         const rawWidth = width
         const rawHeight = height
 
-        width = GeometryUtil.snapToGrid(width, gridSize)
-        height = GeometryUtil.snapToGrid(height, gridSize)
+        width = snapToGrid(width, gridSize)
+        height = snapToGrid(height, gridSize)
         width = Math.max(width, options.minWidth || gridSize)
         height = Math.max(height, options.minHeight || gridSize)
         width = Math.min(width, options.maxWidth || Infinity)
@@ -532,7 +533,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
-          target = GeometryUtil.snapToGrid(target, options.rotateGrid)
+          target = snapToGrid(target, options.rotateGrid)
         }
         target = Angle.normalize(target)
 

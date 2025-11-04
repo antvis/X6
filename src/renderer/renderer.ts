@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { disposable, Util } from '../common'
-import { type PointLike, Rectangle } from '../geometry'
+import { type PointLike, Rectangle, type RectangleLike } from '../geometry'
 import { Base } from '../graph/base'
 import { Cell } from '../model'
 import type { CellView, EdgeView } from '../view'
@@ -95,7 +95,7 @@ export class Renderer extends Base {
   }
 
   findViewsInArea(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options: { strict?: boolean; nodeOnly?: boolean } = {},
   ) {
     const area = Rectangle.create(rect)
