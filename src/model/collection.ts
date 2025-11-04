@@ -1,7 +1,7 @@
 import { ArrayExt, Basecoat, disposable } from '../common'
-import type { Cell } from './cell'
 import type { Edge } from './edge'
 import type { Node } from './node'
+import type { Cell, CellSetOptions, TransitionEventArgs } from './cell'
 
 export class Collection extends Basecoat<CollectionEventArgs> {
   public length = 0
@@ -291,9 +291,9 @@ export class Collection extends Basecoat<CollectionEventArgs> {
     delete this.map[cell.id]
   }
 
-  protected notifyCellEvent<K extends keyof Cell.EventArgs>(
+  protected notifyCellEvent<K extends keyof TransitionEventArgs>(
     name: K,
-    args: Cell.EventArgs[K],
+    args: TransitionEventArgs[K],
   ) {
     const cell = args.cell
     this.trigger(`cell:${name}`, args)
@@ -324,9 +324,9 @@ interface Options {
   comparator?: Comparator
 }
 
-export interface CollectionSetOptions extends Cell.SetOptions {}
+export interface CollectionSetOptions extends CellSetOptions {}
 
-export interface CollectionRemoveOptions extends Cell.SetOptions {
+export interface CollectionRemoveOptions extends CellSetOptions {
   /**
    * The default is to remove all the associated links.
    * Set `disconnectEdges` option to `true` to disconnect edges
@@ -344,7 +344,7 @@ export interface CollectionAddOptions extends CollectionSetOptions {
 }
 
 export interface CollectionEventArgs
-  extends CellEventArgs,
+  extends TransitionEventArgs,
     NodeEventArgs,
     EdgeEventArgs {
   sorted?: null
@@ -380,97 +380,102 @@ interface EdgeEventCommonArgs {
 }
 
 export interface CellEventArgs {
-  'cell:transition:start': Cell.EventArgs['transition:start']
-  'cell:transition:progress': Cell.EventArgs['transition:progress']
-  'cell:transition:complete': Cell.EventArgs['transition:complete']
-  'cell:transition:stop': Cell.EventArgs['transition:stop']
-  'cell:transition:finish': Cell.EventArgs['transition:finish']
+  'cell:transition:start': TransitionEventArgs['transition:start']
+  'cell:transition:progress': TransitionEventArgs['transition:progress']
+  'cell:transition:complete': TransitionEventArgs['transition:complete']
+  'cell:transition:stop': TransitionEventArgs['transition:stop']
+  'cell:transition:finish': TransitionEventArgs['transition:finish']
 
-  'cell:changed': Cell.EventArgs['changed']
-  'cell:added': Cell.EventArgs['added']
-  'cell:removed': Cell.EventArgs['removed']
+  'cell:changed': TransitionEventArgs['changed']
+  'cell:added': TransitionEventArgs['added']
+  'cell:removed': TransitionEventArgs['removed']
 
-  'cell:change:*': Cell.EventArgs['change:*']
-  'cell:change:attrs': Cell.EventArgs['change:attrs']
-  'cell:change:zIndex': Cell.EventArgs['change:zIndex']
-  'cell:change:markup': Cell.EventArgs['change:markup']
-  'cell:change:visible': Cell.EventArgs['change:visible']
-  'cell:change:parent': Cell.EventArgs['change:parent']
-  'cell:change:children': Cell.EventArgs['change:children']
-  'cell:change:tools': Cell.EventArgs['change:tools']
-  'cell:change:view': Cell.EventArgs['change:view']
-  'cell:change:data': Cell.EventArgs['change:data']
+  'cell:change:*': TransitionEventArgs['change:*']
+  'cell:change:attrs': TransitionEventArgs['change:attrs']
+  'cell:change:zIndex': TransitionEventArgs['change:zIndex']
+  'cell:change:markup': TransitionEventArgs['change:markup']
+  'cell:change:visible': TransitionEventArgs['change:visible']
+  'cell:change:parent': TransitionEventArgs['change:parent']
+  'cell:change:children': TransitionEventArgs['change:children']
+  'cell:change:tools': TransitionEventArgs['change:tools']
+  'cell:change:view': TransitionEventArgs['change:view']
+  'cell:change:data': TransitionEventArgs['change:data']
 
-  'cell:change:size': Cell.EventArgs['change:size']
-  'cell:change:angle': Cell.EventArgs['change:angle']
-  'cell:change:position': Cell.EventArgs['change:position']
-  'cell:change:ports': Cell.EventArgs['change:ports']
-  'cell:change:portMarkup': Cell.EventArgs['change:portMarkup']
-  'cell:change:portLabelMarkup': Cell.EventArgs['change:portLabelMarkup']
-  'cell:change:portContainerMarkup': Cell.EventArgs['change:portContainerMarkup']
-  'cell:ports:added': Cell.EventArgs['ports:added']
-  'cell:ports:removed': Cell.EventArgs['ports:removed']
+  'cell:change:size': TransitionEventArgs['change:size']
+  'cell:change:angle': TransitionEventArgs['change:angle']
+  'cell:change:position': TransitionEventArgs['change:position']
+  'cell:change:ports': TransitionEventArgs['change:ports']
+  'cell:change:portMarkup': TransitionEventArgs['change:portMarkup']
+  'cell:change:portLabelMarkup': TransitionEventArgs['change:portLabelMarkup']
+  'cell:change:portContainerMarkup': TransitionEventArgs['change:portContainerMarkup']
+  'cell:ports:added': TransitionEventArgs['ports:added']
+  'cell:ports:removed': TransitionEventArgs['ports:removed']
 
-  'cell:change:source': Cell.EventArgs['change:source']
-  'cell:change:target': Cell.EventArgs['change:target']
-  'cell:change:router': Cell.EventArgs['change:router']
-  'cell:change:connector': Cell.EventArgs['change:connector']
-  'cell:change:vertices': Cell.EventArgs['change:vertices']
-  'cell:change:labels': Cell.EventArgs['change:labels']
-  'cell:change:defaultLabel': Cell.EventArgs['change:defaultLabel']
-  'cell:vertexs:added': Cell.EventArgs['vertexs:added']
-  'cell:vertexs:removed': Cell.EventArgs['vertexs:removed']
-  'cell:labels:added': Cell.EventArgs['labels:added']
-  'cell:labels:removed': Cell.EventArgs['labels:removed']
+  'cell:change:source': TransitionEventArgs['change:source']
+  'cell:change:target': TransitionEventArgs['change:target']
+  'cell:change:router': TransitionEventArgs['change:router']
+  'cell:change:connector': TransitionEventArgs['change:connector']
+  'cell:change:vertices': TransitionEventArgs['change:vertices']
+  'cell:change:labels': TransitionEventArgs['change:labels']
+  'cell:change:defaultLabel': TransitionEventArgs['change:defaultLabel']
+  'cell:vertexs:added': TransitionEventArgs['vertexs:added']
+  'cell:vertexs:removed': TransitionEventArgs['vertexs:removed']
+  'cell:labels:added': TransitionEventArgs['labels:added']
+  'cell:labels:removed': TransitionEventArgs['labels:removed']
 
-  'cell:batch:start': Cell.EventArgs['batch:start']
-  'cell:batch:stop': Cell.EventArgs['batch:stop']
+  'cell:batch:start': TransitionEventArgs['batch:start']
+  'cell:batch:stop': TransitionEventArgs['batch:stop']
 }
 
 export interface NodeEventArgs {
   'node:transition:start': NodeEventCommonArgs &
-    Cell.EventArgs['transition:start']
+    TransitionEventArgs['transition:start']
   'node:transition:progress': NodeEventCommonArgs &
-    Cell.EventArgs['transition:progress']
+    TransitionEventArgs['transition:progress']
   'node:transition:complete': NodeEventCommonArgs &
-    Cell.EventArgs['transition:complete']
+    TransitionEventArgs['transition:complete']
   'node:transition:stop': NodeEventCommonArgs &
-    Cell.EventArgs['transition:stop']
+    TransitionEventArgs['transition:stop']
   'node:transition:finish': NodeEventCommonArgs &
-    Cell.EventArgs['transition:finish']
+    TransitionEventArgs['transition:finish']
 
   'node:changed': NodeEventCommonArgs & CellEventArgs['cell:changed']
   'node:added': NodeEventCommonArgs & CellEventArgs['cell:added']
   'node:removed': NodeEventCommonArgs & CellEventArgs['cell:removed']
 
-  'node:change:*': NodeEventCommonArgs & Cell.EventArgs['change:*']
-  'node:change:attrs': NodeEventCommonArgs & Cell.EventArgs['change:attrs']
-  'node:change:zIndex': NodeEventCommonArgs & Cell.EventArgs['change:zIndex']
-  'node:change:markup': NodeEventCommonArgs & Cell.EventArgs['change:markup']
-  'node:change:visible': NodeEventCommonArgs & Cell.EventArgs['change:visible']
-  'node:change:parent': NodeEventCommonArgs & Cell.EventArgs['change:parent']
+  'node:change:*': NodeEventCommonArgs & TransitionEventArgs['change:*']
+  'node:change:attrs': NodeEventCommonArgs & TransitionEventArgs['change:attrs']
+  'node:change:zIndex': NodeEventCommonArgs &
+    TransitionEventArgs['change:zIndex']
+  'node:change:markup': NodeEventCommonArgs &
+    TransitionEventArgs['change:markup']
+  'node:change:visible': NodeEventCommonArgs &
+    TransitionEventArgs['change:visible']
+  'node:change:parent': NodeEventCommonArgs &
+    TransitionEventArgs['change:parent']
   'node:change:children': NodeEventCommonArgs &
-    Cell.EventArgs['change:children']
-  'node:change:tools': NodeEventCommonArgs & Cell.EventArgs['change:tools']
-  'node:change:view': NodeEventCommonArgs & Cell.EventArgs['change:view']
-  'node:change:data': NodeEventCommonArgs & Cell.EventArgs['change:data']
+    TransitionEventArgs['change:children']
+  'node:change:tools': NodeEventCommonArgs & TransitionEventArgs['change:tools']
+  'node:change:view': NodeEventCommonArgs & TransitionEventArgs['change:view']
+  'node:change:data': NodeEventCommonArgs & TransitionEventArgs['change:data']
 
-  'node:change:size': NodeEventCommonArgs & Cell.EventArgs['change:size']
+  'node:change:size': NodeEventCommonArgs & TransitionEventArgs['change:size']
   'node:change:position': NodeEventCommonArgs &
-    Cell.EventArgs['change:position']
-  'node:change:angle': NodeEventCommonArgs & Cell.EventArgs['change:angle']
-  'node:change:ports': NodeEventCommonArgs & Cell.EventArgs['change:ports']
+    TransitionEventArgs['change:position']
+  'node:change:angle': NodeEventCommonArgs & TransitionEventArgs['change:angle']
+  'node:change:ports': NodeEventCommonArgs & TransitionEventArgs['change:ports']
   'node:change:portMarkup': NodeEventCommonArgs &
-    Cell.EventArgs['change:portMarkup']
+    TransitionEventArgs['change:portMarkup']
   'node:change:portLabelMarkup': NodeEventCommonArgs &
-    Cell.EventArgs['change:portLabelMarkup']
+    TransitionEventArgs['change:portLabelMarkup']
   'node:change:portContainerMarkup': NodeEventCommonArgs &
-    Cell.EventArgs['change:portContainerMarkup']
-  'node:ports:added': NodeEventCommonArgs & Cell.EventArgs['ports:added']
-  'node:ports:removed': NodeEventCommonArgs & Cell.EventArgs['ports:removed']
+    TransitionEventArgs['change:portContainerMarkup']
+  'node:ports:added': NodeEventCommonArgs & TransitionEventArgs['ports:added']
+  'node:ports:removed': NodeEventCommonArgs &
+    TransitionEventArgs['ports:removed']
 
-  'node:batch:start': NodeEventCommonArgs & Cell.EventArgs['batch:start']
-  'node:batch:stop': NodeEventCommonArgs & Cell.EventArgs['batch:stop']
+  'node:batch:start': NodeEventCommonArgs & TransitionEventArgs['batch:start']
+  'node:batch:stop': NodeEventCommonArgs & TransitionEventArgs['batch:stop']
 
   // 'node:translate': NodeEventCommonArgs
   // 'node:translating': NodeEventCommonArgs
@@ -485,47 +490,57 @@ export interface NodeEventArgs {
 
 export interface EdgeEventArgs {
   'edge:transition:start': EdgeEventCommonArgs &
-    Cell.EventArgs['transition:start']
+    TransitionEventArgs['transition:start']
   'edge:transition:progress': EdgeEventCommonArgs &
-    Cell.EventArgs['transition:progress']
+    TransitionEventArgs['transition:progress']
   'edge:transition:complete': EdgeEventCommonArgs &
-    Cell.EventArgs['transition:complete']
+    TransitionEventArgs['transition:complete']
   'edge:transition:stop': EdgeEventCommonArgs &
-    Cell.EventArgs['transition:stop']
+    TransitionEventArgs['transition:stop']
   'edge:transition:finish': EdgeEventCommonArgs &
-    Cell.EventArgs['transition:finish']
+    TransitionEventArgs['transition:finish']
 
   'edge:changed': EdgeEventCommonArgs & CellEventArgs['cell:changed']
   'edge:added': EdgeEventCommonArgs & CellEventArgs['cell:added']
   'edge:removed': EdgeEventCommonArgs & CellEventArgs['cell:removed']
 
-  'edge:change:*': EdgeEventCommonArgs & Cell.EventArgs['change:*']
-  'edge:change:attrs': EdgeEventCommonArgs & Cell.EventArgs['change:attrs']
-  'edge:change:zIndex': EdgeEventCommonArgs & Cell.EventArgs['change:zIndex']
-  'edge:change:markup': EdgeEventCommonArgs & Cell.EventArgs['change:markup']
-  'edge:change:visible': EdgeEventCommonArgs & Cell.EventArgs['change:visible']
-  'edge:change:parent': EdgeEventCommonArgs & Cell.EventArgs['change:parent']
+  'edge:change:*': EdgeEventCommonArgs & TransitionEventArgs['change:*']
+  'edge:change:attrs': EdgeEventCommonArgs & TransitionEventArgs['change:attrs']
+  'edge:change:zIndex': EdgeEventCommonArgs &
+    TransitionEventArgs['change:zIndex']
+  'edge:change:markup': EdgeEventCommonArgs &
+    TransitionEventArgs['change:markup']
+  'edge:change:visible': EdgeEventCommonArgs &
+    TransitionEventArgs['change:visible']
+  'edge:change:parent': EdgeEventCommonArgs &
+    TransitionEventArgs['change:parent']
   'edge:change:children': EdgeEventCommonArgs &
-    Cell.EventArgs['change:children']
-  'edge:change:tools': EdgeEventCommonArgs & Cell.EventArgs['change:tools']
-  'edge:change:data': EdgeEventCommonArgs & Cell.EventArgs['change:data']
+    TransitionEventArgs['change:children']
+  'edge:change:tools': EdgeEventCommonArgs & TransitionEventArgs['change:tools']
+  'edge:change:data': EdgeEventCommonArgs & TransitionEventArgs['change:data']
 
-  'edge:change:source': EdgeEventCommonArgs & Cell.EventArgs['change:source']
-  'edge:change:target': EdgeEventCommonArgs & Cell.EventArgs['change:target']
-  'edge:change:router': EdgeEventCommonArgs & Cell.EventArgs['change:router']
+  'edge:change:source': EdgeEventCommonArgs &
+    TransitionEventArgs['change:source']
+  'edge:change:target': EdgeEventCommonArgs &
+    TransitionEventArgs['change:target']
+  'edge:change:router': EdgeEventCommonArgs &
+    TransitionEventArgs['change:router']
   'edge:change:connector': EdgeEventCommonArgs &
-    Cell.EventArgs['change:connector']
+    TransitionEventArgs['change:connector']
   'edge:change:vertices': EdgeEventCommonArgs &
-    Cell.EventArgs['change:vertices']
-  'edge:change:labels': EdgeEventCommonArgs & Cell.EventArgs['change:labels']
+    TransitionEventArgs['change:vertices']
+  'edge:change:labels': EdgeEventCommonArgs &
+    TransitionEventArgs['change:labels']
   'edge:change:defaultLabel': EdgeEventCommonArgs &
-    Cell.EventArgs['change:defaultLabel']
-  'edge:vertexs:added': EdgeEventCommonArgs & Cell.EventArgs['vertexs:added']
+    TransitionEventArgs['change:defaultLabel']
+  'edge:vertexs:added': EdgeEventCommonArgs &
+    TransitionEventArgs['vertexs:added']
   'edge:vertexs:removed': EdgeEventCommonArgs &
-    Cell.EventArgs['vertexs:removed']
-  'edge:labels:added': EdgeEventCommonArgs & Cell.EventArgs['labels:added']
-  'edge:labels:removed': EdgeEventCommonArgs & Cell.EventArgs['labels:removed']
+    TransitionEventArgs['vertexs:removed']
+  'edge:labels:added': EdgeEventCommonArgs & TransitionEventArgs['labels:added']
+  'edge:labels:removed': EdgeEventCommonArgs &
+    TransitionEventArgs['labels:removed']
 
-  'edge:batch:start': EdgeEventCommonArgs & Cell.EventArgs['batch:start']
-  'edge:batch:stop': EdgeEventCommonArgs & Cell.EventArgs['batch:stop']
+  'edge:batch:start': EdgeEventCommonArgs & TransitionEventArgs['batch:start']
+  'edge:batch:stop': EdgeEventCommonArgs & TransitionEventArgs['batch:stop']
 }

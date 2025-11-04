@@ -1,6 +1,12 @@
 import type { Dom, KeyValue } from '../../common'
 import type { PointLike } from '../../geometry'
-import type { Cell, Edge } from '../../model'
+import type {
+  Cell,
+  Edge,
+  LabelPositionOptions,
+  TerminalData,
+  TerminalType,
+} from '../../model'
 import type { CellView } from '../cell'
 import type {
   CellViewHighlightOptions,
@@ -48,7 +54,7 @@ export interface EdgeViewEventArgs {
     edge: Edge
     view: EdgeView
     isNew: boolean
-    type: Edge.TerminalType
+    type: TerminalType
     previousCell?: Cell | null
     previousView?: CellView | null
     previousPort?: string | null
@@ -89,7 +95,7 @@ export type EventDataValidateConnectionArgs = [
   Element | null | undefined, // source magnet
   CellView | null | undefined, // target view
   Element | null | undefined, // target magnet
-  Edge.TerminalType,
+  TerminalType,
   EdgeView,
 ]
 
@@ -98,10 +104,10 @@ export interface EventDataArrowheadDragging {
   x: number
   y: number
   isNewEdge: boolean
-  terminalType: Edge.TerminalType
+  terminalType: TerminalType
   fallbackAction: 'remove' | 'revert'
   initialMagnet: Element | null
-  initialTerminal: Edge.TerminalData
+  initialTerminal: TerminalData
   getValidateConnectionArgs: (
     cellView: CellView,
     magnet: Element | null,
@@ -130,6 +136,6 @@ export interface EventDataLabelDragging {
   action: 'drag-label'
   index: number
   positionAngle: number
-  positionArgs?: Edge.LabelPositionOptions | null
+  positionArgs?: LabelPositionOptions | null
   stopPropagation: true
 }
