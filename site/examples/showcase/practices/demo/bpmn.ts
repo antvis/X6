@@ -265,7 +265,7 @@ const graph = new Graph({
         }
         const parentId = cell.prop('parent')
         if (parentId) {
-          const parentNode = this.getCellById(parentId) as Node
+          const parentNode = this.getCellById(parentId)
           if (parentNode?.isNode()) {
             return parentNode.getBBox().moveAndExpand({
               x: 0,
@@ -309,19 +309,22 @@ graph.on('subproc:toggle', ({ node }: { node: Node }) => {
   node.size(size.width, next ? expandedHeight : 70)
 
   if (next) {
-    node.attr('label/textVerticalAnchor', 'top')
-    node.attr('label/refY', 18)
-    node.attr('label/refX', '50%')
-    node.attr('label/ref', 'body')
-    node.attr('details/textVerticalAnchor', 'top')
-    node.attr('details/refY', 40)
-    node.attr('details/refX', '50%')
-    node.attr('details/ref', 'body')
+    node.attr({
+      label: { textVerticalAnchor: 'top', refY: 18, refX: '50%', ref: 'body' },
+      details: {
+        textVerticalAnchor: 'top',
+        refY: 40,
+        refX: '50%',
+        ref: 'body',
+      },
+    })
   } else {
-    node.attr('label/textVerticalAnchor', 'middle')
-    node.attr('label/refY', '50%')
-    node.attr('label/refX', '50%')
-    node.attr('label/ref', 'body')
+    node.attr('label', {
+      textVerticalAnchor: 'middle',
+      refY: '50%',
+      refX: '50%',
+      ref: 'body',
+    })
   }
 
   node.setData({ ...data, expanded: next })
@@ -333,7 +336,7 @@ fetch('/data/bpmn.json')
     const cells: Cell[] = []
     const nodeMap: Record<string, Node> = {}
 
-    data.forEach((item) => {
+    data.forEach((item: any) => {
       if (item.shape !== 'bpmn-edge') {
         const node = graph.createNode(item)
         nodeMap[item.id] = node as Node
@@ -341,7 +344,7 @@ fetch('/data/bpmn.json')
       }
     })
 
-    data.forEach((item) => {
+    data.forEach((item: any) => {
       if (item.shape === 'bpmn-edge') {
         const edge = graph.createEdge(item)
         if (item.label) {
@@ -357,10 +360,8 @@ fetch('/data/bpmn.json')
             },
           ])
         }
-        const sourceId =
-          typeof item.source === 'string' ? item.source : item.source?.cell
-        const targetId =
-          typeof item.target === 'string' ? item.target : item.target?.cell
+        const sourceId = edge.getSourceCellId()
+        const targetId = edge.getTargetCellId()
         const sParent = nodeMap[sourceId]?.prop('parent')
         const tParent = nodeMap[targetId]?.prop('parent')
         if (sParent && tParent && sParent !== tParent) {
