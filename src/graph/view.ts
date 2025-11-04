@@ -12,9 +12,8 @@ interface Moving {
   currentView?: CellView | null
 }
 
-const { prefixCls } = Config
+const prefixCls = Config.prefixCls + '-graph'
 export class GraphView extends View {
-  static prefixCls = Config.prefixCls
   static markup: MarkupJSONMarkup[] = [
     {
       ns: Dom.ns.xhtml,

@@ -91,7 +91,7 @@ export type GraphPlugin = {
   isEnabled?: () => boolean
 }
 export class Graph extends Basecoat<EventArgs> {
-  static toStringTag = `X6.graph`
+  static toStringTag = `X6.${Graph.name}`
   static isGraph(instance: any): instance is Graph {
     if (instance == null) {
       return false
