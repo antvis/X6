@@ -1,5 +1,5 @@
 import { Dom, FunctionExt, ObjectExt, SUPPORT_FOREIGNOBJECT } from '../common'
-import type { Node } from '../model'
+import type { Node, NodeConfig } from '../model'
 import { attrPresets, type SetDefinition, type SimpleAttrs } from '../registry'
 import { Base, BaseBodyAttr } from './base'
 
@@ -38,7 +38,7 @@ export function getTextBlockMarkup(supportForeignobject: boolean) {
       }
 }
 
-export const TextBlockConfig: Node.Config = {
+export const TextBlockConfig: NodeConfig = {
   shape: 'text-block',
   markup: [
     {
