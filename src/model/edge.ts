@@ -16,26 +16,187 @@ import type {
 } from '../registry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
-import { Cell } from './cell'
+import {
+  Cell,
+  CellConfig,
+  CellMetadata,
+  CellProperties,
+  CellSetOptions,
+  CellDefaults,
+  CellTranslateOptions,
+  CellCommon,
+  CellChangeArgs,
+} from './cell'
 import type { Node } from './node'
 import { exist, setEdgeRegistry } from './registry'
 import type { Store } from './store'
 
+const toStringTag = `X6.edge`
+const shape = 'basic.edge'
+
+let counter = 0
+function getClassName(name?: string) {
+  if (name) {
+    return StringExt.pascalCase(name)
+  }
+  counter += 1
+  return `CustomEdge${counter}`
+}
 export class Edge<
-  Properties extends Edge.Properties = Edge.Properties,
+  Properties extends EdgeProperties = EdgeProperties,
 > extends Cell<Properties> {
-  protected static defaults: Edge.Defaults = {}
-  protected readonly store: Store<Edge.Properties>
+  static toStringTag: string = toStringTag
+  static defaultLabel = {
+    markup: [
+      {
+        tagName: 'rect',
+        selector: 'body',
+      },
+      {
+        tagName: 'text',
+        selector: 'label',
+      },
+    ],
+    attrs: {
+      text: {
+        fill: '#000',
+        fontSize: 14,
+        textAnchor: 'middle',
+        textVerticalAnchor: 'middle',
+        pointerEvents: 'none',
+      },
+      rect: {
+        ref: 'label',
+        fill: '#fff',
+        rx: 3,
+        ry: 3,
+        refWidth: 1,
+        refHeight: 1,
+        refX: 0,
+        refY: 0,
+      },
+    },
+    position: {
+      distance: 0.5,
+    },
+  }
+  static parseStringLabel(text: string): EdgeLabel {
+    return {
+      attrs: { label: { text } },
+    }
+  }
+  static isEdge(instance: any): instance is Edge {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Edge) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const edge = instance as Edge
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof edge.isNode === 'function' &&
+      typeof edge.isEdge === 'function' &&
+      typeof edge.prop === 'function' &&
+      typeof edge.attr === 'function' &&
+      typeof edge.disconnect === 'function' &&
+      typeof edge.getSource === 'function' &&
+      typeof edge.getTarget === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+  static registry = Registry.create<
+    Definition,
+    never,
+    EdgeConfig & { inherit?: string | Definition }
+  >({
+    type: 'edge',
+    process(shape, options) {
+      if (exist(shape, false)) {
+        throw new Error(
+          `Edge with name '${shape}' was registered by anthor Node`,
+        )
+      }
+
+      if (typeof options === 'function') {
+        options.config({ shape })
+        return options
+      }
+
+      let parent = Edge
+
+      // default inherit from 'dege'
+      const { inherit = 'edge', ...others } = options
+      if (typeof inherit === 'string') {
+        const base = this.get(inherit || 'edge')
+        if (base == null && inherit) {
+          this.onNotFound(inherit, 'inherited')
+        } else {
+          parent = base
+        }
+      } else {
+        parent = inherit
+      }
+
+      if (others.constructorName == null) {
+        others.constructorName = shape
+      }
+
+      const ctor: Definition = parent.define.call(parent, others)
+      ctor.config({ shape })
+      return ctor as any
+    },
+  })
+  static equalTerminals(a: TerminalData, b: TerminalData) {
+    const a1 = a as TerminalCellData
+    const b1 = b as TerminalCellData
+    if (a1.cell === b1.cell) {
+      return a1.port === b1.port || (a1.port == null && b1.port == null)
+    }
+    return false
+  }
+  static define(config: EdgeConfig) {
+    const { constructorName, overwrite, ...others } = config
+    const ctor = ObjectExt.createClass<Definition>(
+      getClassName(constructorName || others.shape),
+      this as Definition,
+    )
+
+    ctor.config(others)
+
+    if (others.shape) {
+      Edge.registry.register(others.shape, ctor, overwrite)
+    }
+
+    return ctor
+  }
+  static create(options: EdgeMetadata) {
+    const shape = options.shape || 'edge'
+    const Ctor = Edge.registry.get(shape)
+    if (Ctor) {
+      return new Ctor(options)
+    }
+    return Edge.registry.onNotFound(shape)
+  }
+  protected static defaults: EdgeDefaults = {}
+  protected readonly store: Store<EdgeProperties>
 
   protected get [Symbol.toStringTag]() {
     return Edge.toStringTag
   }
 
-  constructor(metadata: Edge.Metadata = {}) {
+  constructor(metadata: EdgeMetadata = {}) {
     super(metadata)
   }
 
-  protected preprocess(metadata: Edge.Metadata, ignoreIdCheck?: boolean) {
+  protected preprocess(metadata: EdgeMetadata, ignoreIdCheck?: boolean) {
     const {
       source,
       sourceCell,
@@ -48,7 +209,7 @@ export class Edge<
       ...others
     } = metadata
 
-    const data = others as Edge.BaseOptions
+    const data = others as EdgeBaseOptions
     const isValidId = (val: any): val is string =>
       typeof val === 'string' || typeof val === 'number'
 
@@ -62,20 +223,20 @@ export class Edge<
       } else if (Array.isArray(source)) {
         data.source = { x: source[0], y: source[1] }
       } else {
-        const cell = (source as Edge.TerminalCellLooseData).cell
+        const cell = (source as TerminalCellLooseData).cell
         if (Cell.isCell(cell)) {
           data.source = {
             ...source,
             cell: cell.id,
           }
         } else {
-          data.source = source as Edge.TerminalCellData
+          data.source = source as TerminalCellData
         }
       }
     }
 
     if (sourceCell != null || sourcePort != null) {
-      let terminal = data.source as Edge.TerminalCellData
+      let terminal = data.source as TerminalCellData
       if (sourceCell != null) {
         const id = isValidId(sourceCell) ? sourceCell : sourceCell.id
         if (terminal) {
@@ -102,20 +263,20 @@ export class Edge<
       } else if (Array.isArray(target)) {
         data.target = { x: target[0], y: target[1] }
       } else {
-        const cell = (target as Edge.TerminalCellLooseData).cell
+        const cell = (target as TerminalCellLooseData).cell
         if (Cell.isCell(cell)) {
           data.target = {
             ...target,
             cell: cell.id,
           }
         } else {
-          data.target = target as Edge.TerminalCellData
+          data.target = target as TerminalCellData
         }
       }
     }
 
     if (targetCell != null || targetPort != null) {
-      let terminal = data.target as Edge.TerminalCellData
+      let terminal = data.target as TerminalCellData
 
       if (targetCell != null) {
         const id = isValidId(targetCell) ? targetCell : targetCell.id
@@ -148,7 +309,7 @@ export class Edge<
 
   // #region terminal
 
-  disconnect(options: Edge.SetOptions = {}) {
+  disconnect(options: EdgeSetOptions = {}) {
     this.store.set(
       {
         source: { x: 0, y: 0 },
@@ -163,7 +324,7 @@ export class Edge<
     return this.getSource()
   }
 
-  set source(data: Edge.TerminalData) {
+  set source(data: TerminalData) {
     this.setSource(data)
   }
 
@@ -172,33 +333,33 @@ export class Edge<
   }
 
   getSourceCellId() {
-    return (this.source as Edge.TerminalCellData).cell
+    return (this.source as TerminalCellData).cell
   }
 
   getSourcePortId() {
-    return (this.source as Edge.TerminalCellData).port
+    return (this.source as TerminalCellData).port
   }
 
   setSource(
     node: Node,
-    args?: Edge.SetCellTerminalArgs,
-    options?: Edge.SetOptions,
+    args?: SetCellTerminalArgs,
+    options?: EdgeSetOptions,
   ): this
   setSource(
     edge: Edge,
-    args?: Edge.SetEdgeTerminalArgs,
-    options?: Edge.SetOptions,
+    args?: SetEdgeTerminalArgs,
+    options?: EdgeSetOptions,
   ): this
   setSource(
     point: Point | PointOptions,
-    args?: Edge.SetTerminalCommonArgs,
-    options?: Edge.SetOptions,
+    args?: SetTerminalCommonArgs,
+    options?: EdgeSetOptions,
   ): this
-  setSource(args: Edge.TerminalData, options?: Edge.SetOptions): this
+  setSource(args: TerminalData, options?: EdgeSetOptions): this
   setSource(
-    source: Node | Edge | Point | PointOptions | Edge.TerminalData,
-    args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
-    options: Edge.SetOptions = {},
+    source: Node | Edge | Point | PointOptions | TerminalData,
+    args?: SetTerminalCommonArgs | EdgeSetOptions,
+    options: EdgeSetOptions = {},
   ) {
     return this.setTerminal('source', source, args, options)
   }
@@ -207,7 +368,7 @@ export class Edge<
     return this.getTarget()
   }
 
-  set target(data: Edge.TerminalData) {
+  set target(data: TerminalData) {
     this.setTarget(data)
   }
 
@@ -216,46 +377,46 @@ export class Edge<
   }
 
   getTargetCellId() {
-    return (this.target as Edge.TerminalCellData).cell
+    return (this.target as TerminalCellData).cell
   }
 
   getTargetPortId() {
-    return (this.target as Edge.TerminalCellData).port
+    return (this.target as TerminalCellData).port
   }
 
   setTarget(
     edge: Node,
-    args?: Edge.SetCellTerminalArgs,
-    options?: Edge.SetOptions,
+    args?: SetCellTerminalArgs,
+    options?: EdgeSetOptions,
   ): this
   setTarget(
     edge: Edge,
-    args?: Edge.SetEdgeTerminalArgs,
-    options?: Edge.SetOptions,
+    args?: SetEdgeTerminalArgs,
+    options?: EdgeSetOptions,
   ): this
   setTarget(
     point: Point | PointOptions,
-    args?: Edge.SetTerminalCommonArgs,
-    options?: Edge.SetOptions,
+    args?: SetTerminalCommonArgs,
+    options?: EdgeSetOptions,
   ): this
-  setTarget(args: Edge.TerminalData, options?: Edge.SetOptions): this
+  setTarget(args: TerminalData, options?: EdgeSetOptions): this
   setTarget(
-    target: Node | Edge | Point | PointOptions | Edge.TerminalData,
-    args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
-    options: Edge.SetOptions = {},
+    target: Node | Edge | Point | PointOptions | TerminalData,
+    args?: SetTerminalCommonArgs | EdgeSetOptions,
+    options: EdgeSetOptions = {},
   ) {
     return this.setTerminal('target', target, args, options)
   }
 
-  getTerminal(type: Edge.TerminalType) {
-    return { ...this.store.get(type) } as Edge.TerminalData
+  getTerminal(type: TerminalType) {
+    return { ...this.store.get(type) } as TerminalData
   }
 
   setTerminal(
-    type: Edge.TerminalType,
-    terminal: Node | Edge | Point | PointOptions | Edge.TerminalData,
-    args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
-    options: Edge.SetOptions = {},
+    type: TerminalType,
+    terminal: Node | Edge | Point | PointOptions | TerminalData,
+    args?: SetTerminalCommonArgs | EdgeSetOptions,
+    options: EdgeSetOptions = {},
   ): this {
     // `terminal` is a cell
     if (Cell.isCell(terminal)) {
@@ -279,11 +440,7 @@ export class Edge<
     }
 
     // `terminal` is an object
-    this.store.set(
-      type,
-      ObjectExt.cloneDeep(terminal as Edge.TerminalData),
-      options,
-    )
+    this.store.set(type, ObjectExt.cloneDeep(terminal as TerminalData), options)
 
     return this
   }
@@ -296,7 +453,7 @@ export class Edge<
     return this.getTerminalPoint('target')
   }
 
-  protected getTerminalPoint(type: Edge.TerminalType): Point {
+  protected getTerminalPoint(type: TerminalType): Point {
     const terminal = this[type]
     if (Point.isPointLike(terminal)) {
       return Point.create(terminal)
@@ -318,7 +475,7 @@ export class Edge<
     return this.getTerminalCell('target')
   }
 
-  protected getTerminalCell(type: Edge.TerminalType) {
+  protected getTerminalCell(type: TerminalType) {
     if (this.model) {
       const cellId =
         type === 'source' ? this.getSourceCellId() : this.getTargetCellId()
@@ -338,7 +495,7 @@ export class Edge<
     return this.getTerminalNode('target')
   }
 
-  protected getTerminalNode(type: Edge.TerminalType): Node | null {
+  protected getTerminalNode(type: TerminalType): Node | null {
     let cell: Cell | null = this // eslint-disable-line
     const visited: { [id: string]: boolean } = {}
 
@@ -361,7 +518,7 @@ export class Edge<
     return this.getRouter()
   }
 
-  set router(data: Edge.RouterData | undefined) {
+  set router(data: RouterData | undefined) {
     if (data == null) {
       this.removeRouter()
     } else {
@@ -370,15 +527,15 @@ export class Edge<
   }
 
   getRouter() {
-    return this.store.get<Edge.RouterData>('router')
+    return this.store.get<RouterData>('router')
   }
 
-  setRouter(name: string, args?: KeyValue, options?: Edge.SetOptions): this
-  setRouter(router: Edge.RouterData, options?: Edge.SetOptions): this
+  setRouter(name: string, args?: KeyValue, options?: EdgeSetOptions): this
+  setRouter(router: RouterData, options?: EdgeSetOptions): this
   setRouter(
-    name?: string | Edge.RouterData,
+    name?: string | RouterData,
     args?: KeyValue,
-    options?: Edge.SetOptions,
+    options?: EdgeSetOptions,
   ) {
     if (typeof name === 'object') {
       this.store.set('router', name, args)
@@ -388,7 +545,7 @@ export class Edge<
     return this
   }
 
-  removeRouter(options: Edge.SetOptions = {}) {
+  removeRouter(options: EdgeSetOptions = {}) {
     this.store.remove('router', options)
     return this
   }
@@ -401,7 +558,7 @@ export class Edge<
     return this.getConnector()
   }
 
-  set connector(data: Edge.ConnectorData | undefined) {
+  set connector(data: ConnectorData | undefined) {
     if (data == null) {
       this.removeConnector()
     } else {
@@ -413,12 +570,12 @@ export class Edge<
     return this.store.get('connector')
   }
 
-  setConnector(name: string, args?: KeyValue, options?: Edge.SetOptions): this
-  setConnector(connector: Edge.ConnectorData, options?: Edge.SetOptions): this
+  setConnector(name: string, args?: KeyValue, options?: EdgeSetOptions): this
+  setConnector(connector: ConnectorData, options?: EdgeSetOptions): this
   setConnector(
-    name?: string | Edge.ConnectorData,
-    args?: KeyValue | Edge.SetOptions,
-    options?: Edge.SetOptions,
+    name?: string | ConnectorData,
+    args?: KeyValue | EdgeSetOptions,
+    options?: EdgeSetOptions,
   ) {
     if (typeof name === 'object') {
       this.store.set('connector', name, args)
@@ -428,7 +585,7 @@ export class Edge<
     return this
   }
 
-  removeConnector(options: Edge.SetOptions = {}) {
+  removeConnector(options: EdgeSetOptions = {}) {
     return this.store.remove('connector', options)
   }
 
@@ -436,8 +593,8 @@ export class Edge<
 
   // #region labels
 
-  getDefaultLabel(): Edge.Label {
-    const ctor = this.constructor as Edge.Definition
+  getDefaultLabel(): EdgeLabel {
+    const ctor = this.constructor as Definition
     const defaults = this.store.get('defaultLabel') || ctor.defaultLabel || {}
     return ObjectExt.cloneDeep(defaults)
   }
@@ -446,28 +603,28 @@ export class Edge<
     return this.getLabels()
   }
 
-  set labels(labels: Edge.Label[]) {
+  set labels(labels: EdgeLabel[]) {
     this.setLabels(labels)
   }
 
-  getLabels(): Edge.Label[] {
+  getLabels(): EdgeLabel[] {
     return [...this.store.get('labels', [])].map((item) =>
       this.parseLabel(item),
     )
   }
 
   setLabels(
-    labels: Edge.Label | Edge.Label[] | string | string[],
-    options: Edge.SetOptions = {},
+    labels: EdgeLabel | EdgeLabel[] | string | string[],
+    options: EdgeSetOptions = {},
   ) {
     this.store.set('labels', Array.isArray(labels) ? labels : [labels], options)
     return this
   }
 
   insertLabel(
-    label: Edge.Label | string,
+    label: EdgeLabel | string,
     index?: number,
-    options: Edge.SetOptions = {},
+    options: EdgeSetOptions = {},
   ) {
     const labels = this.getLabels()
     const len = labels.length
@@ -480,7 +637,7 @@ export class Edge<
     return this.setLabels(labels, options)
   }
 
-  appendLabel(label: Edge.Label | string, options: Edge.SetOptions = {}) {
+  appendLabel(label: EdgeLabel | string, options: EdgeSetOptions = {}) {
     return this.insertLabel(label, -1, options)
   }
 
@@ -494,8 +651,8 @@ export class Edge<
 
   setLabelAt(
     index: number,
-    label: Edge.Label | string,
-    options: Edge.SetOptions = {},
+    label: EdgeLabel | string,
+    options: EdgeSetOptions = {},
   ) {
     if (index != null && Number.isFinite(index)) {
       const labels = this.getLabels()
@@ -505,7 +662,7 @@ export class Edge<
     return this
   }
 
-  removeLabelAt(index: number, options: Edge.SetOptions = {}) {
+  removeLabelAt(index: number, options: EdgeSetOptions = {}) {
     const labels = this.getLabels()
     const idx = index != null && Number.isFinite(index) ? index : -1
 
@@ -514,9 +671,9 @@ export class Edge<
     return removed.length ? removed[0] : null
   }
 
-  protected parseLabel(label: string | Edge.Label) {
+  protected parseLabel(label: string | EdgeLabel) {
     if (typeof label === 'string') {
-      const ctor = this.constructor as Edge.Definition
+      const ctor = this.constructor as Definition
       return ctor.parseStringLabel(label)
     }
     return label
@@ -525,7 +682,7 @@ export class Edge<
   protected onLabelsChanged({
     previous,
     current,
-  }: Cell.ChangeArgs<Edge.Label[]>) {
+  }: CellChangeArgs<EdgeLabel[]>) {
     const added =
       previous && current
         ? current.filter((label1) => {
@@ -586,7 +743,7 @@ export class Edge<
 
   setVertices(
     vertices: PointOptions | PointOptions[],
-    options: Edge.SetOptions = {},
+    options: EdgeSetOptions = {},
   ) {
     const points = Array.isArray(vertices) ? vertices : [vertices]
     this.store.set(
@@ -600,7 +757,7 @@ export class Edge<
   insertVertex(
     vertice: PointOptions,
     index?: number,
-    options: Edge.SetOptions = {},
+    options: EdgeSetOptions = {},
   ) {
     const vertices = this.getVertices()
     const len = vertices.length
@@ -613,7 +770,7 @@ export class Edge<
     return this.setVertices(vertices, options)
   }
 
-  appendVertex(vertex: PointOptions, options: Edge.SetOptions = {}) {
+  appendVertex(vertex: PointOptions, options: EdgeSetOptions = {}) {
     return this.insertVertex(vertex, -1, options)
   }
 
@@ -628,7 +785,7 @@ export class Edge<
   setVertexAt(
     index: number,
     vertice: PointOptions,
-    options: Edge.SetOptions = {},
+    options: EdgeSetOptions = {},
   ) {
     if (index != null && Number.isFinite(index)) {
       const vertices = this.getVertices()
@@ -638,7 +795,7 @@ export class Edge<
     return this
   }
 
-  removeVertexAt(index: number, options: Edge.SetOptions = {}) {
+  removeVertexAt(index: number, options: EdgeSetOptions = {}) {
     const vertices = this.getVertices()
     const idx = index != null && Number.isFinite(index) ? index : -1
     vertices.splice(idx, 1)
@@ -648,7 +805,7 @@ export class Edge<
   protected onVertexsChanged({
     previous,
     current,
-  }: Cell.ChangeArgs<PointLike[]>) {
+  }: CellChangeArgs<PointLike[]>) {
     const added =
       previous && current
         ? current.filter((p1) => {
@@ -702,7 +859,7 @@ export class Edge<
    * Translate the edge vertices (and source and target if they are points)
    * by `tx` pixels in the x-axis and `ty` pixels in the y-axis.
    */
-  translate(tx: number, ty: number, options: Cell.TranslateOptions = {}) {
+  translate(tx: number, ty: number, options: CellTranslateOptions = {}) {
     options.translateBy = options.translateBy || this.id
     options.tx = tx
     options.ty = ty
@@ -723,7 +880,7 @@ export class Edge<
     sx: number,
     sy: number,
     origin?: Point | PointOptions,
-    options: Edge.SetOptions = {},
+    options: EdgeSetOptions = {},
   ) {
     return this.applyToPoints((p) => {
       return Point.create(p).scale(sx, sy, origin).toJSON()
@@ -732,11 +889,11 @@ export class Edge<
 
   protected applyToPoints(
     worker: (p: PointLike) => PointLike,
-    options: Edge.SetOptions = {},
+    options: EdgeSetOptions = {},
   ) {
     const attrs: {
-      source?: Edge.TerminalPointData
-      target?: Edge.TerminalPointData
+      source?: TerminalPointData
+      target?: TerminalPointData
       vertices?: PointOptions[]
     } = {}
 
@@ -780,7 +937,7 @@ export class Edge<
     return new Polyline(points)
   }
 
-  updateParent(options?: Edge.SetOptions) {
+  updateParent(options?: EdgeSetOptions) {
     let newParent: Cell | null = null
 
     const source = this.getSourceCell()
@@ -812,8 +969,8 @@ export class Edge<
   }
 
   hasLoop(options: { deep?: boolean } = {}) {
-    const source = this.getSource() as Edge.TerminalCellData
-    const target = this.getTarget() as Edge.TerminalCellData
+    const source = this.getSource() as TerminalCellData
+    const target = this.getTarget() as TerminalCellData
     const sourceId = source.cell
     const targetId = target.cell
 
@@ -858,366 +1015,192 @@ export class Edge<
   // #endregion
 }
 
-export namespace Edge {
-  export type RouterData = RouterNativeItem | RouterManualItem
-  export type ConnectorData = ConnectorNativeItem | ConnectorManualItem
+export type RouterData = RouterNativeItem | RouterManualItem
+export type ConnectorData = ConnectorNativeItem | ConnectorManualItem
+
+interface EdgeCommon extends CellCommon {
+  source?: TerminalData
+  target?: TerminalData
+  router?: RouterData
+  connector?: ConnectorData
+  labels?: EdgeLabel[] | string[]
+  defaultLabel?: EdgeLabel
+  vertices?: PointOptions[]
+  defaultMarkup?: MarkupType
 }
 
-export namespace Edge {
-  interface Common extends Cell.Common {
-    source?: TerminalData
-    target?: TerminalData
-    router?: RouterData
-    connector?: ConnectorData
-    labels?: Label[] | string[]
-    defaultLabel?: Label
-    vertices?: PointOptions[]
-    defaultMarkup?: MarkupType
-  }
-
-  interface TerminalOptions {
-    sourceCell?: Cell | string
-    sourcePort?: string
-    sourcePoint?: PointOptions
-    targetCell?: Cell | string
-    targetPort?: string
-    targetPoint?: PointOptions
-    source?:
-      | string
-      | Cell
-      | PointOptions
-      | PointOptions
-      | TerminalPointData
-      | TerminalCellLooseData
-    target?:
-      | string
-      | Cell
-      | PointOptions
-      | PointOptions
-      | TerminalPointData
-      | TerminalCellLooseData
-  }
-
-  export interface BaseOptions extends Common, Cell.Metadata {}
-
-  export interface Metadata
-    extends Omit<BaseOptions, TerminalType>,
-      TerminalOptions {}
-
-  export interface Defaults extends Common, Cell.Defaults {}
-
-  export interface Properties
-    extends Cell.Properties,
-      Omit<BaseOptions, 'tools'> {}
-
-  export interface Config
-    extends Omit<Defaults, TerminalType>,
-      TerminalOptions,
-      Cell.Config<Metadata, Edge> {}
-}
-
-export namespace Edge {
-  export interface SetOptions extends Cell.SetOptions {}
-
-  export type TerminalType = 'source' | 'target'
-
-  export interface SetTerminalCommonArgs {
-    selector?: string
-    magnet?: string
-    connectionPoint?:
-      | string
-      | ConnectionPointNativeItem
-      | ConnectionPointManualItem
-  }
-
-  export type NodeAnchorItem =
+interface TerminalOptions {
+  sourceCell?: Cell | string
+  sourcePort?: string
+  sourcePoint?: PointOptions
+  targetCell?: Cell | string
+  targetPort?: string
+  targetPoint?: PointOptions
+  source?:
     | string
-    | NodeAnchorNativeItem
-    | NodeAnchorManualItem
-
-  export type EdgeAnchorItem =
+    | Cell
+    | PointOptions
+    | PointOptions
+    | TerminalPointData
+    | TerminalCellLooseData
+  target?:
     | string
-    | EdgeAnchorNativeItem
-    | EdgeAnchorManualItem
-
-  export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
-    port?: string
-    priority?: boolean
-    anchor?: NodeAnchorItem
-  }
-
-  export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
-    anchor?: EdgeAnchorItem
-  }
-
-  export interface TerminalPointData extends SetTerminalCommonArgs, PointLike {}
-
-  export interface TerminalCellData extends SetCellTerminalArgs {
-    cell: string
-    port?: string
-  }
-
-  export interface TerminalCellLooseData extends SetCellTerminalArgs {
-    cell: string | Cell
-    port?: string
-  }
-
-  export type TerminalData = TerminalPointData | TerminalCellLooseData
-
-  export function equalTerminals(a: TerminalData, b: TerminalData) {
-    const a1 = a as TerminalCellData
-    const b1 = b as TerminalCellData
-    if (a1.cell === b1.cell) {
-      return a1.port === b1.port || (a1.port == null && b1.port == null)
-    }
-    return false
-  }
+    | Cell
+    | PointOptions
+    | PointOptions
+    | TerminalPointData
+    | TerminalCellLooseData
 }
 
-export namespace Edge {
-  export interface Label extends KeyValue {
-    markup?: MarkupType
-    attrs?: CellAttrs
-    /**
-     * If the distance is in the `[0,1]` range (inclusive), then the position
-     * of the label is defined as a percentage of the total length of the edge
-     * (the normalized length). For example, passing the number `0.5` positions
-     * the label to the middle of the edge.
-     *
-     * If the distance is larger than `1` (exclusive), the label will be
-     * positioned distance pixels away from the beginning of the path along
-     * the edge.
-     *
-     * If the distance is a negative number, the label will be positioned
-     * distance pixels away from the end of the path along the edge.
-     */
-    position?: LabelPosition
-    size?: Size
-  }
+export interface EdgeBaseOptions extends EdgeCommon, CellMetadata {}
 
-  export interface LabelPositionOptions {
-    /**
-     * Forces absolute coordinates for distance.
-     */
-    absoluteDistance?: boolean
-    /**
-     * Forces reverse absolute coordinates (if absoluteDistance = true)
-     */
-    reverseDistance?: boolean
-    /**
-     * Forces absolute coordinates for offset.
-     */
-    absoluteOffset?: boolean
-    /**
-     * Auto-adjusts the angle of the label to match path gradient at position.
-     */
-    keepGradient?: boolean
-    /**
-     * Whether rotates labels so they are never upside-down.
-     */
-    ensureLegibility?: boolean
-  }
+export interface EdgeMetadata
+  extends Omit<EdgeBaseOptions, TerminalType>,
+    TerminalOptions {}
 
-  export interface LabelPositionObject {
-    distance: number
-    offset?:
-      | number
-      | {
-          x?: number
-          y?: number
-        }
-    angle?: number
-    options?: LabelPositionOptions
-  }
+export interface EdgeDefaults extends EdgeCommon, CellDefaults {}
 
-  export type LabelPosition = number | LabelPositionObject
+export interface EdgeProperties
+  extends CellProperties,
+    Omit<EdgeBaseOptions, 'tools'> {}
 
-  export const defaultLabel: Label = {
-    markup: [
-      {
-        tagName: 'rect',
-        selector: 'body',
-      },
-      {
-        tagName: 'text',
-        selector: 'label',
-      },
-    ],
-    attrs: {
-      text: {
-        fill: '#000',
-        fontSize: 14,
-        textAnchor: 'middle',
-        textVerticalAnchor: 'middle',
-        pointerEvents: 'none',
-      },
-      rect: {
-        ref: 'label',
-        fill: '#fff',
-        rx: 3,
-        ry: 3,
-        refWidth: 1,
-        refHeight: 1,
-        refX: 0,
-        refY: 0,
-      },
-    },
-    position: {
-      distance: 0.5,
-    },
-  }
+export interface EdgeConfig
+  extends Omit<EdgeDefaults, TerminalType>,
+    TerminalOptions,
+    CellConfig<EdgeMetadata, Edge> {}
 
-  export function parseStringLabel(text: string): Label {
-    return {
-      attrs: { label: { text } },
-    }
-  }
+export interface EdgeSetOptions extends CellSetOptions {}
+
+export type TerminalType = 'source' | 'target'
+
+export interface SetTerminalCommonArgs {
+  selector?: string
+  magnet?: string
+  connectionPoint?:
+    | string
+    | ConnectionPointNativeItem
+    | ConnectionPointManualItem
 }
 
-export namespace Edge {
-  export const toStringTag = `X6.${Edge.name}`
+export type NodeAnchorItem =
+  | string
+  | NodeAnchorNativeItem
+  | NodeAnchorManualItem
 
-  export function isEdge(instance: any): instance is Edge {
-    if (instance == null) {
-      return false
-    }
+export type EdgeAnchorItem =
+  | string
+  | EdgeAnchorNativeItem
+  | EdgeAnchorManualItem
 
-    if (instance instanceof Edge) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const edge = instance as Edge
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof edge.isNode === 'function' &&
-      typeof edge.isEdge === 'function' &&
-      typeof edge.prop === 'function' &&
-      typeof edge.attr === 'function' &&
-      typeof edge.disconnect === 'function' &&
-      typeof edge.getSource === 'function' &&
-      typeof edge.getTarget === 'function'
-    ) {
-      return true
-    }
-
-    return false
-  }
+export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
+  port?: string
+  priority?: boolean
+  anchor?: NodeAnchorItem
 }
 
-export namespace Edge {
-  export const registry = Registry.create<
-    Definition,
-    never,
-    Config & { inherit?: string | Definition }
-  >({
-    type: 'edge',
-    process(shape, options) {
-      if (exist(shape, false)) {
-        throw new Error(
-          `Edge with name '${shape}' was registered by anthor Node`,
-        )
-      }
-
-      if (typeof options === 'function') {
-        options.config({ shape })
-        return options
-      }
-
-      let parent = Edge
-
-      // default inherit from 'dege'
-      const { inherit = 'edge', ...others } = options
-      if (typeof inherit === 'string') {
-        const base = this.get(inherit || 'edge')
-        if (base == null && inherit) {
-          this.onNotFound(inherit, 'inherited')
-        } else {
-          parent = base
-        }
-      } else {
-        parent = inherit
-      }
-
-      if (others.constructorName == null) {
-        others.constructorName = shape
-      }
-
-      const ctor: Definition = parent.define.call(parent, others)
-      ctor.config({ shape })
-      return ctor as any
-    },
-  })
-
-  setEdgeRegistry(registry)
+export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
+  anchor?: EdgeAnchorItem
 }
 
-export namespace Edge {
-  type EdgeClass = typeof Edge
+export interface TerminalPointData extends SetTerminalCommonArgs, PointLike {}
 
-  export interface Definition extends EdgeClass {
-    new <T extends Properties = Properties>(metadata: T): Edge
-  }
-
-  let counter = 0
-  function getClassName(name?: string) {
-    if (name) {
-      return StringExt.pascalCase(name)
-    }
-    counter += 1
-    return `CustomEdge${counter}`
-  }
-
-  export function define(config: Config) {
-    const { constructorName, overwrite, ...others } = config
-    const ctor = ObjectExt.createClass<Definition>(
-      getClassName(constructorName || others.shape),
-      this as Definition,
-    )
-
-    ctor.config(others)
-
-    if (others.shape) {
-      registry.register(others.shape, ctor, overwrite)
-    }
-
-    return ctor
-  }
-
-  export function create(options: Metadata) {
-    const shape = options.shape || 'edge'
-    const Ctor = registry.get(shape)
-    if (Ctor) {
-      return new Ctor(options)
-    }
-    return registry.onNotFound(shape)
-  }
+export interface TerminalCellData extends SetCellTerminalArgs {
+  cell: string
+  port?: string
 }
 
-export namespace Edge {
-  const shape = 'basic.edge'
-  Edge.config({
-    shape,
-    propHooks(metadata: Properties) {
-      const { label, vertices, ...others } = metadata
-      if (label) {
-        if (others.labels == null) {
-          others.labels = []
-        }
-        const formated =
-          typeof label === 'string' ? parseStringLabel(label) : label
-        others.labels.push(formated)
-      }
-
-      if (vertices) {
-        if (Array.isArray(vertices)) {
-          others.vertices = vertices.map((item) => Point.create(item).toJSON())
-        }
-      }
-
-      return others
-    },
-  })
-  registry.register(shape, Edge)
+export interface TerminalCellLooseData extends SetCellTerminalArgs {
+  cell: string | Cell
+  port?: string
 }
+
+export type TerminalData = TerminalPointData | TerminalCellLooseData
+
+export interface EdgeLabel extends KeyValue {
+  markup?: MarkupType
+  attrs?: CellAttrs
+  /**
+   * If the distance is in the `[0,1]` range (inclusive), then the position
+   * of the label is defined as a percentage of the total length of the edge
+   * (the normalized length). For example, passing the number `0.5` positions
+   * the label to the middle of the edge.
+   *
+   * If the distance is larger than `1` (exclusive), the label will be
+   * positioned distance pixels away from the beginning of the path along
+   * the edge.
+   *
+   * If the distance is a negative number, the label will be positioned
+   * distance pixels away from the end of the path along the edge.
+   */
+  position?: LabelPosition
+  size?: Size
+}
+
+export interface LabelPositionOptions {
+  /**
+   * Forces absolute coordinates for distance.
+   */
+  absoluteDistance?: boolean
+  /**
+   * Forces reverse absolute coordinates (if absoluteDistance = true)
+   */
+  reverseDistance?: boolean
+  /**
+   * Forces absolute coordinates for offset.
+   */
+  absoluteOffset?: boolean
+  /**
+   * Auto-adjusts the angle of the label to match path gradient at position.
+   */
+  keepGradient?: boolean
+  /**
+   * Whether rotates labels so they are never upside-down.
+   */
+  ensureLegibility?: boolean
+}
+
+export interface LabelPositionObject {
+  distance: number
+  offset?:
+    | number
+    | {
+        x?: number
+        y?: number
+      }
+  angle?: number
+  options?: LabelPositionOptions
+}
+
+export type LabelPosition = number | LabelPositionObject
+
+setEdgeRegistry(Edge.registry)
+
+type EdgeClass = typeof Edge
+
+export interface Definition extends EdgeClass {
+  new <T extends EdgeProperties = EdgeProperties>(metadata: T): Edge
+}
+
+Edge.config({
+  shape,
+  propHooks(metadata: EdgeProperties) {
+    const { label, vertices, ...others } = metadata
+    if (label) {
+      if (others.labels == null) {
+        others.labels = []
+      }
+      const formated =
+        typeof label === 'string' ? Edge.parseStringLabel(label) : label
+      others.labels.push(formated)
+    }
+
+    if (vertices) {
+      if (Array.isArray(vertices)) {
+        others.vertices = vertices.map((item) => Point.create(item).toJSON())
+      }
+    }
+
+    return others
+  },
+})
+Edge.registry.register(shape, Edge)

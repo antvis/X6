@@ -3,7 +3,15 @@ import { ObjectExt } from '../common'
 import { Config } from '../config'
 import type { RectangleLike } from '../geometry'
 import type { Graph } from '../graph'
-import type { Cell, Edge, Model, Node } from '../model'
+import type {
+  Cell,
+  Edge,
+  EdgeLabel,
+  Model,
+  Node,
+  TerminalData,
+  TerminalType,
+} from '../model'
 import type { Port } from '../model/port'
 import type {
   ConnectionPointManualItem,
@@ -215,8 +223,8 @@ export namespace Options {
       this: Graph,
       args: {
         edge: Edge
-        type: Edge.TerminalType
-        previous: Edge.TerminalData
+        type: TerminalType
+        previous: TerminalData
       },
     ) => boolean
 
@@ -228,7 +236,7 @@ export namespace Options {
   }
 
   export interface ValidateConnectionArgs {
-    type?: Edge.TerminalType | null
+    type?: TerminalType | null
     edge?: Edge | null
     edgeView?: EdgeView | null
     sourceCell?: Cell | null
@@ -396,7 +404,7 @@ export namespace Options {
 
   export interface OnEdgeLabelRenderedArgs {
     edge: Edge
-    label: Edge.Label
+    label: EdgeLabel
     container: Element
     selectors: MarkupSelectors
   }

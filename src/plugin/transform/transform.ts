@@ -3,7 +3,7 @@ import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
 import { snapToGrid, Point } from '../../geometry'
 import * as Angle from '../../geometry/angle'
 import type { Graph } from '../../graph'
-import type { Node } from '../../model'
+import type { Node, ResizeDirection, ResizeOptions } from '../../model'
 import { type NodeView, View } from '../../view'
 import { DocumentEvents } from '@/constants'
 import type { PointLike } from '@/types'
@@ -48,9 +48,9 @@ export interface TransformImplOptions {
 interface EventDataResizing {
   action: 'resizing'
   selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
-  direction: Node.ResizeDirection
-  trueDirection: Node.ResizeDirection
-  relativeDirection: Node.ResizeDirection
+  direction: ResizeDirection
+  trueDirection: ResizeDirection
+  relativeDirection: ResizeDirection
   resizeX: number
   resizeY: number
   angle: number
@@ -67,7 +67,7 @@ interface EventDataRotating {
 
 export const NODE_CLS = 'has-widget-transform'
 export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
-export const POSITIONS: Node.ResizeDirection[] = [
+export const POSITIONS: ResizeDirection[] = [
   'top-left',
   'top',
   'top-right',
@@ -282,7 +282,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     }
   }
 
-  protected getTrueDirection(dir: Node.ResizeDirection) {
+  protected getTrueDirection(dir: ResizeDirection) {
     const angle = Angle.normalize(this.node.getAngle())
     let index = POSITIONS.indexOf(dir)
 
@@ -292,7 +292,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     return POSITIONS[index]
   }
 
-  protected toValidResizeDirection(dir: string): Node.ResizeDirection {
+  protected toValidResizeDirection(dir: string): ResizeDirection {
     return (
       (
         {
@@ -308,14 +308,14 @@ export class TransformImpl extends View<TransformImplEventArgs> {
   protected startResizing(evt: Dom.MouseDownEvent) {
     evt.stopPropagation()
     this.model.startBatch('resize', { cid: this.cid })
-    const dir = Dom.attr(evt.target, 'data-position') as Node.ResizeDirection
+    const dir = Dom.attr(evt.target, 'data-position') as ResizeDirection
     this.prepareResizing(evt, dir)
     this.startAction(evt)
   }
 
   protected prepareResizing(
     evt: Dom.EventObject,
-    relativeDirection: Node.ResizeDirection,
+    relativeDirection: ResizeDirection,
   ) {
     const trueDirection = this.getTrueDirection(relativeDirection)
     let rx = 0
@@ -442,7 +442,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
           options.allowReverse &&
           (rawWidth <= -width || rawHeight <= -height)
         ) {
-          let reverted: Node.ResizeDirection
+          let reverted: ResizeDirection
 
           if (relativeDirection === 'left') {
             if (rawWidth <= -width) {
@@ -505,7 +505,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         }
 
         if (currentBBox.width !== width || currentBBox.height !== height) {
-          const resizeOptions: Node.ResizeOptions = {
+          const resizeOptions: ResizeOptions = {
             ui: true,
             direction: data.direction,
             relativeDirection: data.relativeDirection,
@@ -561,7 +561,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     if (handle) {
       Dom.addClass(handle, `${this.containerClassName}-active-handle`)
 
-      const pos = handle.getAttribute('data-position') as Node.ResizeDirection
+      const pos = handle.getAttribute('data-position') as ResizeDirection
       if (pos) {
         const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
         Dom.addClass(this.container, `${this.containerClassName}-cursor-${dir}`)
@@ -575,9 +575,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     if (this.handle) {
       Dom.removeClass(this.handle, `${this.containerClassName}-active-handle`)
 
-      const pos = this.handle.getAttribute(
-        'data-position',
-      ) as Node.ResizeDirection
+      const pos = this.handle.getAttribute('data-position') as ResizeDirection
       if (pos) {
         const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
         Dom.removeClass(

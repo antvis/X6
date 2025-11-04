@@ -1,6 +1,6 @@
 import { ObjectExt } from '../common'
 import { Point, type PointOptions, type PointLike } from '../geometry'
-import type { Cell, Node } from '../model'
+import type { CellPropHook, NodeConfig, NodeDefinition } from '../model'
 import type { MarkupType } from '../view/markup'
 import { Base, BaseBodyAttr } from './base'
 
@@ -18,7 +18,7 @@ export function getMarkup(tagName: string, selector = 'body'): MarkupType {
 }
 
 export function getImageUrlHook(attrName = 'xlink:href') {
-  const hook: Cell.PropHook = (metadata) => {
+  const hook: CellPropHook = (metadata) => {
     const { imageUrl, imageWidth, imageHeight, ...others } = metadata
     if (imageUrl != null || imageWidth != null || imageHeight != null) {
       const apply = () => {
@@ -58,13 +58,13 @@ export function getImageUrlHook(attrName = 'xlink:href') {
 
 export function createShape(
   shape: string,
-  config: Node.Config,
+  config: NodeConfig,
   options: {
     selector?: string
-    parent?: Node.Definition | typeof Base
+    parent?: NodeDefinition | typeof Base
   } = {},
 ) {
-  const defaults: Node.Config = {
+  const defaults: NodeConfig = {
     constructorName: shape,
     markup: getMarkup(shape, options.selector),
     attrs: {
