@@ -105,7 +105,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
   }
 
   protected get view() {
-    return this.graph.renderer.findViewByCell(this.node)
+    return this.graph.renderer.findViewByCell(this.node)!
   }
 
   protected get containerClassName() {
