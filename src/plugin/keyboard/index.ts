@@ -1,5 +1,5 @@
 import { Disposable, disposable } from '../../common'
-import type { Graph } from '../../graph'
+import type { Graph, GraphPlugin } from '../../graph'
 import { KeyboardImpl } from './keyboard'
 import './api'
 import type {
@@ -8,7 +8,7 @@ import type {
   KeyboardImplOptions,
 } from './type'
 
-export class Keyboard extends Disposable implements Graph.Plugin {
+export class Keyboard extends Disposable implements GraphPlugin {
   public name = 'keyboard'
   private keyboardImpl: KeyboardImpl
   public options: KeyboardImplOptions

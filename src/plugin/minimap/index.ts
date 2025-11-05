@@ -1,5 +1,5 @@
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { type EventArgs, Graph } from '../../graph'
+import { type EventArgs, Graph, Options, GraphPlugin } from '../../graph'
 import { View } from '../../view'
 import { content } from './style/raw'
 import type {
@@ -30,7 +30,7 @@ const RootClassName = 'widget-minimap'
 const ViewportClassName = `${RootClassName}-viewport`
 const ZoomClassName = `${ViewportClassName}-zoom`
 
-export class MiniMap extends View implements Graph.Plugin {
+export class MiniMap extends View implements GraphPlugin {
   public name = 'minimap'
   private graph: Graph
   public readonly options: MiniMapOptions
@@ -102,7 +102,7 @@ export class MiniMap extends View implements Graph.Plugin {
     }
 
     this.sourceGraph = this.graph
-    const targetGraphOptions: Graph.Options = {
+    const targetGraphOptions: Options = {
       ...this.options.graphOptions,
       container: graphContainer,
       model: this.sourceGraph.model,

@@ -54,13 +54,23 @@ import { CSSManager as Css } from './css'
 import { DefsManager as Defs } from './defs'
 import type { FilterOptions, GradientOptions, MarkerOptions } from './defs'
 import type { EventArgs } from './events'
-import { GridManager as Grid } from './grid'
+import { GridManager as Grid, GridDrawOptions } from './grid'
 import { HighlightManager as Highlight } from './highlight'
 import { MouseWheel as Wheel } from './mousewheel'
-import { Options as GraphOptions } from './options'
+import { GraphDefinition, GraphManual, getOptions } from './options'
 import { PanningManager as Panning } from './panning'
 import { SizeManager as Size } from './size'
 import { TransformManager as Transform } from './transform'
+import type {
+  GetContentAreaOptions,
+  ZoomOptions,
+  ScaleContentToFitOptions,
+  FitToContentOptions,
+  FitToContentFullOptions,
+  CenterOptions,
+  PositionContentOptions,
+  Direction,
+} from './transform'
 import { GraphView } from './view'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
 import type { KeyPoint } from '@/types'
@@ -68,11 +78,94 @@ import type { KeyPoint } from '@/types'
 type FindViewsInAreaOptions = {
   strict?: boolean
 }
+
+export interface Options extends GraphManual {}
+
+export type GraphPlugin = {
+  name: string
+  init: (graph: Graph, ...options: any[]) => any
+  dispose: () => void
+
+  enable?: () => void
+  disable?: () => void
+  isEnabled?: () => boolean
+}
 export class Graph extends Basecoat<EventArgs> {
-  private installedPlugins: Set<Graph.Plugin> = new Set()
+  static toStringTag = `X6.${Graph.name}`
+  static isGraph(instance: any): instance is Graph {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Graph) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+
+    if (tag == null || tag === Graph.toStringTag) {
+      return true
+    }
+
+    return false
+  }
+  static render(options: Partial<Options>, data?: FromJSONData): Graph
+  static render(container: HTMLElement, data?: FromJSONData): Graph
+  static render(
+    options: Partial<Options> | HTMLElement,
+    data?: FromJSONData,
+  ): Graph {
+    const graph =
+      options instanceof HTMLElement
+        ? new Graph({ container: options })
+        : new Graph(options)
+
+    if (data != null) {
+      graph.fromJSON(data)
+    }
+
+    return graph
+  }
+  static registerNode = Node.registry.register
+  static registerEdge = Edge.registry.register
+  static registerView = CellView.registry.register
+  static registerAttr = attrRegistry.register
+  static registerGrid = gridRegistry.register
+  static registerFilter = filterRegistry.register
+  static registerNodeTool = nodeToolRegistry.register
+  static registerEdgeTool = edgeToolRegistry.register
+  static registerBackground = backgroundRegistry.register
+  static registerHighlighter = highlighterRegistry.register
+  static registerPortLayout = portLayoutRegistry.register
+  static registerPortLabelLayout = portLabelLayoutRegistry.register
+  static registerMarker = markerRegistry.register
+  static registerRouter = routerRegistry.register
+  static registerConnector = connectorRegistry.register
+  static registerAnchor = nodeAnchorRegistry.register
+  static registerEdgeAnchor = edgeAnchorRegistry.register
+  static registerConnectionPoint = connectionPointRegistry.register
+  static unregisterNode = Node.registry.unregister
+  static unregisterEdge = Edge.registry.unregister
+  static unregisterView = CellView.registry.unregister
+  static unregisterAttr = attrRegistry.unregister
+  static unregisterGrid = gridRegistry.unregister
+  static unregisterFilter = filterRegistry.unregister
+  static unregisterNodeTool = nodeToolRegistry.unregister
+  static unregisterEdgeTool = edgeToolRegistry.unregister
+  static unregisterBackground = backgroundRegistry.unregister
+  static unregisterHighlighter = highlighterRegistry.unregister
+  static unregisterPortLayout = portLayoutRegistry.unregister
+  static unregisterPortLabelLayout = portLabelLayoutRegistry.unregister
+  static unregisterMarker = markerRegistry.unregister
+  static unregisterRouter = routerRegistry.unregister
+  static unregisterConnector = connectorRegistry.unregister
+  static unregisterAnchor = nodeAnchorRegistry.unregister
+  static unregisterEdgeAnchor = edgeAnchorRegistry.unregister
+  static unregisterConnectionPoint = connectionPointRegistry.unregister
+  private installedPlugins: Set<GraphPlugin> = new Set()
   public model: Model
 
-  public readonly options: GraphOptions.Definition
+  public readonly options: GraphDefinition
   public readonly css: Css
   public readonly view: GraphView
   public readonly grid: Grid
@@ -95,9 +188,9 @@ export class Graph extends Basecoat<EventArgs> {
     return Graph.toStringTag
   }
 
-  constructor(options: Partial<GraphOptions.Manual>) {
+  constructor(options: Partial<GraphManual>) {
     super()
-    this.options = GraphOptions.get(options)
+    this.options = getOptions(options)
     this.css = new Css(this)
     this.view = new GraphView(this)
     this.defs = new Defs(this)
@@ -608,8 +701,8 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   zoom(): number
-  zoom(factor: number, options?: Transform.ZoomOptions): this
-  zoom(factor?: number, options?: Transform.ZoomOptions) {
+  zoom(factor: number, options?: ZoomOptions): this
+  zoom(factor?: number, options?: ZoomOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       if (typeof factor === 'undefined') {
@@ -626,10 +719,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  zoomTo(
-    factor: number,
-    options: Omit<Transform.ZoomOptions, 'absolute'> = {},
-  ) {
+  zoomTo(factor: number, options: Omit<ZoomOptions, 'absolute'> = {}) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoom(factor, { ...options, absolute: true })
@@ -642,8 +732,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   zoomToRect(
     rect: RectangleLike,
-    options: Transform.ScaleContentToFitOptions &
-      Transform.ScaleContentToFitOptions = {},
+    options: ScaleContentToFitOptions & ScaleContentToFitOptions = {},
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -655,10 +744,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  zoomToFit(
-    options: Transform.GetContentAreaOptions &
-      Transform.ScaleContentToFitOptions = {},
-  ) {
+  zoomToFit(options: GetContentAreaOptions & ScaleContentToFitOptions = {}) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoomToFit(options)
@@ -707,11 +793,11 @@ export class Graph extends Basecoat<EventArgs> {
     return this.transform.getGraphArea()
   }
 
-  getContentArea(options: Transform.GetContentAreaOptions = {}) {
+  getContentArea(options: GetContentAreaOptions = {}) {
     return this.transform.getContentArea(options)
   }
 
-  getContentBBox(options: Transform.GetContentAreaOptions = {}) {
+  getContentBBox(options: GetContentAreaOptions = {}) {
     return this.transform.getContentBBox(options)
   }
 
@@ -719,19 +805,19 @@ export class Graph extends Basecoat<EventArgs> {
     gridWidth?: number,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Transform.FitToContentOptions,
+    options?: FitToContentOptions,
   ): Rectangle
-  fitToContent(options?: Transform.FitToContentFullOptions): Rectangle
+  fitToContent(options?: FitToContentFullOptions): Rectangle
   fitToContent(
-    gridWidth?: number | Transform.FitToContentFullOptions,
+    gridWidth?: number | FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Transform.FitToContentOptions,
+    options?: FitToContentOptions,
   ) {
     return this.transform.fitToContent(gridWidth, gridHeight, padding, options)
   }
 
-  scaleContentToFit(options: Transform.ScaleContentToFitOptions = {}) {
+  scaleContentToFit(options: ScaleContentToFitOptions = {}) {
     this.transform.scaleContentToFit(options)
     return this
   }
@@ -739,7 +825,7 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center(options?: Transform.CenterOptions) {
+  center(options?: CenterOptions) {
     return this.centerPoint(options)
   }
 
@@ -749,21 +835,13 @@ export class Graph extends Basecoat<EventArgs> {
    * only center along the specified dimension and keep the other coordinate
    * unchanged.
    */
+  centerPoint(x: number, y: null | number, options?: CenterOptions): this
+  centerPoint(x: null | number, y: number, options?: CenterOptions): this
+  centerPoint(optons?: CenterOptions): this
   centerPoint(
-    x: number,
-    y: null | number,
-    options?: Transform.CenterOptions,
-  ): this
-  centerPoint(
-    x: null | number,
-    y: number,
-    options?: Transform.CenterOptions,
-  ): this
-  centerPoint(optons?: Transform.CenterOptions): this
-  centerPoint(
-    x?: number | null | Transform.CenterOptions,
+    x?: number | null | CenterOptions,
     y?: number | null,
-    options?: Transform.CenterOptions,
+    options?: CenterOptions,
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -775,7 +853,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  centerContent(options?: Transform.PositionContentOptions) {
+  centerContent(options?: PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.centerContent(options)
@@ -786,7 +864,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  centerCell(cell: Cell, options?: Transform.PositionContentOptions) {
+  centerCell(cell: Cell, options?: PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.centerCell(cell, options)
@@ -801,7 +879,7 @@ export class Graph extends Basecoat<EventArgs> {
     point: PointLike,
     x: number | string,
     y: number | string,
-    options: Transform.CenterOptions = {},
+    options: CenterOptions = {},
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -815,8 +893,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   positionRect(
     rect: RectangleLike,
-    direction: Transform.Direction,
-    options?: Transform.CenterOptions,
+    direction: Direction,
+    options?: CenterOptions,
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -828,11 +906,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionCell(
-    cell: Cell,
-    direction: Transform.Direction,
-    options?: Transform.CenterOptions,
-  ) {
+  positionCell(cell: Cell, direction: Direction, options?: CenterOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.positionCell(cell, direction, options)
@@ -843,10 +917,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionContent(
-    pos: Transform.Direction,
-    options?: Transform.PositionContentOptions,
-  ) {
+  positionContent(pos: Direction, options?: PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.positionContent(pos, options)
@@ -1106,7 +1177,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawGrid(options?: Grid.DrawGridOptions) {
+  drawGrid(options?: GridDrawOptions) {
     this.grid.draw(options)
     return this
   }
@@ -1243,7 +1314,7 @@ export class Graph extends Basecoat<EventArgs> {
   // #region plugin
 
   handleScrollerPluginStateChange(
-    plugin: Graph.Plugin,
+    plugin: GraphPlugin,
     isBeingEnabled: boolean,
   ) {
     if (plugin.name === 'scroller') {
@@ -1255,7 +1326,7 @@ export class Graph extends Basecoat<EventArgs> {
     }
   }
 
-  use(plugin: Graph.Plugin, ...options: any[]) {
+  use(plugin: GraphPlugin, ...options: any[]) {
     if (!this.installedPlugins.has(plugin)) {
       this.installedPlugins.add(plugin)
       plugin.init(this, ...options)
@@ -1264,13 +1335,13 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
+  getPlugin<T extends GraphPlugin>(pluginName: string): T | undefined {
     return Array.from(this.installedPlugins).find(
       (plugin) => plugin.name === pluginName,
     ) as T
   }
 
-  getPlugins<T extends Graph.Plugin[]>(pluginName: string[]): T | undefined {
+  getPlugins<T extends GraphPlugin[]>(pluginName: string[]): T | undefined {
     return Array.from(this.installedPlugins).filter((plugin) =>
       pluginName.includes(plugin.name),
     ) as T
@@ -1349,115 +1420,4 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
-}
-
-export namespace Graph {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  export import View = GraphView
-  export import MouseWheel = Wheel
-  export import GridManager = Grid
-  export import TransformManager = Transform
-  export import HighlightManager = Highlight
-  export import BackgroundManager = Background
-  export import PanningManager = Panning
-}
-
-export namespace Graph {
-  export interface Options extends GraphOptions.Manual {}
-}
-
-export namespace Graph {
-  export const toStringTag = `X6.${Graph.name}`
-
-  export function isGraph(instance: any): instance is Graph {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Graph) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-
-    if (tag == null || tag === toStringTag) {
-      return true
-    }
-
-    return false
-  }
-}
-
-export namespace Graph {
-  export function render(options: Partial<Options>, data?: FromJSONData): Graph
-  export function render(container: HTMLElement, data?: FromJSONData): Graph
-  export function render(
-    options: Partial<Options> | HTMLElement,
-    data?: FromJSONData,
-  ): Graph {
-    const graph =
-      options instanceof HTMLElement
-        ? new Graph({ container: options })
-        : new Graph(options)
-
-    if (data != null) {
-      graph.fromJSON(data)
-    }
-
-    return graph
-  }
-}
-
-export namespace Graph {
-  export const registerNode = Node.registry.register
-  export const registerEdge = Edge.registry.register
-  export const registerView = CellView.registry.register
-  export const registerAttr = attrRegistry.register
-  export const registerGrid = gridRegistry.register
-  export const registerFilter = filterRegistry.register
-  export const registerNodeTool = nodeToolRegistry.register
-  export const registerEdgeTool = edgeToolRegistry.register
-  export const registerBackground = backgroundRegistry.register
-  export const registerHighlighter = highlighterRegistry.register
-  export const registerPortLayout = portLayoutRegistry.register
-  export const registerPortLabelLayout = portLabelLayoutRegistry.register
-  export const registerMarker = markerRegistry.register
-  export const registerRouter = routerRegistry.register
-  export const registerConnector = connectorRegistry.register
-  export const registerAnchor = nodeAnchorRegistry.register
-  export const registerEdgeAnchor = edgeAnchorRegistry.register
-  export const registerConnectionPoint = connectionPointRegistry.register
-}
-
-export namespace Graph {
-  export const unregisterNode = Node.registry.unregister
-  export const unregisterEdge = Edge.registry.unregister
-  export const unregisterView = CellView.registry.unregister
-  export const unregisterAttr = attrRegistry.unregister
-  export const unregisterGrid = gridRegistry.unregister
-  export const unregisterFilter = filterRegistry.unregister
-  export const unregisterNodeTool = nodeToolRegistry.unregister
-  export const unregisterEdgeTool = edgeToolRegistry.unregister
-  export const unregisterBackground = backgroundRegistry.unregister
-  export const unregisterHighlighter = highlighterRegistry.unregister
-  export const unregisterPortLayout = portLayoutRegistry.unregister
-  export const unregisterPortLabelLayout = portLabelLayoutRegistry.unregister
-  export const unregisterMarker = markerRegistry.unregister
-  export const unregisterRouter = routerRegistry.unregister
-  export const unregisterConnector = connectorRegistry.unregister
-  export const unregisterAnchor = nodeAnchorRegistry.unregister
-  export const unregisterEdgeAnchor = edgeAnchorRegistry.unregister
-  export const unregisterConnectionPoint = connectionPointRegistry.unregister
-}
-
-export namespace Graph {
-  export type Plugin = {
-    name: string
-    init: (graph: Graph, ...options: any[]) => any
-    dispose: () => void
-
-    enable?: () => void
-    disable?: () => void
-    isEnabled?: () => boolean
-  }
 }

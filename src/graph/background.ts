@@ -8,8 +8,13 @@ import type {
 } from '../registry'
 import { Base } from './base'
 
+export type BackgroundManagerOptions =
+  | BackgroundOptions
+  | BackgroundNativeItem
+  | BackgroundManualItem
+
 export class BackgroundManager extends Base {
-  protected optionsCache: BackgroundManager.Options | null
+  protected optionsCache: BackgroundManagerOptions | null
 
   protected get elem() {
     return this.view.background
@@ -32,7 +37,7 @@ export class BackgroundManager extends Base {
     this.graph.off('translate', this.update, this)
   }
 
-  protected updateBackgroundImage(options: BackgroundManager.Options = {}) {
+  protected updateBackgroundImage(options: BackgroundManagerOptions = {}) {
     let backgroundSize: any = options.size || 'auto auto'
     let backgroundPosition: any = options.position || 'center'
 
@@ -61,7 +66,7 @@ export class BackgroundManager extends Base {
 
   protected drawBackgroundImage(
     img?: HTMLImageElement | null,
-    options: BackgroundManager.Options = {},
+    options: BackgroundManagerOptions = {},
   ) {
     if (!(img instanceof HTMLImageElement)) {
       this.elem.style.backgroundImage = ''
@@ -144,7 +149,7 @@ export class BackgroundManager extends Base {
     this.elem.style.backgroundColor = color || ''
   }
 
-  protected updateBackgroundOptions(options?: BackgroundManager.Options) {
+  protected updateBackgroundOptions(options?: BackgroundManagerOptions) {
     this.graph.options.background = options
   }
 
@@ -154,7 +159,7 @@ export class BackgroundManager extends Base {
     }
   }
 
-  draw(options?: BackgroundManager.Options) {
+  draw(options?: BackgroundManagerOptions) {
     const opts = options || {}
     this.updateBackgroundOptions(options)
     this.updateBackgroundColor(opts.color)
@@ -180,11 +185,4 @@ export class BackgroundManager extends Base {
     this.clear()
     this.stopListening()
   }
-}
-
-export namespace BackgroundManager {
-  export type Options =
-    | BackgroundOptions
-    | BackgroundNativeItem
-    | BackgroundManualItem
 }
