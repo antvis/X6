@@ -1,10 +1,10 @@
-import type { Cell } from '@/model'
 import type { Dom, KeyValue } from '../../common'
 import type { Graph } from '../../graph'
+import type { Cell } from '../../model'
+import type { ViewEvents } from '../../types'
 import type { EdgeViewEventArgs } from '../edge/type'
 import type { FlagManagerActions } from '../flag'
 import type { NodeViewEventArgs } from '../node/type'
-import { ViewEvents } from '@/types'
 import type { CellView } from '.'
 
 export interface CellViewOptions {
