@@ -5,27 +5,27 @@ import { ensureHandlerId, returnFalse, setHandlerId } from './util'
 import { EventObject, type EventObjectEvent } from './object'
 import { TypeEventHandler, TypeEventHandlers } from './types'
 
-export namespace Event {
-  export function on<TType extends string>(
+export class Event {
+  static on<TType extends string>(
     elem: Element,
     events: TType,
     selector: string,
     handler: TypeEventHandler<Element, undefined, any, any, TType> | false,
   ): Element
-  export function on<TType extends string, TData>(
+  static on<TType extends string, TData>(
     elem: Element,
     events: TType,
     selector: string | null | undefined,
     data: TData,
     handler: TypeEventHandler<Element, TData, Element, Element, TType> | false,
   ): Element
-  export function on<TType extends string, TData>(
+  static on<TType extends string, TData>(
     elem: Element,
     events: TType,
     data: TData,
     handler: TypeEventHandler<Element, TData, Element, Element, TType> | false,
   ): Element
-  export function on<TType extends string, TData>(
+  static on<TType extends string, TData>(
     elem: Element,
     events: TType,
     data: TData,
@@ -35,14 +35,14 @@ export namespace Event {
       [key: string]: any
     },
   ): Element
-  export function on<TType extends string>(
+  static on<TType extends string>(
     elem: Element,
     events: TType,
     handler:
       | TypeEventHandler<Element, undefined, Element, Element, TType>
       | false,
   ): Element
-  export function on<TType extends string>(
+  static on<TType extends string>(
     elem: Element,
     events: TType,
     handlerObject: {
@@ -51,27 +51,27 @@ export namespace Event {
       [key: string]: any
     },
   ): Element
-  export function on<TData>(
+  static on<TData>(
     elem: Element,
     events: TypeEventHandlers<Element, TData, any, any>,
     selector: string | null | undefined,
     data: TData,
   ): Element
-  export function on(
+  static on(
     elem: Element,
     events: TypeEventHandlers<Element, undefined, any, any>,
     selector: string,
   ): Element
-  export function on<TData>(
+  static on<TData>(
     elem: Element,
     events: TypeEventHandlers<Element, TData, Element, Element>,
     data: TData,
   ): Element
-  export function on(
+  static on(
     elem: Element,
     events: TypeEventHandlers<Element, undefined, Element, Element>,
   ): void
-  export function on(
+  static on(
     elem: Element,
     events: any,
     selector?: any,
@@ -82,26 +82,26 @@ export namespace Event {
     return elem
   }
 
-  export function once<TType extends string>(
+  static once<TType extends string>(
     elem: Element,
     events: TType,
     selector: string,
     handler: TypeEventHandler<Element, undefined, any, any, TType> | false,
   ): Element
-  export function once<TType extends string, TData>(
+  static once<TType extends string, TData>(
     elem: Element,
     events: TType,
     selector: string | null | undefined,
     data: TData,
     handler: TypeEventHandler<Element, TData, Element, Element, TType> | false,
   ): Element
-  export function once<TType extends string, TData>(
+  static once<TType extends string, TData>(
     elem: Element,
     events: TType,
     data: TData,
     handler: TypeEventHandler<Element, TData, Element, Element, TType> | false,
   ): Element
-  export function once<TType extends string, TData>(
+  static once<TType extends string, TData>(
     elem: Element,
     events: TType,
     data: TData,
@@ -111,14 +111,14 @@ export namespace Event {
       [key: string]: any
     },
   ): Element
-  export function once<TType extends string>(
+  static once<TType extends string>(
     elem: Element,
     events: TType,
     handler:
       | TypeEventHandler<Element, undefined, Element, Element, TType>
       | false,
   ): Element
-  export function once<TType extends string>(
+  static once<TType extends string>(
     elem: Element,
     events: TType,
     handlerObject: {
@@ -127,27 +127,27 @@ export namespace Event {
       [key: string]: any
     },
   ): Element
-  export function once<TData>(
+  static once<TData>(
     elem: Element,
     events: TypeEventHandlers<Element, TData, any, any>,
     selector: string | null | undefined,
     data: TData,
   ): Element
-  export function once(
+  static once(
     elem: Element,
     events: TypeEventHandlers<Element, undefined, any, any>,
     selector: string,
   ): Element
-  export function once<TData>(
+  static once<TData>(
     elem: Element,
     events: TypeEventHandlers<Element, TData, Element, Element>,
     data: TData,
   ): Element
-  export function once(
+  static once(
     elem: Element,
     events: TypeEventHandlers<Element, undefined, Element, Element>,
   ): Element
-  export function once(
+  static once(
     elem: Element,
     events: any,
     selector?: any,
@@ -158,18 +158,18 @@ export namespace Event {
     return elem
   }
 
-  export function off<TType extends string>(
+  static off<TType extends string>(
     elem: Element,
     events: TType,
     selector: string,
     handler: TypeEventHandler<Element, any, any, any, TType> | false,
   ): Element
-  export function off<TType extends string>(
+  static off<TType extends string>(
     elem: Element,
     events: TType,
     handler: TypeEventHandler<Element, any, any, any, TType> | false,
   ): Element
-  export function off<TType extends string>(
+  static off<TType extends string>(
     elem: Element,
     events: TType,
     selector_handler?:
@@ -177,13 +177,13 @@ export namespace Event {
       | TypeEventHandler<Element, any, any, any, TType>
       | false,
   ): Element
-  export function off(
+  static off(
     elem: Element,
     events: TypeEventHandlers<Element, any, any, any>,
     selector?: string,
   ): Element
-  export function off(elem: Element, event?: EventObject<Element>): Element
-  export function off<TType extends string>(
+  static off(elem: Element, event?: EventObject<Element>): Element
+  static off<TType extends string>(
     elem: Element,
     events?:
       | TType
@@ -196,7 +196,7 @@ export namespace Event {
     return elem
   }
 
-  export function trigger(
+  static trigger(
     elem: Element,
     event:
       | string
