@@ -9,7 +9,7 @@ import {
   Vector,
 } from '../../common'
 import { Rectangle } from '../../geometry'
-import type { Graph } from '../../graph'
+import type { Graph, GraphPlugin } from '../../graph'
 import type {
   ExportEventArgs,
   ExportToDataURLOptions,
@@ -19,7 +19,7 @@ import type {
 } from './type'
 import './api'
 
-export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
+export class Export extends Basecoat<ExportEventArgs> implements GraphPlugin {
   public name = 'export'
   private graph: Graph
 

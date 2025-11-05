@@ -1,5 +1,5 @@
 import { Basecoat, disposable } from '../../common'
-import type { Graph } from '../../graph'
+import type { Graph, GraphPlugin } from '../../graph'
 import type { Cell } from '../../model'
 import { ClipboardImpl } from './clipboard'
 import type {
@@ -12,7 +12,7 @@ import './api'
 
 export class Clipboard
   extends Basecoat<ClipboardEventArgs>
-  implements Graph.Plugin
+  implements GraphPlugin
 {
   public name = 'clipboard'
   private clipboardImpl: ClipboardImpl
