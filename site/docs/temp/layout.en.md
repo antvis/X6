@@ -76,7 +76,7 @@ graph.fromJSON(newModel)
 
 #### Layout Process
 
-- Choose a layout type, such as the `grid` above. If you are unsure which layout to use, you can check the examples [here](https://g6.antv.vision/zh/examples/gallery#category-%E5%8A%9B%E5%AF%BC%E5%90%91%E5%9B%BE%E5%B8%83%E5%B1%80) for visual references. You can refer to the corresponding documentation for layout configurations.
+- Choose a layout type, such as the `grid` above. If you are unsure which layout to use, you can check the examples [here](https://g6.antv.antgroup.com/examples#layout-grid) for visual references. You can refer to the corresponding documentation for layout configurations.
 - Construct the layout data, which is quite simple:
 
 ```ts
