@@ -1,5 +1,5 @@
 import { alignPoint } from 'dom-align'
-import { CssLoader, Dom, disposable, FunctionExt } from '../../common''
+import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
 import { DocumentEvents } from '@/constants'
 import {
   snapToGrid,
