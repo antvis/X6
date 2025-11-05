@@ -1,12 +1,13 @@
 import type { NodeViewPositionEventArgs } from '@/view/node/type'
 import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
-import { snapToGrid, Point } from '../../geometry'
+import { DocumentEvents } from '../../constants'
+import { Point, snapToGrid } from '../../geometry'
 import * as Angle from '../../geometry/angle'
 import type { Graph } from '../../graph'
 import type { Node, ResizeDirection, ResizeOptions } from '../../model'
+import type { PointLike } from '../../types'
 import { type NodeView, View } from '../../view'
-import { DocumentEvents } from '@/constants'
-import type { PointLike } from '@/types'
+import type { Scroller } from '../scroller'
 
 interface ResizeEventArgs<E> extends NodeViewPositionEventArgs<E> {}
 interface RotateEventArgs<E> extends NodeViewPositionEventArgs<E> {}
@@ -104,7 +105,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
   }
 
   protected get view() {
-    return this.graph.renderer.findViewByCell(this.node)!
+    return this.graph.renderer.findViewByCell(this.node)
   }
 
   protected get containerClassName() {
@@ -373,7 +374,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
       let clientX = e.clientX
       let clientY = e.clientY
 
-      const scroller = this.graph.getPlugin<any>('scroller')
+      const scroller = this.graph.getPlugin<Scroller>('scroller')
       const restrict = this.options.restrictedResizing
 
       if (restrict === true || typeof restrict === 'number') {
@@ -494,7 +495,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
             }
           }
 
-          const revertedDir = reverted!
+          const revertedDir = reverted
           this.stopHandle()
           const handle = this.container.querySelector(
             `.${this.resizeClassName}[data-position="${revertedDir}"]`,
@@ -510,10 +511,10 @@ export class TransformImpl extends View<TransformImplEventArgs> {
             direction: data.direction,
             relativeDirection: data.relativeDirection,
             trueDirection: data.trueDirection,
-            minWidth: options.minWidth!,
-            minHeight: options.minHeight!,
+            minWidth: options.minWidth,
+            minHeight: options.minHeight,
             maxWidth: options.maxWidth!,
-            maxHeight: options.maxHeight!,
+            maxHeight: options.maxHeight,
             preserveAspectRatio: options.preserveAspectRatio === true,
           }
           node.resize(width, height, resizeOptions)
@@ -618,7 +619,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
   >(name: K, evt: T, view: NodeView, args: KeyValue = {}) {
     if (view) {
       const graph = view.graph
-      const e = graph.view.normalizeEvent(evt) as any
+      const e = graph.view.normalizeEvent(evt)
       const localPoint = graph.snapToGrid(e.clientX, e.clientY)
 
       this.trigger(name, {
