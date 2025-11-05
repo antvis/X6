@@ -5,8 +5,8 @@ import {
   type KeyValue,
   ObjectExt,
 } from '../../common'
-import type { Graph } from '../../graph'
-import { Model } from '../../model'
+import type { Graph, GraphPlugin } from '../../graph'
+import { Model, type ModelEventArgs } from '../../model'
 import type {
   HistoryChangingData,
   HistoryCommand,
@@ -27,10 +27,7 @@ import {
 import { Validator, type ValidatorCallback } from './validator'
 import './api'
 
-export class History
-  extends Basecoat<HistoryEventArgs>
-  implements Graph.Plugin
-{
+export class History extends Basecoat<HistoryEventArgs> implements GraphPlugin {
   public name = 'history'
   public graph: Graph
   public model: Model
@@ -46,7 +43,7 @@ export class History
 
   protected readonly handlers: (<T extends HistoryModelEvents>(
     event: T,
-    args: Model.EventArgs[T],
+    args: ModelEventArgs[T],
   ) => any)[] = []
 
   constructor(options: HistoryOptions = {}) {
@@ -304,15 +301,15 @@ export class History
     }
   }
 
-  protected addCommand<T extends keyof Model.EventArgs>(
+  protected addCommand<T extends keyof ModelEventArgs>(
     event: T,
-    args: Model.EventArgs[T],
+    args: ModelEventArgs[T],
   ) {
     if (this.freezed || this.disabled) {
       return
     }
 
-    const eventArgs = args as Model.EventArgs['cell:change:*']
+    const eventArgs = args as ModelEventArgs['cell:change:*']
     const options = eventArgs.options || {}
     if (options.dryrun) {
       return
@@ -401,7 +398,7 @@ export class History
     // change:*
     // --------
     if (isChangeEvent(event)) {
-      const key = (args as Model.EventArgs['cell:change:*']).key
+      const key = (args as ModelEventArgs['cell:change:*']).key
       const data = cmd.data as HistoryChangingData
 
       if (!cmd.batch || !cmd.event) {

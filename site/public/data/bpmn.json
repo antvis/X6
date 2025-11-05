@@ -1,139 +1,193 @@
 [
   {
-    "id": "1",
-    "shape": "event",
+    "id": "lane-employee",
+    "shape": "lane",
+    "width": 240,
+    "height": 600,
+    "position": { "x": 60, "y": 60 },
+    "attrs": { "name-text": { "text": "员工" } }
+  },
+  {
+    "id": "lane-system",
+    "shape": "lane",
+    "width": 240,
+    "height": 600,
+    "position": { "x": 320, "y": 60 },
+    "attrs": { "name-text": { "text": "系统" } }
+  },
+  {
+    "id": "lane-leader",
+    "shape": "lane",
+    "width": 240,
+    "height": 600,
+    "position": { "x": 580, "y": 60 },
+    "attrs": { "name-text": { "text": "直属领导" } }
+  },
+  {
+    "id": "start",
+    "shape": "start-event",
     "width": 40,
     "height": 40,
-    "position": {
-      "x": 50,
-      "y": 180
-    }
+    "position": { "x": 160, "y": 100 },
+    "parent": "lane-employee"
   },
   {
-    "id": "2",
+    "id": "apply",
     "shape": "activity",
-    "width": 100,
+    "width": 120,
     "height": 60,
-    "position": {
-      "x": 20,
-      "y": 280
-    },
-    "label": "请假申请"
+    "position": { "x": 120, "y": 190 },
+    "label": "提交请假申请",
+    "parent": "lane-employee"
   },
   {
-    "id": "3",
-    "shape": "bpmn-edge",
-    "source": "1",
-    "target": "2"
-  },
-  {
-    "id": "4",
-    "shape": "gateway",
-    "width": 55,
-    "height": 55,
-    "position": {
-      "x": 170,
-      "y": 282.5
-    }
-  },
-  {
-    "id": "5",
-    "shape": "bpmn-edge",
-    "source": "2",
-    "target": "4"
-  },
-  {
-    "id": "6",
+    "id": "check",
     "shape": "activity",
-    "width": 100,
+    "width": 120,
     "height": 60,
-    "position": {
-      "x": 300,
-      "y": 240
-    },
-    "label": "领导审批"
-  },
-  {
-    "id": "7",
-    "shape": "activity",
-    "width": 100,
-    "height": 60,
-    "position": {
-      "x": 300,
-      "y": 320
-    },
-    "label": "人事审批"
-  },
-  {
-    "id": "8",
-    "shape": "bpmn-edge",
-    "source": "4",
-    "target": "6"
-  },
-  {
-    "id": "9",
-    "shape": "bpmn-edge",
-    "source": "4",
-    "target": "7"
-  },
-  {
-    "id": "10",
-    "shape": "gateway",
-    "width": 55,
-    "height": 55,
-    "position": {
-      "x": 460,
-      "y": 282.5
-    }
-  },
-  {
-    "id": "11",
-    "shape": "bpmn-edge",
-    "source": "6",
-    "target": "10"
-  },
-  {
-    "id": "12",
-    "shape": "bpmn-edge",
-    "source": "7",
-    "target": "10"
-  },
-  {
-    "id": "13",
-    "shape": "activity",
-    "width": 100,
-    "height": 60,
-    "position": {
-      "x": 560,
-      "y": 280
-    },
-    "label": "人事审批"
-  },
-  {
-    "id": "14",
-    "shape": "bpmn-edge",
-    "source": "10",
-    "target": "13"
-  },
-  {
-    "id": "15",
-    "shape": "event",
-    "width": 40,
-    "height": 40,
-    "position": {
-      "x": 710,
-      "y": 290
-    },
+    "position": { "x": 380, "y": 110 },
+    "label": "自动校验",
+    "parent": "lane-system",
     "attrs": {
-      "body": {
-        "strokeWidth": 4
+      "img": {
+        "xlink:href": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*mUotQqntWJQAAAAAF_AAAAgAemJ7AQ/original"
       }
     }
   },
   {
-    "id": "16",
+    "id": "approve",
+    "shape": "activity",
+    "width": 120,
+    "height": 60,
+    "position": { "x": 640, "y": 110 },
+    "label": "领导审批",
+    "parent": "lane-leader"
+  },
+  {
+    "id": "exgw",
+    "shape": "gateway-exclusive",
+    "width": 40,
+    "height": 40,
+    "position": { "x": 680, "y": 260 },
+    "parent": "lane-leader"
+  },
+  {
+    "id": "subproc",
+    "shape": "subprocess",
+    "width": 160,
+    "height": 70,
+    "position": { "x": 100, "y": 330 },
+    "label": "补充资料",
+    "parent": "lane-employee"
+  },
+  {
+    "id": "archive",
+    "shape": "activity",
+    "width": 120,
+    "height": 60,
+    "position": { "x": 370, "y": 300 },
+    "label": "备案与系统更新",
+    "parent": "lane-system",
+    "attrs": {
+      "img": {
+        "xlink:href": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*mUotQqntWJQAAAAAF_AAAAgAemJ7AQ/original"
+      }
+    }
+  },
+  {
+    "id": "pgw",
+    "shape": "gateway-parallel",
+    "width": 40,
+    "height": 40,
+    "position": { "x": 410, "y": 450 },
+    "parent": "lane-system"
+  },
+  {
+    "id": "notify-hr",
+    "shape": "activity",
+    "width": 120,
+    "height": 60,
+    "position": { "x": 370, "y": 540 },
+    "label": "通知 HR",
+    "parent": "lane-system",
+    "attrs": {
+      "img": {
+        "xlink:href": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*mUotQqntWJQAAAAAF_AAAAgAemJ7AQ/original"
+      }
+    }
+  },
+  {
+    "id": "confirm",
+    "shape": "activity",
+    "width": 120,
+    "height": 60,
+    "position": { "x": 120, "y": 440 },
+    "label": "确认请假安排",
+    "parent": "lane-employee"
+  },
+  {
+    "id": "pgw2",
+    "shape": "gateway-parallel",
+    "width": 40,
+    "height": 40,
+    "position": { "x": 160, "y": 550 },
+    "parent": "lane-employee"
+  },
+  {
+    "id": "end",
+    "shape": "end-event",
+    "width": 40,
+    "height": 40,
+    "position": { "x": 160, "y": 610 },
+    "parent": "lane-employee"
+  },
+
+  {
+    "id": "e1",
     "shape": "bpmn-edge",
-    "source": "13",
-    "target": "15"
+    "source": "start",
+    "target": "apply",
+    "label": "开始"
+  },
+  { "id": "e2", "shape": "bpmn-edge", "source": "apply", "target": "check" },
+  { "id": "e3", "shape": "bpmn-edge", "source": "check", "target": "approve" },
+  { "id": "e4", "shape": "bpmn-edge", "source": "approve", "target": "exgw" },
+  {
+    "id": "e5",
+    "shape": "bpmn-edge",
+    "source": "exgw",
+    "target": "subproc",
+    "label": "资料不齐"
+  },
+  {
+    "id": "e6",
+    "shape": "bpmn-edge",
+    "source": "exgw",
+    "target": "archive",
+    "label": "审批通过"
+  },
+  {
+    "id": "e7",
+    "shape": "bpmn-edge",
+    "source": "subproc",
+    "target": "archive",
+    "label": "补充完成"
+  },
+  { "id": "e8", "shape": "bpmn-edge", "source": "archive", "target": "pgw" },
+  { "id": "e9", "shape": "bpmn-edge", "source": "pgw", "target": "notify-hr" },
+  { "id": "e10", "shape": "bpmn-edge", "source": "pgw", "target": "confirm" },
+  {
+    "id": "e11",
+    "shape": "bpmn-edge",
+    "source": "notify-hr",
+    "target": "pgw2"
+  },
+  { "id": "e12", "shape": "bpmn-edge", "source": "confirm", "target": "pgw2" },
+  {
+    "id": "e13",
+    "shape": "bpmn-edge",
+    "source": "pgw2",
+    "target": "end",
+    "label": "结束"
   }
 ]

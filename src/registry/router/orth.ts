@@ -1,5 +1,11 @@
 import { ArrayExt } from '../../common'
-import { Angle, Line, Point, type Rectangle } from '../../geometry'
+import {
+  toRad,
+  Line,
+  Point,
+  type Rectangle,
+  type PointLike,
+} from '../../geometry'
 import type { RouterDefinition } from './index'
 import * as Util from './util'
 
@@ -150,7 +156,7 @@ function getBBoxSize(bbox: Rectangle, bearing: Bearings) {
 
 type Bearings = ReturnType<typeof getBearing>
 
-function getBearing(from: Point.PointLike, to: Point.PointLike) {
+function getBearing(from: PointLike, to: PointLike) {
   if (from.x === to.x) {
     return from.y > to.y ? 'N' : 'S'
   }
@@ -304,7 +310,7 @@ function insideNode(
   if (p1.round().equals(p2.round())) {
     p2 = Point.fromPolar(
       boundary.width + boundary.height,
-      Angle.toRad(p1.theta(start)) + Math.PI / 2,
+      toRad(p1.theta(start)) + Math.PI / 2,
       end,
     )
     p2 = boundary.getNearestPointToPoint(p2).move(end, 1).round()

@@ -1,6 +1,6 @@
 import { Dom, FunctionExt } from '../../common'
-import { Point } from '../../geometry'
-import type { Edge } from '../../model/edge'
+import { Point, type PointLike } from '../../geometry'
+import type { Edge, TerminalCellData, TerminalType } from '../../model/edge'
 import type { Node } from '../../model/node'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
@@ -214,7 +214,7 @@ class Anchor extends ToolItem<EdgeView, Options> {
     })
   }
 
-  protected resetAnchor(anchor?: Edge.TerminalCellData['anchor']) {
+  protected resetAnchor(anchor?: TerminalCellData['anchor']) {
     const type = this.type
     const cell = this.cell
     if (anchor) {
@@ -294,7 +294,7 @@ class Anchor extends ToolItem<EdgeView, Options> {
         terminalType,
         edgeView,
         this,
-      ) as Edge.TerminalCellData['anchor']
+      ) as TerminalCellData['anchor']
     }
 
     this.resetAnchor(anchor)
@@ -324,11 +324,11 @@ class Anchor extends ToolItem<EdgeView, Options> {
 }
 
 interface Options extends ToolItemOptions {
-  type?: Edge.TerminalType
+  type?: TerminalType
   snapRadius?: number
   areaPadding?: number
   restrictArea?: boolean
-  resetAnchor?: boolean | Edge.TerminalCellData['anchor']
+  resetAnchor?: boolean | TerminalCellData['anchor']
   removeRedundancies?: boolean
   defaultAnchorAttrs?: SimpleAttrs
   customAnchorAttrs?: SimpleAttrs
@@ -337,19 +337,19 @@ interface Options extends ToolItemOptions {
     pos: Point,
     terminalView: CellView,
     terminalMagnet: Element | null,
-    terminalType: Edge.TerminalType,
+    terminalType: TerminalType,
     edgeView: EdgeView,
     toolView: Anchor,
-  ) => Point.PointLike
+  ) => PointLike
   anchor?: (
     this: EdgeView,
     pos: Point,
     terminalView: CellView,
     terminalMagnet: Element | null,
-    terminalType: Edge.TerminalType,
+    terminalType: TerminalType,
     edgeView: EdgeView,
     toolView: Anchor,
-  ) => Edge.TerminalCellData['anchor']
+  ) => TerminalCellData['anchor']
 }
 
 export class SourceAnchor extends Anchor {

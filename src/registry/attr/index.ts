@@ -1,5 +1,5 @@
 import { FunctionExt, type JSONObject } from '../../common'
-import type { Point, Rectangle } from '../../geometry'
+import type { PointLike, Rectangle } from '../../geometry'
 import type { Cell } from '../../model'
 import type { CellView } from '../../view'
 import { Registry } from '../registry'
@@ -49,13 +49,13 @@ export type AttrOffsetFunction = (
   this: CellView,
   val: ComplexAttrValue,
   options: AttrOptions,
-) => Point.PointLike
+) => PointLike
 
 export type AttrPositionFunction = (
   this: CellView,
   val: ComplexAttrValue,
   options: AttrOptions,
-) => Point.PointLike | undefined | null
+) => PointLike | undefined | null
 
 interface Qualify {
   qualify?: QualifyFunction

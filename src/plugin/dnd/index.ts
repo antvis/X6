@@ -1,11 +1,17 @@
 import { alignPoint } from 'dom-align'
-import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { DocumentEvents } from '../../constants'
-import { GeometryUtil, type Point, Rectangle } from '../../geometry'
-import { type EventArgs, Graph } from '../../graph'
-import type { Cell, Node } from '../../model'
+import { CssLoader, Dom, disposable, FunctionExt } from '../../common''
+import { DocumentEvents } from '@/constants'
+import {
+  snapToGrid,
+  type Point,
+  Rectangle,
+  type PointLike,
+} from '../../geometry'
+import { type EventArgs, Graph, Options, GraphPlugin } from '../../graph'
+import type { TransitionEventArgs, Node } from '../../model'
 import { type NodeView, View } from '../../view'
-
+import type { Scroller } from '../scroller'
+import type { Snapline } from '../snapline'
 import { content } from './style/raw'
 
 export interface GetDragNodeOptions {
@@ -28,7 +34,7 @@ export interface DndOptions {
    * Should scale the dragging node or not.
    */
   scaled?: boolean
-  delegateGraphOptions?: Graph.Options
+  delegateGraphOptions?: Options
   draggingContainer?: HTMLElement
   /**
    * dnd tool box container.
@@ -48,7 +54,7 @@ export const DndDefaults: Partial<DndOptions> = {
   getDropNode: (draggingNode) => draggingNode.clone(),
 }
 
-export class Dnd extends View implements Graph.Plugin {
+export class Dnd extends View implements GraphPlugin {
   public name = 'dnd'
 
   protected sourceNode: Node | null
@@ -59,14 +65,14 @@ export class Dnd extends View implements Graph.Plugin {
   protected candidateEmbedView: NodeView | null
   protected delta: Point | null
   protected padding: number | null
-  protected snapOffset: Point.PointLike | null
+  protected snapOffset: PointLike | null
 
   public options: DndOptions
   public draggingGraph: Graph
 
   protected get targetScroller() {
     const target = this.options.target
-    const scroller = target.getPlugin<any>('scroller')
+    const scroller = target.getPlugin<Scroller>('scroller')
     return scroller
   }
 
@@ -80,7 +86,7 @@ export class Dnd extends View implements Graph.Plugin {
 
   protected get snapline() {
     const target = this.options.target
-    const snapline = target.getPlugin<any>('snapline')
+    const snapline = target.getPlugin<Snapline>('snapline')
     return snapline
   }
 
@@ -136,7 +142,7 @@ export class Dnd extends View implements Graph.Plugin {
         x: local.x,
         y: local.y,
       })
-      this.draggingNode!.on('change:position', this.snap, this)
+      this.draggingNode?.on('change:position', this.snap, this)
     }
 
     this.delegateDocumentEvents(DocumentEvents, e.data)
@@ -237,7 +243,7 @@ export class Dnd extends View implements Graph.Plugin {
     cell,
     current,
     options,
-  }: Cell.EventArgs['change:position']) {
+  }: TransitionEventArgs['change:position']) {
     const node = cell as Node
     if (options.snapped) {
       const bbox = this.draggingBBox
@@ -391,7 +397,7 @@ export class Dnd extends View implements Graph.Plugin {
     }
   }
 
-  protected isInsideValidArea(p: Point.PointLike) {
+  protected isInsideValidArea(p: PointLike) {
     let targetRect: Rectangle
     let dndRect: Rectangle | null = null
     const targetGraph = this.targetGraph
@@ -439,7 +445,7 @@ export class Dnd extends View implements Graph.Plugin {
     })
   }
 
-  protected drop(draggingNode: Node, pos: Point.PointLike) {
+  protected drop(draggingNode: Node, pos: PointLike) {
     if (this.isInsideValidArea(pos)) {
       const targetGraph = this.targetGraph
       const targetModel = targetGraph.model
@@ -457,8 +463,8 @@ export class Dnd extends View implements Graph.Plugin {
       const gridSize = this.snapOffset ? 1 : targetGraph.getGridSize()
 
       droppingNode.position(
-        GeometryUtil.snapToGrid(local.x, gridSize),
-        GeometryUtil.snapToGrid(local.y, gridSize),
+        snapToGrid(local.x, gridSize),
+        snapToGrid(local.y, gridSize),
       )
 
       droppingNode.removeZIndex()

@@ -1,3 +1,4 @@
+import type { KeyValue } from '../../common'
 import {
   Basecoat,
   DataUri,
@@ -7,10 +8,8 @@ import {
   NumberExt,
   Vector,
 } from '../../common'
-import type { KeyValue } from '../../common'
 import { Rectangle } from '../../geometry'
-import type { Graph } from '../../graph'
-import { kebabCase } from 'lodash-es'
+import type { Graph, GraphPlugin } from '../../graph'
 import type {
   ExportEventArgs,
   ExportToDataURLOptions,
@@ -20,13 +19,9 @@ import type {
 } from './type'
 import './api'
 
-export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
+export class Export extends Basecoat<ExportEventArgs> implements GraphPlugin {
   public name = 'export'
   private graph: Graph
-
-  constructor() {
-    super()
-  }
 
   get view() {
     return this.graph.view
@@ -57,14 +52,15 @@ export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
   toSVG(callback: ExportToSVGCallback, options: ExportToSVGOptions = {}) {
     this.notify('before:export', options)
 
-    // to keep pace with it's doc description witch, the default value should be true.
-    // without Object.hasOwn method cause by ts config target.
-    // without instance.hasOwnProperty method cause by ts rule.
-    // the condition will be false if these properties have been set undefined in the target,
-    // but will be true if these properties are not in the target, cause the doc.
-    !Object.hasOwn(options, 'copyStyle') && (options.copyStyles = true)
-    !Object.hasOwn(options, 'serializeImages') &&
-      (options.serializeImages = true)
+    // Keep pace with the doc: default values should apply only when
+    // the option keys are not present on the target object.
+    // If a key exists (even with `undefined`), we respect that and do not override.
+    if (!Object.hasOwn(options, 'copyStyles')) {
+      options.copyStyles = true
+    }
+    if (!Object.hasOwn(options, 'serializeImages')) {
+      options.serializeImages = true
+    }
 
     const rawSVG = this.view.svg
     const vSVG = Vector.create(rawSVG).clone()
@@ -93,87 +89,51 @@ export class Export extends Basecoat<ExportEventArgs> implements Graph.Plugin {
 
     vStage.removeAttribute('transform')
 
-    // Stores all the CSS declarations from external stylesheets to the
-    // `style` attribute of the SVG document nodes.
+    // Copies style declarations from external stylesheets into inline `style` attributes by computing style differences.
 
-    // This is achieved in three steps.
-    // -----------------------------------
-
-    // 1. Disabling all the stylesheets in the page and therefore collecting
-    //    only default style values. This, together with the step 2, makes it
-    //    possible to discard default CSS property values and store only those
-    //    that differ.
-    //
-    // 2. Enabling back all the stylesheets in the page and collecting styles
-    //    that differ from the default values.
-    //
-    // 3. Applying the difference between default values and the ones set by
-    //    custom stylesheets onto the `style` attribute of each of the nodes
-    //    in SVG.
+    // Implementation steps:
+    // 1) Compute default UA styles in an isolated document.
+    // 2) Compute styles in the current document for each original SVG node.
+    // 3) Build the diff (properties that differ from defaults).
+    // 4) Apply the diff to cloned SVG nodes via inline `style`.
 
     if (options.copyStyles) {
       const document = rawSVG.ownerDocument!
       const raws = Array.from(rawSVG.querySelectorAll('*'))
       const clones = Array.from(clonedSVG.querySelectorAll('*'))
 
-      const styleSheetCount = document.styleSheets.length
-      const styleSheetsCopy = []
-      for (let k = styleSheetCount - 1; k >= 0; k -= 1) {
-        // There is a bug (bugSS) in Chrome 14 and Safari. When you set
-        // `stylesheet.disable = true` it will also remove it from
-        // `document.styleSheets`. So we need to store all stylesheets before
-        // we disable them. Later on we put them back to `document.styleSheets`
-        // if needed.
-
-        // See the bug `https://code.google.com/p/chromium/issues/detail?id=88310`.
-        styleSheetsCopy[k] = document.styleSheets[k]
-        document.styleSheets[k].disabled = true
-      }
+      const isolatedDoc =
+        document.implementation.createHTMLDocument('x6-export-defaults')
+      const isolatedSVG = isolatedDoc.importNode(rawSVG, true) as SVGSVGElement
+      isolatedDoc.body.appendChild(isolatedSVG)
+      const isolatedRaws = Array.from(isolatedSVG.querySelectorAll('*'))
 
       const defaultComputedStyles: KeyValue<KeyValue<string>> = {}
-      raws.forEach((elem, index) => {
+      isolatedRaws.forEach((elem, index) => {
         const computedStyle = window.getComputedStyle(elem, null)
-        // We're making a deep copy of the `computedStyle` so that it's not affected
-        // by that next step when all the stylesheets are re-enabled again.
         const defaultComputedStyle: KeyValue<string> = {}
-        Object.keys(computedStyle).forEach((property) => {
-          const propertyValue = computedStyle.getPropertyValue(
-            kebabCase(property),
-          )
-          defaultComputedStyle[property] = propertyValue
-        })
-
+        // Use the style declaration list for reliable property names.
+        for (let i = 0; i < computedStyle.length; i += 1) {
+          const prop = computedStyle[i]
+          const val = computedStyle.getPropertyValue(prop)
+          defaultComputedStyle[prop] = val
+        }
         defaultComputedStyles[index] = defaultComputedStyle
       })
-
-      // Copy all stylesheets back
-      if (styleSheetCount !== document.styleSheets.length) {
-        styleSheetsCopy.forEach((copy, index) => {
-          document.styleSheets[index] = copy
-        })
-      }
-
-      for (let i = 0; i < styleSheetCount; i += 1) {
-        document.styleSheets[i].disabled = false
-      }
 
       const customStyles: KeyValue<KeyValue<string>> = {}
       raws.forEach((elem, index) => {
         const computedStyle = window.getComputedStyle(elem, null)
-        const defaultComputedStyle = defaultComputedStyles[index]
+        const defaultComputedStyle = defaultComputedStyles[index] || {}
         const customStyle: KeyValue<string> = {}
 
-        Object.keys(computedStyle).forEach((property) => {
-          const propertyValue = computedStyle.getPropertyValue(
-            kebabCase(property),
-          )
-          if (
-            !NumberExt.isNumber(property) &&
-            propertyValue !== defaultComputedStyle[property]
-          ) {
-            customStyle[property] = propertyValue
+        for (let i = 0; i < computedStyle.length; i += 1) {
+          const prop = computedStyle[i]
+          const val = computedStyle.getPropertyValue(prop)
+          if (val !== defaultComputedStyle[prop]) {
+            customStyle[prop] = val
           }
-        })
+        }
 
         customStyles[index] = customStyle
       })

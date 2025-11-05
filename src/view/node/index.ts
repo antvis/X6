@@ -1,11 +1,15 @@
 import { ArrayExt, Dom, FunctionExt } from '../../common'
 import { Config } from '../../config'
-import { GeometryUtil, Point, Rectangle } from '../../geometry'
-import type { Graph } from '../../graph'
+import {
+  snapToGrid,
+  Point,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
 import { Cell } from '../../model/cell'
 import type { Edge } from '../../model/edge'
 import type { Node } from '../../model/node'
-import type { PortManager } from '../../model/port'
+import type { Port, Label } from '../../model/port'
 import type { CellAttrs, PortLayoutResult } from '../../registry'
 import type { AttrManagerUpdateOptions } from '../attr'
 import { CellView } from '../cell'
@@ -22,6 +26,7 @@ import type {
   NodeViewPortCache,
   NodeViewPositionEventArgs,
 } from './type'
+import type { KeyPoint } from '@/types'
 
 export class NodeView<
   Entity extends Node = Node,
@@ -279,7 +284,7 @@ export class NodeView<
 
     // render non-z first
     if (portsGropsByZ[autoZIndexKey]) {
-      portsGropsByZ[autoZIndexKey].forEach((port: PortManager.Port) => {
+      portsGropsByZ[autoZIndexKey].forEach((port: Port) => {
         const portElement = this.getPortElement(port)
         container.append(portElement)
         references.push(portElement)
@@ -296,11 +301,7 @@ export class NodeView<
     this.updatePorts()
   }
 
-  protected appendPorts(
-    ports: PortManager.Port[],
-    zIndex: number,
-    refs: Element[],
-  ) {
+  protected appendPorts(ports: Port[], zIndex: number, refs: Element[]) {
     const elems = ports.map((p) => this.getPortElement(p))
     if (refs[zIndex] || zIndex < 0) {
       Dom.before(refs[Math.max(zIndex, 0)], elems)
@@ -309,7 +310,7 @@ export class NodeView<
     }
   }
 
-  protected getPortElement(port: PortManager.Port) {
+  protected getPortElement(port: Port) {
     const cached = this.portsCache[port.id]
     if (cached) {
       return cached.portElement
@@ -318,7 +319,7 @@ export class NodeView<
     return this.createPortElement(port)
   }
 
-  protected createPortElement(port: PortManager.Port) {
+  protected createPortElement(port: Port) {
     let renderResult = Markup.renderMarkup(this.cell.getPortContainerMarkup())
     const portElement = renderResult.elem
     if (portElement == null) {
@@ -481,15 +482,15 @@ export class NodeView<
     Dom.transform(element as SVGElement, matrix, { absolute: true })
   }
 
-  protected getPortMarkup(port: PortManager.Port) {
+  protected getPortMarkup(port: Port) {
     return port.markup || this.cell.portMarkup
   }
 
-  protected getPortLabelMarkup(label: PortManager.Label) {
+  protected getPortLabelMarkup(label: Label) {
     return label.markup || this.cell.portLabelMarkup
   }
 
-  protected existPortLabel(port: PortManager.Port) {
+  protected existPortLabel(port: Port) {
     return port.attrs && port.attrs.text
   }
 
@@ -770,7 +771,7 @@ export class NodeView<
             )
           })
         : graph.model.getNodesUnderNode(cell, {
-            by: findParent as Rectangle.KeyPoint,
+            by: findParent as KeyPoint,
           })
 
     // Picks the node with the highest `z` index
@@ -1087,7 +1088,7 @@ export class NodeView<
     })
   }
 
-  protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+  protected getRestrictArea(view?: NodeView): RectangleLike | null {
     const restrict = this.graph.options.translating.restrict
     const area =
       typeof restrict === 'function'
@@ -1140,8 +1141,8 @@ export class NodeView<
 
     this.autoScrollGraph(e.clientX, e.clientY)
 
-    const posX = GeometryUtil.snapToGrid(x + offset.x, gridSize)
-    const posY = GeometryUtil.snapToGrid(y + offset.y, gridSize)
+    const posX = snapToGrid(x + offset.x, gridSize)
+    const posY = snapToGrid(y + offset.y, gridSize)
     node.setPosition(posX, posY, {
       restrict,
       deep: true,

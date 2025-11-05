@@ -1,7 +1,7 @@
 import { Dom, FunctionExt, ObjectExt } from '../../common'
-import { Line, Point } from '../../geometry'
+import { Line, Point, type PointLike } from '../../geometry'
 import type { Graph } from '../../graph'
-import type { Edge } from '../../model/edge'
+import type { Edge, TerminalCellData, TerminalType } from '../../model/edge'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
 import { ToolItem, type ToolItemOptions } from '../../view/tool'
@@ -90,8 +90,8 @@ export class Segments extends ToolItem<EdgeView, Options> {
   }
 
   protected renderHandle(
-    vertex: Point.PointLike,
-    nextVertex: Point.PointLike,
+    vertex: PointLike,
+    nextVertex: PointLike,
     index: number,
   ) {
     const handle = this.options.createHandle!({
@@ -142,8 +142,8 @@ export class Segments extends ToolItem<EdgeView, Options> {
   }
 
   protected resetAnchor(
-    type: Edge.TerminalType,
-    anchor: Edge.TerminalCellData['anchor'],
+    type: TerminalType,
+    anchor: TerminalCellData['anchor'],
   ) {
     const edge = this.cellView.cell
     const options = {
@@ -158,11 +158,7 @@ export class Segments extends ToolItem<EdgeView, Options> {
     }
   }
 
-  protected snapHandle(
-    handle: Handle,
-    position: Point.PointLike,
-    data: EventData,
-  ) {
+  protected snapHandle(handle: Handle, position: PointLike, data: EventData) {
     const axis = handle.options.axis!
     const index = handle.options.index!
     const edgeView = this.cellView
@@ -371,8 +367,8 @@ export class Segments extends ToolItem<EdgeView, Options> {
 
   protected updateHandle(
     handle: Handle,
-    vertex: Point.PointLike,
-    nextVertex: Point.PointLike,
+    vertex: PointLike,
+    nextVertex: PointLike,
     offset = 0,
   ) {
     const precision = this.options.precision || 0
@@ -414,10 +410,10 @@ interface Options extends ToolItemOptions {
     pos: Point,
     terminalView: CellView,
     terminalMagnet: Element | null,
-    terminalType: Edge.TerminalType,
+    terminalType: TerminalType,
     edgeView: EdgeView,
     toolView: Segments,
-  ) => Edge.TerminalCellData['anchor']
+  ) => TerminalCellData['anchor']
   createHandle?: (options: HandleOptions) => Handle
   processHandle?: (handle: Handle) => void
   onChanged?: (options: { edge: Edge; edgeView: EdgeView }) => void
@@ -426,8 +422,8 @@ interface Options extends ToolItemOptions {
 interface EventData {
   sourceAnchor: Point
   targetAnchor: Point
-  sourceAnchorDef: Edge.TerminalCellData['anchor']
-  targetAnchorDef: Edge.TerminalCellData['anchor']
+  sourceAnchorDef: TerminalCellData['anchor']
+  targetAnchorDef: TerminalCellData['anchor']
 }
 
 class Handle extends View<HandleEventArgs> {

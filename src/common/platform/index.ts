@@ -75,86 +75,82 @@ if (typeof document === 'object') {
     // pass
   }
 }
-export namespace Platform {
-  export const IS_MAC = _IS_MAC
-  export const IS_IOS = _IS_IOS
-  export const IS_WINDOWS = _IS_WINDOWS
+export const IS_MAC = _IS_MAC
+export const IS_IOS = _IS_IOS
+export const IS_WINDOWS = _IS_WINDOWS
 
-  export const IS_IE = _IS_IE
-  export const IS_IE11 = _IS_IE11
-  export const IS_EDGE = _IS_EDGE
+export const IS_IE = _IS_IE
+export const IS_IE11 = _IS_IE11
+export const IS_EDGE = _IS_EDGE
 
-  /**
-   * A flag indicating whether the browser is Netscape (including Firefox).
-   */
-  export const IS_NETSCAPE = _IS_NETSCAPE
+/**
+ * A flag indicating whether the browser is Netscape (including Firefox).
+ */
+export const IS_NETSCAPE = _IS_NETSCAPE
 
-  /**
-   * A flag indicating whether the the this is running inside a Chrome App.
-   */
-  export const IS_CHROME_APP = _IS_CHROME_APP
+/**
+ * A flag indicating whether the the this is running inside a Chrome App.
+ */
+export const IS_CHROME_APP = _IS_CHROME_APP
 
-  export const IS_CHROME = _IS_CHROME
-  export const IS_OPERA = _IS_OPERA
-  export const IS_FIREFOX = _IS_FIREFOX
-  export const IS_SAFARI = _IS_SAFARI
+export const IS_CHROME = _IS_CHROME
+export const IS_OPERA = _IS_OPERA
+export const IS_FIREFOX = _IS_FIREFOX
+export const IS_SAFARI = _IS_SAFARI
 
-  /**
-   * A flag indicating whether this device supports touchstart/-move/-end
-   * events (Apple iOS, Android, Chromebook and Chrome Browser on touch-enabled
-   * devices).
-   */
-  export const SUPPORT_TOUCH = _SUPPORT_TOUCH
+/**
+ * A flag indicating whether this device supports touchstart/-move/-end
+ * events (Apple iOS, Android, Chromebook and Chrome Browser on touch-enabled
+ * devices).
+ */
+export const SUPPORT_TOUCH = _SUPPORT_TOUCH
 
-  /**
-   * A flag indicating whether this device supports Microsoft pointer events.
-   */
-  export const SUPPORT_POINTER = _SUPPORT_POINTER
+/**
+ * A flag indicating whether this device supports Microsoft pointer events.
+ */
+export const SUPPORT_POINTER = _SUPPORT_POINTER
 
-  export const SUPPORT_PASSIVE = _SUPPORT_PASSIVE
+export const SUPPORT_PASSIVE = _SUPPORT_PASSIVE
 
-  /**
-   * A flag indicating whether foreignObject support is not available. This
-   * is the case for Opera, older SVG-based browsers and all versions of IE.
-   */
-  export const NO_FOREIGNOBJECT = _NO_FOREIGNOBJECT
+/**
+ * A flag indicating whether foreignObject support is not available. This
+ * is the case for Opera, older SVG-based browsers and all versions of IE.
+ */
+export const NO_FOREIGNOBJECT = _NO_FOREIGNOBJECT
 
-  export const SUPPORT_FOREIGNOBJECT = !NO_FOREIGNOBJECT
+export const SUPPORT_FOREIGNOBJECT = !NO_FOREIGNOBJECT
+
+export function getHMRStatus() {
+  const mod = window.module as any
+  if (mod != null && mod.hot != null && mod.hot.status != null) {
+    return mod.hot.status()
+  }
+  return 'unkonwn'
 }
 
-export namespace Platform {
-  export function getHMRStatus() {
-    const mod = window.module as any
-    if (mod != null && mod.hot != null && mod.hot.status != null) {
-      return mod.hot.status()
-    }
-    return 'unkonwn'
-  }
+export function isApplyingHMR() {
+  return getHMRStatus() === 'apply'
+}
 
-  export function isApplyingHMR() {
-    return getHMRStatus() === 'apply'
-  }
+// This function checks if the specified event is supported by the browser.
+// Source: http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
+const TAGNAMES: { [event: string]: string } = {
+  select: 'input',
+  change: 'input',
+  submit: 'form',
+  reset: 'form',
+  error: 'img',
+  load: 'img',
+  abort: 'img',
+}
 
-  // This function checks if the specified event is supported by the browser.
-  // Source: http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
-  const TAGNAMES: { [event: string]: string } = {
-    select: 'input',
-    change: 'input',
-    submit: 'form',
-    reset: 'form',
-    error: 'img',
-    load: 'img',
-    abort: 'img',
+export function isEventSupported(event: string) {
+  const elem = document.createElement(TAGNAMES[event] || 'div')
+  const eventName = `on${event}`
+  let isSupported = eventName in elem
+  if (!isSupported) {
+    elem.setAttribute(eventName, 'return;')
+    isSupported = typeof (elem as any)[eventName] === 'function'
   }
-
-  export function isEventSupported(event: string) {
-    const elem = document.createElement(TAGNAMES[event] || 'div')
-    const eventName = `on${event}`
-    let isSupported = eventName in elem
-    if (!isSupported) {
-      elem.setAttribute(eventName, 'return;')
-      isSupported = typeof (elem as any)[eventName] === 'function'
-    }
-    return isSupported
-  }
+  return isSupported
 }

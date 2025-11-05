@@ -1,6 +1,6 @@
 import { ObjectExt } from '../common'
-import type { Point } from '../geometry'
-import type { Node } from '../model/node'
+import type { PointOptions } from '../geometry'
+import type { Node, NodeSetOptions } from '../model/node'
 import { Base } from './base'
 import { pointsToString } from './util'
 
@@ -17,10 +17,7 @@ export class Poly extends Base {
     return this.getAttrByPath<string>('body/refPoints')
   }
 
-  setPoints(
-    points?: string | Point.PointLike[] | Point.PointData[] | null,
-    options?: Node.SetOptions,
-  ) {
+  setPoints(points?: string | PointOptions[] | null, options?: NodeSetOptions) {
     if (points == null) {
       this.removePoints()
     } else {

@@ -1,4 +1,11 @@
-import { Point, Line, Angle, Rectangle, GeometryUtil } from '../../../geometry'
+import {
+  Point,
+  Line,
+  normalize,
+  Rectangle,
+  snapToGrid,
+  type PointLike,
+} from '../../../geometry'
 import { KeyValue } from '../../../common'
 import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'
@@ -50,7 +57,7 @@ export function getDirectionAngle(
 ) {
   const quadrant = 360 / directionCount
   const angleTheta = start.theta(fixAngleEnd(start, end, grid, options))
-  const normalizedAngle = Angle.normalize(angleTheta + quadrant / 2)
+  const normalizedAngle = normalize(angleTheta + quadrant / 2)
   return quadrant * Math.floor(normalizedAngle / quadrant)
 }
 
@@ -133,8 +140,8 @@ function getGridDimension(diff: number, step: number) {
 
 function snapGrid(point: Point, grid: Grid) {
   const source = grid.source
-  const x = GeometryUtil.snapToGrid(point.x - source.x, grid.x) + source.x
-  const y = GeometryUtil.snapToGrid(point.y - source.y, grid.y) + source.y
+  const x = snapToGrid(point.x - source.x, grid.x) + source.x
+  const y = snapToGrid(point.y - source.y, grid.y) + source.y
 
   return new Point(x, y)
 }
@@ -151,7 +158,7 @@ export function getKey(point: Point) {
   return point.toString()
 }
 
-export function normalizePoint(point: Point.PointLike) {
+export function normalizePoint(point: PointLike) {
   return new Point(
     point.x === 0 ? 0 : Math.abs(point.x) / point.x,
     point.y === 0 ? 0 : Math.abs(point.y) / point.y,

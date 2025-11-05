@@ -1,6 +1,11 @@
 import { NumberExt } from '../../../common'
-import { Angle, Point, type Rectangle } from '../../../geometry'
-import type { Edge, Node } from '../../../model'
+import {
+  normalize,
+  Point,
+  type RectangleLike,
+  type PointLike,
+} from '../../../geometry'
+import type { Edge, Node, TerminalType } from '../../../model'
 import type { EdgeView } from '../../../view'
 import type { RouterDefinition } from '../index'
 import { orth } from '../orth'
@@ -39,7 +44,7 @@ export interface ResolvedOptions {
   /**
    * Should the source and/or target not be considered as obstacles?
    */
-  excludeTerminals: Edge.TerminalType[]
+  excludeTerminals: TerminalType[]
 
   /**
    * Should certain nodes not be considered as obstacles?
@@ -65,10 +70,10 @@ export interface ResolvedOptions {
    * Specify the directions used above and what they mean
    */
   directionMap: {
-    top: Point.PointLike
-    right: Point.PointLike
-    bottom: Point.PointLike
-    left: Point.PointLike
+    top: PointLike
+    right: PointLike
+    bottom: PointLike
+    left: PointLike
   }
 
   /**
@@ -106,15 +111,15 @@ export interface ResolvedOptions {
   /**
    * The padding applied on the element bounding boxes.
    */
-  paddingBox: Rectangle.RectangleLike
+  paddingBox: RectangleLike
 
   fallbackRouter: RouterDefinition<any>
 
   draggingRouter?:
     | ((
         this: EdgeView,
-        dragFrom: Point.PointLike,
-        dragTo: Point.PointLike,
+        dragFrom: PointLike,
+        dragTo: PointLike,
         options: ResolvedOptions,
       ) => Point[])
     | null
@@ -236,7 +241,7 @@ export function resolveOptions(options: ManhattanRouterOptions) {
   result.directions.forEach((direction) => {
     const point1 = new Point(0, 0)
     const point2 = new Point(direction.offsetX, direction.offsetY)
-    direction.angle = Angle.normalize(point1.theta(point2))
+    direction.angle = normalize(point1.theta(point2))
   })
 
   return result

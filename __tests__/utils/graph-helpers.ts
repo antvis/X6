@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import { Graph, Export } from '../../src'
+import { Graph, Export, Options } from '../../src'
 
 export function createTestContainer(width = 800, height = 600) {
   const el = document.createElement('div')
@@ -10,7 +10,7 @@ export function createTestContainer(width = 800, height = 600) {
   return el
 }
 
-export function createTestGraph(options: Partial<Graph.Options> = {}) {
+export function createTestGraph(options: Partial<Options> = {}) {
   const container = createTestContainer()
   const graph = new Graph({
     container,

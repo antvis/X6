@@ -1,6 +1,6 @@
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { type EventArgs, Graph } from '../../graph'
-import { type Cell, Model, Node } from '../../model'
+import { type EventArgs, Graph, GraphPlugin } from '../../graph'
+import { type Cell, Model, Node, NodeMetadata } from '../../model'
 import { View } from '../../view'
 import { DndDefaults, Dnd } from '../dnd'
 import { grid } from './grid'
@@ -52,7 +52,7 @@ export const DefaultOptions: Partial<StencilOptions> = {
   ...DndDefaults,
 }
 
-export class Stencil extends View implements Graph.Plugin {
+export class Stencil extends View implements GraphPlugin {
   public name = 'stencil'
   public options: StencilOptions
   public dnd: Dnd
@@ -100,12 +100,12 @@ export class Stencil extends View implements Graph.Plugin {
 
   // #region api
 
-  load(groups: { [groupName: string]: (Node | Node.Metadata)[] }): this
-  load(nodes: (Node | Node.Metadata)[], groupName?: string): this
+  load(groups: { [groupName: string]: (Node | NodeMetadata)[] }): this
+  load(nodes: (Node | NodeMetadata)[], groupName?: string): this
   load(
     data:
-      | { [groupName: string]: (Node | Node.Metadata)[] }
-      | (Node | Node.Metadata)[],
+      | { [groupName: string]: (Node | NodeMetadata)[] }
+      | (Node | NodeMetadata)[],
     groupName?: string,
   ) {
     if (Array.isArray(data)) {
@@ -120,12 +120,12 @@ export class Stencil extends View implements Graph.Plugin {
     return this
   }
 
-  unload(groups: { [groupName: string]: (Node | Node.Metadata)[] }): this
-  unload(nodes: (Node | Node.Metadata)[], groupName?: string): this
+  unload(groups: { [groupName: string]: (Node | NodeMetadata)[] }): this
+  unload(nodes: (Node | NodeMetadata)[], groupName?: string): this
   unload(
     data:
-      | { [groupName: string]: (Node | Node.Metadata)[] }
-      | (Node | Node.Metadata)[],
+      | { [groupName: string]: (Node | NodeMetadata)[] }
+      | (Node | NodeMetadata)[],
     groupName?: string,
   ) {
     if (Array.isArray(data)) {
@@ -396,7 +396,7 @@ export class Stencil extends View implements Graph.Plugin {
   }
 
   protected loadGroup(
-    cells: (Node | Node.Metadata)[],
+    cells: (Node | NodeMetadata)[],
     groupName?: string,
     reverse?: boolean,
   ) {

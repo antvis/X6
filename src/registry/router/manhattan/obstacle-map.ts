@@ -1,6 +1,6 @@
 import { Rectangle, Point } from '../../../geometry'
 import { ArrayExt, KeyValue } from '../../../common'
-import { Cell, Edge, Model } from '../../../model'
+import { Cell, Edge, Model, TerminalCellData } from '../../../model'
 import { ResolvedOptions } from './options'
 
 /**
@@ -35,7 +35,7 @@ export class ObstacleMap {
       (memo, type) => {
         const terminal = edge[type]
         if (terminal) {
-          const cell = model.getCell((terminal as Edge.TerminalCellData).cell)
+          const cell = model.getCell((terminal as TerminalCellData).cell)
           if (cell) {
             memo.push(cell)
           }

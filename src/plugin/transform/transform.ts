@@ -1,10 +1,12 @@
+import type { NodeViewPositionEventArgs } from '@/view/node/type'
 import { Dom, disposable, type KeyValue, NumberExt } from '../../common'
-import { DocumentEvents } from '../../constants'
-import { Angle, GeometryUtil, Point } from '../../geometry'
+import { snapToGrid, Point } from '../../geometry'
+import * as Angle from '../../geometry/angle'
 import type { Graph } from '../../graph'
-import type { Node } from '../../model'
+import type { Node, ResizeDirection, ResizeOptions } from '../../model'
 import { type NodeView, View } from '../../view'
-import type { NodeViewPositionEventArgs } from '../../view/node/type'
+import { DocumentEvents } from '@/constants'
+import type { PointLike } from '@/types'
 
 interface ResizeEventArgs<E> extends NodeViewPositionEventArgs<E> {}
 interface RotateEventArgs<E> extends NodeViewPositionEventArgs<E> {}
@@ -46,9 +48,9 @@ export interface TransformImplOptions {
 interface EventDataResizing {
   action: 'resizing'
   selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
-  direction: Node.ResizeDirection
-  trueDirection: Node.ResizeDirection
-  relativeDirection: Node.ResizeDirection
+  direction: ResizeDirection
+  trueDirection: ResizeDirection
+  relativeDirection: ResizeDirection
   resizeX: number
   resizeY: number
   angle: number
@@ -57,7 +59,7 @@ interface EventDataResizing {
 
 interface EventDataRotating {
   action: 'rotating'
-  center: Point.PointLike
+  center: PointLike
   angle: number
   start: number
   rotated?: boolean
@@ -65,7 +67,7 @@ interface EventDataRotating {
 
 export const NODE_CLS = 'has-widget-transform'
 export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
-export const POSITIONS: Node.ResizeDirection[] = [
+export const POSITIONS: ResizeDirection[] = [
   'top-left',
   'top',
   'top-right',
@@ -280,7 +282,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     }
   }
 
-  protected getTrueDirection(dir: Node.ResizeDirection) {
+  protected getTrueDirection(dir: ResizeDirection) {
     const angle = Angle.normalize(this.node.getAngle())
     let index = POSITIONS.indexOf(dir)
 
@@ -290,7 +292,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     return POSITIONS[index]
   }
 
-  protected toValidResizeDirection(dir: string): Node.ResizeDirection {
+  protected toValidResizeDirection(dir: string): ResizeDirection {
     return (
       (
         {
@@ -306,14 +308,14 @@ export class TransformImpl extends View<TransformImplEventArgs> {
   protected startResizing(evt: Dom.MouseDownEvent) {
     evt.stopPropagation()
     this.model.startBatch('resize', { cid: this.cid })
-    const dir = Dom.attr(evt.target, 'data-position') as Node.ResizeDirection
+    const dir = Dom.attr(evt.target, 'data-position') as ResizeDirection
     this.prepareResizing(evt, dir)
     this.startAction(evt)
   }
 
   protected prepareResizing(
     evt: Dom.EventObject,
-    relativeDirection: Node.ResizeDirection,
+    relativeDirection: ResizeDirection,
   ) {
     const trueDirection = this.getTrueDirection(relativeDirection)
     let rx = 0
@@ -415,8 +417,8 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         const rawWidth = width
         const rawHeight = height
 
-        width = GeometryUtil.snapToGrid(width, gridSize)
-        height = GeometryUtil.snapToGrid(height, gridSize)
+        width = snapToGrid(width, gridSize)
+        height = snapToGrid(height, gridSize)
         width = Math.max(width, options.minWidth || gridSize)
         height = Math.max(height, options.minHeight || gridSize)
         width = Math.min(width, options.maxWidth || Infinity)
@@ -440,7 +442,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
           options.allowReverse &&
           (rawWidth <= -width || rawHeight <= -height)
         ) {
-          let reverted: Node.ResizeDirection
+          let reverted: ResizeDirection
 
           if (relativeDirection === 'left') {
             if (rawWidth <= -width) {
@@ -503,7 +505,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         }
 
         if (currentBBox.width !== width || currentBBox.height !== height) {
-          const resizeOptions: Node.ResizeOptions = {
+          const resizeOptions: ResizeOptions = {
             ui: true,
             direction: data.direction,
             relativeDirection: data.relativeDirection,
@@ -531,7 +533,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
-          target = GeometryUtil.snapToGrid(target, options.rotateGrid)
+          target = snapToGrid(target, options.rotateGrid)
         }
         target = Angle.normalize(target)
 
@@ -559,7 +561,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     if (handle) {
       Dom.addClass(handle, `${this.containerClassName}-active-handle`)
 
-      const pos = handle.getAttribute('data-position') as Node.ResizeDirection
+      const pos = handle.getAttribute('data-position') as ResizeDirection
       if (pos) {
         const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
         Dom.addClass(this.container, `${this.containerClassName}-cursor-${dir}`)
@@ -573,9 +575,7 @@ export class TransformImpl extends View<TransformImplEventArgs> {
     if (this.handle) {
       Dom.removeClass(this.handle, `${this.containerClassName}-active-handle`)
 
-      const pos = this.handle.getAttribute(
-        'data-position',
-      ) as Node.ResizeDirection
+      const pos = this.handle.getAttribute('data-position') as ResizeDirection
       if (pos) {
         const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
         Dom.removeClass(

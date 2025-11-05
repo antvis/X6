@@ -5,16 +5,23 @@ import {
   type IDisablable,
   Vector,
 } from '../../common'
-import { Angle, Point, Rectangle } from '../../geometry'
+import {
+  toRad,
+  normalize,
+  Point,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
 import type { EventArgs, Graph } from '../../graph'
-import type { Model, Node } from '../../model'
+import type { ModelEventArgs, Node, ResizeOptions } from '../../model'
 import { type CellView, type NodeView, View } from '../../view'
 import type { SnaplineImplFilter, SnaplineImplOptions } from './type'
+import type { PointLike } from '@/types'
 
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImplOptions
   protected readonly graph: Graph
-  protected offset: Point.PointLike
+  protected offset: PointLike
   protected timer: number | null
 
   public container: SVGElement
@@ -115,9 +122,9 @@ export class SnaplineImpl extends View implements IDisablable {
     this.undelegateDocumentEvents()
   }
 
-  protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
+  protected onBatchStop({ name, data }: ModelEventArgs['batch:stop']) {
     if (name === 'resize') {
-      this.snapOnResizing(data.cell, data as Node.ResizeOptions)
+      this.snapOnResizing(data.cell, data as ResizeOptions)
     }
   }
 
@@ -136,7 +143,7 @@ export class SnaplineImpl extends View implements IDisablable {
     return view && view.cell.isNode() && view.can('nodeMovable')
   }
 
-  protected getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+  protected getRestrictArea(view?: NodeView): RectangleLike | null {
     const restrict = this.graph.options.translating.restrict
     const area =
       typeof restrict === 'function'
@@ -154,7 +161,7 @@ export class SnaplineImpl extends View implements IDisablable {
     return area || null
   }
 
-  protected snapOnResizing(node: Node, options: Node.ResizeOptions) {
+  protected snapOnResizing(node: Node, options: ResizeOptions) {
     if (
       this.options.resizing &&
       !options.snapped &&
@@ -168,7 +175,7 @@ export class SnaplineImpl extends View implements IDisablable {
         const nodeBBoxRotated = nodeBbox.bbox(node.getAngle())
         const nodeTopLeft = nodeBBoxRotated.getTopLeft()
         const nodeBottomRight = nodeBBoxRotated.getBottomRight()
-        const angle = Angle.normalize(node.getAngle())
+        const angle = normalize(node.getAngle())
         const tolerance = this.options.tolerance || 0
         let verticalLeft: number | undefined
         let verticalTop: number | undefined
@@ -280,10 +287,10 @@ export class SnaplineImpl extends View implements IDisablable {
             angle >= 0 && angle < 90
               ? 1
               : angle >= 90 && angle < 180
-                ? 4
-                : angle >= 180 && angle < 270
-                  ? 3
-                  : 2
+              ? 4
+              : angle >= 180 && angle < 270
+              ? 3
+              : 2
 
           if (horizontalTop != null && verticalLeft != null) {
             if (dx < dy) {
@@ -295,7 +302,7 @@ export class SnaplineImpl extends View implements IDisablable {
             }
           }
 
-          const rad = Angle.toRad(angle % 90)
+          const rad = toRad(angle % 90)
           if (dx) {
             dWidth = quadrant === 3 ? dx / Math.cos(rad) : dx / Math.sin(rad)
           }

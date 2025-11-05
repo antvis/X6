@@ -11,7 +11,7 @@ import {
   type Size,
   StringExt,
 } from '../common'
-import { Point, Rectangle } from '../geometry'
+import { Point, Rectangle, PointLike } from '../geometry'
 import type { Graph } from '../graph'
 import {
   type AttrDefinitions,
@@ -30,23 +30,184 @@ import {
   type AnimationStopOptions,
   type AnimationTargetValue,
 } from './animation'
-import type { Edge } from './edge'
-import type { Model } from './model'
-import type { Node } from './node'
-import type { PortManager } from './port'
+import type {
+  ConnectorData,
+  Edge,
+  EdgeLabel,
+  EdgeProperties,
+  RouterData,
+  TerminalData,
+  TerminalType,
+} from './edge'
+import type { Model, BatchName } from './model'
+import type { Node, NodeProperties, NodeSetOptions } from './node'
+import type { Port } from './port'
 import { Store } from './store'
+import type {
+  StoreMutateOptions,
+  StoreSetByPathOptions,
+  StoreSetOptions,
+} from './store'
 
 export class Cell<
-  Properties extends Cell.Properties = Cell.Properties,
-> extends Basecoat<Cell.EventArgs> {
+  Properties extends CellProperties = CellProperties,
+> extends Basecoat<TransitionEventArgs> {
+  static toStringTag = `X6.cell`
+  static isCell(instance: any): instance is Cell {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Cell) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const cell = instance as Cell
+
+    if (
+      (tag == null || tag === Cell.toStringTag) &&
+      typeof cell.isNode === 'function' &&
+      typeof cell.isEdge === 'function' &&
+      typeof cell.prop === 'function' &&
+      typeof cell.attr === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+  static normalizeTools(raw: ToolsLoose): Tools {
+    if (typeof raw === 'string') {
+      return { items: [raw] }
+    }
+
+    if (Array.isArray(raw)) {
+      return { items: raw }
+    }
+
+    if ((raw as Tools).items) {
+      return raw as Tools
+    }
+
+    if (Reflect.has(raw, 'local')) {
+      const { local, ...resetItem } = raw as Tools
+      return {
+        local,
+        items: [resetItem as ToolItem],
+      }
+    }
+
+    return {
+      items: [raw as ToolItem],
+    }
+  }
+  static getCommonAncestor(...cells: (Cell | null | undefined)[]): Cell | null {
+    const ancestors = cells
+      .filter((cell) => cell != null)
+      .map((cell) => cell!.getAncestors())
+      .sort((a, b) => {
+        return a.length - b.length
+      })
+
+    const first = ancestors.shift()!
+    return (
+      first.find((cell) => ancestors.every((item) => item.includes(cell))) ||
+      null
+    )
+  }
+  static getCellsBBox(cells: Cell[], options: CellGetCellsBBoxOptions = {}) {
+    let bbox: Rectangle | null = null
+
+    for (let i = 0, ii = cells.length; i < ii; i += 1) {
+      const cell = cells[i]
+      let rect = cell.getBBox(options)
+      if (rect) {
+        if (cell.isNode()) {
+          const angle = cell.getAngle()
+          if (angle != null && angle !== 0) {
+            rect = rect.bbox(angle)
+          }
+        }
+        bbox = bbox == null ? rect : bbox.union(rect)
+      }
+    }
+
+    return bbox
+  }
+
+  static deepClone(cell: Cell) {
+    const cells = [cell, ...cell.getDescendants({ deep: true })]
+    return Cell.cloneCells(cells)
+  }
+
+  static cloneCells(cells: Cell[]) {
+    const inputs = ArrayExt.uniq(cells)
+    const cloneMap = inputs.reduce<KeyValue<Cell>>(
+      (map: KeyValue<Cell>, cell: Cell) => {
+        map[cell.id] = cell.clone()
+        return map
+      },
+      {},
+    )
+
+    inputs.forEach((cell: Cell) => {
+      const clone = cloneMap[cell.id]
+      if (clone.isEdge()) {
+        const sourceId = clone.getSourceCellId()
+        const targetId = clone.getTargetCellId()
+        if (sourceId && cloneMap[sourceId]) {
+          // Source is a node and the node is among the clones.
+          // Then update the source of the cloned edge.
+          clone.setSource({
+            ...clone.getSource(),
+            cell: cloneMap[sourceId].id,
+          })
+        }
+        if (targetId && cloneMap[targetId]) {
+          // Target is a node and the node is among the clones.
+          // Then update the target of the cloned edge.
+          clone.setTarget({
+            ...clone.getTarget(),
+            cell: cloneMap[targetId].id,
+          })
+        }
+      }
+
+      // Find the parent of the original cell
+      const parent = cell.getParent()
+      if (parent && cloneMap[parent.id]) {
+        clone.setParent(cloneMap[parent.id])
+      }
+
+      // Find the children of the original cell
+      const children = cell.getChildren()
+      if (children && children.length) {
+        const embeds = children.reduce<Cell[]>((memo: Cell[], child: Cell) => {
+          // Embedded cells that are not being cloned can not be carried
+          // over with other embedded cells.
+          if (cloneMap[child.id]) {
+            memo.push(cloneMap[child.id])
+          }
+          return memo
+        }, [])
+
+        if (embeds.length > 0) {
+          clone.setChildren(embeds)
+        }
+      }
+    })
+
+    return cloneMap
+  }
   // #region static
 
   protected static markup: MarkupType
-  protected static defaults: Cell.Defaults = {}
+  protected static defaults: CellDefaults = {}
   protected static attrHooks: AttrDefinitions = {}
-  protected static propHooks: Cell.PropHook[] = []
+  protected static propHooks: CellPropHook[] = []
 
-  public static config<C extends Cell.Config = Cell.Config>(presets: C) {
+  public static config<C extends CellConfig = CellConfig>(presets: C) {
     const { markup, propHooks, attrHooks, ...others } = presets
 
     if (markup != null) {
@@ -79,7 +240,7 @@ export class Cell<
     return this.markup
   }
 
-  public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
+  public static getDefaults<T extends CellDefaults = CellDefaults>(
     raw?: boolean,
   ): T {
     return (raw ? this.defaults : ObjectExt.cloneDeep(this.defaults)) as T
@@ -91,15 +252,15 @@ export class Cell<
 
   public static applyPropHooks(
     cell: Cell,
-    metadata: Cell.Metadata,
-  ): Cell.Metadata {
+    metadata: CellMetadata,
+  ): CellMetadata {
     return this.propHooks.reduce((memo, hook) => {
       return hook ? FunctionExt.call(hook, cell, memo) : memo
     }, metadata)
   }
 
   // eslint-disable-next-line
-  public static generateId(metadata: Cell.Metadata = {}) {
+  public static generateId(metadata: CellMetadata = {}) {
     return StringExt.uuid()
   }
 
@@ -110,13 +271,13 @@ export class Cell<
   }
 
   public readonly id: string
-  protected readonly store: Store<Cell.Properties>
+  protected readonly store: Store<CellProperties>
   protected readonly animation: Animation
   protected _model: Model | null // eslint-disable-line
   protected _parent: Cell | null // eslint-disable-line
   protected _children: Cell[] | null // eslint-disable-line
 
-  constructor(metadata: Cell.Metadata = {}) {
+  constructor(metadata: CellMetadata = {}) {
     super()
 
     const ctor = this.constructor as typeof Cell
@@ -152,7 +313,7 @@ export class Cell<
   // #endregion
 
   protected preprocess(
-    metadata: Cell.Metadata,
+    metadata: CellMetadata,
     ignoreIdCheck?: boolean,
   ): Properties {
     const id = metadata.id
@@ -166,7 +327,7 @@ export class Cell<
     return props as Properties
   }
 
-  protected postprocess(metadata: Cell.Metadata) {} // eslint-disable-line
+  protected postprocess(metadata: CellMetadata) {} // eslint-disable-line
 
   protected setup() {
     this.store.on('change:*', (metadata) => {
@@ -180,14 +341,14 @@ export class Cell<
         cell: this,
       })
 
-      this.notify(`change:${key}` as keyof Cell.EventArgs, {
+      this.notify(`change:${key}` as keyof TransitionEventArgs, {
         options,
         current,
         previous,
         cell: this,
       })
 
-      const type = key as Edge.TerminalType
+      const type = key as TerminalType
       if (type === 'source' || type === 'target') {
         this.notify(`change:terminal`, {
           type,
@@ -213,14 +374,14 @@ export class Cell<
     })
   }
 
-  notify<Key extends keyof Cell.EventArgs>(
+  notify<Key extends keyof TransitionEventArgs>(
     name: Key,
-    args: Cell.EventArgs[Key],
+    args: TransitionEventArgs[Key],
   ): this
-  notify(name: Exclude<string, keyof Cell.EventArgs>, args: any): this
-  notify<Key extends keyof Cell.EventArgs>(
+  notify(name: Exclude<string, keyof TransitionEventArgs>, args: any): this
+  notify<Key extends keyof TransitionEventArgs>(
     name: Key,
-    args: Cell.EventArgs[Key],
+    args: TransitionEventArgs[Key],
   ) {
     this.trigger(name, args)
     const model = this.model
@@ -276,14 +437,14 @@ export class Cell<
   setProp<K extends keyof Properties>(
     key: K,
     value: Properties[K] | null | undefined | void,
-    options?: Cell.SetOptions,
+    options?: CellSetOptions,
   ): this
-  setProp(key: string, value: any, options?: Cell.SetOptions): this
-  setProp(props: Partial<Properties>, options?: Cell.SetOptions): this
+  setProp(key: string, value: any, options?: CellSetOptions): this
+  setProp(props: Partial<Properties>, options?: CellSetOptions): this
   setProp(
     key: string | Partial<Properties>,
     value?: any,
-    options?: Cell.SetOptions,
+    options?: CellSetOptions,
   ) {
     if (typeof key === 'string') {
       this.store.set(key, value, options)
@@ -297,13 +458,13 @@ export class Cell<
 
   removeProp<K extends keyof Properties>(
     key: K | K[],
-    options?: Cell.SetOptions,
+    options?: CellSetOptions,
   ): this
-  removeProp(key: string | string[], options?: Cell.SetOptions): this
-  removeProp(options?: Cell.SetOptions): this
+  removeProp(key: string | string[], options?: CellSetOptions): this
+  removeProp(options?: CellSetOptions): this
   removeProp(
-    key?: string | string[] | Cell.SetOptions,
-    options?: Cell.SetOptions,
+    key?: string | string[] | CellSetOptions,
+    options?: CellSetOptions,
   ) {
     if (typeof key === 'string' || Array.isArray(key)) {
       this.store.removeByPath(key, options)
@@ -327,7 +488,7 @@ export class Cell<
   setPropByPath(
     path: string | string[],
     value: any,
-    options: Cell.SetByPathOptions = {},
+    options: SetByPathOptions = {},
   ) {
     if (this.model) {
       // update inner reference
@@ -346,7 +507,7 @@ export class Cell<
     return this
   }
 
-  removePropByPath(path: string | string[], options: Cell.SetOptions = {}) {
+  removePropByPath(path: string | string[], options: CellSetOptions = {}) {
     const paths = Array.isArray(path) ? path : path.split('/')
     // Once a property is removed from the `attrs` the CellView will
     // recognize a `dirty` flag and re-render itself in order to remove
@@ -365,15 +526,15 @@ export class Cell<
   prop<K extends keyof Properties>(
     key: K,
     value: Properties[K] | null | undefined | void,
-    options?: Cell.SetOptions,
+    options?: CellSetOptions,
   ): this
-  prop(key: string, value: any, options?: Cell.SetOptions): this
-  prop(path: string[], value: any, options?: Cell.SetOptions): this
-  prop(props: Partial<Properties>, options?: Cell.SetOptions): this
+  prop(key: string, value: any, options?: CellSetOptions): this
+  prop(path: string[], value: any, options?: CellSetOptions): this
+  prop(props: Partial<Properties>, options?: CellSetOptions): this
   prop(
     key?: string | string[] | Partial<Properties>,
     value?: any,
-    options?: Cell.SetOptions,
+    options?: CellSetOptions,
   ) {
     if (key == null) {
       return this.getProp()
@@ -397,7 +558,7 @@ export class Cell<
   previous<K extends keyof Properties>(name: K): Properties[K] | undefined
   previous<T>(name: string): T | undefined
   previous(name: string) {
-    return this.store.getPrevious(name as keyof Cell.Properties)
+    return this.store.getPrevious(name as keyof CellProperties)
   }
 
   // #endregion
@@ -420,17 +581,17 @@ export class Cell<
     return this.store.get('zIndex')
   }
 
-  setZIndex(z: number, options: Cell.SetOptions = {}) {
+  setZIndex(z: number, options: CellSetOptions = {}) {
     this.store.set('zIndex', z, options)
     return this
   }
 
-  removeZIndex(options: Cell.SetOptions = {}) {
+  removeZIndex(options: CellSetOptions = {}) {
     this.store.remove('zIndex', options)
     return this
   }
 
-  toFront(options: Cell.ToFrontOptions = {}) {
+  toFront(options: ToFrontOptions = {}) {
     const model = this.model
     if (model) {
       let z = model.getMaxZIndex()
@@ -463,7 +624,7 @@ export class Cell<
     return this
   }
 
-  toBack(options: Cell.ToBackOptions = {}) {
+  toBack(options: ToBackOptions = {}) {
     const model = this.model
     if (model) {
       let z = model.getMinZIndex()
@@ -519,12 +680,12 @@ export class Cell<
     return markup
   }
 
-  setMarkup(markup: MarkupType, options: Cell.SetOptions = {}) {
+  setMarkup(markup: MarkupType, options: CellSetOptions = {}) {
     this.store.set('markup', markup, options)
     return this
   }
 
-  removeMarkup(options: Cell.SetOptions = {}) {
+  removeMarkup(options: CellSetOptions = {}) {
     this.store.remove('markup', options)
     return this
   }
@@ -550,10 +711,7 @@ export class Cell<
     return result ? { ...result } : {}
   }
 
-  setAttrs(
-    attrs: CellAttrs | null | undefined,
-    options: Cell.SetAttrOptions = {},
-  ) {
+  setAttrs(attrs: CellAttrs | null | undefined, options: SetAttrOptions = {}) {
     if (attrs == null) {
       this.removeAttrs(options)
     } else {
@@ -574,15 +732,15 @@ export class Cell<
     return this
   }
 
-  replaceAttrs(attrs: CellAttrs, options: Cell.SetOptions = {}) {
+  replaceAttrs(attrs: CellAttrs, options: CellSetOptions = {}) {
     return this.setAttrs(attrs, { ...options, overwrite: true })
   }
 
-  updateAttrs(attrs: CellAttrs, options: Cell.SetOptions = {}) {
+  updateAttrs(attrs: CellAttrs, options: CellSetOptions = {}) {
     return this.setAttrs(attrs, { ...options, deep: false })
   }
 
-  removeAttrs(options: Cell.SetOptions = {}) {
+  removeAttrs(options: CellSetOptions = {}) {
     this.store.remove('attrs', options)
     return this
   }
@@ -615,13 +773,13 @@ export class Cell<
   setAttrByPath(
     path: string | string[],
     value: ComplexAttrValue,
-    options: Cell.SetOptions = {},
+    options: CellSetOptions = {},
   ) {
     this.setPropByPath(this.prefixAttrPath(path), value, options)
     return this
   }
 
-  removeAttrByPath(path: string | string[], options: Cell.SetOptions = {}) {
+  removeAttrByPath(path: string | string[], options: CellSetOptions = {}) {
     this.removePropByPath(this.prefixAttrPath(path), options)
     return this
   }
@@ -635,13 +793,13 @@ export class Cell<
   attr(
     path: string | string[],
     value: ComplexAttrValue | null,
-    options?: Cell.SetOptions,
+    options?: CellSetOptions,
   ): this
-  attr(attrs: CellAttrs, options?: Cell.SetAttrOptions): this
+  attr(attrs: CellAttrs, options?: SetAttrOptions): this
   attr(
     path?: string | string[] | CellAttrs,
-    value?: ComplexAttrValue | Cell.SetOptions,
-    options?: Cell.SetOptions,
+    value?: ComplexAttrValue | CellSetOptions,
+    options?: CellSetOptions,
   ) {
     if (path == null) {
       return this.getAttrByPath()
@@ -657,7 +815,7 @@ export class Cell<
       return this.setAttrByPath(path, value as ComplexAttrValue, options || {})
     }
 
-    return this.setAttrs(path, (value || {}) as Cell.SetOptions)
+    return this.setAttrs(path, (value || {}) as CellSetOptions)
   }
 
   // #endregion
@@ -672,7 +830,7 @@ export class Cell<
     this.setVisible(value)
   }
 
-  setVisible(visible: boolean, options: Cell.SetOptions = {}) {
+  setVisible(visible: boolean, options: CellSetOptions = {}) {
     this.store.set('visible', visible, options)
     return this
   }
@@ -681,25 +839,25 @@ export class Cell<
     return this.store.get('visible') !== false
   }
 
-  show(options: Cell.SetOptions = {}) {
+  show(options: CellSetOptions = {}) {
     if (!this.isVisible()) {
       this.setVisible(true, options)
     }
     return this
   }
 
-  hide(options: Cell.SetOptions = {}) {
+  hide(options: CellSetOptions = {}) {
     if (this.isVisible()) {
       this.setVisible(false, options)
     }
     return this
   }
 
-  toggleVisible(visible: boolean, options?: Cell.SetOptions): this
-  toggleVisible(options?: Cell.SetOptions): this
+  toggleVisible(visible: boolean, options?: CellSetOptions): this
+  toggleVisible(options?: CellSetOptions): this
   toggleVisible(
-    isVisible?: boolean | Cell.SetOptions,
-    options: Cell.SetOptions = {},
+    isVisible?: boolean | CellSetOptions,
+    options: CellSetOptions = {},
   ) {
     const visible =
       typeof isVisible === 'boolean' ? isVisible : !this.isVisible()
@@ -728,7 +886,7 @@ export class Cell<
     return this.store.get<T>('data')
   }
 
-  setData<T = Properties['data']>(data: T, options: Cell.SetDataOptions = {}) {
+  setData<T = Properties['data']>(data: T, options: SetDataOptions = {}) {
     if (data == null) {
       this.removeData(options)
     } else {
@@ -749,15 +907,15 @@ export class Cell<
     return this
   }
 
-  replaceData<T = Properties['data']>(data: T, options: Cell.SetOptions = {}) {
+  replaceData<T = Properties['data']>(data: T, options: CellSetOptions = {}) {
     return this.setData(data, { ...options, overwrite: true })
   }
 
-  updateData<T = Properties['data']>(data: T, options: Cell.SetOptions = {}) {
+  updateData<T = Properties['data']>(data: T, options: CellSetOptions = {}) {
     return this.setData(data, { ...options, deep: false })
   }
 
-  removeData(options: Cell.SetOptions = {}) {
+  removeData(options: CellSetOptions = {}) {
     this.store.remove('data', options)
     return this
   }
@@ -851,7 +1009,7 @@ export class Cell<
     return ancestors
   }
 
-  getDescendants(options: Cell.GetDescendantsOptions = {}): Cell[] {
+  getDescendants(options: CellGetDescendantsOptions = {}): Cell[] {
     if (options.deep !== false) {
       // breadth first
       if (options.breadthFirst) {
@@ -924,7 +1082,7 @@ export class Cell<
     return Cell.getCommonAncestor(this, ...cells)
   }
 
-  setParent(parent: Cell | null, options: Cell.SetOptions = {}) {
+  setParent(parent: Cell | null, options: CellSetOptions = {}) {
     this._parent = parent
     if (parent) {
       this.store.set('parent', parent.id, options)
@@ -934,7 +1092,7 @@ export class Cell<
     return this
   }
 
-  setChildren(children: Cell[] | null, options: Cell.SetOptions = {}) {
+  setChildren(children: Cell[] | null, options: CellSetOptions = {}) {
     this._children = children
     if (children != null) {
       this.store.set(
@@ -948,7 +1106,7 @@ export class Cell<
     return this
   }
 
-  unembed(child: Cell, options: Cell.SetOptions = {}) {
+  unembed(child: Cell, options: CellSetOptions = {}) {
     const children = this.children
     if (children != null && child != null) {
       const index = this.getChildIndex(child)
@@ -961,15 +1119,15 @@ export class Cell<
     return this
   }
 
-  embed(child: Cell, options: Cell.SetOptions = {}) {
+  embed(child: Cell, options: CellSetOptions = {}) {
     child.addTo(this, options)
     return this
   }
 
-  addTo(model: Model, options?: Cell.SetOptions): this
-  addTo(graph: Graph, options?: Cell.SetOptions): this
-  addTo(parent: Cell, options?: Cell.SetOptions): this
-  addTo(target: Model | Graph | Cell, options: Cell.SetOptions = {}) {
+  addTo(model: Model, options?: CellSetOptions): this
+  addTo(graph: Graph, options?: CellSetOptions): this
+  addTo(parent: Cell, options?: CellSetOptions): this
+  addTo(target: Model | Graph | Cell, options: CellSetOptions = {}) {
     if (Cell.isCell(target)) {
       target.addChild(this, options)
     } else {
@@ -978,19 +1136,19 @@ export class Cell<
     return this
   }
 
-  insertTo(parent: Cell, index?: number, options: Cell.SetOptions = {}) {
+  insertTo(parent: Cell, index?: number, options: CellSetOptions = {}) {
     parent.insertChild(this, index, options)
     return this
   }
 
-  addChild(child: Cell | null, options: Cell.SetOptions = {}) {
+  addChild(child: Cell | null, options: CellSetOptions = {}) {
     return this.insertChild(child, undefined, options)
   }
 
   insertChild(
     child: Cell | null,
     index?: number,
-    options: Cell.SetOptions = {},
+    options: CellSetOptions = {},
   ): this {
     if (child != null && child !== this) {
       const oldParent = child.getParent()
@@ -1049,7 +1207,7 @@ export class Cell<
     return this
   }
 
-  removeFromParent(options: Cell.RemoveOptions = {}) {
+  removeFromParent(options: CellRemoveOptions = {}) {
     const parent = this.getParent()
     if (parent != null) {
       const index = parent.getChildIndex(this)
@@ -1058,12 +1216,12 @@ export class Cell<
     return this
   }
 
-  removeChild(child: Cell, options: Cell.RemoveOptions = {}) {
+  removeChild(child: Cell, options: CellRemoveOptions = {}) {
     const index = this.getChildIndex(child)
     return this.removeChildAt(index, options)
   }
 
-  removeChildAt(index: number, options: Cell.RemoveOptions = {}) {
+  removeChildAt(index: number, options: CellRemoveOptions = {}) {
     const child = this.getChildAt(index)
     const children = this.children
 
@@ -1075,7 +1233,7 @@ export class Cell<
     return child
   }
 
-  remove(options: Cell.RemoveOptions = {}) {
+  remove(options: CellRemoveOptions = {}) {
     this.batchUpdate('remove', () => {
       const parent = this.getParent()
       if (parent) {
@@ -1144,15 +1302,15 @@ export class Cell<
   // #region transform
 
   // eslint-disable-next-line
-  translate(tx: number, ty: number, options?: Cell.TranslateOptions) {
+  translate(tx: number, ty: number, options?: CellTranslateOptions) {
     return this
   }
 
   scale(
     sx: number, // eslint-disable-line
     sy: number, // eslint-disable-line
-    origin?: Point | Point.PointLike, // eslint-disable-line
-    options?: Node.SetOptions, // eslint-disable-line
+    origin?: Point | PointLike, // eslint-disable-line
+    options?: NodeSetOptions, // eslint-disable-line
   ) {
     return this
   }
@@ -1161,19 +1319,16 @@ export class Cell<
 
   // #region tools
 
+  addTools(items: ToolItem | ToolItem[], options?: AddToolOptions): void
   addTools(
-    items: Cell.ToolItem | Cell.ToolItem[],
-    options?: Cell.AddToolOptions,
-  ): void
-  addTools(
-    items: Cell.ToolItem | Cell.ToolItem[],
+    items: ToolItem | ToolItem[],
     name: string,
-    options?: Cell.AddToolOptions,
+    options?: AddToolOptions,
   ): void
   addTools(
-    items: Cell.ToolItem | Cell.ToolItem[],
-    obj?: string | Cell.AddToolOptions,
-    options?: Cell.AddToolOptions,
+    items: ToolItem | ToolItem[],
+    obj?: string | AddToolOptions,
+    options?: AddToolOptions,
   ) {
     const toolItems = Array.isArray(items) ? items : [items]
     const name = typeof obj === 'string' ? obj : null
@@ -1189,7 +1344,7 @@ export class Cell<
     let tools = ObjectExt.cloneDeep(this.getTools())
     if (tools == null || name == null || tools.name === name) {
       if (tools == null) {
-        tools = {} as Cell.Tools
+        tools = {} as Tools
       }
 
       if (!tools.items) {
@@ -1203,7 +1358,7 @@ export class Cell<
     }
   }
 
-  setTools(tools?: Cell.ToolsLoose | null, options: Cell.SetOptions = {}) {
+  setTools(tools?: ToolsLoose | null, options: CellSetOptions = {}) {
     if (tools == null) {
       this.removeTools()
     } else {
@@ -1212,11 +1367,11 @@ export class Cell<
     return this
   }
 
-  getTools(): Cell.Tools | null {
-    return this.store.get<Cell.Tools>('tools')
+  getTools(): Tools | null {
+    return this.store.get<Tools>('tools')
   }
 
-  removeTools(options: Cell.SetOptions = {}) {
+  removeTools(options: CellSetOptions = {}) {
     this.store.remove('tools', options)
     return this
   }
@@ -1244,9 +1399,9 @@ export class Cell<
     )
   }
 
-  removeTool(name: string, options?: Cell.SetOptions): this
-  removeTool(index: number, options?: Cell.SetOptions): this
-  removeTool(nameOrIndex: string | number, options: Cell.SetOptions = {}) {
+  removeTool(name: string, options?: CellSetOptions): this
+  removeTool(index: number, options?: CellSetOptions): this
+  removeTool(nameOrIndex: string | number, options: CellSetOptions = {}) {
     const tools = ObjectExt.cloneDeep(this.getTools())
     if (tools) {
       let updated = false
@@ -1289,17 +1444,17 @@ export class Cell<
   }
 
   // eslint-disable-next-line
-  getConnectionPoint(edge: Edge, type: Edge.TerminalType) {
+  getConnectionPoint(edge: Edge, type: TerminalType) {
     return new Point()
   }
 
   toJSON(
-    options: Cell.ToJSONOptions = {},
+    options: CellToJSONOptions = {},
   ): this extends Node
-    ? Node.Properties
+    ? NodeProperties
     : this extends Edge
-      ? Edge.Properties
-      : Properties {
+    ? EdgeProperties
+    : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1408,7 +1563,7 @@ export class Cell<
   }
 
   clone(
-    options: Cell.CloneOptions = {},
+    options: CloneOptions = {},
   ): this extends Node ? Node : this extends Edge ? Edge : Cell {
     if (!options.deep) {
       const data = { ...this.store.get() }
@@ -1435,7 +1590,7 @@ export class Cell<
   // #region batch
 
   startBatch(
-    name: Model.BatchName,
+    name: BatchName,
     data: KeyValue = {},
     model: Model | null = this.model,
   ) {
@@ -1449,7 +1604,7 @@ export class Cell<
   }
 
   stopBatch(
-    name: Model.BatchName,
+    name: BatchName,
     data: KeyValue = {},
     model: Model | null = this.model,
   ) {
@@ -1461,7 +1616,7 @@ export class Cell<
     return this
   }
 
-  batchUpdate<T>(name: Model.BatchName, execute: () => T, data?: KeyValue): T {
+  batchUpdate<T>(name: BatchName, execute: () => T, data?: KeyValue): T {
     // The model is null after cell was removed(remove batch).
     // So we should temp save model to trigger pairing batch event.
     const model = this.model
@@ -1484,427 +1639,257 @@ export class Cell<
   // #endregion
 }
 
-export namespace Cell {
-  export interface Common {
-    view?: string
-    shape?: string
-    markup?: MarkupType
-    attrs?: CellAttrs
-    zIndex?: number
-    visible?: boolean
-    data?: any
-    transition?: TransitionParams[]
-  }
-
-  export interface Defaults extends Common {}
-
-  export interface Metadata extends Common, KeyValue {
-    id?: string
-    tools?: ToolsLoose
-  }
-
-  export interface Properties extends Defaults, Metadata {
-    parent?: string
-    children?: string[]
-    tools?: Tools
-  }
+export interface CellCommon {
+  view?: string
+  shape?: string
+  markup?: MarkupType
+  attrs?: CellAttrs
+  zIndex?: number
+  visible?: boolean
+  data?: any
+  transition?: TransitionParams[]
 }
 
-export namespace Cell {
-  export type ToolItem =
-    | string
-    | {
-        name: string
-        args?: any
-      }
+export interface CellDefaults extends CellCommon {}
 
-  export interface Tools {
-    name?: string | null
-    local?: boolean
-    items: ToolItem[]
-  }
-
-  export type ToolsLoose = ToolItem | ToolItem[] | Tools
-
-  export function normalizeTools(raw: ToolsLoose): Tools {
-    if (typeof raw === 'string') {
-      return { items: [raw] }
-    }
-
-    if (Array.isArray(raw)) {
-      return { items: raw }
-    }
-
-    if ((raw as Tools).items) {
-      return raw as Tools
-    }
-
-    if (Reflect.has(raw, 'local')) {
-      const { local, ...resetItem } = raw as Tools
-      return {
-        local,
-        items: [resetItem as ToolItem],
-      }
-    }
-
-    return {
-      items: [raw as ToolItem],
-    }
-  }
+export interface CellMetadata extends CellCommon, KeyValue {
+  id?: string
+  tools?: ToolsLoose
 }
 
-export namespace Cell {
-  export interface SetOptions extends Store.SetOptions {}
-
-  export interface MutateOptions extends Store.MutateOptions {}
-
-  export interface RemoveOptions extends SetOptions {
-    deep?: boolean
-  }
-
-  export interface SetAttrOptions extends SetOptions {
-    deep?: boolean
-    overwrite?: boolean
-  }
-
-  export interface SetDataOptions extends SetOptions {
-    deep?: boolean
-    overwrite?: boolean
-  }
-
-  export interface SetByPathOptions extends Store.SetByPathOptions {}
-
-  export interface ToFrontOptions extends SetOptions {
-    deep?: boolean
-  }
-
-  export interface ToBackOptions extends ToFrontOptions {}
-
-  export interface TranslateOptions extends SetOptions {
-    tx?: number
-    ty?: number
-    translateBy?: string | number
-  }
-
-  export interface AddToolOptions extends SetOptions {
-    reset?: boolean
-    local?: boolean
-  }
-
-  export interface GetDescendantsOptions {
-    deep?: boolean
-    breadthFirst?: boolean
-  }
-
-  export interface ToJSONOptions {
-    diff?: boolean
-  }
-
-  export interface CloneOptions {
-    deep?: boolean
-    keepId?: boolean
-  }
-
-  export type TransitionParams = Parameters<
-    InstanceType<typeof Cell>['transition']
-  >
+export interface CellProperties extends CellDefaults, CellMetadata {
+  parent?: string
+  children?: string[]
+  tools?: Tools
 }
 
-export namespace Cell {
-  export interface EventArgs {
-    'transition:start': AnimationCallbackArgs<AnimationTargetValue>
-    'transition:progress': AnimationProgressArgs<AnimationTargetValue>
-    'transition:complete': AnimationCallbackArgs<AnimationTargetValue>
-    'transition:stop': AnimationStopArgs<AnimationTargetValue>
-    'transition:finish': AnimationCallbackArgs<AnimationTargetValue>
-
-    // common
-    'change:*': ChangeAnyKeyArgs
-    'change:attrs': ChangeArgs<CellAttrs>
-    'change:zIndex': ChangeArgs<number>
-    'change:markup': ChangeArgs<MarkupType>
-    'change:visible': ChangeArgs<boolean>
-    'change:parent': ChangeArgs<string>
-    'change:children': ChangeArgs<string[]>
-    'change:tools': ChangeArgs<Tools>
-    'change:view': ChangeArgs<string>
-    'change:data': ChangeArgs<any>
-
-    // node
-    'change:size': NodeChangeArgs<Size>
-    'change:angle': NodeChangeArgs<number>
-    'change:position': NodeChangeArgs<Point.PointLike>
-    'change:ports': NodeChangeArgs<PortManager.Port[]>
-    'change:portMarkup': NodeChangeArgs<MarkupType>
-    'change:portLabelMarkup': NodeChangeArgs<MarkupType>
-    'change:portContainerMarkup': NodeChangeArgs<MarkupType>
-    'ports:removed': {
-      cell: Cell
-      node: Node
-      removed: PortManager.Port[]
-    }
-    'ports:added': {
-      cell: Cell
-      node: Node
-      added: PortManager.Port[]
+type ToolItem =
+  | string
+  | {
+      name: string
+      args?: any
     }
 
-    // edge
-    'change:source': EdgeChangeArgs<Edge.TerminalData>
-    'change:target': EdgeChangeArgs<Edge.TerminalData>
-    'change:terminal': EdgeChangeArgs<Edge.TerminalData> & {
-      type: Edge.TerminalType
-    }
-    'change:router': EdgeChangeArgs<Edge.RouterData>
-    'change:connector': EdgeChangeArgs<Edge.ConnectorData>
-    'change:vertices': EdgeChangeArgs<Point.PointLike[]>
-    'change:labels': EdgeChangeArgs<Edge.Label[]>
-    'change:defaultLabel': EdgeChangeArgs<Edge.Label>
-    'vertexs:added': {
-      cell: Cell
-      edge: Edge
-      added: Point.PointLike[]
-    }
-    'vertexs:removed': {
-      cell: Cell
-      edge: Edge
-      removed: Point.PointLike[]
-    }
-    'labels:added': {
-      cell: Cell
-      edge: Edge
-      added: Edge.Label[]
-    }
-    'labels:removed': {
-      cell: Cell
-      edge: Edge
-      removed: Edge.Label[]
-    }
+export interface Tools {
+  name?: string | null
+  local?: boolean
+  items: ToolItem[]
+}
 
-    'batch:start': {
-      name: Model.BatchName
-      data: KeyValue
-      cell: Cell
-    }
+export type ToolsLoose = ToolItem | ToolItem[] | Tools
 
-    'batch:stop': {
-      name: Model.BatchName
-      data: KeyValue
-      cell: Cell
-    }
+export interface CellSetOptions extends StoreSetOptions {}
 
-    changed: {
-      cell: Cell
-      options: MutateOptions
-    }
+export interface CellMutateOptions extends StoreMutateOptions {}
 
-    added: {
-      cell: Cell
-      index: number
-      options: Cell.SetOptions
-    }
+export interface CellRemoveOptions extends CellSetOptions {
+  deep?: boolean
+}
 
-    removed: {
-      cell: Cell
-      index: number
-      options: Cell.RemoveOptions
-    }
-  }
+export interface SetAttrOptions extends CellSetOptions {
+  deep?: boolean
+  overwrite?: boolean
+}
 
-  interface ChangeAnyKeyArgs<T extends keyof Properties = keyof Properties> {
-    key: T
-    current: Properties[T]
-    previous: Properties[T]
-    options: MutateOptions
+export interface SetDataOptions extends CellSetOptions {
+  deep?: boolean
+  overwrite?: boolean
+}
+
+export interface SetByPathOptions extends StoreSetByPathOptions {}
+
+export interface ToFrontOptions extends CellSetOptions {
+  deep?: boolean
+}
+
+export interface ToBackOptions extends ToFrontOptions {}
+
+export interface CellTranslateOptions extends CellSetOptions {
+  tx?: number
+  ty?: number
+  translateBy?: string | number
+}
+
+export interface AddToolOptions extends CellSetOptions {
+  reset?: boolean
+  local?: boolean
+}
+
+export interface CellGetDescendantsOptions {
+  deep?: boolean
+  breadthFirst?: boolean
+}
+
+export interface CellToJSONOptions {
+  diff?: boolean
+}
+
+export interface CloneOptions {
+  deep?: boolean
+  keepId?: boolean
+}
+
+export type TransitionParams = Parameters<
+  InstanceType<typeof Cell>['transition']
+>
+
+export interface TransitionEventArgs {
+  'transition:start': AnimationCallbackArgs<AnimationTargetValue>
+  'transition:progress': AnimationProgressArgs<AnimationTargetValue>
+  'transition:complete': AnimationCallbackArgs<AnimationTargetValue>
+  'transition:stop': AnimationStopArgs<AnimationTargetValue>
+  'transition:finish': AnimationCallbackArgs<AnimationTargetValue>
+
+  // common
+  'change:*': ChangeAnyKeyArgs
+  'change:attrs': CellChangeArgs<CellAttrs>
+  'change:zIndex': CellChangeArgs<number>
+  'change:markup': CellChangeArgs<MarkupType>
+  'change:visible': CellChangeArgs<boolean>
+  'change:parent': CellChangeArgs<string>
+  'change:children': CellChangeArgs<string[]>
+  'change:tools': CellChangeArgs<Tools>
+  'change:view': CellChangeArgs<string>
+  'change:data': CellChangeArgs<any>
+
+  // node
+  'change:size': NodeChangeArgs<Size>
+  'change:angle': NodeChangeArgs<number>
+  'change:position': NodeChangeArgs<PointLike>
+  'change:ports': NodeChangeArgs<Port[]>
+  'change:portMarkup': NodeChangeArgs<MarkupType>
+  'change:portLabelMarkup': NodeChangeArgs<MarkupType>
+  'change:portContainerMarkup': NodeChangeArgs<MarkupType>
+  'ports:removed': {
     cell: Cell
-  }
-
-  export interface ChangeArgs<T> {
-    cell: Cell
-    current?: T
-    previous?: T
-    options: MutateOptions
-  }
-
-  interface NodeChangeArgs<T> extends ChangeArgs<T> {
     node: Node
+    removed: Port[]
+  }
+  'ports:added': {
+    cell: Cell
+    node: Node
+    added: Port[]
   }
 
-  interface EdgeChangeArgs<T> extends ChangeArgs<T> {
+  // edge
+  'change:source': EdgeChangeArgs<TerminalData>
+  'change:target': EdgeChangeArgs<TerminalData>
+  'change:terminal': EdgeChangeArgs<TerminalData> & {
+    type: TerminalType
+  }
+  'change:router': EdgeChangeArgs<RouterData>
+  'change:connector': EdgeChangeArgs<ConnectorData>
+  'change:vertices': EdgeChangeArgs<PointLike[]>
+  'change:labels': EdgeChangeArgs<EdgeLabel[]>
+  'change:defaultLabel': EdgeChangeArgs<EdgeLabel>
+  'vertexs:added': {
+    cell: Cell
     edge: Edge
+    added: PointLike[]
+  }
+  'vertexs:removed': {
+    cell: Cell
+    edge: Edge
+    removed: PointLike[]
+  }
+  'labels:added': {
+    cell: Cell
+    edge: Edge
+    added: EdgeLabel[]
+  }
+  'labels:removed': {
+    cell: Cell
+    edge: Edge
+    removed: EdgeLabel[]
+  }
+
+  'batch:start': {
+    name: BatchName
+    data: KeyValue
+    cell: Cell
+  }
+
+  'batch:stop': {
+    name: BatchName
+    data: KeyValue
+    cell: Cell
+  }
+
+  changed: {
+    cell: Cell
+    options: CellMutateOptions
+  }
+
+  added: {
+    cell: Cell
+    index: number
+    options: CellSetOptions
+  }
+
+  removed: {
+    cell: Cell
+    index: number
+    options: CellRemoveOptions
   }
 }
 
-export namespace Cell {
-  export const toStringTag = `X6.${Cell.name}`
+interface ChangeAnyKeyArgs<
+  T extends keyof CellProperties = keyof CellProperties,
+> {
+  key: T
+  current: CellProperties[T]
+  previous: CellProperties[T]
+  options: CellMutateOptions
+  cell: Cell
+}
 
-  export function isCell(instance: any): instance is Cell {
-    if (instance == null) {
-      return false
+export interface CellChangeArgs<T> {
+  cell: Cell
+  current?: T
+  previous?: T
+  options: CellMutateOptions
+}
+
+interface NodeChangeArgs<T> extends CellChangeArgs<T> {
+  node: Node
+}
+
+interface EdgeChangeArgs<T> extends CellChangeArgs<T> {
+  edge: Edge
+}
+
+export interface CellGetCellsBBoxOptions {
+  deep?: boolean
+}
+
+export type CellDefinition = typeof Cell
+
+export type CellPropHook<
+  M extends CellMetadata = CellMetadata,
+  C extends Cell = Cell,
+> = (this: C, metadata: M) => M
+
+export type PropHooks<
+  M extends CellMetadata = CellMetadata,
+  C extends Cell = Cell,
+> = KeyValue<CellPropHook<M, C>> | CellPropHook<M, C> | CellPropHook<M, C>[]
+
+export interface CellConfig<
+  M extends CellMetadata = CellMetadata,
+  C extends Cell = Cell,
+> extends CellDefaults,
+    KeyValue {
+  constructorName?: string
+  overwrite?: boolean
+  propHooks?: PropHooks<M, C>
+  attrHooks?: AttrDefinitions
+}
+
+Cell.config({
+  propHooks({ tools, ...metadata }) {
+    if (tools) {
+      metadata.tools = Cell.normalizeTools(tools)
     }
-
-    if (instance instanceof Cell) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const cell = instance as Cell
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof cell.isNode === 'function' &&
-      typeof cell.isEdge === 'function' &&
-      typeof cell.prop === 'function' &&
-      typeof cell.attr === 'function'
-    ) {
-      return true
-    }
-
-    return false
-  }
-}
-
-export namespace Cell {
-  export function getCommonAncestor(
-    ...cells: (Cell | null | undefined)[]
-  ): Cell | null {
-    const ancestors = cells
-      .filter((cell) => cell != null)
-      .map((cell) => cell!.getAncestors())
-      .sort((a, b) => {
-        return a.length - b.length
-      })
-
-    const first = ancestors.shift()!
-    return (
-      first.find((cell) => ancestors.every((item) => item.includes(cell))) ||
-      null
-    )
-  }
-
-  export interface GetCellsBBoxOptions {
-    deep?: boolean
-  }
-
-  export function getCellsBBox(
-    cells: Cell[],
-    options: GetCellsBBoxOptions = {},
-  ) {
-    let bbox: Rectangle | null = null
-
-    for (let i = 0, ii = cells.length; i < ii; i += 1) {
-      const cell = cells[i]
-      let rect = cell.getBBox(options)
-      if (rect) {
-        if (cell.isNode()) {
-          const angle = cell.getAngle()
-          if (angle != null && angle !== 0) {
-            rect = rect.bbox(angle)
-          }
-        }
-        bbox = bbox == null ? rect : bbox.union(rect)
-      }
-    }
-
-    return bbox
-  }
-
-  export function deepClone(cell: Cell) {
-    const cells = [cell, ...cell.getDescendants({ deep: true })]
-    return Cell.cloneCells(cells)
-  }
-
-  export function cloneCells(cells: Cell[]) {
-    const inputs = ArrayExt.uniq(cells)
-    const cloneMap = inputs.reduce<KeyValue<Cell>>(
-      (map: KeyValue<Cell>, cell: Cell) => {
-        map[cell.id] = cell.clone()
-        return map
-      },
-      {},
-    )
-
-    inputs.forEach((cell: Cell) => {
-      const clone = cloneMap[cell.id]
-      if (clone.isEdge()) {
-        const sourceId = clone.getSourceCellId()
-        const targetId = clone.getTargetCellId()
-        if (sourceId && cloneMap[sourceId]) {
-          // Source is a node and the node is among the clones.
-          // Then update the source of the cloned edge.
-          clone.setSource({
-            ...clone.getSource(),
-            cell: cloneMap[sourceId].id,
-          })
-        }
-        if (targetId && cloneMap[targetId]) {
-          // Target is a node and the node is among the clones.
-          // Then update the target of the cloned edge.
-          clone.setTarget({
-            ...clone.getTarget(),
-            cell: cloneMap[targetId].id,
-          })
-        }
-      }
-
-      // Find the parent of the original cell
-      const parent = cell.getParent()
-      if (parent && cloneMap[parent.id]) {
-        clone.setParent(cloneMap[parent.id])
-      }
-
-      // Find the children of the original cell
-      const children = cell.getChildren()
-      if (children && children.length) {
-        const embeds = children.reduce<Cell[]>((memo: Cell[], child: Cell) => {
-          // Embedded cells that are not being cloned can not be carried
-          // over with other embedded cells.
-          if (cloneMap[child.id]) {
-            memo.push(cloneMap[child.id])
-          }
-          return memo
-        }, [])
-
-        if (embeds.length > 0) {
-          clone.setChildren(embeds)
-        }
-      }
-    })
-
-    return cloneMap
-  }
-}
-
-export namespace Cell {
-  export type Definition = typeof Cell
-
-  export type PropHook<M extends Metadata = Metadata, C extends Cell = Cell> = (
-    this: C,
-    metadata: M,
-  ) => M
-
-  export type PropHooks<M extends Metadata = Metadata, C extends Cell = Cell> =
-    | KeyValue<PropHook<M, C>>
-    | PropHook<M, C>
-    | PropHook<M, C>[]
-
-  export interface Config<M extends Metadata = Metadata, C extends Cell = Cell>
-    extends Defaults,
-      KeyValue {
-    constructorName?: string
-    overwrite?: boolean
-    propHooks?: PropHooks<M, C>
-    attrHooks?: AttrDefinitions
-  }
-}
-
-export namespace Cell {
-  Cell.config({
-    propHooks({ tools, ...metadata }) {
-      if (tools) {
-        metadata.tools = normalizeTools(tools)
-      }
-      return metadata
-    },
-  })
-}
+    return metadata
+  },
+})

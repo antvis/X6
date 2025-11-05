@@ -1,6 +1,6 @@
 import type { KeyValue } from '../../common'
-import type { Line, Point } from '../../geometry'
-import type { Edge } from '../../model/edge'
+import type { Line, Point, PointLike } from '../../geometry'
+import type { TerminalType } from '../../model/edge'
 import type { CellView } from '../../view/cell'
 import { Registry } from '../registry'
 import * as connectionPoints from './main'
@@ -10,7 +10,7 @@ export type ConnectionPointDefinition<T> = (
   view: CellView,
   magnet: SVGElement,
   options: T,
-  type: Edge.TerminalType,
+  type: TerminalType,
 ) => Point
 
 type CommonDefinition = ConnectionPointDefinition<KeyValue>
@@ -22,7 +22,7 @@ export interface ConnectionPointBaseOptions {
    *
    * Default is `0`.
    */
-  offset?: number | Point.PointLike
+  offset?: number | PointLike
 }
 
 export interface ConnectionPointStrokedOptions

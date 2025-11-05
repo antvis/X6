@@ -1,8 +1,33 @@
 import type { Dom, KeyValue, NumberExt } from '../common'
 import { Basecoat, disposable } from '../common'
-import { Point, Rectangle } from '../geometry'
-import type { Collection } from '../model'
+import { Point, Rectangle, type RectangleLike } from '../geometry'
+import type { PointLike } from '../geometry/point'
+import type {
+  CellGetCellsBBoxOptions,
+  CellRemoveOptions,
+  CellSetOptions,
+  CollectionRemoveOptions,
+  CollectionSetOptions,
+  EdgeMetadata,
+  EdgeSetOptions,
+  NodeMetadata,
+} from '../model'
 import { Cell, Edge, Model, Node } from '../model'
+import type {
+  AddOptions,
+  GetPredecessorsOptions,
+  ToJSONOptions,
+  FromJSONData,
+  FromJSONOptions,
+  GetConnectedEdgesOptions,
+  GetNeighborsOptions,
+  GetSubgraphOptions,
+  GetCellsInAreaOptions,
+  SearchIterator,
+  GetShortestPathOptions,
+  BatchName,
+  SearchOptions,
+} from '../model'
 import type { BackgroundOptions } from '../registry'
 import {
   attrRegistry,
@@ -27,25 +52,120 @@ import { BackgroundManager as Background } from './background'
 import { CoordManager as Coord } from './coord'
 import { CSSManager as Css } from './css'
 import { DefsManager as Defs } from './defs'
+import type { FilterOptions, GradientOptions, MarkerOptions } from './defs'
 import type { EventArgs } from './events'
-import { GridManager as Grid } from './grid'
+import { GridManager as Grid, GridDrawOptions } from './grid'
 import { HighlightManager as Highlight } from './highlight'
 import { MouseWheel as Wheel } from './mousewheel'
-import { Options as GraphOptions } from './options'
+import { GraphDefinition, GraphManual, getOptions } from './options'
 import { PanningManager as Panning } from './panning'
 import { SizeManager as Size } from './size'
 import { TransformManager as Transform } from './transform'
+import type {
+  GetContentAreaOptions,
+  ZoomOptions,
+  ScaleContentToFitOptions,
+  FitToContentOptions,
+  FitToContentFullOptions,
+  CenterOptions,
+  PositionContentOptions,
+  Direction,
+} from './transform'
 import { GraphView } from './view'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
+import type { KeyPoint } from '@/types'
 
 type FindViewsInAreaOptions = {
   strict?: boolean
 }
+
+export interface Options extends GraphManual {}
+
+export type GraphPlugin = {
+  name: string
+  init: (graph: Graph, ...options: any[]) => any
+  dispose: () => void
+
+  enable?: () => void
+  disable?: () => void
+  isEnabled?: () => boolean
+}
 export class Graph extends Basecoat<EventArgs> {
-  private installedPlugins: Set<Graph.Plugin> = new Set()
+  static toStringTag = `X6.${Graph.name}`
+  static isGraph(instance: any): instance is Graph {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Graph) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+
+    if (tag == null || tag === Graph.toStringTag) {
+      return true
+    }
+
+    return false
+  }
+  static render(options: Partial<Options>, data?: FromJSONData): Graph
+  static render(container: HTMLElement, data?: FromJSONData): Graph
+  static render(
+    options: Partial<Options> | HTMLElement,
+    data?: FromJSONData,
+  ): Graph {
+    const graph =
+      options instanceof HTMLElement
+        ? new Graph({ container: options })
+        : new Graph(options)
+
+    if (data != null) {
+      graph.fromJSON(data)
+    }
+
+    return graph
+  }
+  static registerNode = Node.registry.register
+  static registerEdge = Edge.registry.register
+  static registerView = CellView.registry.register
+  static registerAttr = attrRegistry.register
+  static registerGrid = gridRegistry.register
+  static registerFilter = filterRegistry.register
+  static registerNodeTool = nodeToolRegistry.register
+  static registerEdgeTool = edgeToolRegistry.register
+  static registerBackground = backgroundRegistry.register
+  static registerHighlighter = highlighterRegistry.register
+  static registerPortLayout = portLayoutRegistry.register
+  static registerPortLabelLayout = portLabelLayoutRegistry.register
+  static registerMarker = markerRegistry.register
+  static registerRouter = routerRegistry.register
+  static registerConnector = connectorRegistry.register
+  static registerAnchor = nodeAnchorRegistry.register
+  static registerEdgeAnchor = edgeAnchorRegistry.register
+  static registerConnectionPoint = connectionPointRegistry.register
+  static unregisterNode = Node.registry.unregister
+  static unregisterEdge = Edge.registry.unregister
+  static unregisterView = CellView.registry.unregister
+  static unregisterAttr = attrRegistry.unregister
+  static unregisterGrid = gridRegistry.unregister
+  static unregisterFilter = filterRegistry.unregister
+  static unregisterNodeTool = nodeToolRegistry.unregister
+  static unregisterEdgeTool = edgeToolRegistry.unregister
+  static unregisterBackground = backgroundRegistry.unregister
+  static unregisterHighlighter = highlighterRegistry.unregister
+  static unregisterPortLayout = portLayoutRegistry.unregister
+  static unregisterPortLabelLayout = portLabelLayoutRegistry.unregister
+  static unregisterMarker = markerRegistry.unregister
+  static unregisterRouter = routerRegistry.unregister
+  static unregisterConnector = connectorRegistry.unregister
+  static unregisterAnchor = nodeAnchorRegistry.unregister
+  static unregisterEdgeAnchor = edgeAnchorRegistry.unregister
+  static unregisterConnectionPoint = connectionPointRegistry.unregister
+  private installedPlugins: Set<GraphPlugin> = new Set()
   public model: Model
 
-  public readonly options: GraphOptions.Definition
+  public readonly options: GraphDefinition
   public readonly css: Css
   public readonly view: GraphView
   public readonly grid: Grid
@@ -68,9 +188,9 @@ export class Graph extends Basecoat<EventArgs> {
     return Graph.toStringTag
   }
 
-  constructor(options: Partial<GraphOptions.Manual>) {
+  constructor(options: Partial<GraphManual>) {
     super()
-    this.options = GraphOptions.get(options)
+    this.options = getOptions(options)
     this.css = new Css(this)
     this.view = new GraphView(this)
     this.defs = new Defs(this)
@@ -104,25 +224,25 @@ export class Graph extends Basecoat<EventArgs> {
     return cell.isEdge()
   }
 
-  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
+  resetCells(cells: Cell[], options: CollectionSetOptions = {}) {
     this.model.resetCells(cells, options)
     return this
   }
 
-  clearCells(options: Cell.SetOptions = {}) {
+  clearCells(options: CellSetOptions = {}) {
     this.model.clear(options)
     return this
   }
 
-  toJSON(options: Model.ToJSONOptions = {}) {
+  toJSON(options: ToJSONOptions = {}) {
     return this.model.toJSON(options)
   }
 
-  parseJSON(data: Model.FromJSONData) {
+  parseJSON(data: FromJSONData) {
     return this.model.parseJSON(data)
   }
 
-  fromJSON(data: Model.FromJSONData, options: Model.FromJSONOptions = {}) {
+  fromJSON(data: FromJSONData, options: FromJSONOptions = {}) {
     this.model.fromJSON(data, options)
     return this
   }
@@ -131,72 +251,72 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.getCell(id)
   }
 
-  addNode(metadata: Node.Metadata, options?: Model.AddOptions): Node
-  addNode(node: Node, options?: Model.AddOptions): Node
-  addNode(node: Node | Node.Metadata, options: Model.AddOptions = {}): Node {
+  addNode(metadata: NodeMetadata, options?: AddOptions): Node
+  addNode(node: Node, options?: AddOptions): Node
+  addNode(node: Node | NodeMetadata, options: AddOptions = {}): Node {
     return this.model.addNode(node, options)
   }
 
-  addNodes(nodes: (Node | Node.Metadata)[], options: Model.AddOptions = {}) {
+  addNodes(nodes: (Node | NodeMetadata)[], options: AddOptions = {}) {
     return this.addCell(
       nodes.map((node) => (Node.isNode(node) ? node : this.createNode(node))),
       options,
     )
   }
 
-  createNode(metadata: Node.Metadata) {
+  createNode(metadata: NodeMetadata) {
     return this.model.createNode(metadata)
   }
 
-  removeNode(nodeId: string, options?: Collection.RemoveOptions): Node | null
-  removeNode(node: Node, options?: Collection.RemoveOptions): Node | null
-  removeNode(node: Node | string, options: Collection.RemoveOptions = {}) {
+  removeNode(nodeId: string, options?: CollectionRemoveOptions): Node | null
+  removeNode(node: Node, options?: CollectionRemoveOptions): Node | null
+  removeNode(node: Node | string, options: CollectionRemoveOptions = {}) {
     return this.model.removeCell(node as Node, options) as Node
   }
 
-  addEdge(metadata: Edge.Metadata, options?: Model.AddOptions): Edge
-  addEdge(edge: Edge, options?: Model.AddOptions): Edge
-  addEdge(edge: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
+  addEdge(metadata: EdgeMetadata, options?: AddOptions): Edge
+  addEdge(edge: Edge, options?: AddOptions): Edge
+  addEdge(edge: Edge | EdgeMetadata, options: AddOptions = {}): Edge {
     return this.model.addEdge(edge, options)
   }
 
-  addEdges(edges: (Edge | Edge.Metadata)[], options: Model.AddOptions = {}) {
+  addEdges(edges: (Edge | EdgeMetadata)[], options: AddOptions = {}) {
     return this.addCell(
       edges.map((edge) => (Edge.isEdge(edge) ? edge : this.createEdge(edge))),
       options,
     )
   }
 
-  removeEdge(edgeId: string, options?: Collection.RemoveOptions): Edge | null
-  removeEdge(edge: Edge, options?: Collection.RemoveOptions): Edge | null
-  removeEdge(edge: Edge | string, options: Collection.RemoveOptions = {}) {
+  removeEdge(edgeId: string, options?: CollectionRemoveOptions): Edge | null
+  removeEdge(edge: Edge, options?: CollectionRemoveOptions): Edge | null
+  removeEdge(edge: Edge | string, options: CollectionRemoveOptions = {}) {
     return this.model.removeCell(edge as Edge, options) as Edge
   }
 
-  createEdge(metadata: Edge.Metadata) {
+  createEdge(metadata: EdgeMetadata) {
     return this.model.createEdge(metadata)
   }
 
-  addCell(cell: Cell | Cell[], options: Model.AddOptions = {}) {
+  addCell(cell: Cell | Cell[], options: AddOptions = {}) {
     this.model.addCell(cell, options)
     return this
   }
 
-  removeCell(cellId: string, options?: Collection.RemoveOptions): Cell | null
-  removeCell(cell: Cell, options?: Collection.RemoveOptions): Cell | null
-  removeCell(cell: Cell | string, options: Collection.RemoveOptions = {}) {
+  removeCell(cellId: string, options?: CollectionRemoveOptions): Cell | null
+  removeCell(cell: Cell, options?: CollectionRemoveOptions): Cell | null
+  removeCell(cell: Cell | string, options: CollectionRemoveOptions = {}) {
     return this.model.removeCell(cell as Cell, options)
   }
 
-  removeCells(cells: (Cell | string)[], options: Cell.RemoveOptions = {}) {
+  removeCells(cells: (Cell | string)[], options: CellRemoveOptions = {}) {
     return this.model.removeCells(cells, options)
   }
 
-  removeConnectedEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
+  removeConnectedEdges(cell: Cell | string, options: CellRemoveOptions = {}) {
     return this.model.removeConnectedEdges(cell, options)
   }
 
-  disconnectConnectedEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
+  disconnectConnectedEdges(cell: Cell | string, options: EdgeSetOptions = {}) {
     this.model.disconnectConnectedEdges(cell, options)
     return this
   }
@@ -248,7 +368,7 @@ export class Graph extends Basecoat<EventArgs> {
    */
   getConnectedEdges(
     cell: Cell | string,
-    options: Model.GetConnectedEdgesOptions = {},
+    options: GetConnectedEdgesOptions = {},
   ) {
     return this.model.getConnectedEdges(cell, options)
   }
@@ -287,37 +407,29 @@ export class Graph extends Basecoat<EventArgs> {
    * Returns all the neighbors of node in the graph. Neighbors are all
    * the nodes connected to node via either incoming or outgoing edge.
    */
-  getNeighbors(cell: Cell, options: Model.GetNeighborsOptions = {}) {
+  getNeighbors(cell: Cell, options: GetNeighborsOptions = {}) {
     return this.model.getNeighbors(cell, options)
   }
 
   /**
    * Returns `true` if `cell2` is a neighbor of `cell1`.
    */
-  isNeighbor(
-    cell1: Cell,
-    cell2: Cell,
-    options: Model.GetNeighborsOptions = {},
-  ) {
+  isNeighbor(cell1: Cell, cell2: Cell, options: GetNeighborsOptions = {}) {
     return this.model.isNeighbor(cell1, cell2, options)
   }
 
-  getSuccessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+  getSuccessors(cell: Cell, options: GetPredecessorsOptions = {}) {
     return this.model.getSuccessors(cell, options)
   }
 
   /**
    * Returns `true` if `cell2` is a successor of `cell1`.
    */
-  isSuccessor(
-    cell1: Cell,
-    cell2: Cell,
-    options: Model.GetPredecessorsOptions = {},
-  ) {
+  isSuccessor(cell1: Cell, cell2: Cell, options: GetPredecessorsOptions = {}) {
     return this.model.isSuccessor(cell1, cell2, options)
   }
 
-  getPredecessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+  getPredecessors(cell: Cell, options: GetPredecessorsOptions = {}) {
     return this.model.getPredecessors(cell, options)
   }
 
@@ -327,7 +439,7 @@ export class Graph extends Basecoat<EventArgs> {
   isPredecessor(
     cell1: Cell,
     cell2: Cell,
-    options: Model.GetPredecessorsOptions = {},
+    options: GetPredecessorsOptions = {},
   ) {
     return this.model.isPredecessor(cell1, cell2, options)
   }
@@ -344,7 +456,7 @@ export class Graph extends Basecoat<EventArgs> {
    * outgoing edges if both the edge terminal (source/target) are in the
    * cells array.
    */
-  getSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  getSubGraph(cells: Cell[], options: GetSubgraphOptions = {}) {
     return this.model.getSubGraph(cells, options)
   }
 
@@ -355,7 +467,7 @@ export class Graph extends Basecoat<EventArgs> {
    *
    * Returns a map of the form: { [original cell ID]: [clone] }.
    */
-  cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  cloneSubGraph(cells: Cell[], options: GetSubgraphOptions = {}) {
     return this.model.cloneSubGraph(cells, options)
   }
 
@@ -368,8 +480,8 @@ export class Graph extends Basecoat<EventArgs> {
    * Note that there can be more then one node as nodes might overlap.
    */
   getNodesFromPoint(x: number, y: number): Node[]
-  getNodesFromPoint(p: Point.PointLike): Node[]
-  getNodesFromPoint(x: number | Point.PointLike, y?: number) {
+  getNodesFromPoint(p: PointLike): Node[]
+  getNodesFromPoint(x: number | PointLike, y?: number) {
     return this.model.getNodesFromPoint(x as number, y as number)
   }
 
@@ -382,18 +494,15 @@ export class Graph extends Basecoat<EventArgs> {
     y: number,
     w: number,
     h: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Node[]
+  getNodesInArea(rect: RectangleLike, options?: GetCellsInAreaOptions): Node[]
   getNodesInArea(
-    rect: Rectangle.RectangleLike,
-    options?: Model.GetCellsInAreaOptions,
-  ): Node[]
-  getNodesInArea(
-    x: number | Rectangle.RectangleLike,
-    y?: number | Model.GetCellsInAreaOptions,
+    x: number | RectangleLike,
+    y?: number | GetCellsInAreaOptions,
     w?: number,
     h?: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Node[] {
     return this.model.getNodesInArea(
       x as number,
@@ -407,7 +516,7 @@ export class Graph extends Basecoat<EventArgs> {
   getNodesUnderNode(
     node: Node,
     options: {
-      by?: 'bbox' | Rectangle.KeyPoint
+      by?: 'bbox' | KeyPoint
     } = {},
   ) {
     return this.model.getNodesUnderNode(node, options)
@@ -415,8 +524,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   searchCell(
     cell: Cell,
-    iterator: Model.SearchIterator,
-    options: Model.SearchOptions = {},
+    iterator: SearchIterator,
+    options: SearchOptions = {},
   ) {
     this.model.search(cell, iterator, options)
     return this
@@ -429,7 +538,7 @@ export class Graph extends Basecoat<EventArgs> {
   getShortestPath(
     source: Cell | string,
     target: Cell | string,
-    options: Model.GetShortestPathOptions = {},
+    options: GetShortestPathOptions = {},
   ) {
     return this.model.getShortestPath(source, target, options)
   }
@@ -444,26 +553,22 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Returns the bounding box that surrounds all the given cells.
    */
-  getCellsBBox(cells: Cell[], options: Cell.GetCellsBBoxOptions = {}) {
+  getCellsBBox(cells: Cell[], options: CellGetCellsBBoxOptions = {}) {
     return this.model.getCellsBBox(cells, options)
   }
 
-  startBatch(name: string | Model.BatchName, data: KeyValue = {}) {
-    this.model.startBatch(name as Model.BatchName, data)
+  startBatch(name: string | BatchName, data: KeyValue = {}) {
+    this.model.startBatch(name as BatchName, data)
   }
 
-  stopBatch(name: string | Model.BatchName, data: KeyValue = {}) {
-    this.model.stopBatch(name as Model.BatchName, data)
+  stopBatch(name: string | BatchName, data: KeyValue = {}) {
+    this.model.stopBatch(name as BatchName, data)
   }
 
   batchUpdate<T>(execute: () => T, data?: KeyValue): T
+  batchUpdate<T>(name: string | BatchName, execute: () => T, data?: KeyValue): T
   batchUpdate<T>(
-    name: string | Model.BatchName,
-    execute: () => T,
-    data?: KeyValue,
-  ): T
-  batchUpdate<T>(
-    arg1: string | Model.BatchName | (() => T),
+    arg1: string | BatchName | (() => T),
     arg2?: (() => T) | KeyValue,
     arg3?: KeyValue,
   ): T {
@@ -492,7 +597,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.findViewByElem(ref)
   }
 
-  findViews(ref: Point.PointLike | Rectangle.RectangleLike) {
+  findViews(ref: PointLike | RectangleLike) {
     if (Rectangle.isRectangleLike(ref)) {
       return this.findViewsInArea(ref)
     }
@@ -517,8 +622,8 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   findViewsFromPoint(x: number, y: number): CellView[]
-  findViewsFromPoint(p: Point.PointLike): CellView[]
-  findViewsFromPoint(x: number | Point.PointLike, y?: number) {
+  findViewsFromPoint(p: PointLike): CellView[]
+  findViewsFromPoint(x: number | PointLike, y?: number) {
     const p = typeof x === 'number' ? { x, y: y as number } : x
     return this.renderer.findViewsFromPoint(p)
   }
@@ -531,11 +636,11 @@ export class Graph extends Basecoat<EventArgs> {
     options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
-    rect: Rectangle.RectangleLike,
+    rect: RectangleLike,
     options?: FindViewsInAreaOptions,
   ): CellView[]
   findViewsInArea(
-    x: number | Rectangle.RectangleLike,
+    x: number | RectangleLike,
     y?: number | FindViewsInAreaOptions,
     width?: number,
     height?: number,
@@ -596,8 +701,8 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   zoom(): number
-  zoom(factor: number, options?: Transform.ZoomOptions): this
-  zoom(factor?: number, options?: Transform.ZoomOptions) {
+  zoom(factor: number, options?: ZoomOptions): this
+  zoom(factor?: number, options?: ZoomOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       if (typeof factor === 'undefined') {
@@ -614,10 +719,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  zoomTo(
-    factor: number,
-    options: Omit<Transform.ZoomOptions, 'absolute'> = {},
-  ) {
+  zoomTo(factor: number, options: Omit<ZoomOptions, 'absolute'> = {}) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoom(factor, { ...options, absolute: true })
@@ -629,9 +731,8 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   zoomToRect(
-    rect: Rectangle.RectangleLike,
-    options: Transform.ScaleContentToFitOptions &
-      Transform.ScaleContentToFitOptions = {},
+    rect: RectangleLike,
+    options: ScaleContentToFitOptions & ScaleContentToFitOptions = {},
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -643,10 +744,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  zoomToFit(
-    options: Transform.GetContentAreaOptions &
-      Transform.ScaleContentToFitOptions = {},
-  ) {
+  zoomToFit(options: GetContentAreaOptions & ScaleContentToFitOptions = {}) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.zoomToFit(options)
@@ -695,11 +793,11 @@ export class Graph extends Basecoat<EventArgs> {
     return this.transform.getGraphArea()
   }
 
-  getContentArea(options: Transform.GetContentAreaOptions = {}) {
+  getContentArea(options: GetContentAreaOptions = {}) {
     return this.transform.getContentArea(options)
   }
 
-  getContentBBox(options: Transform.GetContentAreaOptions = {}) {
+  getContentBBox(options: GetContentAreaOptions = {}) {
     return this.transform.getContentBBox(options)
   }
 
@@ -707,19 +805,19 @@ export class Graph extends Basecoat<EventArgs> {
     gridWidth?: number,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Transform.FitToContentOptions,
+    options?: FitToContentOptions,
   ): Rectangle
-  fitToContent(options?: Transform.FitToContentFullOptions): Rectangle
+  fitToContent(options?: FitToContentFullOptions): Rectangle
   fitToContent(
-    gridWidth?: number | Transform.FitToContentFullOptions,
+    gridWidth?: number | FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Transform.FitToContentOptions,
+    options?: FitToContentOptions,
   ) {
     return this.transform.fitToContent(gridWidth, gridHeight, padding, options)
   }
 
-  scaleContentToFit(options: Transform.ScaleContentToFitOptions = {}) {
+  scaleContentToFit(options: ScaleContentToFitOptions = {}) {
     this.transform.scaleContentToFit(options)
     return this
   }
@@ -727,7 +825,7 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center(options?: Transform.CenterOptions) {
+  center(options?: CenterOptions) {
     return this.centerPoint(options)
   }
 
@@ -737,21 +835,13 @@ export class Graph extends Basecoat<EventArgs> {
    * only center along the specified dimension and keep the other coordinate
    * unchanged.
    */
+  centerPoint(x: number, y: null | number, options?: CenterOptions): this
+  centerPoint(x: null | number, y: number, options?: CenterOptions): this
+  centerPoint(optons?: CenterOptions): this
   centerPoint(
-    x: number,
-    y: null | number,
-    options?: Transform.CenterOptions,
-  ): this
-  centerPoint(
-    x: null | number,
-    y: number,
-    options?: Transform.CenterOptions,
-  ): this
-  centerPoint(optons?: Transform.CenterOptions): this
-  centerPoint(
-    x?: number | null | Transform.CenterOptions,
+    x?: number | null | CenterOptions,
     y?: number | null,
-    options?: Transform.CenterOptions,
+    options?: CenterOptions,
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -763,7 +853,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  centerContent(options?: Transform.PositionContentOptions) {
+  centerContent(options?: PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.centerContent(options)
@@ -774,7 +864,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  centerCell(cell: Cell, options?: Transform.PositionContentOptions) {
+  centerCell(cell: Cell, options?: PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.centerCell(cell, options)
@@ -786,10 +876,10 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   positionPoint(
-    point: Point.PointLike,
+    point: PointLike,
     x: number | string,
     y: number | string,
-    options: Transform.CenterOptions = {},
+    options: CenterOptions = {},
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -802,9 +892,9 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   positionRect(
-    rect: Rectangle.RectangleLike,
-    direction: Transform.Direction,
-    options?: Transform.CenterOptions,
+    rect: RectangleLike,
+    direction: Direction,
+    options?: CenterOptions,
   ) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
@@ -816,11 +906,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionCell(
-    cell: Cell,
-    direction: Transform.Direction,
-    options?: Transform.CenterOptions,
-  ) {
+  positionCell(cell: Cell, direction: Direction, options?: CenterOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.positionCell(cell, direction, options)
@@ -831,10 +917,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  positionContent(
-    pos: Transform.Direction,
-    options?: Transform.PositionContentOptions,
-  ) {
+  positionContent(pos: Direction, options?: PositionContentOptions) {
     const scroller = this.getPlugin<any>('scroller')
     if (scroller) {
       scroller.positionContent(pos, options)
@@ -849,18 +932,18 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region coord
 
-  snapToGrid(p: Point.PointLike): Point
+  snapToGrid(p: PointLike): Point
   snapToGrid(x: number, y: number): Point
-  snapToGrid(x: number | Point.PointLike, y?: number) {
+  snapToGrid(x: number | PointLike, y?: number) {
     return this.coord.snapToGrid(x, y)
   }
 
-  pageToLocal(rect: Rectangle.RectangleLike): Rectangle
+  pageToLocal(rect: RectangleLike): Rectangle
   pageToLocal(x: number, y: number, width: number, height: number): Rectangle
-  pageToLocal(p: Point.PointLike): Point
+  pageToLocal(p: PointLike): Point
   pageToLocal(x: number, y: number): Point
   pageToLocal(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -881,12 +964,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.pageToLocalPoint(x, y)
   }
 
-  localToPage(rect: Rectangle.RectangleLike): Rectangle
+  localToPage(rect: RectangleLike): Rectangle
   localToPage(x: number, y: number, width: number, height: number): Rectangle
-  localToPage(p: Point.PointLike): Point
+  localToPage(p: PointLike): Point
   localToPage(x: number, y: number): Point
   localToPage(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -907,12 +990,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.localToPagePoint(x, y)
   }
 
-  clientToLocal(rect: Rectangle.RectangleLike): Rectangle
+  clientToLocal(rect: RectangleLike): Rectangle
   clientToLocal(x: number, y: number, width: number, height: number): Rectangle
-  clientToLocal(p: Point.PointLike): Point
+  clientToLocal(p: PointLike): Point
   clientToLocal(x: number, y: number): Point
   clientToLocal(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -933,12 +1016,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.clientToLocalPoint(x, y)
   }
 
-  localToClient(rect: Rectangle.RectangleLike): Rectangle
+  localToClient(rect: RectangleLike): Rectangle
   localToClient(x: number, y: number, width: number, height: number): Rectangle
-  localToClient(p: Point.PointLike): Point
+  localToClient(p: PointLike): Point
   localToClient(x: number, y: number): Point
   localToClient(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -963,7 +1046,7 @@ export class Graph extends Basecoat<EventArgs> {
    * Transform the rectangle `rect` defined in the local coordinate system to
    * the graph coordinate system.
    */
-  localToGraph(rect: Rectangle.RectangleLike): Rectangle
+  localToGraph(rect: RectangleLike): Rectangle
   /**
    * Transform the rectangle `x`, `y`, `width`, `height` defined in the local
    * coordinate system to the graph coordinate system.
@@ -973,14 +1056,14 @@ export class Graph extends Basecoat<EventArgs> {
    * Transform the point `p` defined in the local coordinate system to
    * the graph coordinate system.
    */
-  localToGraph(p: Point.PointLike): Point
+  localToGraph(p: PointLike): Point
   /**
    * Transform the point `x`, `y` defined in the local coordinate system to
    * the graph coordinate system.
    */
   localToGraph(x: number, y: number): Point
   localToGraph(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -1001,12 +1084,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.localToGraphPoint(x, y)
   }
 
-  graphToLocal(rect: Rectangle.RectangleLike): Rectangle
+  graphToLocal(rect: RectangleLike): Rectangle
   graphToLocal(x: number, y: number, width: number, height: number): Rectangle
-  graphToLocal(p: Point.PointLike): Point
+  graphToLocal(p: PointLike): Point
   graphToLocal(x: number, y: number): Point
   graphToLocal(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -1026,12 +1109,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.graphToLocalPoint(x, y)
   }
 
-  clientToGraph(rect: Rectangle.RectangleLike): Rectangle
+  clientToGraph(rect: RectangleLike): Rectangle
   clientToGraph(x: number, y: number, width: number, height: number): Rectangle
-  clientToGraph(p: Point.PointLike): Point
+  clientToGraph(p: PointLike): Point
   clientToGraph(x: number, y: number): Point
   clientToGraph(
-    x: number | Point.PointLike | Rectangle.RectangleLike,
+    x: number | PointLike | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -1054,15 +1137,15 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region defs
 
-  defineFilter(options: Defs.FilterOptions) {
+  defineFilter(options: FilterOptions) {
     return this.defs.filter(options)
   }
 
-  defineGradient(options: Defs.GradientOptions) {
+  defineGradient(options: GradientOptions) {
     return this.defs.gradient(options)
   }
 
-  defineMarker(options: Defs.MarkerOptions) {
+  defineMarker(options: MarkerOptions) {
     return this.defs.marker(options)
   }
 
@@ -1094,7 +1177,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawGrid(options?: Grid.DrawGridOptions) {
+  drawGrid(options?: GridDrawOptions) {
     this.grid.draw(options)
     return this
   }
@@ -1231,7 +1314,7 @@ export class Graph extends Basecoat<EventArgs> {
   // #region plugin
 
   handleScrollerPluginStateChange(
-    plugin: Graph.Plugin,
+    plugin: GraphPlugin,
     isBeingEnabled: boolean,
   ) {
     if (plugin.name === 'scroller') {
@@ -1243,7 +1326,7 @@ export class Graph extends Basecoat<EventArgs> {
     }
   }
 
-  use(plugin: Graph.Plugin, ...options: any[]) {
+  use(plugin: GraphPlugin, ...options: any[]) {
     if (!this.installedPlugins.has(plugin)) {
       this.installedPlugins.add(plugin)
       plugin.init(this, ...options)
@@ -1252,13 +1335,13 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  getPlugin<T extends Graph.Plugin>(pluginName: string): T | undefined {
+  getPlugin<T extends GraphPlugin>(pluginName: string): T | undefined {
     return Array.from(this.installedPlugins).find(
       (plugin) => plugin.name === pluginName,
     ) as T
   }
 
-  getPlugins<T extends Graph.Plugin[]>(pluginName: string[]): T | undefined {
+  getPlugins<T extends GraphPlugin[]>(pluginName: string[]): T | undefined {
     return Array.from(this.installedPlugins).filter((plugin) =>
       pluginName.includes(plugin.name),
     ) as T
@@ -1337,123 +1420,4 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
-}
-
-export namespace Graph {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  export import View = GraphView
-  export import MouseWheel = Wheel
-  export import DefsManager = Defs
-  export import GridManager = Grid
-  export import CoordManager = Coord
-  export import TransformManager = Transform
-  export import HighlightManager = Highlight
-  export import BackgroundManager = Background
-  export import PanningManager = Panning
-}
-
-export namespace Graph {
-  export interface Options extends GraphOptions.Manual {}
-}
-
-export namespace Graph {
-  export const toStringTag = `X6.${Graph.name}`
-
-  export function isGraph(instance: any): instance is Graph {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Graph) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-
-    if (tag == null || tag === toStringTag) {
-      return true
-    }
-
-    return false
-  }
-}
-
-export namespace Graph {
-  export function render(
-    options: Partial<Options>,
-    data?: Model.FromJSONData,
-  ): Graph
-  export function render(
-    container: HTMLElement,
-    data?: Model.FromJSONData,
-  ): Graph
-  export function render(
-    options: Partial<Options> | HTMLElement,
-    data?: Model.FromJSONData,
-  ): Graph {
-    const graph =
-      options instanceof HTMLElement
-        ? new Graph({ container: options })
-        : new Graph(options)
-
-    if (data != null) {
-      graph.fromJSON(data)
-    }
-
-    return graph
-  }
-}
-
-export namespace Graph {
-  export const registerNode = Node.registry.register
-  export const registerEdge = Edge.registry.register
-  export const registerView = CellView.registry.register
-  export const registerAttr = attrRegistry.register
-  export const registerGrid = gridRegistry.register
-  export const registerFilter = filterRegistry.register
-  export const registerNodeTool = nodeToolRegistry.register
-  export const registerEdgeTool = edgeToolRegistry.register
-  export const registerBackground = backgroundRegistry.register
-  export const registerHighlighter = highlighterRegistry.register
-  export const registerPortLayout = portLayoutRegistry.register
-  export const registerPortLabelLayout = portLabelLayoutRegistry.register
-  export const registerMarker = markerRegistry.register
-  export const registerRouter = routerRegistry.register
-  export const registerConnector = connectorRegistry.register
-  export const registerAnchor = nodeAnchorRegistry.register
-  export const registerEdgeAnchor = edgeAnchorRegistry.register
-  export const registerConnectionPoint = connectionPointRegistry.register
-}
-
-export namespace Graph {
-  export const unregisterNode = Node.registry.unregister
-  export const unregisterEdge = Edge.registry.unregister
-  export const unregisterView = CellView.registry.unregister
-  export const unregisterAttr = attrRegistry.unregister
-  export const unregisterGrid = gridRegistry.unregister
-  export const unregisterFilter = filterRegistry.unregister
-  export const unregisterNodeTool = nodeToolRegistry.unregister
-  export const unregisterEdgeTool = edgeToolRegistry.unregister
-  export const unregisterBackground = backgroundRegistry.unregister
-  export const unregisterHighlighter = highlighterRegistry.unregister
-  export const unregisterPortLayout = portLayoutRegistry.unregister
-  export const unregisterPortLabelLayout = portLabelLayoutRegistry.unregister
-  export const unregisterMarker = markerRegistry.unregister
-  export const unregisterRouter = routerRegistry.unregister
-  export const unregisterConnector = connectorRegistry.unregister
-  export const unregisterAnchor = nodeAnchorRegistry.unregister
-  export const unregisterEdgeAnchor = edgeAnchorRegistry.unregister
-  export const unregisterConnectionPoint = connectionPointRegistry.unregister
-}
-
-export namespace Graph {
-  export type Plugin = {
-    name: string
-    init: (graph: Graph, ...options: any[]) => any
-    dispose: () => void
-
-    enable?: () => void
-    disable?: () => void
-    isEnabled?: () => boolean
-  }
 }
