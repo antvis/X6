@@ -9,6 +9,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@': path.resolve(__dirname, '../src'),
       '@antv/x6': path.resolve(__dirname, '../src/index.ts'),
     },
   },
