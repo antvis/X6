@@ -4,7 +4,7 @@ import type {
   GridDefinition,
   GridManualItem,
   GridNativeItem,
-  GridOptions as O,
+  GridOptions as GridOptionsFromRegistry,
   GridOptionsMap,
 } from '../registry'
 import { Base } from './base'
@@ -74,7 +74,11 @@ export class GridManager extends Base {
     this.update()
   }
 
-  update(options: Partial<O> | Partial<O>[] = {}) {
+  update(
+    options:
+      | Partial<GridOptionsFromRegistry>
+      | Partial<GridOptionsFromRegistry>[] = {},
+  ) {
     const gridSize = this.grid.size
     if (gridSize <= 1 || !this.grid.visible) {
       return this.clear()

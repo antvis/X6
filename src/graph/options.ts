@@ -356,7 +356,7 @@ export function getOptions(options: Partial<GraphManual>) {
     const val = options[key]
     if (typeof val === 'boolean') {
       result[key].enabled = val
-    } else {
+    } else if (val != null) {
       result[key] = {
         ...result[key],
         ...(val as any),
