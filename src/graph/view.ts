@@ -6,7 +6,137 @@ import { Markup, View } from '../view'
 import type { CellView } from '../view'
 import type { MarkupJSONMarkup } from '../view/markup'
 
+interface Moving {
+  mouseMovedCount?: number
+  startPosition?: { x: number; y: number }
+  currentView?: CellView | null
+}
+
+const prefixCls = Config.prefixCls + '-graph'
 export class GraphView extends View {
+  static markup: MarkupJSONMarkup[] = [
+    {
+      ns: Dom.ns.xhtml,
+      tagName: 'div',
+      selector: 'background',
+      className: `${prefixCls}-background`,
+    },
+    {
+      ns: Dom.ns.xhtml,
+      tagName: 'div',
+      selector: 'grid',
+      className: `${prefixCls}-grid`,
+    },
+    {
+      ns: Dom.ns.svg,
+      tagName: 'svg',
+      selector: 'svg',
+      className: `${prefixCls}-svg`,
+      attrs: {
+        width: '100%',
+        height: '100%',
+        'xmlns:xlink': Dom.ns.xlink,
+      },
+      children: [
+        {
+          tagName: 'defs',
+          selector: 'defs',
+        },
+        {
+          tagName: 'g',
+          selector: 'viewport',
+          className: `${prefixCls}-svg-viewport`,
+          children: [
+            {
+              tagName: 'g',
+              selector: 'primer',
+              className: `${prefixCls}-svg-primer`,
+            },
+            {
+              tagName: 'g',
+              selector: 'stage',
+              className: `${prefixCls}-svg-stage`,
+            },
+            {
+              tagName: 'g',
+              selector: 'decorator',
+              className: `${prefixCls}-svg-decorator`,
+            },
+            {
+              tagName: 'g',
+              selector: 'overlay',
+              className: `${prefixCls}-svg-overlay`,
+            },
+          ],
+        },
+      ],
+    },
+  ]
+
+  static snapshoot(elem: Element) {
+    const cloned = elem.cloneNode() as Element
+    elem.childNodes.forEach((child) => cloned.appendChild(child))
+
+    return () => {
+      // remove all children
+      Dom.empty(elem)
+
+      // remove all attributes
+      while (elem.attributes.length > 0) {
+        elem.removeAttribute(elem.attributes[0].name)
+      }
+
+      // restore attributes
+      for (let i = 0, l = cloned.attributes.length; i < l; i += 1) {
+        const attr = cloned.attributes[i]
+        elem.setAttribute(attr.name, attr.value)
+      }
+
+      // restore children
+      cloned.childNodes.forEach((child) => elem.appendChild(child))
+    }
+  }
+  static events = {
+    dblclick: 'onDblClick',
+    contextmenu: 'onContextMenu',
+    touchstart: 'onMouseDown',
+    mousedown: 'onMouseDown',
+    mouseover: 'onMouseOver',
+    mouseout: 'onMouseOut',
+    mouseenter: 'onMouseEnter',
+    mouseleave: 'onMouseLeave',
+    mousewheel: 'onMouseWheel',
+    DOMMouseScroll: 'onMouseWheel',
+    [`mouseenter  .${prefixCls}-cell`]: 'onMouseEnter',
+    [`mouseleave  .${prefixCls}-cell`]: 'onMouseLeave',
+    [`mouseenter  .${prefixCls}-cell-tools`]: 'onMouseEnter',
+    [`mouseleave  .${prefixCls}-cell-tools`]: 'onMouseLeave',
+    [`mousedown   .${prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`touchstart  .${prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`mousedown   .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
+    [`touchstart  .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
+    [`dblclick    .${prefixCls}-cell [magnet]`]: 'onMagnetDblClick',
+    [`contextmenu .${prefixCls}-cell [magnet]`]: 'onMagnetContextMenu',
+    [`mousedown   .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`touchstart  .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`dblclick    .${prefixCls}-cell [data-magnet]`]: 'onMagnetDblClick',
+    [`contextmenu .${prefixCls}-cell [data-magnet]`]: 'onMagnetContextMenu',
+    [`mousedown   .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
+    [`touchstart  .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
+    [`dragstart   .${prefixCls}-cell image`]: 'onImageDragStart',
+    [`mousedown   .${prefixCls}-edge .${prefixCls}-edge-label`]:
+      'onLabelMouseDown',
+    [`touchstart  .${prefixCls}-edge .${prefixCls}-edge-label`]:
+      'onLabelMouseDown',
+  }
+  static documentEvents = {
+    mousemove: 'onMouseMove',
+    touchmove: 'onMouseMove',
+    mouseup: 'onMouseUp',
+    touchend: 'onMouseUp',
+    touchcancel: 'onMouseUp',
+  }
+
   public readonly container: HTMLElement
   public readonly background: HTMLDivElement
   public readonly grid: HTMLDivElement
@@ -182,7 +312,7 @@ export class GraphView extends View {
     if (e.data == null) {
       e.data = {}
     }
-    this.setEventData<EventData.Moving>(e, {
+    this.setEventData<Moving>(e, {
       currentView: view || null,
       mouseMovedCount: 0,
       startPosition: {
@@ -196,7 +326,7 @@ export class GraphView extends View {
   }
 
   getMouseMovedCount(e: Dom.EventObject) {
-    const data = this.getEventData<EventData.Moving>(e)
+    const data = this.getEventData<Moving>(e)
     return data.mouseMovedCount || 0
   }
 
@@ -234,7 +364,7 @@ export class GraphView extends View {
   }
 
   protected onMouseMove(evt: Dom.MouseMoveEvent) {
-    const data = this.getEventData<EventData.Moving>(evt)
+    const data = this.getEventData<Moving>(evt)
 
     const startPosition = data.startPosition
     if (
@@ -279,7 +409,7 @@ export class GraphView extends View {
       normalized.clientX,
       normalized.clientY,
     )
-    const data = this.getEventData<EventData.Moving>(e)
+    const data = this.getEventData<Moving>(e)
     const view = data.currentView
     if (view) {
       view.onMouseUp(normalized, localPoint.x, localPoint.y)
@@ -521,150 +651,5 @@ export class GraphView extends View {
     this.undelegateDocumentEvents()
     this.restore()
     this.restore = () => {}
-  }
-}
-
-export namespace GraphView {
-  export type SortType = 'none' | 'approx' | 'exact'
-}
-
-export namespace GraphView {
-  const prefixCls = `${Config.prefixCls}-graph`
-
-  export const markup: MarkupJSONMarkup[] = [
-    {
-      ns: Dom.ns.xhtml,
-      tagName: 'div',
-      selector: 'background',
-      className: `${prefixCls}-background`,
-    },
-    {
-      ns: Dom.ns.xhtml,
-      tagName: 'div',
-      selector: 'grid',
-      className: `${prefixCls}-grid`,
-    },
-    {
-      ns: Dom.ns.svg,
-      tagName: 'svg',
-      selector: 'svg',
-      className: `${prefixCls}-svg`,
-      attrs: {
-        width: '100%',
-        height: '100%',
-        'xmlns:xlink': Dom.ns.xlink,
-      },
-      children: [
-        {
-          tagName: 'defs',
-          selector: 'defs',
-        },
-        {
-          tagName: 'g',
-          selector: 'viewport',
-          className: `${prefixCls}-svg-viewport`,
-          children: [
-            {
-              tagName: 'g',
-              selector: 'primer',
-              className: `${prefixCls}-svg-primer`,
-            },
-            {
-              tagName: 'g',
-              selector: 'stage',
-              className: `${prefixCls}-svg-stage`,
-            },
-            {
-              tagName: 'g',
-              selector: 'decorator',
-              className: `${prefixCls}-svg-decorator`,
-            },
-            {
-              tagName: 'g',
-              selector: 'overlay',
-              className: `${prefixCls}-svg-overlay`,
-            },
-          ],
-        },
-      ],
-    },
-  ]
-
-  export function snapshoot(elem: Element) {
-    const cloned = elem.cloneNode() as Element
-    elem.childNodes.forEach((child) => cloned.appendChild(child))
-
-    return () => {
-      // remove all children
-      Dom.empty(elem)
-
-      // remove all attributes
-      while (elem.attributes.length > 0) {
-        elem.removeAttribute(elem.attributes[0].name)
-      }
-
-      // restore attributes
-      for (let i = 0, l = cloned.attributes.length; i < l; i += 1) {
-        const attr = cloned.attributes[i]
-        elem.setAttribute(attr.name, attr.value)
-      }
-
-      // restore children
-      cloned.childNodes.forEach((child) => elem.appendChild(child))
-    }
-  }
-}
-
-export namespace GraphView {
-  const prefixCls = Config.prefixCls
-
-  export const events = {
-    dblclick: 'onDblClick',
-    contextmenu: 'onContextMenu',
-    touchstart: 'onMouseDown',
-    mousedown: 'onMouseDown',
-    mouseover: 'onMouseOver',
-    mouseout: 'onMouseOut',
-    mouseenter: 'onMouseEnter',
-    mouseleave: 'onMouseLeave',
-    mousewheel: 'onMouseWheel',
-    DOMMouseScroll: 'onMouseWheel',
-    [`mouseenter  .${prefixCls}-cell`]: 'onMouseEnter',
-    [`mouseleave  .${prefixCls}-cell`]: 'onMouseLeave',
-    [`mouseenter  .${prefixCls}-cell-tools`]: 'onMouseEnter',
-    [`mouseleave  .${prefixCls}-cell-tools`]: 'onMouseLeave',
-    [`mousedown   .${prefixCls}-cell [event]`]: 'onCustomEvent',
-    [`touchstart  .${prefixCls}-cell [event]`]: 'onCustomEvent',
-    [`mousedown   .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
-    [`touchstart  .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
-    [`dblclick    .${prefixCls}-cell [magnet]`]: 'onMagnetDblClick',
-    [`contextmenu .${prefixCls}-cell [magnet]`]: 'onMagnetContextMenu',
-    [`mousedown   .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
-    [`touchstart  .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
-    [`dblclick    .${prefixCls}-cell [data-magnet]`]: 'onMagnetDblClick',
-    [`contextmenu .${prefixCls}-cell [data-magnet]`]: 'onMagnetContextMenu',
-    [`mousedown   .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
-    [`touchstart  .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
-    [`dragstart   .${prefixCls}-cell image`]: 'onImageDragStart',
-    [`mousedown   .${prefixCls}-edge .${prefixCls}-edge-label`]:
-      'onLabelMouseDown',
-    [`touchstart  .${prefixCls}-edge .${prefixCls}-edge-label`]:
-      'onLabelMouseDown',
-  }
-
-  export const documentEvents = {
-    mousemove: 'onMouseMove',
-    touchmove: 'onMouseMove',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  }
-}
-
-namespace EventData {
-  export interface Moving {
-    mouseMovedCount?: number
-    startPosition?: { x: number; y: number }
-    currentView?: CellView | null
   }
 }

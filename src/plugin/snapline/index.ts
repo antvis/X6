@@ -1,11 +1,11 @@
 import { CssLoader, Disposable, disposable } from '../../common'
-import type { EventArgs, Graph } from '../../graph'
+import type { EventArgs, Graph, GraphPlugin } from '../../graph'
 import { SnaplineImpl } from './snapline'
 import { content } from './style/raw'
 import type { SnaplineImplFilter, SnaplineOptions } from './type'
 import './api'
 
-export class Snapline extends Disposable implements Graph.Plugin {
+export class Snapline extends Disposable implements GraphPlugin {
   public name = 'snapline'
   private snaplineImpl: SnaplineImpl
   public options: SnaplineOptions

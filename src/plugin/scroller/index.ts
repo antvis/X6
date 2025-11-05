@@ -8,7 +8,14 @@ import {
 } from '../../common'
 import { Config } from '../../config'
 import type { Point, Rectangle, PointLike, RectangleLike } from '../../geometry'
-import type { BackgroundManager, Graph, TransformManager } from '../../graph'
+import type {
+  BackgroundManagerOptions,
+  Graph,
+  ZoomOptions,
+  ScaleContentToFitOptions,
+  GetContentAreaOptions,
+  GraphPlugin,
+} from '../../graph'
 import type { Cell } from '../../model'
 import { ScrollerImpl, getOptions } from './scroller'
 import type {
@@ -38,7 +45,7 @@ interface Options extends SOptions {
 export type ScrollerOptions = Omit<Options, 'graph'>
 export class Scroller
   extends Basecoat<ScrollerEventArgs>
-  implements Graph.Plugin
+  implements GraphPlugin
 {
   public name = 'scroller'
   public options: ScrollerOptions
@@ -92,8 +99,8 @@ export class Scroller
   }
 
   zoom(): number
-  zoom(factor: number, options?: TransformManager.ZoomOptions): this
-  zoom(factor?: number, options?: TransformManager.ZoomOptions) {
+  zoom(factor: number, options?: ZoomOptions): this
+  zoom(factor?: number, options?: ZoomOptions) {
     if (typeof factor === 'undefined') {
       return this.scrollerImpl.zoom()
     }
@@ -101,27 +108,20 @@ export class Scroller
     return this
   }
 
-  zoomTo(
-    factor: number,
-    options: Omit<TransformManager.ZoomOptions, 'absolute'> = {},
-  ) {
+  zoomTo(factor: number, options: Omit<ZoomOptions, 'absolute'> = {}) {
     this.scrollerImpl.zoom(factor, { ...options, absolute: true })
     return this
   }
 
   zoomToRect(
     rect: RectangleLike,
-    options: TransformManager.ScaleContentToFitOptions &
-      TransformManager.ScaleContentToFitOptions = {},
+    options: ScaleContentToFitOptions & ScaleContentToFitOptions = {},
   ) {
     this.scrollerImpl.zoomToRect(rect, options)
     return this
   }
 
-  zoomToFit(
-    options: TransformManager.GetContentAreaOptions &
-      TransformManager.ScaleContentToFitOptions = {},
-  ) {
+  zoomToFit(options: GetContentAreaOptions & ScaleContentToFitOptions = {}) {
     this.scrollerImpl.zoomToFit(options)
     return this
   }
@@ -182,7 +182,7 @@ export class Scroller
     return this
   }
 
-  drawBackground(options?: BackgroundManager.Options, onGraph?: boolean) {
+  drawBackground(options?: BackgroundManagerOptions, onGraph?: boolean) {
     if (this.graph.options.background == null || !onGraph) {
       this.scrollerImpl.backgroundManager.draw(options)
     }

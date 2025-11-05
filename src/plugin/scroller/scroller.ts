@@ -17,10 +17,14 @@ import {
 } from '../../geometry'
 import {
   BackgroundManager,
+  type BackgroundManagerOptions,
   type EventArgs as TEventArgs,
   type Graph,
   GraphView,
-  type TransformManager,
+  FitToContentFullOptions,
+  ZoomOptions,
+  ScaleContentToFitOptions,
+  GetContentAreaOptions,
 } from '../../graph'
 import type { Cell } from '../../model'
 import { View } from '../../view'
@@ -42,24 +46,20 @@ export interface Options {
   pageBreak?: boolean
   minVisibleWidth?: number
   minVisibleHeight?: number
-  background?: false | BackgroundManager.Options
+  background?: false | BackgroundManagerOptions
   autoResize?: boolean
   padding?:
     | NumberExt.SideOptions
     | ((this: ScrollerImpl, scroller: ScrollerImpl) => NumberExt.SideOptions)
   autoResizeOptions?:
-    | TransformManager.FitToContentFullOptions
-    | ((
-        this: ScrollerImpl,
-        scroller: ScrollerImpl,
-      ) => TransformManager.FitToContentFullOptions)
+    | FitToContentFullOptions
+    | ((this: ScrollerImpl, scroller: ScrollerImpl) => FitToContentFullOptions)
 }
 export interface CenterOptions {
   padding?: NumberExt.SideOptions
 }
 
-export type PositionContentOptions = TransformManager.GetContentAreaOptions &
-  CenterOptions
+export type PositionContentOptions = GetContentAreaOptions & CenterOptions
 
 export type Direction =
   | 'center'
@@ -467,7 +467,7 @@ export class ScrollerImpl extends View<EventArgs> {
       resizeOptions = FunctionExt.call(resizeOptions, this, this)
     }
 
-    const options: TransformManager.FitToContentFullOptions = {
+    const options: FitToContentFullOptions = {
       gridWidth: this.options.pageWidth,
       gridHeight: this.options.pageHeight,
       allowNewOrigin: 'negative',
@@ -477,9 +477,7 @@ export class ScrollerImpl extends View<EventArgs> {
     this.graph.fitToContent(this.getFitToContentOptions(options))
   }
 
-  protected getFitToContentOptions(
-    options: TransformManager.FitToContentFullOptions,
-  ) {
+  protected getFitToContentOptions(options: FitToContentFullOptions) {
     const sx = this.sx
     const sy = this.sy
 
@@ -779,8 +777,8 @@ export class ScrollerImpl extends View<EventArgs> {
   }
 
   zoom(): number
-  zoom(factor: number, options?: TransformManager.ZoomOptions): this
-  zoom(factor?: number, options?: TransformManager.ZoomOptions) {
+  zoom(factor: number, options?: ZoomOptions): this
+  zoom(factor?: number, options?: ZoomOptions) {
     if (factor == null) {
       return this.sx
     }
@@ -839,10 +837,7 @@ export class ScrollerImpl extends View<EventArgs> {
     return this
   }
 
-  zoomToRect(
-    rect: RectangleLike,
-    options: TransformManager.ScaleContentToFitOptions = {},
-  ) {
+  zoomToRect(rect: RectangleLike, options: ScaleContentToFitOptions = {}) {
     const area = Rectangle.create(rect)
     const graph = this.graph
 
@@ -866,10 +861,7 @@ export class ScrollerImpl extends View<EventArgs> {
     return this
   }
 
-  zoomToFit(
-    options: TransformManager.GetContentAreaOptions &
-      TransformManager.ScaleContentToFitOptions = {},
-  ) {
+  zoomToFit(options: GetContentAreaOptions & ScaleContentToFitOptions = {}) {
     return this.zoomToRect(this.graph.getContentArea(options), options)
   }
 
@@ -1229,7 +1221,7 @@ export class ScrollerImplBackground extends BackgroundManager {
     this.graph.on('translate', this.update, this)
   }
 
-  protected updateBackgroundOptions(options?: BackgroundManager.Options) {
+  protected updateBackgroundOptions(options?: BackgroundManagerOptions) {
     this.scroller.options.background = options
   }
 }

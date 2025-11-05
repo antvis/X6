@@ -16,7 +16,6 @@ import {
   PointLike,
 } from '../../geometry'
 import type { Graph } from '../../graph'
-import type { Options as GraphOptions } from '../../graph/options'
 import {
   Edge,
   EdgeSetOptions,
@@ -29,6 +28,10 @@ import {
   TerminalPointData,
   TerminalType,
 } from '../../model/edge'
+import type {
+  OnEdgeLabelRenderedArgs,
+  ValidateConnectionArgs,
+} from '../../graph/options'
 import {
   type ConnectionPointManualItem,
   type ConnectorBaseOptions,
@@ -45,7 +48,6 @@ import {
 } from '../../registry'
 import { CellView } from '../cell'
 import {
-  Markup,
   type MarkupJSONMarkup,
   type MarkupSelectors,
   type MarkupType,
@@ -84,7 +86,7 @@ export class EdgeView<
   protected labelCache: { [index: number]: Element }
   protected labelSelectors: { [index: number]: MarkupSelectors }
   protected labelDestroyFn: {
-    [index: number]: (args: GraphOptions.OnEdgeLabelRenderedArgs) => void
+    [index: number]: (args: OnEdgeLabelRenderedArgs) => void
   } = {}
 
   public static isEdgeView(instance: any): instance is EdgeView {
@@ -1773,10 +1775,7 @@ export class EdgeView<
 
     let valid = true
     const doValidate = (
-      validate: (
-        this: Graph,
-        args: GraphOptions.ValidateConnectionArgs,
-      ) => boolean,
+      validate: (this: Graph, args: ValidateConnectionArgs) => boolean,
     ) => {
       const sourcePort =
         terminalType === 'source'
