@@ -76,7 +76,7 @@ graph.fromJSON(newModel)
 
 #### 布局流程
 
-- 选定一种布局方式，比如上面的 `grid`，如果不知道使用哪种布局方式，可以在[这里](https://g6.antv.antgroup.com/en/examples#layout-grid) 看效果图，布局配置可以参考对应的文档。
+- 选定一种布局方式，比如上面的 `grid`，如果不知道使用哪种布局方式，可以在[这里](https://g6.antv.antgroup.com/examples#layout-grid) 看效果图，布局配置可以参考对应的文档。
 - 构造布局数据，其实布局所需要的数据很简单：
 
 ```ts
