@@ -2,6 +2,11 @@
 /** biome-ignore-all lint/complexity/noThisInStatic: <存量的问题biome修了运行的实际效果就变了，所以先忽略> */
 import type { NonUndefined } from 'utility-types'
 import {
+  Animation as Animation2,
+  type EffectTiming,
+  KeyframeEffect,
+} from '../animation'
+import {
   ArrayExt,
   Basecoat,
   disposable,
@@ -1253,7 +1258,17 @@ export class Cell<
 
   // #endregion
 
-  // #region transition
+  // #region animation
+  // TODO: 移除旧的 animation
+  animate(
+    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+    options?: number | EffectTiming,
+  ) {
+    const effect = new KeyframeEffect(this, keyframes, options)
+    const animation = new Animation2(effect)
+    animation.play()
+    return animation
+  }
 
   transition<K extends keyof Properties>(
     path: K,
