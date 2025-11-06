@@ -417,15 +417,12 @@ export class Selection
     // 判断框选和画布拖拽平移触发条件是否有相同事件类型（eventTypes）
     const hasConflictTrigger = selTypes.some((t) => panTypes.includes(t))
 
-    const panModsComparable = panOpts.modifiers as unknown as
-      | string
-      | ModifierKey[]
-      | null
+    const panModsComparable = panOpts.modifiers
     const selModsComparable = this.options.modifiers
 
     if (
       hasConflictTrigger &&
-      isModifierKeyEqual(panModsComparable ?? null, selModsComparable ?? null)
+      isModifierKeyEqual(panModsComparable, selModsComparable)
     ) {
       this.graph.panning.disablePanning()
     }
