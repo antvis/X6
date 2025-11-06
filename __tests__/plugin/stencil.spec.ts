@@ -225,15 +225,13 @@ describe('plugin/stencil', () => {
     const titleEle = document.querySelector(
       `.${stencil.prefixClassName(ClassNames.title)}`,
     ) as HTMLElement
-    const collapseSpy = vi.spyOn(stencil, 'collapseGroups')
     await sleep(500)
-    titleEle?.click()
-    expect(collapseSpy).toHaveBeenCalled()
+    titleEle?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(Dom.hasClass(stencil.container, 'collapsed')).toBe(true)
 
-    const expandSpy = vi.spyOn(stencil, 'expandGroups')
     await sleep(500)
-    titleEle?.click()
-    expect(expandSpy).toHaveBeenCalled()
+    titleEle?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(Dom.hasClass(stencil.container, 'collapsed')).toBe(false)
 
     const groupTitleEle = document.querySelector(
       `.${stencil.prefixClassName(ClassNames.groupTitle)}`,
@@ -248,6 +246,95 @@ describe('plugin/stencil', () => {
     await sleep(200)
     groupTitleEle?.click()
     expect(Dom.hasClass(stencil.container, 'collapsed')).toBe(false)
+
+    cleanup()
+    destroy()
+  })
+
+  it('should disable panning while dragging node in stencil and restore on mouseup', async () => {
+    const { div, destroy } = createDivElement()
+    const { graph, cleanup } = createTestGraph()
+
+    const stencil = new Stencil({
+      target: graph,
+      groups: [{ name: 'group1' }],
+      stencilGraphOptions: { panning: true },
+    })
+
+    const n1 = graph.addNode({ id: 's1', x: 10, y: 10, width: 40, height: 24 })
+    stencil.load([n1], 'group1')
+    div.appendChild(stencil.container)
+
+    const innerGraph = (stencil as any).getGraph('group1')
+    expect(innerGraph).toBeTruthy()
+    expect(innerGraph.isPannable()).toBe(true)
+
+    const downEvt = new MouseEvent('mousedown', { bubbles: true })
+    ;(innerGraph as any).trigger('cell:mousedown', { e: downEvt, node: n1 })
+
+    expect(innerGraph.isPannable()).toBe(false)
+
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+    expect(innerGraph.isPannable()).toBe(true)
+
+    cleanup()
+    destroy()
+  })
+
+  it('should not change panning state if initially disabled', async () => {
+    const { div, destroy } = createDivElement()
+    const { graph, cleanup } = createTestGraph()
+
+    const stencil = new Stencil({
+      target: graph,
+      groups: [{ name: 'group1' }],
+      // 显式关闭 panning
+      stencilGraphOptions: { panning: false },
+    })
+
+    const n1 = graph.addNode({ id: 's1', x: 10, y: 10, width: 40, height: 24 })
+    stencil.load([n1], 'group1')
+    div.appendChild(stencil.container)
+
+    const innerGraph = (stencil as any).getGraph('group1')
+    expect(innerGraph.isPannable()).toBe(false)
+
+    const downEvt = new MouseEvent('mousedown', { bubbles: true })
+    ;(innerGraph as any).trigger('cell:mousedown', { e: downEvt, node: n1 })
+
+    expect(innerGraph.isPannable()).toBe(false)
+
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+    expect(innerGraph.isPannable()).toBe(false)
+
+    cleanup()
+    destroy()
+  })
+
+  it('should respect nodeMovable=false and not alter panning', async () => {
+    const { div, destroy } = createDivElement()
+    const { graph, cleanup } = createTestGraph()
+
+    const stencil = new Stencil({
+      target: graph,
+      groups: [{ name: 'group1', nodeMovable: false }],
+      stencilGraphOptions: { panning: true },
+    })
+
+    const n1 = graph.addNode({ id: 's1', x: 10, y: 10, width: 40, height: 24 })
+    stencil.load([n1], 'group1')
+    div.appendChild(stencil.container)
+
+    const innerGraph = (stencil as any).getGraph('group1')
+    expect(innerGraph.isPannable()).toBe(true)
+
+    const downEvt = new MouseEvent('mousedown', { bubbles: true })
+    ;(innerGraph as any).trigger('cell:mousedown', { e: downEvt, node: n1 })
+
+    expect(innerGraph.isPannable()).toBe(true)
+
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+    expect(innerGraph.isPannable()).toBe(true)
 
     cleanup()
     destroy()
@@ -303,6 +390,7 @@ describe('plugin/stencil/search', () => {
 
     const originNodes = layoutFn.mock.calls?.[0][0].getNodes()
     expect(originNodes.length).toBe(2)
+    layoutFn.mockClear()
 
     const searchTextEle = document.querySelector(
       `.${stencil.prefixClassName(ClassNames.searchText)}`,
@@ -310,7 +398,8 @@ describe('plugin/stencil/search', () => {
     searchTextEle.value = 'n1'
     searchTextEle?.dispatchEvent(new Event('input', { bubbles: true }))
     await sleep(1000)
-    const filteredNodes = layoutFn.mock.lastCall?.[0].getNodes()
+    expect(layoutFn).toHaveBeenCalledTimes(1)
+    const filteredNodes = layoutFn.mock.calls[0][0].getNodes()
     expect(filteredNodes.length).toBe(1)
     expect(filteredNodes[0].id).toBe('n1')
 
@@ -365,6 +454,7 @@ describe('plugin/stencil/search', () => {
 
     const originNodes = layoutFn.mock.calls?.[0][0].getNodes()
     expect(originNodes.length).toBe(2)
+    layoutFn.mockClear()
 
     const searchTextEle = document.querySelector(
       `.${stencil.prefixClassName(ClassNames.searchText)}`,
@@ -372,7 +462,8 @@ describe('plugin/stencil/search', () => {
     searchTextEle.value = 'any search text'
     searchTextEle?.dispatchEvent(new Event('input', { bubbles: true }))
     await sleep(1000)
-    const filteredNodes = layoutFn.mock.lastCall?.[0].getNodes()
+    expect(layoutFn).toHaveBeenCalledTimes(1)
+    const filteredNodes = layoutFn.mock.calls[0][0].getNodes()
     expect(filteredNodes.length).toBe(1)
     expect(filteredNodes[0].id).toBe('c1')
 

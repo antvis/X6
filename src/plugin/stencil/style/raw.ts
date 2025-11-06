@@ -139,10 +139,14 @@ export const content = `.x6-widget-dnd {
   padding: 0;
   transition: none;
 }
-.x6-widget-stencil-group .x6-graph {
-  background: transparent;
-  box-shadow: none;
-}
+  .x6-widget-stencil-group .x6-graph {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .x6-widget-stencil .x6-node.x6-node-immovable {
+    cursor: move;
+  }
 .x6-widget-stencil-group.collapsed {
   height: auto;
   max-height: 31px;

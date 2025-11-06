@@ -1,14 +1,19 @@
 import { alignPoint } from 'dom-align'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { DocumentEvents } from '@/constants'
+import { DocumentEvents } from '../../constants'
 import {
-  snapToGrid,
   type Point,
-  Rectangle,
   type PointLike,
+  Rectangle,
+  snapToGrid,
 } from '../../geometry'
-import { type EventArgs, Graph, Options, GraphPlugin } from '../../graph'
-import type { TransitionEventArgs, Node } from '../../model'
+import {
+  type EventArgs,
+  Graph,
+  type GraphPlugin,
+  type Options,
+} from '../../graph'
+import type { Node, TransitionEventArgs } from '../../model'
 import { type NodeView, View } from '../../view'
 import type { Scroller } from '../scroller'
 import type { Snapline } from '../snapline'
@@ -138,7 +143,7 @@ export class Dnd extends View implements GraphPlugin {
         e,
         node,
         cell: node,
-        view: this.draggingView!,
+        view: this.draggingView,
         x: local.x,
         y: local.y,
       })
@@ -149,7 +154,7 @@ export class Dnd extends View implements GraphPlugin {
   }
 
   protected isSnaplineEnabled() {
-    return this.snapline && this.snapline.isEnabled()
+    return this.snapline?.isEnabled()
   }
 
   protected prepareDragging(
@@ -208,7 +213,7 @@ export class Dnd extends View implements GraphPlugin {
   }
 
   protected updateGraphPosition(clientX: number, clientY: number) {
-    const delta = this.delta!
+    const delta = this.delta
     const nodeBBox = this.geometryBBox
     const padding = this.padding || 5
     const offset = {
@@ -232,10 +237,12 @@ export class Dnd extends View implements GraphPlugin {
 
   protected updateNodePosition(x: number, y: number) {
     const local = this.targetGraph.clientToLocal(x, y)
-    const bbox = this.draggingBBox!
-    local.x -= bbox.width / 2
-    local.y -= bbox.height / 2
-    this.draggingNode!.position(local.x, local.y)
+    const bbox = this.draggingBBox
+    if (bbox) {
+      local.x -= bbox.width / 2
+      local.y -= bbox.height / 2
+      this.draggingNode!.position(local.x, local.y)
+    }
     return local
   }
 
@@ -258,6 +265,14 @@ export class Dnd extends View implements GraphPlugin {
     } else {
       this.snapOffset = null
     }
+  }
+
+  protected onMouseMove(evt: Dom.MouseMoveEvent) {
+    this.onDragging(evt)
+  }
+
+  protected onMouseUp(evt: Dom.MouseUpEvent) {
+    this.onDragEnd(evt)
   }
 
   protected onDragging(evt: Dom.MouseMoveEvent) {
@@ -406,7 +421,7 @@ export class Dnd extends View implements GraphPlugin {
     if (this.options.dndContainer) {
       dndRect = this.getDropArea(this.options.dndContainer)
     }
-    const isInsideDndRect = dndRect && dndRect.containsPoint(p)
+    const isInsideDndRect = dndRect?.containsPoint(p)
 
     if (targetScroller) {
       if (targetScroller.options.autoResize) {
@@ -425,7 +440,7 @@ export class Dnd extends View implements GraphPlugin {
   }
 
   protected getDropArea(elem: Element) {
-    const offset = Dom.offset(elem)!
+    const offset = Dom.offset(elem)
     const scrollTop =
       document.body.scrollTop || document.documentElement.scrollTop
     const scrollLeft =
@@ -438,7 +453,7 @@ export class Dnd extends View implements GraphPlugin {
         scrollLeft,
       y:
         offset.top +
-        parseInt(Dom.css(elem, 'border-top-width')!, 10) -
+        parseInt(Dom.css(elem, 'border-top-width'), 10) -
         scrollTop,
       width: elem.clientWidth,
       height: elem.clientHeight,
@@ -450,7 +465,7 @@ export class Dnd extends View implements GraphPlugin {
       const targetGraph = this.targetGraph
       const targetModel = targetGraph.model
       const local = targetGraph.clientToLocal(pos)
-      const sourceNode = this.sourceNode!
+      const sourceNode = this.sourceNode
       const droppingNode = this.options.getDropNode(draggingNode, {
         sourceNode,
         draggingNode,
