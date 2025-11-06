@@ -13,15 +13,11 @@ redirect_from:
 
 ## Configuration
 
-A regular canvas (without the `scroller` plugin) can support panning by enabling the `panning` option.
-
-:::warning{title=Note}
-Do not use `scroller` and `panning` simultaneously, as they conflict with each other in terms of interaction.
-:::
+A regular canvas (without the `Scroller` plugin) can support panning by the `panning` option.
 
 ```ts
 const graph = new Graph({
-  panning: true,
+  panning: true, // If not provided, default is also true
 })
 
 // Equivalent to
@@ -38,7 +34,7 @@ The supported options are as follows:
 interface Options {
   enabled?: boolean
   modifiers?: ModifierKey
-  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel', 'mouseWheelDown')[]
+  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel' | 'mouseWheelDown')[]
 }
 ```
 
@@ -66,7 +62,7 @@ It supports the following forms:
 
 ### eventTypes
 
-The interaction types that trigger canvas panning. It supports three forms or their combinations:
+The interaction types that trigger canvas panning. It supports four forms or their combinations:
 
 -  `leftMouseDown`: Dragging by pressing the left mouse button
 -  `rightMouseDown`: Dragging by pressing the right mouse button

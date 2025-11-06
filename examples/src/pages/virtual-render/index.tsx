@@ -17,7 +17,6 @@ export const VirtualRenderExample: React.FC = () => {
       height: 800,
       grid: true,
       mousewheel: true,
-      panning: false,
       virtual: true,
     })
 
