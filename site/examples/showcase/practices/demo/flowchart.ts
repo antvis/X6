@@ -1,12 +1,12 @@
 import {
-  Graph,
-  Shape,
   Clipboard,
+  Graph,
   History,
   Keyboard,
   Selection,
-  Stencil,
+  Shape,
   Snapline,
+  Stencil,
   Transform,
 } from '@antv/x6'
 import insertCss from 'insert-css'
@@ -16,7 +16,7 @@ preWork()
 
 // #region 初始化画布
 const graph = new Graph({
-  container: document.getElementById('graph-container')!,
+  container: document.getElementById('graph-container') as HTMLElement,
   grid: true,
   mousewheel: {
     enabled: true,
@@ -99,6 +99,7 @@ const stencil = new Stencil({
   target: graph,
   stencilGraphWidth: 200,
   stencilGraphHeight: 180,
+  stencilGraphOptions: { panning: true },
   collapsable: true,
   groups: [
     {
@@ -120,7 +121,9 @@ const stencil = new Stencil({
     rowHeight: 55,
   },
 })
-document.getElementById('stencil')!.appendChild(stencil.container)
+document
+  .getElementById('stencil')
+  ?.appendChild(stencil.container as HTMLElement)
 // #endregion
 
 // #region 快捷键与事件
@@ -198,14 +201,14 @@ const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
   }
 }
 graph.on('node:mouseenter', () => {
-  const container = document.getElementById('graph-container')!
+  const container = document.getElementById('graph-container') as HTMLElement
   const ports = container.querySelectorAll(
     '.x6-port-body',
   ) as NodeListOf<SVGElement>
   showPorts(ports, true)
 })
 graph.on('node:mouseleave', () => {
-  const container = document.getElementById('graph-container')!
+  const container = document.getElementById('graph-container') as HTMLElement
   const ports = container.querySelectorAll(
     '.x6-port-body',
   ) as NodeListOf<SVGElement>
@@ -509,7 +512,7 @@ stencil.load(imageNodes, 'group2')
 
 function preWork() {
   // 这里协助演示的代码，在实际项目中根据实际情况进行调整
-  const container = document.getElementById('container')!
+  const container = document.getElementById('container') as HTMLElement
   const stencilContainer = document.createElement('div')
   stencilContainer.id = 'stencil'
   const graphContainer = document.createElement('div')
