@@ -3,6 +3,7 @@ import {
   CssLoader,
   type Dom,
   disposable,
+  isModifierKeyEqual,
   isModifierKeyMatch,
   type ModifierKey,
 } from '../../common'
@@ -94,6 +95,7 @@ export class Selection
       ...this.options,
       graph,
     })
+    this.resolvePanningSelectionConflict()
     this.setup()
     this.startListening()
   }
@@ -386,10 +388,47 @@ export class Selection
   }
 
   protected allowRubberband(e: Dom.MouseDownEvent, strict?: boolean) {
+    const safeEvent =
+      e ??
+      ({
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      } as Dom.EventObject)
     return (
       !this.rubberbandDisabled &&
-      isModifierKeyMatch(e, this.options.modifiers, strict)
+      isModifierKeyMatch(safeEvent, this.options.modifiers, strict)
     )
+  }
+
+  /**
+   * 当框选和画布拖拽平移触发条件相同时（相同事件 + 相同修饰键），框选优先触发，否则不互相影响。
+   */
+  protected resolvePanningSelectionConflict() {
+    if (this.options.enabled !== true || this.options.rubberband !== true)
+      return
+
+    const selTypes = this.options.eventTypes ?? []
+    const panOpts = this.graph.options.panning
+    if (!panOpts || panOpts.enabled === false) return
+
+    const panTypes = panOpts.eventTypes ?? []
+    // 判断框选和画布拖拽平移触发条件是否有相同事件类型（eventTypes）
+    const hasConflictTrigger = selTypes.some((t) => panTypes.includes(t))
+
+    const panModsComparable = panOpts.modifiers as unknown as
+      | string
+      | ModifierKey[]
+      | null
+    const selModsComparable = this.options.modifiers
+
+    if (
+      hasConflictTrigger &&
+      isModifierKeyEqual(panModsComparable ?? null, selModsComparable ?? null)
+    ) {
+      this.graph.panning.disablePanning()
+    }
   }
 
   protected allowMultipleSelection(e: Dom.MouseDownEvent | Dom.MouseUpEvent) {

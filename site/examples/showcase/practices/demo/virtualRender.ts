@@ -9,6 +9,7 @@ const graph = new Graph({
   mousewheel: true,
   // 开启虚拟渲染
   virtual: true,
+  grid: true,
 })
 
 graph.use(new Scroller({ enabled: true, pannable: true }))
