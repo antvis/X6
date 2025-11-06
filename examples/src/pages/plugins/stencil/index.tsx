@@ -50,11 +50,12 @@ export class StencilExample extends React.Component {
           name: 'group2',
         },
       ],
+      stencilGraphOptions: { panning: true },
     })
 
     this.stencilContainer.appendChild(stencil.container)
 
-    var r = new Shape.Rect({
+    const r = new Shape.Rect({
       position: { x: 10, y: 10 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -63,7 +64,7 @@ export class StencilExample extends React.Component {
       },
     })
 
-    var c = new Shape.Circle({
+    const c = new Shape.Circle({
       position: { x: 100, y: 10 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -72,7 +73,7 @@ export class StencilExample extends React.Component {
       },
     })
 
-    var c2 = new Shape.Circle({
+    const c2 = new Shape.Circle({
       position: { x: 10, y: 70 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -81,7 +82,7 @@ export class StencilExample extends React.Component {
       },
     })
 
-    var r2 = new Shape.Rect({
+    const r2 = new Shape.Rect({
       position: { x: 100, y: 70 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -90,7 +91,7 @@ export class StencilExample extends React.Component {
       },
     })
 
-    var r3 = new Shape.Rect({
+    const r3 = new Shape.Rect({
       position: { x: 10, y: 130 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -99,7 +100,7 @@ export class StencilExample extends React.Component {
       },
     })
 
-    var c3 = new Shape.Circle({
+    const c3 = new Shape.Circle({
       position: { x: 100, y: 130 },
       size: { width: 70, height: 40 },
       attrs: {
