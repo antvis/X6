@@ -6,8 +6,8 @@
 <!--- 详细描述你的改动 -->
 
 ### 🖼️ Screenshot
-<!-- Comparison of screenshots before and after changes, it is best to be GIF -->
-<!-- 改动前后的截图对比，最好是 GIF -->
+<!--- Comparison of screenshots before and after changes, it is best to be GIF -->
+<!--- 改动前后的截图对比，最好是 GIF -->
 
 | Before | After |
 | ------ | ----- |
@@ -38,8 +38,8 @@
 ### 🔍 Self Check before Merge
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- 请逐项检查以下内容，并在适用项打上 `x`。 -->
-<!-- Please add test case, docs, and demos -->
-<!-- 吾日三省吾身，有添加单元测试吗？有完善文档吗？有增加文档示例吗？-->
+<!--- Please add test case, docs, and demos -->
+<!--- 吾日三省吾身，有添加单元测试吗？有完善文档吗？有增加文档示例吗？-->
 
 - [ ] My code follows the code style of this project.
 - [ ] My change requires a change to the documentation.
