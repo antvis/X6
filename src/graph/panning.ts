@@ -1,5 +1,5 @@
-import { Dom, disposable, isModifierKeyMatch } from '../common'
 import type { ModifierKey } from '../common'
+import { Dom, disposable, isModifierKeyMatch } from '../common'
 import { Base } from './base'
 
 type EventType =
@@ -9,7 +9,7 @@ type EventType =
   | 'mouseWheelDown'
 export interface PanningOptions {
   enabled?: boolean
-  modifiers?: string | Array<ModifierKey | 'space'> | null
+  modifiers?: string | ModifierKey[] | null
   eventTypes?: EventType[]
 }
 
@@ -71,7 +71,7 @@ export class PanningManager extends Base {
     ;(e as any).spaceKey = this.isSpaceKeyPressed
     return (
       this.pannable &&
-      isModifierKeyMatch(e, this.widgetOptions.modifiers as ModifierKey, strict)
+      isModifierKeyMatch(e, this.widgetOptions.modifiers, strict)
     )
   }
 

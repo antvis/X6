@@ -14,7 +14,7 @@ redirect_from:
 :::
 
 :::warning{title=注意}
-当同时使用 `Scroller` 插件的时候请不要同时开启画布的 `panning` 配置，因为两种形式在交互上有冲突。从 2.19.0 版本开始，`panning` 配置默认值为 `true` 。
+使用 `Scroller` 插件时会默认禁用画布的 `panning` 拖拽平移能力以避免冲突。
 :::
 
 ## 使用
@@ -27,8 +27,7 @@ import { Scroller } from '@antv/x6'
 const graph = new Graph({
   background: {
     color: '#F2F7FA',
-  },
-  panning: false,
+  }
 })
 graph.use(
   new Scroller({

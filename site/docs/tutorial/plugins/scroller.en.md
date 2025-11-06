@@ -14,7 +14,7 @@ redirect_from:
 :::
 
 :::warning{title=Note}
-When using the `Scroller` plugin, please do not enable the canvas's `panning` configuration at the same time, as the two forms conflict in interaction.
+The `Scroller` plugin disables the graph's built-in `panning` by default to avoid interaction conflicts.
 :::
 
 ## Usage
@@ -27,7 +27,7 @@ import { Scroller } from '@antv/x6'
 const graph = new Graph({
   background: {
     color: '#F2F7FA',
-  },
+  }
 })
 graph.use(
   new Scroller({
