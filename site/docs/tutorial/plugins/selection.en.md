@@ -79,7 +79,7 @@ The type definition for `ModifierKey` is as follows:
 type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
 ```
 
-The modifier keys in X6 include `alt`, `ctrl`, `meta`, and `shift`. After setting the modifier keys, you need to click the mouse and press the modifier keys to trigger the corresponding behavior. Modifier keys are very useful in certain scenarios, such as starting rubberband selection and dragging the canvas simultaneously, where both actions are triggered by pressing the left mouse button on a blank area of the canvas. You can set different modifier keys for rubberband selection and dragging the canvas to achieve simultaneous activation without conflict. You can configure a single (e.g., `alt`) or multiple (e.g., `['alt', 'ctrl']`) modifier keys. Multiple modifier keys configured in array form are treated as an OR relationship. For example, the configured modifier keys indicate pressing `alt` or `ctrl`. If you need more flexible configurations, you can use the following forms:
+The modifier keys in X6 include `alt`, `ctrl`, `meta`, `shift` and `space`. After setting modifier keys, clicking the mouse while holding a modifier triggers the corresponding behavior. If rubberband selection and canvas panning have exactly the same trigger conditions (same `eventTypes` and same `modifiers`), rubberband selection takes precedence and the default canvas panning is disabled; if their triggers differ, they do not interfere with each other. Therefore, when both features start on `leftMouseDown` over blank areas, configure different modifier keys for selection and panning to enable both without conflict. You can configure a single (e.g., `alt`) or multiple (e.g., `['alt', 'ctrl']`) modifier keys. Multiple modifier keys configured in array form are treated as an OR relationship. If you need more flexible configurations, you can use the following forms:
 
 - `alt` indicates pressing `alt`.
 - `[alt, ctrl]` indicates pressing `alt` or `ctrl`.
@@ -92,11 +92,11 @@ The type definition for `SelectionEventType` is as follows:
 ```ts
 type SelectionEventType = 'leftMouseDown' | 'mouseWheelDown';
 ```
+
 Interaction methods that trigger rubberband selection. Supports two forms or combinations of them:
 
 - `leftMouseDown`: Pressing the left mouse button to drag.
 - `mouseWheelDown`: Pressing the mouse wheel to drag.
-
 
 ## API
 

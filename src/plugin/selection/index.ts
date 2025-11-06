@@ -3,6 +3,7 @@ import {
   CssLoader,
   type Dom,
   disposable,
+  isModifierKeyEqual,
   isModifierKeyMatch,
   type ModifierKey,
 } from '../../common'
@@ -94,6 +95,7 @@ export class Selection
       ...this.options,
       graph,
     })
+    this.resolvePanningSelectionConflict()
     this.setup()
     this.startListening()
   }
@@ -386,10 +388,49 @@ export class Selection
   }
 
   protected allowRubberband(e: Dom.MouseDownEvent, strict?: boolean) {
+    const safeEvent =
+      e ??
+      ({
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      } as Dom.EventObject)
     return (
       !this.rubberbandDisabled &&
-      isModifierKeyMatch(e, this.options.modifiers, strict)
+      isModifierKeyMatch(safeEvent, this.options.modifiers, strict)
     )
+  }
+
+  /**
+   * 当框选和画布拖拽平移触发条件相同时（相同事件 + 相同修饰键），框选优先触发，否则不互相影响。
+   */
+  protected resolvePanningSelectionConflict() {
+    if (this.options.enabled !== true || this.options.rubberband !== true)
+      return
+
+    const panningOpts = this.graph.options.panning
+    if (!panningOpts || panningOpts.enabled === false) return
+
+    const checkHasConflict = () => {
+      const selectionEvents = this.options.eventTypes ?? []
+      const panningEvents = panningOpts.eventTypes ?? []
+      const panningEventsSet = new Set(panningEvents)
+      // 判断是否有相同事件类型（eventTypes）
+      const hasOverlappingEvents = selectionEvents.some((event) =>
+        panningEventsSet.has(event),
+      )
+      // 判断是否有相同修饰键（modifiers）
+      const hasSameModifiers = isModifierKeyEqual(
+        panningOpts.modifiers,
+        this.options.modifiers,
+      )
+      return hasOverlappingEvents && hasSameModifiers
+    }
+
+    if (checkHasConflict()) {
+      this.graph.panning.disablePanning()
+    }
   }
 
   protected allowMultipleSelection(e: Dom.MouseDownEvent | Dom.MouseUpEvent) {

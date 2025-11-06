@@ -7,26 +7,26 @@ import {
   type ModifierKey,
 } from '../../common'
 import { Config } from '../../config'
-import type { Point, Rectangle, PointLike, RectangleLike } from '../../geometry'
+import type { Point, PointLike, Rectangle, RectangleLike } from '../../geometry'
 import type {
   BackgroundManagerOptions,
-  Graph,
-  ZoomOptions,
-  ScaleContentToFitOptions,
   GetContentAreaOptions,
+  Graph,
   GraphPlugin,
+  ScaleContentToFitOptions,
+  ZoomOptions,
 } from '../../graph'
 import type { Cell } from '../../model'
-import { ScrollerImpl, getOptions } from './scroller'
 import type {
-  EventArgs,
-  Options as SOptions,
-  PositionContentOptions,
   CenterOptions,
   Direction,
+  EventArgs,
+  PositionContentOptions,
+  Options as SOptions,
   TransitionOptions,
   TransitionToRectOptions,
 } from './scroller'
+import { getOptions, ScrollerImpl } from './scroller'
 import { content } from './style/raw'
 import './api'
 
@@ -83,6 +83,7 @@ export class Scroller
     this.options = options
     this.scrollerImpl = new ScrollerImpl(options)
     this.setup()
+    this.autoDisableGraphPanning()
     this.startListening()
     this.updateClassName()
     this.scrollerImpl.center()
@@ -384,12 +385,6 @@ export class Scroller
       this.updateClassName(true)
       this.scrollerImpl.startPanning(e)
       this.scrollerImpl.once('pan:stop', () => this.updateClassName(false))
-
-      if (this.graph.panning.pannable) {
-        console.warn(
-          'Detected that graph.panning and scroll panning are both enabled, which may cause unexpected behavior.',
-        )
-      }
     }
   }
 
@@ -407,6 +402,20 @@ export class Scroller
       container.dataset.panning = (!!isPanning).toString() // Use dataset to control scroller panning style to avoid reflow caused by changing classList
     } else {
       Dom.removeClass(container, pannable)
+    }
+  }
+
+  /**
+   * 当 Scroller 插件启用时，默认关闭 Graph 的内置 panning，
+   * 以避免滚动容器的拖拽与画布平移产生冲突。
+   */
+  protected autoDisableGraphPanning() {
+    const graphPan = this.graph?.panning
+    if (graphPan?.pannable) {
+      graphPan.disablePanning()
+      console.warn(
+        'Detected Scroller plugin; Graph panning has been disabled by default to avoid conflicts.',
+      )
     }
   }
 

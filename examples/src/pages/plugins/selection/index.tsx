@@ -16,7 +16,7 @@ export class SelectionExample extends React.Component {
     })
 
     const keyboard = new Keyboard()
-    const selectionOptions: Selection.Options = {
+    const selectionOptions = {
       rubberband: true,
       multiple: true,
       strict: true,
