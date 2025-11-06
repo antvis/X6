@@ -409,21 +409,26 @@ export class Selection
     if (this.options.enabled !== true || this.options.rubberband !== true)
       return
 
-    const selTypes = this.options.eventTypes ?? []
-    const panOpts = this.graph.options.panning
-    if (!panOpts || panOpts.enabled === false) return
+    const panningOpts = this.graph.options.panning
+    if (!panningOpts || panningOpts.enabled === false) return
 
-    const panTypes = panOpts.eventTypes ?? []
-    // 判断框选和画布拖拽平移触发条件是否有相同事件类型（eventTypes）
-    const hasConflictTrigger = selTypes.some((t) => panTypes.includes(t))
+    const checkHasConflict = () => {
+      const selectionEvents = this.options.eventTypes ?? []
+      const panningEvents = panningOpts.eventTypes ?? []
+      const panningEventsSet = new Set(panningEvents)
+      // 判断是否有相同事件类型（eventTypes）
+      const hasOverlappingEvents = selectionEvents.some((event) =>
+        panningEventsSet.has(event),
+      )
+      // 判断是否有相同修饰键（modifiers）
+      const hasSameModifiers = isModifierKeyEqual(
+        panningOpts.modifiers,
+        this.options.modifiers,
+      )
+      return hasOverlappingEvents && hasSameModifiers
+    }
 
-    const panModsComparable = panOpts.modifiers
-    const selModsComparable = this.options.modifiers
-
-    if (
-      hasConflictTrigger &&
-      isModifierKeyEqual(panModsComparable, selModsComparable)
-    ) {
+    if (checkHasConflict()) {
       this.graph.panning.disablePanning()
     }
   }
