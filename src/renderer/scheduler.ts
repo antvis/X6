@@ -142,8 +142,10 @@ export class Scheduler extends Disposable {
       flush = false // eslint-disable-line
     }
 
+    // 对包含插入标记的任务使用独立的队列 id，避免与同一视图的后续更新任务去重合并
+    const jobId = flag & FLAG_INSERT ? `${id}#insert` : id
     this.queue.queueJob({
-      id,
+      id: jobId,
       priority,
       cb: () => {
         this.renderViewInArea(view, flag, options)

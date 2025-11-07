@@ -28,7 +28,7 @@ export class EdgeExample extends React.Component {
       },
     })
 
-    var r2 = r1.clone()
+    const r2 = r1.clone()
     graph.addNode(r2)
     r2.translate(300)
 
@@ -40,11 +40,11 @@ export class EdgeExample extends React.Component {
 
     // Changing source and target selectors of the edge.
     // -------------------------------------------------
-    var r3 = r1.clone()
+    const r3 = r1.clone()
     graph.addNode(r3)
     r3.translate(0, 80)
 
-    var r4 = r3.clone()
+    const r4 = r3.clone()
     graph.addNode(r4)
     r4.translate(300)
 
@@ -56,11 +56,11 @@ export class EdgeExample extends React.Component {
 
     // Vertices.
     // ---------
-    var r5 = r3.clone()
+    const r5 = r3.clone()
     graph.addNode(r5)
     r5.translate(0, 80)
 
-    var r6 = r5.clone()
+    const r6 = r5.clone()
     graph.addNode(r6)
     r6.translate(300)
 
@@ -76,11 +76,11 @@ export class EdgeExample extends React.Component {
 
     // // Manhattan routing.
     // // ------------------
-    var r7 = r5.clone()
+    const r7 = r5.clone()
     graph.addNode(r7)
     r7.translate(0, 100)
 
-    var r8 = r7.clone()
+    const r8 = r7.clone()
     graph.addNode(r8)
     r8.translate(200, 80)
 
@@ -102,19 +102,19 @@ export class EdgeExample extends React.Component {
 
     // // OneSide routing.
     // // ----------------
-    var r9 = r7.clone()
+    const r9 = r7.clone()
     graph.addNode(r9)
     r9.translate(0, 150)
 
-    var r10 = r9.clone()
+    const r10 = r9.clone()
     graph.addNode(r10)
     r10.translate(300, 0)
-    graph.addEdge({
+    const testEdge = graph.addEdge({
       source: r9,
       target: r10,
       router: { name: 'oneSide', args: { side: 'bottom' } },
-      label: 'oneSide rounter',
     })
+    testEdge.setLabels('oneSide router')
   }
 
   refContainer = (container: HTMLDivElement) => {
