@@ -16,7 +16,7 @@ import {
   type Size,
   StringExt,
 } from '../common'
-import { Point, Rectangle, PointLike } from '../geometry'
+import { Point, type PointLike, Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import {
   type AttrDefinitions,
@@ -44,19 +44,19 @@ import type {
   TerminalData,
   TerminalType,
 } from './edge'
-import type { Model, BatchName } from './model'
+import type { BatchName, Model } from './model'
 import type { Node, NodeProperties, NodeSetOptions } from './node'
 import type { Port } from './port'
-import { Store } from './store'
 import type {
   StoreMutateOptions,
   StoreSetByPathOptions,
   StoreSetOptions,
 } from './store'
+import { Store } from './store'
 
 export class Cell<
   Properties extends CellProperties = CellProperties,
-> extends Basecoat<TransitionEventArgs> {
+> extends Basecoat<CellBaseEventArgs> {
   static toStringTag = `X6.cell`
   static isCell(instance: any): instance is Cell {
     if (instance == null) {
@@ -346,7 +346,7 @@ export class Cell<
         cell: this,
       })
 
-      this.notify(`change:${key}` as keyof TransitionEventArgs, {
+      this.notify(`change:${key}` as keyof CellBaseEventArgs, {
         options,
         current,
         previous,
@@ -379,14 +379,14 @@ export class Cell<
     })
   }
 
-  notify<Key extends keyof TransitionEventArgs>(
+  notify<Key extends keyof CellBaseEventArgs>(
     name: Key,
-    args: TransitionEventArgs[Key],
+    args: CellBaseEventArgs[Key],
   ): this
-  notify(name: Exclude<string, keyof TransitionEventArgs>, args: any): this
-  notify<Key extends keyof TransitionEventArgs>(
+  notify(name: Exclude<string, keyof CellBaseEventArgs>, args: any): this
+  notify<Key extends keyof CellBaseEventArgs>(
     name: Key,
-    args: TransitionEventArgs[Key],
+    args: CellBaseEventArgs[Key],
   ) {
     this.trigger(name, args)
     const model = this.model
@@ -1468,8 +1468,8 @@ export class Cell<
   ): this extends Node
     ? NodeProperties
     : this extends Edge
-    ? EdgeProperties
-    : Properties {
+      ? EdgeProperties
+      : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1748,7 +1748,7 @@ export type TransitionParams = Parameters<
   InstanceType<typeof Cell>['transition']
 >
 
-export interface TransitionEventArgs {
+export interface CellBaseEventArgs {
   'transition:start': AnimationCallbackArgs<AnimationTargetValue>
   'transition:progress': AnimationProgressArgs<AnimationTargetValue>
   'transition:complete': AnimationCallbackArgs<AnimationTargetValue>
