@@ -19,7 +19,7 @@ const image = {
     'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t8fURKfgSOgAAAAAAAAAAAAAARQnAQ',
 }
 
-const AlgoNode = (props: any) => {
+const AlgoNode = (props: { node: Cell }) => {
   const { node } = props
   const data = node?.getData() as NodeStatus
   const { label, status = 'default' } = data
