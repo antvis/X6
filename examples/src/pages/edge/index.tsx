@@ -109,12 +109,12 @@ export class EdgeExample extends React.Component {
     const r10 = r9.clone()
     graph.addNode(r10)
     r10.translate(300, 0)
-    const testEdge = graph.addEdge({
+    const oneSideEdge = graph.addEdge({
       source: r9,
       target: r10,
       router: { name: 'oneSide', args: { side: 'bottom' } },
     })
-    testEdge.setLabels('oneSide router')
+    oneSideEdge.setLabels('oneSide router')
   }
 
   refContainer = (container: HTMLDivElement) => {

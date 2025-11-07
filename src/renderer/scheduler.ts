@@ -13,6 +13,8 @@ import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
 import { JOB_PRIORITY, JobQueue } from './queueJob'
 
+const INSERT_JOB_ID_SUFFIX = '#insert'
+
 export enum SchedulerViewState {
   CREATED,
   MOUNTED,
@@ -143,7 +145,7 @@ export class Scheduler extends Disposable {
     }
 
     // 对包含插入标记的任务使用独立的队列 id，避免与同一视图的后续更新任务去重合并
-    const jobId = flag & FLAG_INSERT ? `${id}#insert` : id
+    const jobId = flag & FLAG_INSERT ? `${id}${INSERT_JOB_ID_SUFFIX}` : id
     this.queue.queueJob({
       id: jobId,
       priority,
