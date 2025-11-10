@@ -4,9 +4,9 @@ import {
   Node,
   Path,
   Edge,
-  Platform,
   StringExt,
   Selection,
+  IS_SAFARI,
 } from '@antv/x6'
 import classnames from 'classnames'
 import insertCss from 'insert-css'
@@ -30,6 +30,13 @@ enum CellStatus {
   ERROR = 'error',
 }
 
+interface ProcessingNodeData {
+  name: string
+  type: NodeType
+  status?: CellStatus
+  statusMsg?: string
+}
+
 // 节点位置信息
 interface Position {
   x: number
@@ -37,32 +44,32 @@ interface Position {
 }
 
 // 加工类型列表
-const PROCESSING_TYPE_LIST = [
+const PROCESSING_TYPE_LIST: { type: NodeType; name: string }[] = [
   {
-    type: 'FILTER',
+    type: NodeType.FILTER,
     name: '数据筛选',
   },
   {
-    type: 'JOIN',
+    type: NodeType.JOIN,
     name: '数据连接',
   },
   {
-    type: 'UNION',
+    type: NodeType.UNION,
     name: '数据合并',
   },
   {
-    type: 'AGG',
+    type: NodeType.AGG,
     name: '数据聚合',
   },
 
   {
-    type: 'OUTPUT',
+    type: NodeType.OUTPUT,
     name: '数据输出',
   },
 ]
 
 // 不同节点类型的icon
-const NODE_TYPE_LOGO = {
+const NODE_TYPE_LOGO: Record<NodeType, string> = {
   INPUT:
     'https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*RXnuTpQ22xkAAAAAAAAAAAAADtOHAQ/original', // 数据输入
   FILTER:
@@ -120,8 +127,11 @@ const getDownstreamNodePosition = (
 }
 
 // 根据节点的类型获取ports
-const getPortsByType = (type: NodeType, nodeId: string) => {
-  let ports = []
+const getPortsByType = (
+  type: NodeType,
+  nodeId: string,
+): { id: string; group: 'in' | 'out' }[] => {
+  let ports: { id: string; group: 'in' | 'out' }[] = []
   switch (type) {
     case NodeType.INPUT:
       ports = [
@@ -166,11 +176,7 @@ export const createNode = (
   type: NodeType,
   graph: Graph,
   position?: Position,
-) => {
-  if (!graph) {
-    return {}
-  }
-  let newNode = {}
+): Node => {
   const sameTypeNodes = graph
     .getNodes()
     .filter((item) => item.getData()?.type === type)
@@ -189,8 +195,7 @@ export const createNode = (
       type,
     },
   }
-  newNode = graph.addNode(node)
-  return newNode
+  return graph.addNode(node)
 }
 
 /**
@@ -291,7 +296,7 @@ class DataProcessingDagNode extends React.Component<{
     const { node } = this.props
     // 获取该节点下的所有连接桩
     const ports = node.getPorts() || []
-    ports.forEach((port) => {
+    ports.forEach((port: { id: string }) => {
       node.setPortProp(port.id, 'attrs/circle', {
         fill: '#fff',
         stroke: '#85A5FF',
@@ -304,7 +309,7 @@ class DataProcessingDagNode extends React.Component<{
     const { node } = this.props
     // 获取该节点下的所有连接桩
     const ports = node.getPorts() || []
-    ports.forEach((port) => {
+    ports.forEach((port: { id: string }) => {
       node.setPortProp(port.id, 'attrs/circle', {
         fill: 'transparent',
         stroke: 'transparent',
@@ -315,7 +320,7 @@ class DataProcessingDagNode extends React.Component<{
   render() {
     const { plusActionSelected } = this.state
     const { node } = this.props
-    const data = node?.getData()
+    const data = node?.getData() as ProcessingNodeData
     const { name, type, status, statusMsg } = data
 
     return (
@@ -533,13 +538,13 @@ const graph: Graph = new Graph({
     sourceAnchor: {
       name: 'left',
       args: {
-        dx: Platform.IS_SAFARI ? 4 : 8,
+        dx: IS_SAFARI ? 4 : 8,
       },
     },
     targetAnchor: {
       name: 'right',
       args: {
-        dx: Platform.IS_SAFARI ? 4 : -8,
+        dx: IS_SAFARI ? 4 : -8,
       },
     },
     createEdge() {
@@ -628,7 +633,7 @@ const showNodeStatus = () => {
   nodeStatusList.forEach((item) => {
     const { id, status, statusMsg } = item
     const node = graph.getCellById(id)
-    const data = node.getData() as CellStatus
+    const data = (node.getData() || {}) as ProcessingNodeData
     node.setData({
       ...data,
       status,
