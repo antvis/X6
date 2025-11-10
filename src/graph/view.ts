@@ -2,8 +2,8 @@ import { Dom, disposable, FunctionExt } from '../common'
 import { Config } from '../config'
 import type { Graph } from '../graph'
 import { Cell } from '../model'
-import { Markup, View } from '../view'
 import type { CellView } from '../view'
+import { Markup, View } from '../view'
 import type { MarkupJSONMarkup } from '../view/markup'
 
 interface Moving {
@@ -12,7 +12,7 @@ interface Moving {
   currentView?: CellView | null
 }
 
-const prefixCls = Config.prefixCls + '-graph'
+const prefixCls = `${Config.prefixCls}-graph`
 export class GraphView extends View {
   static markup: MarkupJSONMarkup[] = [
     {
@@ -75,7 +75,9 @@ export class GraphView extends View {
 
   static snapshoot(elem: Element) {
     const cloned = elem.cloneNode() as Element
-    elem.childNodes.forEach((child) => cloned.appendChild(child))
+    elem.childNodes.forEach((child) => {
+      cloned.appendChild(child)
+    })
 
     return () => {
       // remove all children
@@ -93,7 +95,9 @@ export class GraphView extends View {
       }
 
       // restore children
-      cloned.childNodes.forEach((child) => elem.appendChild(child))
+      cloned.childNodes.forEach((child) => {
+        elem.appendChild(child)
+      })
     }
   }
   static events = {
@@ -107,26 +111,29 @@ export class GraphView extends View {
     mouseleave: 'onMouseLeave',
     mousewheel: 'onMouseWheel',
     DOMMouseScroll: 'onMouseWheel',
-    [`mouseenter  .${prefixCls}-cell`]: 'onMouseEnter',
-    [`mouseleave  .${prefixCls}-cell`]: 'onMouseLeave',
-    [`mouseenter  .${prefixCls}-cell-tools`]: 'onMouseEnter',
-    [`mouseleave  .${prefixCls}-cell-tools`]: 'onMouseLeave',
-    [`mousedown   .${prefixCls}-cell [event]`]: 'onCustomEvent',
-    [`touchstart  .${prefixCls}-cell [event]`]: 'onCustomEvent',
-    [`mousedown   .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
-    [`touchstart  .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
-    [`dblclick    .${prefixCls}-cell [magnet]`]: 'onMagnetDblClick',
-    [`contextmenu .${prefixCls}-cell [magnet]`]: 'onMagnetContextMenu',
-    [`mousedown   .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
-    [`touchstart  .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
-    [`dblclick    .${prefixCls}-cell [data-magnet]`]: 'onMagnetDblClick',
-    [`contextmenu .${prefixCls}-cell [data-magnet]`]: 'onMagnetContextMenu',
-    [`mousedown   .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
-    [`touchstart  .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
-    [`dragstart   .${prefixCls}-cell image`]: 'onImageDragStart',
-    [`mousedown   .${prefixCls}-edge .${prefixCls}-edge-label`]:
+    [`mouseenter  .${Config.prefixCls}-cell`]: 'onMouseEnter',
+    [`mouseleave  .${Config.prefixCls}-cell`]: 'onMouseLeave',
+    [`mouseenter  .${Config.prefixCls}-cell-tools`]: 'onMouseEnter',
+    [`mouseleave  .${Config.prefixCls}-cell-tools`]: 'onMouseLeave',
+    [`mousedown   .${Config.prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`touchstart  .${Config.prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`mousedown   .${Config.prefixCls}-cell [data-event]`]: 'onCustomEvent',
+    [`touchstart  .${Config.prefixCls}-cell [data-event]`]: 'onCustomEvent',
+    [`dblclick    .${Config.prefixCls}-cell [magnet]`]: 'onMagnetDblClick',
+    [`contextmenu .${Config.prefixCls}-cell [magnet]`]: 'onMagnetContextMenu',
+    [`mousedown   .${Config.prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`touchstart  .${Config.prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`dblclick    .${Config.prefixCls}-cell [data-magnet]`]: 'onMagnetDblClick',
+    [`contextmenu .${Config.prefixCls}-cell [data-magnet]`]:
+      'onMagnetContextMenu',
+    [`mousedown   .${Config.prefixCls}-cell [data-magnet]`]:
+      'onMagnetMouseDown',
+    [`touchstart  .${Config.prefixCls}-cell [data-magnet]`]:
+      'onMagnetMouseDown',
+    [`dragstart   .${Config.prefixCls}-cell image`]: 'onImageDragStart',
+    [`mousedown   .${Config.prefixCls}-edge .${Config.prefixCls}-edge-label`]:
       'onLabelMouseDown',
-    [`touchstart  .${prefixCls}-edge .${prefixCls}-edge-label`]:
+    [`touchstart  .${Config.prefixCls}-edge .${Config.prefixCls}-edge-label`]:
       'onLabelMouseDown',
   }
   static documentEvents = {
