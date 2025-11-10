@@ -153,7 +153,6 @@ graph.on('node:mouseleave', () => {
   ) as NodeListOf<SVGElement>
   showPorts(portsEls, false)
 })
-
 graph.on('edge:mouseenter', ({ edge }) => {
   edge.addTools({ name: 'button-remove', args: { distance: -40 } })
 })
@@ -204,14 +203,7 @@ const AgentReactCard = ({ node }: { node: Node }) => {
               const cfg = (node.getData() as AgentCardConfig | null) || null
               const k = cfg?.key
               if (k === 'start' || k === 'end') return
-              const g = (node.model && (node.model as any).graph) as
-                | Graph
-                | undefined
-              if (g) {
-                g.removeNode(node.id)
-              } else {
-                node.remove()
-              }
+              node.remove()
             },
             title: '删除节点',
           },
@@ -414,74 +406,10 @@ const createAgentStencilCard = (cfg: AgentCardConfig) => {
   })
 }
 
+let AGENT_CONFIGS: Record<string, AgentCardConfig> | null = null
+
 const getAgentConfig = (type: string): AgentCardConfig | null => {
-  switch (type) {
-    case 'llm':
-      return {
-        key: 'llm',
-        iconText: 'LLM',
-        title: '文本大模型',
-        desc: '处理文本指令与上下文。',
-        inputPlaceholder: '输入',
-        theme: 'blue',
-      }
-    case 'code':
-      return {
-        key: 'code',
-        iconText: '</>',
-        title: '代码',
-        desc: '运行脚本和逻辑。',
-        inputPlaceholder: '输入',
-        theme: 'green',
-      }
-    case 'branch':
-      return {
-        key: 'branch',
-        iconText: 'IF',
-        title: '分支',
-        desc: '根据条件执行不同业务逻辑。',
-        inputPlaceholder: '输入',
-        theme: 'orange',
-      }
-    case 'loop':
-      return {
-        key: 'loop',
-        iconText: 'FOR',
-        title: '循环',
-        desc: '迭代处理重复执行步骤。',
-        inputPlaceholder: '输入',
-        theme: 'orange',
-      }
-    case 'kb':
-      return {
-        key: 'kb',
-        iconText: 'KB',
-        title: '知识库',
-        desc: '检索信息，提供丰富上下文。',
-        inputPlaceholder: '输入',
-        theme: 'blue',
-      }
-    case 'mcp':
-      return {
-        key: 'mcp',
-        iconText: 'MCP',
-        title: 'MCP 插件',
-        desc: '扩展外部能力。',
-        inputPlaceholder: '输入',
-        theme: 'green',
-      }
-    case 'db':
-      return {
-        key: 'db',
-        iconText: 'DB',
-        title: '数据库',
-        desc: '读写数据，支撑数据持久化。',
-        inputPlaceholder: '输入',
-        theme: 'blue',
-      }
-    default:
-      return null
-  }
+  return AGENT_CONFIGS ? (AGENT_CONFIGS[type] ?? null) : null
 }
 
 graph.on('node:added', ({ node }) => {
@@ -497,45 +425,53 @@ graph.on('node:added', ({ node }) => {
     }
   }
 })
+;(async () => {
+  AGENT_CONFIGS = await fetch('/data/agent-flow.json').then((res) => res.json())
 
-stencil.load(
-  [
-    createAgentStencilCard(getAgentConfig('llm')!),
-    createAgentStencilCard(getAgentConfig('code')!),
-    createAgentStencilCard(getAgentConfig('branch')!),
-    createAgentStencilCard(getAgentConfig('loop')!),
-  ],
-  'biz',
-)
+  stencil.load(
+    [
+      createAgentStencilCard(getAgentConfig('llm')!),
+      createAgentStencilCard(getAgentConfig('code')!),
+      createAgentStencilCard(getAgentConfig('branch')!),
+      createAgentStencilCard(getAgentConfig('loop')!),
+    ],
+    'biz',
+  )
 
-stencil.load(
-  [
-    createAgentStencilCard(getAgentConfig('kb')!),
-    createAgentStencilCard(getAgentConfig('mcp')!),
-    createAgentStencilCard(getAgentConfig('db')!),
-  ],
-  'data',
-)
+  stencil.load(
+    [
+      createAgentStencilCard(getAgentConfig('kb')!),
+      createAgentStencilCard(getAgentConfig('mcp')!),
+      createAgentStencilCard(getAgentConfig('db')!),
+    ],
+    'data',
+  )
 
-const start = graph.addNode(createStartCard().position(60, 60))
+  const start = graph.addNode(createStartCard().position(60, 60))
 
-const llm = graph.addNode(
-  createAgentCard(getAgentConfig('llm')!).position(220, 220),
-)
+  const llm = graph.addNode(
+    createAgentCard(getAgentConfig('llm')!).position(220, 220),
+  )
 
-const end = graph.addNode(createEndCard().position(360, 360))
+  const end = graph.addNode(createEndCard().position(360, 360))
 
-graph.addEdge({
-  source: { cell: start.id, port: 'bottom' },
-  target: { cell: llm.id, port: 'top' },
-})
-graph.addEdge({
-  source: { cell: llm.id, port: 'bottom' },
-  target: { cell: end.id, port: 'top' },
+  graph.addEdge({
+    source: { cell: start.id, port: 'bottom' },
+    target: { cell: llm.id, port: 'top' },
+  })
+  graph.addEdge({
+    source: { cell: llm.id, port: 'bottom' },
+    target: { cell: end.id, port: 'top' },
+  })
+})().catch((err) => {
+  console.error(err)
 })
 
 function preWork() {
   const container = document.getElementById('container') as HTMLElement
+  if (!container) {
+    return
+  }
   const stencilContainer = document.createElement('div')
   stencilContainer.id = 'stencil'
   const graphContainer = document.createElement('div')
