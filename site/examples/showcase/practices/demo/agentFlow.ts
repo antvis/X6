@@ -1,4 +1,4 @@
-import { Graph, type Node, Snapline, Stencil } from '@antv/x6'
+import { type Edge, Graph, type Node, Snapline, Stencil } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import insertCss from 'insert-css'
 import React from 'react'
@@ -8,6 +8,9 @@ preWork()
 
 const CARD_WIDTH = 260
 const CARD_HEIGHT = 96
+const PORT_DOT_RADIUS = 3
+const COLOR_PORT_GRAY = '#C2C8D5'
+const COLOR_PORT_BLUE = '#5F95FF'
 
 const graph = new Graph({
   container: document.getElementById('graph-container') as HTMLElement,
@@ -25,7 +28,14 @@ const graph = new Graph({
     allowEdge: false,
     allowLoop: false,
     highlight: true,
-    validateConnection({ targetMagnet }) {
+    createEdge(): Edge {
+      return graph.createEdge({ shape: 'agent-edge' })
+    },
+    validateConnection({
+      targetMagnet,
+    }: {
+      targetMagnet?: Element | null
+    }): boolean {
       return !!targetMagnet
     },
   },
@@ -34,8 +44,8 @@ const graph = new Graph({
       name: 'stroke',
       args: {
         attrs: {
-          fill: '#5F95FF',
-          stroke: '#5F95FF',
+          fill: COLOR_PORT_BLUE,
+          stroke: COLOR_PORT_BLUE,
         },
       },
     },
@@ -43,6 +53,17 @@ const graph = new Graph({
 })
 
 graph.use(new Snapline())
+
+Graph.registerEdge(
+  'agent-edge',
+  {
+    inherit: 'edge',
+    attrs: {
+      line: { stroke: COLOR_PORT_BLUE, strokeWidth: 2, targetMarker: 'block' },
+    },
+  },
+  true,
+)
 
 const stencil = new Stencil({
   title: '智能体流程编排',
@@ -71,60 +92,24 @@ document
   .getElementById('stencil')
   ?.appendChild(stencil.container as HTMLElement)
 
+const basePortAttrs = {
+  r: PORT_DOT_RADIUS,
+  magnet: true,
+  stroke: COLOR_PORT_GRAY,
+  strokeWidth: 1,
+  fill: COLOR_PORT_GRAY,
+  style: { visibility: 'hidden' },
+}
+const createPortGroup = (position: 'top' | 'right' | 'bottom' | 'left') => ({
+  position,
+  attrs: { circle: { ...basePortAttrs } },
+})
 const ports = {
   groups: {
-    top: {
-      position: 'top',
-      attrs: {
-        circle: {
-          r: 4,
-          magnet: true,
-          stroke: '#5F95FF',
-          strokeWidth: 1,
-          fill: '#fff',
-          style: { visibility: 'hidden' },
-        },
-      },
-    },
-    right: {
-      position: 'right',
-      attrs: {
-        circle: {
-          r: 4,
-          magnet: true,
-          stroke: '#5F95FF',
-          strokeWidth: 1,
-          fill: '#fff',
-          style: { visibility: 'hidden' },
-        },
-      },
-    },
-    bottom: {
-      position: 'bottom',
-      attrs: {
-        circle: {
-          r: 4,
-          magnet: true,
-          stroke: '#5F95FF',
-          strokeWidth: 1,
-          fill: '#fff',
-          style: { visibility: 'hidden' },
-        },
-      },
-    },
-    left: {
-      position: 'left',
-      attrs: {
-        circle: {
-          r: 4,
-          magnet: true,
-          stroke: '#5F95FF',
-          strokeWidth: 1,
-          fill: '#fff',
-          style: { visibility: 'hidden' },
-        },
-      },
-    },
+    top: createPortGroup('top'),
+    right: createPortGroup('right'),
+    bottom: createPortGroup('bottom'),
+    left: createPortGroup('left'),
   },
   items: [
     { id: 'top', group: 'top' },
@@ -134,30 +119,101 @@ const ports = {
   ],
 }
 
-const showPorts = (portsEls: NodeListOf<SVGElement>, show: boolean) => {
-  for (let i = 0, len = portsEls.length; i < len; i += 1) {
-    portsEls[i].style.visibility = show ? 'visible' : 'hidden'
+const isPortConnected = (node: Node, portId: string): boolean => {
+  const edges = graph.getConnectedEdges(node)
+  return edges.some(
+    (e) =>
+      (e.getSourceCellId() === node.id && e.getSourcePortId() === portId) ||
+      (e.getTargetCellId() === node.id && e.getTargetPortId() === portId),
+  )
+}
+const setPortVisible = (node: Node, portId: string, visible: boolean) => {
+  node.setPortProp(
+    portId,
+    'attrs/circle/style/visibility',
+    visible ? 'visible' : 'hidden',
+  )
+}
+const setPortColor = (node: Node, portId: string, color: string) => {
+  node.setPortProp(portId, 'attrs/circle/fill', color)
+  node.setPortProp(portId, 'attrs/circle/stroke', color)
+}
+const setPortDot = (
+  node: Node,
+  portId: string,
+  visible: boolean,
+  color?: string,
+) => {
+  setPortVisible(node, portId, visible)
+  if (color) setPortColor(node, portId, color)
+}
+const withNodePort = (
+  cellId?: string | null,
+  portId?: string | null,
+  fn?: (node: Node, portId: string) => void,
+) => {
+  if (!cellId || !portId || !fn) return
+  const cell = graph.getCellById(cellId)
+  if (cell && cell.isNode()) fn(cell as Node, portId)
+}
+const showNodePorts = (node: Node, show: boolean) => {
+  const ps = node.getPorts()
+  for (let i = 0; i < ps.length; i += 1) {
+    const id = ps[i].id as string
+    if (show) {
+      setPortVisible(node, id, true)
+    } else {
+      const connected = isPortConnected(node, id)
+      setPortVisible(node, id, connected)
+      setPortColor(node, id, connected ? COLOR_PORT_BLUE : COLOR_PORT_GRAY)
+    }
   }
 }
-graph.on('node:mouseenter', () => {
-  const container = document.getElementById('graph-container') as HTMLElement
-  const portsEls = container.querySelectorAll(
-    '.x6-port-body',
-  ) as NodeListOf<SVGElement>
-  showPorts(portsEls, true)
+graph.on('node:mouseenter', ({ node }: { node: Node }) => {
+  showNodePorts(node, true)
 })
-graph.on('node:mouseleave', () => {
-  const container = document.getElementById('graph-container') as HTMLElement
-  const portsEls = container.querySelectorAll(
-    '.x6-port-body',
-  ) as NodeListOf<SVGElement>
-  showPorts(portsEls, false)
+graph.on('node:mouseleave', ({ node }: { node: Node }) => {
+  showNodePorts(node, false)
 })
-graph.on('edge:mouseenter', ({ edge }) => {
+graph.on('edge:mouseenter', ({ edge }: { edge: Edge }) => {
   edge.addTools({ name: 'button-remove', args: { distance: -40 } })
 })
-graph.on('edge:mouseleave', ({ edge }) => {
+graph.on('edge:mouseleave', ({ edge }: { edge: Edge }) => {
   edge.removeTools()
+})
+
+graph.on(
+  'edge:connected',
+  ({
+    currentCell,
+    currentPort,
+  }: {
+    currentCell: Node
+    currentPort?: string
+  }) => {
+    if (!currentPort) return
+    setPortDot(currentCell, currentPort, true, COLOR_PORT_BLUE)
+  },
+)
+
+graph.on('edge:added', ({ edge }: { edge: Edge }) => {
+  withNodePort(edge.getSourceCellId(), edge.getSourcePortId(), (node, port) =>
+    setPortDot(node, port, true, COLOR_PORT_BLUE),
+  )
+  withNodePort(edge.getTargetCellId(), edge.getTargetPortId(), (node, port) =>
+    setPortDot(node, port, true, COLOR_PORT_BLUE),
+  )
+})
+
+graph.on('edge:removed', ({ edge }: { edge: Edge }) => {
+  withNodePort(edge.getSourceCellId(), edge.getSourcePortId(), (node, port) => {
+    const stillConnected = isPortConnected(node, port)
+    if (!stillConnected) setPortDot(node, port, false, COLOR_PORT_GRAY)
+  })
+  withNodePort(edge.getTargetCellId(), edge.getTargetPortId(), (node, port) => {
+    const stillConnected = isPortConnected(node, port)
+    if (!stillConnected) setPortDot(node, port, false, COLOR_PORT_GRAY)
+  })
 })
 
 type AgentCardConfig = {
@@ -340,7 +396,7 @@ Graph.registerNode(
       { tagName: 'text', selector: 'desc' },
     ],
     attrs: {
-      body: { stroke: '#E5E7EB', fill: '#fff', rx: 8, ry: 8 },
+      body: { stroke: '#5F95FF', strokeWidth: 1, fill: '#fff', rx: 8, ry: 8 },
       iconRect: {
         width: 32,
         height: 32,
@@ -412,7 +468,7 @@ const getAgentConfig = (type: string): AgentCardConfig | null => {
   return AGENT_CONFIGS ? (AGENT_CONFIGS[type] ?? null) : null
 }
 
-graph.on('node:added', ({ node }) => {
+graph.on('node:added', ({ node }: { node: Node }) => {
   const data = node.getData() as { type?: string } | undefined
   const type = data?.type
   if (type && node.shape !== 'agent-react-card') {
@@ -426,7 +482,9 @@ graph.on('node:added', ({ node }) => {
   }
 })
 ;(async () => {
-  AGENT_CONFIGS = await fetch('/data/agent-flow.json').then((res) => res.json())
+  AGENT_CONFIGS = await fetch('/data/agent-card-configs.json').then((res) =>
+    res.json(),
+  )
 
   stencil.load(
     [
@@ -456,10 +514,12 @@ graph.on('node:added', ({ node }) => {
   const end = graph.addNode(createEndCard().position(360, 360))
 
   graph.addEdge({
+    shape: 'agent-edge',
     source: { cell: start.id, port: 'bottom' },
     target: { cell: llm.id, port: 'top' },
   })
   graph.addEdge({
+    shape: 'agent-edge',
     source: { cell: llm.id, port: 'bottom' },
     target: { cell: end.id, port: 'top' },
   })
@@ -505,7 +565,7 @@ function preWork() {
     .agent-card {
       display: flex;
       flex-direction: column;
-      border: 1px solid #616161;
+      border: 1px solid #5F95FF;
       border-radius: 8px;
       box-sizing: border-box;
       padding: 12px;
@@ -530,13 +590,13 @@ function preWork() {
     .agent-card .body { display: flex; align-items: center; gap: 8px; }
     .agent-card .section { font-size: 12px; color: #8c8c8c; flex: 0 0 auto; white-space: nowrap; min-width: max-content; }
     .agent-card .body input {
-      flex: 1; min-width: 0; height: 30px; border: 1px solid #616161; border-radius: 6px; padding: 4px 8px; background: #FAFAFA; color: #141414;
+      flex: 1; min-width: 0; height: 30px; border: 1px solid #5F95FF; border-radius: 6px; padding: 4px 8px; background: #FAFAFA; color: #141414;
     }
     .agent-card .actions { margin-left: auto; color: #8c8c8c; display: flex; gap: 8px; }
     .agent-card .actions .op { font-size: 14px; cursor: pointer; }
 
     /* start/end flow cards */
-    .flow-card { display: flex; flex-direction: column; border: 1px solid #616161; border-radius: 12px; background: #fff; width: 260px; height: 96px; box-sizing: border-box; padding: 12px; gap: 8px; }
+    .flow-card { display: flex; flex-direction: column; border: 1px solid #5F95FF; border-radius: 12px; background: #fff; width: 260px; height: 96px; box-sizing: border-box; padding: 12px; gap: 8px; }
     .flow-card .header { display: flex; align-items: center; gap: 12px; }
     .flow-card .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
     .flow-card.start .icon { background: #EEF2FF; color: #5F95FF; }
@@ -546,7 +606,7 @@ function preWork() {
     .flow-card .body { display: flex; align-items: center; gap: 8px; }
     .flow-card .section { font-size: 12px; color: #8c8c8c; }
     .flow-card .chips { display: flex; align-items: center; gap: 6px; flex: 1; flex-wrap: wrap; }
-    .flow-card .chip { font-size: 12px; color: #595959; background: #FAFAFA; border: 1px solid #616161; border-radius: 6px; padding: 2px 8px; }
+    .flow-card .chip { font-size: 12px; color: #595959; background: #FAFAFA; border: 1px solid #5F95FF; border-radius: 6px; padding: 2px 8px; }
     .flow-card .actions { margin-left: auto; color: #8c8c8c; }
     .flow-card .footer { display: flex; align-items: center; gap: 8px; }
   `)
