@@ -16,13 +16,16 @@ $ npm install @antv/x6 --save
 
 # yarn
 $ yarn add @antv/x6
+
+# pnpm
+$ pnpm add @antv/x6
 ```
 
-If using the umd package, you can use any of the following CDN.
+If using the UMD package, you can use any of the following CDN URLs.
 
-- https://unpkg.com/@antv/x6/dist/index.js
-- https://cdn.jsdelivr.net/npm/@antv/x6/dist/index.js
-- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/2.0.0/index.js
+- <https://unpkg.com/@antv/x6/dist/index.js>
+- <https://cdn.jsdelivr.net/npm/@antv/x6/dist/index.js>
+- <https://cdnjs.cloudflare.com/ajax/libs/antv-x6/2.0.0/index.js>
 
 ## Basic Usage
 
@@ -59,7 +62,7 @@ X6 supports json data, you can also use the `attrs` attribute to customize the s
 
 X6 supports using `SVG` and `HTML` to render node content. On this basis, we can also use `React` and `Vue` components to render nodes, which will be very convenient in the development process.
 
-For example, we have a new requirement: add a right-click menu to the node. It would be more complicated to implement using `SVG`, We can easily implement it with react node. We can use the React render package `@antv/x6-react-shape` that comes with X6.
+For example, we have a new requirement: add a right-click menu to the node. It would be more complicated to implement using `SVG`, We can easily implement it with a React node. You can use the React render package `@antv/x6-react-shape` provided by the X6 ecosystem.
 
 <code id="react-shape" src="@/src/tutorial/getting-started/react-shape/index.tsx"></code>
 
@@ -81,7 +84,7 @@ graph.use(
 
 ### 5. Export the Data
 
-In addition to using `fromJSON` to render JSON data to the graph, of course, there is also support for exporting the data from the graph width `toJSON`, so that we can serialize the graph data and store it to the server.
+In addition to using `fromJSON` to render JSON data to the graph, of course, there is also support for exporting the data from the graph with `toJSON`, so that we can serialize the graph data and store it to the server.
 
 ```ts
 graph.toJSON()

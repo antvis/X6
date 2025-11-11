@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic/basic
 ---
 
-:::info{title="In this chapter, we mainly introduce knowledge related to nodes. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to nodes. By reading, you can learn about"}
 
 - Node rendering methods supported by X6
 - Methods for adding nodes
@@ -17,7 +17,7 @@ redirect_from:
 
 :::
 
-## Node Rendering Method
+## Node Rendering Methods
 
 X6 is based on an `SVG` rendering engine, which allows for rendering nodes and edges using different SVG elements, making it particularly suitable for scenarios where node content is relatively simple. For more complex nodes, there is a special `foreignObject` element in `SVG` that can embed any XHTML elements. This element can be used to render HTML, React/Vue/Angular components at the desired location, greatly facilitating project development.
 
@@ -83,7 +83,7 @@ Next, we may encounter a problem: if the customized content needs to be used by 
 
 After rendering is complete, we can also modify all properties of a node through the API. The two methods we commonly use are:
 
-- node.prop(path, value), for detailed usage see [prop](/en/api/model/cell#node-and-edge-properties-properties).
+- node.prop(path, value), for detailed usage see [prop](/en/api/model/cell#node-and-edge-properties).
 - node.attr(path, value), for detailed usage see [attr](/en/api/model/cell#element-attributes-attrs).
 
 First, let's look at `prop`. We will directly print the `prop` values of the default rect node in X6.
@@ -95,7 +95,7 @@ const node = graph.addNode({
   height: 40,
   x: 100,
   y: 100,
-  label: 'edge',
+  label: 'node',
 })
 console.log(node.prop())
 
@@ -141,7 +141,7 @@ console.log(node.prop())
 From the above result, we can see that `prop` is a new configuration after processing, and its values can be updated through methods. After updating, the node will immediately refresh to the latest state. To modify the node's `attrs` more conveniently, X6 provides the `attr` method.
 
 ```ts
-source.prop('size', { width: 120, height: 50 }) // Modify x coordinate
+source.prop('size', { width: 120, height: 50 }) // Modify size
 source.attr('rect/fill', '#ccc') // Modify fill color, equivalent to source.prop('attrs/rect/fill', '#ccc')
 ```
 

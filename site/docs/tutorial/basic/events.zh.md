@@ -7,9 +7,9 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍事件相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍事件相关的知识，通过阅读，你可以了解到}
 
-- 可以监听哪些类别事件
+- 可以监听哪些类别的事件
 - 如何监听事件
 
 :::
@@ -33,7 +33,7 @@ redirect_from:
 | 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `node:port:mouseleave`  | `edge:mouseleave`  | `graph:mouseleave`  |
 
 :::warning{title=注意}
-需要注意的是，这里的 `mousemove` 事件和通常的鼠标移动事件有所区别，它需要在鼠标按下后移动鼠标才能触发。
+需要注意，这里的 `mousemove` 事件不同于常规的鼠标移动事件：仅在按下鼠标拖动时触发。
 :::
 
 除了 `mouseenter` 和 `mouseleave` 外，事件回调函数的参数都包含鼠标相对于画布的位置 `x`、`y` 和鼠标事件对象 `e` 等参数。
@@ -98,7 +98,7 @@ graph.on('resize', ({ width, height }) => {})
 graph.on('translate', ({ tx, ty }) => {})
 ```
 
-### 节点或边平移
+### 节点或边移动
 
 | 事件名        | 回调参数                                                                      | 说明                |
 |---------------|-------------------------------------------------------------------------------|-------------------|
@@ -125,7 +125,7 @@ graph.on('node:moved', ({ e, x, y, node, view }) => {})
 
 ### 边连接/取消连接
 
-当拖动边的起始/终止箭头将边连接到节点/边或者将边从节点/边上分离后触发 `edge:connected`，回调函数的参数如下。
+当拖动边的起始/终止箭头将边连接到节点/边，或将边从节点/边上分离后，会触发 `edge:connected`，回调函数的参数如下。
 
 ```ts
 interface Args {
@@ -405,7 +405,7 @@ graph.on('view:mounted', ({ view }) => {})
 graph.on('view:unmounted', ({ view }) => {})
 ```
 
-大家还有经常需要在调用 `fromJSON` 或者 `resetCells` 后监听画布完成渲染事件，这时候可以使用 `render:done` 事件来监听 (2.15.1 版本新增)。
+大家经常需要在调用 `fromJSON` 或 `resetCells` 后，监听画布完成渲染事件，此时可以使用 `render:done` 事件（2.15.1 版本新增）。
 
 ```typescript
 graph.on('render:done', () => {

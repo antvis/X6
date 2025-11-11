@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic/basic
 ---
 
-:::info{title=在本章节中主要介绍边相关的知识,通过阅读,你可以了解到}
+:::info{title=在本章节中主要介绍边相关的知识，通过阅读，你可以了解到}
 
 - 添加边的方法
 - 如何配置边的形状
@@ -29,7 +29,7 @@ redirect_from:
 | router       | RouterData        | -                                              | 路由。             |
 | connector    | ConnectorData     | -                                              | 连接器。           |
 | labels       | Label[]           | -                                              | 标签。             |
-| defaultLabel | Label             | [默认标签](/api/model/labels#默认标签) | 默认标签。         |
+| defaultLabel | Label             | [默认标签](/api/model/edge#labels-和-defaultlabel) | 默认标签。         |
 
 ```ts
 graph.addEdge({
@@ -132,7 +132,7 @@ graph.addEdge({
     { x: 300, y: 120 },
   ],
   router: 'orth',
-  // 如果没有 args 参数，可以简写写 connector: 'rounded'
+  // 如果没有 args 参数，可以简写为 connector: 'rounded'
   connector: {
     name: 'rounded',
     args: {},
@@ -149,11 +149,11 @@ X6 默认提供了以下几种连接器，点击下面的链接查看每种连�
 - [smooth](/api/registry/connector#smooth)
 - [jumpover](/api/registry/connector#jumpover)
 
-另外，我们也可以注册自定义连接器，详情请参考[自定义连接器](/api/registry/connector#register)。
+另外，我们也可以注册自定义连接器，详情请参考[自定义连接器](/api/registry/connector)。
 
 ### labels
 
-用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将与 [defaultLabel](/api/model/labels#默认标签) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
+用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将与 [defaultLabel](/api/model/edge#labels-和-defaultlabel) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
 
 ```ts
 const edge = graph.addEdge({
@@ -179,7 +179,7 @@ const edge = graph.addEdge({
 const edge = graph.addEdge({
   source: rect1,
   target: rect2,
-  label: 'edge', // 通过 label 设置单个标签，当只设置标签文本是可以简化为此写法
+  label: 'edge', // 通过 label 设置单个标签，当只设置标签文本时可以简化为此写法
 })
 ```
 
@@ -212,7 +212,7 @@ X6 提供了以下几种内置箭头，使用时只需要指定箭头名和参�
 ```ts
 graph.addEdge({
   shape: 'edge',
-  sourece: [100, 100],
+  source: [100, 100],
   target: [500, 500],
   attrs: {
     line: {
@@ -240,7 +240,7 @@ graph.addEdge({
 ```ts
 graph.addEdge({
   shape: 'edge',
-  sourece: [100, 100],
+  source: [100, 100],
   target: [500, 500],
   attrs: {
     line: {

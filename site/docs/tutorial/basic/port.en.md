@@ -1,5 +1,5 @@
 ---
-title: Connection Pile
+title: Ports
 order: 3
 redirect_from:
   - /en/docs
@@ -7,12 +7,12 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-:::info{title="This chapter mainly introduces knowledge related to connection piles. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to ports. By reading, you can learn about"}
 
-- How to configure connection piles in nodes
-- Adding, deleting, and modifying connection piles
-- How to configure the position of connection piles
-- How to configure the position of labels on connection piles
+- How to configure ports in nodes
+- Adding, deleting, and modifying ports
+- How to configure port positions
+- How to configure label positions on ports
 
 :::
 
@@ -93,7 +93,7 @@ node.portProp(portId, 'attrs/circle/stroke', color)
 
 The layout algorithm for connection ports can only be specified through the `position` option in `groups`, as the layout algorithm needs to consider all connection ports in the group when calculating their positions. We can influence the layout result of a single connection port through the `args` option.
 
-We provide the following layout algorithms for connection ports by default, and also support [custom connection port layout algorithms and registration](/en/api/registry/port-layout#registry). Click the links below to learn how to use each layout algorithm.
+We provide the following layout algorithms for connection ports by default, and also support [custom connection port layout algorithms and registration](/en/api/registry/port-layout). Click the links below to learn how to use each layout algorithm.
 
 - [`absolute`](/en/api/registry/port-layout#absolute) Absolute positioning.
 - [`left`](/en/api/registry/port-layout#left-right-top-bottom) Evenly distributed on the left side of rectangular nodes.
@@ -106,9 +106,9 @@ We provide the following layout algorithms for connection ports by default, and 
 
 ## Connection Port Label Position
 
-The position of the label can be specified in both the `label.position` option of `groups` and the `items.label.position` option of the node.
+The label position can be specified in `groups.label.position` and in the node's `ports.items.label.position` option.
 
-We provide the following label positions by default, and also support [custom label positions and registration](/en/api/registry/port-label-layout#registry). Click the links below to learn how to use each label position.
+We provide the following label positions by default, and also support [custom label positions and registration](/en/api/registry/port-label-layout). Click the links below to learn how to use each label position.
 
 - [`left`](/en/api/registry/port-label-layout#side) The label is located on the left side of the connection port.
 - [`right`](/en/api/registry/port-label-layout#side) The label is located on the right side of the connection port.
