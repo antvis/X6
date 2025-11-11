@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Animation } from '../../src/model/animation'
+import { Animation, KeyframeEffect } from '../../src/model/animation'
 
 type AnyFn = (...args: any[]) => any
 
@@ -35,11 +35,25 @@ describe('Animation', () => {
   let realRAF: any
   let realCancelRAF: any
   let currentTime = 0
+  let cell: MockCell
+  let effect: KeyframeEffect
+  let keyFrames: Keyframe[] | PropertyIndexedKeyframes | null
+  let animation: Animation
+
+  const mockTimeline = {
+    get currentTime() {
+      return currentTime
+    },
+  }
+  Object.defineProperty(document, 'timeline', {
+    writable: false,
+    configurable: true,
+    value: mockTimeline,
+  })
 
   beforeEach(() => {
     vi.useFakeTimers()
     currentTime = 0
-    vi.setSystemTime(currentTime)
 
     realRAF = global.requestAnimationFrame
     realCancelRAF = global.cancelAnimationFrame
@@ -50,6 +64,19 @@ describe('Animation', () => {
     global.cancelAnimationFrame = (id: number) => {
       clearTimeout(id)
     }
+
+    cell = new MockCell({
+      'position/x': 0,
+      'position/y': 0,
+    })
+
+    keyFrames = [
+      { 'position/x': 0, offset: 0 },
+      { 'position/x': 100, offset: 1 },
+    ]
+
+    effect = new KeyframeEffect(cell as any, keyFrames, { duration: 100 })
+    animation = new Animation(effect)
   })
 
   afterEach(() => {
@@ -61,227 +88,436 @@ describe('Animation', () => {
 
   function tick(ms: number) {
     currentTime += ms
-    vi.setSystemTime(currentTime)
     vi.advanceTimersByTime(ms)
   }
 
-  it('should run numeric animation, call callbacks and notify on complete', () => {
-    const startValue = 0
-    const targetValue = 100
-    const cell = new MockCell({ a: startValue })
-    const anim = new Animation(cell as any)
-
-    const startCb = vi.fn()
-    const progressCb = vi.fn()
-    const completeCb = vi.fn()
-    const finishCb = vi.fn()
-
-    anim.start('a', targetValue, {
-      delay: 0,
-      duration: 100,
-      timing: 'linear',
-      fill: 'forwards',
-      start: startCb,
-      progress: progressCb,
-      complete: completeCb,
-      finish: finishCb,
-    })
-
-    tick(0)
-
-    const keys = anim.get()
-    expect(keys).toContain('a')
-    expect(cell.notifySpy).toHaveBeenCalledWith(
-      'transition:start',
-      expect.objectContaining({
-        path: 'a',
-        startValue,
-        targetValue,
-        cell,
-      }),
-    )
-    expect(startCb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'a',
-        startValue,
-        targetValue,
-        cell,
-      }),
-    )
-
-    tick(16)
-
-    expect(progressCb).toHaveBeenCalled()
-    const firstProgressArg = progressCb.mock.calls[0][0]
-    expect(firstProgressArg).toHaveProperty('progress')
-    expect(firstProgressArg).toHaveProperty('currentValue')
-    expect(cell.setSpy).toHaveBeenCalled()
-
-    tick(100)
-
-    expect(cell.values['a']).toBe(targetValue)
-
-    expect(completeCb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'a',
-        startValue,
-        targetValue,
-        cell,
-      }),
-    )
-    expect(finishCb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'a',
-        startValue,
-        targetValue,
-        cell,
-      }),
-    )
-
-    expect(cell.notifySpy).toHaveBeenCalledWith(
-      'transition:complete',
-      expect.objectContaining({
-        path: 'a',
-        startValue,
-        targetValue,
-        cell,
-      }),
-    )
-
-    expect(cell.notifySpy).toHaveBeenCalledWith(
-      'transition:finish',
-      expect.objectContaining({
-        path: 'a',
-        startValue,
-        targetValue,
-        cell,
-      }),
-    )
-
-    expect(anim.get()).not.toContain('a')
+  it('should initialize with effect and default properties', () => {
+    expect(animation.effect).toBe(effect)
+    expect(animation.currentTime).toBeNull()
+    expect(animation.playbackRate).toBe(1)
+    expect(animation.playState).toBe('idle')
   })
 
-  it('stop with jumpedToEnd should set final value and call complete/finish notifications', () => {
-    const cell = new MockCell({ a: 10 })
-    const anim = new Animation(cell as any)
+  it('should play animation', () => {
+    const onfinishSpy = vi.fn()
+    animation.onfinish = onfinishSpy
 
-    const stopCompleteCb = vi.fn()
-    const stopCb = vi.fn()
-    const finishCb = vi.fn()
-
-    anim.start('a', 50, { delay: 0, duration: 100 })
-    tick(0)
-
-    anim.stop('a', {
-      jumpedToEnd: true,
-      complete: stopCompleteCb,
-      stop: stopCb,
-      finish: finishCb,
-    })
-
-    expect(cell.values['a']).toBe(50)
-
-    expect(cell.notifySpy).toHaveBeenCalledWith(
-      'transition:end',
-      expect.objectContaining({
-        path: 'a',
-        startValue: 10,
-        targetValue: 50,
-        cell,
-      }),
-    )
-    expect(cell.notifySpy).toHaveBeenCalledWith(
-      'transition:complete',
-      expect.objectContaining({
-        path: 'a',
-        startValue: 10,
-        targetValue: 50,
-        cell,
-      }),
-    )
-
-    expect(stopCompleteCb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'a',
-        startValue: 10,
-        targetValue: 50,
-        cell,
-      }),
-    )
-    expect(stopCb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'a',
-        startValue: 10,
-        targetValue: 50,
-        jumpedToEnd: true,
-        cell,
-      }),
-    )
-    expect(finishCb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'a',
-        startValue: 10,
-        targetValue: 50,
-        cell,
-      }),
-    )
-
-    expect(anim.get()).not.toContain('a')
-  })
-
-  it('stop by prefix should stop multiple animations under the same prefix', () => {
-    const cell = new MockCell({ 'g/x': 0, 'g/y': 0 })
-    const anim = new Animation(cell as any)
-
-    anim.start(['g', 'x'], 10, { delay: 0, duration: 100 })
-    anim.start(['g', 'y'], 20, { delay: 0, duration: 100 })
-    tick(0)
-
-    const keysBefore = anim.get().sort()
-    expect(keysBefore).toContain('g/x')
-    expect(keysBefore).toContain('g/y')
-
-    anim.stop('g')
-
-    const keysAfter = anim.get()
-    expect(keysAfter).not.toContain('g/x')
-    expect(keysAfter).not.toContain('g/y')
-  })
-
-  it('should use provided interp function when given', () => {
-    const cell = new MockCell({ v: 'start' })
-    const anim = new Animation(cell as any)
-
-    const interpFactory = vi.fn((s: any, t: any) => {
-      return (p: number) => {
-        return `interp:${String(s)}->${String(t)}@${Math.round(p * 100)}`
-      }
-    })
-
-    const progressCb = vi.fn()
-
-    anim.start('v', 'end', {
-      delay: 0,
-      duration: 50,
-      fill: 'forwards',
-      interp: interpFactory,
-      progress: progressCb,
-    })
-
-    tick(0)
-
-    tick(16)
-
-    expect(progressCb).toHaveBeenCalled()
-    const anySetCallWithInterp = cell.setSpy.mock.calls.some((c: any[]) => {
-      const value = c[1]
-      return typeof value === 'string' && value.startsWith('interp:')
-    })
-    expect(anySetCallWithInterp).toBeTruthy()
+    animation.play()
+    expect(animation.playState).toBe('running')
 
     tick(50)
+    expect(animation.currentTime).toBe(50)
+    expect(cell.values['position/x']).toBe(50)
 
-    const finalVal = cell.values['v']
-    expect(finalVal).toMatch(/^interp:start->end@100/)
+    tick(50)
+    expect(cell.values['position/x']).toBe(0)
+    expect(animation.playState).toBe('finished')
+    expect(onfinishSpy).toHaveBeenCalled()
+  })
+
+  it('should pause and resume animation', () => {
+    animation.play()
+    tick(30)
+
+    animation.pause()
+    expect(animation.playState).toBe('paused')
+    expect(animation.currentTime).toBe(30)
+
+    animation.play()
+    expect(animation.playState).toBe('running')
+    tick(20)
+    expect(animation.currentTime).toBe(50)
+  })
+
+  it('should cancel animation', () => {
+    const oncancelSpy = vi.fn()
+    animation.oncancel = oncancelSpy
+
+    animation.play()
+    tick(30)
+    animation.cancel()
+
+    expect(animation.playState).toBe('idle')
+    expect(animation.currentTime).toBeNull()
+    expect(cell.values['position/x']).toBe(0)
+    expect(oncancelSpy).toHaveBeenCalled()
+  })
+
+  it('should finish animation with forwards fill', () => {
+    effect = new KeyframeEffect(cell as any, keyFrames, {
+      duration: 100,
+      fill: 'forwards',
+    })
+    animation = new Animation(effect)
+
+    animation.play()
+    tick(100)
+
+    expect(animation.playState).toBe('finished')
+    expect(animation.currentTime).toBe(100)
+    expect(cell.values['position/x']).toBe(100)
+  })
+
+  it('should update playback rate', () => {
+    animation.updatePlaybackRate(2)
+    expect(animation.playbackRate).toBe(2)
+
+    animation.play()
+    tick(25) // 实际时间25ms，由于2倍速，动画时间应为50ms
+    expect(animation.currentTime).toBe(50)
+  })
+
+  it('should not play without effect', () => {
+    const emptyAnimation = new Animation(null)
+    emptyAnimation.play()
+    expect(emptyAnimation.playState).toBe('idle')
+  })
+
+  it('should handle timeline currentTime null', () => {
+    const timeline = { currentTime: null }
+    const anim = new Animation(effect, timeline)
+    anim.play()
+    expect(anim.playState).toBe('idle')
+  })
+
+  describe('direction handling', () => {
+    it('should play in reverse direction', () => {
+      effect = new KeyframeEffect(cell as any, keyFrames, {
+        duration: 100,
+        direction: 'reverse',
+      })
+      animation = new Animation(effect)
+
+      animation.play()
+      tick(50)
+      expect(animation.currentTime).toBe(50)
+      expect(cell.values['position/x']).toBe(50) // 反向播放，从100开始
+
+      tick(50)
+      expect(animation.playState).toBe('finished')
+      expect(cell.values['position/x']).toBe(0)
+    })
+
+    it('should alternate direction with iterations', () => {
+      effect = new KeyframeEffect(cell as any, keyFrames, {
+        duration: 100,
+        direction: 'alternate',
+        iterations: 2,
+      })
+      animation = new Animation(effect)
+
+      animation.play()
+      // 第一次迭代 - 正向
+      tick(100)
+      expect(animation.currentTime).toBe(100)
+      expect(cell.values['position/x']).toBe(100)
+
+      // 第二次迭代 - 反向
+      tick(100)
+      expect(cell.values['position/x']).toBe(0)
+      expect(animation.playState).toBe('finished')
+    })
+
+    it('should alternate-reverse direction with iterations', () => {
+      effect = new KeyframeEffect(cell as any, keyFrames, {
+        duration: 100,
+        direction: 'alternate-reverse',
+        iterations: 2,
+      })
+      animation = new Animation(effect)
+
+      animation.play()
+      // 第一次迭代 - 反向
+      tick(90)
+      expect(animation.currentTime).toBe(90)
+      expect(cell.values['position/x']).toBe(10)
+
+      // 第二次迭代 - 正向
+      tick(100)
+      expect(animation.currentTime).toBe(190)
+      expect(cell.values['position/x']).toBe(90)
+    })
+
+    it('should finish with correct value for different directions and fills', () => {
+      const expectValueMap = {
+        'normal/forwards/1': 100,
+        'normal/backwards/1': 0,
+        'normal/both/1': 100,
+        'normal/none/1': 0,
+        'reverse/forwards/1': 0,
+        'reverse/backwards/1': 0,
+        'reverse/both/1': 0,
+        'reverse/none/1': 0,
+        'alternate/forwards/1': 100,
+        'alternate/forwards/2': 0,
+        'alternate/backwards/1': 0,
+        'alternate/backwards/2': 0,
+        'alternate/both/1': 100,
+        'alternate/both/2': 0,
+        'alternate/none/1': 0,
+        'alternate-reverse/forwards/1': 0,
+        'alternate-reverse/forwards/2': 100,
+        'alternate-reverse/backwards/1': 0,
+        'alternate-reverse/backwards/2': 0,
+        'alternate-reverse/both/1': 0,
+        'alternate-reverse/both/2': 100,
+        'alternate-reverse/none/1': 0,
+      }
+
+      Object.entries(expectValueMap).forEach(([key, expectedValue]) => {
+        const [direction, fill, iterations] = key.split('/')
+
+        effect = new KeyframeEffect(cell as any, keyFrames, {
+          duration: 100,
+          direction: direction as any,
+          fill: fill as any,
+          iterations: parseInt(iterations),
+        })
+        animation = new Animation(effect)
+
+        animation.play()
+        // 播放足够长的时间确保动画完成
+        Array.from({ length: parseInt(iterations) }).forEach(() => {
+          tick(100)
+        })
+
+        console.log('key', key)
+        console.log('expectedValue', expectedValue)
+        console.log("cell.values['position/x']", cell.values['position/x'])
+        console.log('-----')
+        expect(cell.values['position/x']).toBe(expectedValue)
+      })
+    })
+  })
+})
+
+describe('KeyframeEffect', () => {
+  let cell: MockCell
+
+  beforeEach(() => {
+    cell = new MockCell({
+      'position/x': 0,
+      'position/y': 0,
+      'size/width': 100,
+      'size/height': 100,
+      opacity: 1,
+    })
+  })
+
+  it('should initialize with keyframes array', () => {
+    const keyframes = [
+      { 'position/x': 0, 'position/y': 0, offset: 0 },
+      { 'position/x': 100, 'position/y': 100, offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    expect(effect.target).toBe(cell)
+    expect(effect.getKeyframes()).toEqual([
+      expect.objectContaining({
+        'position/x': 0,
+        'position/y': 0,
+        easing: 'linear',
+        offset: 0,
+        computedOffset: 0,
+      }),
+      expect.objectContaining({
+        'position/x': 100,
+        'position/y': 100,
+        easing: 'linear',
+        offset: 1,
+        computedOffset: 1,
+      }),
+    ])
+  })
+
+  it('should initialize with property indexed keyframes', () => {
+    const keyframes = {
+      'position/x': 100,
+      'position/y': 200,
+    }
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    const frames = effect.getKeyframes()
+    expect(frames).toHaveLength(1)
+    expect(frames[0]).toEqual(
+      expect.objectContaining({
+        'position/x': 100,
+        'position/y': 200,
+        computedOffset: 1,
+      }),
+    )
+  })
+
+  it('should initialize with property indexed array keyframes', () => {
+    const keyframes = {
+      'position/x': [50, 100],
+      'position/y': [50, 200],
+    }
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    const frames = effect.getKeyframes()
+    expect(frames).toHaveLength(2)
+    expect(frames[0]).toEqual(
+      expect.objectContaining({
+        'position/x': 50,
+        'position/y': 50,
+        computedOffset: 0,
+      }),
+    )
+    expect(frames[1]).toEqual(
+      expect.objectContaining({
+        'position/x': 100,
+        'position/y': 200,
+        computedOffset: 1,
+      }),
+    )
+  })
+
+  it('should apply animation at different progress', () => {
+    const keyframes = [
+      { 'position/x': 0, offset: 0 },
+      { 'position/x': 100, offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    // Start
+    effect.apply(0)
+    expect(cell.values['position/x']).toBe(0)
+
+    // Middle
+    effect.apply(50)
+    expect(cell.values['position/x']).toBe(50)
+
+    // End
+    effect.apply(100)
+    expect(cell.values['position/x']).toBe(100)
+  })
+
+  it('should handle color interpolation', () => {
+    const keyframes = [
+      { fill: '#ff0000', offset: 0 },
+      { fill: '#0000ff', offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(50)
+    expect(cell.values['fill']).toMatch(/^#[\da-f]{6}$/i)
+    expect(cell.values['fill']).not.toBe('#ff0000')
+    expect(cell.values['fill']).not.toBe('#0000ff')
+  })
+
+  it('should restore original values when currentTime is null', () => {
+    const keyframes = [{ 'position/x': 100, 'position/y': 100 }]
+    const effect = new KeyframeEffect(cell as any, keyframes, 100)
+
+    // Apply animation
+    effect.apply(100)
+    expect(cell.values['position/x']).toBe(100)
+    expect(cell.values['position/y']).toBe(100)
+
+    // Restore
+    effect.apply(null)
+    expect(cell.values['position/x']).toBe(0)
+    expect(cell.values['position/y']).toBe(0)
+  })
+
+  it('should handle easing functions', () => {
+    const keyframes = [{ 'position/x': 100, easing: 'quad' }]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(25)
+    const earlyValue = cell.values['position/x']
+
+    effect.apply(75)
+    const lateValue = cell.values['position/x']
+
+    // Ease-in should start slow, ease-out should end slow
+    expect(earlyValue).toBeLessThan(25)
+    expect(lateValue).toBeLessThan(75)
+  })
+
+  it('should update keyframes with setKeyframes', () => {
+    const initialKeyframes = [{ 'position/x': 0 }]
+    const effect = new KeyframeEffect(cell as any, initialKeyframes, {
+      duration: 100,
+    })
+
+    const newKeyframes = [
+      { 'position/x': 0, offset: 0 },
+      { 'position/x': 100, offset: 1 },
+    ]
+    effect.setKeyframes(newKeyframes)
+
+    const frames = effect.getKeyframes()
+    expect(frames).toHaveLength(2)
+    expect(frames[0]).toEqual(
+      expect.objectContaining({
+        'position/x': 0,
+        computedOffset: 0,
+      }),
+    )
+    expect(frames[1]).toEqual(
+      expect.objectContaining({
+        'position/x': 100,
+        computedOffset: 1,
+      }),
+    )
+  })
+
+  it('should return timing options with getTiming', () => {
+    const options = {
+      duration: 200,
+      delay: 50,
+      easing: 'ease-in-out',
+      iterations: 2,
+    }
+    const effect = new KeyframeEffect(cell as any, [], options)
+
+    const timing = effect.getTiming()
+    expect(timing).toEqual(
+      expect.objectContaining({
+        duration: 200,
+        delay: 50,
+        easing: 'ease-in-out',
+        iterations: 2,
+      }),
+    )
+  })
+
+  it('should return computed timing with getComputedTiming', () => {
+    const options = {
+      duration: 200,
+      delay: 50,
+      easing: 'ease-in-out',
+    }
+    const effect = new KeyframeEffect(cell as any, [], options)
+
+    const computedTiming = effect.getComputedTiming()
+    expect(computedTiming).toEqual(
+      expect.objectContaining({
+        duration: 200,
+        delay: 50,
+        easing: 'ease-in-out',
+        fill: 'none', // 默认值
+        direction: 'normal', // 默认值
+        iterations: 1, // 默认值
+      }),
+    )
+  })
+
+  it('should merge default timing options', () => {
+    const effect = new KeyframeEffect(cell as any, [], { duration: 100 })
+
+    const timing = effect.getTiming()
+    expect(timing).toEqual(
+      expect.objectContaining({
+        duration: 100,
+        delay: 0, // 默认值
+        easing: 'linear', // 默认值
+        fill: 'none', // 默认值
+        direction: 'normal', // 默认值
+        iterations: 1, // 默认值
+      }),
+    )
   })
 })
