@@ -12,23 +12,24 @@ redirect_from:
 :::code-group
 
 ```shell [npm]
-$ npm install @antv/x6 --save
+npm install @antv/x6 --save
 ```
 
 ```shell [yarn]
-$ yarn add @antv/x6
+yarn add @antv/x6
 ```
 
 ```bash [pnpm]
-$ pnpm add @antv/x6
+pnpm add @antv/x6
 ```
+
 :::
 
 如果使用 `umd` 包，可以使用下面三个 CDN 中的任何一个，默认使用 X6 的最新版：
 
-- https://unpkg.com/@antv/x6/dist/index.js
-- https://cdn.jsdelivr.net/npm/@antv/x6/dist/index.js
-- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/2.18.1/index.js
+- <https://unpkg.com/@antv/x6/dist/index.js>
+- <https://cdn.jsdelivr.net/npm/@antv/x6/dist/index.js>
+- <https://cdnjs.cloudflare.com/ajax/libs/antv-x6/2.18.1/index.js>
 
 ## 开始使用
 
@@ -43,6 +44,7 @@ $ pnpm add @antv/x6
 ```
 
 然后初始化画布对象，可以通过配置设置画布的样式，比如背景颜色：
+
 ```ts
 import { Graph } from '@antv/x6'
 
@@ -63,6 +65,7 @@ const graph = new Graph({
 创建画布后，可在其中添加**节点**和**边**。X6 支持 JSON 格式数据，该对象中 `nodes` 代表节点数据，`edges` 代表边数据，可以使用 `attrs` 属性来定制节点和边的样式（可以类比 CSS）。
 
 这样我们就得到了一个基础的 X6 画布：
+
 ```js | ob { inject: true }
 import { Graph } from '@antv/x6'
 
@@ -138,10 +141,11 @@ graph.fromJSON(data) // 渲染元素
 graph.centerContent() // 居中显示
 ```
 
-
 ### 3. 前端框架集成
-X6 是基于 js 开发的包，不依赖任何的前端框架，可以在`html`中使用，也可以任意 js 框架中使用，但是实际开发中大多数业务都是在使用`React` `Vue` 等前端框架进行开发，X6 也可以很简单地在这些框架中进行使用，下面的例子实现了上面 [步骤2渲染节点和边章节](#2-渲染节点和边) 相同的效果：
+
+X6 是基于 js 开发的包，不依赖任何的前端框架，可以在`html`中使用，也可以任意 js 框架中使用，但是实际开发中大多数业务都是在使用`React`、`Vue` 等前端框架进行开发，X6 也可以很简单地在这些框架中进行使用，下面的例子实现了上面 [步骤2渲染节点和边章节](#2-渲染节点和边) 相同的效果：
 :::code-group
+
 ```jsx [React]
 import React from 'react'
 import { Graph } from '@antv/x6'
@@ -416,6 +420,7 @@ export class AppComponent {
 :::
 
 在上面的例子中，都使用了内置的`rect`节点，除此之外 X6 还支持使用框架组件来自定义节点，例如使用 `React` 组件、`Vue` 组件来渲染节点，这些进阶内容我们会在后续的章节中详细介绍，你也可以提前了解：
+
 - [React 节点](/tutorial/intermediate/react)
 - [Vue 节点](/tutorial/intermediate/vue)
 - [Angular 节点](/tutorial/intermediate/angular)
@@ -509,8 +514,8 @@ graph.use(
 graph.fromJSON(data) // 渲染元素
 graph.centerContent() // 居中显示
 ```
-更多插件会在后续章节中详细介绍。
 
+更多插件会在后续章节中详细介绍。
 
 ### 5. 数据导出
 

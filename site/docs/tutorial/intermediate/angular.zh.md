@@ -4,10 +4,10 @@ order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
-  - /zh/docs/tutorial/inermediate
+  - /zh/docs/tutorial/intermediate
 ---
 
-:::info{title=在本章节中,你可以了解到}
+:::info{title="在本章节中主要介绍 Angular 节点相关的知识，通过阅读，你可以了解到"}
 
 - 如何使用 Angular 来渲染节点内容
 - 如何更新节点内容
@@ -17,10 +17,10 @@ redirect_from:
 
 ## 渲染节点
 
-我们提供了一个独立的包 `@antv/x6-angular-shape` 以支持将 Angular 的组件/模板作为节点进行渲染。
+我们提供一个独立的包 `@antv/x6-angular-shape`，用于将 Angular 组件/模板渲染为节点。
 
 :::warning{title=注意}
-需要注意的是，x6 的版本要和 x6-angular-shape 的版本匹配，也就是两个包需要用同一个大版本。
+版本兼容关系：X6 1.x 使用 x6-angular-shape 1.x；X6 2.x 和 3.x 版本均使用 x6-angular-shape 2.x。
 :::
 
 ### Component 渲染
@@ -115,7 +115,7 @@ export class AppComponent implements AfterViewInit {
 
 ## 更新节点
 
-无论是使用 Component 还是 TemplateRef, 都是一样的更新方式.
+无论使用 Component 还是 TemplateRef，更新方式相同。
 
 ```ts
 node.setData({
@@ -125,31 +125,31 @@ node.setData({
 })
 ```
 
-## 有 demo 吗?
+## 有 demo 吗？
 
-有的, 因为 X6 渲染节点部分与框架是解耦的. 因此 `x6-angular-shape` 包并非是直接在源代码里改的, 而是在一个单独的 Angular 环境中开发的. 该 demo 还提供了多种节点类型的性能测试, 详情请参考[Eve-Sama/x6-angular-shape](https://github.com/Eve-Sama/x6-angular-shape)、[X6 与 G6 的性能对比, 以及 X6 多节点类型下的 FPS 临界点讨论](https://github.com/antvis/X6/issues/3266)
+有的。由于 X6 的节点渲染与框架解耦，因此 `x6-angular-shape` 包并非直接在源代码中修改，而是在独立的 Angular 环境中开发。该 demo 还提供多种节点类型的性能测试，详情请参考 [Eve-Sama/x6-angular-shape](https://github.com/Eve-Sama/x6-angular-shape) 和 [X6 与 G6 的性能对比，以及 X6 多节点类型下的 FPS 临界点讨论](https://github.com/antvis/X6/issues/3266)。
 
 ## FAQ
 
-### 为什么输入属性不能直接放在 data 中而需要放在 ngArguments 中? 且为什么不叫 ngInput?
+### 为什么输入属性不能直接放在 data 中而需要放在 ngArguments 中？且为什么不叫 ngInput？
 
-因为并非所有 `node.data` 中的属性都是输入属性, 所以遍历 `data` 中的所有属性进行赋值是不合适的. 至于为什么叫 `ngArguments` 主要是有两点考虑.
+因为并非所有 `node.data` 中的属性都是输入属性，所以遍历 `data` 中的所有属性进行赋值并不合适。至于为什么叫 `ngArguments`，主要有两点考虑：
 
-- 1.x 版本中已经这么用了, 沿用该 API 可以降低用户升级成本
-- `Input` 的概念其实是来自 `Component`, 而 `TemplateRef` 中是 `context`, 在二者的基础上抽象一个 `Arguments` 的概念更通用些
+- 1.x 版本中已采用该命名，沿用可降低用户升级成本。
+- `Input` 的概念来自 `Component`，而在 `TemplateRef` 中是 `context`，在二者基础上抽象出更通用的 `Arguments` 概念。
 
 ### 2.x 版本的 x6-angular-shape 相比较 1.x 版本有什么新特性吗?
 
-实现思路其实和之前是差不多的. 但是确实有几个点值得一提.
+实现思路与之前基本一致，但有几点值得一提。
 
-#### demo 更聚焦
+#### Demo 更聚焦
 
-1.x 版本的 demo 除了渲染组件外, 还写了连线、清除等一系列案例. 看似扩展, 实则眼花缭乱. 作为 `x6-angular-shape`的 demo, 2.x 版本更加聚焦, 更加聚焦于 shape 的使用与性能测试等, 与插件无关的内容请查看 X6 官网.
+1.x 版本的 demo 除了渲染组件外，还包含连线、清除等一系列案例。看似扩展，实则冗杂。作为 `x6-angular-shape` 的 demo，2.x 版本更聚焦于 shape 的使用与性能测试等。与插件无关的内容请查看 X6 官网。
 
 #### 功能更稳定
 
-在 1.x 版本中, 虽然实现了功能, 但是使用场景的思考不够全面. 比如`ngArguments`的变化, 对 `TemplateRef`的场景并不生效. 虽然对`Component`生效但是无法触发`ngOnChanges`. 而在新版本中, 这些问题都将不复存在.
+在 1.x 版本中，虽然实现了功能，但对使用场景的考虑不够全面。比如 `ngArguments` 的变化在 `TemplateRef` 场景不生效；对 `Component` 生效但无法触发 `ngOnChanges`。在新版本中，这些问题已被修复。
 
 ### 版本要求
 
-你的 Angular 版本至少在 14 及以上才可以. 14 以下需要用 hack 的方式实现一些特性, 比较麻烦. 暂时不提供, 如有需要可提 issue, 我再专门介绍下如何实现.
+Angular 版本需至少 14 及以上。14 以下需通过 hack 的方式实现部分特性，较为麻烦，暂不提供支持。如有需要可提 Issue，我们将说明实现方式。

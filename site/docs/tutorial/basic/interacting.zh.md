@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍元素交互相关的知识,通过阅读,你可以了解到}
+:::info{title=本章节主要介绍元素交互相关的知识，通过阅读，你可以了解到}
 
 - 如何设置连线交互规则
 - 节点之间怎么嵌入
@@ -24,12 +24,12 @@ redirect_from:
 
 可以通过 `allowXXX` 配置来定义连线能否连接到对应的位置。默认支持以下项：
 
-- `allowBlank`：是否允许连接到画布空白位置的点，默认为 `true`。
+- `allowBlank`：是否允许连接到画布空白处，默认为 `true`。
 - `allowLoop`：是否允许创建循环连线，即边的起始节点和终止节点为同一节点，默认为 `true`。
 - `allowNode`：是否允许边连接到节点（非节点上的连接桩），默认为 `true`。
 - `allowEdge`：是否允许边连接到另一个边，默认为 `true`。
 - `allowPort`：是否允许边连接到连接桩，默认为 `true`。
-- `allowMulti`：是否允许在相同的起始节点和终止之间创建多条边，默认为 `true`。
+- `allowMulti`：是否允许在相同的起始节点和终止节点之间创建多条边，默认为 `true`。
 
 它们的值都支持以下两种类型：
 
@@ -97,13 +97,13 @@ new Graph({
 
 - `validateMagnet`：点击 `magnet=true` 的元素时 根据 `validateMagnet` 返回值来判断是否新增边，触发时机是元素被按下，如果返回 `false`，则没有任何反应，如果返回 `true`，会在当前元素创建一条新的边。
 - `validateConnection`：在移动边的时候判断连接是否有效，如果返回 `false`，当鼠标放开的时候，不会连接到当前元素，常常配合[高亮](/tutorial/basic/interacting#高亮)功能一起使用。
-- `validateEdge`：当停止拖动边的时候根据 `validateEdge` 返回值来判断边是否生效，如果返回 `false`, 该边会被清除。
+- `validateEdge`：当停止拖动边的时候根据 `validateEdge` 返回值来判断边是否生效，如果返回 `false`，该边会被清除。
 
 <code id="interacting-validate" src="@/src/tutorial/basic/interacting/validate/index.tsx"></code>
 
 ## 组合
 
-有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/api/interacting/interacting#组合)。
+有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/api/model/interaction#组合)。
 
 ```ts
 const graph = new Graph({
@@ -135,7 +135,7 @@ const graph = new Graph({
 ```ts
 new Graph({
   highlighting: {
-    // 连接桩可以被连接时在连接桩外围围渲染一个包围框
+    // 连接桩可以被连接时在连接桩外围渲染一个包围框
     magnetAvailable: {
       name: 'stroke',
       args: {
@@ -146,7 +146,7 @@ new Graph({
         },
       },
     },
-    // 连接桩吸附连线时在连接桩外围围渲染一个包围框
+    // 连接桩吸附连线时在连接桩外围渲染一个包围框
     magnetAdsorbed: {
       name: 'stroke',
       args: {

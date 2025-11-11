@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-:::info{title=在本章节中,你可以了解到}
+:::info{title="在本章节中主要介绍 Vue 节点相关的知识，通过阅读，你可以了解到"}
 
 - 如何使用 Vue 组件来渲染节点内容
 - 如何更新节点内容
@@ -16,10 +16,10 @@ redirect_from:
 
 ## 渲染节点
 
-我们提供了一个独立的包 `@antv/x6-vue-shape` 来使用 Vue 组件渲染节点。
+我们提供一个独立的包 `@antv/x6-vue-shape`，用于通过 Vue 组件渲染节点。
 
 :::warning{title=注意}
-需要注意的是，x6 的版本要和 x6-vue-shape 的版本匹配，也就是两个包需要用同一个大版本。
+版本兼容关系：X6 1.x 使用 x6-vue-shape 1.x；X6 2.x 和 3.x 版本均使用 x6-vue-shape 2.x。
 :::
 
 ```html
@@ -98,7 +98,7 @@ redirect_from:
 </script>
 ```
 
-最终效果如下：
+效果如下：
 
 <iframe src="/demos/vue/basic/index.html" style="width: 100%; height: 260px; border: 0px; overflow: hidden;"></iframe>
 
@@ -152,9 +152,9 @@ export default defineComponent({
 
 <iframe src="/demos/vue/update/index.html" style="width: 100%; height: 260px; border: 0px; overflow: hidden;"></iframe>
 
-## Vue2 中使用
+## 在 Vue2 中使用
 
-上面我们使用到了 `teleport`，它是 `Vue3` 中的特性，如果在 `Vue2` 中，如何使用呢？
+上述示例使用了 `Teleport`，它是 `Vue3` 的特性；在 `Vue2` 中如何使用？
 
 ```html
 <template>
@@ -196,5 +196,5 @@ export default defineComponent({
 节点组件写法和上面的一致。
 
 :::warning{title=注意}
-在 Vue2 中，节点组件内容有一些限制，比如无法使用 Vuex、i18n、element-ui 等。
+在 Vue 2 中，节点组件内容存在一些限制，例如无法使用 Vuex、i18n、Element UI 等。
 :::
