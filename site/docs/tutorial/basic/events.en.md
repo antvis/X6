@@ -9,7 +9,7 @@ redirect_from:
 
 :::info{title="This chapter mainly introduces knowledge related to events. By reading, you can learn about"}
 
-- What categories of events can be listened to
+- Which event categories you can listen to
 - How to listen to events
 
 :::
@@ -20,8 +20,8 @@ Events triggered when interacting with the application through mouse, keyboard, 
 
 ### Mouse Events
 
-| Event      | Cell Node/Edge      | Node Node          | Port Connection Point      | Edge Edge         | Blank Canvas Area  |
-|------------|----------------------|---------------------|----------------------------|--------------------|---------------------|
+| Event      | Cell                | Node              | Port                      | Edge              | Graph              |
+|------------|---------------------|-------------------|---------------------------|-------------------|--------------------|
 | Click      | `cell:click`         | `node:click`        | `node:port:click`         | `edge:click`       | `blank:click`       |
 | Double Click | `cell:dblclick`    | `node:dblclick`     | `node:port:dblclick`      | `edge:dblclick`    | `blank:dblclick`    |
 | Right Click | `cell:contextmenu`  | `node:contextmenu`  | `node:port:contextmenu`   | `edge:contextmenu` | `blank:contextmenu` |
@@ -98,7 +98,7 @@ graph.on('resize', ({ width, height }) => {})
 graph.on('translate', ({ tx, ty }) => {})
 ```
 
-### Node or Edge Movement
+### Node/Edge Movement
 
 | Event Name    | Callback Parameters                                                                 | Description                |
 |---------------|-------------------------------------------------------------------------------------|----------------------------|
@@ -125,7 +125,7 @@ graph.on('node:moved', ({ e, x, y, node, view }) => {})
 
 ### Edge Connection/Disconnection
 
-The `edge:connected` event is triggered when dragging the start/end arrow of an edge to connect it to a node/edge or disconnecting it from a node/edge. The callback function parameters are as follows.
+The `edge:connected` event fires when dragging an edge terminal to connect/disconnect it to/from a node or edge. The callback parameters are as follows.
 
 ```ts
 interface Args {
@@ -133,23 +133,23 @@ interface Args {
   edge: Edge // Edge
   view: EdgeView // Edge view
   isNew: boolean // Whether it is a newly created edge
-  type: Edge.TerminalType // Whether the operation is on the start or end arrow ('source' | 'target')
+  type: Edge.TerminalType // Whether the operation is on the source or target arrow ('source' | 'target')
 
   previousCell?: Cell | null // The node/edge connected before the interaction
   previousView?: CellView | null // The view of the node/edge connected before the interaction
-  previousPort?: string | null // The ID of the connection point connected before the interaction
+  previousPort?: string | null // The port ID connected before the interaction
   previousPoint?: Point.PointLike | null // The point connected before the interaction (records the position of the start terminal when dragging the edge terminal from blank to node/edge)
   previousMagnet?: Element | null // The element connected before the interaction
 
   currentCell?: Cell | null // The node/edge connected after the interaction
   currentView?: CellView | null // The view of the node/edge connected after the interaction
-  currentPort?: string | null // The ID of the connection point connected after the interaction
+  currentPort?: string | null // The port ID connected after the interaction
   currentPoint?: Point.PointLike | null // The point connected after the interaction (records the position of the terminal after dragging from node/edge to blank)
   currentMagnet?: Element | null // The element connected after the interaction
 }
 ```
 
-We can use `isNew` to determine whether the corresponding edge is newly created after the connection is completed. For example, if an edge is created starting from a connection point and connected to another node/connection point, `isNew` will be `true`.
+We can use `isNew` to determine whether the corresponding edge is newly created after the connection is completed. For example, if an edge is created starting from a port and connected to another node/port, `isNew` will be `true`.
 
 ```ts
 graph.on('edge:connected', ({ isNew, edge }) => {

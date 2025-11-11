@@ -10,44 +10,44 @@ redirect_from:
 :::info{title="This chapter mainly introduces knowledge related to grouping. By reading, you can learn about"}
 
 - How to group nodes
-- How to group nodes through interactive methods
-- How to restrict the movement of child nodes within a group
-- How to achieve the effect of automatically expanding parent nodes
-- How to implement the effect of expanding and collapsing parent nodes
+- How to group nodes via interaction
+- How to restrict child node movement in a group
+- How to automatically expand the parent node
+- How to expand and collapse the parent node
 :::
 
 ## Group Nodes
 
-We can implement groups through parent-child combinations and provide a series of [methods](/en/api/model/cell#parentchildren-relationship) to get and set these relationships.
+You can build groups via parent–child relationships, with [methods](/en/api/model/cell#parentchildren-relationship) to get and set them.
 
 <code id="group-embed-edge" src="@/src/tutorial/intermediate/group/embed-edge/index.tsx"></code>
 
-From the example above, we can see that:
+From the example above:
 
-- When the parent node is moved, the child nodes will also move along with it, even if the child nodes are outside the parent node.
-- By default, the common parent of the starting and ending nodes of an edge is considered the parent of the edge. When the parent node is moved, the path points of the edge will follow.
+- Moving the parent node also moves its children, even if they are outside.
+- By default, the edge’s parent is the common parent of its terminals. Moving the parent moves the edge’s vertices.
 
-## Combining Nodes through Interaction
+## Group via Interaction
 
-Sometimes we need to drag one node into another node to make it a child of the other node. In this case, we can enable the `embedding` option, which allows us to specify a method through `findParent` to return the parent node when the node is moved. For more detailed configuration, refer to the [API](/en/api/interacting/interacting#embedding).
+Sometimes you need to drag one node into another to make it a child. Enable `embedding` and implement `findParent` to return the parent on move. See the [API](/en/api/interacting/interacting#embedding) for details.
 
 <code id="group-embedding" src="@/src/tutorial/basic/interacting/embedding/index.tsx"></code>
 
-## Restricting the Movement of Child Nodes
+## Restrict Child Movement
 
-At times, we need to limit the movement range of child nodes within the parent node. This can be achieved by using the `translating.restrict` option when creating the `Graph` instance.
+Limit the movement range of child nodes within the parent by using the `translating.restrict` option when creating the `Graph` instance.
 
 <code id="group-restrict" src="@/src/tutorial/intermediate/group/restrict/index.tsx"></code>
 
-## Automatically Expanding the Parent Node
+## Auto-expand Parent Node
 
-By listening to the `node:change:position` event, we can automatically expand or shrink the size of the parent node when the child node moves, ensuring that the parent node completely encompasses the child nodes. The code here is a bit complex; you can click the `CodeSandbox` link below the demo to view the detailed code.
+Listen to `node:change:position` to automatically expand/shrink the parent when a child moves, ensuring it fully encompasses the children. The example code is a bit involved; click the demo’s `CodeSandbox` link to view the full implementation.
 
 <code id="group-expand-shrink" src="@/src/tutorial/intermediate/group/expand-shrink/index.tsx"></code>
 
-## Expanding and Collapsing the Parent Node
+## Expand/Collapse Parent Node
 
-First, we define a custom `Group` node, which renders an expand/collapse button in the top-left corner and sets a custom event `node:collapse` on that button:
+First, define a custom `Group` node that renders an expand/collapse button at the top-left corner and sets a custom event `node:collapse` on that button:
 
 ```ts
 import { Node } from '@antv/x6'
@@ -119,7 +119,7 @@ Group.config({
 })
 ```
 
-Then, we listen for the `node:collapse` event on the `graph`, showing or hiding the corresponding child nodes when the parent node is expanded or collapsed:
+Then listen for `node:collapse` on the `graph`, and show/hide the corresponding child nodes when the parent node is expanded/collapsed:
 
 ```ts
 graph.on('node:collapse', ({ node }: { node: Group }) => {

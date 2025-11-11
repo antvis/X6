@@ -4,10 +4,10 @@ order: 7
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
-  - /zh/docs/tutorial/inermediate
+  - /zh/docs/tutorial/intermediate
 ---
 
-:::info{title=在本章节中你可以了解到}
+:::info{title="在本章节中主要介绍 HTML 节点相关的知识，通过阅读，你可以了解到"}
 
 - 如何使用 HTML 来渲染节点内容
 - 如何更新节点内容
@@ -19,7 +19,7 @@ redirect_from:
 X6 默认内置 `HTML` 渲染能力，使用方法也非常简单：
 
 ```ts
-import {  Shape } from '@antv/x6'
+import { Shape } from '@antv/x6'
 
 Shape.HTML.register({
   shape: 'custom-html',
@@ -43,9 +43,9 @@ graph.addNode({
 
 <code id="html-basic" src="@/src/tutorial/intermediate/html/basic/index.tsx"></code>
 
-## 节点更新
+## 更新节点
 
-那你可能会好奇，节点内容如果是动态渲染的，那节点怎么根据外部数据来动态更新内容呢？其实也非常简单，在注册节点的时候，提供一个 `effect`，字段，是当前节点的 `prop` 数组，当 `effect` 包含的 `prop` 有变动时，会重新执行 `html` 方法，返回新的 dom，更新节点内容。
+在注册节点时，提供 `effect` 字段（当前节点的 `prop` 数组）。当 `effect` 中任一 `prop` 发生变化时，会重新执行 `html` 方法，返回新的 DOM，从而更新节点内容。
 
 ```ts
 Shape.HTML.register({

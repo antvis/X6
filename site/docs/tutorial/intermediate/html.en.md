@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/intermediate
 ---
 
-:::info{title="In this chapter, you will learn"}
+:::info{title="This chapter mainly introduces knowledge related to HTML nodes. By reading, you can learn"}
 
 - How to use HTML to render node content
 - How to update node content
@@ -43,9 +43,9 @@ In the example below, we add a hover animation effect to the `HTML` element, whi
 
 <code id="html-basic" src="@/src/tutorial/intermediate/html/basic/index.tsx"></code>
 
-## Node Updates
+## Updating Nodes
 
-You might be curious about how to dynamically update the content of a node if it is rendered dynamically. It's actually quite simple. When registering the node, you provide an `effect` field, which is an array of the current node's `prop`. When any of the `prop` included in the `effect` changes, the `html` method will be re-executed, returning a new DOM element to update the node's content.
+When registering the node, provide an `effect` field—the array of the node’s `props`. When any listed prop changes, the `html` method runs again and returns a new DOM to update the node content.
 
 ```ts
 Shape.HTML.register({
