@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-:::info{title="This section mainly introduces knowledge related to the graph. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to the graph. By reading, you can learn about"}
 
 - How to make the graph size responsive
 - Optimizing graph style by setting background and grid
@@ -73,11 +73,103 @@ Let's experience this through an example:
 
 <code id="panning-mousewheel" src="@/src/tutorial/basic/graph/panning-mousewheel/index.tsx"></code>
 
-Of course, `panning` and `mousewheel` also support many other configurations, such as modifier keys (which must be pressed to trigger the corresponding behavior), zoom factors (rates), etc. We can learn more through the [API](/en/api/graph/mousewheel).
+Of course, `panning` and `mousewheel` also support many other configurations, such as modifier keys (which must be pressed to trigger the corresponding behavior), zoom factors (rates), etc. Learn more from [Panning API](/en/api/graph/panning) and [Mousewheel API](/en/api/graph/mousewheel).
+
+## Graph Plugins
+
+Beyond built-in background, grid, zoom, and pan, X6 also provides useful canvas plugins such as scrolling and alignment guides that you can enable as needed.
+
+```ts
+import { Graph, Scroller, Snapline } from '@antv/x6'
+
+const graph = new Graph({
+  container: document.getElementById('container'),
+  height: 300,
+  width: 800,
+})
+
+// Snapline helps show alignment guides when dragging nodes near others
+graph.use(
+  new Snapline({
+    enabled: true,
+  }),
+)
+
+// Scroller enables scrollable canvas (with optional drag-to-pan)
+graph.use(
+  new Scroller({
+    enabled: true,
+    pannable: true,
+  }),
+)
+```
+
+In the demo below, enabling `Scroller` allows scrolling the canvas, and enabling `Snapline` shows alignment lines when dragging nodes close to others.
+
+```js | ob { inject: true, pin: false }
+import { Graph, Scroller, Snapline } from '@antv/x6'
+
+const data = {
+  nodes: [
+    {
+      id: 'node1',
+      shape: 'rect',
+      x: 40,
+      y: 160,
+      width: 100,
+      height: 40,
+      label: 'hello',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+    {
+      id: 'node2',
+      shape: 'rect',
+      x: 160,
+      y: 180,
+      width: 100,
+      height: 40,
+      label: 'world',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+  ],
+}
+
+const graph = new Graph({
+  container: document.getElementById('container'),
+  height: 300,
+  background: {
+    color: '#F2F7FA',
+  },
+})
+
+graph.use(new Snapline({ enabled: true }))
+graph.use(new Scroller({ enabled: true, pannable: true }))
+
+graph.fromJSON(data)
+graph.centerContent()
+```
+
+For more details, see [Snapline](/tutorial/plugins/snapline) and [Scroller](/tutorial/plugins/scroller).
 
 ## Common APIs
 
-In addition to the configurations mentioned above, X6 also provides a rich set of APIs for manipulating graph size and position. Here are some commonly used APIs; for more detailed content, see the [API](/en/api/graph/transform).
+In addition to the configurations mentioned above, X6 also provides a rich set of APIs for manipulating graph size and position. Here are some commonly used APIs; for more detailed content, see [Transform API](/en/api/graph/transform).
 
 ```ts
 graph.resize(800, 600) // Resize the graph size
@@ -91,3 +183,13 @@ graph.centerContent() // Center the elements in the graph for display
 ```
 
 <code id="transform" src="@/src/tutorial/basic/graph/transform/index.tsx"></code>
+
+More APIs:
+
+- [Graph Options](/en/api/graph/graph)
+- [Grid](/en/api/graph/grid)
+- [Background](/en/api/graph/background)
+- [Panning](/en/api/graph/panning)
+- [Mousewheel](/en/api/graph/mousewheel)
+- [Transform](/en/api/graph/transform)
+- [Coordinate](/en/api/graph/coordinate)

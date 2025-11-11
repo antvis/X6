@@ -7,16 +7,16 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍画布数据序列化相关的知识,通过阅读,你可以了解到}
+:::info{title=在本章节中主要介绍画布数据序列化相关的知识，通过阅读，你可以了解到}
 
-- 如何导入数据
 - 如何导出数据
+- 如何导入数据
 
 :::
 
 ## 导出
 
-我们可以调用 `graph.toJSON()` 方法来导出图中的节点和边，返回一个具有 `{ cells: [] }` 结构的对象，其中 `cells` 数组**按渲染顺序**保存节点和边。
+我们可以调用 `graph.toJSON()` 方法来导出图中的节点和边，返回一个形如 `{ cells: [] }` 的对象，其中 `cells` 数组**按渲染顺序**保存节点和边。
 
 其中，导出的节点结构如下：
 
@@ -54,7 +54,7 @@ redirect_from:
 
 ## 导入
 
-支持节点/边元数据数组 `graph.fromJSON(cells: (Node.Metadata | Edge.Metadata)[])`。
+支持传入节点/边元数据数组 `graph.fromJSON(cells: (Node.Metadata | Edge.Metadata)[])`。
 
 ```ts
 graph.fromJSON([
@@ -97,5 +97,5 @@ graph.fromJSON({
 通常，我们通过 `graph.fromJSON(...)` 来渲染 `graph.toJSON()` 导出的数据。
 
 :::info{title=提示}
-当数据中没有提供 `zIndex` 时，则按照节点/边在数组中的顺序渲染，也就是说越靠前的节点/边，其 `zIndex` 越小，在画布中的层级就越低
+当数据中没有提供 `zIndex` 时，则按照节点/边在数组中的顺序渲染，也就是说越靠前的节点/边，其 `zIndex` 越小，在画布中的层级就越低。
 :::

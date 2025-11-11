@@ -7,21 +7,23 @@ redirect_from:
   - /en/docs/tutorial/intermediate
 ---
 
-:::info{title="In this chapter, you will learn"}
+:::info{title="This chapter mainly introduces knowledge related to React nodes. By reading, you can learn"}
+
 - How to use React components to render node content
 - How to update node content
+
 :::
 
 ## Rendering Nodes
 
-We provide a standalone package `@antv/x6-react-shape` for rendering nodes using React.
+We provide a standalone package `@antv/x6-react-shape` for rendering nodes with React.
 
 :::warning{title=Note}
-It is important to ensure that the version of x6 matches the version of x6-react-shape, meaning both packages need to use the same major version. For example, if X6 is using version 2.x, then x6-react-shape must also use version 2.x.
+Version compatibility: X6 1.x uses x6-react-shape 1.x; X6 2.x and 3.x use x6-react-shape 2.x.
 :::
 
 :::warning{title=Note}
-x6-react-shape only supports React 18 and above starting from version 2.0.8. If your project is using a version lower than React 18, please lock the version of x6-react-shape to 2.0.8.
+Since 2.0.8, x6-react-shape supports React 18+. If your project uses React < 18, lock x6-react-shape to 2.0.8.
 :::
 
 ```ts
@@ -53,7 +55,7 @@ graph.addNode({
 
 ## Updating Nodes
 
-Similar to `HTML`, when registering a node, you provide an `effect` field, which is an array of the current node's `props`. When any of the `props` included in the `effect` change, the current React component will be re-rendered.
+Similar to `HTML`, register a node with an `effect` field—an array of the node’s `props`. When any listed prop changes, the React component re-renders.
 
 ```ts
 register({
@@ -85,7 +87,7 @@ setInterval(() => {
 
 ## Portal Mode
 
-The rendering method of the above React component has a drawback, as it renders the component into the node's DOM using the following approach.
+The approach above renders the component directly into the node’s DOM:
 
 ```ts
 import { createRoot, Root } from 'react-dom/client'
@@ -94,6 +96,6 @@ const root = createRoot(container) // container is the node container
 root.render(component)
 ```
 
-As you can see, the React component is no longer part of the normal rendering document tree. Therefore, it cannot access external `Context` content. If you have such application scenarios, you can use the `Portal` mode to render React components.
+This detaches the component from the normal React tree, so it cannot access external `Context`. Use `Portal` mode when you need access to app-level context.
 
 <code id="react-portal" src="@/src/tutorial/intermediate/react/portal/index.tsx"></code>
