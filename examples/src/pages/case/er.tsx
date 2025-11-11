@@ -1,4 +1,4 @@
-import { Graph, Shape } from '@antv/x6'
+import { Graph, Shape, Edge } from '@antv/x6'
 import React, { useEffect, useRef } from 'react'
 import './er.less'
 import './tableNode'
@@ -34,7 +34,7 @@ const CONFIG = {
   minSpacing: 60,
   headerHeight: 40,
   fieldHeight: 25,
-  bottomPadding: 2,
+  bottomPadding: 16,
 }
 
 // 创建图实例
@@ -102,7 +102,7 @@ const createErGraph = (container: HTMLElement) =>
   })
 
 // 计算节点高度
-const calculateNodeHeight = (fields: any[]) =>
+const calculateNodeHeight = (fields: Table['fields']) =>
   CONFIG.headerHeight +
   fields.length * CONFIG.fieldHeight +
   CONFIG.bottomPadding
@@ -134,7 +134,7 @@ const createNode = (table: Table, x: number, y: number) => ({
         },
       },
       bottom: {
-        position: { name: 'bottom', args: { dx: 0, dy: 12 } },
+        position: { name: 'bottom' },
         attrs: {
           circle: {
             r: 4,
@@ -217,14 +217,15 @@ const layoutTables = (tables: Table[]) => {
     table,
   }))
 
-  const positions = [
-    { x: 50, y: 50 },
-    { x: 400, y: 50 },
-    { x: 50, y: 350 },
-    { x: 400, y: 350 },
-  ]
+  const cols = 2
+  const colWidth = CONFIG.nodeWidth + CONFIG.baseSpacing
+  const rowHeight = 300 // 可以根据节点最大高度动态计算
   nodeData.forEach((data, i) => {
-    nodes.push(createNode(data.table, positions[i].x, positions[i].y))
+    const row = Math.floor(i / cols)
+    const col = i % cols
+    const x = col * colWidth
+    const y = row * rowHeight
+    nodes.push(createNode(data.table, x, y))
   })
 
   tables.forEach((table) => {
@@ -240,9 +241,9 @@ const layoutTables = (tables: Table[]) => {
 
 export const ErDiagram: React.FC<ErDiagramProps> = ({ tables }) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<any>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  const toggleType = (edge: any) => {
+  const toggleType = (edge: Edge) => {
     const types: RelationshipType[] = ['1:1', '1:N', 'N:N']
     const current = edge.getData()?.relationshipType || '1:1'
     const next = types[(types.indexOf(current) + 1) % types.length]
@@ -303,15 +304,11 @@ export const ErDiagram: React.FC<ErDiagramProps> = ({ tables }) => {
     graphRef.current.addEdges(edges)
     graphRef.current.centerContent()
 
-    const timer = setTimeout(() => {
+    requestAnimationFrame(() => {
       if (graphRef.current) {
         graphRef.current.zoomToFit({ padding: 20 })
       }
-    }, 200)
-
-    return () => {
-      clearTimeout(timer)
-    }
+    })
   }, [tables])
 
   return (
@@ -398,12 +395,8 @@ const data = [
     foreignKeys: [],
   },
 ]
-export class CaseErExample extends React.Component {
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <ErDiagram tables={data} />
-      </div>
-    )
-  }
-}
+export const CaseErExample = () => (
+  <div className="x6-graph-wrap">
+    <ErDiagram tables={data} />
+  </div>
+)

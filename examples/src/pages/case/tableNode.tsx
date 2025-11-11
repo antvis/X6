@@ -58,53 +58,68 @@ const TableNode = ({ node }: { node: Node }) => {
             无字段
           </div>
         ) : (
-          fields.map((field: any, index: number) => {
-            let icon = ''
-            let color = '#262626'
-            let fontWeight = 'normal'
+          fields.map(
+            (
+              field: {
+                name: string
+                type: string
+                isPrimary?: boolean
+                isForeign?: boolean
+                isUnique?: boolean
+              },
+              index: number,
+            ) => {
+              let icon = ''
+              let color = '#262626'
+              let fontWeight = 'normal'
 
-            if (field.isPrimary) {
-              icon = '🔑'
-              color = '#ff4d4f'
-              fontWeight = 'bold'
-            } else if (field.isForeign) {
-              icon = '🔗'
-              color = '#52c41a'
-              fontWeight = 'bold'
-            } else if (field.isUnique) {
-              icon = '⭐'
-              color = '#faad14'
-              fontWeight = 'bold'
-            }
+              if (field.isPrimary) {
+                icon = '🔑'
+                color = '#ff4d4f'
+                fontWeight = 'bold'
+              } else if (field.isForeign) {
+                icon = '🔗'
+                color = '#52c41a'
+                fontWeight = 'bold'
+              } else if (field.isUnique) {
+                icon = '⭐'
+                color = '#faad14'
+                fontWeight = 'bold'
+              }
 
-            return (
-              <div
-                key={field.name}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '6px 8px',
-                  backgroundColor: index % 2 === 0 ? '#f8f9fa' : '#ffffff',
-                  borderBottom:
-                    index === fields.length - 1 ? 'none' : '1px solid #e8e8e8',
-                  fontSize: '12px',
-                  height: '25px',
-                  lineHeight: '1',
-                  boxSizing: 'border-box',
-                }}
-              >
-                <span style={{ marginRight: '4px', fontSize: '11px' }}>
-                  {icon}
-                </span>
-                <span style={{ color, fontWeight, flex: 1, textAlign: 'left' }}>
-                  {field.name}
-                </span>
-                <span style={{ color: '#8c8c8c', fontSize: '11px' }}>
-                  {field.type}
-                </span>
-              </div>
-            )
-          })
+              return (
+                <div
+                  key={field.name}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '6px 8px',
+                    backgroundColor: index % 2 === 0 ? '#f8f9fa' : '#ffffff',
+                    borderBottom:
+                      index === fields.length - 1
+                        ? 'none'
+                        : '1px solid #e8e8e8',
+                    fontSize: '12px',
+                    height: '25px',
+                    lineHeight: '1',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <span style={{ marginRight: '4px', fontSize: '11px' }}>
+                    {icon}
+                  </span>
+                  <span
+                    style={{ color, fontWeight, flex: 1, textAlign: 'left' }}
+                  >
+                    {field.name}
+                  </span>
+                  <span style={{ color: '#8c8c8c', fontSize: '11px' }}>
+                    {field.type}
+                  </span>
+                </div>
+              )
+            },
+          )
         )}
       </div>
     </div>
