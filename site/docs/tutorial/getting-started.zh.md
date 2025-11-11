@@ -66,7 +66,7 @@ const graph = new Graph({
 
 这样我们就得到了一个基础的 X6 画布：
 
-```js | ob { inject: true }
+```js | ob { inject: true, pin: false }
 import { Graph } from '@antv/x6'
 
 const data = {

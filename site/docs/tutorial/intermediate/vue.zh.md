@@ -152,9 +152,9 @@ export default defineComponent({
 
 <iframe src="/demos/vue/update/index.html" style="width: 100%; height: 260px; border: 0px; overflow: hidden;"></iframe>
 
-## 在 Vue2 中使用
+## 在 Vue 2 中使用
 
-上述示例使用了 `Teleport`，它是 `Vue3` 的特性；在 `Vue2` 中如何使用？
+上述示例使用了 `Teleport`，它是 `Vue 3` 的特性；在 `Vue 2` 中如何使用？
 
 ```html
 <template>

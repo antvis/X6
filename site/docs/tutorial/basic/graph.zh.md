@@ -145,7 +145,7 @@ graph.centerContent() // 居中显示
 
 画布的拖拽、缩放也是常用操作，Graph 中通过 `panning` 和 `mousewheel` 配置来实现这两个功能，鼠标按下画布后移动时会拖拽画布，滚动鼠标滚轮会缩放画布。
 
-```ts {5-6}
+```ts
 import { Graph } from '@antv/x6'
 
 const graph = new Graph({

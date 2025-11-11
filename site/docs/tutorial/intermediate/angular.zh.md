@@ -138,7 +138,7 @@ node.setData({
 - 1.x 版本中已采用该命名，沿用可降低用户升级成本。
 - `Input` 的概念来自 `Component`，而在 `TemplateRef` 中是 `context`，在二者基础上抽象出更通用的 `Arguments` 概念。
 
-### 2.x 版本的 x6-angular-shape 相比较 1.x 版本有什么新特性吗?
+### 2.x 版本的 x6-angular-shape 相比较 1.x 版本有什么新特性吗？
 
 实现思路与之前基本一致，但有几点值得一提。
 
