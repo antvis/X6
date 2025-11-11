@@ -1,5 +1,13 @@
-import { ArrayExt, ObjectExt } from '../common'
-import type { Cell } from '../model/cell'
+import {
+  ArrayExt,
+  Interp,
+  NumberExt,
+  ObjectExt,
+  StringExt,
+  Timing,
+} from '../../common'
+import type { CamelToKebabCase } from '../../types'
+import type { Cell } from '../cell'
 import { isNotReservedWord } from './utils'
 
 /**
@@ -7,26 +15,24 @@ import { isNotReservedWord } from './utils'
  * 参考: https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect
  */
 export class KeyframeEffect {
-  private _target: Cell | null
+  private _target: Cell
   private _keyframes: Keyframe[] | PropertyIndexedKeyframes | null
-  private _computedKeyframes: ComputedKeyframe[] | null
-  private _options: EffectTiming
+  private _computedKeyframes: ComputedKeyframe[]
+  private _options: KeyframeAnimationOptions
+  // biome-ignore lint/suspicious/noExplicitAny: <属性类型存在多种可能>
   private _originProps?: Record<string, any> = {}
 
   constructor(
-    target: Cell | null,
+    target: Cell,
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | EffectTiming,
+    options?: number | KeyframeAnimationOptions,
   ) {
     this._target = target
+    this._options = NumberExt.isNumber(options)
+      ? { duration: options }
+      : { ...options }
     this._keyframes = keyframes
     this._computedKeyframes = this.getKeyframes()
-
-    if (typeof options === 'number') {
-      this._options = { duration: options }
-    } else {
-      this._options = { ...options }
-    }
 
     // 收集动画属性的原始值
     this._computedKeyframes.forEach((frame) => {
@@ -43,7 +49,7 @@ export class KeyframeEffect {
   }
 
   getKeyframes(): ComputedKeyframe[] {
-    if (!this._keyframes || this._keyframes == null) return []
+    if (!this._keyframes || this._keyframes.length === 0) return []
 
     // 标准化关键帧数据
     let normalizedFrames = []
@@ -52,25 +58,37 @@ export class KeyframeEffect {
       normalizedFrames = [...this._keyframes]
     }
 
+    // 处理对象形式的关键帧,eg: {'position/x': [0, 100],'position/y': 100 }
     if (ObjectExt.isPlainObject(this._keyframes)) {
-      Object.entries(this._keyframes).forEach(([prop, value]) => {
-        if (isNotReservedWord(prop)) {
-          ArrayExt.castArray(value).forEach((v) => {
-            normalizedFrames.push({
-              [prop]: v,
-            })
-          })
-        }
-      })
+      const frameValues = Object.values(this._keyframes)
+      const frameValuesArr = frameValues.map(
+        (subArr) => ArrayExt.castArray(subArr).length,
+      )
+      const maxFramesLength = Math.max(...frameValuesArr)
+
+      for (let i = 0; i < maxFramesLength; i++) {
+        const frame = {} as ComputedKeyframe
+        Object.entries(this._keyframes).forEach(([prop, value]) => {
+          const v = ArrayExt.castArray(value)[i]
+          if (isNotReservedWord(prop) && v != null) {
+            frame[prop] = v
+          }
+        })
+        normalizedFrames.push(frame)
+      }
     }
 
-    normalizedFrames = normalizedFrames.map((keyframe) => {
+    normalizedFrames = normalizedFrames.map((keyframe, index, arr) => {
       const frame = keyframe ?? {}
+      // biome-ignore lint/suspicious/noExplicitAny: <属性类型存在多种可能>
       const normalized: Record<string, any> = {}
 
       normalized.offset = frame.offset
       // 确保每个关键帧都有 easing
-      normalized.easing = frame.easing || 'linear'
+      normalized.easing =
+        frame.easing ??
+        arr[index - 1]?.easing ??
+        this.getComputedTiming().easing
 
       // 复制其他属性
       Object.keys(frame).forEach((prop) => {
@@ -112,15 +130,21 @@ export class KeyframeEffect {
     return ObjectExt.defaults(this._options, defaultTiming)
   }
 
-  getComputedTiming(): EffectTiming {
-    return this.getTiming()
+  getComputedTiming(): ComputedEffectTiming {
+    const timing = this.getTiming()
+    const activeDuration = timing.duration * timing.iterations
+
+    return {
+      ...timing,
+      activeDuration,
+    }
   }
 
-  apply(currentTime: number | null): void {
+  apply(iterationTime: number | null): void {
     if (!this._target || !this._computedKeyframes.length) return
 
     // 参数为null则回到初始状态
-    if (currentTime == null) {
+    if (iterationTime == null) {
       Object.entries(this._originProps).forEach(([prop, value]) => {
         this.target.setPropByPath(prop, value)
       })
@@ -132,17 +156,23 @@ export class KeyframeEffect {
     if (duration <= 0) return
 
     // 计算进度 (0-1)
-    const progress = Math.min(currentTime / duration, 1)
+    const progress = Math.min(iterationTime / duration, 1)
 
     // 找到当前进度对应的关键帧
     const frames = this._computedKeyframes
     if (frames.length === 0) return
 
-    let startFrame = {} as ComputedKeyframe
-    let endFrame = {} as ComputedKeyframe
+    let startFrame = { computedOffset: 0 } as ComputedKeyframe
+    let endFrame = { computedOffset: 1 } as ComputedKeyframe
 
     for (const frame of frames) {
-      if (frame.computedOffset <= progress) {
+      if (progress === 0 && frame.computedOffset === 0) {
+        startFrame = frame
+      }
+      if (progress === 1 && frame.computedOffset === 1) {
+        endFrame = frame
+      }
+      if (frame.computedOffset < progress) {
         startFrame = frame
       }
       if (frame.computedOffset > progress) {
@@ -152,12 +182,15 @@ export class KeyframeEffect {
     }
 
     // 计算两个关键帧之间的插值
-    const startOffset = startFrame.computedOffset ?? 0
-    const endOffset = endFrame.computedOffset ?? 1
+    const startOffset = startFrame.computedOffset
+    const endOffset = endFrame.computedOffset
     const frameProgress = (progress - startOffset) / (endOffset - startOffset)
+    const kebabEasingName = startFrame.easing ?? endFrame.easing
+    const easingName = StringExt.camelCase(kebabEasingName)
+    const easingFn = Timing[easingName] ?? Timing.linear
 
     // 应用插值后的样式
-    for (const prop in endFrame) {
+    for (const prop in { ...startFrame, ...endFrame }) {
       if (
         isNotReservedWord(prop) &&
         (startFrame[prop] != null || endFrame[prop] != null)
@@ -165,10 +198,18 @@ export class KeyframeEffect {
         const startValue = startFrame[prop] ?? this._originProps[prop]
         const endValue = endFrame[prop] ?? this._originProps[prop]
 
-        if (typeof startValue === 'number' && typeof endValue === 'number') {
-          const value = startValue + (endValue - startValue) * frameProgress
-          this.target.setPropByPath(prop, value)
-        }
+        // TODO: 确认是否全部自动参考标准自动识别，还是放开标准，先简单处理颜色
+        const interpolation: Interp.Definition<number | string> = String(
+          startValue,
+        ).startsWith('#')
+          ? Interp.color
+          : Interp.number
+
+        const interpolationFn = interpolation(startValue, endValue)
+
+        const value = interpolationFn(easingFn(frameProgress))
+
+        this.target.setPropByPath(prop, value)
       }
     }
   }
@@ -178,9 +219,20 @@ export interface EffectTiming {
   delay?: number
   direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
   duration?: number
-  easing?: string
+  easing?: CamelToKebabCase<Timing.Names>
   fill?: 'none' | 'forwards' | 'backwards' | 'both'
   iterations?: number
+}
+
+interface ComputedEffectTiming extends EffectTiming {
+  activeDuration?: number
+}
+
+export interface KeyframeEffectOptions extends EffectTiming {
+  /** TODO: 待实现 */
+  composite?: CompositeOperation
+  /** TODO: 待实现 */
+  iterationComposite?: IterationCompositeOperation
 }
 
 const defaultTiming: EffectTiming = {

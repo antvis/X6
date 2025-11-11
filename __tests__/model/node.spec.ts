@@ -178,9 +178,19 @@ describe('Model', () => {
       })
 
       it('should translate the node with transition', async () => {
+        const mockTimeline = {
+          get currentTime() {
+            return performance.now()
+          },
+        }
+        Object.defineProperty(document, 'timeline', {
+          writable: false,
+          configurable: true,
+          value: mockTimeline,
+        })
+
         node.position(10, 20)
         node.translate(30, 40, { transition: true })
-        expect(node.position()).toEqual({ x: 10, y: 20 })
         await sleep(200)
         expect(node.position()).toEqual({ x: 40, y: 60 })
       })

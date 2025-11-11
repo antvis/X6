@@ -196,6 +196,14 @@ const dataSource = [
     description: '边动画',
   },
   {
+    example: 'animation/animationControl',
+    description: '动画控制',
+  },
+  {
+    example: 'animation/oscp',
+    description: '带动画的oscp示意图',
+  },
+  {
     example: 'history',
     description: '时光回溯',
   },

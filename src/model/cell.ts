@@ -2,16 +2,12 @@
 /** biome-ignore-all lint/complexity/noThisInStatic: <存量的问题biome修了运行的实际效果就变了，所以先忽略> */
 import type { NonUndefined } from 'utility-types'
 import {
-  Animation as Animation2,
-  type EffectTiming,
-  KeyframeEffect,
-} from '../animation'
-import {
   ArrayExt,
   Basecoat,
   disposable,
   FunctionExt,
   type KeyValue,
+  NumberExt,
   ObjectExt,
   type Size,
   StringExt,
@@ -28,12 +24,10 @@ import type { CellView } from '../view'
 import type { MarkupType } from '../view/markup'
 import {
   Animation,
-  type AnimationCallbackArgs,
-  type AnimationProgressArgs,
-  type AnimationStartOptions,
-  type AnimationStopArgs,
-  type AnimationStopOptions,
-  type AnimationTargetValue,
+  AnimationManager,
+  type AnimationPlaybackEvent,
+  KeyframeEffect,
+  type KeyframeEffectOptions,
 } from './animation'
 import type {
   ConnectorData,
@@ -277,7 +271,7 @@ export class Cell<
 
   public readonly id: string
   protected readonly store: Store<CellProperties>
-  protected readonly animation: Animation
+  protected readonly animationManager: AnimationManager
   protected _model: Model | null // eslint-disable-line
   protected _parent: Cell | null // eslint-disable-line
   protected _children: Cell[] | null // eslint-disable-line
@@ -295,7 +289,7 @@ export class Cell<
 
     this.id = props.id || Cell.generateId(metadata)
     this.store = new Store(props)
-    this.animation = new Animation(this)
+    this.animationManager = new AnimationManager()
     this.setup()
     this.init()
     this.postprocess(metadata)
@@ -370,10 +364,10 @@ export class Cell<
     )
 
     this.on('added', ({ cell }) => {
-      const transition = this.store.get('transition')
-      if (!ObjectExt.isEmpty(transition)) {
-        transition.forEach((t) => {
-          cell.transition(...t)
+      const animation = this.store.get('animation')
+      if (!ObjectExt.isEmpty(animation)) {
+        animation.forEach((p) => {
+          cell.animate(...p)
         })
       }
     })
@@ -1259,57 +1253,24 @@ export class Cell<
   // #endregion
 
   // #region animation
-  // TODO: 移除旧的 animation
+
   animate(
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | EffectTiming,
+    options?: number | KeyframeAnimationOptions,
   ) {
-    const effect = new KeyframeEffect(this, keyframes, options)
-    const animation = new Animation2(effect)
+    const optionsObj = NumberExt.isNumber(options)
+      ? { duration: options }
+      : { ...options }
+    const effect = new KeyframeEffect(this, keyframes, optionsObj)
+    const animation = new Animation(effect, optionsObj.timeline)
+    this.animationManager.addAnimation(animation)
+    animation.id = optionsObj.id ?? ''
     animation.play()
     return animation
   }
 
-  transition<K extends keyof Properties>(
-    path: K,
-    target: Properties[K],
-    options?: AnimationStartOptions<Properties[K]>,
-    delim?: string,
-  ): () => void
-  transition<T extends AnimationTargetValue>(
-    path: string | string[],
-    target: T,
-    options?: AnimationStartOptions<T>,
-    delim?: string,
-  ): () => void
-  transition<T extends AnimationTargetValue>(
-    path: string | string[],
-    target: T,
-    options: AnimationStartOptions<T> = {},
-    delim = '/',
-  ) {
-    return this.animation.start(
-      path,
-      target,
-      {
-        fill: 'forwards',
-        ...options,
-      },
-      delim,
-    )
-  }
-
-  stopTransition<T extends AnimationTargetValue>(
-    path: string | string[],
-    options?: AnimationStopOptions<T>,
-    delim = '/',
-  ) {
-    this.animation.stop(path, options, delim)
-    return this
-  }
-
-  getTransitions() {
-    return this.animation.get()
+  getAnimations() {
+    return this.animationManager.getAnimations()
   }
 
   // #endregion
@@ -1662,7 +1623,7 @@ export interface CellCommon {
   zIndex?: number
   visible?: boolean
   data?: any
-  transition?: TransitionParams[]
+  animation?: AnimateParams[]
 }
 
 export interface CellDefaults extends CellCommon {}
@@ -1744,16 +1705,16 @@ export interface CloneOptions {
   keepId?: boolean
 }
 
-export type TransitionParams = Parameters<
-  InstanceType<typeof Cell>['transition']
->
+export interface KeyframeAnimationOptions extends KeyframeEffectOptions {
+  id?: string
+  timeline?: AnimationTimeline | null
+}
+
+export type AnimateParams = Parameters<InstanceType<typeof Cell>['animate']>
 
 export interface CellBaseEventArgs {
-  'transition:start': AnimationCallbackArgs<AnimationTargetValue>
-  'transition:progress': AnimationProgressArgs<AnimationTargetValue>
-  'transition:complete': AnimationCallbackArgs<AnimationTargetValue>
-  'transition:stop': AnimationStopArgs<AnimationTargetValue>
-  'transition:finish': AnimationCallbackArgs<AnimationTargetValue>
+  'animation:finish': AnimationPlaybackEvent
+  'animation:cancel': AnimationPlaybackEvent
 
   // common
   'change:*': ChangeAnyKeyArgs

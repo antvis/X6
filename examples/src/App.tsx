@@ -1,9 +1,11 @@
 import { Route, Routes } from 'react-router-dom'
 import { ExampleList } from './pages'
 import { AnimateElementExample } from './pages/animation/animateElement'
-import { ComplexTransitionExample } from './pages/animation/complexTransition'
-import { EdgeTransitionExample } from './pages/animation/edgeTransition'
-import { TransitionConfExample } from './pages/animation/transitionConf'
+import { AnimationConfExample } from './pages/animation/animationConf'
+import { AnimationControlExample } from './pages/animation/animationControl'
+import { ComplexAnimationExample } from './pages/animation/complexAnimation'
+import { EdgeAnimationExample } from './pages/animation/edgeAniamtion'
+import { OSCPExample } from './pages/animation/oscp'
 import { AutoResizeExample } from './pages/auto-resize'
 import { CaseBpmnExample } from './pages/case/bpmn'
 import { CaseClassExample } from './pages/case/class'
@@ -111,11 +113,11 @@ function App() {
 
       <Route
         path="/animation/complexTransition"
-        element={<ComplexTransitionExample />}
+        element={<ComplexAnimationExample />}
       />
       <Route
         path="/animation/transitionConf"
-        element={<TransitionConfExample />}
+        element={<AnimationConfExample />}
       />
       <Route
         path="/animation/animateElement"
@@ -123,8 +125,13 @@ function App() {
       />
       <Route
         path="/animation/edgeTransition"
-        element={<EdgeTransitionExample />}
+        element={<EdgeAnimationExample />}
       />
+      <Route
+        path="/animation/animationControl"
+        element={<AnimationControlExample />}
+      />
+      <Route path="/animation/oscp" element={<OSCPExample />} />
       <Route path="/history" element={<HistoryExample />} />
       <Route path="/virtual-render" element={<VirtualRenderExample />} />
     </Routes>

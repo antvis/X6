@@ -380,11 +380,8 @@ interface EdgeEventCommonArgs {
 }
 
 export interface CellEventArgs {
-  'cell:transition:start': CellBaseEventArgs['transition:start']
-  'cell:transition:progress': CellBaseEventArgs['transition:progress']
-  'cell:transition:complete': CellBaseEventArgs['transition:complete']
-  'cell:transition:stop': CellBaseEventArgs['transition:stop']
-  'cell:transition:finish': CellBaseEventArgs['transition:finish']
+  'cell:animation:finish': CellBaseEventArgs['animation:finish']
+  'cell:animation:cancel': CellBaseEventArgs['animation:cancel']
 
   'cell:changed': CellBaseEventArgs['changed']
   'cell:added': CellBaseEventArgs['added']
@@ -428,16 +425,8 @@ export interface CellEventArgs {
 }
 
 export interface NodeEventArgs {
-  'node:transition:start': NodeEventCommonArgs &
-    CellBaseEventArgs['transition:start']
-  'node:transition:progress': NodeEventCommonArgs &
-    CellBaseEventArgs['transition:progress']
-  'node:transition:complete': NodeEventCommonArgs &
-    CellBaseEventArgs['transition:complete']
-  'node:transition:stop': NodeEventCommonArgs &
-    CellBaseEventArgs['transition:stop']
-  'node:transition:finish': NodeEventCommonArgs &
-    CellBaseEventArgs['transition:finish']
+  'node:animation:finish': CellBaseEventArgs['animation:finish']
+  'node:animation:cancel': CellBaseEventArgs['animation:cancel']
 
   'node:changed': NodeEventCommonArgs & CellEventArgs['cell:changed']
   'node:added': NodeEventCommonArgs & CellEventArgs['cell:added']
@@ -485,16 +474,8 @@ export interface NodeEventArgs {
 }
 
 export interface EdgeEventArgs {
-  'edge:transition:start': EdgeEventCommonArgs &
-    CellBaseEventArgs['transition:start']
-  'edge:transition:progress': EdgeEventCommonArgs &
-    CellBaseEventArgs['transition:progress']
-  'edge:transition:complete': EdgeEventCommonArgs &
-    CellBaseEventArgs['transition:complete']
-  'edge:transition:stop': EdgeEventCommonArgs &
-    CellBaseEventArgs['transition:stop']
-  'edge:transition:finish': EdgeEventCommonArgs &
-    CellBaseEventArgs['transition:finish']
+  'edge:animation:finish': CellBaseEventArgs['animation:finish']
+  'edge:animation:cancel': CellBaseEventArgs['animation:cancel']
 
   'edge:changed': EdgeEventCommonArgs & CellEventArgs['cell:changed']
   'edge:added': EdgeEventCommonArgs & CellEventArgs['cell:added']
