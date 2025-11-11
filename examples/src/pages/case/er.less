@@ -1,0 +1,38 @@
+.x6-graph-wrap {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.x6-port {
+  cursor: crosshair;
+  transition: all 0.3s ease;
+}
+
+.x6-port:hover circle {
+  fill: #5f95ff;
+  stroke: #5f95ff;
+  r: 6;
+}
+
+.x6-port-body {
+  pointer-events: all;
+}
+
+.x6-node:hover .x6-port circle {
+  visibility: visible !important;
+  opacity: 1;
+}
+
+.x6-node .x6-port circle {
+  visibility: hidden;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+.x6-edge-label {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.x6-edge-label text {
+  cursor: pointer;
+}
