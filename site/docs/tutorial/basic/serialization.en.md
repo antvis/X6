@@ -7,18 +7,18 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-:::info{title="This section mainly introduces knowledge related to canvas data serialization. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to canvas data serialization. By reading, you can learn about"}
 
-- How to import data
 - How to export data
+- How to import data
 
 :::
 
 ## Export
 
-We can call the `graph.toJSON()` method to export the nodes and edges in the graph, returning an object with the structure `{ cells: [] }`, where the `cells` array stores nodes and edges **in rendering order**.
+Call `graph.toJSON()` to export nodes and edges. It returns an object like `{ cells: [] }`, where the `cells` array stores nodes and edges **in render order**.
 
-The structure of the exported nodes is as follows:
+Exported node structure:
 
 ```ts
 {
@@ -37,7 +37,7 @@ The structure of the exported nodes is as follows:
 }
 ```
 
-The structure of the edges is as follows:
+Exported edge structure:
 
 ```ts
 {
@@ -54,7 +54,7 @@ The structure of the edges is as follows:
 
 ## Import
 
-Support for an array of node/edge metadata `graph.fromJSON(cells: (Node.Metadata | Edge.Metadata)[])`.
+Supports an array of node/edge metadata `graph.fromJSON(cells: (Node.Metadata | Edge.Metadata)[])`.
 
 ```ts
 graph.fromJSON([
