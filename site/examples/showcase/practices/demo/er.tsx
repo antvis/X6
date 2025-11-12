@@ -126,63 +126,6 @@ Graph.registerEdge('er-relationship', {
   ],
 })
 
-// 示例数据
-const SAMPLE_SCHEMA: TableNodeData[] = [
-  {
-    id: 'profiles',
-    name: 'profiles',
-    fields: [
-      { name: 'id', type: 'bigint', keyType: 'primary' },
-      {
-        name: 'user_id',
-        type: 'bigint',
-        keyType: 'foreign',
-        ref: { table: 'users', field: 'id' },
-      },
-      { name: 'first_name', type: 'varchar(50)' },
-      { name: 'last_name', type: 'varchar(50)' },
-    ],
-  },
-  {
-    id: 'users',
-    name: 'users',
-    fields: [
-      { name: 'id', type: 'bigint', keyType: 'primary' },
-      {
-        name: 'email',
-        type: 'varchar(255)',
-        keyType: 'unique',
-      },
-      {
-        name: 'username',
-        type: 'varchar(50)',
-        keyType: 'unique',
-      },
-      {
-        name: 'created_at',
-        type: 'timestamp',
-        defaultValue: 'CURRENT_TIMESTAMP',
-      },
-    ],
-  },
-  {
-    id: 'posts',
-    name: 'posts',
-    fields: [
-      { name: 'id', type: 'bigint' },
-      {
-        name: 'user_id',
-        type: 'bigint',
-        keyType: 'foreign',
-        ref: { table: 'users', field: 'id' },
-      },
-      { name: 'title', type: 'varchar(200)' },
-      { name: 'content', type: 'text' },
-      { name: 'created_at', type: 'timestamp' },
-    ],
-  },
-]
-
 // 图配置
 const graph = new Graph({
   container: document.getElementById('container')!,
@@ -317,16 +260,11 @@ graph.on('edge:mouseleave', ({ edge }) => {
 
 // 初始化
 const initializeGraph = async () => {
-  try {
-    const response = await fetch('/data/er.json')
-    const { nodes, edges } = transformToGraphData(await response.json())
-    graph.addNodes(nodes)
-    graph.addEdges(edges)
-  } catch {
-    const { nodes, edges } = transformToGraphData(SAMPLE_SCHEMA)
-    graph.addNodes(nodes)
-    graph.addEdges(edges)
-  }
+  const response = await fetch('/data/er.json')
+  const { nodes, edges } = transformToGraphData(await response.json())
+  graph.addNodes(nodes)
+  graph.addEdges(edges)
+
   graph.centerContent()
 }
 
