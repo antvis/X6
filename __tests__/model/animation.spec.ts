@@ -143,6 +143,33 @@ describe('Animation', () => {
     expect(oncancelSpy).toHaveBeenCalled()
   })
 
+  it('should finish animation', () => {
+    const onfinishSpy = vi.fn()
+    animation.onfinish = onfinishSpy
+
+    animation.play()
+    tick(30)
+    animation.finish()
+
+    expect(animation.playState).toBe('finished')
+    expect(animation.currentTime).toBe(100)
+    expect(cell.values['position/x']).toBe(0)
+    expect(onfinishSpy).toHaveBeenCalled()
+  })
+
+  it('should finish animation with duration 0', () => {
+    effect = new KeyframeEffect(cell as any, keyFrames, {
+      duration: 0,
+    })
+    animation = new Animation(effect)
+    const onfinishSpy = vi.fn()
+    animation.onfinish = onfinishSpy
+    animation.play()
+    expect(animation.playState).toBe('finished')
+    expect(cell.values['position/x']).toBe(0)
+    expect(onfinishSpy).toHaveBeenCalled()
+  })
+
   it('should finish animation with forwards fill', () => {
     effect = new KeyframeEffect(cell as any, keyFrames, {
       duration: 100,
@@ -165,6 +192,61 @@ describe('Animation', () => {
     animation.play()
     tick(25) // 实际时间25ms，由于2倍速，动画时间应为50ms
     expect(animation.currentTime).toBe(50)
+  })
+
+  it('should update playback rate in running state', () => {
+    animation.play()
+    tick(25)
+    animation.updatePlaybackRate(2)
+    expect(animation.playbackRate).toBe(2)
+    // 中途变更速率后时间和实际值应保持不变
+    expect(animation.currentTime).toBe(25)
+    expect(cell.values['position/x']).toBe(25)
+
+    tick(25)
+    expect(animation.currentTime).toBe(25 + 50) // 时间应为原本的 1*25 + 2*25
+    expect(cell.values['position/x']).toBe(75)
+  })
+
+  it('should update playback rate and currentTime with reverse', () => {
+    animation.play()
+    tick(50)
+
+    // 第一次反转速率
+    animation.reverse()
+    tick(20)
+    expect(animation.playbackRate).toBe(-1)
+    expect(animation.currentTime).toBe(30)
+    expect(cell.values['position/x']).toBe(30)
+
+    tick(29)
+    expect(animation.currentTime).toBe(1)
+
+    // 第二次反转速率
+    animation.reverse()
+    expect(animation.playbackRate).toBe(1)
+    tick(49)
+    expect(animation.currentTime).toBe(50)
+    expect(cell.values['position/x']).toBe(50)
+  })
+
+  it('should update currentTime with setter', () => {
+    animation.play()
+    tick(25)
+    expect(animation.currentTime).toBe(25)
+    expect(cell.values['position/x']).toBe(25)
+
+    // 跳转到 50ms
+    animation.currentTime = 50
+    vi.advanceTimersByTime(25)
+    expect(animation.currentTime).toBe(50)
+    expect(cell.values['position/x']).toBe(50)
+
+    // 跳转到动画结束
+    animation.currentTime = 100
+    vi.advanceTimersByTime(50)
+    expect(animation.currentTime).toBe(100)
+    expect(animation.playState).toBe('finished')
   })
 
   it('should not play without effect', () => {
@@ -271,7 +353,7 @@ describe('Animation', () => {
           duration: 100,
           direction: direction as any,
           fill: fill as any,
-          iterations: parseInt(iterations),
+          iterations: parseInt(iterations, 10),
         })
         animation = new Animation(effect)
 
@@ -281,10 +363,6 @@ describe('Animation', () => {
           tick(100)
         })
 
-        console.log('key', key)
-        console.log('expectedValue', expectedValue)
-        console.log("cell.values['position/x']", cell.values['position/x'])
-        console.log('-----')
         expect(cell.values['position/x']).toBe(expectedValue)
       })
     })
@@ -444,7 +522,11 @@ describe('KeyframeEffect', () => {
 
     const newKeyframes = [
       { 'position/x': 0, offset: 0 },
-      { 'position/x': 100, offset: 1 },
+      {
+        'position/x': 100,
+        'position/y': 150,
+        offset: 1,
+      },
     ]
     effect.setKeyframes(newKeyframes)
 
@@ -459,9 +541,15 @@ describe('KeyframeEffect', () => {
     expect(frames[1]).toEqual(
       expect.objectContaining({
         'position/x': 100,
+        'position/y': 150,
         computedOffset: 1,
       }),
     )
+
+    // 回到初始状态
+    effect.apply(null)
+    expect(cell.values['position/x']).toBe(0)
+    expect(cell.values['position/y']).toBe(0)
   })
 
   it('should return timing options with getTiming', () => {

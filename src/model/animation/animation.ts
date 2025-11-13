@@ -1,3 +1,4 @@
+import { NumberExt } from '../../common'
 import { AnimationPlaybackEvent } from './animationEvent'
 import type { KeyframeEffect } from './keyframeEffect'
 import { isReverseDirection } from './utils'
@@ -36,7 +37,9 @@ export class Animation {
   }
 
   set currentTime(value: number | null) {
-    const now = this._timeline.currentTime as number
+    const now = this._timeline.currentTime
+    if (!NumberExt.isNumber(now)) return
+
     this._startTime = now - value
     this._currentTime = value
   }
@@ -46,7 +49,19 @@ export class Animation {
   }
 
   set playbackRate(value: number) {
+    const oldRate = this._playbackRate
     this._playbackRate = value
+    const now = this._timeline.currentTime
+
+    // 如果正在运行，调整开始时间以保持视觉连续性
+    if (
+      this._playState === 'running' &&
+      this._startTime != null &&
+      NumberExt.isNumber(now)
+    ) {
+      const currentTime = (now - this._startTime) * oldRate
+      this._startTime = now - currentTime / value
+    }
   }
 
   get playState(): AnimationPlayState {
@@ -60,9 +75,9 @@ export class Animation {
   play(): void {
     if (this._playState === 'running' || !this._effect) return
 
-    const now = this._timeline.currentTime as number
+    const now = this._timeline.currentTime
 
-    if (now == null) return
+    if (!NumberExt.isNumber(now)) return
 
     if (this._playState === 'paused') {
       // 从暂停状态恢复
@@ -94,20 +109,21 @@ export class Animation {
     if (!this._effect) return
 
     const timing = this._effect.getComputedTiming()
-    const { duration, delay, activeDuration, direction, fill, iterations } =
-      timing
+    const reversePlaybackRate = this._playbackRate < 0
+    const { duration, endTime, direction, fill, iterations } = timing
 
     // 根据 fill 模式设置最终状态
     if (fill === 'forwards' || fill === 'both') {
-      const reverseDirection = isReverseDirection(direction, iterations - 1)
-      this._effect.apply(reverseDirection ? 0 : duration)
+      const lastIteration = reversePlaybackRate ? 0 : iterations - 1
+      const reverseDirection = isReverseDirection(direction, lastIteration)
+      this._effect.apply(reverseDirection || reversePlaybackRate ? 0 : duration)
     }
     // 清除所有动画效果
     else if (fill === 'none' || fill === 'backwards') {
       this._effect.apply(null)
     }
 
-    this._currentTime = activeDuration + delay
+    this._currentTime = reversePlaybackRate ? 0 : endTime
     this._playState = 'finished'
 
     if (this._rafId) {
@@ -149,34 +165,42 @@ export class Animation {
   }
 
   updatePlaybackRate(playbackRate: number): void {
-    this._playbackRate = playbackRate
+    this.playbackRate = playbackRate
+  }
+
+  reverse(): void {
+    this.playbackRate = this.playbackRate * -1
   }
 
   private _tick(): void {
-    if (this._playState !== 'running' || !this._effect) return
+    const now = this._timeline.currentTime
 
-    const now = this._timeline.currentTime as number
-    const currentTIme = (now - this._startTime) * this._playbackRate
+    if (
+      this._playState !== 'running' ||
+      !this._effect ||
+      !NumberExt.isNumber(now)
+    ) {
+      return
+    }
+
     const timing = this._effect.getComputedTiming()
-    const { duration, delay, iterations } = timing
+    const { duration, delay, iterations, direction, endTime } = timing
+    const currentTime = (now - this._startTime) * this._playbackRate
+    const elapsed = currentTime - delay
+    let currentIteration = Math.floor(elapsed / duration)
 
-    if (currentTIme >= delay && duration > 0) {
-      const elapsed = currentTIme - delay
-      const timing = this._effect.getComputedTiming()
+    if (currentTime >= endTime || currentTime < 0 || duration <= 0) {
+      this.finish()
+      return
+    }
 
-      // 处理迭代和方向
-      let currentIteration = Math.floor(elapsed / duration)
-      if (currentIteration >= iterations && iterations !== Infinity) {
-        this.finish()
-        return
-      }
-
+    if (currentTime >= delay) {
       // 计算当前迭代的进度
       let iterationTime = elapsed % duration
       currentIteration = Math.min(currentIteration, iterations - 1)
 
       // 处理播放方向
-      if (isReverseDirection(timing.direction, currentIteration)) {
+      if (isReverseDirection(direction, currentIteration)) {
         iterationTime = duration - iterationTime
       }
 
@@ -184,7 +208,7 @@ export class Animation {
       this._effect.apply(iterationTime)
     }
 
-    this._currentTime = currentTIme
+    this._currentTime = currentTime
     this._rafId = requestAnimationFrame(() => this._tick())
   }
 }

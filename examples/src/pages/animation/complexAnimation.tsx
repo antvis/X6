@@ -50,7 +50,6 @@ export class ComplexAnimationExample extends React.Component {
         delay: 1000,
         duration: 1000,
         fill: 'forwards',
-        // timing: Timing.decorators.reverse(Timing.quad),
       },
     )
 
@@ -60,7 +59,6 @@ export class ComplexAnimationExample extends React.Component {
         delay: 1000,
         duration: 1000,
         fill: 'forwards',
-        // timing: Timing.decorators.reverse(Timing.bounce),
       },
     )
 
@@ -72,25 +70,7 @@ export class ComplexAnimationExample extends React.Component {
       },
     )
 
-    // ball.transition(
-    //   'attrs/label',
-    //   { text: 'yellow ball', fontSize: 8 },
-    //   {
-    //     delay: 5000,
-    //     duration: 2000,
-    //     interp: (
-    //       start: { text: string; fontSize: number },
-    //       end: { text: string; fontSize: number },
-    //     ) => {
-    //       return (time: number) => ({
-    //         text: end.text.substr(0, Math.ceil(end.text.length * time)),
-    //         fontSize: start.fontSize + (end.fontSize - start.fontSize) * time,
-    //       })
-    //     },
-    //   },
-    // )
-
-    const ufo = graph.addNode({
+    graph.addNode({
       shape: 'ellipse',
       x: 400,
       y: 50,
@@ -109,16 +89,6 @@ export class ComplexAnimationExample extends React.Component {
         },
       },
     })
-
-    // ufo.transition('position', 20, {
-    //   delay: 0,
-    //   duration: 5000,
-    //   iterations: Infinity,
-    //   interp: (a: Point.PointLike, b: number) => (t: number) => ({
-    //     x: a.x + 10 * b * (Math.cos(t * 2 * Math.PI) - 1),
-    //     y: a.y - b * Math.sin(t * 2 * Math.PI),
-    //   }),
-    // })
   }
 
   refContainer = (container: HTMLDivElement) => {

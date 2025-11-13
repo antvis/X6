@@ -13,8 +13,8 @@ export class AnimationPlaybackEvent {
   defaultPrevented: boolean
   eventPhase: number
   timeStamp: number
-  currentTime: number
-  timelineTime: number
+  currentTime: number | null
+  timelineTime: number | null
   cell: Cell
 
   constructor(
@@ -24,7 +24,7 @@ export class AnimationPlaybackEvent {
     timelineTime: number | null,
   ) {
     this.target = target
-    this.cell = this.target.effect.target
+    this.cell = this.target.effect?.target
     this.type = type
     this.bubbles = false
     this.currentTarget = target

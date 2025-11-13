@@ -10,4 +10,10 @@ export class AnimationManager {
   getAnimations() {
     return this.animations
   }
+
+  cancelAnimations() {
+    this.animations.forEach((animation) => {
+      animation.cancel()
+    })
+  }
 }

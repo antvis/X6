@@ -31,17 +31,7 @@ export class KeyframeEffect {
     this._options = NumberExt.isNumber(options)
       ? { duration: options }
       : { ...options }
-    this._keyframes = keyframes
-    this._computedKeyframes = this.getKeyframes()
-
-    // 收集动画属性的原始值
-    this._computedKeyframes.forEach((frame) => {
-      Object.keys(frame).forEach((prop) => {
-        if (isNotReservedWord(prop) && this._originProps[prop] == null) {
-          this._originProps[prop] = this.target.getPropByPath(prop)
-        }
-      })
-    })
+    this.setKeyframes(keyframes)
   }
 
   get target(): Cell | null {
@@ -124,6 +114,14 @@ export class KeyframeEffect {
   setKeyframes(keyframes: Keyframe[] | PropertyIndexedKeyframes | null): void {
     this._keyframes = keyframes
     this._computedKeyframes = this.getKeyframes()
+    // 收集动画属性的原始值
+    this._computedKeyframes.forEach((frame) => {
+      Object.keys(frame).forEach((prop) => {
+        if (isNotReservedWord(prop) && this._originProps[prop] == null) {
+          this._originProps[prop] = this.target.getPropByPath(prop)
+        }
+      })
+    })
   }
 
   getTiming(): EffectTiming {
@@ -137,6 +135,7 @@ export class KeyframeEffect {
     return {
       ...timing,
       activeDuration,
+      endTime: activeDuration + timing.delay,
     }
   }
 
@@ -152,8 +151,8 @@ export class KeyframeEffect {
     }
 
     const timing = this.getComputedTiming()
-    const duration = timing.duration as number
-    if (duration <= 0) return
+    const duration = timing.duration
+    if (duration < 0) return
 
     // 计算进度 (0-1)
     const progress = Math.min(iterationTime / duration, 1)
@@ -220,12 +219,14 @@ export interface EffectTiming {
   direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
   duration?: number
   easing?: CamelToKebabCase<Timing.Names>
+  // TODO: backwards 和 both 的初始应用效果待实现
   fill?: 'none' | 'forwards' | 'backwards' | 'both'
   iterations?: number
 }
 
 interface ComputedEffectTiming extends EffectTiming {
   activeDuration?: number
+  endTime?: number
 }
 
 export interface KeyframeEffectOptions extends EffectTiming {

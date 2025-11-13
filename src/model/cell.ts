@@ -1609,6 +1609,7 @@ export class Cell<
   @disposable()
   dispose() {
     this.removeFromParent()
+    this.animationManager.cancelAnimations()
     this.store.dispose()
   }
 
