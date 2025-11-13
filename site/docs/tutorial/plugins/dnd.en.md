@@ -7,15 +7,16 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="By reading this chapter, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to the Dnd plugin. By reading, you can learn about"}
 
--  How to add nodes to the canvas through drag-and-drop interactions
+- How to add nodes via drag-and-drop
+- How to customize the dragged and dropped nodes
 
 :::
 
 ## Usage
 
-We often need to add nodes to the canvas through drag-and-drop interactions, such as in process graph editing scenarios, where we drag and drop components from the process graph component library onto the canvas. We provide a separate plugin `dnd` to use this feature, we use it in our code like this:
+We often need to add nodes to the canvas through drag-and-drop interactions, such as in process graph editing scenarios, where we drag and drop components from the process graph component library onto the canvas. You can enable drag-and-drop with the `Dnd` plugin. Example:
 
 ```ts
 import { Graph, Dnd } from '@antv/x6'
@@ -61,10 +62,10 @@ export default () => {
 
 | Option              | Type                                                                                | Required | Default Value          | Description                                                                                                  |
 |-------------------|-------------------------------------------------------------------------------------|:----:|-----------------|-----------------------------------------------------------------------------------------------------|
-| target            | Graph                                                                               |  ✓️  |                 | The target canvas.                                                                                             |
+| target            | Graph                                                                               |  ✓️   |                 | The target canvas.                                                                                             |
 | getDragNode       | (sourceNode: Node, options: GetDragNodeOptions) => Node                             |      |                 | Get the node being dragged when dragging starts, default to cloning the node passed to `dnd.start`. |
 | getDropNode       | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |                 | Get the node to be placed on the target canvas when dragging ends, default to cloning the dragged node. |
-| validateNode      | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |                 | Validate whether the node can be placed on the target canvas when dragging ends. |
+| validateNode      | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promise\<boolean\> |      |                 | Validate whether the node can be placed on the target canvas when dragging ends. |
 | dndContainer      | HTMLElement                                                                         |      |                 | If `dndContainer` is set, releasing the mouse on `dndContainer` will not place the node, commonly used in scenarios where the `dnd` container is above the canvas. |
 | draggingContainer | HTMLElement                                                                         |      | `document.body` | Customize the dragging canvas container.                                                                           |
 

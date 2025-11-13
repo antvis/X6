@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍小地图插件相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍小地图插件相关的知识，通过阅读，你可以了解到}
 
 - 如何使用小地图功能
 
@@ -15,10 +15,10 @@ redirect_from:
 
 ## 使用
 
-我们提供了一个独立的插件 `minimap` 来使用小地图功能，我们在代码中这样使用：
+你可以通过插件 `MiniMap` 启用小地图功能，示例：
 
 ```ts
-import { MiniMap } from '@antv/x6'
+import { Graph, MiniMap } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -43,11 +43,12 @@ graph.use(
 
 | 属性名       | 类型          | 默认值 | 必选 | 描述                      |
 |--------------|---------------|--------|------|-------------------------|
-| container    | HTMLElement   | -      | √    | 挂载小地图的容器          |
+| container    | HTMLElement   | -      | ✓️    | 挂载小地图的容器          |
 | width        | number        | `300`  |      | 小地图的宽度              |
 | height       | number        | `200`  |      | 小地图的高度              |
 | padding      | number        | `10`   |      | 小地图容器的 padding 边距 |
-| scalable     | boolean       | `true` |      | 是否可缩放                |
+| scalable     | boolean       | `true` |      | 是否启用缩放              |
 | minScale     | number        | `0.01` |      | 最小缩放比例              |
 | maxScale     | number        | `16`   |      | 最大缩放比例              |
-| graphOptions | Graph.Options | `null` |      | 创建小地图 Graph 的选项   |
+| graphOptions | Graph.Options | `{}`   |      | 小地图内部 Graph 的选项   |
+| createGraph  | (options: Graph.Options) => Graph | `options => new Graph(options)` |      | 自定义创建小地图内部 Graph 的方法 |

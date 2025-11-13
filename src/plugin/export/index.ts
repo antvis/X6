@@ -230,7 +230,7 @@ export class Export extends Basecoat<ExportEventArgs> implements GraphPlugin {
         ? { width: options.width, height: options.height }
         : viewBox
 
-    let scale = options.ratio ? parseFloat(options.ratio) : 1
+    let scale = options.ratio ? options.ratio : 1
     if (!Number.isFinite(scale) || scale === 0) {
       scale = 1
     }

@@ -7,18 +7,19 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=通过阅读本章节你可以了解到}
+:::info{title='在本章节中主要介绍 Stencil 插件相关的知识，通过阅读，你可以了解到'}
 
-- 如何通过 stencil 插件，进一步增强 dnd 能力
+- 如何通过 Stencil 提升 Dnd 能力
+- 如何配置分组、折叠与搜索
 
 :::
 
 ## 使用
 
-Stencil 是在 Dnd 基础上的进一步封装，提供了一个类似侧边栏的 UI 组件，并支持分组、折叠、搜索等能力。我们提供了一个插件 `stencil` 来使用这个功能，在代码中这样使用：
+Stencil 是在 Dnd 基础上的进一步封装，提供了一个类似侧边栏的 UI 组件，并支持分组、折叠、搜索等能力。你可以通过插件 `Stencil` 启用该侧边栏模板功能，示例：
 
 ```ts
-import { Stencil } from '@antv/x6'
+import { Graph, Stencil } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -59,7 +60,7 @@ stencil.load([rect1, rect2], 'group1')
 | 选项                | 类型                                                        | 必选 | 默认值               | 说明                                  |
 |---------------------|-------------------------------------------------------------|:----:|----------------------|-------------------------------------|
 | title               | string                                                      |      | `'Stencil'`          | 标题。                                 |
-| groups              | Group[]                                                     |  ✓️  | -                    | 分组信息。                             |
+| groups              | Group[]                                                     |  ✓️   | -                    | 分组信息。                             |
 | search              | Filter                                                      |      | `false`              | 搜索选项。                             |
 | placeholder         | string                                                      |      | `'Search'`           | 搜索文本框的 placeholder 文本。        |
 | notFoundText        | string                                                      |      | `'No matches found'` | 未匹配到搜索结果时的提示文本。         |
@@ -95,7 +96,7 @@ export interface Group {
 }
 ```
 
-可以看到分组内的一些配置和外层的配置有重合，比如 `graphWidth` 和 `stencilGraphHeight`，分组内的配置优先级比较高。
+可以看到分组内的一些配置和外层的配置有重合，比如 `graphWidth`/`stencilGraphWidth` 与 `graphHeight`/`stencilGraphHeight`，分组内的配置优先级更高。
 
 ### 布局
 
@@ -153,7 +154,7 @@ load(nodes: (Node | Node.Metadata)[], groupName?: string): this
 
 | 名称      | 类型                        | 必选 | 默认值 | 描述                |
 |-----------|-----------------------------|:----:|--------|-------------------|
-| nodes     | `(Node \| Node.Metadata)[]` |  √   | -      | 加载的节点。         |
+| nodes     | `(Node \| Node.Metadata)[]` |  ✓️   | -      | 加载的节点。         |
 | groupName | string                      |      | -      | 加载节点的分组名称。 |
 
 ### stencil.unload(...)
@@ -166,7 +167,7 @@ unload(nodes: (Node | Node.Metadata)[], groupName?: string): this
 
 | 名称      | 类型                        | 必选 | 默认值 | 描述                |
 |-----------|-----------------------------|:----:|--------|-------------------|
-| nodes     | `(Node \| Node.Metadata)[]` |  √   | -      | 卸载的节点。         |
+| nodes     | `(Node \| Node.Metadata)[]` |  ✓️   | -      | 卸载的节点。         |
 | groupName | string                      |      | -      | 卸载节点的分组名称。 |
 
 ### stencil.addGroup(...)
