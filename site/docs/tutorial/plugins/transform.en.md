@@ -7,19 +7,19 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="In this chapter, we mainly introduce the graphic transformation plugin. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to the graphic transformation plugin. By reading, you can learn about"}
 
 - How to adjust node size using the interactive plugin
-- How to adjust node rotation angle using the interactive plugin
+- How to adjust a node’s rotation angle using the interactive plugin
 
 :::
 
 ## Usage
 
-Using `UI` components to adjust node size and angle is a common requirement. We provide a plugin `transform` to utilize this functionality, we can use it in our code like this:
+Using interactive UI components to adjust node size and angle is a common requirement. We provide the `transform` plugin to implement this. Use it like this:
 
 ```ts
-import { Transform } from '@antv/x6'
+import { Graph, Transform } from '@antv/x6'
 
 const graph = new Graph({
   background: {

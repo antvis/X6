@@ -7,15 +7,17 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍撤销重做相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍撤销重做插件相关的知识，通过阅读，你可以了解到}
 
 - 如何实现元素操作的撤销与重做
+- 如何设置是否记录元素添加、删除和属性更改
+- 如何将多个改变合并为一条历史记录
 
 :::
 
 ## 使用
 
-我们提供了一个独立的插件 `history` 来实现撤销重做功能，然后我们在代码中这样使用：
+你可以通过插件 `History` 启用撤销重做功能，示例：
 
 ```ts
 import { Graph, History } from '@antv/x6'
@@ -47,7 +49,7 @@ graph.use(
 | stackSize        | number                          | `0`     |      | `stackSize` 为 0 表示不限制历史记录栈的长度，如果设置为其他数字表示最多只会记录该数字长度的历史记录 |
 | ignoreAdd        | boolean                         | `false` |      | `ignoreAdd` 如果为 `true`，添加元素不会被记录到历史记录                                         |
 | ignoreRemove     | boolean                         | `false` |      | `ignoreRemove` 如果为 `true`，删除元素不会被记录到历史记录                                          |
-| ignoreChange     | boolean                         | `false` |      | `ignoreChange` 如果为 `true`，元素属性变化是否被记录到历史记录                                      |
+| ignoreChange     | boolean                         | `false` |      | `ignoreChange` 如果为 `true`，元素属性变化不会被记录到历史记录                                      |
 | beforeAddCommand | `(event, args) => any`          | -       |      | 当一个命令被添加到 Undo 队列前被调用，如果该方法返回 `false`，那么这个命令将不会被添加到 Undo 队列中 |
 | afterAddCommand  | `(event, args, cmd) => any`     | -       |      | 当一个命令被添加到 Undo 队列后被调用                                                               |
 | executeCommand   | `(cmd, revert, options) => any` | -       |      | 当命令被撤销或重做时被调用，`revert` 为 `true` 表示命令被撤销，否则表示命令被重做                    |
@@ -88,7 +90,7 @@ undo(options?: KeyValue): this
 undoAndCancel(options?: KeyValue): this
 ```
 
-撤销，并且不添加到重做队列中，所以这个被撤销的命令不能被重做。`options` 将被传递到事件回调中。
+撤销，并且不添加到重做队列中，因此该命令不能被重做。`options` 将被传递到事件回调中。
 
 ### graph.redo(...)
 
@@ -160,7 +162,7 @@ getRedoStackSize(): number
 isHistoryEnabled(): boolean
 ```
 
-是否启用了历史状态。
+返回是否启用了历史状态。
 
 ### graph.enableHistory()
 

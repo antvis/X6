@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="By reading this section, you can learn about"}
+:::info{title="This chapter mainly introduces the knowledge of the export plugin. By reading, you can learn about"}
 
 - How to export the canvas content in image format
 
@@ -15,7 +15,7 @@ redirect_from:
 
 ## Usage
 
-We often need to export the content of a canvas as an image. We provide a standalone plugin `export` to use this feature, we use it in the code like this:
+You can export the canvas content as images via the `Export` plugin. Example:
 
 ```ts
 import { Graph, Export } from '@antv/x6'
@@ -41,11 +41,11 @@ exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
 
 | Property Name      | Type                                       | Default Value | Required | Description                                                                                                                                                                            |
 |--------------------|--------------------------------------------|---------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| preserveDimensions | `boolean \| Size`                          | -             |          | `preserveDimensions` controls the size of the exported SVG. If not set, width and height default to 100%; if set to true, width and height will be automatically calculated to the actual size of the graphic area. |
-| viewBox            | Rectangle.RectangleLike                    | -             |          | Sets the viewBox of the exported SVG.                                                                                                                                                 |
-| copyStyles         | boolean                                    | `true`        |          | Whether to copy styles from external stylesheets. When enabled, computed style differences of nodes are inlined into the exported SVG to keep visuals consistent with the page; it does not disable page stylesheets, so no brief style loss occurs, but there is some performance overhead. If you prefer speed or styles are set via `attrs`, set to `false`; you can also pair with `stylesheet` to inject necessary CSS. |
+| preserveDimensions | `boolean \| Size`                          | -             |          | Controls the exported SVG size. When unset, width/height are `100%`; when `true`, they are auto-calculated to the actual content size; you can also pass `{ width, height }` to explicitly set the export size. |
+| viewBox            | RectangleLike                               | -             |          | Sets the viewBox of the exported SVG.                                                                                                                                                 |
+| copyStyles         | boolean                                    | `true`        |          | Whether to copy styles from external stylesheets. When enabled, computed style differences of nodes are inlined into the exported SVG to keep visuals consistent with the page; this adds export time. If you prefer speed or styles are set via `attrs`, set to `false` and pair with `stylesheet` to inject necessary CSS. |
 | stylesheet         | string                                     | -             |          | Custom stylesheet.                                                                                                                                                                     |
-| serializeImages    | boolean                                    | `true`        |          | Whether to convert the `xlink:href` links of image elements to dataUri format.                                                                                                       |
+| serializeImages    | boolean                                    | `true`        |          | Whether to convert the `xlink:href`/`href` of image elements to DataURI (forced for PNG/JPEG).                                                                                       |
 | beforeSerialize    | `(this: Graph, svg: SVGSVGElement) => any` | -             |          | You can call `beforeSerialize` to modify the SVG string before exporting it.                                                                                                         |
 
 ### graph.exportPNG(...)
@@ -60,9 +60,10 @@ exportPNG(fileName?: string, options?: Export.ToImageOptions): void
 |--------------------|-----------------------|---------------|----------|-------------------------------------------------------------------------------------------|
 | width              | number                | -             |          | Width of the exported image.                                                              |
 | height             | number                | -             |          | Height of the exported image.                                                             |
-| backgroundColor    | string                | -             |          | Background color of the exported image.                                                   |
+| ratio              | number                | `1`           |          | Scale factor (e.g., device pixel ratio) used to compute export resolution.                |
+| backgroundColor    | string                | -             |          | Background color of the exported image, defaults to white.                                |
 | padding            | NumberExt.SideOptions | -             |          | Padding for the image.                                                                     |
-| quality            | number                | -             |          | Image quality, which can be selected from a range of 0 to 1. If out of range, the default value of 0.92 will be used. |
+| quality            | number                | -             |          | Image quality (0–1). If out of range, the default value `0.92` is used.                  |
 
 ### graph.exportJPEG(...)
 

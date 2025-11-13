@@ -7,19 +7,19 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍图形变换插件,通过阅读你可以了解到}
+:::info{title="在本章节中主要介绍图形变换插件相关的知识，通过阅读，你可以了解到"}
 
 - 如何通过交互插件调整节点大小
-- 如果通过交互插件调整节点旋转角度
+- 如何通过交互插件调整节点旋转角度
 
 :::
 
 ## 使用
 
-使用 `UI` 组件来调整节点尺寸和角度是常用需求，我们提供了一个插件 `transform` 来使用这个功能，在代码中这样使用：
+使用 `UI` 组件来调整节点尺寸和角度是常见需求。我们提供插件 `transform` 来实现该功能，代码示例如下：
 
 ```ts
-import { Transform } from '@antv/x6'
+import { Graph, Transform } from '@antv/x6'
 
 const graph = new Graph({
   background: {

@@ -7,18 +7,18 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="This chapter mainly introduces knowledge related to the clipboard. By reading, you can learn about"}
+:::info{title="This section mainly introduces the Clipboard plugin. By reading, you will learn:"}
 
-- How to use the copy and paste function
+- How to use copy and paste
 
 :::
 
 ## Usage
 
-The clipboard is used for copying/pasting nodes and edges. We provide a plugin named `clipboard` to utilize this feature, we use it in the code like this:
+The clipboard is used for copying/pasting nodes and edges. Enable the feature via the `Clipboard` plugin:
 
 ```ts
-import { Clipboard } from '@antv/x6'
+import { Graph, Clipboard } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -95,7 +95,7 @@ Paste and return the nodes/edges pasted onto the canvas. Parameters are as follo
 ### graph.getCellsInClipboard()
 
 ```ts
-getCellsInClipboard: Cell[]
+getCellsInClipboard(): Cell[]
 ```
 
 Get the nodes/edges in the clipboard.
@@ -150,7 +150,7 @@ Toggle the clipboard's enabled state. Parameters are as follows:
 
 | Name    | Type    | Required | Default Value | Description                                   |
 |---------|---------|:--------:|---------------|-----------------------------------------------|
-| enabled | boolean |          | -             | Whether to enable the clipboard; defaults to toggling the clipboard's enabled state. |
+| enabled | boolean |          | -             | Whether to enable the clipboard; if omitted, toggles the current enabled state. |
 
 ## Events
 

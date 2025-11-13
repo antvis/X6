@@ -7,15 +7,17 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="This chapter mainly introduces knowledge related to undo and redo. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to undo and redo plugin. By reading, you can learn about"}
 
 - How to implement undo and redo for element operations
+- How to configure whether to record additions, removals, and property changes
+- How to merge multiple changes into a single history entry
 
 :::
 
 ## Usage
 
-We provide a standalone plugin `history` to use the undo and redo functionality, then we use it in the code like this:
+You can enable undo/redo with the `History` plugin, for example:
 
 ```ts
 import { Graph, History } from '@antv/x6'
@@ -44,7 +46,7 @@ graph.use(
 
 | Property Name      | Type                            | Default Value | Required | Description                                                                                          |
 |--------------------|---------------------------------|---------------|----------|------------------------------------------------------------------------------------------------------|
-| stackSize          | number                          | `0`           |          | A `stackSize` of 0 means there is no limit on the length of the history stack; setting it to another number means it will only record that many history entries. |
+| stackSize          | number                          | `0`           |          | A `stackSize` of 0 means no limit; otherwise only that many entries are kept. |
 | ignoreAdd          | boolean                         | `false`       |          | If `ignoreAdd` is `true`, adding elements will not be recorded in the history.                      |
 | ignoreRemove       | boolean                         | `false`       |          | If `ignoreRemove` is `true`, removing elements will not be recorded in the history.                 |
 | ignoreChange       | boolean                         | `false`       |          | If `ignoreChange` is `true`, changes to element properties will not be recorded in the history.     |
@@ -88,7 +90,7 @@ Undo. `options` will be passed to the event callback.
 undoAndCancel(options?: KeyValue): this
 ```
 
-Undo and do not add to the redo queue, so this undone command cannot be redone. `options` will be passed to the event callback.
+Undo and do not add to the redo queue; the command cannot be redone. `options` will be passed to the event callback.
 
 ### graph.redo(...)
 
@@ -104,7 +106,7 @@ Redo. `options` will be passed to the event callback.
 canUndo(): boolean
 ```
 
-Check if it can be undone.
+Returns whether undo is available.
 
 ### graph.canRedo()
 
@@ -112,7 +114,7 @@ Check if it can be undone.
 canRedo(): boolean
 ```
 
-Check if it can be redone.
+Returns whether redo is available.
 
 ### graph.cleanHistory(...)
 
@@ -160,7 +162,7 @@ Get the size of the history redo stack.
 isHistoryEnabled(): boolean
 ```
 
-Check if history state is enabled.
+Returns whether history is enabled.
 
 ### graph.enableHistory()
 

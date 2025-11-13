@@ -19,10 +19,10 @@ The `Scroller` plugin disables the graph's built-in `panning` by default to avoi
 
 ## Usage
 
-We provide a plugin `scroller` to use the scroller feature, Then we use it in the code like this:
+You can enable canvas scrolling with the `Scroller` plugin. For example:
 
 ```ts
-import { Scroller } from '@antv/x6'
+import { Graph, Scroller } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -67,7 +67,7 @@ type Padding = { top: number; right: number; bottom: number; left: number }
 The `ModifierKey` type is defined as follows:
 
 ```ts
-type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift' | 'space')[] | null
 ```
 
 Supports the following forms:
