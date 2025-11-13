@@ -7,7 +7,7 @@ import { register } from '@antv/x6-react-shape'
 interface TableField {
   name: string
   type: string
-  keyType?: 'primary' | 'foreign' | 'unique' | 'index'
+  keyType?: 'primary' | 'foreign' | 'unique'
   ref?: { table: string; field: string }
   defaultValue?: string
 }
@@ -27,7 +27,6 @@ const ICONS: Record<NonNullable<TableField['keyType']>, string> = {
   primary: '🔑',
   foreign: '🔗',
   unique: '⭐',
-  index: '📌',
 }
 
 // React节点组件
@@ -127,7 +126,7 @@ Graph.registerEdge('er-relationship', {
 })
 
 // 图配置
-const graph = new Graph({
+const graph: Graph = new Graph({
   container: document.getElementById('container')!,
   background: { color: '#f8f9fa' },
   grid: { visible: true, type: 'dot', args: { color: '#e0e0e0' } },
@@ -141,7 +140,7 @@ const graph = new Graph({
     highlight: true,
     router: { name: 'manhattan' },
     connector: { name: 'rounded', args: { radius: 8 } },
-    createEdge: () =>
+    createEdge: (): Edge =>
       graph.createEdge({
         shape: 'er-relationship',
         data: { type: '1:1' } as RelationshipData,
@@ -270,6 +269,10 @@ const initializeGraph = async () => {
 
 initializeGraph()
 
+export default function ERDiagram() {
+  return <div id="container" style={{ width: '100%', height: '100vh' }} />
+}
+
 // 样式
 insertCss(`
   .er-table {
@@ -329,7 +332,6 @@ insertCss(`
   .er-table-field.primary { background-color: #e6f7ff; }
   .er-table-field.foreign { background-color: #fff7e6; }
   .er-table-field.unique { background-color: #f6ffed; }
-  .er-table-field.index { background-color: #f9f0ff; }
 
   .er-field-icon { margin-right: 4px; font-size: 10px; }
   .er-field-name { flex: 1; font-weight: 500; color: #262626; }
@@ -343,7 +345,3 @@ insertCss(`
   .x6-port-available .x6-port-body circle { fill: #f6ffed; stroke: #52c41a; stroke-width: 3; r: 10; }
   .x6-edge:hover path:nth-child(2) { stroke: #1890ff; }
 `)
-
-export default function ERDiagram() {
-  return <div id="container" style={{ width: '100%', height: '100vh' }} />
-}
