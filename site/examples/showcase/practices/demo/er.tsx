@@ -304,7 +304,11 @@ insertCss(`
     gap: 6px;
   }
 
-  .er-table-fields { flex: 1; overflow: hidden; }
+  .er-table-fields { 
+    flex: 1; 
+    overflow: hidden;
+    border-radius: 0 0 6px 6px;
+  }
   .er-table-empty { padding: 20px; text-align: center; color: #999; font-style: italic; }
 
   .er-table-field {
@@ -312,13 +316,16 @@ insertCss(`
     align-items: center;
     padding: 4px 8px;
     font-size: 11px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #e8e8e8;
     transition: background-color 0.2s ease;
   }
 
   .er-table-field:hover { background-color: #f5f5f5; }
   .er-table-field.even { background-color: #fafafa; }
-  .er-table-field:last-child { border-bottom: none; }
+  .er-table-field:last-child { 
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
+  }
   .er-table-field.primary { background-color: #e6f7ff; }
   .er-table-field.foreign { background-color: #fff7e6; }
   .er-table-field.unique { background-color: #f6ffed; }
