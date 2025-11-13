@@ -7,18 +7,19 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="By reading this chapter, you will learn"}
+:::info{title="This chapter mainly introduces knowledge related to the Stencil plugin. By reading, you can learn about"}
 
-- How to further enhance DND capabilities through the Stencil plugin
+- How to enhance DnD with the Stencil plugin
+- How to configure grouping, collapse, and search
 
 :::
 
 ## Usage
 
-Stencil is a further encapsulation based on Dnd, providing a sidebar-like UI component that supports grouping, collapsing, searching, and other capabilities. We offer a plugin `stencil` to use this feature, we can use it in the code like this:
+Stencil is a further encapsulation based on Dnd, providing a sidebar-like UI component that supports grouping, collapsing, searching, and more. You can enable the stencil sidebar with the `Stencil` plugin. Example:
 
 ```ts
-import { Stencil } from '@antv/x6'
+import { Graph, Stencil } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -59,7 +60,7 @@ stencil.load([rect1, rect2], 'group1')
 | Option              | Type                                                        | Required | Default Value        | Description                                  |
 |---------------------|-------------------------------------------------------------|:--------:|----------------------|----------------------------------------------|
 | title               | string                                                      |          | `'Stencil'`          | Title.                                      |
-| groups              | Group[]                                                     |    ✓️    | -                    | Group information.                           |
+| groups              | Group[]                                                     |    ✓️     | -                    | Group information.                           |
 | search              | Filter                                                      |          | `false`              | Search option.                               |
 | placeholder         | string                                                      |          | `'Search'`           | Placeholder text for the search input.      |
 | notFoundText        | string                                                      |          | `'No matches found'` | Text displayed when no search results are found. |
@@ -95,7 +96,7 @@ export interface Group {
 }
 ```
 
-As you can see, some configurations within the group overlap with the outer configurations, such as `graphWidth` and `stencilGraphHeight`, with the group configurations taking higher priority.
+As you can see, some configurations within the group overlap with the outer configurations, such as `graphWidth/stencilGraphWidth` and `graphHeight/stencilGraphHeight`, with the group configurations taking higher priority.
 
 ### Layout
 
@@ -153,7 +154,7 @@ Load nodes. Parameters are as follows:
 
 | Name      | Type                        | Required | Default Value | Description                |
 |-----------|-----------------------------|:--------:|---------------|----------------------------|
-| nodes     | `(Node \| Node.Metadata)[]` |    √     | -             | Nodes to load.             |
+| nodes     | `(Node \| Node.Metadata)[]` |    ✓️     | -             | Nodes to load.             |
 | groupName | string                      |          | -             | Name of the group to load nodes into. |
 
 ### stencil.unload(...)
@@ -166,7 +167,7 @@ Unload nodes. Parameters are as follows:
 
 | Name      | Type                        | Required | Default Value | Description                |
 |-----------|-----------------------------|:--------:|---------------|----------------------------|
-| nodes     | `(Node \| Node.Metadata)[]` |    √     | -             | Nodes to unload.           |
+| nodes     | `(Node \| Node.Metadata)[]` |    ✓️     | -             | Nodes to unload.           |
 | groupName | string                      |          | -             | Name of the group to unload nodes from. |
 
 ### stencil.addGroup(...)

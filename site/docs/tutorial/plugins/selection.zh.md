@@ -7,15 +7,17 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍框选插件相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍框选插件相关的知识，通过阅读，你可以了解到}
 
-- 如何开启选择交互
+- 如何启用选择与框选
+- 如何配置多选与严格框选
+- 如何设置修饰键与触发事件（eventTypes）
 
 :::
 
 ## 使用
 
-我们提供了一个独立的插件 `selection` 来使用框选功能，我们在代码中这样使用：
+你可以通过插件 `Selection` 启用选择与框选功能，示例：
 
 ```ts
 import { Graph, Selection } from '@antv/x6'
@@ -38,10 +40,12 @@ graph.use(
 - 启用多选，按住 Ctrl/Command 后点击节点多选。
 - 启用移动，拖动选框移动节点。
 - 启用框选，在画布空白位置按下鼠标左键，拖动选框来框选节点。
-- 启用严格框选模式(strict)，观察对框选的影响。
-- 选择与框选配合使用的修饰键，如 `alt` 键，按住 `alt` 键并画布空白位置按下鼠标左键，拖动选框来框选节点。
-- 应用自定义过滤器(排除 circle 节点)，圆形节点不能被选中。
-- 应用自定义附加内容(显示选中节点个数)，选择两个及以上的节点，触发显示自定义内容。
+
+– 启用严格框选（strict）模式，观察其对框选的影响。
+
+- 选择与框选配合使用的修饰键，如 `alt`；按住 `alt` 键，在画布空白处按下鼠标左键并拖动选框来框选节点。
+- 应用自定义过滤器（排除 circle 节点），圆形节点不能被选中。
+- 应用自定义附加内容（显示选中节点个数），选择两个及以上的节点，触发显示自定义内容。
 
 <code id="plugin-selection" src="@/src/tutorial/plugins/selection/index.tsx"></code>
 
@@ -60,7 +64,7 @@ graph.use(
 | filter                     | Filter               | -                                     |      | 节点过滤器                                                                                                                                     |
 | showNodeSelectionBox       | boolean              | `false`                               |      | 是否显示节点的选择框                                                                                                                           |
 | showEdgeSelectionBox       | boolean              | `false`                               |      | 是否显示边的选择框                                                                                                                             |
-| pointerEvents              | `node \| auto`       | `auto`                                |      | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
+| pointerEvents              | `'none' \| 'auto'`   | `auto`                                |      | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
 | eventTypes                 | SelectionEventType[] | `['leftMouseDown', 'mouseWheelDown']` |      | 用于设置框选的触发事件类型                                                                                                                     |
 
 `Filter` 的类型定义如下：
@@ -76,7 +80,7 @@ type Filter = string[] | { id: string }[] | (this: Graph, cell: Cell) => boolean
 `ModifierKey` 的类型定义如下：
 
 ```ts
-type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift' | 'space')[] | null
 ```
 
 X6 中修饰键包括 `alt`、`ctrl`、`meta`、`shift`、`space` 五个，设置修饰键后点击鼠标并按下修饰键即可触发相应的行为。如果框选和画布拖拽平移的触发条件完全相同时，即相同事件类型（eventTypes）和修饰键（modifiers），框选的优先级更高（禁用默认的画布拖拽平移）；如果触发条件不同，则互不影响。因此在同时开始框选和拖拽画布时，修饰键就非常有用，比如框选和拖拽画布的触发时机都是鼠标左键在画布空白位置按下（leftMouseDown），这时可以为框选和拖拽画布设置不一样的修饰键，达到同时开启又不冲突的效果。支持配置单个（如 `alt`）或多个（如 `['alt', 'ctrl']`）修饰键，通过数组形式配置的多个修饰键是或关系，比如刚刚配置的修饰键表示按下 `alt` 或 `ctrl`，如果需要更加灵活的配置，可以使用如下这些形式：
@@ -151,7 +155,7 @@ cleanSelection(): this
 ### graph.isSelectionEmpty()
 
 ```ts
-cleanSelection(): boolean
+isSelectionEmpty(): boolean
 ```
 
 返回选区是否为空。
@@ -162,7 +166,7 @@ cleanSelection(): boolean
 isSelectionEnabled(): boolean
 ```
 
-是否启用选择能力。
+返回是否启用选择能力。
 
 ### graph.enableSelection()
 
@@ -198,7 +202,7 @@ toggleSelection(enabled?: boolean): this
 isMultipleSelection(): boolean
 ```
 
-是否启用了多选。
+返回是否启用了多选。
 
 ### graph.enableMultipleSelection()
 
