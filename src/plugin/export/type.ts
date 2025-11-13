@@ -52,7 +52,7 @@ export interface ExportToImageOptions extends ExportToSVGOptions {
    * The height of the image in pixels.
    */
   height?: number
-  ratio?: string
+  ratio?: number
   backgroundColor?: string
   padding?: NumberExt.SideOptions
   quality?: number

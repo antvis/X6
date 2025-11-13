@@ -7,18 +7,18 @@ redirect_from:
   - /en/docs/tutorial/basic
 ---
 
-:::info{title="This section mainly introduces knowledge related to the snapline plugin. By reading, you can learn about"}
+:::info{title="This section mainly introduces the Snapline plugin. By reading, you will learn:"}
 
-- How to use snapline in the canvas
+- How to use snaplines on the canvas
 
 :::
 
 ## Usage
 
-The alignment line is an auxiliary tool for the layout of movable nodes. We provide a plugin `snapline` to use this feature, we use it in the code like this:
+Snaplines help align moving nodes. Enable the feature via the `Snapline` plugin:
 
 ```ts
-import { Snapline } from '@antv/x6'
+import { Graph, Snapline } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -38,20 +38,20 @@ graph.use(
 
 ## Configuration
 
-| Property Name | Type    | Default Value | Required | Description                                                                                     |
-|---------------|---------|---------------|----------|-------------------------------------------------------------------------------------------------|
-| className     | string  | -             |          | Additional style name for customizing the alignment line style                                   |
-| tolerance      | number  | 10            |          | Alignment precision; the alignment line is triggered when the distance to the target position is less than `tolerance` |
-| sharp         | boolean | `false`       |          | Whether to display truncated snapline                                                      |
-| resizing      | boolean | `false`       |          | Whether to trigger snapline when resizing nodes                                           |
-| clean         | boolean | `true`        |          | If `true`, the alignment line will be cleared after 3 seconds; if `false`, it will not be cleared; if a number (ms), it will be cleared after the specified time |
-| filter        | Filter  | -             |          | Node filter                                                                                     |
+| Property Name | Type    | Default Value | Required | Description                                                                                               |
+|---------------|---------|---------------|----------|-----------------------------------------------------------------------------------------------------------|
+| className     | string  | -             |          | Additional class name to customize snapline styles                                                         |
+| tolerance     | number  | 10            |          | Snapline precision; a snapline is shown when the distance to the target position is less than `tolerance` |
+| sharp         | boolean | `false`       |          | Whether to use short snaplines (truncated)                                                                 |
+| resizing      | boolean | `false`       |          | Whether to trigger snaplines when resizing nodes                                                            |
+| clean         | boolean | `true`        |          | If `true`, snaplines are cleared after 3 seconds; if `false`, they are not cleared; if a number (ms), they are cleared after the specified duration |
+| filter        | Filter  | -             |          | Node filter                                                                                                 |
 
-The above Filter type is relatively complex and supports the following three types:
+The above Filter type is relatively flexible and supports the following forms:
 
-- `string[]`: An array of node `shape`; only the specified node `shape` will participate in alignment calculations
-- `({ id: string })[]`: An array of node IDs; only the specified nodes will participate in alignment calculations
-- `(this: Graph, node: Node) => boolean`: Only nodes that return `true` will participate in alignment calculations
+- `string[]`: An array of node `shape`s; only nodes with those shapes participate in snapline calculations
+- `({ id: string })[]`: An array of node IDs; only the specified nodes participate in snapline calculations
+- `(this: Graph, node: Node) => boolean`: Only nodes for which the function returns `true` participate in snapline calculations
 
 ## API
 
@@ -61,7 +61,7 @@ The above Filter type is relatively complex and supports the following three typ
 isSnaplineEnabled(): boolean
 ```
 
-Returns whether the alignment line is enabled.
+Returns whether snaplines are enabled.
 
 ### graph.enableSnapline()
 
@@ -69,7 +69,7 @@ Returns whether the alignment line is enabled.
 enableSnapline(): this
 ```
 
-Enables the alignment line.
+Enables snaplines.
 
 ### graph.disableSnapline()
 
@@ -77,7 +77,7 @@ Enables the alignment line.
 disableSnapline(): this
 ```
 
-Disables the alignment line.
+Disables snaplines.
 
 ### graph.toggleSnapline(...)
 
@@ -85,11 +85,11 @@ Disables the alignment line.
 toggleSnapline(enabled?: boolean): this
 ```
 
-Toggles the enabled state of the alignment line. Parameters are as follows:
+Toggles whether snaplines are enabled. Parameters are as follows:
 
-| Name    | Type    | Required | Default Value | Description                                   |
-|---------|---------|:--------:|---------------|-----------------------------------------------|
-| enabled | boolean |          | -             | Whether to enable the alignment line; defaults to toggling the enabled state of the alignment line. |
+| Name    | Type    | Required | Default Value | Description                                                                                                   |
+|---------|---------|:--------:|---------------|-----------------------------------------------------------------------------------------------------------------|
+| enabled | boolean |          | -             | Whether to enable snaplines; if omitted, toggles the current enabled state.                                     |
 
 ### graph.hideSnapline()
 
@@ -97,7 +97,7 @@ Toggles the enabled state of the alignment line. Parameters are as follows:
 hideSnapline(): this
 ```
 
-Hides the alignment line.
+Hides snaplines.
 
 ### graph.isSnaplineOnResizingEnabled()
 
@@ -105,7 +105,7 @@ Hides the alignment line.
 isSnaplineOnResizingEnabled(): boolean
 ```
 
-Whether to trigger the alignment line when resizing nodes.
+Whether to trigger snaplines when resizing nodes.
 
 ### graph.enableSnaplineOnResizing()
 
@@ -113,7 +113,7 @@ Whether to trigger the alignment line when resizing nodes.
 enableSnaplineOnResizing(): this
 ```
 
-Enables triggering the alignment line during node resizing.
+Enables triggering snaplines during node resizing.
 
 ### graph.disableSnaplineOnResizing()
 
@@ -121,7 +121,7 @@ Enables triggering the alignment line during node resizing.
 disableSnaplineOnResizing(): this
 ```
 
-Disables triggering the alignment line during node resizing.
+Disables triggering snaplines during node resizing.
 
 ### graph.toggleSnaplineOnResizing(...)
 
@@ -129,11 +129,11 @@ Disables triggering the alignment line during node resizing.
 toggleSnaplineOnResizing(enabled?: boolean): this
 ```
 
-Toggles whether to trigger the alignment line during node resizing. Parameters are as follows:
+Toggles whether to trigger snaplines during node resizing. Parameters are as follows:
 
-| Name    | Type    | Required | Default Value | Description                                   |
-|---------|---------|:--------:|---------------|-----------------------------------------------|
-| enabled | boolean |          | -             | Whether to enable the alignment line; defaults to toggling the enabled state of the alignment line. |
+| Name    | Type    | Required | Default Value | Description                                                                                                   |
+|---------|---------|:--------:|---------------|-----------------------------------------------------------------------------------------------------------------|
+| enabled | boolean |          | -             | Whether to enable snaplines; if omitted, toggles the current enabled state.                                     |
 
 ### graph.isSharpSnapline()
 
@@ -141,7 +141,7 @@ Toggles whether to trigger the alignment line during node resizing. Parameters a
 isSharpSnapline(): boolean
 ```
 
-Whether to use short snapline.
+Whether to use short snaplines.
 
 ### graph.enableSharpSnapline()
 
@@ -149,7 +149,7 @@ Whether to use short snapline.
 enableSharpSnapline(): this
 ```
 
-Enables short snapline; when enabled, the snapline only show up to the relevant node positions, otherwise they span across the canvas.
+Enables short snaplines; when enabled, snaplines are truncated at relevant node positions; otherwise they span across the canvas.
 
 ### graph.disableSharpSnapline()
 
@@ -157,7 +157,7 @@ Enables short snapline; when enabled, the snapline only show up to the relevant 
 disableSharpSnapline(): this
 ```
 
-Disables short snapline; snapline will span the entire canvas.
+Disables short snaplines; snaplines span the entire canvas.
 
 ### graph.toggleSharpSnapline()
 
@@ -165,11 +165,11 @@ Disables short snapline; snapline will span the entire canvas.
 toggleSharpSnapline(enabled?: boolean): this
 ```
 
-Toggles the enabled state of short snapline. Parameters are as follows:
+Toggles whether short snaplines are enabled. Parameters are as follows:
 
-| Name    | Type    | Required | Default Value | Description                                   |
-|---------|---------|:--------:|---------------|-----------------------------------------------|
-| enabled | boolean |          | -             | Whether to enable short snapline; defaults to toggling the enabled state of short snapline. |
+| Name    | Type    | Required | Default Value | Description                                                                                                   |
+|---------|---------|:--------:|---------------|-----------------------------------------------------------------------------------------------------------------|
+| enabled | boolean |          | -             | Whether to enable short snaplines; if omitted, toggles the current enabled state.                                |
 
 ### graph.getSnaplineTolerance()
 
@@ -177,7 +177,7 @@ Toggles the enabled state of short snapline. Parameters are as follows:
 getSnaplineTolerance(): number
 ```
 
-Gets the alignment line precision.
+Gets snapline precision.
 
 ### graph.setSnaplineTolerance(...)
 
@@ -185,7 +185,7 @@ Gets the alignment line precision.
 setSnaplineTolerance(tolerance: number): this
 ```
 
-Sets the alignment line precision.
+Sets snapline precision.
 
 ### graph.setSnaplineFilter(...)
 
@@ -198,4 +198,4 @@ setSnaplineFilter(
 ): this
 ```
 
-Sets the filter condition; only nodes that meet the filter condition will participate in alignment line calculations.
+Sets the filter; only nodes that meet the condition participate in snapline calculations.

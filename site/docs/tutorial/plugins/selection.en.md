@@ -7,15 +7,17 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="This chapter mainly introduces knowledge related to the selection box plugin. By reading, you can learn about"}
+:::info{title="This chapter mainly introduces knowledge related to selection and rubberband plugin. By reading, you can learn about"}
 
-- How to enable selection interaction
+- How to enable selection and rubberband
+- How to configure multi-selection and strict rubberband
+- How to set modifier keys and trigger events (`eventTypes`)
 
 :::
 
 ## Usage
 
-We provide a standalone plugin `selection` to use the selection feature, we use it in the code like this:
+You can enable selection and rubberband with the `Selection` plugin, for example:
 
 ```ts
 import { Graph, Selection } from '@antv/x6'
@@ -60,7 +62,7 @@ graph.use(
 | filter                  | Filter               | -                                     |          | Node filter                                                                                                                                     |
 | showNodeSelectionBox    | boolean              | `false`                               |          | Whether to show the selection box for nodes                                                                                                    |
 | showEdgeSelectionBox    | boolean              | `false`                               |          | Whether to show the selection box for edges                                                                                                    |
-| pointerEvents           | `node \| auto`       | `auto`                                |          | When `showNodeSelectionBox` is enabled, an element will overlay on top of the node, causing the node's events to be unresponsive; you can set `pointerEvents: none` to resolve this, default is `auto` |
+| pointerEvents           | `'none' \| 'auto'`   | `auto`                                |          | When `showNodeSelectionBox` is enabled, an element overlays the node and its events may not respond; set `pointerEvents: none` to resolve this. Default is `auto`. |
 | eventTypes              | SelectionEventType[] | `['leftMouseDown', 'mouseWheelDown']` |          | Used to set the trigger event types for rubberband selection                                                                                   |
 
 The type definition for `Filter` is as follows:
@@ -76,10 +78,10 @@ type Filter = string[] | { id: string }[] | (this: Graph, cell: Cell) => boolean
 The type definition for `ModifierKey` is as follows:
 
 ```ts
-type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift' | 'space')[] | null
 ```
 
-The modifier keys in X6 include `alt`, `ctrl`, `meta`, `shift` and `space`. After setting modifier keys, clicking the mouse while holding a modifier triggers the corresponding behavior. If rubberband selection and canvas panning have exactly the same trigger conditions (same `eventTypes` and same `modifiers`), rubberband selection takes precedence and the default canvas panning is disabled; if their triggers differ, they do not interfere with each other. Therefore, when both features start on `leftMouseDown` over blank areas, configure different modifier keys for selection and panning to enable both without conflict. You can configure a single (e.g., `alt`) or multiple (e.g., `['alt', 'ctrl']`) modifier keys. Multiple modifier keys configured in array form are treated as an OR relationship. If you need more flexible configurations, you can use the following forms:
+The modifier keys in X6 include `alt`, `ctrl`, `meta`, `shift`, and `space`. When modifiers are configured, clicking the mouse while holding a modifier triggers the corresponding behavior. If rubberband selection and canvas panning have identical triggers (same `eventTypes` and same `modifiers`), rubberband selection takes precedence and the default panning is disabled; if they differ, they work independently. When both start on `leftMouseDown` over blank areas, configure different modifiers for selection and panning to avoid conflicts. You can configure a single key (e.g., `alt`) or multiple keys (e.g., `['alt', 'ctrl']`). Multiple keys in an array are treated as OR. For more flexible configurations, use the following forms:
 
 - `alt` indicates pressing `alt`.
 - `[alt, ctrl]` indicates pressing `alt` or `ctrl`.
@@ -151,7 +153,7 @@ Clears the selection.
 ### graph.isSelectionEmpty()
 
 ```ts
-cleanSelection(): boolean
+isSelectionEmpty(): boolean
 ```
 
 Returns whether the selection is empty.
@@ -162,7 +164,7 @@ Returns whether the selection is empty.
 isSelectionEnabled(): boolean
 ```
 
-Whether selection capability is enabled.
+Returns whether selection is enabled.
 
 ### graph.enableSelection()
 
@@ -198,7 +200,7 @@ Toggles the enabled state of selection. Parameters are as follows:
 isMultipleSelection(): boolean
 ```
 
-Whether multi-selection is enabled.
+Returns whether multi-selection is enabled.
 
 ### graph.enableMultipleSelection()
 

@@ -7,15 +7,15 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="This section mainly introduces knowledge related to keyboard shortcuts. By reading, you can learn about"}
+:::info{title="This section mainly introduces the Keyboard plugin. By reading, you will learn:"}
 
-- How to bind keyboard shortcuts to the canvas
+- How to bind keyboard shortcuts on the canvas
 
 :::
 
 ## Usage
 
-We provide a standalone plugin `keyboard` to use keyboard shortcut functionality, we use it in the code like this:
+Enable keyboard shortcuts via the `Keyboard` plugin:
 
 ```ts
 import { Graph, Keyboard } from '@antv/x6'
@@ -40,9 +40,9 @@ graph.use(
 
 | Property Name | Type                                      | Default Value | Required | Description                                                                                                                                       |
 |---------------|-------------------------------------------|---------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| global        | boolean                                   | `false`       |          | Whether to use global keyboard events. When set to `true`, keyboard events are bound to `document`; otherwise, they are bound to the canvas container. When bound to the canvas container, the container must gain focus to trigger keyboard events. |
-| format        | `(this:Graph, key: string) => string`    | -             |          | Format the key string when binding or unbinding keyboard events.                                                                                   |
-| guard         | `(this:Graph,e:KeyboardEvent) => boolean` | -             |          | Determine whether a keyboard event should be processed. If it returns `false`, the corresponding keyboard event is ignored.                       |
+| global        | boolean                                   | `false`       |          | Whether to use global keyboard events. When set to `true`, keyboard events are bound to `document`; otherwise they are bound to the canvas container. When bound to the canvas container, it must be focused to trigger keyboard events. |
+| format        | `(this: Graph, key: string) => string`    | -             |          | Format the key string when binding or unbinding keyboard events.                                                                                   |
+| guard         | `(this: Graph, e: KeyboardEvent) => boolean` | -          |          | Determine whether a keyboard event should be processed. If it returns `false`, the corresponding keyboard event is ignored.                       |
 
 The `format` and `guard` configurations are used as follows:
 
@@ -122,7 +122,7 @@ Manually trigger keyboard shortcuts.
 isKeyboardEnabled(): boolean
 ```
 
-Get whether keyboard events are enabled.
+Returns whether keyboard events are enabled.
 
 ### graph.enableKeyboard()
 
@@ -150,4 +150,4 @@ Toggle the enabled state of keyboard events. The parameters are as follows:
 
 | Name     | Type    | Required | Default Value | Description                                           |
 |----------|---------|:--------:|---------------|------------------------------------------------------|
-| enabled  | boolean |          | -             | Whether to enable keyboard events. If omitted, it toggles the enabled state of keyboard events. |
+| enabled  | boolean |          | -             | Whether to enable keyboard events; if omitted, toggles the current enabled state. |

@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍快捷键相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍快捷键插件相关的知识，通过阅读，你可以了解到}
 
 - 如何为画布绑定快捷键
 
@@ -15,7 +15,7 @@ redirect_from:
 
 ## 使用
 
-我们提供了一个独立的插件 `keyboard` 来使用快捷键功能，我们在代码中这样使用：
+你可以通过插件 `Keyboard` 启用快捷键功能，示例：
 
 ```ts
 import { Graph, Keyboard } from '@antv/x6'
@@ -41,8 +41,8 @@ graph.use(
 | 属性名 | 类型                                      | 默认值  | 必选 | 描述                                                                                                                                       |
 |--------|-------------------------------------------|---------|------|------------------------------------------------------------------------------------------------------------------------------------------|
 | global | boolean                                   | `false` |      | 是否为全局键盘事件，设置为 `true` 时键盘事件绑定在 `document` 上，否则绑定在画布容器上。当绑定在画布容器上时，需要容器获得焦点才能触发键盘事件 |
-| format | `(this:Graph, key: string) => string`     | -       |      | 绑定或解绑键盘事件时，格式化按键字符串                                                                                                      |
-| guard  | `(this:Graph,e:KeyboardEvent) => boolean` | -       |      | 判断一个键盘事件是否应该被处理，返回 `false` 时对应的键盘事件被忽略                                                                         |
+| format | `(this: Graph, key: string) => string`    | -       |      | 绑定或解绑键盘事件时，格式化按键字符串                                                                                                      |
+| guard  | `(this: Graph, e: KeyboardEvent) => boolean` | -    |      | 判断一个键盘事件是否应该被处理，返回 `false` 时对应的键盘事件被忽略                                                                         |
 
 `format` 和 `guard` 配置使用如下：
 

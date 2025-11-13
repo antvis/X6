@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍对齐线插件相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍对齐线插件相关的知识，通过阅读，你可以了解到}
 
 - 如何在画布中使用对齐线
 
@@ -15,10 +15,10 @@ redirect_from:
 
 ## 使用
 
-对齐线是移动节点排版的辅助工具，我们提供了一个插件 `snapline` 来使用这个功能，在代码中这样使用：
+对齐线是用于移动节点排版的辅助工具。你可以通过插件 `Snapline` 启用该功能，示例：
 
 ```ts
-import { Snapline } from '@antv/x6'
+import { Graph, Snapline } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -42,9 +42,9 @@ graph.use(
 |-----------|---------|---------|------|----------------------------------------------------------------------------------------------|
 | className | string  | -       |      | 附加样式名，用于定制对齐线样式                                                                  |
 | tolerance | number  | 10      |      | 对齐精度，即移动节点时与目标位置的距离小于 `tolerance` 时触发显示对齐线                         |
-| sharp     | boolean | `false` |      | 是否显示截断的对齐线                                                                           |
+| sharp     | boolean | `false` |      | 是否使用短款对齐线                                                                             |
 | resizing  | boolean | `false` |      | 改变节点大小时是否触发对齐线                                                                   |
-| clean     | boolean | `true`  |      | 如果为 `true`，则在 3s 后清除对齐线，为 `false`，不会清除，如果为数字(ms)，则在指定时间后清除对齐线 |
+| clean     | boolean | `true`  |      | 如果为 `true`，则在 3 秒后清除对齐线；为 `false` 则不会清除；如果为数字（ms），则在指定时间后清除对齐线 |
 | filter    | Filter  | -       |      | 节点过滤器                                                                                     |
 
 上面的 Filter 类型比较复杂，支持以下三种类型：

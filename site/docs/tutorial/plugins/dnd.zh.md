@@ -6,16 +6,16 @@ redirect_from:
   - /zh/docs/tutorial
   - /zh/docs/tutorial/plugins
 ---
-
-:::info{title=通过阅读本章节,你可以了解到}
+:::info{title=在本章节中主要介绍拖拽插件相关的知识，通过阅读，你可以了解到}
 
 - 如何通过拖拽交互往画布中添加节点
+- 如何自定义拖拽节点与放置节点
 
 :::
 
 ## 使用
 
-我们经常需要通过拖拽交互往画布中添加节点，如流程图编辑场景，从流程图组件库中拖拽组件到画布中。我们提供了一个独立的插件 `dnd` 来使用这个功能，我们在代码中这样使用：
+我们经常需要通过拖拽交互往画布中添加节点，如流程图编排场景，从流程图组件库中拖拽组件到画布中。你可以通过插件 `Dnd` 启用拖拽交互，示例：
 
 ```ts
 import { Graph, Dnd } from '@antv/x6'
@@ -64,7 +64,7 @@ export default () => {
 | target            | Graph                                                                               |  ✓️  |                 | 目标画布。                                                                                             |
 | getDragNode       | (sourceNode: Node, options: GetDragNodeOptions) => Node                             |      |                 | 拖拽开始时，获取被拖拽的节点，默认克隆 `dnd.start` 传入的节点。                                          |
 | getDropNode       | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |                 | 拖拽结束时，获取放置到目标画布的节点，默认克隆被拖拽的节点。                                             |
-| validateNode      | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |                 | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                          |
+| validateNode      | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promise\<boolean\> |      |                 | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                          |
 | dndContainer      | HTMLElement                                                                         |      |                 | 如果设置 `dndContainer`，在 `dndContainer` 上放开鼠标不会放置节点，常用于 `dnd` 容器处于画布上面的场景。 |
 | draggingContainer | HTMLElement                                                                         |      | `document.body` | 自定义拖拽画布容器。                                                                                   |
 
