@@ -105,6 +105,8 @@ register({
   },
 })
 
+// 注销边，防止重复注册报错
+Graph.unregisterEdge('er-relationship')
 // 注册边
 Graph.registerEdge('er-relationship', {
   inherit: 'edge',
