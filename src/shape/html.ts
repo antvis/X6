@@ -1,7 +1,7 @@
 import { Dom, disposable } from '../common'
 import { Graph } from '../graph/graph'
-import type { Cell, TransitionEventArgs } from '../model/cell'
-import { Node, NodeProperties } from '../model/node'
+import type { Cell, CellBaseEventArgs } from '../model/cell'
+import { Node, type NodeProperties } from '../model/node'
 import { Markup } from '../view'
 import { NodeView } from '../view/node'
 
@@ -96,7 +96,7 @@ class View extends NodeView<HTML> {
     this.cell.on('change:*', this.onCellChangeAny, this)
   }
 
-  protected onCellChangeAny({ key }: TransitionEventArgs['change:*']) {
+  protected onCellChangeAny({ key }: CellBaseEventArgs['change:*']) {
     const content = HTMLShapeMaps[this.cell.shape]
     if (content) {
       const { effect } = content

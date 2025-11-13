@@ -7,11 +7,12 @@ import {
   disposable,
   FunctionExt,
   type KeyValue,
+  NumberExt,
   ObjectExt,
   type Size,
   StringExt,
 } from '../common'
-import { Point, Rectangle, PointLike } from '../geometry'
+import { Point, type PointLike, Rectangle } from '../geometry'
 import type { Graph } from '../graph'
 import {
   type AttrDefinitions,
@@ -23,12 +24,10 @@ import type { CellView } from '../view'
 import type { MarkupType } from '../view/markup'
 import {
   Animation,
-  type AnimationCallbackArgs,
-  type AnimationProgressArgs,
-  type AnimationStartOptions,
-  type AnimationStopArgs,
-  type AnimationStopOptions,
-  type AnimationTargetValue,
+  AnimationManager,
+  type AnimationPlaybackEvent,
+  KeyframeEffect,
+  type KeyframeEffectOptions,
 } from './animation'
 import type {
   ConnectorData,
@@ -39,19 +38,19 @@ import type {
   TerminalData,
   TerminalType,
 } from './edge'
-import type { Model, BatchName } from './model'
+import type { BatchName, Model } from './model'
 import type { Node, NodeProperties, NodeSetOptions } from './node'
 import type { Port } from './port'
-import { Store } from './store'
 import type {
   StoreMutateOptions,
   StoreSetByPathOptions,
   StoreSetOptions,
 } from './store'
+import { Store } from './store'
 
 export class Cell<
   Properties extends CellProperties = CellProperties,
-> extends Basecoat<TransitionEventArgs> {
+> extends Basecoat<CellBaseEventArgs> {
   static toStringTag = `X6.cell`
   static isCell(instance: any): instance is Cell {
     if (instance == null) {
@@ -272,7 +271,7 @@ export class Cell<
 
   public readonly id: string
   protected readonly store: Store<CellProperties>
-  protected readonly animation: Animation
+  protected readonly animationManager: AnimationManager
   protected _model: Model | null // eslint-disable-line
   protected _parent: Cell | null // eslint-disable-line
   protected _children: Cell[] | null // eslint-disable-line
@@ -290,7 +289,7 @@ export class Cell<
 
     this.id = props.id || Cell.generateId(metadata)
     this.store = new Store(props)
-    this.animation = new Animation(this)
+    this.animationManager = new AnimationManager()
     this.setup()
     this.init()
     this.postprocess(metadata)
@@ -341,7 +340,7 @@ export class Cell<
         cell: this,
       })
 
-      this.notify(`change:${key}` as keyof TransitionEventArgs, {
+      this.notify(`change:${key}` as keyof CellBaseEventArgs, {
         options,
         current,
         previous,
@@ -365,23 +364,23 @@ export class Cell<
     )
 
     this.on('added', ({ cell }) => {
-      const transition = this.store.get('transition')
-      if (!ObjectExt.isEmpty(transition)) {
-        transition.forEach((t) => {
-          cell.transition(...t)
+      const animation = this.store.get('animation')
+      if (!ObjectExt.isEmpty(animation)) {
+        animation.forEach((p) => {
+          cell.animate(...p)
         })
       }
     })
   }
 
-  notify<Key extends keyof TransitionEventArgs>(
+  notify<Key extends keyof CellBaseEventArgs>(
     name: Key,
-    args: TransitionEventArgs[Key],
+    args: CellBaseEventArgs[Key],
   ): this
-  notify(name: Exclude<string, keyof TransitionEventArgs>, args: any): this
-  notify<Key extends keyof TransitionEventArgs>(
+  notify(name: Exclude<string, keyof CellBaseEventArgs>, args: any): this
+  notify<Key extends keyof CellBaseEventArgs>(
     name: Key,
-    args: TransitionEventArgs[Key],
+    args: CellBaseEventArgs[Key],
   ) {
     this.trigger(name, args)
     const model = this.model
@@ -1253,48 +1252,25 @@ export class Cell<
 
   // #endregion
 
-  // #region transition
+  // #region animation
 
-  transition<K extends keyof Properties>(
-    path: K,
-    target: Properties[K],
-    options?: AnimationStartOptions<Properties[K]>,
-    delim?: string,
-  ): () => void
-  transition<T extends AnimationTargetValue>(
-    path: string | string[],
-    target: T,
-    options?: AnimationStartOptions<T>,
-    delim?: string,
-  ): () => void
-  transition<T extends AnimationTargetValue>(
-    path: string | string[],
-    target: T,
-    options: AnimationStartOptions<T> = {},
-    delim = '/',
+  animate(
+    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+    options?: number | KeyframeAnimationOptions,
   ) {
-    return this.animation.start(
-      path,
-      target,
-      {
-        fill: 'forwards',
-        ...options,
-      },
-      delim,
-    )
+    const optionsObj = NumberExt.isNumber(options)
+      ? { duration: options }
+      : { ...options }
+    const effect = new KeyframeEffect(this, keyframes, optionsObj)
+    const animation = new Animation(effect, optionsObj.timeline)
+    this.animationManager.addAnimation(animation)
+    animation.id = optionsObj.id ?? ''
+    animation.play()
+    return animation
   }
 
-  stopTransition<T extends AnimationTargetValue>(
-    path: string | string[],
-    options?: AnimationStopOptions<T>,
-    delim = '/',
-  ) {
-    this.animation.stop(path, options, delim)
-    return this
-  }
-
-  getTransitions() {
-    return this.animation.get()
+  getAnimations() {
+    return this.animationManager.getAnimations()
   }
 
   // #endregion
@@ -1453,8 +1429,8 @@ export class Cell<
   ): this extends Node
     ? NodeProperties
     : this extends Edge
-    ? EdgeProperties
-    : Properties {
+      ? EdgeProperties
+      : Properties {
     const props = { ...this.store.get() }
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
@@ -1633,6 +1609,7 @@ export class Cell<
   @disposable()
   dispose() {
     this.removeFromParent()
+    this.animationManager.cancelAnimations()
     this.store.dispose()
   }
 
@@ -1647,7 +1624,7 @@ export interface CellCommon {
   zIndex?: number
   visible?: boolean
   data?: any
-  transition?: TransitionParams[]
+  animation?: AnimateParams[]
 }
 
 export interface CellDefaults extends CellCommon {}
@@ -1729,16 +1706,16 @@ export interface CloneOptions {
   keepId?: boolean
 }
 
-export type TransitionParams = Parameters<
-  InstanceType<typeof Cell>['transition']
->
+export interface KeyframeAnimationOptions extends KeyframeEffectOptions {
+  id?: string
+  timeline?: AnimationTimeline | null
+}
 
-export interface TransitionEventArgs {
-  'transition:start': AnimationCallbackArgs<AnimationTargetValue>
-  'transition:progress': AnimationProgressArgs<AnimationTargetValue>
-  'transition:complete': AnimationCallbackArgs<AnimationTargetValue>
-  'transition:stop': AnimationStopArgs<AnimationTargetValue>
-  'transition:finish': AnimationCallbackArgs<AnimationTargetValue>
+export type AnimateParams = Parameters<InstanceType<typeof Cell>['animate']>
+
+export interface CellBaseEventArgs {
+  'animation:finish': AnimationPlaybackEvent
+  'animation:cancel': AnimationPlaybackEvent
 
   // common
   'change:*': ChangeAnyKeyArgs
