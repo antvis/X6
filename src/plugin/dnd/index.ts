@@ -13,7 +13,7 @@ import {
   type GraphPlugin,
   type Options,
 } from '../../graph'
-import type { Node, TransitionEventArgs } from '../../model'
+import type { CellBaseEventArgs, Node } from '../../model'
 import { type NodeView, View } from '../../view'
 import type { Scroller } from '../scroller'
 import type { Snapline } from '../snapline'
@@ -250,7 +250,7 @@ export class Dnd extends View implements GraphPlugin {
     cell,
     current,
     options,
-  }: TransitionEventArgs['change:position']) {
+  }: CellBaseEventArgs['change:position']) {
     const node = cell as Node
     if (options.snapped) {
       const bbox = this.draggingBBox

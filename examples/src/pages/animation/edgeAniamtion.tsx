@@ -1,8 +1,8 @@
-import { Graph, Shape, Timing } from '@antv/x6'
+import { Graph, Shape } from '@antv/x6'
 import React from 'react'
 import '../index.less'
 
-export class EdgeTransitionExample extends React.Component {
+export class EdgeAnimationExample extends React.Component {
   private container!: HTMLDivElement
 
   componentDidMount() {
@@ -24,10 +24,9 @@ export class EdgeTransitionExample extends React.Component {
           strokeDashoffset: 0,
         },
       },
-      transition: [
+      animation: [
         [
-          'attrs/line/strokeDashoffset',
-          -20,
+          { 'attrs/line/strokeDashoffset': -20 },
           {
             duration: 1000,
             iterations: Infinity,
@@ -63,10 +62,9 @@ export class EdgeTransitionExample extends React.Component {
           atConnectionRatio: 0,
         },
       },
-      transition: [
+      animation: [
         [
-          'attrs/marker/atConnectionRatio',
-          1,
+          { 'attrs/marker/atConnectionRatio': 1 },
           {
             duration: 2000,
             iterations: Infinity,
@@ -90,15 +88,14 @@ export class EdgeTransitionExample extends React.Component {
           },
         },
       },
-      transition: [
+      animation: [
         [
-          'attrs/line/strokeWidth',
-          4,
+          { 'attrs/line/strokeWidth': 4 },
           {
             duration: 2500,
             iterations: Infinity,
             direction: 'alternate',
-            timing: Timing.easeInOutBack,
+            easing: 'ease-in-out-back',
           },
         ],
         [
@@ -108,7 +105,7 @@ export class EdgeTransitionExample extends React.Component {
             duration: 2500,
             iterations: Infinity,
             direction: 'alternate',
-            timing: Timing.easeInOutBack,
+            easing: 'ease-in-out-back',
           },
         ],
       ],
