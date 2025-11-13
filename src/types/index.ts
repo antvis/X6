@@ -33,3 +33,18 @@ export type KeyPoint =
   | 'bottomRight'
   | 'rightMiddle'
   | 'leftMiddle'
+
+type CamelToKebab<S extends string> = S extends `${infer C}${infer R}`
+  ? C extends Uppercase<C>
+    ? `-${Lowercase<C>}${CamelToKebab<R>}`
+    : `${C}${CamelToKebab<R>}`
+  : S
+
+type RemoveLeadingHyphen<S extends string> = S extends `-${infer Rest}`
+  ? Rest
+  : S
+
+// 将 camelCase 转为 kebab-case
+export type CamelToKebabCase<S extends string> = RemoveLeadingHyphen<
+  CamelToKebab<S>
+>

@@ -7,29 +7,29 @@ import {
   StringExt,
 } from '../common'
 import {
-  toRad,
   normalize,
   Point,
-  Rectangle,
   type PointLike,
+  Rectangle,
   type RectangleLike,
+  toRad,
 } from '../geometry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
-import type { AnimationStartOptions } from './animation'
+import type { KeyframeEffectOptions } from './animation'
 import {
   Cell,
-  CellConfig,
-  CellMetadata,
-  CellProperties,
-  CellSetOptions,
-  CellDefaults,
-  CellTranslateOptions,
-  CellCommon,
+  type CellCommon,
+  type CellConfig,
+  type CellDefaults,
+  type CellMetadata,
+  type CellProperties,
+  type CellSetOptions,
+  type CellTranslateOptions,
 } from './cell'
 import type { Edge, TerminalCellData, TerminalType } from './edge'
+import type { Metadata as PMetadata, PortMetadata } from './port'
 import { PortManager } from './port'
-import type { PortMetadata, Metadata as PMetadata } from './port'
 import { exist, setNodeRegistry } from './registry'
 import type { Store } from './store'
 
@@ -120,6 +120,7 @@ export class Node<
     const { constructorName, overwrite, ...others } = config
     const ctor = ObjectExt.createClass<NodeClass>(
       getClassName(constructorName || others.shape),
+      // biome-ignore lint/complexity/noThisInStatic: <修改后会导致渲染错误>
       this as NodeClass,
     )
 
@@ -498,13 +499,22 @@ export class Node<
     options.ty = ty
 
     if (options.transition) {
-      if (typeof options.transition !== 'object') {
-        options.transition = {}
+      let animateOptions =
+        typeof options.transition !== 'object' ? {} : { ...options.transition }
+
+      animateOptions = {
+        duration: 100,
+        fill: 'forwards',
+        ...animateOptions,
       }
 
-      this.transition('position', translatedPosition, {
-        ...options.transition,
-      })
+      this.animate(
+        {
+          'position/x': translatedPosition.x,
+          'position/y': translatedPosition.y,
+        },
+        animateOptions,
+      )
       this.eachChild((child) => {
         const excluded = options.exclude?.includes(child)
         if (!excluded) {
@@ -1142,7 +1152,7 @@ export interface SetPositionOptions extends NodeSetOptions {
 }
 
 export interface TranslateOptions extends CellTranslateOptions {
-  transition?: boolean | AnimationStartOptions<PointLike>
+  transition?: boolean | KeyframeEffectOptions
   restrict?: RectangleLike | null
   exclude?: Cell[]
 }

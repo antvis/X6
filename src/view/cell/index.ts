@@ -13,7 +13,7 @@ import { Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
 import type {
   Cell,
-  TransitionEventArgs,
+  CellBaseEventArgs,
   CellMutateOptions,
 } from '../../model/cell'
 import type {
@@ -308,7 +308,7 @@ export class CellView<
     this.cell.on('changed', this.onCellChanged, this)
   }
 
-  protected onCellChanged({ options }: TransitionEventArgs['changed']) {
+  protected onCellChanged({ options }: CellBaseEventArgs['changed']) {
     this.onAttrsChange(options)
   }
 

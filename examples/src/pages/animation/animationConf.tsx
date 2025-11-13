@@ -9,10 +9,9 @@ Graph.registerNode(
     angle: 0,
     width: 80,
     height: 80,
-    transition: [
+    animation: [
       [
-        'angle',
-        360,
+        { angle: 360 },
         {
           duration: 4000,
           iterations: Infinity,
@@ -23,7 +22,7 @@ Graph.registerNode(
   true,
 )
 
-export class TransitionConfExample extends React.Component {
+export class AnimationConfExample extends React.Component {
   private container!: HTMLDivElement
 
   componentDidMount() {
@@ -43,10 +42,11 @@ export class TransitionConfExample extends React.Component {
       x: 100,
       y: 100,
       label: '配置形式动画',
-      transition: [
+      animation: [
         [
-          'position/x',
-          400,
+          {
+            'position/x': 400,
+          },
           {
             duration: 2000,
             iterations: Infinity,
@@ -65,11 +65,14 @@ export class TransitionConfExample extends React.Component {
     })
 
     // api指令形式的动画
-    node2.transition('position/x', 400, {
-      duration: 2000,
-      iterations: 2,
-      direction: 'alternate',
-    })
+    node2.animate(
+      { 'position/x': 400 },
+      {
+        duration: 2000,
+        iterations: 2,
+        direction: 'alternate',
+      },
+    )
 
     // 自定义shape的动画
     graph.addNode({
