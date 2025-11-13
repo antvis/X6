@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/plugins
 ---
 
-:::info{title="This chapter mainly introduces the knowledge of the export plugin. By reading,  you can learn about"}
+:::info{title="This chapter mainly introduces the knowledge of the export plugin. By reading, you can learn about"}
 
 - How to export the canvas content in image format
 
@@ -60,7 +60,7 @@ exportPNG(fileName?: string, options?: Export.ToImageOptions): void
 |--------------------|-----------------------|---------------|----------|-------------------------------------------------------------------------------------------|
 | width              | number                | -             |          | Width of the exported image.                                                              |
 | height             | number                | -             |          | Height of the exported image.                                                             |
-| ratio              | string                | `1`           |          | Scale factor (e.g., device pixel ratio) used to compute export resolution.                |
+| ratio              | number                | `1`           |          | Scale factor (e.g., device pixel ratio) used to compute export resolution.                |
 | backgroundColor    | string                | -             |          | Background color of the exported image, defaults to white.                                |
 | padding            | NumberExt.SideOptions | -             |          | Padding for the image.                                                                     |
 | quality            | number                | -             |          | Image quality (0–1). If out of range, the default value `0.92` is used.                  |

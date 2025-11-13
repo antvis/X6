@@ -46,7 +46,7 @@ exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
 | copyStyles         | boolean                                    | `true` |      | 是否复制外部样式表中的样式，默认 true。开启后会将节点的计算样式按差异内联到导出的 SVG，以保持页面与导出视觉一致，但会增加导出耗时；若样式已通过 `attrs` 指定或追求速度，可设为 `false`，并结合 `stylesheet` 注入必要 CSS。 |
 | stylesheet         | string                                     | -      |      | 自定义样式表                                                                                                                                                                    |
 | serializeImages    | boolean                                    | `true` |      | 是否将 image 元素的 `xlink:href`/`href` 链接转化为 DataURI（导出 PNG/JPEG 时会强制启用）。                                                                                      |
-| beforeSerialize    | `(this: Graph, svg: SVGElement) => any` | -      |      | 可以在导出 svg 字符串之前调用 beforeSerialize 来修改它                                                                                                                          |
+| beforeSerialize    | `(this: Graph, svg: SVGSVGElement) => any` | -      |      | 可以在导出 svg 字符串之前调用 beforeSerialize 来修改它                                                                                                                          |
 
 ### graph.exportPNG(...)
 
@@ -60,7 +60,7 @@ exportPNG(fileName?: string, options?: Export.ToImageOptions): void
 |-----------------|-----------------------|--------|------|----------------------------------------------------------------------------------|
 | width           | number                | -      |      | 导出图片的宽度                                                                     |
 | height          | number                | -      |      | 导出图片的高度                                                                     |
-| ratio           | string                | `1`    |      | 输出缩放比例（如设备像素比），用于计算导出分辨率。                                   |
+| ratio           | number                | `1`    |      | 输出缩放比例（如设备像素比），用于计算导出分辨率。                                   |
 | backgroundColor | string                | -      |      | 导出图片的背景色，缺省为白色。                                                     |
 | padding         | NumberExt.SideOptions | -      |      | 图片的 padding                                                                     |
 | quality         | number                | -      |      | 图片质量，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92 |

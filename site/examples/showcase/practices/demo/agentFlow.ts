@@ -482,9 +482,7 @@ graph.on('node:added', ({ node }: { node: Node }) => {
   }
 })
 ;(async () => {
-  AGENT_CONFIGS = await fetch('/data/agent-card-configs.json').then((res) =>
-    res.json(),
-  )
+  AGENT_CONFIGS = await fetch('/data/agent-flow.json').then((res) => res.json())
 
   stencil.load(
     [
@@ -511,7 +509,7 @@ graph.on('node:added', ({ node }: { node: Node }) => {
     createAgentCard(getAgentConfig('llm')!).position(220, 220),
   )
 
-  const end = graph.addNode(createEndCard().position(360, 360))
+  const end = graph.addNode(createEndCard().position(360, 380))
 
   graph.addEdge({
     shape: 'agent-edge',
