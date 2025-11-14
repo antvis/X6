@@ -378,12 +378,12 @@ export class Selection
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.options.eventTypes
 
-    const isTouchEvent = 'touches' in e || (e as TouchEvent)?.type?.startsWith('touch')
+    const isTouchEvent = 'touches' in e
     if (isTouchEvent) return eventTypes?.includes('leftMouseDown') || eventTypes?.includes('mouseWheelDown')
 
     return (
-      (eventTypes?.includes('leftMouseDown') && (e as Dom.MouseDownEvent).button === 0) ||
-      (eventTypes?.includes('mouseWheelDown') && (e as Dom.MouseDownEvent).button === 1)
+      (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
+      (eventTypes?.includes('mouseWheelDown') && e.button === 1)
     )
   }
 

@@ -183,11 +183,11 @@ export class PanningManager extends Base {
     const eventTypes = this.widgetOptions.eventTypes
 
     const isTouchEvent = 'touches' in e || (e as TouchEvent)?.type?.startsWith('touch')
-    if (isTouchEvent) return eventTypes?.includes('leftMouseDown') || eventTypes?.includes('mouseWheelDown')
+    if (isTouchEvent) return eventTypes?.includes('leftMouseDown')
 
     return (
-      (eventTypes?.includes('leftMouseDown') && (e as Dom.MouseDownEvent).button === 0) ||
-      (eventTypes?.includes('mouseWheelDown') && (e as Dom.MouseDownEvent).button === 1)
+      (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
+      (eventTypes?.includes('mouseWheelDown') && e.button === 1)
     )
   }
 
