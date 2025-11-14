@@ -25,6 +25,7 @@ import { NativeMarkerExample } from './pages/edge/native-marker'
 import { ToolArrowheadExample } from './pages/edge/tool/arrowhead'
 import { ToolButtonExample } from './pages/edge/tool/button'
 import { SegmentsExample } from './pages/edge/tool/segments'
+import { VerticesExample } from './pages/edge/tool/vertices'
 import { EmbedDndExample } from './pages/embed/dnd'
 import { GraphFromJSONExample } from './pages/graph/from-json'
 import { GraphExample } from './pages/graph/index'
@@ -76,6 +77,7 @@ function App() {
       <Route path="/edge/tool/arrowhead" element={<ToolArrowheadExample />} />
       <Route path="/edge/tool/button" element={<ToolButtonExample />} />
       <Route path="/edge/tool/segments" element={<SegmentsExample />} />
+      <Route path="/edge/tool/vertices" element={<VerticesExample />} />
       <Route
         path="/edge/custom-connector"
         element={<CustomConnectorExample />}
