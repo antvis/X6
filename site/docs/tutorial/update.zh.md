@@ -13,7 +13,7 @@ redirect_from:
 - 导入路径更改：插件从 `@antv/x6` 直接导入，原有插件的 `graph.use(new Xxx())` 方式保持不变。
 - 交互默认值调整：画布 `panning` 默认开启。
 - 新增动画能力：支持指令式动画、配置式动画和自定义动画 Shape 实现丰富酷炫的效果。
-- 滚动画布（`Scroller`）下，支持虚拟渲染能力 `virtual: true`
+- 滚动画布（`Scroller`）下，支持虚拟渲染能力 `virtual: true`。
 
 ## 升级参考
 
@@ -23,7 +23,7 @@ redirect_from:
 
 ```json
 {
-  "@antv/x6": "^3.0.0",
+  "@antv/x6": "^3.0.0"
 }
 ```
 

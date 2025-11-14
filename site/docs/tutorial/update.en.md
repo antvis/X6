@@ -62,7 +62,7 @@ graph.use(new Selection())
 
 3.x provides built-in animation capabilities to add effects to nodes and edges.
 
-See more: [Animation Docs](/en/docs/temp/animation).
+See more: [Animation Docs](xxx).
 
 ### Configuration Changes
 
