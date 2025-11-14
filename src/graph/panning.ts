@@ -181,9 +181,12 @@ export class PanningManager extends Base {
 
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.widgetOptions.eventTypes
-
-    const isTouchEvent = 'touches' in e
-    if (isTouchEvent) return eventTypes?.includes('leftMouseDown') || eventTypes?.includes('mouseWheelDown')
+ 
+    const isTouchEvent = 'touches' in e && (
+      (typeof TouchEvent !== 'undefined' && e instanceof window.TouchEvent) ||
+      (typeof Touch !== 'undefined' && e instanceof Touch)
+    )
+    if (isTouchEvent) return eventTypes?.includes('leftMouseDown')
 
     return (
       (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
