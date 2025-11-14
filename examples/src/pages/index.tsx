@@ -72,6 +72,10 @@ const dataSource = [
     description: '按钮工具',
   },
   {
+    example: 'edge/tool/vertices',
+    description: '顶点工具',
+  },
+  {
     example: 'edge/custom-connector',
     description: '自定义连接器',
   },
