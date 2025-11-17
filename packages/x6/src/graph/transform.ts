@@ -47,6 +47,12 @@ export class TransformManager extends Base {
    */
   setMatrix(matrix: DOMMatrix | Dom.MatrixLike | null) {
     const ctm = Dom.createSVGMatrix(matrix)
+    ctm.a = Number.isFinite(ctm.a) ? ctm.a : 1
+    ctm.b = Number.isFinite(ctm.b) ? ctm.b : 0
+    ctm.c = Number.isFinite(ctm.c) ? ctm.c : 0
+    ctm.d = Number.isFinite(ctm.d) ? ctm.d : 1
+    ctm.e = Number.isFinite(ctm.e) ? ctm.e : 0
+    ctm.f = Number.isFinite(ctm.f) ? ctm.f : 0
     const transform = Dom.matrixToTransformString(ctm)
     this.viewport.setAttribute('transform', transform)
     this.viewportMatrix = ctm
@@ -105,11 +111,13 @@ export class TransformManager extends Base {
     }
 
     const matrix = this.getMatrix()
-    matrix.a = sx
-    matrix.d = sy
+    const nextSX = Number.isFinite(sx) ? sx : 1
+    const nextSY = Number.isFinite(sy) ? sy : 1
+    matrix.a = nextSX
+    matrix.d = nextSY
 
     this.setMatrix(matrix)
-    this.graph.trigger('scale', { sx, sy, ox, oy })
+    this.graph.trigger('scale', { sx: nextSX, sy: nextSY, ox, oy })
     return this
   }
 
@@ -159,11 +167,15 @@ export class TransformManager extends Base {
 
     sx = this.clampScale(sx)
     sy = this.clampScale(sy)
+    sx = Number.isFinite(sx) ? sx : scale.sx
+    sy = Number.isFinite(sy) ? sy : scale.sy
 
     if (cx || cy) {
       const ts = this.getTranslation()
-      const tx = cx - (cx - ts.tx) * (sx / scale.sx)
-      const ty = cy - (cy - ts.ty) * (sy / scale.sy)
+      const denomX = scale.sx === 0 ? 1 : scale.sx
+      const denomY = scale.sy === 0 ? 1 : scale.sy
+      const tx = cx - (cx - ts.tx) * (sx / denomX)
+      const ty = cy - (cy - ts.ty) * (sy / denomY)
       if (tx !== ts.tx || ty !== ts.ty) {
         this.translate(tx, ty)
       }
@@ -199,8 +211,8 @@ export class TransformManager extends Base {
 
   translate(tx: number, ty: number) {
     const matrix = this.getMatrix()
-    matrix.e = tx || 0
-    matrix.f = ty || 0
+    matrix.e = Number.isFinite(tx) ? tx : 0
+    matrix.f = Number.isFinite(ty) ? ty : 0
     this.setMatrix(matrix)
     const ts = this.getTranslation()
     this.options.x = ts.tx
