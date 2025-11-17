@@ -187,10 +187,12 @@ export class EdgeView<
   render() {
     this.empty()
 
-    this.renderMarkup()
-
+    // FIXBUG: 为了兼容safari marker无法渲染的问题
+    // 让labels先绘制，后绘制箭头和path相关
     this.labelContainer = null
     this.renderLabels()
+
+    this.renderMarkup()
 
     this.update()
     this.renderTools()
@@ -214,7 +216,7 @@ export class EdgeView<
   protected renderJSONMarkup(markup: MarkupJSONMarkup | MarkupJSONMarkup[]) {
     const ret = this.parseJSONMarkup(markup, this.container)
     this.selectors = ret.selectors
-    this.container.append(ret.fragment)
+    this.container.prepend(ret.fragment)
   }
 
   protected customizeLabels() {
