@@ -124,7 +124,7 @@ export function transformStringToMatrix(transform?: string | null) {
           break
         case 'translate':
           tx = parseFloat(args[0])
-          ty = parseFloat(args[1])
+          ty = args[1] === undefined ? 0 : parseFloat(args[1])
           ctm = ctm.translate(tx, ty)
           break
         case 'rotate':

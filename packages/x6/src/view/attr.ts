@@ -341,8 +341,8 @@ export class AttrManager {
 
     if (nodeTransform != null || positioned || offseted) {
       nodePosition.round(1)
-      nodeMatrix.e = nodePosition.x
-      nodeMatrix.f = nodePosition.y
+      nodeMatrix.e = Number.isFinite(nodePosition.x) ? nodePosition.x : 0
+      nodeMatrix.f = Number.isFinite(nodePosition.y) ? nodePosition.y : 0
       elem.setAttribute('transform', Dom.matrixToTransformString(nodeMatrix))
     }
   }
