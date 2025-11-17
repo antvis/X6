@@ -92,7 +92,7 @@ export class EdgeAnimationExample extends React.Component {
         [
           { 'attrs/line/strokeWidth': 4 },
           {
-            duration: 2500,
+            duration: 1500,
             iterations: Infinity,
             direction: 'alternate',
             easing: 'ease-in-out-back',
@@ -102,13 +102,27 @@ export class EdgeAnimationExample extends React.Component {
           'attrs/line/opacity',
           1,
           {
-            duration: 2500,
+            duration: 1500,
             iterations: Infinity,
             direction: 'alternate',
             easing: 'ease-in-out-back',
           },
         ],
       ],
+    })
+
+    graph.addEdge({
+      source: { x: 60, y: 240 },
+      target: { x: 240, y: 240 },
+      vertices: [{ x: 160, y: 260 }],
+      connector: { name: 'smooth' },
+      attrs: {
+        line: {
+          stroke: '#7d8fff',
+          strokeWidth: 2,
+          opacity: 0.6,
+        },
+      },
     })
   }
 

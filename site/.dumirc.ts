@@ -348,6 +348,14 @@ export default defineConfig({
           en: 'Layout',
         },
       },
+      {
+        slug: 'animation',
+        icon: 'scatter',
+        title: {
+          zh: '动画',
+          en: 'Animation',
+        },
+      },
     ],
     docsearchOptions: {
       appId: 'XFVM2O0U6B',

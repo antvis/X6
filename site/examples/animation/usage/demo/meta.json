@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "filename": "basic.ts",
+      "title": {
+        "zh": "基本使用",
+        "en": "Basic usage"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "composition.ts",
+      "title": {
+        "zh": "组合动画",
+        "en": "Composition animation"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "edge.ts",
+      "title": {
+        "zh": "边动画",
+        "en": "Edge animation"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "breathing-circle.ts",
+      "title": {
+        "zh": "呼吸效果",
+        "en": "Breathing effect"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "ripple-circle.ts",
+      "title": {
+        "zh": "涟漪效果",
+        "en": "ripple effect"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

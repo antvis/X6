@@ -204,6 +204,14 @@ const dataSource = [
     description: '带动画的oscp示意图',
   },
   {
+    example: 'animation/scattering',
+    description: '炫酷的扩散动画',
+  },
+  {
+    example: 'animation/routePlanning',
+    description: '带动画的路线规划图',
+  },
+  {
     example: 'history',
     description: '时光回溯',
   },

@@ -254,8 +254,8 @@ export class OSCPExample extends React.Component {
             args: {
               color: '#9C27B0',
               blur: 1,
-              width: 0,
-              opacity: 0.7,
+              width: 8,
+              opacity: 0.1,
             },
           },
         },
@@ -274,18 +274,10 @@ export class OSCPExample extends React.Component {
       },
       animation: [
         [
-          { 'attrs/body/filter/args/width': 8 },
           {
-            duration: 1500,
-            iterations: Infinity,
+            'attrs/body/opacity': [1, 0.85],
           },
-        ],
-        [
-          { 'attrs/body/filter/args/opacity': 0.1 },
-          {
-            duration: 1500,
-            iterations: Infinity,
-          },
+          { duration: 1000, iterations: Infinity, direction: 'alternate' },
         ],
       ],
     })
