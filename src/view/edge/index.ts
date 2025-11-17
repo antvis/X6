@@ -1,6 +1,7 @@
 import {
   Dom,
   FunctionExt,
+  IS_SAFARI,
   type KeyValue,
   NumberExt,
   ObjectExt,
@@ -472,6 +473,21 @@ export class EdgeView<
 
     const { text, ...attrs } = this.cell.getAttrs()
     if (attrs != null) {
+      // FIXME: safari 兼容，重新渲染一次g内的labels 和 markup
+      if (
+        this.container?.tagName === 'g' &&
+        this.container?.getAttribute?.('data-shape') === 'edge' &&
+        IS_SAFARI
+      ) {
+        this.empty()
+
+        // FIXBUG: 为了兼容safari marker无法渲染的问题
+        // 让labels先绘制，后绘制箭头和path相关
+        this.labelContainer = null
+        this.renderLabels()
+
+        this.renderMarkup()
+      }
       this.updateAttrs(this.container, attrs, {
         selectors: this.selectors,
       })
