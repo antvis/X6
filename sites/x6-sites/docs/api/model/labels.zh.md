@@ -523,7 +523,7 @@ Edge.parseStringLabel = (label: string) => {
 
 ## 单标签
 
-大多数边都只拥有最多一个标签，所以我们为 `Edge` 定义了一个[自定义选项](/tutorial/basic/cell#自定义选项) `label` 来支持传入单标签。
+大多数边都只拥有最多一个标签，所以我们为 `Edge` 定义了一个[自定义选项](/api/model/cell/#自定义选项) `label` 来支持传入单标签。
 
 ```ts
 graph.addEdge({

@@ -33,7 +33,8 @@ None
 
 ## Parameters
 
-For specific event types to listen to, please refer to [X6 Events](/tutorial/basic/events).
+For specific event types to listen to, please refer to [X6 Events](/en/tutorial/basic/events).
+
 | Parameter | Description | Type | Default Value |
 |-----------|-------------|------|---------------|
 | name      | The event to listen for | `T` | - |

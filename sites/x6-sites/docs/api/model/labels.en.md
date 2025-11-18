@@ -523,7 +523,7 @@ Edge.parseStringLabel = (label: string) => {
 
 ## Single Label
 
-Most edges only have at most one label, so we define a [custom option](/en/tutorial/basic/cell#custom-options) `label` for `Edge` to support passing a single label.
+Most edges only have at most one label, so we define a [custom option](/en/api/model/cell/#custom-options) `label` for `Edge` to support passing a single label.
 
 ```ts
 graph.addEdge({

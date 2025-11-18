@@ -117,7 +117,7 @@ Whether to allow multiple edges to be created between the same starting and endi
 highlight: boolean
 ```
 
-Whether to highlight all available connection ports or nodes while dragging an edge. The default value is `false`. This is generally used in conjunction with [highlighting](/en/api/interacting/interacting#highlighting)highlighting
+Whether to highlight all available connection ports or nodes while dragging an edge. The default value is `false`. This is generally used in conjunction with [highlighting](#highlighting)
 ### anchor
 
 ```typescript
@@ -172,7 +172,7 @@ When connecting to an edge, the anchor point of the target edge is specified thr
 connectionPoint: ConnectionPointOptions
 ```
 
-Specifies the [connection point](/en/api/registry/connector), with the default value being `boundary`.
+Specifies the [connection point](/en/api/registry/connection-point), with the default value being `boundary`.
 
 ### sourceConnectionPoint
 

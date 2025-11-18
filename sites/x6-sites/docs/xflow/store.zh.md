@@ -8,7 +8,7 @@ redirect_from:
 
 xflow 对画布的数据进行了统一的管理，整个画布的数据存在一个 `store` 中，这让开发变得非常容易
 
-你可以使用 [useGraphStore]((/xflow/hooks/use-graph-store)) 方便快捷的操作 `store` , 从而更新画布数据, 实现更新画布
+你可以使用 [useGraphStore](/xflow/hooks/use-graph-store) 方便快捷的操作 `store` , 从而更新画布数据, 实现更新画布
 
 ## 初始化状态
 
