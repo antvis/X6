@@ -17,7 +17,7 @@ The `<History />` component can only be used within the `<XFlow />` component to
 
 :::
 
-Import the `History` component, and in conjunction with [useHistory](/xflow/hooks/use-history), you can quickly implement undo and redo functionality for element operations.
+Import the `History` component, and in conjunction with [useHistory](/en/xflow/hooks/useHistory), you can quickly implement undo and redo functionality for element operations.
 
 ```tsx
 <XFlow>
@@ -32,4 +32,4 @@ Import the `History` component, and in conjunction with [useHistory](/xflow/hook
 
 ### History
 
-For detailed configuration, please refer to [X6 Configuration](/tutorial/plugins/history#configuration).
+For detailed configuration, please refer to [X6 Configuration](/en/tutorial/plugins/history#configuration).

@@ -36,5 +36,5 @@ By setting the `resizing` and `rotating` properties of the Transform component t
 
 | Parameter Name | Description | Type | Default Value |
 |----------------|-------------|------|---------------|
-| resizing       | Configuration for adjusting node size | [Transform.Resizing](/tutorial/plugins/transform#adjust-size) \| `boolean` | - |
-| rotating       | Configuration for adjusting node angle | [Transform.Rotating](/tutorial/plugins/transform#adjust-angle) \| `boolean` | - |
+| resizing       | Configuration for adjusting node size | [Transform.Resizing](/en/tutorial/plugins/transform#adjust-size) \| `boolean` | - |
+| rotating       | Configuration for adjusting node angle | [Transform.Rotating](/en/tutorial/plugins/transform#adjust-angle) \| `boolean` | - |

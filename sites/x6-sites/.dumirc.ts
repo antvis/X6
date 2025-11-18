@@ -37,7 +37,7 @@ export default defineConfig({
     showGithubCorner: true, // 是否显示头部的 GitHub icon
     showGithubStars: true, // 是否显示 GitHub star 数量
     showAntVProductsCard: true, // 是否显示 AntV 产品汇总的卡片
-    showLanguageSwitcher: false, // 是否显示官网语言切换
+    showLanguageSwitcher: true, // 是否显示官网语言切换
     showWxQrcode: true, // 是否显示头部菜单的微信公众号
     showChartResize: true, // 是否在 demo 页展示图表视图切换
     showAPIDoc: false, // 是否在 demo 页展示API文档

@@ -14,6 +14,7 @@ redirect_from:
 - How to restrict the movement of child nodes within a group
 - How to achieve the effect of automatically expanding parent nodes
 - How to implement the effect of expanding and collapsing parent nodes
+
 :::
 
 ## Group Nodes
@@ -29,7 +30,7 @@ From the example above, we can see that:
 
 ## Combining Nodes through Interaction
 
-Sometimes we need to drag one node into another node to make it a child of the other node. In this case, we can enable the `embedding` option, which allows us to specify a method through `findParent` to return the parent node when the node is moved. For more detailed configuration, refer to the [API](/en/api/interacting/interacting#embedding).
+Sometimes we need to drag one node into another node to make it a child of the other node. In this case, we can enable the `embedding` option, which allows us to specify a method through `findParent` to return the parent node when the node is moved. For more detailed configuration, refer to the [API](/en/api/model/interaction#embedding).
 
 <code id="group-embedding" src="@/src/tutorial/basic/interacting/embedding/index.tsx"></code>
 

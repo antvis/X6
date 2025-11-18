@@ -33,7 +33,7 @@ const {
 |-----------|-------------|------|
 | copy      | Copy elements | (ids: string[], copyOptions?: [CopyOptions](#CopyOptions-parameters-below)) => void |
 | paste     | Render elements | (ids: string[], cutOptions?: [CopyOptions](#CopyOptions-parameters-below)) => void |
-| cut       | Render elements | (pasteOptions?: [PasteOptions](#PasteOptions-parameters-below)) => [Cell](/en/docs/api/model/cell#properties)[] |
+| cut       | Render elements | (pasteOptions?: [PasteOptions](#PasteOptions-parameters-below)) => [Cell](/en/api/model/cell#properties)[] |
 
 <p id="CopyOptions-parameters-below">CopyOptions parameters are as follows</p>
 

@@ -31,9 +31,9 @@ const {
 
 | 参数 | 描述 | 类型 | 默认值
 |--------|------|------| ------|
-| exportPNG | 导出PNG |  (fileName:string, options: [Export.ToImageOptions]((/tutorial/plugins/export#graphexportsvg)) = {}) => void  |`('chart', {}) => void`|
-| exportJPEG | 导出JPEG | (fileName:string, options: [Export.ToImageOptions]((/tutorial/plugins/export#graphexportsvg)) = {}) => void  |`('chart', {}) => void`|
-| exportSVG | 导出SVG | (fileName:string, options: [Export.ToSVGOptions]((/tutorial/plugins/export#graphexportsvg)) = {}) => void  |`('chart', {}) => void`|
+| exportPNG | 导出PNG |  (fileName:string, options: [Export.ToImageOptions](/tutorial/plugins/export#graphexportsvg) = {}) => void  |`('chart', {}) => void`|
+| exportJPEG | 导出JPEG | (fileName:string, options: [Export.ToImageOptions](/tutorial/plugins/export#graphexportsvg) = {}) => void  |`('chart', {}) => void`|
+| exportSVG | 导出SVG | (fileName:string, options: [Export.ToSVGOptions](/tutorial/plugins/export#graphexportsvg) = {}) => void  |`('chart', {}) => void`|
 
 ## 参数
 
