@@ -100,7 +100,7 @@ const stencil = new Stencil({
   stencilGraphWidth: 200,
   stencilGraphHeight: 180,
   stencilGraphOptions: { panning: true },
-  collapsable: true,
+  collapsable: false,
   groups: [
     {
       title: '基础流程图',
