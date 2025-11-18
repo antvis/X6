@@ -117,8 +117,6 @@ export const content = `.x6-widget-dnd {
 }
 .x6-widget-stencil-content {
   position: absolute;
-}
-.x6-widget-stencil.collapsable > .x6-widget-stencil-content {
   top: 32px;
 }
 .x6-widget-stencil.searchable > .x6-widget-stencil-content {
