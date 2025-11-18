@@ -32,4 +32,4 @@ After importing `<Snapline />`, you can enable node alignment guide lines.
 
 ### Snapline
 
-For detailed configuration, please refer to [Snapline Configuration](/tutorial/plugins/snapline#configuration).
+For detailed configuration, please refer to [Snapline Configuration](/en/tutorial/plugins/snapline#configuration).

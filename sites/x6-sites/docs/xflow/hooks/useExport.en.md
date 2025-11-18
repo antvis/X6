@@ -31,9 +31,9 @@ const {
 
 | Parameter  | Description | Type | Default Value |
 |------------|-------------|------|---------------|
-| exportPNG  | Export as PNG |  (fileName:string, options: [Export.ToImageOptions]((/tutorial/plugins/export#graphexportsvg)) = {}) => void  | `('chart', {}) => void` |
-| exportJPEG | Export as JPEG | (fileName:string, options: [Export.ToImageOptions]((/tutorial/plugins/export#graphexportsvg)) = {}) => void  | `('chart', {}) => void` |
-| exportSVG   | Export as SVG | (fileName:string, options: [Export.ToSVGOptions]((/tutorial/plugins/export#graphexportsvg)) = {}) => void  | `('chart', {}) => void` |
+| exportPNG  | Export as PNG |  (fileName:string, options: [Export.ToImageOptions](/en/tutorial/plugins/export#graphexportsvg) = {}) => void  | `('chart', {}) => void` |
+| exportJPEG | Export as JPEG | (fileName:string, options: [Export.ToImageOptions](/en/tutorial/plugins/export#graphexportsvg) = {}) => void  | `('chart', {}) => void` |
+| exportSVG   | Export as SVG | (fileName:string, options: [Export.ToSVGOptions](/en/tutorial/plugins/export#graphexportsvg) = {}) => void  | `('chart', {}) => void` |
 
 ## Parameters
 

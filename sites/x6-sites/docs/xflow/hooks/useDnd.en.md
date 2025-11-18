@@ -33,7 +33,7 @@ Quickly implement a hook for node dragging and dropping.
 
 <p id="use-dnd-startDrag-options">NodeOptions, in addition to inheriting from Node type, has two additional properties.</p>
 
-For Node-related documentation, please refer to [Node](/api/model/node).
+For Node-related documentation, please refer to [Node](/en/api/model/node).
 
 ```tsx
 interface NodeOptions extends Node {

@@ -38,7 +38,7 @@ If you have any questions, suggestions, feedback, or wish to communicate, you ca
 
 If you encounter any issues while using, please first check the [issues](https://github.com/antvis/x6/issues) to see if there are similar bugs or suggestions.
 
-Before reporting a bug, please ensure you have searched existing issues and read our [FAQ]("/xflow/faq").
+Before reporting a bug, please ensure you have searched existing issues and read our [FAQ](https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy).
 
 To submit code, please follow our [Contribution Guidelines](https://github.com/antvis/X6/blob/master/CONTRIBUTING.md).
 

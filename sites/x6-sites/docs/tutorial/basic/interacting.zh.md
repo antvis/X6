@@ -18,7 +18,7 @@ redirect_from:
 
 ## 连线
 
-连线交互规则都是通过 `connecting` 配置来完成，完整的配置参考 [API](/api/interacting/interacting#连线)。下面介绍一些常用的功能。
+连线交互规则都是通过 `connecting` 配置来完成，完整的配置参考 [API](/api/model/interaction#连线)。下面介绍一些常用的功能。
 
 ### allowXXX
 
@@ -103,7 +103,7 @@ new Graph({
 
 ## 组合
 
-有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/api/interacting/interacting#组合)。
+有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。更详细的配置参考 [API](/api/model/interaction#组合)。
 
 ```ts
 const graph = new Graph({

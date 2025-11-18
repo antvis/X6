@@ -38,7 +38,7 @@ XFlow 是基于 X6 图编辑引擎、面向 React 技术栈用户的应用级解
 
 如果您在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。
 
-在你报告一个 bug 之前，请先确保已经搜索过已有的 issue 和阅读了我们的 [FAQ]("/xflow/faq")。
+在你报告一个 bug 之前，请先确保已经搜索过已有的 issue 和阅读了我们的 [FAQ](https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy)。
 
 如需提交代码，请遵从我们的[贡献指南](https://github.com/antvis/X6/blob/master/CONTRIBUTING.zh-CN.md)。
 

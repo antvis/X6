@@ -33,7 +33,7 @@ const {
 |--------|------|------|
 | copy | 复制元素 | (ids: string[], copyOptions?: [CopyOptions](#CopyOptions-参数如下)) => void |
 | paste | 渲染元素 |  (ids: string[], cutOptions?: [CopyOptions](#CopyOptions-参数如下)) => void |
-| cut | 渲染元素 |  (pasteOptions?: [PasteOptions](#PasteOptions-参数如下)) => [Cell](/zh/docs/api/model/cell#属性)[] |
+| cut | 渲染元素 |  (pasteOptions?: [PasteOptions](#PasteOptions-参数如下)) => [Cell](/api/model/cell#属性)[] |
 
 <p id="CopyOptions-参数如下">CopyOptions 参数如下</p>
 

@@ -24,18 +24,18 @@ new Graph(options: Options)
 | [mousewheel](/api/graph/mousewheel) | `boolean \| MouseWheel.Options` |  | 鼠标滚轮缩放，默认禁用。 | `false` |
 | [grid](/api/graph/grid) | `boolean \| number \| GridManager.Options` |  | 网格，默认使用 `10px` 的网格，但不绘制网格背景。 | `false` |
 | [background](/api/graph/background) | `false \| BackgroundManager.Options` |  | 背景，默认不绘制背景。 | `false` |
-| [translating](/api/interacting/interaction#移动范围) | `Translating.Options` |  | 限制节点移动、移动节点重叠时自动偏移。 | `{ restrict: false， autoOffset: true }` |
-| [embedding](/api/interacting/interaction#组合) | `boolean \| Embedding.Options` |  | 嵌套节点，默认禁用。 | `false` |
-| [connecting](/api/interacting/interaction#connecting) | `Connecting.Options` |  | 连线选项。 | `{ snap: false, ... }` |
-| [highlighting](/api/interacting/interaction#高亮) | `Highlighting.Options` |  | 高亮选项。 | `{...}` |
-| [interacting](/api/interacting/interaction#限制) | `Interacting.Options` |  | 定制节点和边的交互行为。 | `{ edgeLabelMovable: false }` |
-| [magnetThreshold](/api/graph/view#magnetthreshold) | `number \| onleave` |  | 鼠标移动多少次后才触发连线，或者设置为 `onleave` 时表示鼠标移出元素时才触发连线。 | `0` |
-| [moveThreshold](/api/graph/view#movethreshold) | `number` |  | 触发 `mousemove` 事件之前，允许鼠标移动的次数。 | `0` |
-| [clickThreshold](/api/graph/view#clickthreshold) | `number` |  | 当鼠标移动次数超过指定的数字时，将不触发鼠标点击事件。 | `0` |
-| [preventDefaultContextMenu](/api/graph/view#preventdefaultcontextmenu) | `boolean` |  | 是否禁用浏览器默认右键菜单。 | `true` |
-| [preventDefaultBlankAction](/api/graph/view#preventdefaultblankaction) | `boolean` |  | 在画布空白位置响应鼠标事件时，是否禁用鼠标默认行为。 | `true` |
-| [async](/api/graph/view#async) | `boolean` |  | 是否异步渲染 | `true` |
-| [virtual](/api/graph/view#virtual) | `boolean` |  | 是否只渲染可视区域内容 | `false` |
-| [onPortRendered](/api/graph/view#onportrendered) | `(args: OnPortRenderedArgs) => void` |  | 当某个连接桩渲染完成时触发的回调。 | - |
-| [onEdgeLabelRendered](/api/graph/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void` |  | 当边的文本标签渲染完成时触发的回调。 | - |
-| [createCellView](/api/graph/view#createcellview) | `(cell: Cell) => CellView \| null \| undefined` |  | 是自定义元素的视图。 | - |
+| [translating](/api/model/interaction#移动范围) | `Translating.Options` |  | 限制节点移动、移动节点重叠时自动偏移。 | `{ restrict: false， autoOffset: true }` |
+| [embedding](/api/model/interaction#组合) | `boolean \| Embedding.Options` |  | 嵌套节点，默认禁用。 | `false` |
+| [connecting](/api/model/interaction#连线) | `Connecting.Options` |  | 连线选项。 | `{ snap: false, ... }` |
+| [highlighting](/api/model/interaction#高亮) | `Highlighting.Options` |  | 高亮选项。 | `{...}` |
+| [interacting](/api/model/interaction#限制) | `Interacting.Options` |  | 定制节点和边的交互行为。 | `{ edgeLabelMovable: false }` |
+| [magnetThreshold](/api/mvc/view#magnetthreshold) | `number \| onleave` |  | 鼠标移动多少次后才触发连线，或者设置为 `onleave` 时表示鼠标移出元素时才触发连线。 | `0` |
+| [moveThreshold](/api/mvc/view#movethreshold) | `number` |  | 触发 `mousemove` 事件之前，允许鼠标移动的次数。 | `0` |
+| [clickThreshold](/api/mvc/view#clickthreshold) | `number` |  | 当鼠标移动次数超过指定的数字时，将不触发鼠标点击事件。 | `0` |
+| [preventDefaultContextMenu](/api/mvc/view#preventdefaultcontextmenu) | `boolean` |  | 是否禁用浏览器默认右键菜单。 | `true` |
+| [preventDefaultBlankAction](/api/mvc/view#preventdefaultblankaction) | `boolean` |  | 在画布空白位置响应鼠标事件时，是否禁用鼠标默认行为。 | `true` |
+| [async](/api/mvc/view#async) | `boolean` |  | 是否异步渲染 | `true` |
+| [virtual](/api/mvc/view#virtual) | `boolean` |  | 是否只渲染可视区域内容 | `false` |
+| [onPortRendered](/api/mvc/view#onportrendered) | `(args: OnPortRenderedArgs) => void` |  | 当某个连接桩渲染完成时触发的回调。 | - |
+| [onEdgeLabelRendered](/api/mvc/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void` |  | 当边的文本标签渲染完成时触发的回调。 | - |
+| [createCellView](/api/mvc/view#createcellview) | `(cell: Cell) => CellView \| null \| undefined` |  | 是自定义元素的视图。 | - |

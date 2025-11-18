@@ -19,7 +19,7 @@ The `<Clipboard />` component can only be used properly within the `<XFlow />` c
 
 By importing this component under the XFlow component, you can enable the ability to copy and paste nodes and edges on the canvas.
 
-Combined with [useClipboard](/xflow/hooks/use-clipboard), you can quickly implement copy and paste functionality.
+Combined with [useClipboard](/en/xflow/hooks/useClipboard), you can quickly implement copy and paste functionality.
 
 ```tsx
 <XFlow>

@@ -52,7 +52,7 @@ You can set the canvas zoom by configuring `minScale` and `maxScale`.
 
 - Zooming the canvas with the mouse wheel.
 
-For specific `zoomOptions` configuration, refer to [mousewheel configuration](/api/graph/mousewheel#configuration).
+For specific `zoomOptions` configuration, refer to [mousewheel configuration](/en/api/graph/mousewheel#configuration).
 
 ```tsx
 <XFlowGraph
@@ -169,9 +169,9 @@ Drag one node into another to make it a child of the other node.
 
 | Parameter Name | Description | Type | Default Value |
 |----------------|-------------|------|---------------|
-| findParent | Method to specify how to find the parent node when a node is moved. Default value is [findParent](/api/model/interaction#findparent) | `bbox` |
+| findParent | Method to specify how to find the parent node when a node is moved. Default value is [findParent](/en/api/model/interaction#findparent) | `bbox` |
 | frontOnly | If `frontOnly` is true, nodes can only be embedded if they are displayed in front | boolean | true |
-| validate | `validate` is a function that determines whether a node can be embedded in a parent node | [validate](/api/model/interaction#validate) | `() => true` |
+| validate | `validate` is a function that determines whether a node can be embedded in a parent node | [validate](/en/api/model/interaction#validate) | `() => true` |
 
 ## Node Movement Range
 
@@ -203,7 +203,7 @@ restrictOptions?: {
 
 ## Connection Configuration
 
-Configure `connectionOptions` to enable connection interactions. For specific configurations, refer to [connection configuration](/api/model/interaction#connection).
+Configure `connectionOptions` to enable connection interactions. For specific configurations, refer to [connection configuration](/en/api/model/interaction#connecting).
 
 ```tsx
 <XFlowGraph 
@@ -241,7 +241,7 @@ connectionEdgeOptions={{
 }}
 ```
 
-The `connectionEdgeOptions` parameter inherits from [Edge](/api/model/edge#attributes) and additionally has the properties `selected`, `draggable`, and `animated`.
+The `connectionEdgeOptions` parameter inherits from [Edge](/en/api/model/edge#attributes) and additionally has the properties `selected`, `draggable`, and `animated`.
 
 ```tsx
 export interface EdgeOptions extends Edge.Metadata {
@@ -255,7 +255,7 @@ export interface EdgeOptions extends Edge.Metadata {
 
 Specify the highlight style for nodes/edges when a certain interaction is triggered.
 
-<span id="highlight-HighlightManager.Options">HighlightManager.Options</span> has two parameters, `name` and its corresponding `args`. The `name` has two built-in highlight types: one is [stroke](/api/registry/highlighter#stroke) and the other is [className](/api/registry/highlighter#classname).
+<span id="highlight-HighlightManager.Options">HighlightManager.Options</span> has two parameters, `name` and its corresponding `args`. The `name` has two built-in highlight types: one is [stroke](/en/api/registry/highlighter#stroke) and the other is [className](/en/api/registry/highlighter#classname).
 
 Note: When the following highlight configurations `embedHighlightOptions`, `nodeAvailableHighlightOptions`, `magnetAvailableHighlightOptions`, and `magnetAdsorbedHighlightOptions` are not set, the `defaultHighlightOptions` configuration is used by default.
 
@@ -300,7 +300,7 @@ Note: When the following highlight configurations `embedHighlightOptions`, `node
 | minScale | Minimum zoom level for the canvas | number | 0.01 |
 | maxScale | Maximum zoom level for the canvas | number | 16 |
 | zoomable | Whether mouse wheel zooming is enabled for the canvas | boolean | false |
-| zoomOptions | Configuration for enabling mouse wheel zooming | [Omit<MouseWheelOptions, 'enabled'>](/api/graph/mousewheel#configuration) | - |
+| zoomOptions | Configuration for enabling mouse wheel zooming | [Omit<MouseWheelOptions, 'enabled'>](/en/api/graph/mousewheel#configuration) | - |
 | pannable | Whether to enable canvas panning interaction | boolean | false |
 | panOptions | Configuration for enabling canvas panning interaction | [panOptions](#panOptions-configuration-parameters) | - |
 | centerView | Aligns the center of the canvas content with the center of the viewport | boolean | false |
@@ -308,15 +308,15 @@ Note: When the following highlight configurations `embedHighlightOptions`, `node
 | fitView | Scales the canvas content to fill the viewport | boolean | false |
 | fitViewOptions | Configuration for scaling the canvas content | [fitViewOptions](#fitViewOptions-configuration-parameters) | - |
 | scroller | Whether to enable scrolling on the canvas | boolean | false |
-| scrollerOptions | Configuration for enabling scrolling on the canvas | [scrollerOptions](/tutorial/plugins/scroller#options) | - |
-| connectionOptions | Connection configuration | [Omit<Options.Connecting, 'createEdge'>](/api/model/interaction#connection) | - |
+| scrollerOptions | Configuration for enabling scrolling on the canvas | [scrollerOptions](/en/tutorial/plugins/scroller#options) | - |
+| connectionOptions | Connection configuration | [Omit<Options.Connecting, 'createEdge'>](/en/api/model/interaction#connection) | - |
 | connectionEdgeOptions | Custom edge in connection options | [EdgeOptions](#connectionEdgeOptions) | - |
 | embedable | Whether to allow node embedding | boolean | false |
 | embedOptions | Node embedding configuration | [embedOptions](#embedOptions-parameter-configuration) | - |
 | restrict | Whether to restrict node movement range | boolean | false |
 | restrictOptions | Configuration for restricting node movement range | [restrict configuration](#restrictOptions-node-movement-range) | - |
-| selectOptions | Box selection configuration | [Selection configuration](/tutorial/plugins/selection#configuration) | - |
-| keyboardOptions | Shortcut key configuration | [Keyboard configuration](/tutorial/plugins/keyboard#configuration) | - |
+| selectOptions | Box selection configuration | [Selection configuration](/en/tutorial/plugins/selection#configuration) | - |
+| keyboardOptions | Shortcut key configuration | [Keyboard configuration](/en/tutorial/plugins/keyboard#configuration) | - |
 | defaultHighlightOptions | Default highlight options used when the following highlight configurations are not set | [HighlightManager.Options](#highlight-HighlightManager.Options) | - |
 | embedHighlightOptions | Used when dragging nodes for embedding operations | [HighlightManager.Options](#highlight-HighlightManager.Options) | - |
 | nodeAvailableHighlightOptions | Used when nodes can be linked during connection | [HighlightManager.Options](#highlight-HighlightManager.Options) | - |

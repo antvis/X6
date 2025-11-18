@@ -8,7 +8,8 @@ redirect_from:
 
 Xflow provides unified management of data on the canvas, with all canvas data stored in a single `store`, making development very easy.
 
-You can conveniently manipulate the `store` using [useGraphStore]((/xflow/hooks/use-graph-store)), allowing you to update the canvas data and achieve canvas updates.
+You can conveniently manipulate the `store` using [useGraphStore](/en/xflow/hooks/use-graph-store), allowing you to update the canvas data and achieve canvas updates.
+
 ## Initialization State
 
 ### `initData(data, options)`

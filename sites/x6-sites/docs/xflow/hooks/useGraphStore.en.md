@@ -43,8 +43,8 @@ Below is a simple example of adding and removing nodes using `useGraphStore`.
 
 | Parameter   | Description               | Type                                                                 | Default Value |
 |-------------|---------------------------|----------------------------------------------------------------------|---------------|
-| nodes       | All nodes in the canvas   | [NodeOptions](/api/model/node)[]                                   | -             |
-| edges       | All edges in the canvas   | [EdgeOptions](/api/model/edge)[]                                   | -             |
+| nodes       | All nodes in the canvas   | [NodeOptions](/en/api/model/node)[]                                   | -             |
+| edges       | All edges in the canvas   | [EdgeOptions](/en/api/model/edge)[]                                   | -             |
 | changeList  | Store operation records    | (`init` \| `addNodes` \| `removeNodes` \| `updateNode` \| `addEdges` \| `removeEdges` \| `updateEdge` )[] | -             |
 | initData    | Initialize data            | `(data: {nodes: NodeOptions[], edges: EdgeOptions[] }, options?: {silent?: boolean}) => void` | -             |
 | addNodes    | Add nodes                  | `(ns: NodeOptions[], options?: {silent?: boolean}) => void`       | -             |

@@ -117,7 +117,7 @@ allowMulti: boolean |
 highlight: boolean
 ```
 
-拖动边时，是否高亮显示所有可用的连接桩或节点，默认值为 `false` 。一般都会与 [highlighting](/api/interacting/interacting#高亮) 联合使用。
+拖动边时，是否高亮显示所有可用的连接桩或节点，默认值为 `false` 。一般都会与 [highlighting](#高亮) 联合使用。
 
 ### anchor
 
@@ -173,7 +173,7 @@ targetEdgeAnchor?: EdgeAnchorOptions
 connectionPoint: ConnectionPointOptions
 ```
 
-指定[连接点](/api/registry/connector)，默认值为 `boundary` 。
+指定[连接点](/api/registry/connection-point)，默认值为 `boundary` 。
 
 ### sourceConnectionPoint
 
