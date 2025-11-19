@@ -42,7 +42,8 @@ export default defineConfig({
     showChartResize: true, // 是否在 demo 页展示图表视图切换
     showAPIDoc: false, // 是否在 demo 页展示API文档
     versions: {
-      [version]: 'https://x6.antv.antgroup.com',
+      '3.x': 'https://x6.antv.antgroup.com',
+      '2.x': 'https://x6-v2.antv.vision',
       '1.x': 'https://x6.antv.vision',
     },
     navs: [
@@ -80,14 +81,14 @@ export default defineConfig({
           {
             url: 'https://www.yuque.com/sxd_panda/antv/x6',
             name: {
-              zh: '社区FAQ',
+              zh: '社区 FAQ',
               en: 'Community FAQ',
             },
           },
           {
             url: 'https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy',
             name: {
-              zh: '官方FAQ',
+              zh: '官方 FAQ',
               en: 'Official FAQ',
             },
           },
