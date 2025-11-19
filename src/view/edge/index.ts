@@ -1,6 +1,7 @@
 import {
   Dom,
   FunctionExt,
+  IS_SAFARI,
   type KeyValue,
   NumberExt,
   ObjectExt,
@@ -470,6 +471,19 @@ export class EdgeView<
 
     const { text, ...attrs } = this.cell.getAttrs()
     if (attrs != null) {
+      // FIXME: safari 兼容，重新渲染一次data-shape === 'edge' 的g元素，确保重排/重绘能渲染出marker
+      if (
+        this.container?.tagName === 'g' &&
+        this.container?.getAttribute?.('data-shape') === 'edge' &&
+        IS_SAFARI
+      ) {
+        const parent = this.container.parentNode
+        if (parent) {
+          const next = this.container.nextSibling
+          parent.removeChild(this.container)
+          parent.insertBefore(this.container, next)
+        }
+      }
       this.updateAttrs(this.container, attrs, {
         selectors: this.selectors,
       })
