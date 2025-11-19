@@ -2,26 +2,27 @@ import {
   Dom,
   disposable,
   FunctionExt,
+  isModifierKeyMatch,
   type KeyValue,
   type ModifierKey,
 } from '../../common'
 import {
   type Point,
-  Rectangle,
   type PointLike,
+  Rectangle,
   type RectangleLike,
 } from '../../geometry'
 import type { Graph } from '../../graph'
-import { Cell, Collection, type CollectionEventArgs } from '../../model'
 import type {
-  SetOptions,
-  Model,
-  Edge,
-  Node,
+  CollectionAddOptions,
   CollectionRemoveOptions,
   CollectionSetOptions,
-  CollectionAddOptions,
+  Edge,
+  Model,
+  Node,
+  SetOptions,
 } from '../../model'
+import { Cell, Collection, type CollectionEventArgs } from '../../model'
 import { type CellView, View } from '../../view'
 import type { Scroller } from '../scroller'
 
@@ -96,6 +97,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       {
         [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
         [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+        [`mousedown .${this.prefixClassName(classNames.inner)}`]:
+          'onSelectionContainerMouseDown',
+        [`touchstart .${this.prefixClassName(classNames.inner)}`]:
+          'onSelectionContainerMouseDown',
       },
       true,
     )
@@ -440,21 +445,65 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: Dom.MouseDownEvent) {
-    // 避免触发鼠标命中节点自身的拖拽逻辑
+    this.handleSelectionMouseDown(evt, true)
+  }
+
+  protected onSelectionContainerMouseDown(evt: Dom.MouseDownEvent) {
+    this.handleSelectionMouseDown(evt, false)
+  }
+
+  protected handleSelectionMouseDown(evt: Dom.MouseDownEvent, isBox: boolean) {
     evt.stopPropagation()
     evt.preventDefault?.()
 
     const e = this.normalizeEvent(evt)
+    const client = this.graph.snapToGrid(e.clientX, e.clientY)
+
+    // 容器内的多选切换：按下修饰键时，不拖拽，直接切换选中状态
+    if (
+      !isBox &&
+      isModifierKeyMatch(e, this.options.multipleSelectionModifiers)
+    ) {
+      const viewsUnderPoint = this.graph.findViewsFromPoint(client.x, client.y)
+      const nodeView = viewsUnderPoint.find((v) => v.isNodeView())
+      if (nodeView) {
+        const cell = nodeView.cell
+        if (this.isSelected(cell)) {
+          this.unselect(cell, { ui: true })
+        } else {
+          if (this.options.multiple === false) {
+            this.reset(cell, { ui: true })
+          } else {
+            this.select(cell, { ui: true })
+          }
+        }
+      }
+      return
+    }
 
     if (this.options.movable) {
       this.startTranslating(e)
     }
 
-    const activeView = this.getCellViewFromElem(e.target)
+    let activeView = isBox ? this.getCellViewFromElem(e.target) : null
+    if (!activeView) {
+      const viewsUnderPoint = this.graph
+        .findViewsFromPoint(client.x, client.y)
+        .filter((view) => this.isSelected(view.cell))
+      activeView = viewsUnderPoint[0] || null
+      if (!activeView) {
+        const firstSelected = this.collection.first()
+        if (firstSelected) {
+          activeView = this.graph.renderer.findViewByCell(firstSelected)
+        }
+      }
+    }
+
     if (activeView) {
       this.setEventData<SelectionBoxEventData>(e, { activeView })
-      const client = this.graph.snapToGrid(e.clientX, e.clientY)
-      this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      if (isBox) {
+        this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      }
       this.delegateDocumentEvents(documentEvents, e.data)
     }
   }
@@ -920,7 +969,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     Dom.css(this.selectionContainer, {
       position: 'absolute',
-      pointerEvents: 'none',
+      pointerEvents: this.options.movable ? 'auto' : 'none',
+      cursor: this.options.movable ? 'move' : 'default',
       left: origin.x,
       top: origin.y,
       width: corner.x - origin.x,

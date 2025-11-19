@@ -5,7 +5,7 @@ const graph = new Graph({
   grid: true,
 })
 
-// 文档：https://x6.antv.vision/zh/docs/tutorial/basic/port
+// 文档：https://x6.antv.antgroup.com/tutorial/basic/port
 
 const rect = graph.addNode({
   x: 240,

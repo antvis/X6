@@ -33,7 +33,7 @@ graph.addNode({
             fill: '#888',
           },
         },
-        // 文档：https://x6.antv.vision/zh/docs/api/registry/port-layout#absolute
+        // 文档：https://x6.antv.antgroup.com/api/registry/port-layout#absolute
         position: {
           name: 'absolute',
         },
