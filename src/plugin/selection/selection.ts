@@ -492,7 +492,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         .filter((view) => this.isSelected(view.cell))
       activeView = viewsUnderPoint[0] || null
       if (!activeView) {
-        const firstSelected = this.collection.toArray()[0]
+        const firstSelected = this.collection.first()
         if (firstSelected) {
           activeView = this.graph.renderer.findViewByCell(firstSelected)
         }
