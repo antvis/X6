@@ -1,5 +1,5 @@
 import { defineConfig } from 'dumi'
-import { repository, version } from './package.json'
+import { repository } from './package.json'
 
 export default defineConfig({
   ...(process.env.NODE_ENV === 'production'
