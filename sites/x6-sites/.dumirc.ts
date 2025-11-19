@@ -27,7 +27,7 @@ export default defineConfig({
     /** 死链检查配置  */
     deadLinkChecker: {}, // 开启并采用默认配置
     defaultLanguage: 'zh',
-    siteUrl: 'https://x6.antv.antgroup.com',
+    siteUrl: 'https://x6-v2.antv.vision',
     isAntVSite: false,
     footerTheme: 'light', // 白色 底部主题
     feedback: true, // 是否开启用户反馈
@@ -42,7 +42,8 @@ export default defineConfig({
     showChartResize: true, // 是否在 demo 页展示图表视图切换
     showAPIDoc: false, // 是否在 demo 页展示API文档
     versions: {
-      '2.x': 'https://x6.antv.antgroup.com',
+      '2.x': 'https://x6-v2.antv.vision',
+      '3.x': 'https://x6.antv.antgroup.com',
       '1.x': 'https://x6.antv.vision',
     },
     navs: [
@@ -337,7 +338,7 @@ export default defineConfig({
     docsearchOptions: {
       appId: 'XFVM2O0U6B',
       apiKey: 'bfcb6154d9e7ee9c70baee42fd37bebb',
-      indexName: 'x6-antv-antgroup',
+      indexName: 'x6-v2.antv.vision',
       versionV3: true,
     },
     playground: {
