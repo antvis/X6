@@ -188,12 +188,10 @@ export class EdgeView<
   render() {
     this.empty()
 
-    // FIXBUG: 为了兼容safari marker无法渲染的问题
-    // 让labels先绘制，后绘制箭头和path相关
+    this.renderMarkup()
+
     this.labelContainer = null
     this.renderLabels()
-
-    this.renderMarkup()
 
     this.update()
     this.renderTools()
@@ -217,7 +215,7 @@ export class EdgeView<
   protected renderJSONMarkup(markup: MarkupJSONMarkup | MarkupJSONMarkup[]) {
     const ret = this.parseJSONMarkup(markup, this.container)
     this.selectors = ret.selectors
-    this.container.prepend(ret.fragment)
+    this.container.append(ret.fragment)
   }
 
   protected customizeLabels() {
@@ -473,20 +471,16 @@ export class EdgeView<
 
     const { text, ...attrs } = this.cell.getAttrs()
     if (attrs != null) {
-      // FIXME: safari 兼容，重新渲染一次g内的labels 和 markup
+      // FIXME: safari 兼容，重新渲染一次data-shape === 'edge' 的g元素，确保重排/重绘能渲染出marker
       if (
         this.container?.tagName === 'g' &&
         this.container?.getAttribute?.('data-shape') === 'edge' &&
         IS_SAFARI
       ) {
-        this.empty()
-
-        // FIXBUG: 为了兼容safari marker无法渲染的问题
-        // 让labels先绘制，后绘制箭头和path相关
-        this.labelContainer = null
-        this.renderLabels()
-
-        this.renderMarkup()
+        const parent = this.container.parentNode
+        const next = this.container.nextSibling
+        parent.removeChild(this.container)
+        parent.insertBefore(this.container, next)
       }
       this.updateAttrs(this.container, attrs, {
         selectors: this.selectors,
