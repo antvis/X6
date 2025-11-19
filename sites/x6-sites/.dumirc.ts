@@ -42,8 +42,8 @@ export default defineConfig({
     showChartResize: true, // 是否在 demo 页展示图表视图切换
     showAPIDoc: false, // 是否在 demo 页展示API文档
     versions: {
-      '3.x': 'https://x6.antv.antgroup.com',
       '2.x': 'https://x6-v2.antv.vision',
+      '3.x': 'https://x6.antv.antgroup.com',
       '1.x': 'https://x6.antv.vision',
     },
     navs: [
