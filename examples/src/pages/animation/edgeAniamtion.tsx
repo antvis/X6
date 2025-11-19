@@ -110,20 +110,6 @@ export class EdgeAnimationExample extends React.Component {
         ],
       ],
     })
-
-    graph.addEdge({
-      source: { x: 60, y: 240 },
-      target: { x: 240, y: 240 },
-      vertices: [{ x: 160, y: 260 }],
-      connector: { name: 'smooth' },
-      attrs: {
-        line: {
-          stroke: '#7d8fff',
-          strokeWidth: 2,
-          opacity: 0.6,
-        },
-      },
-    })
   }
 
   refContainer = (container: HTMLDivElement) => {

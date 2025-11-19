@@ -16,7 +16,7 @@ palette.forEach((color, index) => {
     width: r * 2,
     height: r * 2,
     x: index % 2 === 0 ? 0 : 300,
-    y: index < 2 ? 0 : 300,
+    y: index < 2 ? 0 : 260,
     markup: [
       ...Array.from({ length }).map((_, markupIndex) => {
         return {

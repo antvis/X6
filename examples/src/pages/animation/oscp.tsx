@@ -366,10 +366,6 @@ export class OSCPExample extends React.Component {
         target: prNode,
       },
       {
-        source: issueNode,
-        target: prNode,
-      },
-      {
         source: docNode,
         target: prNode,
         attrs: {

@@ -122,9 +122,9 @@ graph.addEdge({
       stroke: {
         type: 'linearGradient',
         stops: [
-          { offset: '0%', color: '#0ff', opacity: 1 },
+          { offset: '0%', color: '#4874EE', opacity: 1 },
           { offset: '50%', color: '#f0f', opacity: 0.8 },
-          { offset: '100%', color: '#ff0' },
+          { offset: '100%', color: '#DB655C' },
         ],
       },
     },

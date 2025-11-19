@@ -53,10 +53,7 @@ export const AnimationControlExample = () => {
     }
 
     return () => {
-      graph.getCells().forEach((cell) => {
-        cell.dispose()
-      })
-      graph.dispose(true)
+      graph.dispose()
     }
   }, [])
 

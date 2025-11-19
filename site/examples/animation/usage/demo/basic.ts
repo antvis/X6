@@ -12,8 +12,8 @@ graph.addNode({
   height: 60,
   attrs: {
     body: {
-      fill: '#efdbff',
-      stroke: '#9254de',
+      fill: '#9254de',
+      stroke: 'none',
       rx: 10,
     },
   },
@@ -51,7 +51,7 @@ graph.addNode({
   height: 60,
   attrs: {
     body: {
-      fill: '#efdbff',
+      fill: '#85C054',
       stroke: 'none',
       rx: 10,
     },
@@ -60,6 +60,84 @@ graph.addNode({
     [
       {
         'size/width': 120,
+      },
+      {
+        duration: 1000,
+        direction: 'alternate',
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+graph.addNode({
+  x: 40,
+  y: 160,
+  width: 60,
+  height: 60,
+  attrs: {
+    body: {
+      fill: '#06b6d4',
+      stroke: 'none',
+      rx: 10,
+    },
+  },
+  animation: [
+    [
+      {
+        angle: 360,
+      },
+      {
+        duration: 1000,
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+graph.addNode({
+  x: 200,
+  y: 160,
+  width: 100,
+  height: 60,
+  attrs: {
+    body: {
+      fill: '#DB655C',
+      stroke: 'none',
+      rx: 10,
+    },
+  },
+  animation: [
+    [
+      {
+        'attrs/body/opacity': [0.5, 1],
+      },
+      {
+        duration: 1000,
+        direction: 'alternate',
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+graph.addNode({
+  x: 360,
+  y: 160,
+  width: 100,
+  height: 60,
+  label: '文本',
+  attrs: {
+    body: {
+      fill: '#efdbff',
+      stroke: 'none',
+      rx: 10,
+    },
+  },
+  animation: [
+    [
+      {
+        'attrs/text/fontSize': [10, 16],
       },
       {
         duration: 1000,

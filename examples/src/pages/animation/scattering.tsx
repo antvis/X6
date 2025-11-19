@@ -1,5 +1,5 @@
 import { type AnimateParams, Graph } from '@antv/x6'
-import React from 'react'
+import { useEffect, useRef } from 'react'
 import '../index.less'
 
 const circleRadius = 20
@@ -165,12 +165,14 @@ Graph.registerEdge(
   true,
 )
 
-export class ScatteringExample extends React.Component {
-  private container!: HTMLDivElement
+export function ScatteringExample() {
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       connecting: {
         connectionPoint: {
           name: 'anchor',
@@ -211,17 +213,15 @@ export class ScatteringExample extends React.Component {
     })
 
     graph.centerContent()
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap" style={{ padding: 0 }}>
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap" style={{ padding: 0 }}>
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
