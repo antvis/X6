@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Cell, Dom, type Graph } from '../../src'
-import { Selection, DefaultOptions } from '../../src/plugin/selection'
+import { DefaultOptions, Selection } from '../../src/plugin/selection'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
 
@@ -700,6 +700,174 @@ describe('Selection plugin', () => {
       selection['selectionImpl']['onSelectionBoxMouseDown'](e as any)
       expect(notifyBoxEventSpy).toBeCalled()
       expect(snapToGridSpy).toBeCalledWith(10, 10)
+    })
+  })
+
+  describe('outer selection container interactions', () => {
+    it('should set pointerEvents and cursor on outer container when movable', async () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'n2',
+        width: 80,
+        height: 40,
+        x: 120,
+        y: 10,
+      })
+      selection.select([n1, n2])
+
+      await sleep(20)
+
+      const style = (selection as any).selectionImpl.selectionContainer.style
+      expect(style.pointerEvents).toBe('auto')
+      expect(style.cursor).toBe('move')
+
+      graph.disableSelectionMovable()
+      ;(selection as any).selectionImpl.updateContainer()
+      const style2 = (selection as any).selectionImpl.selectionContainer.style
+      expect(style2.pointerEvents).toBe('none')
+      expect(style2.cursor).toBe('default')
+    })
+
+    it('should toggle node selection with modifier inside outer container', async () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'n2',
+        width: 80,
+        height: 40,
+        x: 120,
+        y: 10,
+      })
+      selection.select([n1])
+
+      const view2 = graph.renderer.findViewByCell(n2)!
+      const findViewsSpy = vi
+        .spyOn(graph, 'findViewsFromPoint')
+        .mockReturnValue([view2])
+
+      const e = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(e, 'clientX', { value: 100 })
+      Object.defineProperty(e, 'clientY', { value: 20 })
+      Object.defineProperty(e, 'ctrlKey', { value: true })
+      Object.defineProperty(e, 'metaKey', { value: true })
+      Object.defineProperty(e, 'shiftKey', { value: false })
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+
+      expect(findViewsSpy).toHaveBeenCalled()
+      expect(selection.isSelected(n2)).toBe(true)
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+      expect(selection.isSelected(n2)).toBe(false)
+    })
+
+    it('should not toggle edge selection with modifier inside outer container', () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+          showEdgeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'n2',
+        width: 80,
+        height: 40,
+        x: 120,
+        y: 10,
+      })
+      const e1 = graph.addEdge({ source: n1, target: n2 })
+      selection.select([n1])
+
+      const edgeView = graph.renderer.findViewByCell(e1)!
+      vi.spyOn(graph, 'findViewsFromPoint').mockReturnValue([edgeView])
+
+      const e = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(e, 'clientX', { value: 100 })
+      Object.defineProperty(e, 'clientY', { value: 20 })
+      Object.defineProperty(e, 'ctrlKey', { value: true })
+      Object.defineProperty(e, 'metaKey', { value: true })
+      Object.defineProperty(e, 'shiftKey', { value: false })
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+
+      expect(selection.length).toBe(1)
+      expect(selection.isSelected(n1)).toBe(true)
+      expect(selection.isSelected(e1)).toBe(false)
+    })
+
+    it('should start translating when clicking outer container without modifier', () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      selection.select([n1])
+
+      const startSpy = vi.spyOn(
+        (selection as any).selectionImpl,
+        'startTranslating' as any,
+      )
+
+      const e = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(e, 'clientX', { value: 20 })
+      Object.defineProperty(e, 'clientY', { value: 20 })
+      Object.defineProperty(e, 'ctrlKey', { value: false })
+      Object.defineProperty(e, 'metaKey', { value: false })
+      Object.defineProperty(e, 'shiftKey', { value: false })
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+      expect(startSpy).toHaveBeenCalled()
     })
   })
 
