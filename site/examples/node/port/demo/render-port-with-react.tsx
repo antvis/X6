@@ -7,7 +7,6 @@ import { createRoot } from 'react-dom/client'
 const graph = new Graph({
   container: document.getElementById('container'),
   grid: true,
-  // https://x6.antv.vision/zh/docs/tutorial/advanced/react#%E6%B8%B2%E6%9F%93%E9%93%BE%E6%8E%A5%E6%A1%A9
   onPortRendered(args) {
     const selectors = args.contentSelectors
     const container = selectors && selectors.foContent

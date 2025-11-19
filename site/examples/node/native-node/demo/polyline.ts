@@ -17,7 +17,7 @@ graph.addNode({
       fill: '#efdbff',
       stroke: '#9254de',
       // 指定 refPoints 属性，顶点随图形大小自动缩放
-      // https://x6.antv.vision/zh/docs/api/registry/attr#refpointsresetoffset
+      // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
       refPoints: '0,0 0,10 10,10 10,0',
     },
   },
@@ -31,7 +31,7 @@ graph.addNode({
   height: 80,
   label: 'polyline',
   // 使用 points 属性指定顶点，相当于指定 refPoints 属性
-  // https://x6.antv.vision/zh/docs/api/registry/attr#refpointsresetoffset
+  // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
   points: '0,0 0,10 10,10 10,0',
   attrs: {
     body: {

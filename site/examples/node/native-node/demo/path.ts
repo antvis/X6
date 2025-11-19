@@ -13,7 +13,7 @@ graph.addNode({
   height: 80,
   label: 'path',
   // 使用 path 属性指定路径的 pathData，相当于指定路径的 refD 属性
-  // https://x6.antv.vision/zh/docs/api/registry/attr#refdresetoffset
+  // https://x6.antv.antgroup.com/api/registry/attr#refdresetoffset
   path: 'M 0 5 10 0 C 20 0 20 20 10 20 L 0 15 Z',
   attrs: {
     body: {
@@ -35,7 +35,7 @@ graph.addNode({
       fill: '#efdbff',
       stroke: '#9254de',
       // 指定 refD 属性，pathData 随图形大小自动缩放
-      // https://x6.antv.vision/zh/docs/api/registry/attr#refdresetoffset
+      // https://x6.antv.antgroup.com/api/registry/attr#refdresetoffset
       refD: 'M 0 5 10 0 C 20 0 20 20 10 20 L 0 15 Z',
     },
   },
