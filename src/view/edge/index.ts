@@ -478,9 +478,11 @@ export class EdgeView<
         IS_SAFARI
       ) {
         const parent = this.container.parentNode
-        const next = this.container.nextSibling
-        parent.removeChild(this.container)
-        parent.insertBefore(this.container, next)
+        if (parent) {
+          const next = this.container.nextSibling
+          parent.removeChild(this.container)
+          parent.insertBefore(this.container, next)
+        }
       }
       this.updateAttrs(this.container, attrs, {
         selectors: this.selectors,
