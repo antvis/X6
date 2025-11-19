@@ -338,7 +338,7 @@ export default defineConfig({
     docsearchOptions: {
       appId: 'XFVM2O0U6B',
       apiKey: 'bfcb6154d9e7ee9c70baee42fd37bebb',
-      indexName: 'x6-antv-antgroup',
+      indexName: 'x6-v2.antv.vision',
       versionV3: true,
     },
     playground: {
