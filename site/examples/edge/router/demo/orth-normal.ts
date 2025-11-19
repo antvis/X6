@@ -34,7 +34,7 @@ const target = graph.addNode({
 graph.addEdge({
   source,
   target,
-  // https://x6.antv.vision/zh/docs/api/registry/router#orth
+  // https://x6.antv.antgroup.com/api/registry/router#orth
   router: {
     name: 'orth',
   },

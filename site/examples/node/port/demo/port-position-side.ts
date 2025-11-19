@@ -38,7 +38,7 @@ const rect = graph.addNode({
             fill: '#888',
           },
         },
-        // 文档：https://x6.antv.vision/zh/docs/api/registry/port-layout#left-right-top-bottom
+        // 文档：https://x6.antv.antgroup.com/api/registry/port-layout#left-right-top-bottom
         position: {
           name: 'left',
         },

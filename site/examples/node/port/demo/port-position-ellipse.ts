@@ -75,11 +75,11 @@ const node = graph.addNode({
             fill: '#6a6c8a',
           },
         },
-        // https://x6.antv.vision/zh/docs/api/registry/port-label-layout#radial
+        // https://x6.antv.antgroup.com/api/registry/port-label-layout#radial
         label: {
           position: 'radial',
         },
-        // https://x6.antv.vision/zh/docs/api/registry/port-layout#ellipse
+        // https://x6.antv.antgroup.com/api/registry/port-layout#ellipse
         position: {
           name: 'ellipse',
           args: {

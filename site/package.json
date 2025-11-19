@@ -21,7 +21,6 @@
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
     "@antv/x6": "workspace:*",
-    "@antv/xflow": "^2.0.3",
     "antd": "^5.7.3",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
