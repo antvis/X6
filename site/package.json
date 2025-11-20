@@ -18,9 +18,9 @@
     "@antv/dumi-theme-antv": "^0.7.9",
     "@antv/hierarchy": "^0.6.6",
     "@antv/layout": "^0.3.12",
+    "@antv/x6": "workspace:*",
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
-    "@antv/x6": "workspace:*",
     "antd": "^5.7.3",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
@@ -35,5 +35,8 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "repository": "https://github.com/antvis/x6"
+  "repository": "https://github.com/antvis/x6",
+  "devDependencies": {
+    "cross-env": "^10.1.0"
+  }
 }
