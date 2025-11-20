@@ -1,0 +1,68 @@
+{
+  "demos": [
+    {
+      "filename": "basic.ts",
+      "title": {
+        "zh": "基本使用",
+        "en": "Basic usage"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*J6XRTpLhFl8AAAAASXAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "composition.ts",
+      "title": {
+        "zh": "组合动画",
+        "en": "Composition animation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*u_VpTYHNf0EAAAAAUbAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "control.ts",
+      "title": {
+        "zh": "控制动画播放",
+        "en": "Control animation playback"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*O9zKSLzKtEEAAAAAWpAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "edge.ts",
+      "title": {
+        "zh": "边动画",
+        "en": "Edge animation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*zG9YRpFTXUYAAAAAS1AAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "custom-attr.ts",
+      "title": {
+        "zh": "自定义属性动画",
+        "en": "Custom attribute animation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*26HdQbWVgU8AAAAAQeAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "breathing-circle.ts",
+      "title": {
+        "zh": "呼吸效果",
+        "en": "Breathing effect"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*l4JaR7UbjfcAAAAATDAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "ripple-circle.ts",
+      "title": {
+        "zh": "涟漪效果",
+        "en": "ripple effect"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*yp1ZTbMeLG8AAAAAUeAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "css.ts",
+      "title": {
+        "zh": "CSS动画",
+        "en": "CSS animation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Zn_ESYvKC6AAAAAAREAAAAgAemJ7AQ/original"
+    }
+  ]
+}

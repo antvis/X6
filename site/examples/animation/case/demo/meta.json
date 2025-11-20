@@ -1,0 +1,28 @@
+{
+  "demos": [
+    {
+      "filename": "oscp.ts",
+      "title": {
+        "zh": "OSCP 活动",
+        "en": "OSCP activity"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*aEhDTY8sa0kAAAAAUhAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "scattering.ts",
+      "title": {
+        "zh": "炫酷散射动画",
+        "en": "Cool scatter Animation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8xH6R4SrE7AAAAAAXiAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "route-planning.ts",
+      "title": {
+        "zh": "路线规划图",
+        "en": "Route planning graph"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*n7PQSYXZ180AAAAATuAAAAgAemJ7AQ/original"
+    }
+  ]
+}

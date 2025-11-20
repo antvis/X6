@@ -173,7 +173,10 @@ export class Collection extends Basecoat<CollectionEventArgs> {
   reset(cells: Cell | Cell[], options: CollectionSetOptions = {}) {
     const previous = this.cells.slice()
     if (!options.diff) {
-      previous.forEach((cell) => this.unreference(cell))
+      previous.forEach((cell) => {
+        this.unreference(cell)
+        cell.remove()
+      })
       this.clean()
     }
     this.add(cells, { silent: true, ...options })
