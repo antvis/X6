@@ -310,6 +310,14 @@ export default defineConfig({
         },
       },
       {
+        slug: 'animation',
+        icon: 'scatter',
+        title: {
+          zh: '动画',
+          en: 'Animation',
+        },
+      },
+      {
         slug: 'layout',
         icon: 'tree',
         title: {

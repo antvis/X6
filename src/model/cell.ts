@@ -1246,6 +1246,8 @@ export class Cell<
       if (this.model) {
         this.model.removeCell(this, options)
       }
+
+      this.dispose()
     })
     return this
   }
@@ -1624,7 +1626,6 @@ export interface CellCommon {
   zIndex?: number
   visible?: boolean
   data?: any
-  animation?: AnimateParams[]
 }
 
 export interface CellDefaults extends CellCommon {}
@@ -1632,6 +1633,7 @@ export interface CellDefaults extends CellCommon {}
 export interface CellMetadata extends CellCommon, KeyValue {
   id?: string
   tools?: ToolsLoose
+  animation?: AnimateParams[]
 }
 
 export interface CellProperties extends CellDefaults, CellMetadata {
