@@ -4,8 +4,10 @@ import { AnimateElementExample } from './pages/animation/animateElement'
 import { AnimationConfExample } from './pages/animation/animationConf'
 import { AnimationControlExample } from './pages/animation/animationControl'
 import { ComplexAnimationExample } from './pages/animation/complexAnimation'
-import { EdgeAnimationExample } from './pages/animation/edgeAniamtion'
+import { EdgeAnimationExample } from './pages/animation/edgeAnimation'
 import { OSCPExample } from './pages/animation/oscp'
+import { RoutePlanningExample } from './pages/animation/routePlanning'
+import { ScatteringExample } from './pages/animation/scattering'
 import { AutoResizeExample } from './pages/auto-resize'
 import { CaseBpmnExample } from './pages/case/bpmn'
 import { CaseClassExample } from './pages/case/class'
@@ -114,11 +116,11 @@ function App() {
       <Route path="/plugins/export" element={<ExportExample />} />
 
       <Route
-        path="/animation/complexTransition"
+        path="/animation/complexAnimation"
         element={<ComplexAnimationExample />}
       />
       <Route
-        path="/animation/transitionConf"
+        path="/animation/animationConf"
         element={<AnimationConfExample />}
       />
       <Route
@@ -126,7 +128,7 @@ function App() {
         element={<AnimateElementExample />}
       />
       <Route
-        path="/animation/edgeTransition"
+        path="/animation/edgeAnimation"
         element={<EdgeAnimationExample />}
       />
       <Route
@@ -134,6 +136,11 @@ function App() {
         element={<AnimationControlExample />}
       />
       <Route path="/animation/oscp" element={<OSCPExample />} />
+      <Route path="/animation/scattering" element={<ScatteringExample />} />
+      <Route
+        path="/animation/routePlanning"
+        element={<RoutePlanningExample />}
+      />
       <Route path="/history" element={<HistoryExample />} />
       <Route path="/virtual-render" element={<VirtualRenderExample />} />
     </Routes>
