@@ -180,11 +180,11 @@ const dataSource = [
   },
   // ========= animation ========
   {
-    example: 'animation/complexTransition',
+    example: 'animation/complexAnimation',
     description: '复杂些的动画',
   },
   {
-    example: 'animation/transitionConf',
+    example: 'animation/animationConf',
     description: '动画的不同配置方式',
   },
   {
@@ -192,7 +192,7 @@ const dataSource = [
     description: '使用animate等svg元素实现动画',
   },
   {
-    example: 'animation/edgeTransition',
+    example: 'animation/edgeAnimation',
     description: '边动画',
   },
   {
@@ -202,6 +202,14 @@ const dataSource = [
   {
     example: 'animation/oscp',
     description: '带动画的oscp示意图',
+  },
+  {
+    example: 'animation/scattering',
+    description: '炫酷的扩散动画',
+  },
+  {
+    example: 'animation/routePlanning',
+    description: '带动画的路线规划图',
   },
   {
     example: 'history',

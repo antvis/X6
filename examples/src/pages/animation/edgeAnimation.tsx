@@ -92,7 +92,7 @@ export class EdgeAnimationExample extends React.Component {
         [
           { 'attrs/line/strokeWidth': 4 },
           {
-            duration: 2500,
+            duration: 1500,
             iterations: Infinity,
             direction: 'alternate',
             easing: 'ease-in-out-back',
@@ -102,10 +102,10 @@ export class EdgeAnimationExample extends React.Component {
           'attrs/line/opacity',
           1,
           {
-            duration: 2500,
+            duration: 1500,
             iterations: Infinity,
             direction: 'alternate',
-            easing: 'ease-in-out-back',
+            easing: 'ease-in-out-quad',
           },
         ],
       ],
