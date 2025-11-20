@@ -95,7 +95,7 @@ export default defineConfig({
         ],
       },
       {
-        slug: 'https://www.yuque.com/antv/x6/bbfu6r',
+        slug: 'https://www.yuque.com/antv/x6/gkniz4iiyxftgv0r',
         title: {
           zh: '更新日志',
           en: 'Change Log',
@@ -353,9 +353,9 @@ export default defineConfig({
     memo.module
       .rule('js')
       .test(/\.(js|mjs|jsx|ts|tsx)$/)
-      .resolve.set('fullySpecified', false);
+      .resolve.set('fullySpecified', false)
 
-    return memo;
+    return memo
   },
   links: [],
   scripts: [],
