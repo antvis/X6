@@ -107,7 +107,7 @@ function atConnectionWrapper(
     }
 
     return {
-      transform: `translate(${p.x},${p.y}') rotate(${angle})`,
+      transform: `translate(${p.x},${p.y}) rotate(${angle})`,
     }
   }
 }

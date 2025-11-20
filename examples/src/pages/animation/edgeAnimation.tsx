@@ -105,7 +105,7 @@ export class EdgeAnimationExample extends React.Component {
             duration: 1500,
             iterations: Infinity,
             direction: 'alternate',
-            easing: 'ease-in-out-back',
+            easing: 'ease-in-out-quad',
           },
         ],
       ],

@@ -4,7 +4,7 @@ import { AnimateElementExample } from './pages/animation/animateElement'
 import { AnimationConfExample } from './pages/animation/animationConf'
 import { AnimationControlExample } from './pages/animation/animationControl'
 import { ComplexAnimationExample } from './pages/animation/complexAnimation'
-import { EdgeAnimationExample } from './pages/animation/edgeAniamtion'
+import { EdgeAnimationExample } from './pages/animation/edgeAnimation'
 import { OSCPExample } from './pages/animation/oscp'
 import { RoutePlanningExample } from './pages/animation/routePlanning'
 import { ScatteringExample } from './pages/animation/scattering'
@@ -114,11 +114,11 @@ function App() {
       <Route path="/plugins/export" element={<ExportExample />} />
 
       <Route
-        path="/animation/complexTransition"
+        path="/animation/complexAnimation"
         element={<ComplexAnimationExample />}
       />
       <Route
-        path="/animation/transitionConf"
+        path="/animation/animationConf"
         element={<AnimationConfExample />}
       />
       <Route
@@ -126,7 +126,7 @@ function App() {
         element={<AnimateElementExample />}
       />
       <Route
-        path="/animation/edgeTransition"
+        path="/animation/edgeAnimation"
         element={<EdgeAnimationExample />}
       />
       <Route

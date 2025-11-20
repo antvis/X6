@@ -121,7 +121,7 @@ Shape.HTML.register({
   width: 160,
   height: 80,
   effect: ['data'],
-  html(cell: Cell) {
+  html(cell) {
     const {
       img,
       tag,

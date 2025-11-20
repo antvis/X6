@@ -94,7 +94,7 @@ graph.addEdge({
         duration: 2500,
         iterations: Infinity,
         direction: 'alternate',
-        easing: 'ease-in-out-back',
+        easing: 'ease-in-out-quad',
       },
     ],
   ],
