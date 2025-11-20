@@ -349,6 +349,14 @@ export default defineConfig({
   alias: {
     '@': __dirname,
   },
+  chainWebpack(memo: any) {
+    memo.module
+      .rule('js')
+      .test(/\.(js|mjs|jsx|ts|tsx)$/)
+      .resolve.set('fullySpecified', false);
+
+    return memo;
+  },
   links: [],
   scripts: [],
 })
