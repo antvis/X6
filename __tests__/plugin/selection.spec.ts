@@ -519,6 +519,8 @@ describe('Selection plugin', () => {
       graph.trigger('blank:click', { e })
       await sleep(100)
       expect(selection.cells.length).toBe(0)
+      // ensure node is not removed from graph
+      expect(graph.getCellById('n1')).not.toBeNull()
     })
   })
 
@@ -1052,6 +1054,57 @@ describe('Selection plugin', () => {
 
       graph.cleanSelection()
       expect(graph.getSelectedCellCount()).toBe(0)
+      // ensure node still exists in graph after clean
+      expect(graph.getCellById(node.id)).not.toBeNull()
+    })
+
+    it('should call updateContainer once on batch reset', async () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'bn1',
+        shape: 'rect',
+        width: 40,
+        height: 20,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'bn2',
+        shape: 'rect',
+        width: 40,
+        height: 20,
+        x: 60,
+        y: 10,
+      })
+
+      selection.select(n1)
+      const spy = vi.spyOn((selection as any).selectionImpl, 'updateContainer')
+
+      selection.reset([n1, n2], { batch: true })
+      await sleep(20)
+
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it('cleanSelection should not call collection.reset', () => {
+      const node = graph.addNode({ shape: 'rect' })
+      selection.select(node)
+      const resetSpy = vi.spyOn(
+        (selection as any).selectionImpl.collection,
+        'reset',
+      )
+
+      selection.clean()
+      expect(resetSpy).not.toHaveBeenCalled()
+      expect(selection.length).toBe(0)
     })
   })
 
