@@ -110,6 +110,7 @@ export default class Example extends React.Component {
             duration: 5000,
             easing: 'linear',
             fill: 'forwards',
+            iterations: Infinity,
           },
         )
       }
