@@ -1,1 +1,2 @@
-export const unitReg = /(-?[0-9]*.[0-9]*)(px|vw|vh|em|cm|mm|in|pt|pc|deg|%)/
+export const unitReg =
+  /(-?(?:\d*\.\d+|\d+))\s*(px|em|rem|ch|vh|vw|vmin|vmax|%|cm|mm|in|pt|pc|ex|fr|deg|rad|turn)$/
