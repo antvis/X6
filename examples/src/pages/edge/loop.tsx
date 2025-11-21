@@ -1,5 +1,5 @@
-import React from 'react'
 import { Graph } from '@antv/x6'
+import React from 'react'
 
 export default class Example extends React.Component {
   private container!: HTMLDivElement
@@ -445,33 +445,23 @@ export default class Example extends React.Component {
     const pathAngle = 'router/args/angle'
     const pathMerge = 'router/args/merge'
     const animateAngle = () => {
-      edge.prop(pathAngle, 0)
-      edge.transition(pathAngle, 360, {
-        duration: 5000,
-        start(options) {
-          console.log('rotate:start', options)
+      edge.animate(
+        { [pathAngle]: 360 },
+        {
+          duration: 5000,
+          iterations: Infinity,
         },
-        progress(options) {
-          console.log('rotate:progress', options)
-        },
-        complete(options) {
-          console.log('rotate:complete', options)
-          animateAngle()
-        },
-        always(options) {
-          console.log('rotate:finish', options)
-        },
-      })
+      )
     }
 
     const animateMerge = () => {
-      edge.prop(pathMerge, 0)
-      edge.transition(pathMerge, 20, {
-        duration: 1000,
-        complete() {
-          animateMerge()
+      edge.animate(
+        { [pathMerge]: 20 },
+        {
+          duration: 1000,
+          iterations: Infinity,
         },
-      })
+      )
     }
 
     animateAngle()
