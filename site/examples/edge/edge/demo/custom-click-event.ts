@@ -1,4 +1,4 @@
-import { Graph, Timing } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
 const graph = new Graph({
   container: document.getElementById('container'),
@@ -9,13 +9,18 @@ graph.on('edge:customevent', ({ name, e, edge }) => {
   if (name === 'click:circle' || name === 'click:rect') {
     e.stopPropagation()
     const t = edge.attr<number>('c1/atConnectionRatio') > 0.3 ? 0.3 : 0.9
-    const options = {
-      delay: 100,
-      duration: 1000,
-      timing: Timing.easeInOutBack,
-    }
-    edge.transition('attrs/c1/atConnectionRatio', t, options)
-    edge.transition('attrs/c2/atConnectionRatio', t, options)
+    edge.animate(
+      {
+        'attrs/c1/atConnectionRatio': t,
+        'attrs/c2/atConnectionRatio': t,
+      },
+      {
+        delay: 100,
+        duration: 1000,
+        easing: 'ease-in-out-back',
+        fill: 'forwards',
+      },
+    )
   }
 })
 

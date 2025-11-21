@@ -1,5 +1,5 @@
+import { Edge, Graph, Timing } from '@antv/x6'
 import React from 'react'
-import { Graph, Edge, Timing } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -14,16 +14,21 @@ export default class Example extends React.Component {
     })
 
     graph.on('edge:customevent', ({ name, e, edge }) => {
-      if (name === 'click:circle') {
+      if (name === 'click:circle' || name === 'click:rect') {
         e.stopPropagation()
-        var t = edge.attr<number>('c1/atConnectionRatio') > 0.2 ? 0.2 : 0.9
-        var options = {
-          delay: 100,
-          duration: 1000,
-          timing: Timing.easeInOutBack,
-        }
-        edge.transition('attrs/c1/atConnectionRatio', t, options)
-        edge.transition('attrs/c2/atConnectionRatio', t, options)
+        const t = edge.attr<number>('c1/atConnectionRatio') > 0.3 ? 0.3 : 0.9
+        edge.animate(
+          {
+            'attrs/c1/atConnectionRatio': t,
+            'attrs/c2/atConnectionRatio': t,
+          },
+          {
+            delay: 100,
+            duration: 1000,
+            easing: 'ease-in-out-back',
+            fill: 'forwards',
+          },
+        )
       }
     })
 
