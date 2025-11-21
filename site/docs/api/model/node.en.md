@@ -471,7 +471,7 @@ child.translate(30, 30, {
 })
 ```
 
-When `options.transition` is `true` or an [animation option](/en/api/model/cell#transition) is specified, it indicates that animation should be used to translate the node. For more details, please refer to the [Using Animation Documentation](/en/api/model/cell#transition).
+When `options.transition` is `true` or an animation option is specified, it indicates that animation should be used to translate the node.
 
 ```ts
 // Translate the node using the default animation

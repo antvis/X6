@@ -112,8 +112,7 @@ export const transform: Definition<string> = (a, b) => {
           if (fromVal === undefined || toVal === undefined) continue
 
           // 检查是否是带单位的值
-          const unitMatch = fromVal.match(unitReg)
-          if (unitMatch) {
+          if (unitReg.test(fromVal) || unitReg.test(toVal)) {
             // 使用 unit 插值函数处理带单位的值
             const interpolate = unit(fromVal, toVal)
             values.push(interpolate(t))

@@ -85,8 +85,8 @@ describe('transform', () => {
   })
 
   it('should handle unitless values', () => {
-    const interp = Interp.transform('scale(1)', 'scale(2)')
-    expect(interp(0.5)).toBe('scale(1.5)')
+    const interp = Interp.transform('scale(2)', 'scale(3)')
+    expect(interp(0.5)).toBe('scale(2.5)')
   })
 
   it('should return original value for invalid input', () => {

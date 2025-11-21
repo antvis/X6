@@ -471,7 +471,7 @@ child.translate(30, 30, {
 })
 ```
 
-当 `options.transition` 为 `true` 或指定了一个[动画选项](/api/model/cell#transition)时，表示使用动画来平移节点，详情请参考[使用动画文档](/api/model/cell#transition)。
+当 `options.transition` 为 `true` 或指定了一个动画选项时，表示使用动画来平移节点。
 
 ```ts
 // 使用默认动画在平移节点

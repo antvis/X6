@@ -207,7 +207,10 @@ export class KeyframeEffect {
           !NumberExt.isNumber(startValue)
         ) {
           interpolation = Interp.transform
-        } else if (unitReg.test(String(startValue))) {
+        } else if (
+          unitReg.test(String(startValue)) ||
+          unitReg.test(String(endValue))
+        ) {
           interpolation = Interp.unit
         } else {
           interpolation = Interp.number
