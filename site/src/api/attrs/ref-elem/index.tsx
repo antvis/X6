@@ -112,55 +112,79 @@ export default class Example extends React.Component {
       },
     })
 
-    let currentTransitions = 0
     let typeToggle = true
 
     function type() {
-      node.transition('attrs/label/text', 'Hello, World!', {
-        delay: 1000,
-        duration: 4000,
-        interp(start, end) {
-          return function (time) {
-            return start + end.substr(1, Math.ceil(end.length * time))
+      const full = 'Hello, World!'
+      const delay = 1000
+      const duration = 4000
+      const steps = full.length - 1
+      setTimeout(() => {
+        let i = 1
+        const step = Math.max(1, Math.floor(duration / steps))
+        const timer = setInterval(() => {
+          node.attr('label/text', full.substring(0, i + 1))
+          i += 1
+          if (i >= full.length) {
+            clearInterval(timer)
           }
+        }, step)
+      }, delay)
+
+      node.animate(
+        {
+          'outline/strokeDashoffset': 2.5,
         },
-      })
+        {
+          delay,
+          duration,
+          easing: 'linear',
+          fill: 'none',
+        },
+      )
 
       typeToggle = false
     }
 
     function untype() {
-      node.transition('attrs/label/text', 'H', {
-        delay: 1000,
-        duration: 4000,
-        timing(time) {
-          return 1 - time
-        },
-        interp(start, end) {
-          return function (time) {
-            return end + start.substr(1, Math.ceil(start.length * time))
+      const full = 'Hello, World!'
+      const delay = 1000
+      const duration = 4000
+      const steps = full.length - 1
+      setTimeout(() => {
+        let i = full.length
+        const step = Math.max(1, Math.floor(duration / steps))
+        const timer = setInterval(() => {
+          i -= 1
+          node.attr('label/text', full.substring(0, Math.max(1, i)))
+          if (i <= 1) {
+            clearInterval(timer)
           }
+        }, step)
+      }, delay)
+
+      node.animate(
+        {
+          'outline/strokeDashoffset': 2.5,
         },
-      })
+        {
+          delay,
+          duration,
+          easing: 'linear',
+          fill: 'none',
+        },
+      )
 
       typeToggle = true
     }
 
     type()
 
-    node.on('transition:start', () => {
-      currentTransitions += 1
-    })
-
-    node.on('transition:complete', () => {
-      currentTransitions -= 1
-
-      if (currentTransitions === 0) {
-        if (typeToggle) {
-          type()
-        } else {
-          untype()
-        }
+    node.on('animation:finish', () => {
+      if (typeToggle) {
+        type()
+      } else {
+        untype()
       }
     })
   }

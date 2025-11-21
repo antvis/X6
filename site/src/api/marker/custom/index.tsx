@@ -37,59 +37,76 @@ export default class Example extends React.Component {
     })
 
     function hourHand() {
-      edge.transition('source', (10 + 9.36 / 60) / 12, {
-        delay: 1000,
-        duration: 19000,
-        interp: (start, startTime) => {
-          const timeCorrection = startTime * (2 * Math.PI) - Math.PI / 2
-          const origin = { x: 300, y: 150 }
-          const radius = 140 / 1.618
-          return function (t) {
-            return {
-              x: origin.x + radius * Math.cos(t * 2 * Math.PI + timeCorrection),
-              y: origin.y + radius * Math.sin(t * 2 * Math.PI + timeCorrection),
-            }
-          }
+      const originX = 300
+      const originY = 150
+      const radius = 140 / 1.618
+      const steps = 60
+      const offset = (10 + 9.36 / 60) / 12
+      const xs: number[] = []
+      const ys: number[] = []
+      for (let i = 0; i < steps; i += 1) {
+        const theta = 2 * Math.PI * (i / steps + offset) - Math.PI / 2
+        xs.push(originX + radius * Math.cos(theta))
+        ys.push(originY + radius * Math.sin(theta))
+      }
+
+      edge.animate(
+        {
+          'source/x': xs,
+          'source/y': ys,
         },
-      })
+        {
+          delay: 1000,
+          duration: 19000,
+          easing: 'linear',
+          fill: 'none',
+        },
+      )
     }
 
     function minuteHand() {
-      edge.transition('target', 9.36 / 60, {
-        delay: 1000,
-        duration: 19000,
-        timing: (time) => {
-          return time * 12 - Math.floor(time * 12)
+      const originX = 300
+      const originY = 150
+      const radius = 140
+      const steps = 60
+      const offset = 9.36 / 60
+      const xs: number[] = []
+      const ys: number[] = []
+      for (let i = 0; i < steps; i += 1) {
+        const theta = 2 * Math.PI * (i / steps + offset) - Math.PI / 2
+        xs.push(originX + radius * Math.cos(theta))
+        ys.push(originY + radius * Math.sin(theta))
+      }
+
+      edge.animate(
+        {
+          'target/x': xs,
+          'target/y': ys,
         },
-        interp: (start, startTime) => {
-          const timeCorrection = startTime * (2 * Math.PI) - Math.PI / 2
-          const origin = { x: 300, y: 150 }
-          const radius = 140
-          return function (t) {
-            return {
-              x: origin.x + radius * Math.cos(t * 2 * Math.PI + timeCorrection),
-              y: origin.y + radius * Math.sin(t * 2 * Math.PI + timeCorrection),
-            }
-          }
+        {
+          delay: 1000,
+          duration: 19000 / 12,
+          iterations: 12,
+          easing: 'linear',
+          fill: 'none',
         },
-      })
+      )
     }
 
-    let currentTransitions = 0
+    let currentAnimations = 0
 
-    hourHand()
-    minuteHand()
+    function run() {
+      currentAnimations = 2
+      hourHand()
+      minuteHand()
+    }
 
-    edge.on('transition:start', () => {
-      currentTransitions += 1
-    })
+    run()
 
-    edge.on('transition:complete', () => {
-      currentTransitions -= 1
-
-      if (currentTransitions === 0) {
-        hourHand()
-        minuteHand()
+    edge.on('animation:finish', () => {
+      currentAnimations -= 1
+      if (currentAnimations === 0) {
+        run()
       }
     })
   }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Interp } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import './index.less'
 
 Graph.registerNode(
@@ -99,26 +99,22 @@ export default class Example extends React.Component {
     })
 
     let stretchToggle = false
-    let currentTransitions = 0
 
     function contract() {
-      node.transition(
-        'size',
-        { width: 40, height: 40 },
+      node.animate(
         {
-          delay: 1000,
-          duration: 4000,
-          interp: Interp.object,
+          'size/width': 40,
+          'size/height': 40,
+          'position/x': 280,
+          'position/y': 130,
         },
-      )
-
-      node.transition(
-        'position',
-        { x: 280, y: 130 },
         {
           delay: 1000,
-          duration: 4000,
-          interp: Interp.object,
+          duration: 2000,
+          direction: 'alternate',
+          iterations: 2,
+          easing: 'linear',
+          fill: 'none',
         },
       )
 
@@ -126,23 +122,20 @@ export default class Example extends React.Component {
     }
 
     function stretch() {
-      node.transition(
-        'size',
-        { width: 280, height: 120 },
+      node.animate(
         {
-          delay: 1000,
-          duration: 4000,
-          interp: Interp.object,
+          'size/width': 280,
+          'size/height': 120,
+          'position/x': 160,
+          'position/y': 100,
         },
-      )
-
-      node.transition(
-        'position',
-        { x: 160, y: 100 },
         {
           delay: 1000,
-          duration: 4000,
-          interp: Interp.object,
+          duration: 2000,
+          direction: 'alternate',
+          iterations: 2,
+          easing: 'linear',
+          fill: 'none',
         },
       )
 
@@ -151,19 +144,11 @@ export default class Example extends React.Component {
 
     stretch()
 
-    node.on('transition:start', () => {
-      currentTransitions += 1
-    })
-
-    node.on('transition:complete', () => {
-      currentTransitions -= 1
-
-      if (currentTransitions === 0) {
-        if (stretchToggle) {
-          stretch()
-        } else {
-          contract()
-        }
+    node.on('animation:finish', () => {
+      if (stretchToggle) {
+        stretch()
+      } else {
+        contract()
       }
     })
   }
