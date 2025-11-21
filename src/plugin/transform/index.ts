@@ -1,21 +1,55 @@
 import { Basecoat, CssLoader, disposable, type KeyValue } from '../../common'
-import type { EventArgs, Graph } from '../../graph'
+import type { EventArgs, Graph, GraphPlugin } from '../../graph'
 import type { Node } from '../../model'
 import { content } from './style/raw'
+import type { TransformImplOptions, TransformImplEventArgs } from './transform'
 import { TransformImpl } from './transform'
 import './api'
 
+type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
+
+interface ResizingRaw {
+  enabled?: boolean
+  minWidth?: number
+  maxWidth?: number
+  minHeight?: number
+  maxHeight?: number
+  orthogonal?: boolean
+  restrict?: boolean | number
+  autoScroll?: boolean
+  preserveAspectRatio?: boolean
+  allowReverse?: boolean
+}
+
+interface RotatingRaw {
+  enabled?: boolean
+  grid?: number
+}
+
+type Resizing = {
+  [K in keyof ResizingRaw]?: OptionItem<Node, ResizingRaw[K]>
+}
+
+type Rotating = {
+  [K in keyof RotatingRaw]?: OptionItem<Node, RotatingRaw[K]>
+}
+
+type Options = {
+  rotating?: boolean | Partial<Rotating>
+  resizing?: boolean | Partial<Resizing>
+}
+
 export class Transform
-  extends Basecoat<Transform.EventArgs>
-  implements Graph.Plugin
+  extends Basecoat<TransformImplEventArgs>
+  implements GraphPlugin
 {
   public name = 'transform'
-  public options: Transform.Options
+  public options: Options
   private graph: Graph
   protected widgets: Map<Node, TransformImpl> = new Map()
   private disabled = false
 
-  constructor(options: Transform.Options = {}) {
+  constructor(options: Options = {}) {
     super()
     this.options = options
     CssLoader.ensure(this.name, content)
@@ -86,6 +120,19 @@ export class Transform
     return null
   }
 
+  protected parseOptionGroup<
+    K extends KeyValue,
+    S extends KeyValue = KeyValue,
+    T = any,
+  >(graph: Graph, arg: T, options: S): K {
+    const result: any = {}
+    Object.keys(options || {}).forEach((key) => {
+      const val = options[key]
+      result[key] = typeof val === 'function' ? val.call(graph, arg) : val
+    })
+    return result
+  }
+
   protected getTransformOptions(node: Node) {
     if (!this.options.resizing) {
       this.options.resizing = {
@@ -110,19 +157,19 @@ export class Transform
       }
     }
 
-    const resizing = Transform.parseOptionGroup<Transform.ResizingRaw>(
+    const resizing = this.parseOptionGroup<ResizingRaw>(
       this.graph,
       node,
       this.options.resizing,
     )
 
-    const rotating = Transform.parseOptionGroup<Transform.RotatingRaw>(
+    const rotating = this.parseOptionGroup<RotatingRaw>(
       this.graph,
       node,
       this.options.rotating,
     )
 
-    const options: TransformImpl.Options = {
+    const options: TransformImplOptions = {
       resizable: !!resizing.enabled,
       minWidth: resizing.minWidth || 0,
       maxWidth: resizing.maxWidth || Number.MAX_SAFE_INTEGER,
@@ -161,55 +208,5 @@ export class Transform
     this.stopListening()
     this.off()
     CssLoader.clean(this.name)
-  }
-}
-
-export namespace Transform {
-  export interface EventArgs extends TransformImpl.EventArgs {}
-
-  type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
-
-  export interface ResizingRaw {
-    enabled?: boolean
-    minWidth?: number
-    maxWidth?: number
-    minHeight?: number
-    maxHeight?: number
-    orthogonal?: boolean
-    restrict?: boolean | number
-    autoScroll?: boolean
-    preserveAspectRatio?: boolean
-    allowReverse?: boolean
-  }
-
-  export interface RotatingRaw {
-    enabled?: boolean
-    grid?: number
-  }
-
-  export type Resizing = {
-    [K in keyof ResizingRaw]?: OptionItem<Node, ResizingRaw[K]>
-  }
-
-  export type Rotating = {
-    [K in keyof RotatingRaw]?: OptionItem<Node, RotatingRaw[K]>
-  }
-
-  export type Options = {
-    rotating?: boolean | Partial<Rotating>
-    resizing?: boolean | Partial<Resizing>
-  }
-
-  export function parseOptionGroup<
-    K extends KeyValue,
-    S extends KeyValue = KeyValue,
-    T = any,
-  >(graph: Graph, arg: T, options: S): K {
-    const result: any = {}
-    Object.keys(options || {}).forEach((key) => {
-      const val = options[key]
-      result[key] = typeof val === 'function' ? val.call(graph, arg) : val
-    })
-    return result
   }
 }

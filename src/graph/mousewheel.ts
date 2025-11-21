@@ -2,6 +2,17 @@ import { Dom, disposable, isModifierKeyMatch, NumberExt } from '../common'
 import type { ModifierKey } from '../common'
 import { Base } from './base'
 
+export interface MouseWheelOptions {
+  enabled?: boolean
+  global?: boolean
+  factor?: number
+  minScale?: number
+  maxScale?: number
+  modifiers?: string | ModifierKey[] | null
+  guard?: (e: WheelEvent) => boolean
+  zoomAtMousePosition?: boolean
+}
+
 export class MouseWheel extends Base {
   public target: HTMLElement | Document
   public container: HTMLElement
@@ -142,18 +153,5 @@ export class MouseWheel extends Base {
   @disposable()
   dispose() {
     this.disable()
-  }
-}
-
-export namespace MouseWheel {
-  export interface Options {
-    enabled?: boolean
-    global?: boolean
-    factor?: number
-    minScale?: number
-    maxScale?: number
-    modifiers?: string | ModifierKey[] | null
-    guard?: (e: WheelEvent) => boolean
-    zoomAtMousePosition?: boolean
   }
 }

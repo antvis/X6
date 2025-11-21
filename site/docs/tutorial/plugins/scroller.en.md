@@ -14,20 +14,20 @@ redirect_from:
 :::
 
 :::warning{title=Note}
-When using the `Scroller` plugin, please do not enable the canvas's `panning` configuration at the same time, as the two forms conflict in interaction.
+The `Scroller` plugin disables the graph's built-in `panning` by default to avoid interaction conflicts.
 :::
 
 ## Usage
 
-We provide a plugin `scroller` to use the scroller feature, Then we use it in the code like this:
+You can enable canvas scrolling with the `Scroller` plugin. For example:
 
 ```ts
-import { Scroller } from '@antv/x6'
+import { Graph, Scroller } from '@antv/x6'
 
 const graph = new Graph({
   background: {
     color: '#F2F7FA',
-  },
+  }
 })
 graph.use(
   new Scroller({
@@ -67,7 +67,7 @@ type Padding = { top: number; right: number; bottom: number; left: number }
 The `ModifierKey` type is defined as follows:
 
 ```ts
-type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift' | 'space')[] | null
 ```
 
 Supports the following forms:

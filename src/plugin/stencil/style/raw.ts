@@ -117,8 +117,6 @@ export const content = `.x6-widget-dnd {
 }
 .x6-widget-stencil-content {
   position: absolute;
-}
-.x6-widget-stencil.collapsable > .x6-widget-stencil-content {
   top: 32px;
 }
 .x6-widget-stencil.searchable > .x6-widget-stencil-content {
@@ -139,10 +137,14 @@ export const content = `.x6-widget-dnd {
   padding: 0;
   transition: none;
 }
-.x6-widget-stencil-group .x6-graph {
-  background: transparent;
-  box-shadow: none;
-}
+  .x6-widget-stencil-group .x6-graph {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .x6-widget-stencil .x6-node.x6-node-immovable {
+    cursor: move;
+  }
 .x6-widget-stencil-group.collapsed {
   height: auto;
   max-height: 31px;

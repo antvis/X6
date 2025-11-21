@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-:::info{title=在本章节中主要介绍连接桩相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍连接桩相关的知识，通过阅读，你可以了解到}
 
 - 如何在节点中配置连接桩
 - 连接桩的增、删、改
@@ -25,7 +25,7 @@ interface PortGroupMetadata {
   markup?: Markup // 连接桩 DOM 结构定义。
   attrs?: Attr.CellAttrs // 属性和样式。
   zIndex?: number | 'auto' // 连接桩的 DOM 层级，值越大层级越高。
-  // 群组中连接桩的布局。
+  // 分组中连接桩的布局。
   position?: [number, number] | string | { name: string; args?: object }
   label?: {
     // 连接桩标签
@@ -45,7 +45,7 @@ interface PortGroupMetadata {
 interface PortMetadata {
   id?: string // 连接桩唯一 ID，默认自动生成。
   group?: string // 分组名称，指定分组后将继承分组中的连接桩选项。
-  args?: object // 为群组中指定的连接桩布局算法提供参数, 我们不能为单个连接桩指定布局算法，但可以为群组中指定的布局算法提供不同的参数。
+  args?: object // 为群组中指定的连接桩布局算法提供参数，我们不能为单个连接桩指定布局算法，但可以为群组中指定的布局算法提供不同的参数。
   markup?: Markup // 连接桩的 DOM 结构定义。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
   attrs?: Attr.CellAttrs // 元素的属性样式。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
   zIndex?: number | 'auto' // 连接桩的 DOM 层级，值越大层级越高。指定该选项后将覆盖 `group` 指代的群组提供的默认选项。
@@ -61,7 +61,7 @@ interface PortMetadata {
 }
 ```
 
-从下面例子代码中可以清晰看到连接桩的定义方式。
+下方示例展示了连接桩的定义方式。
 
 <code id="port-config" src="@/src/tutorial/basic/ports/config/index.tsx"></code>
 
@@ -93,7 +93,7 @@ node.portProp(portId, 'attrs/circle/stroke', color)
 
 连接桩布局算法只能通过 `groups` 中的 `position` 选项来指定，因为布局算法在计算连接桩位置时需要考虑到群组中的所有连接桩，我们在单个连接桩中可以通过 `args` 选项来影响该连接桩的布局结果。
 
-我们默认提供了下面几种连接桩布局算法，同时支持[自定义连接桩布局算法并注册使用](/api/registry/port-layout#registry)，点击下面的链接可以了解每种布局算法的使用方法。
+我们默认提供了下面几种连接桩布局算法，同时支持[自定义连接桩布局算法并注册使用](/api/registry/port-layout)，点击下面的链接可以了解每种布局算法的使用方法。
 
 - [`absolute`](/api/registry/port-layout#absolute) 绝对定位。
 - [`left`](/api/registry/port-layout#left-right-top-bottom) 矩形节点左侧均匀分布。
@@ -106,9 +106,9 @@ node.portProp(portId, 'attrs/circle/stroke', color)
 
 ## 连接桩标签位置
 
-在 `groups` 的 `label.position` 选项和节点的 `items.label.position` 选项中都可以指定标签的位置。
+在 `groups.label.position` 选项和节点的 `ports.items.label.position` 选项中都可以指定标签的位置。
 
-我们默认提供了下面几种标签位置，也支持[自定义标签位置并注册使用](/api/registry/port-label-layout#registry)，点击下面的链接了解每种标签位置的使用方法。
+我们默认提供了下面几种标签位置，也支持[自定义标签位置并注册使用](/api/registry/port-label-layout)，点击下面的链接了解每种标签位置的使用方法。
 
 - [`left`](/api/registry/port-label-layout#side) 标签位于连接桩左侧。
 - [`right`](/api/registry/port-label-layout#side) 标签位于连接桩右侧。

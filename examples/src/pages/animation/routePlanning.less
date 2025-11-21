@@ -1,0 +1,135 @@
+.routePlanning {
+  .destination-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family:
+      "Hiragino Maru Gothic Pro",
+      /* 圆体最可爱，优先日文/繁体环境 */
+      "PingFang SC",
+      /* 苹方，简体中文首选，清新现代 */
+      "Hiragino Sans GB",
+      /* 冬青黑体简体，柔和清晰 */
+      "Helvetica Neue",
+      "Arial",
+      sans-serif;
+  }
+
+  .node-image-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    background: #fff;
+    border-radius: 50%;
+  }
+
+  .node-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+
+  }
+
+  .node-image-shadow {
+    position: absolute;
+    top: 0;
+    left: 4px;
+    width: 100%;
+    height: 100%;
+    background: #EBB27D;
+    z-index: -1;
+    border-radius: 50%;
+  }
+
+
+  .node-label-wrapper {
+    margin-top: 20px;
+    background-color: #FEFCF2;
+    min-height: 120px;
+    border-radius: 4px;
+    width: 150px;
+    position: relative;
+    color: #838181;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .node-label-wrapper:hover {
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .node-label-shadow {
+    position: absolute;
+    top: 0;
+    left: 3px;
+    width: 100%;
+    height: 100%;
+    background: #F7D0AE;
+    z-index: -1;
+    border-radius: 4px;
+    transform: rotate(-2deg);
+  }
+
+  .node-label {
+    padding: 8px;
+    z-index: 2;
+  }
+
+  .node-label-tag {
+    background: #EEAD8A;
+    color: #fff;
+    border-radius: 4px;
+    position: absolute;
+    line-height: 22px;
+    width: 60px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  @keyframes shake {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(20deg);
+    }
+  }
+
+  .node-label-star {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    animation: shake 0.5s ease infinite;
+    animation-direction: alternate;
+  }
+
+
+  .node-label-tag-top-left {
+    left: 0;
+    top: 0;
+    transform: translateX(-50%) translateY(-50%) rotate(-20deg);
+  }
+
+  .node-label-tag-bottom-left {
+    left: 0;
+    bottom: 0;
+    transform: translateX(-50%) translateY(50%) rotate(20deg);
+  }
+
+
+  .node-label-tag-top-right {
+    right: 0;
+    top: 0;
+    transform: translateX(50%) translateY(-50%) rotate(20deg);
+  }
+
+
+
+  .node-label-tag-bottom-right {
+    right: 0;
+    bottom: 0;
+    transform: translateX(50%) translateY(50%) rotate(-20deg);
+  }
+}

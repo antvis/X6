@@ -1,13 +1,65 @@
 import { alignPoint } from 'dom-align'
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { GeometryUtil, type Point, Rectangle } from '../../geometry'
-import { type EventArgs, Graph } from '../../graph'
-import type { Cell, Node } from '../../model'
+import { DocumentEvents } from '../../constants'
+import {
+  type Point,
+  type PointLike,
+  Rectangle,
+  snapToGrid,
+} from '../../geometry'
+import {
+  type EventArgs,
+  Graph,
+  type GraphPlugin,
+  type Options,
+} from '../../graph'
+import type { CellBaseEventArgs, Node } from '../../model'
 import { type NodeView, View } from '../../view'
-
+import type { Scroller } from '../scroller'
+import type { Snapline } from '../snapline'
 import { content } from './style/raw'
 
-export class Dnd extends View implements Graph.Plugin {
+export interface GetDragNodeOptions {
+  sourceNode: Node
+  targetGraph: Graph
+  draggingGraph: Graph
+}
+
+export interface GetDropNodeOptions extends GetDragNodeOptions {
+  draggingNode: Node
+}
+
+export interface ValidateNodeOptions extends GetDropNodeOptions {
+  droppingNode: Node
+}
+
+export interface DndOptions {
+  target: Graph
+  /**
+   * Should scale the dragging node or not.
+   */
+  scaled?: boolean
+  delegateGraphOptions?: Options
+  draggingContainer?: HTMLElement
+  /**
+   * dnd tool box container.
+   */
+  dndContainer?: HTMLElement
+  getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
+  getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
+  validateNode?: (
+    droppingNode: Node,
+    options: ValidateNodeOptions,
+  ) => boolean | Promise<boolean>
+}
+
+export const DndDefaults: Partial<DndOptions> = {
+  // animation: false,
+  getDragNode: (sourceNode) => sourceNode.clone(),
+  getDropNode: (draggingNode) => draggingNode.clone(),
+}
+
+export class Dnd extends View implements GraphPlugin {
   public name = 'dnd'
 
   protected sourceNode: Node | null
@@ -18,14 +70,14 @@ export class Dnd extends View implements Graph.Plugin {
   protected candidateEmbedView: NodeView | null
   protected delta: Point | null
   protected padding: number | null
-  protected snapOffset: Point.PointLike | null
+  protected snapOffset: PointLike | null
 
-  public options: Dnd.Options
+  public options: DndOptions
   public draggingGraph: Graph
 
   protected get targetScroller() {
     const target = this.options.target
-    const scroller = target.getPlugin<any>('scroller')
+    const scroller = target.getPlugin<Scroller>('scroller')
     return scroller
   }
 
@@ -39,16 +91,16 @@ export class Dnd extends View implements Graph.Plugin {
 
   protected get snapline() {
     const target = this.options.target
-    const snapline = target.getPlugin<any>('snapline')
+    const snapline = target.getPlugin<Snapline>('snapline')
     return snapline
   }
 
-  constructor(options: Partial<Dnd.Options> & { target: Graph }) {
+  constructor(options: Partial<DndOptions> & { target: Graph }) {
     super()
     this.options = {
-      ...Dnd.defaults,
+      ...DndDefaults,
       ...options,
-    } as Dnd.Options
+    } as DndOptions
     this.init()
   }
 
@@ -91,18 +143,18 @@ export class Dnd extends View implements Graph.Plugin {
         e,
         node,
         cell: node,
-        view: this.draggingView!,
+        view: this.draggingView,
         x: local.x,
         y: local.y,
       })
-      this.draggingNode!.on('change:position', this.snap, this)
+      this.draggingNode?.on('change:position', this.snap, this)
     }
 
-    this.delegateDocumentEvents(Dnd.documentEvents, e.data)
+    this.delegateDocumentEvents(DocumentEvents, e.data)
   }
 
   protected isSnaplineEnabled() {
-    return this.snapline && this.snapline.isEnabled()
+    return this.snapline?.isEnabled()
   }
 
   protected prepareDragging(
@@ -161,7 +213,7 @@ export class Dnd extends View implements Graph.Plugin {
   }
 
   protected updateGraphPosition(clientX: number, clientY: number) {
-    const delta = this.delta!
+    const delta = this.delta
     const nodeBBox = this.geometryBBox
     const padding = this.padding || 5
     const offset = {
@@ -185,10 +237,12 @@ export class Dnd extends View implements Graph.Plugin {
 
   protected updateNodePosition(x: number, y: number) {
     const local = this.targetGraph.clientToLocal(x, y)
-    const bbox = this.draggingBBox!
-    local.x -= bbox.width / 2
-    local.y -= bbox.height / 2
-    this.draggingNode!.position(local.x, local.y)
+    const bbox = this.draggingBBox
+    if (bbox) {
+      local.x -= bbox.width / 2
+      local.y -= bbox.height / 2
+      this.draggingNode!.position(local.x, local.y)
+    }
     return local
   }
 
@@ -196,7 +250,7 @@ export class Dnd extends View implements Graph.Plugin {
     cell,
     current,
     options,
-  }: Cell.EventArgs['change:position']) {
+  }: CellBaseEventArgs['change:position']) {
     const node = cell as Node
     if (options.snapped) {
       const bbox = this.draggingBBox
@@ -211,6 +265,14 @@ export class Dnd extends View implements Graph.Plugin {
     } else {
       this.snapOffset = null
     }
+  }
+
+  protected onMouseMove(evt: Dom.MouseMoveEvent) {
+    this.onDragging(evt)
+  }
+
+  protected onMouseUp(evt: Dom.MouseUpEvent) {
+    this.onDragEnd(evt)
   }
 
   protected onDragging(evt: Dom.MouseMoveEvent) {
@@ -350,7 +412,7 @@ export class Dnd extends View implements Graph.Plugin {
     }
   }
 
-  protected isInsideValidArea(p: Point.PointLike) {
+  protected isInsideValidArea(p: PointLike) {
     let targetRect: Rectangle
     let dndRect: Rectangle | null = null
     const targetGraph = this.targetGraph
@@ -359,7 +421,7 @@ export class Dnd extends View implements Graph.Plugin {
     if (this.options.dndContainer) {
       dndRect = this.getDropArea(this.options.dndContainer)
     }
-    const isInsideDndRect = dndRect && dndRect.containsPoint(p)
+    const isInsideDndRect = dndRect?.containsPoint(p)
 
     if (targetScroller) {
       if (targetScroller.options.autoResize) {
@@ -378,7 +440,7 @@ export class Dnd extends View implements Graph.Plugin {
   }
 
   protected getDropArea(elem: Element) {
-    const offset = Dom.offset(elem)!
+    const offset = Dom.offset(elem)
     const scrollTop =
       document.body.scrollTop || document.documentElement.scrollTop
     const scrollLeft =
@@ -391,19 +453,19 @@ export class Dnd extends View implements Graph.Plugin {
         scrollLeft,
       y:
         offset.top +
-        parseInt(Dom.css(elem, 'border-top-width')!, 10) -
+        parseInt(Dom.css(elem, 'border-top-width'), 10) -
         scrollTop,
       width: elem.clientWidth,
       height: elem.clientHeight,
     })
   }
 
-  protected drop(draggingNode: Node, pos: Point.PointLike) {
+  protected drop(draggingNode: Node, pos: PointLike) {
     if (this.isInsideValidArea(pos)) {
       const targetGraph = this.targetGraph
       const targetModel = targetGraph.model
       const local = targetGraph.clientToLocal(pos)
-      const sourceNode = this.sourceNode!
+      const sourceNode = this.sourceNode
       const droppingNode = this.options.getDropNode(draggingNode, {
         sourceNode,
         draggingNode,
@@ -416,8 +478,8 @@ export class Dnd extends View implements Graph.Plugin {
       const gridSize = this.snapOffset ? 1 : targetGraph.getGridSize()
 
       droppingNode.position(
-        GeometryUtil.snapToGrid(local.x, gridSize),
-        GeometryUtil.snapToGrid(local.y, gridSize),
+        snapToGrid(local.x, gridSize),
+        snapToGrid(local.y, gridSize),
       )
 
       droppingNode.removeZIndex()
@@ -464,61 +526,5 @@ export class Dnd extends View implements Graph.Plugin {
   dispose() {
     this.remove()
     CssLoader.clean(this.name)
-  }
-}
-
-export namespace Dnd {
-  export interface Options {
-    target: Graph
-    /**
-     * Should scale the dragging node or not.
-     */
-    scaled?: boolean
-    delegateGraphOptions?: Graph.Options
-    // animation?:
-    //   | boolean
-    //   | {
-    //       duration?: number
-    //       easing?: string
-    //     }
-    draggingContainer?: HTMLElement
-    /**
-     * dnd tool box container.
-     */
-    dndContainer?: HTMLElement
-    getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
-    getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
-    validateNode?: (
-      droppingNode: Node,
-      options: ValidateNodeOptions,
-    ) => boolean | Promise<boolean>
-  }
-
-  export interface GetDragNodeOptions {
-    sourceNode: Node
-    targetGraph: Graph
-    draggingGraph: Graph
-  }
-
-  export interface GetDropNodeOptions extends GetDragNodeOptions {
-    draggingNode: Node
-  }
-
-  export interface ValidateNodeOptions extends GetDropNodeOptions {
-    droppingNode: Node
-  }
-
-  export const defaults: Partial<Options> = {
-    // animation: false,
-    getDragNode: (sourceNode) => sourceNode.clone(),
-    getDropNode: (draggingNode) => draggingNode.clone(),
-  }
-
-  export const documentEvents = {
-    mousemove: 'onDragging',
-    touchmove: 'onDragging',
-    mouseup: 'onDragEnd',
-    touchend: 'onDragEnd',
-    touchcancel: 'onDragEnd',
   }
 }

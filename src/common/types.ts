@@ -1,12 +1,5 @@
 export type Nilable<T> = T | null | undefined
 
-export interface PointLike {
-  x: number
-  y: number
-}
-
-export type PointData = [number, number]
-
 export interface Translation {
   tx: number
   ty: number

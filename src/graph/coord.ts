@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '../geometry'
+import { Point, PointLike, Rectangle, type RectangleLike } from '../geometry'
 import { Dom, Util } from '../common'
 import { Base } from './base'
 
@@ -24,7 +24,7 @@ export class CoordManager extends Base {
     return this.getClientOffset().translate(window.scrollX, window.scrollY)
   }
 
-  snapToGrid(x: number | Point | Point.PointLike, y?: number) {
+  snapToGrid(x: number | Point | PointLike, y?: number) {
     const p =
       typeof x === 'number'
         ? this.clientToLocalPoint(x, y as number)
@@ -32,17 +32,17 @@ export class CoordManager extends Base {
     return p.snapToGrid(this.graph.getGridSize())
   }
 
-  localToGraphPoint(x: number | Point | Point.PointLike, y?: number) {
+  localToGraphPoint(x: number | Point | PointLike, y?: number) {
     const localPoint = Point.create(x, y)
     return Util.transformPoint(localPoint, this.graph.matrix())
   }
 
-  localToClientPoint(x: number | Point | Point.PointLike, y?: number) {
+  localToClientPoint(x: number | Point | PointLike, y?: number) {
     const localPoint = Point.create(x, y)
     return Util.transformPoint(localPoint, this.getClientMatrix())
   }
 
-  localToPagePoint(x: number | Point | Point.PointLike, y?: number) {
+  localToPagePoint(x: number | Point | PointLike, y?: number) {
     const p =
       typeof x === 'number'
         ? this.localToGraphPoint(x, y!)
@@ -51,7 +51,7 @@ export class CoordManager extends Base {
   }
 
   localToGraphRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -61,7 +61,7 @@ export class CoordManager extends Base {
   }
 
   localToClientRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -71,7 +71,7 @@ export class CoordManager extends Base {
   }
 
   localToPageRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -83,17 +83,17 @@ export class CoordManager extends Base {
     return rect.translate(this.getPageOffset())
   }
 
-  graphToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
+  graphToLocalPoint(x: number | Point | PointLike, y?: number) {
     const graphPoint = Point.create(x, y)
     return Util.transformPoint(graphPoint, this.graph.matrix().inverse())
   }
 
-  clientToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
+  clientToLocalPoint(x: number | Point | PointLike, y?: number) {
     const clientPoint = Point.create(x, y)
     return Util.transformPoint(clientPoint, this.getClientMatrix().inverse())
   }
 
-  clientToGraphPoint(x: number | Point | Point.PointLike, y?: number) {
+  clientToGraphPoint(x: number | Point | PointLike, y?: number) {
     const clientPoint = Point.create(x, y)
     return Util.transformPoint(
       clientPoint,
@@ -101,14 +101,14 @@ export class CoordManager extends Base {
     )
   }
 
-  pageToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
+  pageToLocalPoint(x: number | Point | PointLike, y?: number) {
     const pagePoint = Point.create(x, y)
     const graphPoint = pagePoint.diff(this.getPageOffset())
     return this.graphToLocalPoint(graphPoint)
   }
 
   graphToLocalRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -118,7 +118,7 @@ export class CoordManager extends Base {
   }
 
   clientToLocalRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -128,7 +128,7 @@ export class CoordManager extends Base {
   }
 
   clientToGraphRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -141,7 +141,7 @@ export class CoordManager extends Base {
   }
 
   pageToLocalRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
+    x: number | Rectangle | RectangleLike,
     y?: number,
     width?: number,
     height?: number,
@@ -153,5 +153,3 @@ export class CoordManager extends Base {
     return this.graphToLocalRect(graphRect)
   }
 }
-
-export namespace CoordManager {}

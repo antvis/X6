@@ -1,12 +1,13 @@
 {
   "name": "@antv/x6",
-  "version": "2.18.1",
+  "version": "2.19.0",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/x6.min.js",
   "jsdelivr": "dist/x6.min.js",
   "types": "lib/index.d.ts",
+  "type": "module",
   "files": [
     "dist",
     "es",

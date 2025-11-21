@@ -1,21 +1,21 @@
 import type { KeyValue } from '../../common'
-import type { Point } from '../../geometry'
 import type { Graph } from '../../graph'
-import type { Edge } from '../../model'
+import type { Edge, TerminalCellData, TerminalType } from '../../model'
 import type { CellView } from '../../view'
 import { Registry } from '../registry'
 import * as strategies from './main'
+import type { PointLike } from '@/types'
 
 export type ConnectionStrategyDefinition = (
   this: Graph,
-  terminal: Edge.TerminalCellData,
+  terminal: TerminalCellData,
   cellView: CellView,
   magnet: Element,
-  coords: Point.PointLike,
+  coords: PointLike,
   edge: Edge,
-  type: Edge.TerminalType,
+  type: TerminalType,
   options: KeyValue,
-) => Edge.TerminalCellData
+) => TerminalCellData
 
 type Presets = typeof connectionStrategyPresets
 

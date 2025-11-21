@@ -1,10 +1,18 @@
-import { ObjectExt } from '../common'
 import type { Dom, Nilable } from '../common'
+import { ObjectExt } from '../common'
 import { Config } from '../config'
-import type { Rectangle } from '../geometry'
+import type { RectangleLike } from '../geometry'
 import type { Graph } from '../graph'
-import type { Cell, Edge, Model, Node } from '../model'
-import type { PortManager } from '../model/port'
+import type {
+  Cell,
+  Edge,
+  EdgeLabel,
+  Model,
+  Node,
+  TerminalData,
+  TerminalType,
+} from '../model'
+import type { Port } from '../model/port'
 import type {
   ConnectionPointManualItem,
   ConnectionPointNativeItem,
@@ -21,479 +29,452 @@ import { Edge as StandardEdge } from '../shape'
 import type { CellView, EdgeView, NodeView } from '../view'
 import type { CellViewInteracting } from '../view/cell/type'
 import type { MarkupSelectors } from '../view/markup'
-import type { BackgroundManager } from './background'
-import type { GridManager } from './grid'
-import type { HighlightManager } from './highlight'
-import type { MouseWheel } from './mousewheel'
-import type { PanningManager } from './panning'
+import type { BackgroundManagerOptions } from './background'
+import type { GridDrawOptions, GridCommonOptions, GridOptions } from './grid'
+import type { HighlightManagerOptions } from './highlight'
+import type { MouseWheelOptions } from './mousewheel'
+import type { PanningOptions } from './panning'
 
-export namespace Options {
-  interface Common {
-    container: HTMLElement
-    model?: Model
+interface Common {
+  container: HTMLElement
+  model?: Model
 
-    x: number
-    y: number
-    width: number
-    height: number
-    autoResize?: boolean | Element | Document
+  x: number
+  y: number
+  width: number
+  height: number
+  autoResize?: boolean | Element | Document
 
-    background?: false | BackgroundManager.Options
+  background?: false | BackgroundManagerOptions
 
-    scaling: {
-      min?: number
-      max?: number
-    }
-
-    moveThreshold: number
-    clickThreshold: number
-    magnetThreshold: number | 'onleave'
-    preventDefaultDblClick: boolean
-    preventDefaultContextMenu:
-      | boolean
-      | ((this: Graph, { view }: { view: CellView | null }) => boolean)
-    preventDefaultMouseDown: boolean
-    preventDefaultBlankAction: boolean
-    interacting: CellViewInteracting
-
-    async?: boolean
-    virtual?: boolean
-
-    guard: (e: Dom.EventObject, view?: CellView | null) => boolean
-
-    onPortRendered?: (args: OnPortRenderedArgs) => void
-    onEdgeLabelRendered?: (
-      args: OnEdgeLabelRenderedArgs,
-    ) => void | ((args: OnEdgeLabelRenderedArgs) => void)
-
-    createCellView?: (
-      this: Graph,
-      cell: Cell,
-    ) => typeof CellView | (new (...args: any[]) => CellView) | null | undefined
+  scaling: {
+    min?: number
+    max?: number
   }
 
-  export interface ManualBooleans {
-    panning: boolean | Partial<PanningManager.Options>
-    mousewheel: boolean | Partial<MouseWheel.Options>
-    embedding: boolean | Partial<Embedding>
-  }
+  moveThreshold: number
+  clickThreshold: number
+  magnetThreshold: number | 'onleave'
+  preventDefaultDblClick: boolean
+  preventDefaultContextMenu:
+    | boolean
+    | ((this: Graph, { view }: { view: CellView | null }) => boolean)
+  preventDefaultMouseDown: boolean
+  preventDefaultBlankAction: boolean
+  interacting: CellViewInteracting
 
-  export interface Manual extends Partial<Common>, Partial<ManualBooleans> {
-    grid?:
-      | boolean
-      | number
-      | (Partial<GridManager.CommonOptions> & GridManager.DrawGridOptions)
-    connecting?: Partial<Connecting>
-    translating?: Partial<Translating>
-    highlighting?: Partial<Highlighting>
-  }
+  async?: boolean
+  virtual?: boolean
 
-  export interface Definition extends Common {
-    grid: GridManager.Options
-    panning: PanningManager.Options
-    mousewheel: MouseWheel.Options
-    embedding: Embedding
-    connecting: Connecting
-    translating: Translating
-    highlighting: Highlighting
-  }
+  guard: (e: Dom.EventObject, view?: CellView | null) => boolean
+
+  onPortRendered?: (args: OnPortRenderedArgs) => void
+  onEdgeLabelRendered?: (
+    args: OnEdgeLabelRenderedArgs,
+  ) => void | ((args: OnEdgeLabelRenderedArgs) => void)
+
+  createCellView?: (
+    this: Graph,
+    cell: Cell,
+  ) => typeof CellView | (new (...args: any[]) => CellView) | null | undefined
 }
 
-export namespace Options {
-  type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
+export interface ManualBooleans {
+  panning: boolean | Partial<PanningOptions>
+  mousewheel: boolean | Partial<MouseWheelOptions>
+  embedding: boolean | Partial<Embedding>
+}
 
-  type NodeAnchorOptions = string | NodeAnchorNativeItem | NodeAnchorManualItem
-  type EdgeAnchorOptions = string | EdgeAnchorNativeItem | EdgeAnchorManualItem
-  type ConnectionPointOptions =
-    | string
-    | ConnectionPointNativeItem
-    | ConnectionPointManualItem
+export interface GraphManual extends Partial<Common>, Partial<ManualBooleans> {
+  grid?: boolean | number | (Partial<GridCommonOptions> & GridDrawOptions)
+  connecting?: Partial<Connecting>
+  translating?: Partial<Translating>
+  highlighting?: Partial<Highlighting>
+}
 
-  export interface Connecting {
-    /**
-     * Snap edge to the closest node/port in the given radius on dragging.
-     */
-    snap: boolean | { radius: number; anchor?: 'center' | 'bbox' }
+export interface GraphDefinition extends Common {
+  grid: GridOptions
+  panning: PanningOptions
+  mousewheel: MouseWheelOptions
+  embedding: Embedding
+  connecting: Connecting
+  translating: Translating
+  highlighting: Highlighting
+}
 
-    /**
-     * Specify whether connect to point on the graph is allowed.
-     */
-    allowBlank:
-      | boolean
-      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
 
-    /**
-     * When set to `false`, edges can not be connected to the same node,
-     * meaning the source and target of the edge can not be the same node.
-     */
-    allowLoop:
-      | boolean
-      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+type NodeAnchorOptions = string | NodeAnchorNativeItem | NodeAnchorManualItem
+type EdgeAnchorOptions = string | EdgeAnchorNativeItem | EdgeAnchorManualItem
+type ConnectionPointOptions =
+  | string
+  | ConnectionPointNativeItem
+  | ConnectionPointManualItem
 
-    /**
-     * Specify whether connect to node(not the port on the node) is allowed.
-     */
-    allowNode:
-      | boolean
-      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
-
-    /**
-     * Specify whether connect to edge is allowed.
-     */
-    allowEdge:
-      | boolean
-      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
-
-    /**
-     * Specify whether connect to port is allowed.
-     */
-    allowPort:
-      | boolean
-      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
-
-    /**
-     * Specify whether more than one edge connected to the same source and
-     * target node is allowed.
-     */
-    allowMulti:
-      | boolean
-      | 'withPort'
-      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
-
-    /**
-     * Highlights all the available magnets or nodes when a edge is
-     * dragging(reconnecting). This gives a hint to the user to what
-     * other nodes/ports this edge can be connected. What magnets/cells
-     * are available is determined by the `validateConnection` function.
-     */
-    highlight: boolean
-
-    anchor: NodeAnchorOptions
-    sourceAnchor?: NodeAnchorOptions
-    targetAnchor?: NodeAnchorOptions
-    edgeAnchor: EdgeAnchorOptions
-    sourceEdgeAnchor?: EdgeAnchorOptions
-    targetEdgeAnchor?: EdgeAnchorOptions
-
-    connectionPoint: ConnectionPointOptions
-    sourceConnectionPoint?: ConnectionPointOptions
-    targetConnectionPoint?: ConnectionPointOptions
-
-    router: string | RouterNativeItem | RouterManualItem
-    connector: string | ConnectorNativeItem | ConnectorManualItem
-
-    createEdge?: (
-      this: Graph,
-      args: {
-        sourceCell: Cell
-        sourceView: CellView
-        sourceMagnet: Element
-      },
-    ) => Nilable<Edge> | void
-
-    /**
-     * Check whether to add a new edge to the graph when user clicks
-     * on an a magnet.
-     */
-    validateMagnet?: (
-      this: Graph,
-      args: {
-        cell: Cell
-        view: CellView
-        magnet: Element
-        e: Dom.MouseDownEvent | Dom.MouseEnterEvent
-      },
-    ) => boolean
-
-    /**
-     * Custom validation on stop draggin the edge arrowhead(source/target).
-     * If the function returns `false`, the edge is either removed(edges
-     * which are created during the interaction) or reverted to the state
-     * before the interaction.
-     */
-    validateEdge?: (
-      this: Graph,
-      args: {
-        edge: Edge
-        type: Edge.TerminalType
-        previous: Edge.TerminalData
-      },
-    ) => boolean
-
-    /**
-     * Check whether to allow or disallow the edge connection while an
-     * arrowhead end (source/target) being changed.
-     */
-    validateConnection: (this: Graph, args: ValidateConnectionArgs) => boolean
-  }
-
-  export interface ValidateConnectionArgs {
-    type?: Edge.TerminalType | null
-    edge?: Edge | null
-    edgeView?: EdgeView | null
-    sourceCell?: Cell | null
-    targetCell?: Cell | null
-    sourceView?: CellView | null
-    targetView?: CellView | null
-    sourcePort?: string | null
-    targetPort?: string | null
-    sourceMagnet?: Element | null
-    targetMagnet?: Element | null
-  }
-
-  export interface Translating {
-    /**
-     * Restrict the translation (movement) of nodes by a given bounding box.
-     * If set to `true`, the user will not be able to move nodes outside the
-     * boundary of the graph area.
-     */
-    restrict:
-      | boolean
-      | OptionItem<CellView | null, Rectangle.RectangleLike | number | null>
-    /**
-     * After a node is moved, if it overlaps with other nodes, it will be
-     * automatically offset (by default, no offset occurs).
-     */
-    autoOffset?: boolean
-  }
-
-  export interface Embedding {
-    enabled?: boolean
-
-    /**
-     * Determines the way how a cell finds a suitable parent when it's dragged
-     * over the graph. The cell with the highest z-index (visually on the top)
-     * will be chosen.
-     */
-    findParent?:
-      | 'bbox'
-      | 'center'
-      | 'topLeft'
-      | 'topRight'
-      | 'bottomLeft'
-      | 'bottomRight'
-      | ((this: Graph, args: { node: Node; view: NodeView }) => Cell[])
-
-    /**
-     * If enabled only the node on the very front is taken into account for the
-     * embedding. If disabled the nodes under the dragged view are tested one by
-     * one (from front to back) until a valid parent found.
-     */
-    frontOnly?: boolean
-
-    /**
-     * Check whether to allow or disallow the node embedding while it's being
-     * translated. By default, all nodes can be embedded into all other nodes.
-     */
-    validate: (
-      this: Graph,
-      args: {
-        child: Node
-        parent: Node
-        childView: CellView
-        parentView: CellView
-      },
-    ) => boolean
-  }
+export interface Connecting {
+  /**
+   * Snap edge to the closest node/port in the given radius on dragging.
+   */
+  snap: boolean | { radius: number; anchor?: 'center' | 'bbox' }
 
   /**
-   * Configure which highlighter to use (and with which options) for
-   * each type of interaction.
+   * Specify whether connect to point on the graph is allowed.
    */
-  export interface Highlighting {
-    /**
-     * The default highlighter to use (and options) when none is specified
-     */
-    default: HighlightManager.Options
-    /**
-     * When a cell is dragged over another cell in embedding mode.
-     */
-    embedding?: HighlightManager.Options | null
-    /**
-     * When showing all nodes to which a valid connection can be made.
-     */
-    nodeAvailable?: HighlightManager.Options | null
-    /**
-     * When showing all magnets to which a valid connection can be made.
-     */
-    magnetAvailable?: HighlightManager.Options | null
-    /**
-     * When a valid edge connection can be made to an node.
-     */
-    magnetAdsorbed?: HighlightManager.Options | null
-  }
+  allowBlank: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+  /**
+   * When set to `false`, edges can not be connected to the same node,
+   * meaning the source and target of the edge can not be the same node.
+   */
+  allowLoop: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+  /**
+   * Specify whether connect to node(not the port on the node) is allowed.
+   */
+  allowNode: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+  /**
+   * Specify whether connect to edge is allowed.
+   */
+  allowEdge: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+  /**
+   * Specify whether connect to port is allowed.
+   */
+  allowPort: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+  /**
+   * Specify whether more than one edge connected to the same source and
+   * target node is allowed.
+   */
+  allowMulti:
+    | boolean
+    | 'withPort'
+    | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+  /**
+   * Highlights all the available magnets or nodes when a edge is
+   * dragging(reconnecting). This gives a hint to the user to what
+   * other nodes/ports this edge can be connected. What magnets/cells
+   * are available is determined by the `validateConnection` function.
+   */
+  highlight: boolean
+
+  anchor: NodeAnchorOptions
+  sourceAnchor?: NodeAnchorOptions
+  targetAnchor?: NodeAnchorOptions
+  edgeAnchor: EdgeAnchorOptions
+  sourceEdgeAnchor?: EdgeAnchorOptions
+  targetEdgeAnchor?: EdgeAnchorOptions
+
+  connectionPoint: ConnectionPointOptions
+  sourceConnectionPoint?: ConnectionPointOptions
+  targetConnectionPoint?: ConnectionPointOptions
+
+  router: string | RouterNativeItem | RouterManualItem
+  connector: string | ConnectorNativeItem | ConnectorManualItem
+
+  createEdge?: (
+    this: Graph,
+    args: {
+      sourceCell: Cell
+      sourceView: CellView
+      sourceMagnet: Element
+    },
+  ) => Nilable<Edge> | void
+
+  /**
+   * Check whether to add a new edge to the graph when user clicks
+   * on an a magnet.
+   */
+  validateMagnet?: (
+    this: Graph,
+    args: {
+      cell: Cell
+      view: CellView
+      magnet: Element
+      e: Dom.MouseDownEvent | Dom.MouseEnterEvent
+    },
+  ) => boolean
+
+  /**
+   * Custom validation on stop draggin the edge arrowhead(source/target).
+   * If the function returns `false`, the edge is either removed(edges
+   * which are created during the interaction) or reverted to the state
+   * before the interaction.
+   */
+  validateEdge?: (
+    this: Graph,
+    args: {
+      edge: Edge
+      type: TerminalType
+      previous: TerminalData
+    },
+  ) => boolean
+
+  /**
+   * Check whether to allow or disallow the edge connection while an
+   * arrowhead end (source/target) being changed.
+   */
+  validateConnection: (this: Graph, args: ValidateConnectionArgs) => boolean
 }
 
-export namespace Options {
-  export function get(options: Partial<Manual>) {
-    const { grid, panning, mousewheel, embedding, ...others } = options
+export interface ValidateConnectionArgs {
+  type?: TerminalType | null
+  edge?: Edge | null
+  edgeView?: EdgeView | null
+  sourceCell?: Cell | null
+  targetCell?: Cell | null
+  sourceView?: CellView | null
+  targetView?: CellView | null
+  sourcePort?: string | null
+  targetPort?: string | null
+  sourceMagnet?: Element | null
+  targetMagnet?: Element | null
+}
 
-    // size
-    // ----
-    const container = options.container
-    if (container != null) {
-      if (others.width == null) {
-        others.width = container.clientWidth
-      }
+export interface Translating {
+  /**
+   * Restrict the translation (movement) of nodes by a given bounding box.
+   * If set to `true`, the user will not be able to move nodes outside the
+   * boundary of the graph area.
+   */
+  restrict: boolean | OptionItem<CellView | null, RectangleLike | number | null>
+  /**
+   * After a node is moved, if it overlaps with other nodes, it will be
+   * automatically offset (by default, no offset occurs).
+   */
+  autoOffset?: boolean
+}
 
-      if (others.height == null) {
-        others.height = container.clientHeight
-      }
-    } else {
-      throw new Error(
-        `Ensure the container of the graph is specified and valid`,
-      )
+export interface Embedding {
+  enabled?: boolean
+
+  /**
+   * Determines the way how a cell finds a suitable parent when it's dragged
+   * over the graph. The cell with the highest z-index (visually on the top)
+   * will be chosen.
+   */
+  findParent?:
+    | 'bbox'
+    | 'center'
+    | 'topLeft'
+    | 'topRight'
+    | 'bottomLeft'
+    | 'bottomRight'
+    | ((this: Graph, args: { node: Node; view: NodeView }) => Cell[])
+
+  /**
+   * If enabled only the node on the very front is taken into account for the
+   * embedding. If disabled the nodes under the dragged view are tested one by
+   * one (from front to back) until a valid parent found.
+   */
+  frontOnly?: boolean
+
+  /**
+   * Check whether to allow or disallow the node embedding while it's being
+   * translated. By default, all nodes can be embedded into all other nodes.
+   */
+  validate: (
+    this: Graph,
+    args: {
+      child: Node
+      parent: Node
+      childView: CellView
+      parentView: CellView
+    },
+  ) => boolean
+}
+
+/**
+ * Configure which highlighter to use (and with which options) for
+ * each type of interaction.
+ */
+export interface Highlighting {
+  /**
+   * The default highlighter to use (and options) when none is specified
+   */
+  default: HighlightManagerOptions
+  /**
+   * When a cell is dragged over another cell in embedding mode.
+   */
+  embedding?: HighlightManagerOptions | null
+  /**
+   * When showing all nodes to which a valid connection can be made.
+   */
+  nodeAvailable?: HighlightManagerOptions | null
+  /**
+   * When showing all magnets to which a valid connection can be made.
+   */
+  magnetAvailable?: HighlightManagerOptions | null
+  /**
+   * When a valid edge connection can be made to an node.
+   */
+  magnetAdsorbed?: HighlightManagerOptions | null
+}
+
+export function getOptions(options: Partial<GraphManual>) {
+  const { grid, panning, mousewheel, embedding, ...others } = options
+
+  // size
+  // ----
+  const container = options.container
+  if (container != null) {
+    if (others.width == null) {
+      others.width = container.clientWidth
     }
 
-    const result = ObjectExt.merge({}, defaults, others) as Options.Definition
-
-    // grid
-    // ----
-    const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
-    if (typeof grid === 'number') {
-      result.grid = { size: grid, visible: false }
-    } else if (typeof grid === 'boolean') {
-      result.grid = { ...defaultGrid, visible: grid }
-    } else {
-      result.grid = { ...defaultGrid, ...grid }
+    if (others.height == null) {
+      others.height = container.clientHeight
     }
+  } else {
+    throw new Error(`Ensure the container of the graph is specified and valid`)
+  }
 
-    // booleas
-    // -------
-    const booleas: (keyof Options.ManualBooleans)[] = [
-      'panning',
-      'mousewheel',
-      'embedding',
-    ]
+  const result = ObjectExt.merge({}, defaults, others) as GraphDefinition
 
-    booleas.forEach((key) => {
-      const val = options[key]
-      if (typeof val === 'boolean') {
-        result[key].enabled = val
-      } else {
-        result[key] = {
-          ...result[key],
-          ...(val as any),
-        }
+  // grid
+  // ----
+  const defaultGrid: GridCommonOptions = { size: 10, visible: false }
+  if (typeof grid === 'number') {
+    result.grid = { size: grid, visible: false }
+  } else if (typeof grid === 'boolean') {
+    result.grid = { ...defaultGrid, visible: grid }
+  } else {
+    result.grid = { ...defaultGrid, ...grid }
+  }
+
+  // booleas
+  // -------
+  const booleas: (keyof ManualBooleans)[] = [
+    'panning',
+    'mousewheel',
+    'embedding',
+  ]
+
+  booleas.forEach((key) => {
+    const val = options[key]
+    if (typeof val === 'boolean') {
+      result[key].enabled = val
+    } else if (val != null) {
+      result[key] = {
+        ...result[key],
+        ...(val as any),
       }
-    })
+    }
+  })
 
-    return result
-  }
+  return result
 }
 
-export namespace Options {
-  export interface OnPortRenderedArgs {
-    node: Node
-    port: PortManager.Port
-    container: Element
-    selectors?: MarkupSelectors
-    labelContainer?: Element
-    labelSelectors?: MarkupSelectors | null
-    contentContainer: Element
-    contentSelectors?: MarkupSelectors
-  }
-
-  export interface OnEdgeLabelRenderedArgs {
-    edge: Edge
-    label: Edge.Label
-    container: Element
-    selectors: MarkupSelectors
-  }
+export interface OnPortRenderedArgs {
+  node: Node
+  port: Port
+  container: Element
+  selectors?: MarkupSelectors
+  labelContainer?: Element
+  labelSelectors?: MarkupSelectors | null
+  contentContainer: Element
+  contentSelectors?: MarkupSelectors
 }
 
-export namespace Options {
-  export const defaults: Partial<Definition> = {
-    x: 0,
-    y: 0,
-    scaling: {
-      min: 0.01,
-      max: 16,
-    },
-    grid: {
-      size: 10,
-      visible: false,
-    },
-    background: false,
+export interface OnEdgeLabelRenderedArgs {
+  edge: Edge
+  label: EdgeLabel
+  container: Element
+  selectors: MarkupSelectors
+}
 
-    panning: {
-      enabled: false,
-      eventTypes: ['leftMouseDown'],
-    },
-    mousewheel: {
-      enabled: false,
-      factor: 1.2,
-      zoomAtMousePosition: true,
-    },
+export const defaults: Partial<GraphDefinition> = {
+  x: 0,
+  y: 0,
+  scaling: {
+    min: 0.01,
+    max: 16,
+  },
+  grid: {
+    size: 10,
+    visible: false,
+  },
+  background: false,
 
-    highlighting: {
-      default: {
-        name: 'stroke',
-        args: {
-          padding: 3,
-        },
-      },
-      nodeAvailable: {
-        name: 'className',
-        args: {
-          className: Config.prefix('available-node'),
-        },
-      },
-      magnetAvailable: {
-        name: 'className',
-        args: {
-          className: Config.prefix('available-magnet'),
-        },
+  panning: {
+    enabled: true,
+    eventTypes: ['leftMouseDown'],
+  },
+  mousewheel: {
+    enabled: false,
+    factor: 1.2,
+    zoomAtMousePosition: true,
+  },
+
+  highlighting: {
+    default: {
+      name: 'stroke',
+      args: {
+        padding: 3,
       },
     },
-    connecting: {
-      snap: false,
-      allowLoop: true,
-      allowNode: true,
-      allowEdge: false,
-      allowPort: true,
-      allowBlank: true,
-      allowMulti: true,
-      highlight: false,
-
-      anchor: 'center',
-      edgeAnchor: 'ratio',
-      connectionPoint: 'boundary',
-      router: 'normal',
-      connector: 'normal',
-
-      validateConnection(this: Graph, { type, sourceView, targetView }) {
-        const view = type === 'target' ? targetView : sourceView
-        return view != null
-      },
-
-      createEdge() {
-        return new StandardEdge()
+    nodeAvailable: {
+      name: 'className',
+      args: {
+        className: Config.prefix('available-node'),
       },
     },
-    translating: {
-      restrict: false,
+    magnetAvailable: {
+      name: 'className',
+      args: {
+        className: Config.prefix('available-magnet'),
+      },
     },
-    embedding: {
-      enabled: false,
-      findParent: 'bbox',
-      frontOnly: true,
-      validate: () => true,
+  },
+  connecting: {
+    snap: false,
+    allowLoop: true,
+    allowNode: true,
+    allowEdge: false,
+    allowPort: true,
+    allowBlank: true,
+    allowMulti: true,
+    highlight: false,
+
+    anchor: 'center',
+    edgeAnchor: 'ratio',
+    connectionPoint: 'boundary',
+    router: 'normal',
+    connector: 'normal',
+
+    validateConnection(this: Graph, { type, sourceView, targetView }) {
+      const view = type === 'target' ? targetView : sourceView
+      return view != null
     },
 
-    moveThreshold: 0,
-    clickThreshold: 0,
-    magnetThreshold: 0,
-    preventDefaultDblClick: true,
-    preventDefaultMouseDown: false,
-    preventDefaultContextMenu: true,
-    preventDefaultBlankAction: true,
-    interacting: {
-      edgeLabelMovable: false,
+    createEdge() {
+      return new StandardEdge()
     },
+  },
+  translating: {
+    restrict: false,
+  },
+  embedding: {
+    enabled: false,
+    findParent: 'bbox',
+    frontOnly: true,
+    validate: () => true,
+  },
 
-    async: true,
-    virtual: false,
-    guard: () => false,
-  }
+  moveThreshold: 0,
+  clickThreshold: 0,
+  magnetThreshold: 0,
+  preventDefaultDblClick: true,
+  preventDefaultMouseDown: false,
+  preventDefaultContextMenu: true,
+  preventDefaultBlankAction: true,
+  interacting: {
+    edgeLabelMovable: false,
+  },
+
+  async: true,
+  virtual: false,
+  guard: () => false,
 }

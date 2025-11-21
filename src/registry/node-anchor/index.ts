@@ -1,9 +1,10 @@
 import type { KeyValue } from '../../common'
 import type { Point } from '../../geometry'
-import type { Edge } from '../../model'
+import type { TerminalType } from '../../model'
 import type { EdgeView, NodeView } from '../../view'
 import { Registry } from '../registry'
 import * as anchors from './main'
+import type { PointLike } from '@/types'
 
 export type NodeAnchorDefinition<T> = (
   this: EdgeView,
@@ -24,9 +25,9 @@ export type NodeAnchorDefinition<T> = (
    * anchor, it is the last vertex, or if there are no vertices the source
    * anchor...
    */
-  ref: Point | Point.PointLike | SVGElement,
+  ref: Point | PointLike | SVGElement,
   args: T,
-  type: Edge.TerminalType,
+  type: TerminalType,
 ) => Point
 
 type CommonDefinition = NodeAnchorDefinition<KeyValue>

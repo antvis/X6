@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
+import { type CellView, type Edge, Graph, Node, Snapline } from '../../src'
 import { createTestGraph } from '../utils'
-import { Node, Graph, Snapline, CellView, Edge } from '../../src'
 
 const testGraphJSON = {
   nodes: [
@@ -126,7 +126,9 @@ describe('Graph: 基础节点/边操作', () => {
     })
 
     expect(graph.getCellById('e1')).toBeTruthy()
-    await expect(graph).toMatchDOMSnapshot(__dirname, 'graph')
+    await expect(graph).toMatchDOMSnapshot(__dirname, 'graph', {
+      copyStyles: false,
+    })
 
     cleanup()
   })
@@ -630,7 +632,7 @@ describe('Graph: View / 视图查找', () => {
     const { graph, cleanup } = createTestGraph()
     const node = graph.addNode({ id: 'node1' })
     const view = graph.findViewByCell(node) as CellView
-    const elem = view?.el
+    const elem = view?.container
 
     if (elem) {
       const foundView = graph.findViewByElem(elem)
@@ -1105,6 +1107,24 @@ describe('Graph: Transform / 补充未覆盖方法', () => {
 
     const contentBBox = graph.getContentBBox()
     expect(contentBBox).toEqual(contentArea)
+
+    cleanup()
+  })
+
+  it('getGraphArea: 当存在 scroller 插件时返回可视区域', () => {
+    const { graph, cleanup } = createTestGraph()
+    const vis = { x: 5, y: 6, width: 123, height: 456 }
+    vi.spyOn(graph, 'getPlugin').mockImplementation((name: string) => {
+      if (name === 'scroller') {
+        return {
+          getVisibleArea: vi.fn(() => vis),
+        } as any
+      }
+      return null as any
+    })
+
+    const area = graph.getGraphArea()
+    expect(area).toEqual(vis)
 
     cleanup()
   })

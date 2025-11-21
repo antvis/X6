@@ -1,4 +1,4 @@
-import { Platform } from '../platform'
+import { isApplyingHMR } from '../platform'
 
 interface CssModule {
   name: string
@@ -17,7 +17,7 @@ export function ensure(name: string, content: string) {
     }
   }
 
-  if (!Platform.isApplyingHMR()) {
+  if (!isApplyingHMR()) {
     const styleElement = document.createElement('style')
     styleElement.setAttribute('type', 'text/css')
     styleElement.textContent = content

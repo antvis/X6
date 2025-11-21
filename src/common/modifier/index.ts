@@ -1,6 +1,6 @@
 import type { Dom } from '../dom'
 
-export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift'
+export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift' | 'space'
 
 export function parseModifierKey(modifiers: string | ModifierKey[]) {
   const or: ModifierKey[] = []

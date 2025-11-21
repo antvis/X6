@@ -3,9 +3,9 @@ import type { Point, Rectangle } from '../../geometry'
 import type { CellAttrs } from '../attr'
 import { Registry } from '../registry'
 import * as layouts from './main'
-
+import type { PointLike } from '@/types'
 export interface PortLabelLayoutResult {
-  position: Point.PointLike
+  position: PointLike
   angle: number
   attrs: CellAttrs
 }

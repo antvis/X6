@@ -38,7 +38,7 @@ graph.addEdge({
     { x: 200, y: 200 },
     { x: 380, y: 120 },
   ],
-  // https://x6.antv.vision/zh/docs/api/registry/router#normal
+  // https://x6.antv.antgroup.com/api/registry/router#normal
   router: {
     name: 'normal',
   },

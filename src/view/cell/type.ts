@@ -1,10 +1,10 @@
-import type { Cell } from '@/model'
 import type { Dom, KeyValue } from '../../common'
 import type { Graph } from '../../graph'
+import type { Cell } from '../../model'
+import type { ViewEvents } from '../../types'
 import type { EdgeViewEventArgs } from '../edge/type'
 import type { FlagManagerActions } from '../flag'
 import type { NodeViewEventArgs } from '../node/type'
-import type { View } from '../view'
 import type { CellView } from '.'
 
 export interface CellViewOptions {
@@ -14,8 +14,8 @@ export interface CellViewOptions {
   rootSelector: string
   bootstrap: FlagManagerActions
   actions: KeyValue<FlagManagerActions>
-  events?: View.Events | null
-  documentEvents?: View.Events | null
+  events?: ViewEvents | null
+  documentEvents?: ViewEvents | null
 }
 
 type Interactable = boolean | ((this: Graph, cellView: CellView) => boolean)
@@ -103,6 +103,7 @@ export interface CellViewEventArgs
     options: CellViewHighlightOptions
   }
   'cell:unhighlight': CellViewEventArgs['cell:highlight']
+  'view:render': { view: CellView }
 }
 
 type CellViewClass = typeof CellView

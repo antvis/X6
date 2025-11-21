@@ -1,6 +1,17 @@
-import { Dom, disposable, isModifierKeyMatch } from '../common'
 import type { ModifierKey } from '../common'
+import { Dom, disposable, isModifierKeyMatch } from '../common'
 import { Base } from './base'
+
+type EventType =
+  | 'leftMouseDown'
+  | 'rightMouseDown'
+  | 'mouseWheel'
+  | 'mouseWheelDown'
+export interface PanningOptions {
+  enabled?: boolean
+  modifiers?: string | ModifierKey[] | null
+  eventTypes?: EventType[]
+}
 
 export class PanningManager extends Base {
   private panning: boolean
@@ -60,7 +71,7 @@ export class PanningManager extends Base {
     ;(e as any).spaceKey = this.isSpaceKeyPressed
     return (
       this.pannable &&
-      isModifierKeyMatch(e, this.widgetOptions.modifiers as ModifierKey, strict)
+      isModifierKeyMatch(e, this.widgetOptions.modifiers, strict)
     )
   }
 
@@ -170,6 +181,10 @@ export class PanningManager extends Base {
 
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.widgetOptions.eventTypes
+ 
+    const isTouchEvent = (typeof e.type === 'string' && e.type.startsWith('touch')) || e.pointerType === 'touch'
+    if (isTouchEvent) return eventTypes?.includes('leftMouseDown')
+
     return (
       (eventTypes?.includes('leftMouseDown') && e.button === 0) ||
       (eventTypes?.includes('mouseWheelDown') && e.button === 1)
@@ -228,18 +243,5 @@ export class PanningManager extends Base {
   @disposable()
   dispose() {
     this.stopListening()
-  }
-}
-
-export namespace PanningManager {
-  type EventType =
-    | 'leftMouseDown'
-    | 'rightMouseDown'
-    | 'mouseWheel'
-    | 'mouseWheelDown'
-  export interface Options {
-    enabled?: boolean
-    modifiers?: string | Array<ModifierKey | 'space'> | null
-    eventTypes?: EventType[]
   }
 }

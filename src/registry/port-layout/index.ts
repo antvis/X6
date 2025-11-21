@@ -1,10 +1,10 @@
 import type { KeyValue } from '../../common'
-import type { Point, Rectangle } from '../../geometry'
+import type { PointLike, Rectangle } from '../../geometry'
 import { Registry } from '../registry'
 import * as layouts from './main'
 
 export interface PortLayoutResult {
-  position: Point.PointLike
+  position: PointLike
   angle?: number
 }
 

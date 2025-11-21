@@ -1,11 +1,31 @@
 /* eslint-disable no-constructor-return */
 
 import { Line } from './line'
-import { Point } from './point'
+import { Point, PointOptions } from './point'
 import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
 
+type HullRecord = [Point, number, number]
 export class Polyline extends Geometry {
+  static isPolyline(instance: any): instance is Polyline {
+    return instance != null && instance instanceof Polyline
+  }
+
+  static parse(svgString: string) {
+    const str = svgString.trim()
+    if (str === '') {
+      return new Polyline()
+    }
+
+    const points = []
+
+    const coords = str.split(/\s*,\s*|\s+/)
+    for (let i = 0, ii = coords.length; i < ii; i += 2) {
+      points.push({ x: +coords[i], y: +coords[i + 1] })
+    }
+
+    return new Polyline(points)
+  }
   points: Point[]
 
   public get start() {
@@ -16,7 +36,7 @@ export class Polyline extends Geometry {
     return this.points[this.points.length - 1] || null
   }
 
-  constructor(points?: (Point.PointLike | Point.PointData)[] | string) {
+  constructor(points?: PointOptions[] | string) {
     super()
     if (points != null) {
       if (typeof points === 'string') {
@@ -28,23 +48,19 @@ export class Polyline extends Geometry {
     }
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin: Point.PointLike | Point.PointData = new Point(),
-  ) {
+  scale(sx: number, sy: number, origin: PointOptions = new Point()) {
     this.points.forEach((p) => p.scale(sx, sy, origin))
     return this
   }
 
-  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: PointOptions) {
     this.points.forEach((p) => p.rotate(angle, origin))
     return this
   }
 
   translate(dx: number, dy: number): this
-  translate(p: Point.PointLike | Point.PointData): this
-  translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {
+  translate(p: PointOptions): this
+  translate(dx: number | PointOptions, dy?: number): this {
     const t = Point.create(dx, dy)
     this.points.forEach((p) => p.translate(t.x, t.y))
     return this
@@ -80,12 +96,12 @@ export class Polyline extends Geometry {
     return new Rectangle(x1, y1, x2 - x1, y2 - y1)
   }
 
-  closestPoint(p: Point.PointLike | Point.PointData) {
+  closestPoint(p: PointOptions) {
     const cpLength = this.closestPointLength(p)
     return this.pointAtLength(cpLength)
   }
 
-  closestPointLength(p: Point.PointLike | Point.PointData) {
+  closestPointLength(p: PointOptions) {
     const points = this.points
     const count = points.length
     if (count === 0 || count === 1) {
@@ -113,7 +129,7 @@ export class Polyline extends Geometry {
     return cpLength
   }
 
-  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: PointOptions) {
     const length = this.length()
     if (length === 0) {
       return 0
@@ -123,12 +139,12 @@ export class Polyline extends Geometry {
     return cpLength / length
   }
 
-  closestPointTangent(p: Point.PointLike | Point.PointData) {
+  closestPointTangent(p: PointOptions) {
     const cpLength = this.closestPointLength(p)
     return this.tangentAtLength(cpLength)
   }
 
-  containsPoint(p: Point.PointLike | Point.PointData) {
+  containsPoint(p: PointOptions) {
     if (this.points.length === 0) {
       return false
     }
@@ -416,7 +432,7 @@ export class Polyline extends Geometry {
     // from start point to current point and the x-axis (theta).
 
     // Step 2a: create the point records = [point, originalIndex, angle]
-    const sortedRecords: Types.HullRecord[] = []
+    const sortedRecords: HullRecord[] = []
     for (let i = 0; i < count; i += 1) {
       let angle = startPoint.theta(points[i])
       if (angle === 0) {
@@ -455,8 +471,8 @@ export class Polyline extends Geometry {
     // Dictionary of points with left turns - cannot be on the hull.
     const insidePoints: { [key: string]: Point } = {}
     // Stack of records with right turns - hull point candidates.
-    const hullRecords: Types.HullRecord[] = []
-    const getKey = (record: Types.HullRecord) =>
+    const hullRecords: HullRecord[] = []
+    const getKey = (record: HullRecord) =>
       `${record[0].toString()}@${record[1]}`
 
     while (sortedRecords.length !== 0) {
@@ -611,32 +627,4 @@ export class Polyline extends Geometry {
   serialize() {
     return this.points.map((p) => `${p.serialize()}`).join(' ')
   }
-}
-
-export namespace Polyline {
-  export function isPolyline(instance: any): instance is Polyline {
-    return instance != null && instance instanceof Polyline
-  }
-}
-
-export namespace Polyline {
-  export function parse(svgString: string) {
-    const str = svgString.trim()
-    if (str === '') {
-      return new Polyline()
-    }
-
-    const points = []
-
-    const coords = str.split(/\s*,\s*|\s+/)
-    for (let i = 0, ii = coords.length; i < ii; i += 2) {
-      points.push({ x: +coords[i], y: +coords[i + 1] })
-    }
-
-    return new Polyline(points)
-  }
-}
-
-namespace Types {
-  export type HullRecord = [Point, number, number]
 }

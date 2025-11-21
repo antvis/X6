@@ -7,7 +7,7 @@ redirect_from:
   - /en/docs/tutorial/intermediate
 ---
 
-:::info{title="In this chapter, you will learn about"}
+:::info{title="This chapter mainly introduces knowledge related to Vue nodes. By reading, you can learn"}
 
 - How to use Vue components to render node content
 - How to update node content
@@ -16,10 +16,10 @@ redirect_from:
 
 ## Rendering Nodes
 
-We provide a standalone package `@antv/x6-vue-shape` to render nodes using Vue components.
+We provide a standalone package `@antv/x6-vue-shape` for rendering nodes with Vue components.
 
 :::warning{title=Note}
-It is important to ensure that the versions of x6 and x6-vue-shape match, meaning both packages should use the same major version.
+Version compatibility: X6 1.x uses x6-vue-shape 1.x; X6 2.x and 3.x use x6-vue-shape 2.x.
 :::
 
 ```html
@@ -98,7 +98,7 @@ The content of the node component is as follows:
 </script>
 ```
 
-The final effect is as follows:
+The result is as follows:
 
 <iframe src="/demos/vue/basic/index.html" style="width: 100%; height: 260px; border: 0px; overflow: hidden;"></iframe>
 
@@ -152,9 +152,9 @@ export default defineComponent({
 
 <iframe src="/demos/vue/update/index.html" style="width: 100%; height: 260px; border: 0px; overflow: hidden;"></iframe>
 
-## Using in Vue2
+## Using in Vue 2
 
-In the above example, we used `teleport`, which is a feature in `Vue3`. How can we use it in `Vue2`?
+In the above example, we used `Teleport`, a feature in `Vue 3`. How can we use it in `Vue 2`?
 
 ```html
 <template>
@@ -196,5 +196,5 @@ In the above example, we used `teleport`, which is a feature in `Vue3`. How can 
 The node component is written in the same way as above.
 
 :::warning{title=Note}
-In Vue2, there are some limitations on the content of node components, such as the inability to use Vuex, i18n, element-ui, etc.
+In Vue 2, node components have some limitations, such as the inability to use Vuex, i18n, and Element UI.
 :::

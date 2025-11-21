@@ -1,21 +1,19 @@
-import { Store } from './store'
+import type { EventTarget, HandlerObject } from './store'
 import { EventObject } from './object'
 import { EventHandler } from './types'
 
-export namespace EventHook {
-  const cache: { [type: string]: EventHook } = {}
+const cache: { [type: string]: EventHook } = {}
 
-  export function get(type: string) {
-    return cache[type] || {}
-  }
+export function get(type: string) {
+  return cache[type] || {}
+}
 
-  export function register(type: string, hook: EventHook) {
-    cache[type] = hook
-  }
+export function register(type: string, hook: EventHook) {
+  cache[type] = hook
+}
 
-  export function unregister(type: string) {
-    delete cache[type]
-  }
+export function unregister(type: string) {
+  delete cache[type]
 }
 
 export interface EventHook {
@@ -73,10 +71,10 @@ export interface EventHook {
    *
    */
   setup?: (
-    elem: Store.EventTarget,
+    elem: EventTarget,
     data: any,
     namespaces: string[],
-    eventHandle: EventHandler<Store.EventTarget, any>,
+    eventHandle: EventHandler<EventTarget, any>,
   ) => any | false
 
   /**
@@ -96,9 +94,9 @@ export interface EventHook {
    *
    */
   teardown?: (
-    elem: Store.EventTarget,
+    elem: EventTarget,
     namespaces: string[],
-    eventHandle: EventHandler<Store.EventTarget, any>,
+    eventHandle: EventHandler<EventTarget, any>,
   ) => any | false
 
   /**
@@ -107,7 +105,7 @@ export interface EventHook {
    * handler is being added, and the `handleObj` argument is as described in the
    * section above. The return value of this hook is ignored.
    */
-  add?: (elem: Store.EventTarget, handleObj: Store.HandlerObject) => void
+  add?: (elem: EventTarget, handleObj: HandlerObject) => void
 
   /**
    * When an event handler is removed from an element using an API such as
@@ -116,7 +114,7 @@ export interface EventHook {
    * section above. The return value of this hook is ignored.
    *
    */
-  remove?: (elem: Store.EventTarget, handleObj: Store.HandlerObject) => void
+  remove?: (elem: EventTarget, handleObj: HandlerObject) => void
 
   /**
    * The handle hook is called when the event has occurred and me would
@@ -127,7 +125,7 @@ export interface EventHook {
    * handled, and `event.handleObj` property has the detailed event information.
    *
    */
-  handle?: (elem: Store.EventTarget, event: EventObject, ...args: any[]) => void
+  handle?: (elem: EventTarget, event: EventObject, ...args: any[]) => void
 
   /**
    * Called when the `.trigger()` method is used to trigger an event for the
@@ -139,11 +137,7 @@ export interface EventHook {
    * data passed by `.trigger()` if present.
    *
    */
-  trigger?: (
-    elem: Store.EventTarget,
-    event: EventObject,
-    data: any,
-  ) => any | false
+  trigger?: (elem: EventTarget, event: EventObject, data: any) => any | false
 
   /**
    * When the `.trigger()` method finishes running all the event handlers for
@@ -156,12 +150,12 @@ export interface EventHook {
    * called; otherwise it is not.
    */
   preventDefault?: (
-    elem: Store.EventTarget,
+    elem: EventTarget,
     event: EventObject,
     data: any,
   ) => any | false
 
-  preDispatch?: (elem: Store.EventTarget, event: EventObject) => void | false
+  preDispatch?: (elem: EventTarget, event: EventObject) => void | false
 
-  postDispatch?: (elem: Store.EventTarget, event: EventObject) => void
+  postDispatch?: (elem: EventTarget, event: EventObject) => void
 }

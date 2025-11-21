@@ -102,12 +102,12 @@ function atConnectionWrapper(
       angle = 0
     }
 
-    if (angle === 0) {
-      return { transform: `translate(${p.x},${p.y}')` }
+    if (angle === 0 || Number.isNaN(angle)) {
+      return { transform: `translate(${p.x},${p.y})` }
     }
 
     return {
-      transform: `translate(${p.x},${p.y}') rotate(${angle})`,
+      transform: `translate(${p.x},${p.y}) rotate(${angle})`,
     }
   }
 }

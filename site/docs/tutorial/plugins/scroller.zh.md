@@ -7,27 +7,27 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍滚动画布插件相关的知识,通过阅读你可以了解到}
+:::info{title=在本章节中主要介绍滚动画布插件相关的知识，通过阅读，你可以了解到}
 
 - 如何使画布具备滚动能力
 
 :::
 
 :::warning{title=注意}
-当同时使用 `Scroller` 插件的时候请不要同时开启画布的 `panning` 配置，因为两种形式在交互上有冲突。 
+使用 `Scroller` 插件时会默认禁用画布的 `panning` 拖拽平移能力以避免冲突。
 :::
 
 ## 使用
 
-我们提供了一个插件 `scroller` 来使用滚动画布功能，在代码中这样使用：
+你可以通过插件 `Scroller` 启用画布滚动能力，示例：
 
 ```ts
-import { Scroller } from '@antv/x6'
+import { Graph, Scroller } from '@antv/x6'
 
 const graph = new Graph({
   background: {
     color: '#F2F7FA',
-  },
+  }
 })
 graph.use(
   new Scroller({
@@ -67,13 +67,13 @@ type Padding = { top: number; right: number; bottom: number; left: number }
 `ModifierKey` 的类型定义如下：
 
 ```ts
-type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
+type ModifierKey = string | ('alt' | 'ctrl' | 'meta' | 'shift' | 'space')[] | null
 ```
 
 支持以下几种形式：
 
 - `alt` 表示按下 `alt`。
-- `[alt, ctrl]`, 表示按下 `alt` 或 `ctrl`。
+- `[alt, ctrl]` 表示按下 `alt` 或 `ctrl`。
 - `alt|ctrl` 表示按下 `alt` 或 `ctrl`。
 - `alt&ctrl` 表示同时按下 `alt` 和 `ctrl`。
 - `alt|ctrl&shift` 表示同时按下 `alt` 和 `shift` 或者同时按下 `ctrl` 和 `shift`。

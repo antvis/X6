@@ -30,6 +30,10 @@ jobs:
           npm i pnpm@latest -g
           pnpm install
 
+      - name: 🚀　Build Core library @antv/x6
+        run: |
+          pnpm run build
+
       - name: 🚀　Build site
         run: |
           cd ./site && pnpm run build

@@ -1,8 +1,14 @@
 import { CssLoader, Dom, disposable, FunctionExt } from '../../common'
-import { type EventArgs, Graph } from '../../graph'
-import { type Cell, Model, Node } from '../../model'
+import {
+  type EventArgs,
+  Graph,
+  type Options as GraphOptions,
+  type GraphPlugin,
+} from '../../graph'
+import { type Cell, Model, Node, type NodeMetadata } from '../../model'
 import { View } from '../../view'
-import { Dnd } from '../dnd'
+import { Dnd, DndDefaults } from '../dnd'
+import type { Scroller } from '../scroller'
 import { grid } from './grid'
 import { content } from './style/raw'
 import type {
@@ -49,10 +55,10 @@ export const DefaultOptions: Partial<StencilOptions> = {
       ...(group ? group.layoutOptions : {}),
     })
   },
-  ...Dnd.defaults,
+  ...DndDefaults,
 }
 
-export class Stencil extends View implements Graph.Plugin {
+export class Stencil extends View implements GraphPlugin {
   public name = 'stencil'
   public options: StencilOptions
   public dnd: Dnd
@@ -62,7 +68,7 @@ export class Stencil extends View implements Graph.Plugin {
 
   protected get targetScroller() {
     const target = this.options.target
-    const scroller = target.getPlugin<any>('scroller')
+    const scroller = target.getPlugin<Scroller>('scroller')
     return scroller
   }
 
@@ -100,12 +106,12 @@ export class Stencil extends View implements Graph.Plugin {
 
   // #region api
 
-  load(groups: { [groupName: string]: (Node | Node.Metadata)[] }): this
-  load(nodes: (Node | Node.Metadata)[], groupName?: string): this
+  load(groups: { [groupName: string]: (Node | NodeMetadata)[] }): this
+  load(nodes: (Node | NodeMetadata)[], groupName?: string): this
   load(
     data:
-      | { [groupName: string]: (Node | Node.Metadata)[] }
-      | (Node | Node.Metadata)[],
+      | { [groupName: string]: (Node | NodeMetadata)[] }
+      | (Node | NodeMetadata)[],
     groupName?: string,
   ) {
     if (Array.isArray(data)) {
@@ -120,12 +126,12 @@ export class Stencil extends View implements Graph.Plugin {
     return this
   }
 
-  unload(groups: { [groupName: string]: (Node | Node.Metadata)[] }): this
-  unload(nodes: (Node | Node.Metadata)[], groupName?: string): this
+  unload(groups: { [groupName: string]: (Node | NodeMetadata)[] }): this
+  unload(nodes: (Node | NodeMetadata)[], groupName?: string): this
   unload(
     data:
-      | { [groupName: string]: (Node | Node.Metadata)[] }
-      | (Node | Node.Metadata)[],
+      | { [groupName: string]: (Node | NodeMetadata)[] }
+      | (Node | NodeMetadata)[],
     groupName?: string,
   ) {
     if (Array.isArray(data)) {
@@ -182,14 +188,16 @@ export class Stencil extends View implements Graph.Plugin {
   }
 
   collapseGroups() {
-    Object.keys(this.groups).forEach((groupName) =>
-      this.collapseGroup(groupName),
-    )
+    Object.keys(this.groups).forEach((groupName) => {
+      this.collapseGroup(groupName)
+    })
     return this
   }
 
   expandGroups() {
-    Object.keys(this.groups).forEach((groupName) => this.expandGroup(groupName))
+    Object.keys(this.groups).forEach((groupName) => {
+      this.expandGroup(groupName)
+    })
     return this
   }
 
@@ -208,7 +216,9 @@ export class Stencil extends View implements Graph.Plugin {
     } else {
       this.options.groups = groups
     }
-    groups.forEach((group) => this.initGroup(group))
+    groups.forEach((group) => {
+      this.initGroup(group)
+    })
   }
 
   removeGroup(groupName: string | string[]) {
@@ -248,6 +258,42 @@ export class Stencil extends View implements Graph.Plugin {
     Dom.appendTo(this.content, this.container)
   }
 
+  protected buildGraphConfig(group?: StencilGroup) {
+    const globalGraphOptions = this.options.stencilGraphOptions || {}
+    const graphOptionsInGroup = group?.graphOptions
+    const mergedGraphOptions = {
+      ...globalGraphOptions,
+      ...graphOptionsInGroup,
+    }
+    if (mergedGraphOptions.panning == null) {
+      mergedGraphOptions.panning = false
+    }
+    const width = (group && group.graphWidth) || this.options.stencilGraphWidth
+    const height =
+      (group && group.graphHeight) || this.options.stencilGraphHeight
+    const model = mergedGraphOptions.model || new Model()
+    return { mergedGraphOptions, width, height, model }
+  }
+
+  protected createStencilGraph(
+    mergedGraphOptions: Partial<GraphOptions>,
+    width: number,
+    height: number,
+    model: Model,
+  ) {
+    const graph = new Graph({
+      ...mergedGraphOptions,
+      container: document.createElement('div'),
+      model,
+      width,
+      height,
+      interacting: false,
+      preventDefaultBlankAction: false,
+    })
+    this.registerGraphEvents(graph)
+    return graph
+  }
+
   protected initSearch() {
     if (this.options.search) {
       Dom.addClass(this.container, 'searchable')
@@ -256,7 +302,6 @@ export class Stencil extends View implements Graph.Plugin {
   }
 
   protected initGroup(group: StencilGroup) {
-    const globalGraphOptions = this.options.stencilGraphOptions || {}
     const groupElem = document.createElement('div')
     Dom.addClass(groupElem, this.prefixClassName(ClassNames.group))
     Dom.attr(groupElem, 'data-name', group.name)
@@ -277,19 +322,14 @@ export class Stencil extends View implements Graph.Plugin {
     const content = document.createElement('div')
     Dom.addClass(content, this.prefixClassName(ClassNames.groupContent))
 
-    const graphOptionsInGroup = group.graphOptions
-    const graph = new Graph({
-      ...globalGraphOptions,
-      ...graphOptionsInGroup,
-      container: document.createElement('div'),
-      model: globalGraphOptions.model || new Model(),
-      width: group.graphWidth || this.options.stencilGraphWidth,
-      height: group.graphHeight || this.options.stencilGraphHeight,
-      interacting: false,
-      preventDefaultBlankAction: false,
-    })
-
-    this.registerGraphEvents(graph)
+    const { mergedGraphOptions, width, height, model } =
+      this.buildGraphConfig(group)
+    const graph = this.createStencilGraph(
+      mergedGraphOptions,
+      width as number,
+      height as number,
+      model,
+    )
 
     Dom.append(content, graph.container)
     Dom.append(groupElem, [title, content])
@@ -308,16 +348,14 @@ export class Stencil extends View implements Graph.Plugin {
         this.initGroup(group)
       })
     } else {
-      const globalGraphOptions = this.options.stencilGraphOptions || {}
-      const graph = new Graph({
-        ...globalGraphOptions,
-        container: document.createElement('div'),
-        model: globalGraphOptions.model || new Model(),
-        width: this.options.stencilGraphWidth,
-        height: this.options.stencilGraphHeight,
-        interacting: false,
-        preventDefaultBlankAction: false,
-      })
+      const { mergedGraphOptions, width, height, model } =
+        this.buildGraphConfig()
+      const graph = this.createStencilGraph(
+        mergedGraphOptions,
+        width as number,
+        height as number,
+        model,
+      )
       Dom.append(this.content, graph.container)
       this.graphs[DefaultGroupName] = graph
     }
@@ -396,7 +434,7 @@ export class Stencil extends View implements Graph.Plugin {
   }
 
   protected loadGroup(
-    cells: (Node | Node.Metadata)[],
+    cells: (Node | NodeMetadata)[],
     groupName?: string,
     reverse?: boolean,
   ) {
@@ -444,6 +482,31 @@ export class Stencil extends View implements Graph.Plugin {
     if (group && group.nodeMovable === false) {
       return
     }
+    // 当在 Stencil 中拖拽节点时，禁用该分组 Graph 的平移（panning）
+    const graph = this.getGraph(group ? group.name : undefined)
+    const wasPannable =
+      graph && typeof graph.isPannable === 'function'
+        ? graph.isPannable()
+        : false
+
+    if (wasPannable) {
+      graph.disablePanning()
+    }
+
+    // 在拖拽结束（document mouseup/touchend）后恢复之前的 panning 状态。
+    const restorePanning = () => {
+      if (wasPannable) {
+        graph.enablePanning()
+      }
+      this.undelegateDocumentEvents()
+    }
+
+    this.delegateDocumentEvents({
+      mouseup: restorePanning,
+      touchend: restorePanning,
+      touchcancel: restorePanning,
+    })
+
     this.dnd.start(node, e)
   }
 

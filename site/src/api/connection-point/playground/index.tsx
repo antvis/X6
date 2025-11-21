@@ -114,40 +114,42 @@ export default class Example extends React.Component {
     })
 
     function animate() {
-      edge1.transition('source', 9.36 / 60, {
-        duration: 5000,
-        interp: (start, startTime) => {
-          const corr = startTime * (2 * Math.PI) - Math.PI / 2
-          const origin = { x: 210, y: 180 }
-          const radius = 120
-          return function (t) {
-            return {
-              x: origin.x + radius * Math.cos(t * 2 * Math.PI + corr),
-              y: origin.y + radius * Math.sin(t * 2 * Math.PI + corr),
-            }
-          }
-        },
-      })
+      const animateEdge = (
+        edge: Edge,
+        origin: { x: number; y: number },
+        radius: number,
+        steps: number,
+      ) => {
+        const p = edge.getSourcePoint()
+        const start = Math.atan2(p.y - origin.y, p.x - origin.x)
+        const xs: number[] = []
+        const ys: number[] = []
+        for (let i = 0; i < steps; i += 1) {
+          const theta = start + (2 * Math.PI * i) / steps
+          xs.push(origin.x + radius * Math.cos(theta))
+          ys.push(origin.y + radius * Math.sin(theta))
+        }
+        edge.animate(
+          {
+            'source/x': xs,
+            'source/y': ys,
+          },
+          {
+            duration: 5000,
+            easing: 'linear',
+            fill: 'forwards',
+          },
+        )
+      }
 
-      edge2.transition('source', 9.36 / 60, {
-        duration: 5000,
-        interp: (start, startTime) => {
-          const corr = startTime * (2 * Math.PI) - Math.PI / 2
-          const origin = { x: 485, y: 180 }
-          const radius = 120
-          return function (t) {
-            return {
-              x: origin.x + radius * Math.cos(t * 2 * Math.PI + corr),
-              y: origin.y + radius * Math.sin(t * 2 * Math.PI + corr),
-            }
-          }
-        },
-      })
+      const steps = 60
+      animateEdge(edge1, { x: 210, y: 180 }, 120, steps)
+      animateEdge(edge2, { x: 485, y: 180 }, 120, steps)
     }
 
     animate()
 
-    edge1.on('transition:complete', animate)
+    edge1.on('animation:finish', animate)
 
     this.edge1 = edge1
     this.edge2 = edge2
