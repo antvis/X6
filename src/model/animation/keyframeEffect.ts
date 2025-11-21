@@ -6,6 +6,7 @@ import {
   StringExt,
   Timing,
 } from '../../common'
+import { unitReg } from '../../common/animation/util'
 import type { CamelToKebabCase } from '../../types'
 import type { Cell } from '../cell'
 import { isNotReservedWord } from './utils'
@@ -196,13 +197,21 @@ export class KeyframeEffect {
       ) {
         const startValue = startFrame[prop] ?? this._originProps[prop]
         const endValue = endFrame[prop] ?? this._originProps[prop]
+        let interpolation: Interp.Definition<number | string>
 
-        // TODO: 确认是否全部自动参考标准自动识别，还是放开标准，先简单处理颜色
-        const interpolation: Interp.Definition<number | string> = String(
-          startValue,
-        ).startsWith('#')
-          ? Interp.color
-          : Interp.number
+        // TODO: rgb color
+        if (String(startValue).startsWith('#')) {
+          interpolation = Interp.color
+        } else if (
+          prop.endsWith('transform') &&
+          !NumberExt.isNumber(startValue)
+        ) {
+          interpolation = Interp.transform
+        } else if (unitReg.test(String(startValue))) {
+          interpolation = Interp.unit
+        } else {
+          interpolation = Interp.number
+        }
 
         const interpolationFn = interpolation(startValue, endValue)
 
