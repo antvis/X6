@@ -608,4 +608,82 @@ describe('KeyframeEffect', () => {
       }),
     )
   })
+
+  it('should handle unit values interpolation', () => {
+    const keyframes = [
+      { 'size/width': '0px', offset: 0 },
+      { 'size/width': '100px', offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(50)
+    expect(cell.values['size/width']).toBe('50px')
+
+    effect.apply(100)
+    expect(cell.values['size/width']).toBe('100px')
+  })
+
+  it('should handle color interpolation with hex format', () => {
+    const keyframes = [
+      { fill: '#ff0000', offset: 0 },
+      { fill: '#0000ff', offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(50)
+    expect(cell.values['fill']).toMatch(/^#[\da-f]{6}$/i)
+    expect(cell.values['fill']).not.toBe('#ff0000')
+    expect(cell.values['fill']).not.toBe('#0000ff')
+  })
+
+  it('should handle transform interpolation', () => {
+    const keyframes = [
+      { transform: 'translate(0px, 0px)', offset: 0 },
+      { transform: 'translate(100px, 50px)', offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(50)
+    expect(cell.values['transform']).toBe('translate(50px, 25px)')
+
+    effect.apply(100)
+    expect(cell.values['transform']).toBe('translate(100px, 50px)')
+  })
+
+  it('should handle mixed value types', () => {
+    const keyframes = [
+      {
+        'position/x': 0,
+        'size/width': '0px',
+        fill: '#ff0000',
+        transform: 'translate(0px, 0px)',
+        offset: 0,
+      },
+      {
+        'position/x': 100,
+        'size/width': '100px',
+        fill: '#0000ff',
+        transform: 'translate(100px, 50px)',
+        offset: 1,
+      },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(50)
+    expect(cell.values['position/x']).toBe(50)
+    expect(cell.values['size/width']).toBe('50px')
+    expect(cell.values['fill']).toMatch(/^#[\da-f]{6}$/i)
+    expect(cell.values['transform']).toBe('translate(50px, 25px)')
+  })
+
+  it('should handle numeric values with decimals', () => {
+    const keyframes = [
+      { opacity: 0.1, offset: 0 },
+      { opacity: 0.9, offset: 1 },
+    ]
+    const effect = new KeyframeEffect(cell as any, keyframes, { duration: 100 })
+
+    effect.apply(50)
+    expect(cell.values['opacity']).toBeCloseTo(0.5)
+  })
 })

@@ -10,8 +10,8 @@ const switchCenter = {
   x: 35,
   y: -2,
 }
-const switchOpen = `rotate(-30 ${switchCenter.x} ${switchCenter.y})`
-const switchClose = `rotate(-12 ${switchCenter.x} ${switchCenter.y})`
+const switchOpen = `rotate(-30, ${switchCenter.x}, ${switchCenter.y})`
+const switchClose = `rotate(-12, ${switchCenter.x}, ${switchCenter.y})`
 
 graph.addNode({
   x: 320,
@@ -111,19 +111,17 @@ graph.addNode({
 graph.on('node:click', ({ node }) => {
   const attrPath = 'attrs/switch/transform'
   const current = node.prop(attrPath)
-  const target = current === switchOpen ? switchClose : switchOpen
 
-  node.transition(attrPath, target, {
-    interp: (a: string, b: string) => {
-      const reg = /-?\d+/g
-      const start = parseInt(a.match(reg)![0], 10)
-      const end = parseInt(b.match(reg)![0], 10)
-      const d = end - start
-      return (t: number) => {
-        return `rotate(${start + d * t} ${switchCenter.x} ${switchCenter.y})`
-      }
+  node.animate(
+    {
+      'attrs/switch/transform':
+        current === switchOpen ? switchClose : switchOpen,
     },
-  })
+    {
+      duration: 100,
+      fill: 'forwards',
+    },
+  )
 })
 
 // 我们用 insert-css 插入自定义样式，实际使用时请使用自己的样式定义方式
