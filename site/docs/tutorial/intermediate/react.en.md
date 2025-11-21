@@ -36,14 +36,14 @@ const NodeComponent = () => {
 }
 
 register({
-  shape: 'custom-react-node',
+  shape: 'custom-basic-react-node',
   width: 100,
   height: 100,
   component: NodeComponent,
 })
 
 graph.addNode({
-  shape: 'custom-react-node',
+  shape: 'custom-basic-react-node',
   x: 60,
   y: 100,
 })
@@ -57,7 +57,7 @@ Similar to `HTML`, when registering a node, you provide an `effect` field, which
 
 ```ts
 register({
-  shape: 'custom-react-node',
+  shape: 'custom-update-react-node',
   width: 100,
   height: 100,
   effect: ['data'],
@@ -65,7 +65,7 @@ register({
 })
 
 const node = graph.addNode({
-  shape: 'custom-react-node',
+  shape: 'custom-update-react-node',
   x: 60,
   y: 100,
   data: {
