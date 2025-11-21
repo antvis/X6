@@ -35,6 +35,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected boxesUpdated: boolean
   protected updateThrottleTimer: ReturnType<typeof setTimeout> | null = null
   protected isDragging: boolean = false
+  protected batchUpdating: boolean = false
   // 逐帧批处理拖拽位移，降低 translate 重绘频率
   protected dragRafId: number | null = null
   // 合并缩放/平移下的选择框刷新到每帧一次
@@ -240,12 +241,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   reset(cells?: Cell | Cell[], options: SelectionImplSetOptions = {}) {
     if (cells) {
-      if (options.batch) {
-        const filterCells = this.filter(Array.isArray(cells) ? cells : [cells])
-        this.collection.reset(filterCells, { ...options, ui: true })
-        return this
-      }
-
+      this.batchUpdating = !!options.batch
       const prev = this.cells
       const next = this.filter(Array.isArray(cells) ? cells : [cells])
       const prevMap: KeyValue<Cell> = {}
@@ -278,9 +274,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         this.select(added, { ...options, ui: true })
       }
 
-      if (removed.length === 0 && added.length === 0) {
-        this.updateContainer()
-      }
+      this.updateContainer()
+      this.batchUpdating = false
 
       return this
     }
@@ -290,11 +285,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   clean(options: SelectionImplSetOptions = {}) {
     if (this.length) {
-      if (options.batch === false) {
-        this.unselect(this.cells, options)
-      } else {
-        this.collection.reset([], { ...options, ui: true })
-      }
+      this.unselect(this.cells, options)
     }
     // 清理容器 transform 与位移累计
     this.containerOffsetX = 0
@@ -1125,7 +1116,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   protected onCellRemoved({ cell }: CollectionEventArgs['removed']) {
     this.destroySelectionBox(cell)
-    this.updateContainer()
+    if (!this.batchUpdating) this.updateContainer()
   }
 
   protected onReseted({ previous, current }: CollectionEventArgs['reseted']) {
@@ -1143,7 +1134,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     // manually listen to cell's remove event.
     this.listenCellRemoveEvent(cell)
     this.createSelectionBox(cell)
-    this.updateContainer()
+    if (!this.batchUpdating) this.updateContainer()
   }
 
   protected listenCellRemoveEvent(cell: Cell) {
