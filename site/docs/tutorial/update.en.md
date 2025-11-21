@@ -60,7 +60,7 @@ graph.use(new Selection())
 
 ### New Animation Capability
 
-3.x provides built-in animation capabilities to add effects to nodes and edges.
+3.x introduces `animate` and removes the 2.x `transition` API, making it easier to add effects to nodes and edges.
 
 See more: [Animation Docs](/en/tutorial/basic/animation).
 
