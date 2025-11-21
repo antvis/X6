@@ -358,39 +358,14 @@ cell.on('change:custom', ({ cell, current, previous, options }) => {
 When modifying the value of the `custom` property using the `cell.prop('custom', 'any data')` method, the `change:custom` event will be triggered.
 
 ### Animation
-
-- `transition:start` is triggered when the animation starts
-- `transition:progress` is triggered during the animation
-- `transition:complete` is triggered when the animation completes
-- `transition:stop` is triggered when the animation is stopped
-- `transition:finish` is triggered when the animation completes or is stopped
-
-```ts
-cell.on('transition:start', (args: Animation.CallbackArgs) => {})
-cell.on('transition:progress', (args: Animation.ProgressArgs) => {})
-cell.on('transition:complete', (args: Animation.CallbackArgs) => {})
-cell.on('transition:stop', (args: Animation.StopArgs) => {})
-cell.on('transition:finish', (args: Animation.CallbackArgs) => {})
-
-graph.on('cell:transition:start', (args: Animation.CallbackArgs) => {})
-graph.on('cell:transition:progress', (args: Animation.ProgressArgs) => {})
-graph.on('cell:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('cell:transition:stop', (args: Animation.StopArgs) => {})
-graph.on('cell:transition:finish', (args: Animation.CallbackArgs) => {})
-
-graph.on('node:transition:start', (args: Animation.CallbackArgs) => {})
-graph.on('node:transition:progress', (args: Animation.ProgressArgs) => {})
-graph.on('node:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('node:transition:stop', (args: Animation.StopArgs) => {})
-graph.on('node:transition:finish', (args: Animation.CallbackArgs) => {})
-
-graph.on('edge:transition:start', (args: Animation.CallbackArgs) => {})
-graph.on('edge:transition:progress', (args: Animation.ProgressArgs) => {})
-graph.on('edge:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('edge:transition:stop', (args: Animation.StopArgs) => {})
-graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
-```
-
+The animation system supports the following events：
+- `cell:animation:finish` Triggered when the animation finish.
+- `cell:animation:cancel` Triggered when the animation cancel.
+- `node:animation:finish` Triggered when the animation finish. (only triggered when the cell is a node)
+- `node:animation:cancel` Triggered when the animation cancel. (only triggered when the cell is a node)
+- `edge:animation:finish` Triggered when the animation finish. (only triggered when the cell is a edge)
+- `edge:animation:cancel` Triggered when the animation cancel. (only triggered when the cell is a edge)
+  
 ## View
 
 Since X6 implements an asynchronous rendering scheduling algorithm, adding a node does not necessarily mean it is mounted on the canvas. Separate events are triggered when a node is mounted to or unmounted from the canvas.

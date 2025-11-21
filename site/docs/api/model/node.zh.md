@@ -449,7 +449,7 @@ translate(tx?: number, ty?: number, options?: Node.TranslateOptions): this
 | tx | number |  | `0` | 节点在 X 轴的偏移量。 |
 | ty | number |  | `0` | 节点在 Y 轴的偏移量。 |
 | options.restrict | Rectangle.RectangleLike |  | `undefined` | 将节点的可移动范围限制在指定的矩形区域内。 |
-| options.transition | boolean \| Animation.Options |  | `false` | 是否使用动画或指定一个[动画选项](/api/model/cell#transition)。 |
+| options.transition | boolean \| KeyframeEffectOptions |  | `false` | 是否使用动画或指定一个动画选项。 |
 | options.silent | boolean |  | `false` | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。 |
 | options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
