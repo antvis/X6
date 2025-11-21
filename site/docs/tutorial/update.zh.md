@@ -60,9 +60,9 @@ graph.use(new Selection())
 
 ### 新增动画能力
 
-3.x 内置动画 API，便于为节点和边添加动效
+3.x 新增 `animate` 动画，移除 2.x 中的 `transition` 使用方式，更加方便地为节点和边添加动效。
 
-更多用法可参考：[动画 API 文档](xxx)。
+更多用法可参考：[动画说明文档](/tutorial/basic/animation)。
 
 ### 配置修改说明
 
