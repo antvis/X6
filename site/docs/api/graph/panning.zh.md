@@ -13,15 +13,11 @@ redirect_from:
 
 ## 配置
 
-普通画布(未使用 `scroller` 插件)通过开启 `panning` 选项来支持拖拽平移。
-
-:::warning{title=注意}
-不要同时使用 `scroller` 和 `panning`，因为两种形式在交互上有冲突。 
-:::
+普通画布(未使用 `Scroller` 插件)通过 `panning` 选项来支持拖拽平移。
 
 ```ts
 const graph = new Graph({
-  panning: true,
+  panning: true, // 不传该选项时，默认值也为 true
 })
 
 // 等同于
@@ -38,7 +34,7 @@ const graph = new Graph({
 interface Options {
   enabled?: boolean
   modifiers?: ModifierKey
-  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel', 'mouseWheelDown')[]
+  eventTypes?: ('leftMouseDown' | 'rightMouseDown' | 'mouseWheel' | 'mouseWheelDown')[]
 }
 ```
 

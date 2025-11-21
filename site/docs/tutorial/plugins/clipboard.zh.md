@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/plugins
 ---
 
-:::info{title=在本章节中主要介绍剪切板相关的知识,通过阅读,你可以了解到}
+:::info{title=在本章节中主要介绍剪切板插件相关的知识，通过阅读，你可以了解到}
 
 - 如何使用复制粘贴功能
 
@@ -15,10 +15,10 @@ redirect_from:
 
 ## 使用
 
-剪切板用于复制/粘贴节点和边，我们提供了一个名为 `Clipboard` 的插件 `Clipboard` 来使用这个功能，我们在代码中这样使用：
+剪切板用于复制/粘贴节点和边。你可以通过插件 `Clipboard` 启用该功能，示例：
 
 ```ts
-import { Clipboard } from '@antv/x6'
+import { Graph, Clipboard } from '@antv/x6'
 
 const graph = new Graph({
   background: {
@@ -95,7 +95,7 @@ paste(options?: PasteOptions, graph?: Graph): Cell[]
 ### graph.getCellsInClipboard()
 
 ```ts
-getCellsInClipboard: Cell[]
+getCellsInClipboard(): Cell[]
 ```
 
 获取剪切板中的节点/边。

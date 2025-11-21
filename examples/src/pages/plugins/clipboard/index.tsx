@@ -1,16 +1,36 @@
-import React from 'react'
+import { useEffect, useRef } from 'react'
 import { Button } from 'antd'
 import { Graph, Keyboard, Clipboard, Selection } from '@antv/x6'
 import '../../index.less'
 
-export class ClipboardExample extends React.Component {
-  private container!: HTMLDivElement
-  private selection!: Selection
-  private clipboard!: Clipboard
+export const ClipboardExample = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const selectionRef = useRef<Selection | null>(null)
+  const clipboardRef = useRef<Clipboard | null>(null)
 
-  componentDidMount() {
+  const onCopy = () => {
+    const selection = selectionRef.current
+    const clipboard = clipboardRef.current
+    if (selection && clipboard) {
+      const cells = selection.getSelectedCells()
+      if (cells && cells.length) {
+        clipboard.copy(cells)
+      }
+    }
+  }
+
+  const onPaste = () => {
+    const clipboard = clipboardRef.current
+    if (clipboard && !clipboard.isEmpty()) {
+      clipboard.paste()
+    }
+  }
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -53,50 +73,31 @@ export class ClipboardExample extends React.Component {
 
     keyboard.bindKey('meta+c', (e) => {
       e.preventDefault()
-      this.onCopy()
+      onCopy()
     })
 
     keyboard.bindKey('meta+v', (e) => {
       e.preventDefault()
-      this.onPaste()
+      onPaste()
     })
 
     clipboard.on('clipboard:changed', ({ cells }) => {
       console.log(cells)
     })
 
-    this.selection = selection
-    this.clipboard = clipboard
-  }
+    selectionRef.current = selection
+    clipboardRef.current = clipboard
+  }, [])
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  onCopy = () => {
-    const cells = this.selection.getSelectedCells()
-    if (cells && cells.length) {
-      this.clipboard.copy(cells)
-    }
-  }
-
-  onPaste = () => {
-    if (!this.clipboard.isEmpty()) {
-      this.clipboard.paste()
-    }
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div className="x6-graph-tools">
-          <Button onClick={this.onCopy} style={{ marginRight: 8 }}>
-            Copy
-          </Button>
-          <Button onClick={this.onPaste}>Paste</Button>
-        </div>
-        <div ref={this.refContainer} className="x6-graph" />
+  return (
+    <div className="x6-graph-wrap">
+      <div className="x6-graph-tools">
+        <Button onClick={onCopy} style={{ marginRight: 8 }}>
+          Copy
+        </Button>
+        <Button onClick={onPaste}>Paste</Button>
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

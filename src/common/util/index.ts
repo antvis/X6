@@ -1,13 +1,23 @@
-import { Ellipse, Line, Path, Point, Polyline, Rectangle } from '../../geometry'
+import {
+  Ellipse,
+  Line,
+  Path,
+  Point,
+  Polyline,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
+import { normalizePathData } from '../../geometry/path'
+import { isValid } from '../../geometry/path/util'
 import { normalize } from '../../registry/marker/util'
+import type { PointLike, PointOptions } from '../../types'
 import { Dom } from '../dom'
-import type { PointData, PointLike } from '../types'
 
 export const normalizeMarker = normalize
 /**
  * Transforms point by an SVG transformation represented by `matrix`.
  */
-export function transformPoint(point: Point.PointLike, matrix: DOMMatrix) {
+export function transformPoint(point: PointLike, matrix: DOMMatrix) {
   const ret = Dom.createSVGPoint(point.x, point.y).matrixTransform(matrix)
   return new Point(ret.x, ret.y)
 }
@@ -34,10 +44,7 @@ export function transformPolyline(polyline: Polyline, matrix: DOMMatrix) {
   return new Polyline(points.map((p) => transformPoint(p, matrix)))
 }
 
-export function transformRectangle(
-  rect: Rectangle.RectangleLike,
-  matrix: DOMMatrix,
-) {
+export function transformRectangle(rect: RectangleLike, matrix: DOMMatrix) {
   const svgDocument = Dom.createSvgElement('svg') as SVGSVGElement
   const p = svgDocument.createSVGPoint()
 
@@ -77,7 +84,7 @@ export function bbox(
   withoutTransformations?: boolean,
   target?: SVGElement,
 ): Rectangle {
-  let box
+  let box: RectangleLike | null = null
   const ownerSVGElement = elem.ownerSVGElement
 
   // If the element is not in the live DOM, it does not have a bounding
@@ -88,7 +95,7 @@ export function bbox(
 
   try {
     box = (elem as SVGGraphicsElement).getBBox()
-  } catch (e) {
+  } catch (_e) {
     // Fallback for IE.
     box = {
       x: elem.clientLeft,
@@ -119,7 +126,7 @@ export function getBBox(
     recursive?: boolean
   } = {},
 ): Rectangle {
-  let outputBBox
+  let box: RectangleLike | null = null
   const ownerSVGElement = elem.ownerSVGElement
 
   // If the element is not in the live DOM, it does not have a bounding box
@@ -129,7 +136,9 @@ export function getBBox(
   if (!ownerSVGElement || !Dom.isSVGGraphicsElement(elem)) {
     if (Dom.isHTMLElement(elem)) {
       // If the element is a HTMLElement, return the position relative to the body
-      const { left, top, width, height } = getBoundingOffsetRect(elem as any)
+      const { left, top, width, height } = getBoundingOffsetRect(
+        elem as HTMLElement,
+      )
       return new Rectangle(left, top, width, height)
     }
     return new Rectangle(0, 0, 0, 0)
@@ -140,9 +149,9 @@ export function getBBox(
 
   if (!recursive) {
     try {
-      outputBBox = elem.getBBox()
-    } catch (e) {
-      outputBBox = {
+      box = (elem as SVGGraphicsElement).getBBox()
+    } catch (_e) {
+      box = {
         x: elem.clientLeft,
         y: elem.clientTop,
         width: elem.clientWidth,
@@ -151,12 +160,12 @@ export function getBBox(
     }
 
     if (!target) {
-      return Rectangle.create(outputBBox)
+      return Rectangle.create(box)
     }
 
     // transform like target
     const matrix = Dom.getTransformToElement(elem, target)
-    return transformRectangle(outputBBox, matrix)
+    return transformRectangle(box, matrix)
   }
 
   // recursive
@@ -174,9 +183,10 @@ export function getBBox(
       target = elem // eslint-disable-line
     }
 
+    let aggregate: Rectangle | null = null
     for (let i = 0; i < n; i += 1) {
       const child = children[i] as SVGElement
-      let childBBox
+      let childBBox: Rectangle | null = null
 
       if (child.childNodes.length === 0) {
         childBBox = getBBox(child, {
@@ -190,14 +200,13 @@ export function getBBox(
         })
       }
 
-      if (!outputBBox) {
-        outputBBox = childBBox
+      if (!aggregate) {
+        aggregate = Rectangle.create(childBBox)
       } else {
-        outputBBox = outputBBox.union(childBBox)
+        aggregate = aggregate.union(childBBox)
       }
     }
-
-    return outputBBox as Rectangle
+    return (aggregate as Rectangle) || new Rectangle(0, 0, 0, 0)
   }
 }
 
@@ -207,11 +216,11 @@ export function getBoundingOffsetRect(elem: HTMLElement) {
   let width = 0
   let height = 0
   if (elem) {
-    let current = elem as any
+    let current = elem as HTMLElement
     while (current) {
       left += current.offsetLeft
       top += current.offsetTop
-      current = current.offsetParent
+      current = current.offsetParent as HTMLElement
       if (current) {
         left += parseInt(Dom.getComputedStyle(current, 'borderLeft'), 10)
         top += parseInt(Dom.getComputedStyle(current, 'borderTop'), 10)
@@ -275,8 +284,8 @@ export function toGeometryShape(elem: SVGElement) {
     }
     case 'path': {
       let d = elem.getAttribute('d') as string
-      if (!Path.isValid(d)) {
-        d = Path.normalize(d)
+      if (!isValid(d)) {
+        d = normalizePathData(d)
       }
       return Path.parse(d)
     }
@@ -293,15 +302,18 @@ export function toGeometryShape(elem: SVGElement) {
 
 export function translateAndAutoOrient(
   elem: SVGElement,
-  position: PointLike | PointData,
-  reference: PointLike | PointData,
+  position: PointOptions,
+  reference: PointOptions,
   target?: SVGElement,
 ) {
   const pos = Point.create(position)
   const ref = Point.create(reference)
 
   if (!target) {
-    const svg = elem instanceof SVGSVGElement ? elem : elem.ownerSVGElement!
+    const svg =
+      elem instanceof SVGSVGElement
+        ? elem
+        : (elem.ownerSVGElement as SVGSVGElement)
     target = svg // eslint-disable-line
   }
 
@@ -382,7 +394,9 @@ export function getBBoxV2(elem: SVGElement) {
 
   if (!Dom.isSVGGraphicsElement(node)) {
     if (Dom.isHTMLElement(elem)) {
-      const { left, top, width, height } = getBoundingOffsetRect(elem as any)
+      const { left, top, width, height } = getBoundingOffsetRect(
+        elem as HTMLElement,
+      )
       return new Rectangle(left, top, width, height)
     }
     return new Rectangle(0, 0, 0, 0)

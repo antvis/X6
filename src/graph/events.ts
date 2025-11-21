@@ -1,6 +1,6 @@
 import type { Dom } from '../common'
-import type { Model } from '../model'
-import type { Scheduler } from '../renderer/scheduler'
+import type { ModelEventArgs } from '../model'
+import type { SchedulerEventArgs } from '../renderer/scheduler'
 import type { CellViewEventArgs } from '../view/cell/type'
 
 interface CommonEventArgs<E> {
@@ -13,12 +13,12 @@ interface PositionEventArgs<E> extends CommonEventArgs<E> {
 }
 
 export interface EventArgs
-  extends Omit<Model.EventArgs, 'sorted' | 'updated' | 'reseted'>,
+  extends Omit<ModelEventArgs, 'sorted' | 'updated' | 'reseted'>,
     CellViewEventArgs,
-    Scheduler.EventArgs {
-  'model:sorted'?: Model.EventArgs['sorted']
-  'model:updated': Model.EventArgs['updated']
-  'model:reseted': Model.EventArgs['reseted']
+    SchedulerEventArgs {
+  'model:sorted'?: ModelEventArgs['sorted']
+  'model:updated': ModelEventArgs['updated']
+  'model:reseted': ModelEventArgs['reseted']
 
   'blank:click': PositionEventArgs<Dom.ClickEvent>
   'blank:dblclick': PositionEventArgs<Dom.DoubleClickEvent>

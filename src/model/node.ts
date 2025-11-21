@@ -1,44 +1,166 @@
 import type { DeepPartial, Omit } from 'utility-types'
 import {
-  Interp,
   type KeyValue,
   NumberExt,
   ObjectExt,
   type Size,
   StringExt,
 } from '../common'
-import { Angle, Point, Rectangle } from '../geometry'
+import {
+  normalize,
+  Point,
+  type PointLike,
+  Rectangle,
+  type RectangleLike,
+  toRad,
+} from '../geometry'
 import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
-import type { Animation } from './animation'
-import { Cell } from './cell'
-import type { Edge } from './edge'
+import type { KeyframeEffectOptions } from './animation'
+import {
+  Cell,
+  type CellCommon,
+  type CellConfig,
+  type CellDefaults,
+  type CellMetadata,
+  type CellProperties,
+  type CellSetOptions,
+  type CellTranslateOptions,
+} from './cell'
+import type { Edge, TerminalCellData, TerminalType } from './edge'
+import type { Metadata as PMetadata, PortMetadata } from './port'
 import { PortManager } from './port'
-import { ShareRegistry } from './registry'
+import { exist, setNodeRegistry } from './registry'
 import type { Store } from './store'
 
+const toStringTag = `X6.node`
+
+let counter = 0
+function getClassName(name?: string) {
+  if (name) {
+    return StringExt.pascalCase(name)
+  }
+  counter += 1
+  return `CustomNode${counter}`
+}
 export class Node<
-  Properties extends Node.Properties = Node.Properties,
+  Properties extends NodeProperties = NodeProperties,
 > extends Cell<Properties> {
-  protected static defaults: Node.Defaults = {
+  static toStringTag: string = toStringTag
+  static isNode(instance: any): instance is Node {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Node) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const node = instance as Node
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof node.isNode === 'function' &&
+      typeof node.isEdge === 'function' &&
+      typeof node.prop === 'function' &&
+      typeof node.attr === 'function' &&
+      typeof node.size === 'function' &&
+      typeof node.position === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+  static registry = Registry.create<
+    NodeDefinition,
+    never,
+    NodeConfig & { inherit?: string | NodeDefinition }
+  >({
+    type: 'node',
+    process(shape, options) {
+      if (exist(shape, true)) {
+        throw new Error(
+          `Node with name '${shape}' was registered by anthor Edge`,
+        )
+      }
+
+      if (typeof options === 'function') {
+        options.config({ shape })
+        return options
+      }
+
+      let parent = Node
+      const { inherit, ...config } = options
+      if (inherit) {
+        if (typeof inherit === 'string') {
+          const base = this.get(inherit)
+          if (base == null) {
+            this.onNotFound(inherit, 'inherited')
+          } else {
+            parent = base
+          }
+        } else {
+          parent = inherit
+        }
+      }
+
+      if (config.constructorName == null) {
+        config.constructorName = shape
+      }
+
+      const ctor: NodeDefinition = parent.define.call(parent, config)
+      ctor.config({ shape })
+      return ctor as any
+    },
+  })
+
+  static define(config: NodeConfig) {
+    const { constructorName, overwrite, ...others } = config
+    const ctor = ObjectExt.createClass<NodeClass>(
+      getClassName(constructorName || others.shape),
+      // biome-ignore lint/complexity/noThisInStatic: <修改后会导致渲染错误>
+      this as NodeClass,
+    )
+
+    ctor.config(others)
+
+    if (others.shape) {
+      Node.registry.register(others.shape, ctor, overwrite)
+    }
+
+    return ctor
+  }
+
+  static create(options: NodeMetadata) {
+    const shape = options.shape || 'rect'
+    const Ctor = Node.registry.get(shape)
+    if (Ctor) {
+      return new Ctor(options)
+    }
+    return Node.registry.onNotFound(shape)
+  }
+
+  protected static defaults: Defaults = {
     angle: 0,
     position: { x: 0, y: 0 },
     size: { width: 1, height: 1 },
   }
-  protected readonly store: Store<Node.Properties>
+  protected readonly store: Store<NodeProperties>
   protected port: PortManager
 
   protected get [Symbol.toStringTag]() {
     return Node.toStringTag
   }
 
-  constructor(metadata: Node.Metadata = {}) {
+  constructor(metadata: NodeMetadata = {}) {
     super(metadata)
     this.initPorts()
   }
 
   protected preprocess(
-    metadata: Node.Metadata,
+    metadata: NodeMetadata,
     ignoreIdCheck?: boolean,
   ): Properties {
     const { x, y, width, height, ...others } = metadata
@@ -71,12 +193,12 @@ export class Node<
   // #region size
 
   size(): Size
-  size(size: Size, options?: Node.ResizeOptions): this
-  size(width: number, height: number, options?: Node.ResizeOptions): this
+  size(size: Size, options?: ResizeOptions): this
+  size(width: number, height: number, options?: ResizeOptions): this
   size(
     width?: number | Size,
-    height?: number | Node.ResizeOptions,
-    options?: Node.ResizeOptions,
+    height?: number | ResizeOptions,
+    options?: ResizeOptions,
   ) {
     if (width === undefined) {
       return this.getSize()
@@ -86,7 +208,7 @@ export class Node<
       return this.setSize(width, height as number, options)
     }
 
-    return this.setSize(width, height as Node.ResizeOptions)
+    return this.setSize(width, height as ResizeOptions)
   }
 
   getSize() {
@@ -94,15 +216,15 @@ export class Node<
     return size ? { ...size } : { width: 1, height: 1 }
   }
 
-  setSize(size: Size, options?: Node.ResizeOptions): this
-  setSize(width: number, height: number, options?: Node.ResizeOptions): this
+  setSize(size: Size, options?: ResizeOptions): this
+  setSize(width: number, height: number, options?: ResizeOptions): this
   setSize(
     width: number | Size,
-    height?: number | Node.ResizeOptions,
-    options?: Node.ResizeOptions,
+    height?: number | ResizeOptions,
+    options?: ResizeOptions,
   ) {
     if (typeof width === 'object') {
-      this.resize(width.width, width.height, height as Node.ResizeOptions)
+      this.resize(width.width, width.height, height as ResizeOptions)
     } else {
       this.resize(width, height as number, options)
     }
@@ -110,7 +232,7 @@ export class Node<
     return this
   }
 
-  resize(width: number, height: number, options: Node.ResizeOptions = {}) {
+  resize(width: number, height: number, options: ResizeOptions = {}) {
     this.startBatch('resize', options)
     const direction = options.direction
 
@@ -143,7 +265,7 @@ export class Node<
       }
 
       let quadrant = map[direction]
-      const angle = Angle.normalize(this.getAngle() || 0)
+      const angle = normalize(this.getAngle() || 0)
       if (options.absolute) {
         // We are taking the node's rotation into account
         quadrant += Math.floor((angle + 45) / 90)
@@ -204,7 +326,7 @@ export class Node<
 
       // Lastly we have to deduct the original angle the element was rotated
       // by and that's it.
-      alpha -= Angle.toRad(angle)
+      alpha -= toRad(angle)
 
       // With this angle and distance we can easily calculate the centre of
       // the un-rotated element.
@@ -230,8 +352,8 @@ export class Node<
   scale(
     sx: number,
     sy: number,
-    origin?: Point.PointLike | null,
-    options: Node.SetOptions = {},
+    origin?: PointLike | null,
+    options: NodeSetOptions = {},
   ) {
     const scaledBBox = this.getBBox().scale(
       sx,
@@ -250,12 +372,12 @@ export class Node<
 
   // #region position
 
-  position(x: number, y: number, options?: Node.SetPositionOptions): this
-  position(options?: Node.GetPositionOptions): Point.PointLike
+  position(x: number, y: number, options?: SetPositionOptions): this
+  position(options?: GetPositionOptions): PointLike
   position(
-    arg0?: number | Node.GetPositionOptions,
+    arg0?: number | GetPositionOptions,
     arg1?: number,
-    arg2?: Node.SetPositionOptions,
+    arg2?: SetPositionOptions,
   ) {
     if (typeof arg0 === 'number') {
       return this.setPosition(arg0, arg1 as number, arg2)
@@ -263,7 +385,7 @@ export class Node<
     return this.getPosition(arg0)
   }
 
-  getPosition(options: Node.GetPositionOptions = {}): Point.PointLike {
+  getPosition(options: GetPositionOptions = {}): PointLike {
     if (options.relative) {
       const parent = this.getParent()
       if (parent != null && parent.isNode()) {
@@ -281,24 +403,21 @@ export class Node<
     return pos ? { ...pos } : { x: 0, y: 0 }
   }
 
+  setPosition(p: Point | PointLike, options?: SetPositionOptions): this
+  setPosition(x: number, y: number, options?: SetPositionOptions): this
   setPosition(
-    p: Point | Point.PointLike,
-    options?: Node.SetPositionOptions,
-  ): this
-  setPosition(x: number, y: number, options?: Node.SetPositionOptions): this
-  setPosition(
-    arg0: number | Point | Point.PointLike,
-    arg1?: number | Node.SetPositionOptions,
-    arg2: Node.SetPositionOptions = {},
+    arg0: number | Point | PointLike,
+    arg1?: number | SetPositionOptions,
+    arg2: SetPositionOptions = {},
   ) {
     let x: number
     let y: number
-    let options: Node.SetPositionOptions
+    let options: SetPositionOptions
 
     if (typeof arg0 === 'object') {
       x = arg0.x
       y = arg0.y
-      options = (arg1 as Node.SetPositionOptions) || {}
+      options = (arg1 as SetPositionOptions) || {}
     } else {
       x = arg0
       y = arg1 as number
@@ -324,7 +443,7 @@ export class Node<
     return this
   }
 
-  translate(tx = 0, ty = 0, options: Node.TranslateOptions = {}) {
+  translate(tx = 0, ty = 0, options: TranslateOptions = {}) {
     if (tx === 0 && ty === 0) {
       return this
     }
@@ -380,14 +499,22 @@ export class Node<
     options.ty = ty
 
     if (options.transition) {
-      if (typeof options.transition !== 'object') {
-        options.transition = {}
+      let animateOptions =
+        typeof options.transition !== 'object' ? {} : { ...options.transition }
+
+      animateOptions = {
+        duration: 100,
+        fill: 'forwards',
+        ...animateOptions,
       }
 
-      this.transition('position', translatedPosition, {
-        ...options.transition,
-        interp: Interp.object,
-      })
+      this.animate(
+        {
+          'position/x': translatedPosition.x,
+          'position/y': translatedPosition.y,
+        },
+        animateOptions,
+      )
       this.eachChild((child) => {
         const excluded = options.exclude?.includes(child)
         if (!excluded) {
@@ -414,8 +541,8 @@ export class Node<
   // #region angle
 
   angle(): number
-  angle(val: number, options?: Node.RotateOptions): this
-  angle(val?: number, options?: Node.RotateOptions) {
+  angle(val: number, options?: RotateOptions): this
+  angle(val?: number, options?: RotateOptions) {
     if (val == null) {
       return this.getAngle()
     }
@@ -426,7 +553,7 @@ export class Node<
     return this.store.get('angle', 0)
   }
 
-  rotate(angle: number, options: Node.RotateOptions = {}) {
+  rotate(angle: number, options: RotateOptions = {}) {
     const currentAngle = this.getAngle()
     if (options.center) {
       const size = this.getSize()
@@ -464,10 +591,10 @@ export class Node<
     return Rectangle.fromPositionAndSize(this.getPosition(), this.getSize())
   }
 
-  getConnectionPoint(edge: Edge, type: Edge.TerminalType) {
+  getConnectionPoint(edge: Edge, type: TerminalType) {
     const bbox = this.getBBox()
     const center = bbox.getCenter()
-    const terminal = edge.getTerminal(type) as Edge.TerminalCellData
+    const terminal = edge.getTerminal(type) as TerminalCellData
     if (terminal == null) {
       return center
     }
@@ -497,7 +624,7 @@ export class Node<
   /**
    * Sets cell's size and position based on the children bbox and given padding.
    */
-  fit(options: Node.FitEmbedsOptions = {}) {
+  fit(options: FitEmbedsOptions = {}) {
     const children = this.getChildren() || []
     const embeds = children.filter((cell) => cell.isNode()) as Node[]
     if (embeds.length === 0) {
@@ -507,7 +634,9 @@ export class Node<
     this.startBatch('fit-embeds', options)
 
     if (options.deep) {
-      embeds.forEach((cell) => cell.fit(options))
+      embeds.forEach((cell) => {
+        cell.fit(options)
+      })
     }
 
     let { x, y, width, height } = Cell.getCellsBBox(embeds)!
@@ -557,7 +686,7 @@ export class Node<
     )
   }
 
-  setPortContainerMarkup(markup?: MarkupType, options: Node.SetOptions = {}) {
+  setPortContainerMarkup(markup?: MarkupType, options: NodeSetOptions = {}) {
     this.store.set('portContainerMarkup', Markup.clone(markup), options)
     return this
   }
@@ -578,7 +707,7 @@ export class Node<
     return this.store.get('portMarkup') || this.getDefaultPortMarkup()
   }
 
-  setPortMarkup(markup?: MarkupType, options: Node.SetOptions = {}) {
+  setPortMarkup(markup?: MarkupType, options: NodeSetOptions = {}) {
     this.store.set('portMarkup', Markup.clone(markup), options)
     return this
   }
@@ -601,13 +730,13 @@ export class Node<
     return this.store.get('portLabelMarkup') || this.getDefaultPortLabelMarkup()
   }
 
-  setPortLabelMarkup(markup?: MarkupType, options: Node.SetOptions = {}) {
+  setPortLabelMarkup(markup?: MarkupType, options: NodeSetOptions = {}) {
     this.store.set('portLabelMarkup', Markup.clone(markup), options)
     return this
   }
 
   get ports() {
-    const res = this.store.get<PortManager.Metadata>('ports', { items: [] })
+    const res = this.store.get<PMetadata>('ports', { items: [] })
     if (res.items == null) {
       res.items = []
     }
@@ -620,7 +749,7 @@ export class Node<
 
   getPortsByGroup(groupName: string) {
     return this.getPorts().filter(
-      (port: PortManager.PortMetadata) => port.group === groupName,
+      (port: PortMetadata) => port.group === groupName,
     )
   }
 
@@ -642,7 +771,7 @@ export class Node<
     return this.getPortIndex(portId) !== -1
   }
 
-  getPortIndex(port: PortManager.PortMetadata | string) {
+  getPortIndex(port: PortMetadata | string) {
     const portId = typeof port === 'string' ? port : port.id
     return portId != null
       ? this.ports.items.findIndex((item) => item.id === portId)
@@ -658,7 +787,7 @@ export class Node<
 
     return layouts.reduce<
       KeyValue<{
-        position: Point.PointLike
+        position: PointLike
         angle: number
       }>
     >((memo, item) => {
@@ -671,7 +800,7 @@ export class Node<
     }, {})
   }
 
-  getPortProp(portId: string): PortManager.PortMetadata
+  getPortProp(portId: string): PortMetadata
   getPortProp<T>(portId: string, path: string | string[]): T
   getPortProp(portId: string, path?: string | string[]) {
     return this.getPropByPath(this.prefixPortPath(portId, path))
@@ -681,18 +810,18 @@ export class Node<
     portId: string,
     path: string | string[],
     value: any,
-    options?: Node.SetOptions,
+    options?: NodeSetOptions,
   ): this
   setPortProp(
     portId: string,
-    value: DeepPartial<PortManager.PortMetadata>,
-    options?: Node.SetOptions,
+    value: DeepPartial<PortMetadata>,
+    options?: NodeSetOptions,
   ): this
   setPortProp(
     portId: string,
-    arg1: string | string[] | DeepPartial<PortManager.PortMetadata>,
-    arg2: any | Node.SetOptions,
-    arg3?: Node.SetOptions,
+    arg1: string | string[] | DeepPartial<PortMetadata>,
+    arg2: any | NodeSetOptions,
+    arg3?: NodeSetOptions,
   ) {
     if (typeof arg1 === 'string' || Array.isArray(arg1)) {
       const path = this.prefixPortPath(portId, arg1)
@@ -701,20 +830,20 @@ export class Node<
     }
 
     const path = this.prefixPortPath(portId)
-    const value = arg1 as DeepPartial<PortManager.PortMetadata>
-    return this.setPropByPath(path, value, arg2 as Node.SetOptions)
+    const value = arg1 as DeepPartial<PortMetadata>
+    return this.setPropByPath(path, value, arg2 as NodeSetOptions)
   }
 
-  removePortProp(portId: string, options?: Node.SetOptions): this
+  removePortProp(portId: string, options?: NodeSetOptions): this
   removePortProp(
     portId: string,
     path: string | string[],
-    options?: Node.SetOptions,
+    options?: NodeSetOptions,
   ): this
   removePortProp(
     portId: string,
-    path?: string | string[] | Node.SetOptions,
-    options?: Node.SetOptions,
+    path?: string | string[] | NodeSetOptions,
+    options?: NodeSetOptions,
   ) {
     if (typeof path === 'string' || Array.isArray(path)) {
       return this.removePropByPath(this.prefixPortPath(portId, path), options)
@@ -722,24 +851,24 @@ export class Node<
     return this.removePropByPath(this.prefixPortPath(portId), path)
   }
 
-  portProp(portId: string): PortManager.PortMetadata
+  portProp(portId: string): PortMetadata
   portProp<T>(portId: string, path: string | string[]): T
   portProp(
     portId: string,
     path: string | string[],
     value: any,
-    options?: Node.SetOptions,
+    options?: NodeSetOptions,
   ): this
   portProp(
     portId: string,
-    value: DeepPartial<PortManager.PortMetadata>,
-    options?: Node.SetOptions,
+    value: DeepPartial<PortMetadata>,
+    options?: NodeSetOptions,
   ): this
   portProp(
     portId: string,
-    path?: string | string[] | DeepPartial<PortManager.PortMetadata>,
-    value?: any | Node.SetOptions,
-    options?: Node.SetOptions,
+    path?: string | string[] | DeepPartial<PortMetadata>,
+    value?: any | NodeSetOptions,
+    options?: NodeSetOptions,
   ) {
     if (path == null) {
       return this.getPortProp(portId)
@@ -754,14 +883,14 @@ export class Node<
       return this.setPortProp(
         portId,
         path,
-        value as DeepPartial<PortManager.PortMetadata>,
+        value as DeepPartial<PortMetadata>,
         options,
       )
     }
     return this.setPortProp(
       portId,
-      path as DeepPartial<PortManager.PortMetadata>,
-      value as Node.SetOptions,
+      path as DeepPartial<PortMetadata>,
+      value as NodeSetOptions,
     )
   }
 
@@ -782,37 +911,30 @@ export class Node<
     return `ports/items/${index}/${path}`
   }
 
-  addPort(port: PortManager.PortMetadata, options?: Node.SetOptions) {
+  addPort(port: PortMetadata, options?: NodeSetOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  addPorts(ports: PortManager.PortMetadata[], options?: Node.SetOptions) {
+  addPorts(ports: PortMetadata[], options?: NodeSetOptions) {
     this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
-  insertPort(
-    index: number,
-    port: PortManager.PortMetadata,
-    options?: Node.SetOptions,
-  ) {
+  insertPort(index: number, port: PortMetadata, options?: NodeSetOptions) {
     const ports = [...this.ports.items]
     ports.splice(index, 0, port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  removePort(
-    port: PortManager.PortMetadata | string,
-    options: Node.SetOptions = {},
-  ) {
+  removePort(port: PortMetadata | string, options: NodeSetOptions = {}) {
     return this.removePortAt(this.getPortIndex(port), options)
   }
 
-  removePortAt(index: number, options: Node.SetOptions = {}) {
+  removePortAt(index: number, options: NodeSetOptions = {}) {
     if (index >= 0) {
       const ports = [...this.ports.items]
       ports.splice(index, 1)
@@ -822,16 +944,16 @@ export class Node<
     return this
   }
 
-  removePorts(options?: Node.SetOptions): this
+  removePorts(options?: NodeSetOptions): this
   removePorts(
-    portsForRemoval: (PortManager.PortMetadata | string)[],
-    options?: Node.SetOptions,
+    portsForRemoval: (PortMetadata | string)[],
+    options?: NodeSetOptions,
   ): this
   removePorts(
-    portsForRemoval?: (PortManager.PortMetadata | string)[] | Node.SetOptions,
-    opt?: Node.SetOptions,
+    portsForRemoval?: (PortMetadata | string)[] | NodeSetOptions,
+    opt?: NodeSetOptions,
   ) {
-    let options
+    let options: NodeSetOptions
 
     if (Array.isArray(portsForRemoval)) {
       options = opt || {}
@@ -887,7 +1009,7 @@ export class Node<
     })
 
     const removed: { [id: string]: boolean } = {}
-    const previous = this.store.getPrevious<PortManager.Metadata>('ports') || {
+    const previous = this.store.getPrevious<PMetadata>('ports') || {
       items: [],
     }
 
@@ -946,10 +1068,7 @@ export class Node<
     const err = this.validatePorts()
 
     if (err.length > 0) {
-      this.store.set(
-        'ports',
-        this.store.getPrevious<PortManager.Metadata>('ports'),
-      )
+      this.store.set('ports', this.store.getPrevious<PMetadata>('ports'))
       throw new Error(err.join(' '))
     }
 
@@ -987,213 +1106,95 @@ export class Node<
   // #endregion
 }
 
-export namespace Node {
-  interface Common extends Cell.Common {
-    size?: { width: number; height: number }
-    position?: { x: number; y: number }
-    angle?: number
-    ports?: Partial<PortManager.Metadata> | PortManager.PortMetadata[]
-    portContainerMarkup?: MarkupType
-    portMarkup?: MarkupType
-    portLabelMarkup?: MarkupType
-    defaultPortMarkup?: MarkupType
-    defaultPortLabelMarkup?: MarkupType
-    defaultPortContainerMarkup?: MarkupType
-  }
-
-  interface Boundary {
-    x?: number
-    y?: number
-    width?: number
-    height?: number
-  }
-
-  export interface Defaults extends Common, Cell.Defaults {}
-
-  export interface Metadata extends Common, Cell.Metadata, Boundary {}
-
-  export interface Properties
-    extends Common,
-      Omit<Cell.Metadata, 'tools'>,
-      Cell.Properties {}
-
-  export interface Config
-    extends Defaults,
-      Boundary,
-      Cell.Config<Metadata, Node> {}
+interface Common extends CellCommon {
+  size?: { width: number; height: number }
+  position?: { x: number; y: number }
+  angle?: number
+  ports?: Partial<PMetadata> | PortMetadata[]
+  portContainerMarkup?: MarkupType
+  portMarkup?: MarkupType
+  portLabelMarkup?: MarkupType
+  defaultPortMarkup?: MarkupType
+  defaultPortLabelMarkup?: MarkupType
+  defaultPortContainerMarkup?: MarkupType
 }
 
-export namespace Node {
-  export interface SetOptions extends Cell.SetOptions {}
-
-  export interface GetPositionOptions {
-    relative?: boolean
-  }
-
-  export interface SetPositionOptions extends SetOptions {
-    deep?: boolean
-    relative?: boolean
-  }
-
-  export interface TranslateOptions extends Cell.TranslateOptions {
-    transition?: boolean | Animation.StartOptions<Point.PointLike>
-    restrict?: Rectangle.RectangleLike | null
-    exclude?: Cell[]
-  }
-
-  export interface RotateOptions extends SetOptions {
-    absolute?: boolean
-    center?: Point.PointLike | null
-  }
-
-  export type ResizeDirection =
-    | 'left'
-    | 'top'
-    | 'right'
-    | 'bottom'
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right'
-
-  export interface ResizeOptions extends SetOptions {
-    absolute?: boolean
-    direction?: ResizeDirection
-  }
-
-  export interface FitEmbedsOptions extends SetOptions {
-    deep?: boolean
-    padding?: NumberExt.SideOptions
-  }
+interface Boundary {
+  x?: number
+  y?: number
+  width?: number
+  height?: number
 }
 
-export namespace Node {
-  export const toStringTag = `X6.${Node.name}`
+export interface Defaults extends Common, CellDefaults {}
 
-  export function isNode(instance: any): instance is Node {
-    if (instance == null) {
-      return false
-    }
+export interface NodeMetadata extends Common, CellMetadata, Boundary {}
 
-    if (instance instanceof Node) {
-      return true
-    }
+export interface NodeProperties
+  extends Common,
+    Omit<CellMetadata, 'tools'>,
+    CellProperties {}
 
-    const tag = instance[Symbol.toStringTag]
-    const node = instance as Node
+export interface NodeConfig
+  extends Defaults,
+    Boundary,
+    CellConfig<NodeMetadata, Node> {}
 
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof node.isNode === 'function' &&
-      typeof node.isEdge === 'function' &&
-      typeof node.prop === 'function' &&
-      typeof node.attr === 'function' &&
-      typeof node.size === 'function' &&
-      typeof node.position === 'function'
-    ) {
-      return true
-    }
+export interface NodeSetOptions extends CellSetOptions {}
 
-    return false
-  }
+export interface GetPositionOptions {
+  relative?: boolean
 }
 
-export namespace Node {
-  Node.config<Node.Config>({
-    propHooks({ ports, ...metadata }) {
-      if (ports) {
-        metadata.ports = Array.isArray(ports) ? { items: ports } : ports
-      }
-      return metadata
-    },
-  })
+export interface SetPositionOptions extends NodeSetOptions {
+  deep?: boolean
+  relative?: boolean
 }
 
-export namespace Node {
-  export const registry = Registry.create<
-    Definition,
-    never,
-    Config & { inherit?: string | Definition }
-  >({
-    type: 'node',
-    process(shape, options) {
-      if (ShareRegistry.exist(shape, true)) {
-        throw new Error(
-          `Node with name '${shape}' was registered by anthor Edge`,
-        )
-      }
-
-      if (typeof options === 'function') {
-        options.config({ shape })
-        return options
-      }
-
-      let parent = Node
-      const { inherit, ...config } = options
-      if (inherit) {
-        if (typeof inherit === 'string') {
-          const base = this.get(inherit)
-          if (base == null) {
-            this.onNotFound(inherit, 'inherited')
-          } else {
-            parent = base
-          }
-        } else {
-          parent = inherit
-        }
-      }
-
-      if (config.constructorName == null) {
-        config.constructorName = shape
-      }
-
-      const ctor: Definition = parent.define.call(parent, config)
-      ctor.config({ shape })
-      return ctor as any
-    },
-  })
-
-  ShareRegistry.setNodeRegistry(registry)
+export interface TranslateOptions extends CellTranslateOptions {
+  transition?: boolean | KeyframeEffectOptions
+  restrict?: RectangleLike | null
+  exclude?: Cell[]
 }
 
-export namespace Node {
-  type NodeClass = typeof Node
+export interface RotateOptions extends NodeSetOptions {
+  absolute?: boolean
+  center?: PointLike | null
+}
 
-  export interface Definition extends NodeClass {
-    new <T extends Properties = Properties>(metadata: T): Node
-  }
+export type ResizeDirection =
+  | 'left'
+  | 'top'
+  | 'right'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
 
-  let counter = 0
-  function getClassName(name?: string) {
-    if (name) {
-      return StringExt.pascalCase(name)
+export interface ResizeOptions extends NodeSetOptions {
+  absolute?: boolean
+  direction?: ResizeDirection
+}
+
+export interface FitEmbedsOptions extends NodeSetOptions {
+  deep?: boolean
+  padding?: NumberExt.SideOptions
+}
+
+Node.config<NodeConfig>({
+  propHooks({ ports, ...metadata }) {
+    if (ports) {
+      metadata.ports = Array.isArray(ports) ? { items: ports } : ports
     }
-    counter += 1
-    return `CustomNode${counter}`
-  }
+    return metadata
+  },
+})
 
-  export function define(config: Config) {
-    const { constructorName, overwrite, ...others } = config
-    const ctor = ObjectExt.createClass<NodeClass>(
-      getClassName(constructorName || others.shape),
-      this as NodeClass,
-    )
+setNodeRegistry(Node.registry)
 
-    ctor.config(others)
+type NodeClass = typeof Node
 
-    if (others.shape) {
-      registry.register(others.shape, ctor, overwrite)
-    }
-
-    return ctor
-  }
-
-  export function create(options: Metadata) {
-    const shape = options.shape || 'rect'
-    const Ctor = registry.get(shape)
-    if (Ctor) {
-      return new Ctor(options)
-    }
-    return registry.onNotFound(shape)
-  }
+export interface NodeDefinition extends NodeClass {
+  new <T extends NodeProperties = NodeProperties>(metadata: T): Node
 }

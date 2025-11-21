@@ -88,7 +88,7 @@ export default class Example extends React.Component {
         break
       case 'attr':
         edges.forEach((edge) => {
-          const color = Color.random().toHex()
+          const color = Color.randomHex()
           edge.attr('line/stroke', color)
         })
         break

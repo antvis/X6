@@ -1,20 +1,18 @@
-import { Platform } from '../platform'
-
+import { isEventSupported } from '../platform'
+import type { OnWheelCallback, OnWheelGuard } from '@/types'
 export class MouseWheelHandle {
   private target: HTMLElement | Document
-  private onWheelCallback: MouseWheelHandle.OnWheelCallback
-  private onWheelGuard?: MouseWheelHandle.OnWheelGuard
+  private onWheelCallback: OnWheelCallback
+  private onWheelGuard?: OnWheelGuard
   private animationFrameId = 0
   private deltaX = 0
   private deltaY = 0
-  private eventName = Platform.isEventSupported('wheel')
-    ? 'wheel'
-    : 'mousewheel'
+  private eventName = isEventSupported('wheel') ? 'wheel' : 'mousewheel'
 
   constructor(
     target: HTMLElement | Document,
-    onWheelCallback: MouseWheelHandle.OnWheelCallback,
-    onWheelGuard?: MouseWheelHandle.OnWheelGuard,
+    onWheelCallback: OnWheelCallback,
+    onWheelGuard?: OnWheelGuard,
   ) {
     this.target = target
     this.onWheelCallback = onWheelCallback
@@ -61,13 +59,4 @@ export class MouseWheelHandle {
     this.deltaX = 0
     this.deltaY = 0
   }
-}
-
-export namespace MouseWheelHandle {
-  export type OnWheelGuard = (e: WheelEvent) => boolean
-  export type OnWheelCallback = (
-    e: WheelEvent,
-    deltaX?: number,
-    deltaY?: number,
-  ) => void
 }

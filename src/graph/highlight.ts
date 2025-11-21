@@ -11,8 +11,18 @@ import type { CellViewHighlightOptions } from '../view/cell/type'
 import { Base } from './base'
 import type { EventArgs } from './events'
 
+interface Cache {
+  highlighter: HighlighterDefinition<KeyValue>
+  cellView: CellView
+  magnet: Element
+  args: KeyValue
+}
+
+export type HighlightManagerOptions =
+  | HighlighterNativeItem
+  | HighlighterManualItem
 export class HighlightManager extends Base {
-  protected readonly highlights: KeyValue<HighlightManager.Cache> = {}
+  protected readonly highlights: KeyValue<Cache> = {}
 
   protected init() {
     this.startListening()
@@ -132,15 +142,4 @@ export class HighlightManager extends Base {
     Object.keys(this.highlights).forEach((id) => this.unhighlight(id))
     this.stopListening()
   }
-}
-
-export namespace HighlightManager {
-  export interface Cache {
-    highlighter: HighlighterDefinition<KeyValue>
-    cellView: CellView
-    magnet: Element
-    args: KeyValue
-  }
-
-  export type Options = HighlighterNativeItem | HighlighterManualItem
 }

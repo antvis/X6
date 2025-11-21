@@ -7,21 +7,23 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-:::info{title=在本章节中你可以了解到}
+:::info{title="在本章节中主要介绍 React 节点相关的知识，通过阅读，你可以了解到"}
+
 - 如何使用 React 组件来渲染节点内容
 - 如何更新节点内容
+
 :::
 
 ## 渲染节点
 
-我们提供了一个独立的包 `@antv/x6-react-shape` 来使用 React 渲染节点。
+我们提供了一个独立的包 `@antv/x6-react-shape`，用于通过 React 渲染节点。
 
 :::warning{title=注意}
-需要注意的是，x6 的版本要和 x6-react-shape 的版本匹配，也就是两个包需要用同一个大版本。比如如果 X6 使用的是 2.x 版本，那么 x6-react-shape 也需要使用 2.x 版本。
+版本兼容关系：X6 1.x 使用 x6-react-shape 1.x；X6 2.x 和 3.x 版本均使用 x6-react-shape 2.x。
 :::
 
 :::warning{title=注意}
-x6-react-shape 从 2.0.8 版本以后只支持 react18，如果你的项目是低于 react18 的版本，请把 x6-react-shape 的版本锁定在 2.0.8。
+x6-react-shape 自 2.0.8 起仅支持 React 18 及以上；若项目低于 React 18，请将 x6-react-shape 锁定到 2.0.8。
 :::
 
 ```ts
@@ -36,14 +38,14 @@ const NodeComponent = () => {
 }
 
 register({
-  shape: 'custom-react-node',
+  shape: 'custom-basic-react-node',
   width: 100,
   height: 100,
   component: NodeComponent,
 })
 
 graph.addNode({
-  shape: 'custom-react-node',
+  shape: 'custom-basic-react-node',
   x: 60,
   y: 100,
 })
@@ -53,11 +55,11 @@ graph.addNode({
 
 ## 更新节点
 
-与 `HTML` 一样，在注册节点的时候，提供一个 `effect`，字段，是当前节点的 `prop` 数组，当 `effect` 包含的 `prop` 有变动时，会重新渲染当前 React 组件。
+与 `HTML` 类似，注册节点时可提供 `effect` 字段（当前节点的 `props` 数组）。当 `effect` 中任一 `prop` 发生变化时，会重新渲染对应的 React 组件。
 
 ```ts
 register({
-  shape: 'custom-react-node',
+  shape: 'custom-update-react-node',
   width: 100,
   height: 100,
   effect: ['data'],
@@ -65,7 +67,7 @@ register({
 })
 
 const node = graph.addNode({
-  shape: 'custom-react-node',
+  shape: 'custom-update-react-node',
   x: 60,
   y: 100,
   data: {
@@ -85,7 +87,7 @@ setInterval(() => {
 
 ## Portal 方式
 
-上面的 React 组件渲染方式有一个缺点，因为内部是通过以下方式将组件渲染到节点的 DOM 中。
+上述渲染方式有一个缺点：组件会被直接渲染到节点的 DOM 中，方式如下。
 
 ```ts
 import { createRoot, Root } from 'react-dom/client'
@@ -94,6 +96,6 @@ const root = createRoot(container) // container 为节点容器
 root.render(component)
 ```
 
-可以看出，React 组件已经不处于正常的渲染文档树中。所以它内部无法获取外部 `Context` 内容。如果有这种应用场景，可以使用 `Portal` 模式来渲染 React 组件。
+此时组件不在常规渲染树中，因而无法访问外部 `Context`。若有此需求，请使用 `Portal` 模式来渲染 React 组件。
 
 <code id="react-portal" src="@/src/tutorial/intermediate/react/portal/index.tsx"></code>

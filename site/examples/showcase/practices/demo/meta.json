@@ -1,6 +1,14 @@
 {
   "demos": [
     {
+      "filename": "agentFlow.ts",
+      "title": {
+        "zh": "智能体流程编排",
+        "en": "Agent Flow"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*sXYvQZDhuF0AAAAAUOAAAAgAemJ7AQ/original"
+    },
+    {
       "filename": "flowchart.ts",
       "title": {
         "zh": "流程图",
@@ -25,12 +33,12 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*yRLDQ5KgSO4AAAAAAAAAAAAADtOHAQ/original"
     },
     {
-      "filename": "er.ts",
+      "filename": "er.tsx",
       "title": {
         "zh": "ER 图",
         "en": "ER"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*JC4fSosMaVIAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*v60ER6NVzCQAAAAAT1AAAAgAemJ7AQ/original"
     },
     {
       "filename": "mindmap.ts",
@@ -46,15 +54,7 @@
         "zh": "BPMN",
         "en": "BPMN"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aPSySa8oz4sAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "swimlane.ts",
-      "title": {
-        "zh": "泳道图",
-        "en": "Swimlane"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mUVrSJMkP1UAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*q6X4RbYDXpAAAAAAUNAAAAgAemJ7AQ/original"
     },
     {
       "filename": "elk.ts",
@@ -95,6 +95,22 @@
         "en": "Expand/Collapse the Tree"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XDnNRqnj4WkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "virtualRender.ts",
+      "title": {
+        "zh": "多节点虚拟渲染",
+        "en": "Virtual Rendering for Multiple Nodes"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*dXlKS5AyvRYAAAAAYjAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "selectionDrag.ts",
+      "title": {
+        "zh": "框选批量拖拽多节点",
+        "en": "Batch Dragging Multiple Nodes with Selection"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*kxWSSLKG_tIAAAAAbkAAAAgAemJ7AQ/original"
     }
   ]
 }

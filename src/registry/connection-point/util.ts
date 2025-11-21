@@ -1,10 +1,6 @@
-import { Point, Line } from '../../geometry'
+import { Point, Line, type PointLike } from '../../geometry'
 
-export function offset(
-  p1: Point,
-  p2: Point,
-  offset?: number | Point.PointLike,
-) {
+export function offset(p1: Point, p2: Point, offset?: number | PointLike) {
   let tx: number | undefined
   if (typeof offset === 'object') {
     if (Number.isFinite(offset.y)) {

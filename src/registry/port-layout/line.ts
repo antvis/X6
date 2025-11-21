@@ -1,4 +1,4 @@
-import { Line, type Point } from '../../geometry'
+import { Line, type Point, type PointLike } from '../../geometry'
 import type { PortLayoutCommonArgs, PortLayoutDefinition } from './index'
 import { normalizePoint, toResult } from './util'
 
@@ -7,8 +7,8 @@ export interface SideArgs extends PortLayoutCommonArgs {
 }
 
 export interface LineArgs extends SideArgs {
-  start?: Point.PointLike
-  end?: Point.PointLike
+  start?: PointLike
+  end?: PointLike
 }
 
 export const line: PortLayoutDefinition<LineArgs> = (

@@ -11,8 +11,17 @@ import {
 } from '../../common'
 import { Rectangle } from '../../geometry'
 import type { Graph } from '../../graph'
-import type { Cell } from '../../model/cell'
-import type { Edge } from '../../model/edge'
+import type {
+  Cell,
+  CellBaseEventArgs,
+  CellMutateOptions,
+} from '../../model/cell'
+import type {
+  Edge,
+  TerminalCellData,
+  TerminalData,
+  TerminalType,
+} from '../../model/edge'
 import type { Model } from '../../model/model'
 import type { CellAttrs, SimpleAttrs } from '../../registry/attr'
 import { Registry } from '../../registry/registry'
@@ -299,11 +308,11 @@ export class CellView<
     this.cell.on('changed', this.onCellChanged, this)
   }
 
-  protected onCellChanged({ options }: Cell.EventArgs['changed']) {
+  protected onCellChanged({ options }: CellBaseEventArgs['changed']) {
     this.onAttrsChange(options)
   }
 
-  protected onAttrsChange(options: Cell.MutateOptions) {
+  protected onAttrsChange(options: CellMutateOptions) {
     let flag = this.flag.getChangedFlag()
     if (options.updated || !flag) {
       return
@@ -534,12 +543,12 @@ export class CellView<
     x: number,
     y: number,
     edge: Edge,
-    type: Edge.TerminalType,
+    type: TerminalType,
   ) {
     const cell = this.cell
     const portId = this.findAttr('port', magnet)
     const selector = magnet.getAttribute('data-selector')
-    const terminal: Edge.TerminalCellData = { cell: cell.id }
+    const terminal: TerminalCellData = { cell: cell.id }
 
     if (selector != null) {
       terminal.magnet = selector
@@ -560,10 +569,10 @@ export class CellView<
     return terminal
   }
 
-  getMagnetFromEdgeTerminal(terminal: Edge.TerminalData) {
+  getMagnetFromEdgeTerminal(terminal: TerminalData) {
     const cell = this.cell
     const root = this.container
-    const portId = (terminal as Edge.TerminalCellData).port
+    const portId = (terminal as TerminalCellData).port
     let selector = terminal.magnet
     let magnet: any
     if (portId != null && cell.isNode() && cell.hasPort(portId)) {

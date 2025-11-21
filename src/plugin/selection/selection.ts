@@ -2,13 +2,29 @@ import {
   Dom,
   disposable,
   FunctionExt,
+  isModifierKeyMatch,
   type KeyValue,
   type ModifierKey,
 } from '../../common'
-import { type Point, Rectangle } from '../../geometry'
+import {
+  type Point,
+  type PointLike,
+  Rectangle,
+  type RectangleLike,
+} from '../../geometry'
 import type { Graph } from '../../graph'
-import { Cell, Collection, type Edge, type Model, type Node } from '../../model'
+import type {
+  CollectionAddOptions,
+  CollectionRemoveOptions,
+  CollectionSetOptions,
+  Edge,
+  Model,
+  Node,
+  SetOptions,
+} from '../../model'
+import { Cell, Collection, type CollectionEventArgs } from '../../model'
 import { type CellView, View } from '../../view'
+import type { Scroller } from '../scroller'
 
 export class SelectionImpl extends View<SelectionImplEventArgs> {
   public readonly options: SelectionImplOptions
@@ -19,6 +35,19 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected boxesUpdated: boolean
   protected updateThrottleTimer: ReturnType<typeof setTimeout> | null = null
   protected isDragging: boolean = false
+  // 逐帧批处理拖拽位移，降低 translate 重绘频率
+  protected dragRafId: number | null = null
+  // 合并缩放/平移下的选择框刷新到每帧一次
+  protected transformRafId: number | null = null
+  protected dragPendingOffset: { dx: number; dy: number } | null = null
+  protected containerOffsetX: number = 0
+  protected containerOffsetY: number = 0
+  // 拖拽过程的缓存，减少每次 move 重复计算
+  protected translatingCache: {
+    selectedNodes: Node[]
+    nodeIdSet: Set<string>
+    edgesToTranslate: Edge[]
+  } | null = null
 
   public get graph() {
     return this.options.graph
@@ -68,6 +97,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       {
         [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
         [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+        [`mousedown .${this.prefixClassName(classNames.inner)}`]:
+          'onSelectionContainerMouseDown',
+        [`touchstart .${this.prefixClassName(classNames.inner)}`]:
+          'onSelectionContainerMouseDown',
       },
       true,
     )
@@ -92,6 +125,15 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     graph.off('scale', this.onGraphTransformed, this)
     graph.off('translate', this.onGraphTransformed, this)
+    // 清理缩放/平移的 rAF 刷新与 throttleTimer
+    if (this.transformRafId != null) {
+      cancelAnimationFrame(this.transformRafId)
+      this.transformRafId = null
+    }
+    if (this.updateThrottleTimer) {
+      clearTimeout(this.updateThrottleTimer)
+      this.updateThrottleTimer = null
+    }
     graph.model.off('updated', this.onModelUpdated, this)
 
     collection.off('added', this.onCellAdded, this)
@@ -107,7 +149,19 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected onGraphTransformed() {
-    this.updateSelectionBoxes()
+    if (this.updateThrottleTimer) {
+      clearTimeout(this.updateThrottleTimer)
+      this.updateThrottleTimer = null
+    }
+    // 使用 rAF 将多次 transform 合并为每帧一次刷新
+    if (this.transformRafId == null) {
+      this.transformRafId = window.requestAnimationFrame(() => {
+        this.transformRafId = null
+        if (!this.isDragging && this.collection.length > 0) {
+          this.refreshSelectionBoxes()
+        }
+      })
+    }
   }
 
   protected onCellChanged() {
@@ -119,7 +173,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected onNodePositionChanged({
     node,
     options,
-  }: Collection.EventArgs['node:change:position']) {
+  }: CollectionEventArgs['node:change:position']) {
     const { showNodeSelectionBox, pointerEvents } = this.options
     const { ui, selection, translateBy, snapped } = options
 
@@ -148,7 +202,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
   }
 
-  protected onModelUpdated({ removed }: Collection.EventArgs['updated']) {
+  protected onModelUpdated({ removed }: CollectionEventArgs['updated']) {
     if (removed?.length) {
       this.unselect(removed)
     }
@@ -242,6 +296,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         this.collection.reset([], { ...options, ui: true })
       }
     }
+    // 清理容器 transform 与位移累计
+    this.containerOffsetX = 0
+    this.containerOffsetY = 0
+    Dom.css(this.container, 'transform', '')
     return this
   }
 
@@ -347,17 +405,25 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
       case 'translating': {
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
-        if (!this.options.following) {
-          const data = eventData as TranslatingEventData
-          this.updateSelectedNodesPosition({
-            dx: data.clientX - data.originX,
-            dy: data.clientY - data.originY,
-          })
+        if (this.dragPendingOffset) {
+          const toApply = this.dragPendingOffset
+          this.dragPendingOffset = null
+          this.translateSelectedNodes(toApply.dx, toApply.dy)
+          this.updateContainerPosition(toApply)
         }
+        if (this.dragRafId != null) {
+          cancelAnimationFrame(this.dragRafId)
+          this.dragRafId = null
+        }
+        // 重置容器 transform 与累计偏移
+        this.containerOffsetX = 0
+        this.containerOffsetY = 0
+        Dom.css(this.container, 'transform', '')
         this.graph.model.stopBatch('move-selection')
+        // 清理本次拖拽缓存
+        this.translatingCache = null
         this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
-        // 拖拽结束后，重新创建选择框确保位置正确
-        this.updateSelectionBoxes()
+        this.repositionSelectionBoxesInPlace()
         break
       }
 
@@ -379,21 +445,65 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: Dom.MouseDownEvent) {
-    if (!this.options.following) {
-      evt.stopPropagation()
-    }
+    this.handleSelectionMouseDown(evt, true)
+  }
+
+  protected onSelectionContainerMouseDown(evt: Dom.MouseDownEvent) {
+    this.handleSelectionMouseDown(evt, false)
+  }
+
+  protected handleSelectionMouseDown(evt: Dom.MouseDownEvent, isBox: boolean) {
+    evt.stopPropagation()
+    evt.preventDefault?.()
 
     const e = this.normalizeEvent(evt)
+    const client = this.graph.snapToGrid(e.clientX, e.clientY)
+
+    // 容器内的多选切换：按下修饰键时，不拖拽，直接切换选中状态
+    if (
+      !isBox &&
+      isModifierKeyMatch(e, this.options.multipleSelectionModifiers)
+    ) {
+      const viewsUnderPoint = this.graph.findViewsFromPoint(client.x, client.y)
+      const nodeView = viewsUnderPoint.find((v) => v.isNodeView())
+      if (nodeView) {
+        const cell = nodeView.cell
+        if (this.isSelected(cell)) {
+          this.unselect(cell, { ui: true })
+        } else {
+          if (this.options.multiple === false) {
+            this.reset(cell, { ui: true })
+          } else {
+            this.select(cell, { ui: true })
+          }
+        }
+      }
+      return
+    }
 
     if (this.options.movable) {
       this.startTranslating(e)
     }
 
-    const activeView = this.getCellViewFromElem(e.target)
+    let activeView = isBox ? this.getCellViewFromElem(e.target) : null
+    if (!activeView) {
+      const viewsUnderPoint = this.graph
+        .findViewsFromPoint(client.x, client.y)
+        .filter((view) => this.isSelected(view.cell))
+      activeView = viewsUnderPoint[0] || null
+      if (!activeView) {
+        const firstSelected = this.collection.first()
+        if (firstSelected) {
+          activeView = this.graph.renderer.findViewByCell(firstSelected)
+        }
+      }
+    }
+
     if (activeView) {
       this.setEventData<SelectionBoxEventData>(e, { activeView })
-      const client = this.graph.snapToGrid(e.clientX, e.clientY)
-      this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      if (isBox) {
+        this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      }
       this.delegateDocumentEvents(documentEvents, e.data)
     }
   }
@@ -408,9 +518,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       originX: client.x,
       originY: client.y,
     })
+    this.prepareTranslatingCache()
   }
 
-  private getRestrictArea(): Rectangle.RectangleLike | null {
+  private getRestrictArea(): RectangleLike | null {
     const restrict = this.graph.options.translating.restrict
     const area =
       typeof restrict === 'function'
@@ -426,6 +537,48 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
 
     return area || null
+  }
+
+  // 根据当前选择的节点构建拖拽缓存
+  protected prepareTranslatingCache() {
+    const selectedNodes = this.collection
+      .toArray()
+      .filter((cell): cell is Node => cell.isNode())
+    const nodeIdSet = new Set(selectedNodes.map((n) => n.id))
+    const selectedEdges = this.collection
+      .toArray()
+      .filter((cell): cell is Edge => cell.isEdge())
+
+    const edgesToTranslateSet = new Set<Edge>()
+    const needsTranslate = (edge: Edge) =>
+      edge.getVertices().length > 0 ||
+      !edge.getSourceCellId() ||
+      !edge.getTargetCellId()
+
+    // 邻接边：仅当需要位移（有顶点或点端点）时加入缓存
+    this.graph.model.getEdges().forEach((edge) => {
+      const srcId = edge.getSourceCellId()
+      const tgtId = edge.getTargetCellId()
+      const isConnectedToSelectedNode =
+        (srcId != null && nodeIdSet.has(srcId)) ||
+        (tgtId != null && nodeIdSet.has(tgtId))
+      if (isConnectedToSelectedNode && needsTranslate(edge)) {
+        edgesToTranslateSet.add(edge)
+      }
+    })
+
+    // 选中的边（不一定与选中节点相邻）也需要考虑
+    selectedEdges.forEach((edge) => {
+      if (needsTranslate(edge)) {
+        edgesToTranslateSet.add(edge)
+      }
+    })
+
+    this.translatingCache = {
+      selectedNodes,
+      nodeIdSet,
+      edgesToTranslate: Array.from(edgesToTranslateSet),
+    }
   }
 
   protected getSelectionOffset(client: Point, data: TranslatingEventData) {
@@ -470,42 +623,39 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
   }
 
-  private updateElementPosition(elem: Element, dLeft: number, dTop: number) {
-    const strLeft = Dom.css(elem, 'left')
-    const strTop = Dom.css(elem, 'top')
-    const left = strLeft ? parseFloat(strLeft) : 0
-    const top = strTop ? parseFloat(strTop) : 0
-
-    Dom.css(elem, 'left', left + dLeft)
-    Dom.css(elem, 'top', top + dTop)
-  }
-
   protected updateSelectedNodesPosition(offset: { dx: number; dy: number }) {
     if (offset.dx === 0 && offset.dy === 0) {
       return
     }
 
-    this.translateSelectedNodes(offset.dx, offset.dy)
+    // 合并偏移并在下一帧统一应用，减少高频重绘
+    if (this.dragPendingOffset) {
+      this.dragPendingOffset.dx += offset.dx
+      this.dragPendingOffset.dy += offset.dy
+    } else {
+      this.dragPendingOffset = { dx: offset.dx, dy: offset.dy }
+    }
 
-    // 立即同步更新选择框位置，确保与节点位置一致，需要考虑画布的缩放比例
-    const scale = this.graph.transform.getScale()
-    this.$boxes.forEach((box) => {
-      this.updateElementPosition(
-        box,
-        offset.dx * scale.sx,
-        offset.dy * scale.sy,
-      )
-    })
-    this.updateContainer()
+    if (this.dragRafId == null) {
+      this.dragRafId = requestAnimationFrame(() => {
+        const toApply = this.dragPendingOffset || { dx: 0, dy: 0 }
+        this.dragPendingOffset = null
+        this.dragRafId = null
 
-    // 标记选择框已更新，避免重复更新
-    this.boxesUpdated = true
-    this.isDragging = true
+        this.translateSelectedNodes(toApply.dx, toApply.dy)
+        this.updateContainerPosition(toApply)
+        this.boxesUpdated = true
+        this.isDragging = true
+      })
+    }
   }
 
-  protected autoScrollGraph(x: number, y: number) {
-    const scroller = this.graph.getPlugin('scroller') as any
-    if (scroller && scroller.autoScroll) {
+  protected autoScrollGraph(
+    x: number,
+    y: number,
+  ): { scrollerX: number; scrollerY: number } {
+    const scroller = this.graph.getPlugin<Scroller>('scroller')
+    if (scroller?.autoScroll) {
       return scroller.autoScroll(x, y)
     }
     return { scrollerX: 0, scrollerY: 0 }
@@ -599,21 +749,60 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       }
     }
 
-    this.collection.toArray().forEach((cell) => {
-      if (!map[cell.id]) {
-        const options = {
-          ...otherOptions,
-          selection: this.cid,
-          exclude: excluded,
-        }
-        cell.translate(dx, dy, options)
-        this.graph.model.getConnectedEdges(cell).forEach((edge) => {
-          if (!map[edge.id]) {
-            edge.translate(dx, dy, options)
-            map[edge.id] = true
+    const options = {
+      ...otherOptions,
+      selection: this.cid,
+      exclude: excluded,
+    }
+
+    // 移动选中的节点，避免重复和嵌套
+    const cachedSelectedNodes = this.translatingCache?.selectedNodes
+    const selectedNodes = (
+      cachedSelectedNodes ??
+      (this.collection.toArray().filter((cell) => cell.isNode()) as Node[])
+    ).filter((node) => !map[node.id])
+    selectedNodes.forEach((node) => {
+      node.translate(dx, dy, options)
+    })
+
+    // 边移动缓存：仅移动需要位移的边（有顶点或点端点）
+    const cachedEdges = this.translatingCache?.edgesToTranslate
+    const edgesToTranslate = new Set<Edge>()
+    if (cachedEdges) {
+      cachedEdges.forEach((edge) => {
+        edgesToTranslate.add(edge)
+      })
+    } else {
+      const selectedNodeIdSet = new Set(selectedNodes.map((n) => n.id))
+      this.graph.model.getEdges().forEach((edge) => {
+        const srcId = edge.getSourceCellId()
+        const tgtId = edge.getTargetCellId()
+        const srcSelected = srcId ? selectedNodeIdSet.has(srcId) : false
+        const tgtSelected = tgtId ? selectedNodeIdSet.has(tgtId) : false
+        if (srcSelected || tgtSelected) {
+          const hasVertices = edge.getVertices().length > 0
+          const pointEndpoint = !srcId || !tgtId
+          if (hasVertices || pointEndpoint) {
+            edgesToTranslate.add(edge)
           }
-        })
+        }
+      })
+    }
+
+    // 若选择了边（仅边、无节点），确保其也被移动（过滤无顶点且两端为节点的情况）
+    const selectedEdges = this.collection
+      .toArray()
+      .filter((cell): cell is Edge => cell.isEdge() && !map[cell.id])
+    selectedEdges.forEach((edge) => {
+      const hasVertices = edge.getVertices().length > 0
+      const pointEndpoint = !edge.getSourceCellId() || !edge.getTargetCellId()
+      if (hasVertices || pointEndpoint) {
+        edgesToTranslate.add(edge)
       }
+    })
+
+    edgesToTranslate.forEach((edge) => {
+      edge.translate(dx, dy, options)
     })
   }
 
@@ -718,6 +907,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     if (this.options.className) {
       Dom.addClass(this.container, this.options.className)
     }
+    Dom.css(this.container, {
+      willChange: 'transform',
+    })
 
     this.selectionContainer = document.createElement('div')
     Dom.addClass(
@@ -744,10 +936,13 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected updateContainerPosition(offset: { dx: number; dy: number }) {
     if (offset.dx || offset.dy) {
       const scale = this.graph.transform.getScale()
-      this.updateElementPosition(
-        this.selectionContainer,
-        offset.dx * scale.sx,
-        offset.dy * scale.sy,
+      // 使用 transform，避免频繁修改 left/top
+      this.containerOffsetX += offset.dx * scale.sx
+      this.containerOffsetY += offset.dy * scale.sy
+      Dom.css(
+        this.container,
+        'transform',
+        `translate3d(${this.containerOffsetX}px, ${this.containerOffsetY}px, 0)`,
       )
     }
   }
@@ -774,7 +969,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     Dom.css(this.selectionContainer, {
       position: 'absolute',
-      pointerEvents: 'none',
+      pointerEvents: this.options.movable ? 'auto' : 'none',
+      cursor: this.options.movable ? 'move' : 'default',
       left: origin.x,
       top: origin.y,
       width: corner.x - origin.x,
@@ -888,6 +1084,34 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     this.boxesUpdated = true
   }
 
+  // 按当前视图几何同步每个选择框的位置与尺寸
+  protected repositionSelectionBoxesInPlace() {
+    const boxes = this.$boxes
+    if (boxes.length === 0) {
+      this.refreshSelectionBoxes()
+      return
+    }
+
+    for (const elem of boxes) {
+      const id = elem.getAttribute('data-cell-id')
+      if (!id) continue
+      const cell = this.collection.get(id)
+      if (!cell) continue
+      const view = this.graph.renderer.findViewByCell(cell)
+      if (!view) continue
+      const bbox = view.getBBox({ useCellGeometry: true })
+      Dom.css(elem, {
+        left: bbox.x,
+        top: bbox.y,
+        width: bbox.width,
+        height: bbox.height,
+      })
+    }
+
+    this.updateContainer()
+    this.boxesUpdated = true
+  }
+
   protected getCellViewFromElem(elem: Element) {
     const id = elem.getAttribute('data-cell-id')
     if (id) {
@@ -899,12 +1123,12 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     return null
   }
 
-  protected onCellRemoved({ cell }: Collection.EventArgs['removed']) {
+  protected onCellRemoved({ cell }: CollectionEventArgs['removed']) {
     this.destroySelectionBox(cell)
     this.updateContainer()
   }
 
-  protected onReseted({ previous, current }: Collection.EventArgs['reseted']) {
+  protected onReseted({ previous, current }: CollectionEventArgs['reseted']) {
     this.destroyAllSelectionBoxes(previous)
     current.forEach((cell) => {
       this.listenCellRemoveEvent(cell)
@@ -913,7 +1137,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     this.updateContainer()
   }
 
-  protected onCellAdded({ cell }: Collection.EventArgs['added']) {
+  protected onCellAdded({ cell }: CollectionEventArgs['added']) {
     // The collection do not known the cell was removed when cell was
     // removed by interaction(such as, by "delete" shortcut), so we should
     // manually listen to cell's remove event.
@@ -931,7 +1155,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     added,
     removed,
     options,
-  }: Collection.EventArgs['updated']) {
+  }: CollectionEventArgs['updated']) {
     added.forEach((cell) => {
       this.trigger('cell:selected', { cell, options })
       if (cell.isNode()) {
@@ -1022,13 +1246,13 @@ export type SelectionImplFilter =
   | (string | { id: string })[]
   | ((this: Graph, cell: Cell) => boolean)
 
-export interface SelectionImplSetOptions extends Collection.SetOptions {
+export interface SelectionImplSetOptions extends CollectionSetOptions {
   batch?: boolean
 }
 
-export interface SelectionImplAddOptions extends Collection.AddOptions {}
+export interface SelectionImplAddOptions extends CollectionAddOptions {}
 
-export interface SelectionImplRemoveOptions extends Collection.RemoveOptions {}
+export interface SelectionImplRemoveOptions extends CollectionRemoveOptions {}
 
 interface BaseSelectionBoxEventArgs<T> {
   e: T
@@ -1045,17 +1269,17 @@ export interface SelectionImplBoxEventArgsRecord {
 }
 
 export interface SelectionImplEventArgsRecord {
-  'cell:selected': { cell: Cell; options: Model.SetOptions }
-  'node:selected': { cell: Cell; node: Node; options: Model.SetOptions }
-  'edge:selected': { cell: Cell; edge: Edge; options: Model.SetOptions }
-  'cell:unselected': { cell: Cell; options: Model.SetOptions }
-  'node:unselected': { cell: Cell; node: Node; options: Model.SetOptions }
-  'edge:unselected': { cell: Cell; edge: Edge; options: Model.SetOptions }
+  'cell:selected': { cell: Cell; options: SetOptions }
+  'node:selected': { cell: Cell; node: Node; options: SetOptions }
+  'edge:selected': { cell: Cell; edge: Edge; options: SetOptions }
+  'cell:unselected': { cell: Cell; options: SetOptions }
+  'node:unselected': { cell: Cell; node: Node; options: SetOptions }
+  'edge:unselected': { cell: Cell; edge: Edge; options: SetOptions }
   'selection:changed': {
     added: Cell[]
     removed: Cell[]
     selected: Cell[]
-    options: Model.SetOptions
+    options: SetOptions
   }
 }
 
@@ -1117,7 +1341,7 @@ export interface SelectionBoxEventData {
 
 export interface RotationEventData {
   rotated?: boolean
-  center: Point.PointLike
+  center: PointLike
   start: number
   angles: { [id: string]: number }
 }

@@ -4,14 +4,113 @@ import {
   type DijkstraWeight,
   dijkstra,
 } from '../common/algorithm'
-import { type Point, Rectangle } from '../geometry'
+import { Rectangle, type RectangleLike } from '../geometry'
 import type { Graph } from '../graph'
-import { Cell } from './cell'
+import {
+  Cell,
+  CellGetDescendantsOptions,
+  CellMetadata,
+  CellRemoveOptions,
+  CellSetOptions,
+  CellTranslateOptions,
+  CellToJSONOptions,
+  CellProperties,
+  CellGetCellsBBoxOptions,
+} from './cell'
 import { Collection } from './collection'
-import { Edge } from './edge'
-import { Node } from './node'
+import type {
+  CollectionAddOptions,
+  CollectionSetOptions,
+  CollectionRemoveOptions,
+  CellEventArgs,
+  NodeEventArgs,
+  EdgeEventArgs,
+} from './collection'
+import {
+  Edge,
+  EdgeMetadata,
+  EdgeSetOptions,
+  TerminalCellData,
+  TerminalCellLooseData,
+  TerminalType,
+} from './edge'
+import { Node, NodeMetadata } from './node'
+import type { PointLike, KeyPoint } from '@/types'
 
-export class Model extends Basecoat<Model.EventArgs> {
+const toStringTag = 'X6.Model'
+export class Model extends Basecoat<ModelEventArgs> {
+  static isModel(instance: unknown): instance is Model {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Model) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const model = instance as Model
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof model.addNode === 'function' &&
+      typeof model.addEdge === 'function' &&
+      model.collection != null
+    ) {
+      return true
+    }
+
+    return false
+  }
+  static toJSON(cells: Cell[], options: ToJSONOptions = {}) {
+    return {
+      cells: cells.map((cell) => cell.toJSON(options)),
+    }
+  }
+
+  static fromJSON(data: FromJSONData) {
+    const cells: CellMetadata[] = []
+    if (Array.isArray(data)) {
+      cells.push(...data)
+    } else {
+      if (data.cells) {
+        cells.push(...data.cells)
+      }
+
+      if (data.nodes) {
+        data.nodes.forEach((node) => {
+          if (node.shape == null) {
+            node.shape = 'rect'
+          }
+          cells.push(node)
+        })
+      }
+
+      if (data.edges) {
+        data.edges.forEach((edge) => {
+          if (edge.shape == null) {
+            edge.shape = 'edge'
+          }
+          cells.push(edge)
+        })
+      }
+    }
+
+    return cells.map((cell) => {
+      const type = cell.shape
+      if (type) {
+        if (Node.registry.exist(type)) {
+          return Node.create(cell)
+        }
+        if (Edge.registry.exist(type)) {
+          return Edge.create(cell)
+        }
+      }
+      throw new Error(
+        'The `shape` should be specified when creating a node/edge instance',
+      )
+    })
+  }
   public readonly collection: Collection
   protected readonly batches: KeyValue<number> = {}
   protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
@@ -21,24 +120,20 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected outgoings: KeyValue<string[]> = {}
   protected incomings: KeyValue<string[]> = {}
 
-  protected get [Symbol.toStringTag]() {
-    return Model.toStringTag
-  }
-
   constructor(cells: Cell[] = []) {
     super()
     this.collection = new Collection(cells)
     this.setup()
   }
 
-  notify<Key extends keyof Model.EventArgs>(
+  notify<Key extends keyof ModelEventArgs>(
     name: Key,
-    args: Model.EventArgs[Key],
+    args: ModelEventArgs[Key],
   ): this
-  notify(name: Exclude<string, keyof Model.EventArgs>, args: any): this
-  notify<Key extends keyof Model.EventArgs>(
+  notify(name: Exclude<string, keyof ModelEventArgs>, args: unknown): this
+  notify<Key extends keyof ModelEventArgs>(
     name: Key,
-    args: Model.EventArgs[Key],
+    args: ModelEventArgs[Key],
   ) {
     this.trigger(name, args)
     const graph = this.graph
@@ -107,14 +202,14 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
   }
 
-  protected onCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
+  protected onCellRemoved(cell: Cell, options: CollectionRemoveOptions) {
     const cellId = cell.id
     if (cell.isEdge()) {
       delete this.edges[cellId]
 
-      const source = cell.getSource() as Edge.TerminalCellData
-      const target = cell.getTarget() as Edge.TerminalCellData
-      if (source && source.cell) {
+      const source = cell.getSource() as TerminalCellData
+      const target = cell.getTarget() as TerminalCellData
+      if (source?.cell) {
         const cache = this.outgoings[source.cell]
         const index = cache ? cache.indexOf(cellId) : -1
         if (index >= 0) {
@@ -125,7 +220,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         }
       }
 
-      if (target && target.cell) {
+      if (target?.cell) {
         const cache = this.incomings[target.cell]
         const index = cache ? cache.indexOf(cellId) : -1
         if (index >= 0) {
@@ -157,14 +252,16 @@ export class Model extends Basecoat<Model.EventArgs> {
     this.edges = {}
     this.outgoings = {}
     this.incomings = {}
-    cells.forEach((cell) => this.onCellAdded(cell))
+    cells.forEach((cell) => {
+      this.onCellAdded(cell)
+    })
   }
 
-  protected onEdgeTerminalChanged(edge: Edge, type: Edge.TerminalType) {
+  protected onEdgeTerminalChanged(edge: Edge, type: TerminalType) {
     const ref = type === 'source' ? this.outgoings : this.incomings
-    const prev = edge.previous<Edge.TerminalCellLooseData>(type)
+    const prev = edge.previous<TerminalCellLooseData>(type)
 
-    if (prev && prev.cell) {
+    if (prev?.cell) {
       const cellId = Cell.isCell(prev.cell) ? prev.cell.id : prev.cell
       const cache = ref[cellId]
       const index = cache ? cache.indexOf(edge.id) : -1
@@ -176,8 +273,8 @@ export class Model extends Basecoat<Model.EventArgs> {
       }
     }
 
-    const terminal = edge.getTerminal(type) as Edge.TerminalCellLooseData
-    if (terminal && terminal.cell) {
+    const terminal = edge.getTerminal(type) as TerminalCellLooseData
+    if (terminal?.cell) {
       const terminalId = Cell.isCell(terminal.cell)
         ? terminal.cell.id
         : terminal.cell
@@ -190,7 +287,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
   }
 
-  protected prepareCell(cell: Cell, options: Collection.AddOptions) {
+  protected prepareCell(cell: Cell, options: CollectionAddOptions) {
     if (!cell.model && (!options || !options.dryrun)) {
       cell.model = this
     }
@@ -202,7 +299,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return cell
   }
 
-  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
+  resetCells(cells: Cell[], options: CollectionSetOptions = {}) {
     // Do not update model at this time. Because if we just update the graph
     // with the same json-data, the edge will reference to the old nodes.
     cells.map((cell) => this.prepareCell(cell, { ...options, dryrun: true }))
@@ -212,7 +309,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return this
   }
 
-  clear(options: Cell.SetOptions = {}) {
+  clear(options: CellSetOptions = {}) {
     const raw = this.getCells()
     if (raw.length === 0) {
       return this
@@ -243,41 +340,41 @@ export class Model extends Basecoat<Model.EventArgs> {
     return this
   }
 
-  addNode(metadata: Node | Node.Metadata, options: Model.AddOptions = {}) {
+  addNode(metadata: Node | NodeMetadata, options: AddOptions = {}) {
     const node = Node.isNode(metadata) ? metadata : this.createNode(metadata)
     this.addCell(node, options)
     return node
   }
 
-  updateNode(metadata: Node.Metadata, options: Model.SetOptions = {}) {
+  updateNode(metadata: NodeMetadata, options: SetOptions = {}) {
     const node = this.createNode(metadata)
     const prop = node.getProp()
     node.dispose()
     return this.updateCell(prop, options)
   }
 
-  createNode(metadata: Node.Metadata) {
+  createNode(metadata: NodeMetadata) {
     return Node.create(metadata)
   }
 
-  addEdge(metadata: Edge.Metadata | Edge, options: Model.AddOptions = {}) {
+  addEdge(metadata: EdgeMetadata | Edge, options: AddOptions = {}) {
     const edge = Edge.isEdge(metadata) ? metadata : this.createEdge(metadata)
     this.addCell(edge, options)
     return edge
   }
 
-  createEdge(metadata: Edge.Metadata) {
+  createEdge(metadata: EdgeMetadata) {
     return Edge.create(metadata)
   }
 
-  updateEdge(metadata: Edge.Metadata, options: Model.SetOptions = {}) {
+  updateEdge(metadata: EdgeMetadata, options: SetOptions = {}) {
     const edge = this.createEdge(metadata)
     const prop = edge.getProp()
     edge.dispose()
     return this.updateCell(prop, options)
   }
 
-  addCell(cell: Cell | Cell[], options: Model.AddOptions = {}) {
+  addCell(cell: Cell | Cell[], options: AddOptions = {}) {
     if (Array.isArray(cell)) {
       return this.addCells(cell, options)
     }
@@ -292,7 +389,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return this
   }
 
-  addCells(cells: Cell[], options: Model.AddOptions = {}) {
+  addCells(cells: Cell[], options: AddOptions = {}) {
     const count = cells.length
     if (count === 0) {
       return this
@@ -314,15 +411,15 @@ export class Model extends Basecoat<Model.EventArgs> {
     return this
   }
 
-  updateCell(prop: Cell.Properties, options: Model.SetOptions = {}): boolean {
+  updateCell(prop: CellProperties, options: SetOptions = {}): boolean {
     const existing = prop.id && this.getCell(prop.id)
     if (existing) {
       return this.batchUpdate(
         'update',
         () => {
-          Object.entries(prop).forEach(([key, val]) =>
-            existing.setProp(key, val, options),
-          )
+          Object.entries(prop).forEach(([key, val]) => {
+            existing.setProp(key, val, options)
+          })
           return true
         },
         prop,
@@ -331,11 +428,11 @@ export class Model extends Basecoat<Model.EventArgs> {
     return false
   }
 
-  removeCell(cellId: string, options?: Collection.RemoveOptions): Cell | null
-  removeCell(cell: Cell, options?: Collection.RemoveOptions): Cell | null
+  removeCell(cellId: string, options?: CollectionRemoveOptions): Cell | null
+  removeCell(cell: Cell, options?: CollectionRemoveOptions): Cell | null
   removeCell(
     obj: Cell | string,
-    options: Collection.RemoveOptions = {},
+    options: CollectionRemoveOptions = {},
   ): Cell | null {
     const cell = typeof obj === 'string' ? this.getCell(obj) : obj
     if (cell && this.has(cell)) {
@@ -375,7 +472,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return newCell
   }
 
-  removeCells(cells: (Cell | string)[], options: Cell.RemoveOptions = {}) {
+  removeCells(cells: (Cell | string)[], options: CellRemoveOptions = {}) {
     if (cells.length) {
       return this.batchUpdate('remove', () => {
         return cells.map((cell) => this.removeCell(cell as Cell, options))
@@ -384,7 +481,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return []
   }
 
-  removeConnectedEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
+  removeConnectedEdges(cell: Cell | string, options: CellRemoveOptions = {}) {
     const edges = this.getConnectedEdges(cell)
     edges.forEach((edge) => {
       edge.remove(options)
@@ -392,7 +489,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return edges
   }
 
-  disconnectConnectedEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
+  disconnectConnectedEdges(cell: Cell | string, options: EdgeSetOptions = {}) {
     const cellId = typeof cell === 'string' ? cell : cell.id
     this.getConnectedEdges(cell).forEach((edge) => {
       const sourceCellId = edge.getSourceCellId()
@@ -501,7 +598,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return cellIds
       ? cellIds
           .map((id) => this.getCell(id) as Edge)
-          .filter((cell) => cell && cell.isEdge())
+          .filter((cell) => cell?.isEdge())
       : null
   }
 
@@ -514,7 +611,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return cellIds
       ? cellIds
           .map((id) => this.getCell(id) as Edge)
-          .filter((cell) => cell && cell.isEdge())
+          .filter((cell) => cell?.isEdge())
       : null
   }
 
@@ -523,7 +620,7 @@ export class Model extends Basecoat<Model.EventArgs> {
    */
   getConnectedEdges(
     cell: Cell | string,
-    options: Model.GetConnectedEdgesOptions = {},
+    options: GetConnectedEdgesOptions = {},
   ) {
     const result: Edge[] = []
     const node = typeof cell === 'string' ? this.getCell(cell) : cell
@@ -569,7 +666,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         const terminal = isOutgoing
           ? cell.getTargetCell()
           : cell.getSourceCell()
-        if (terminal && terminal.isEdge()) {
+        if (terminal?.isEdge()) {
           if (!cache[terminal.id]) {
             result.push(terminal)
             collect(terminal, isOutgoing)
@@ -696,7 +793,7 @@ export class Model extends Basecoat<Model.EventArgs> {
    * Returns all the neighbors of node in the graph. Neighbors are all
    * the nodes connected to node via either incoming or outgoing edge.
    */
-  getNeighbors(cell: Cell, options: Model.GetNeighborsOptions = {}) {
+  getNeighbors(cell: Cell, options: GetNeighborsOptions = {}) {
     let incoming = options.incoming
     let outgoing = options.outgoing
     if (incoming == null && outgoing == null) {
@@ -745,13 +842,13 @@ export class Model extends Basecoat<Model.EventArgs> {
     if (cell.isEdge()) {
       if (incoming) {
         const sourceCell = cell.getSourceCell()
-        if (sourceCell && sourceCell.isNode() && !map[sourceCell.id]) {
+        if (sourceCell?.isNode() && !map[sourceCell.id]) {
           map[sourceCell.id] = sourceCell
         }
       }
       if (outgoing) {
         const targetCell = cell.getTargetCell()
-        if (targetCell && targetCell.isNode() && !map[targetCell.id]) {
+        if (targetCell?.isNode() && !map[targetCell.id]) {
           map[targetCell.id] = targetCell
         }
       }
@@ -763,11 +860,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns `true` if `cell2` is a neighbor of `cell1`.
    */
-  isNeighbor(
-    cell1: Cell,
-    cell2: Cell,
-    options: Model.GetNeighborsOptions = {},
-  ) {
+  isNeighbor(cell1: Cell, cell2: Cell, options: GetNeighborsOptions = {}) {
     let incoming = options.incoming
     let outgoing = options.outgoing
     if (incoming == null && outgoing == null) {
@@ -790,7 +883,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
   }
 
-  getSuccessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+  getSuccessors(cell: Cell, options: GetPredecessorsOptions = {}) {
     const successors: Cell[] = []
     this.search(
       cell,
@@ -807,11 +900,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns `true` if `cell2` is a successor of `cell1`.
    */
-  isSuccessor(
-    cell1: Cell,
-    cell2: Cell,
-    options: Model.GetPredecessorsOptions = {},
-  ) {
+  isSuccessor(cell1: Cell, cell2: Cell, options: GetPredecessorsOptions = {}) {
     let result = false
     this.search(
       cell1,
@@ -830,7 +919,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return result
   }
 
-  getPredecessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+  getPredecessors(cell: Cell, options: GetPredecessorsOptions = {}) {
     const predecessors: Cell[] = []
     this.search(
       cell,
@@ -850,7 +939,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   isPredecessor(
     cell1: Cell,
     cell2: Cell,
-    options: Model.GetPredecessorsOptions = {},
+    options: GetPredecessorsOptions = {},
   ) {
     let result = false
     this.search(
@@ -914,7 +1003,7 @@ export class Model extends Basecoat<Model.EventArgs> {
    * outgoing edges if both the edge terminal (source/target) are in the
    * cells array.
    */
-  getSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  getSubGraph(cells: Cell[], options: GetSubgraphOptions = {}) {
     const subgraph: Cell[] = []
     const cache: KeyValue<Cell> = {}
     const nodes: Node[] = []
@@ -937,7 +1026,9 @@ export class Model extends Basecoat<Model.EventArgs> {
       collect(cell)
       if (options.deep) {
         const descendants = cell.getDescendants({ deep: true })
-        descendants.forEach((descendant) => collect(descendant))
+        descendants.forEach((descendant) => {
+          collect(descendant)
+        })
       }
     })
 
@@ -991,7 +1082,7 @@ export class Model extends Basecoat<Model.EventArgs> {
    *
    * Returns a map of the form: { [original cell ID]: [clone] }.
    */
-  cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  cloneSubGraph(cells: Cell[], options: GetSubgraphOptions = {}) {
     const subgraph = this.getSubGraph(cells, options)
     return this.cloneCells(subgraph)
   }
@@ -1005,8 +1096,8 @@ export class Model extends Basecoat<Model.EventArgs> {
    * Note that there can be more then one node as nodes might overlap.
    */
   getNodesFromPoint(x: number, y: number): Node[]
-  getNodesFromPoint(p: Point.PointLike): Node[]
-  getNodesFromPoint(x: number | Point.PointLike, y?: number) {
+  getNodesFromPoint(p: PointLike): Node[]
+  getNodesFromPoint(x: number | PointLike, y?: number) {
     const p = typeof x === 'number' ? { x, y: y || 0 } : x
     return this.getNodes().filter((node) => {
       return node.getBBox().containsPoint(p)
@@ -1022,28 +1113,25 @@ export class Model extends Basecoat<Model.EventArgs> {
     y: number,
     w: number,
     h: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Node[]
+  getNodesInArea(rect: RectangleLike, options?: GetCellsInAreaOptions): Node[]
   getNodesInArea(
-    rect: Rectangle.RectangleLike,
-    options?: Model.GetCellsInAreaOptions,
-  ): Node[]
-  getNodesInArea(
-    x: number | Rectangle.RectangleLike,
-    y?: number | Model.GetCellsInAreaOptions,
+    x: number | RectangleLike,
+    y?: number | GetCellsInAreaOptions,
     w?: number,
     h?: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Node[] {
     const rect =
       typeof x === 'number'
         ? new Rectangle(x, y as number, w as number, h as number)
         : Rectangle.create(x)
-    const opts =
-      typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
-    const strict = opts && opts.strict
+    const opts = typeof x === 'number' ? options : (y as GetCellsInAreaOptions)
+    const strict = opts?.strict
     return this.getNodes().filter((node) => {
-      const bbox = node.getBBox()
+      const angle = node.angle()
+      const bbox = node.getBBox().bbox(angle)
       return strict ? rect.containsRect(bbox) : rect.isIntersectWithRect(bbox)
     })
   }
@@ -1057,26 +1145,22 @@ export class Model extends Basecoat<Model.EventArgs> {
     y: number,
     w: number,
     h: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Edge[]
+  getEdgesInArea(rect: RectangleLike, options?: GetCellsInAreaOptions): Edge[]
   getEdgesInArea(
-    rect: Rectangle.RectangleLike,
-    options?: Model.GetCellsInAreaOptions,
-  ): Edge[]
-  getEdgesInArea(
-    x: number | Rectangle.RectangleLike,
-    y?: number | Model.GetCellsInAreaOptions,
+    x: number | RectangleLike,
+    y?: number | GetCellsInAreaOptions,
     w?: number,
     h?: number,
-    options?: Model.GetCellsInAreaOptions,
+    options?: GetCellsInAreaOptions,
   ): Edge[] {
     const rect =
       typeof x === 'number'
         ? new Rectangle(x, y as number, w as number, h as number)
         : Rectangle.create(x)
-    const opts =
-      typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
-    const strict = opts && opts.strict
+    const opts = typeof x === 'number' ? options : (y as GetCellsInAreaOptions)
+    const strict = opts?.strict
     return this.getEdges().filter((edge) => {
       const bbox = edge.getBBox()
       if (bbox.width === 0) {
@@ -1091,7 +1175,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   getNodesUnderNode(
     node: Node,
     options: {
-      by?: 'bbox' | Rectangle.KeyPoint
+      by?: 'bbox' | KeyPoint
     } = {},
   ) {
     const bbox = node.getBBox()
@@ -1115,17 +1199,13 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns the bounding box that surrounds all the given cells.
    */
-  getCellsBBox(cells: Cell[], options: Cell.GetCellsBBoxOptions = {}) {
+  getCellsBBox(cells: Cell[], options: CellGetCellsBBoxOptions = {}) {
     return Cell.getCellsBBox(cells, options)
   }
 
   // #region search
 
-  search(
-    cell: Cell,
-    iterator: Model.SearchIterator,
-    options: Model.SearchOptions = {},
-  ) {
+  search(cell: Cell, iterator: SearchIterator, options: SearchOptions = {}) {
     if (options.breadthFirst) {
       this.breadthFirstSearch(cell, iterator, options)
     } else {
@@ -1135,8 +1215,8 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   breadthFirstSearch(
     cell: Cell,
-    iterator: Model.SearchIterator,
-    options: Model.GetNeighborsOptions = {},
+    iterator: SearchIterator,
+    options: GetNeighborsOptions = {},
   ) {
     const queue: Cell[] = []
     const visited: KeyValue<boolean> = {}
@@ -1164,8 +1244,8 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   depthFirstSearch(
     cell: Cell,
-    iterator: Model.SearchIterator,
-    options: Model.GetNeighborsOptions = {},
+    iterator: SearchIterator,
+    options: GetNeighborsOptions = {},
   ) {
     const queue: Cell[] = []
     const visited: KeyValue<boolean> = {}
@@ -1205,7 +1285,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   getShortestPath(
     source: Cell | string,
     target: Cell | string,
-    options: Model.GetShortestPathOptions = {},
+    options: GetShortestPathOptions = {},
   ) {
     const adjacencyList: DijkstraAdjacencyList = {}
     this.getEdges().forEach((edge) => {
@@ -1235,8 +1315,10 @@ export class Model extends Basecoat<Model.EventArgs> {
       path.push(targetId)
     }
 
-    while ((targetId = previous[targetId])) {
-      path.unshift(targetId)
+    while (previous[targetId]) {
+      const prev = previous[targetId]
+      path.unshift(prev)
+      targetId = prev
     }
     return path
   }
@@ -1248,15 +1330,17 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Translate all cells in the graph by `tx` and `ty` pixels.
    */
-  translate(tx: number, ty: number, options: Cell.TranslateOptions) {
+  translate(tx: number, ty: number, options: CellTranslateOptions) {
     this.getCells()
       .filter((cell) => !cell.hasParent())
-      .forEach((cell) => cell.translate(tx, ty, options))
+      .forEach((cell) => {
+        cell.translate(tx, ty, options)
+      })
 
     return this
   }
 
-  resize(width: number, height: number, options: Cell.SetOptions) {
+  resize(width: number, height: number, options: CellSetOptions) {
     return this.resizeCells(width, height, this.getCells(), options)
   }
 
@@ -1264,14 +1348,16 @@ export class Model extends Basecoat<Model.EventArgs> {
     width: number,
     height: number,
     cells: Cell[],
-    options: Cell.SetOptions = {},
+    options: CellSetOptions = {},
   ) {
     const bbox = this.getCellsBBox(cells)
     if (bbox) {
       const sx = Math.max(width / bbox.width, 0)
       const sy = Math.max(height / bbox.height, 0)
       const origin = bbox.getOrigin()
-      cells.forEach((cell) => cell.scale(sx, sy, origin, options))
+      cells.forEach((cell) => {
+        cell.scale(sx, sy, origin, options)
+      })
     }
 
     return this
@@ -1281,16 +1367,35 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region serialize/deserialize
 
-  toJSON(options: Model.ToJSONOptions = {}) {
+  toJSON(options: ToJSONOptions = {}) {
     return Model.toJSON(this.getCells(), options)
   }
 
-  parseJSON(data: Model.FromJSONData) {
+  parseJSON(data: FromJSONData) {
     return Model.fromJSON(data)
   }
 
-  fromJSON(data: Model.FromJSONData, options: Model.FromJSONOptions = {}) {
-    const cells = this.parseJSON(data)
+  fromJSON(data: FromJSONData, options: FromJSONOptions = {}) {
+    let cells: Cell[] = []
+    if (!options.diff) {
+      cells = this.parseJSON(data)
+    } else {
+      const {
+        nodes = [],
+        edges = [],
+        ...rest
+      } = data as {
+        nodes?: NodeMetadata[]
+        edges?: EdgeMetadata[]
+      }
+      const updateNodes = nodes.filter((node) => !this.nodes[node.id]) || []
+      const updateEdges = edges.filter((edge) => !this.edges[edge.id]) || []
+      cells = this.parseJSON({
+        ...rest,
+        nodes: updateNodes,
+        edges: updateEdges,
+      })
+    }
     this.resetCells(cells, options)
     return this
   }
@@ -1299,19 +1404,19 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region batch
 
-  startBatch(name: Model.BatchName, data: KeyValue = {}) {
+  startBatch(name: BatchName, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) + 1
     this.notify('batch:start', { name, data })
     return this
   }
 
-  stopBatch(name: Model.BatchName, data: KeyValue = {}) {
+  stopBatch(name: BatchName, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) - 1
     this.notify('batch:stop', { name, data })
     return this
   }
 
-  batchUpdate<T>(name: Model.BatchName, execute: () => T, data: KeyValue = {}) {
+  batchUpdate<T>(name: BatchName, execute: () => T, data: KeyValue = {}) {
     this.startBatch(name, data)
     const result = execute()
     this.stopBatch(name, data)
@@ -1319,9 +1424,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   hasActiveBatch(
-    name: Model.BatchName | Model.BatchName[] = Object.keys(
-      this.batches,
-    ) as Model.BatchName[],
+    name: BatchName | BatchName[] = Object.keys(this.batches) as BatchName[],
   ) {
     const names = Array.isArray(name) ? name : [name]
     return names.some((batch) => this.batches[batch] > 0)
@@ -1335,194 +1438,114 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 }
 
-export namespace Model {
-  export const toStringTag = `X6.${Model.name}`
-
-  export function isModel(instance: any): instance is Model {
-    if (instance == null) {
-      return false
-    }
-
-    if (instance instanceof Model) {
-      return true
-    }
-
-    const tag = instance[Symbol.toStringTag]
-    const model = instance as Model
-
-    if (
-      (tag == null || tag === toStringTag) &&
-      typeof model.addNode === 'function' &&
-      typeof model.addEdge === 'function' &&
-      model.collection != null
-    ) {
-      return true
-    }
-
-    return false
-  }
-}
-export namespace Model {
-  export interface SetOptions extends Collection.SetOptions {}
-  export interface AddOptions extends Collection.AddOptions {}
-  export interface RemoveOptions extends Collection.RemoveOptions {}
-  export interface FromJSONOptions extends Collection.SetOptions {}
-
-  export type FromJSONData =
-    | (Node.Metadata | Edge.Metadata)[]
-    | (Partial<ReturnType<typeof toJSON>> & {
-        nodes?: Node.Metadata[]
-        edges?: Edge.Metadata[]
-      })
-  export type ToJSONData = {
-    cells: Cell.Properties[]
-  }
-
-  export interface GetCellsInAreaOptions {
-    strict?: boolean
-  }
-
-  export interface SearchOptions extends GetNeighborsOptions {
-    breadthFirst?: boolean
-  }
-
-  export type SearchIterator = (
-    this: Model,
-    cell: Cell,
-    distance: number,
-  ) => any
-
-  export interface GetNeighborsOptions {
-    deep?: boolean
-    incoming?: boolean
-    outgoing?: boolean
-    indirect?: boolean
-  }
-
-  export interface GetConnectedEdgesOptions extends GetNeighborsOptions {
-    enclosed?: boolean
-  }
-
-  export interface GetSubgraphOptions {
-    deep?: boolean
-  }
-
-  export interface GetShortestPathOptions {
-    directed?: boolean
-    weight?: DijkstraWeight
-  }
-
-  export interface GetPredecessorsOptions extends Cell.GetDescendantsOptions {
-    distance?: number | number[] | ((distance: number) => boolean)
-  }
+export interface SetOptions extends CollectionSetOptions {}
+export interface AddOptions extends CollectionAddOptions {}
+export interface RemoveOptions extends CollectionRemoveOptions {}
+export interface FromJSONOptions extends CollectionSetOptions {
+  // whether to perform a diff update
+  diff?: boolean
 }
 
-export namespace Model {
-  export interface EventArgs
-    extends Collection.CellEventArgs,
-      Collection.NodeEventArgs,
-      Collection.EdgeEventArgs {
-    'batch:start': {
-      name: BatchName | string
-      data: KeyValue
-    }
-    'batch:stop': {
-      name: BatchName | string
-      data: KeyValue
-    }
-
-    sorted: null
-    reseted: {
-      current: Cell[]
-      previous: Cell[]
-      options: Collection.SetOptions
-    }
-    updated: {
-      added: Cell[]
-      merged: Cell[]
-      removed: Cell[]
-      options: Collection.SetOptions
-    }
-  }
-
-  export type BatchName =
-    | 'update'
-    | 'add'
-    | 'remove'
-    | 'clear'
-    | 'to-back'
-    | 'to-front'
-    | 'scale'
-    | 'resize'
-    | 'rotate'
-    | 'translate'
-    | 'mouse'
-    | 'layout'
-    | 'add-edge'
-    | 'fit-embeds'
-    | 'dnd'
-    | 'halo'
-    | 'cut'
-    | 'paste'
-    | 'knob'
-    | 'add-vertex'
-    | 'move-anchor'
-    | 'move-vertex'
-    | 'move-segment'
-    | 'move-arrowhead'
-    | 'move-selection'
-}
-
-export namespace Model {
-  export interface ToJSONOptions extends Cell.ToJSONOptions {}
-
-  export function toJSON(cells: Cell[], options: ToJSONOptions = {}) {
-    return {
-      cells: cells.map((cell) => cell.toJSON(options)),
-    }
-  }
-
-  export function fromJSON(data: FromJSONData) {
-    const cells: Cell.Metadata[] = []
-    if (Array.isArray(data)) {
-      cells.push(...data)
-    } else {
-      if (data.cells) {
-        cells.push(...data.cells)
-      }
-
-      if (data.nodes) {
-        data.nodes.forEach((node) => {
-          if (node.shape == null) {
-            node.shape = 'rect'
-          }
-          cells.push(node)
-        })
-      }
-
-      if (data.edges) {
-        data.edges.forEach((edge) => {
-          if (edge.shape == null) {
-            edge.shape = 'edge'
-          }
-          cells.push(edge)
-        })
-      }
-    }
-
-    return cells.map((cell) => {
-      const type = cell.shape
-      if (type) {
-        if (Node.registry.exist(type)) {
-          return Node.create(cell)
-        }
-        if (Edge.registry.exist(type)) {
-          return Edge.create(cell)
-        }
-      }
-      throw new Error(
-        'The `shape` should be specified when creating a node/edge instance',
-      )
+export type FromJSONData =
+  | (NodeMetadata | EdgeMetadata)[]
+  | (Partial<ReturnType<typeof Model.toJSON>> & {
+      nodes?: NodeMetadata[]
+      edges?: EdgeMetadata[]
     })
+export type ToJSONData = {
+  cells: CellProperties[]
+}
+
+export interface GetCellsInAreaOptions {
+  strict?: boolean
+}
+
+export interface SearchOptions extends GetNeighborsOptions {
+  breadthFirst?: boolean
+}
+
+export type SearchIterator = (
+  this: Model,
+  cell: Cell,
+  distance: number,
+) => boolean | void
+
+export interface GetNeighborsOptions {
+  deep?: boolean
+  incoming?: boolean
+  outgoing?: boolean
+  indirect?: boolean
+}
+
+export interface GetConnectedEdgesOptions extends GetNeighborsOptions {
+  enclosed?: boolean
+}
+
+export interface GetSubgraphOptions {
+  deep?: boolean
+}
+
+export interface GetShortestPathOptions {
+  directed?: boolean
+  weight?: DijkstraWeight
+}
+
+export interface GetPredecessorsOptions extends CellGetDescendantsOptions {
+  distance?: number | number[] | ((distance: number) => boolean)
+}
+
+export interface ModelEventArgs
+  extends CellEventArgs,
+    NodeEventArgs,
+    EdgeEventArgs {
+  'batch:start': {
+    name: BatchName | string
+    data: KeyValue
+  }
+  'batch:stop': {
+    name: BatchName | string
+    data: KeyValue
+  }
+
+  sorted: null
+  reseted: {
+    current: Cell[]
+    previous: Cell[]
+    options: CollectionSetOptions
+  }
+  updated: {
+    added: Cell[]
+    merged: Cell[]
+    removed: Cell[]
+    options: CollectionSetOptions
   }
 }
+
+export type BatchName =
+  | 'update'
+  | 'add'
+  | 'remove'
+  | 'clear'
+  | 'to-back'
+  | 'to-front'
+  | 'scale'
+  | 'resize'
+  | 'rotate'
+  | 'translate'
+  | 'mouse'
+  | 'layout'
+  | 'add-edge'
+  | 'fit-embeds'
+  | 'dnd'
+  | 'halo'
+  | 'cut'
+  | 'paste'
+  | 'knob'
+  | 'add-vertex'
+  | 'move-anchor'
+  | 'move-vertex'
+  | 'move-segment'
+  | 'move-arrowhead'
+  | 'move-selection'
+
+export interface ToJSONOptions extends CellToJSONOptions {}

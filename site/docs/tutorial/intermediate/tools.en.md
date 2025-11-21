@@ -10,7 +10,7 @@ redirect_from:
 :::info{title="This chapter mainly introduces knowledge related to tools. By reading, you can learn about"}
 
 - How to add tools for nodes or edges
-- What common tools are built into X6 by default
+- Common tools built into X6
 
 :::
 
@@ -24,7 +24,7 @@ graph.addNode({
     {
       name: 'button-remove', // Tool name
       args: {
-        // Parameters corresponding to the tool
+        // Tool parameters
         x: 10,
         y: 10,
       },
@@ -32,7 +32,7 @@ graph.addNode({
   ],
 })
 
-// If the parameters are empty, it can be abbreviated as:
+// If no parameters are needed, you can abbreviate as:
 graph.addNode({
   tools: ['button-remove'],
 })
@@ -62,19 +62,19 @@ After nodes/edges are created, you can call methods like [hasTool(name)](/en/api
 
 ## Built-in Tools
 
-Tools are widgets rendered on nodes/edges to enhance their interactivity. We provide the following built-in tools for nodes and edges:
+Tools are widgets rendered on nodes/edges to enhance interactivity. We provide the following built-in tools for nodes and edges:
 
-### Nodes:
+### Nodes
 
-- [button](/en/api/registry/node-tool#button) Renders a button at a specified position, supporting custom click interactions for the button.
-- [button-remove](/en/api/registry/node-tool#button-remove) Renders a delete button at a specified position, which deletes the corresponding node when clicked.
-- [boundary](/en/api/registry/node-tool#boundary) Renders a rectangle surrounding the node based on its bounding box. Note that this tool only renders a rectangle without any interaction.
+- [button](/en/api/registry/node-tool#button) Renders a button at a specified position; supports custom click interactions.
+- [button-remove](/en/api/registry/node-tool#button-remove) Renders a delete button at a specified position; clicking deletes the node.
+- [boundary](/en/api/registry/node-tool#boundary) Renders a rectangle around the node based on its bounding box. Note: visualization only; no interaction.
 
-### Edges:
+### Edges
 
-- [vertices](/en/api/registry/edge-tool#vertices) Path point tool that renders a small dot at the path point position. You can drag the dot to modify the path point position, double-click the dot to delete the path point, and click on the edge to add a path point.
-- [segments](/en/api/registry/edge-tool#segments) Segment tool that renders a toolbar at the center of each line segment of the edge. You can drag the toolbar to adjust the positions of the path points at both ends of the segment.
-- [boundary](/en/api/registry/edge-tool#boundary) Renders a rectangle surrounding the edge based on its bounding box. Note that this tool only renders a rectangle without any interaction.
-- [button](/en/api/registry/edge-tool#button) Renders a button at a specified position, supporting custom click interactions for the button.
-- [button-remove](/en/api/registry/edge-tool#button-remove) Renders a delete button at a specified position, which deletes the corresponding edge when clicked.
-- [source-arrowhead and target-arrowhead](/en/api/registry/edge-tool#source-arrowhead-and-target-arrowhead) Renders a shape (default is an arrow) at the start or end of the edge, allowing you to drag the shape to modify the start or end of the edge.
+- [vertices](/en/api/registry/edge-tool#vertices) Renders dots at path points. Drag to move; double-click to delete; click on the edge to add.
+- [segments](/en/api/registry/edge-tool#segments) Renders a handle at each segment’s center; drag to adjust the adjacent path points.
+- [boundary](/en/api/registry/edge-tool#boundary) Renders a rectangle around the edge based on its bounding box. Note: visualization only; no interaction.
+- [button](/en/api/registry/edge-tool#button) Renders a button at a specified position; supports custom click interactions.
+- [button-remove](/en/api/registry/edge-tool#button-remove) Renders a delete button at a specified position; clicking deletes the edge.
+- [source-arrowhead and target-arrowhead](/en/api/registry/edge-tool#source-arrowhead-and-target-arrowhead) Renders a shape (arrow by default) at the source/target terminal; drag to adjust the terminal.

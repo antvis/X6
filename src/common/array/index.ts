@@ -1,4 +1,5 @@
 export {
+  castArray,
   difference,
   groupBy,
   max,

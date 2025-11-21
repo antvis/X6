@@ -1,7 +1,7 @@
 import { Dom, disposable } from '../common'
 import { Graph } from '../graph/graph'
-import type { Cell } from '../model/cell'
-import { Node } from '../model/node'
+import type { Cell, CellBaseEventArgs } from '../model/cell'
+import { Node, type NodeProperties } from '../model/node'
 import { Markup } from '../view'
 import { NodeView } from '../view/node'
 
@@ -10,10 +10,10 @@ type HTMLComponent =
   | HTMLElement
   | ((cell: Cell) => HTMLElement | string)
 
-export type HTMLShapeConfig = Node.Properties & {
+export type HTMLShapeConfig = NodeProperties & {
   shape: string
   html: HTMLComponent
-  effect?: (keyof Node.Properties)[]
+  effect?: (keyof NodeProperties)[]
   inherit?: string
 }
 
@@ -23,7 +23,7 @@ const HTMLShapeMaps: Record<
   string,
   {
     html: string | HTMLElement | ((cell: Cell) => HTMLElement | string)
-    effect?: (keyof Node.Properties)[]
+    effect?: (keyof NodeProperties)[]
   }
 > = {}
 
@@ -96,7 +96,7 @@ class View extends NodeView<HTML> {
     this.cell.on('change:*', this.onCellChangeAny, this)
   }
 
-  protected onCellChangeAny({ key }: Cell.EventArgs['change:*']) {
+  protected onCellChangeAny({ key }: CellBaseEventArgs['change:*']) {
     const content = HTMLShapeMaps[this.cell.shape]
     if (content) {
       const { effect } = content

@@ -3,7 +3,7 @@ import { repository } from './package.json'
 
 export default defineConfig({
   ...(process.env.NODE_ENV === 'production'
-    ? { ssr: { builder: 'mako' } }
+    ? { ssr: { builder: 'webpack' }, mako: false }
     : { ssr: false, mako: {} }),
   locales: [
     { id: 'zh', name: '中文' },
@@ -42,7 +42,8 @@ export default defineConfig({
     showChartResize: true, // 是否在 demo 页展示图表视图切换
     showAPIDoc: false, // 是否在 demo 页展示API文档
     versions: {
-      '2.x': 'https://x6.antv.antgroup.com',
+      '3.x': 'https://x6.antv.antgroup.com',
+      '2.x': 'https://x6-v2.antv.vision',
       '1.x': 'https://x6.antv.vision',
     },
     navs: [
@@ -71,28 +72,35 @@ export default defineConfig({
         order: 2,
       },
       {
-        slug: 'https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy',
         title: {
           zh: '常见问题',
           en: 'Q&A',
         },
         order: 3,
+        dropdownItems: [
+          {
+            url: 'https://www.yuque.com/sxd_panda/antv/x6',
+            name: {
+              zh: '社区 FAQ',
+              en: 'Community FAQ',
+            },
+          },
+          {
+            url: 'https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy',
+            name: {
+              zh: '官方 FAQ',
+              en: 'Official FAQ',
+            },
+          },
+        ],
       },
       {
-        slug: 'https://www.yuque.com/antv/x6/bbfu6r',
+        slug: 'https://www.yuque.com/antv/x6/gkniz4iiyxftgv0r',
         title: {
           zh: '更新日志',
           en: 'Change Log',
         },
         order: 4,
-      },
-      {
-        slug: 'docs/xflow/guide/introduction',
-        title: {
-          zh: 'XFlow',
-          en: 'XFlow',
-        },
-        order: 5,
       },
     ],
     detail: {
@@ -275,30 +283,6 @@ export default defineConfig({
         },
         order: 4,
       },
-      {
-        slug: 'xflow/guide',
-        title: {
-          zh: '开始',
-          en: 'start',
-        },
-        order: 1,
-      },
-      {
-        slug: 'xflow/components',
-        title: {
-          zh: '组件',
-          en: 'component',
-        },
-        order: 2,
-      },
-      {
-        slug: 'xflow/hooks',
-        title: {
-          zh: 'Hook',
-          en: 'Hook',
-        },
-        order: 3,
-      },
     ],
     examples: [
       {
@@ -323,6 +307,14 @@ export default defineConfig({
         title: {
           zh: '边',
           en: 'Edge',
+        },
+      },
+      {
+        slug: 'animation',
+        icon: 'scatter',
+        title: {
+          zh: '动画',
+          en: 'Animation',
         },
       },
       {
@@ -356,6 +348,14 @@ export default defineConfig({
   mfsu: false,
   alias: {
     '@': __dirname,
+  },
+  chainWebpack(memo: any) {
+    memo.module
+      .rule('js')
+      .test(/\.(js|mjs|jsx|ts|tsx)$/)
+      .resolve.set('fullySpecified', false)
+
+    return memo
   },
   links: [],
   scripts: [],

@@ -1,11 +1,16 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { Scroller } from '@/plugin/scroller'
-import { Dom } from '@/common/dom'
-import { ScrollerImpl } from '@/plugin/scroller/scroller'
-import { Graph } from '@/graph'
-import { Cell } from '@/model'
-import { Rectangle } from '@/geometry'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Util } from '@/common'
+import { Dom } from '@/common/dom'
+import { Rectangle } from '@/geometry'
+import { Graph } from '@/graph'
+import type { Cell } from '@/model'
+import { Scroller } from '@/plugin/scroller'
+import {
+  ScrollerImpl,
+  ScrollerImplBackground,
+  transitionClassName,
+  transitionEventName,
+} from '@/plugin/scroller/scroller'
 
 class MockCell {
   getBBox() {
@@ -33,6 +38,11 @@ function createMockGraph() {
     container,
     view: { grid: document.createElement('div'), background: null },
     grid: { update: vi.fn(), draw: vi.fn(), clear: vi.fn() }, // ✅ mock grid
+    panning: {
+      pannable: true,
+      disablePanning: vi.fn(),
+      enablePanning: vi.fn(),
+    },
     transform: {
       getScale: () => ({ sx: 1, sy: 1 }),
       resize: vi.fn(),
@@ -50,7 +60,9 @@ function createMockGraph() {
       handlers[event] = (handlers[event] || []).filter((fn) => fn !== cb)
     }),
     trigger: vi.fn((event: string, ...args: any[]) => {
-      ;(handlers[event] || []).forEach((fn) => fn(...args))
+      ;(handlers[event] || []).forEach((fn) => {
+        fn(...args)
+      })
     }),
     once: vi.fn(),
     matrix: () => ({
@@ -356,9 +368,9 @@ describe('Scroller (index.ts)', () => {
     }
 
     scroller = new Scroller()
-    // @ts-ignore
+    // @ts-expect-error
     scroller.scrollerImpl = scrollerImplMock as ScrollerImpl
-    // @ts-ignore
+    // @ts-expect-error
     scroller.graph = graphMock as Graph
   })
 
@@ -477,7 +489,7 @@ describe('ScrollerImpl', () => {
   it('should initialize container, content, background, and backgroundManager', () => {
     expect(scroller.container).toBeInstanceOf(HTMLDivElement)
     expect(scroller.background).toBeInstanceOf(HTMLDivElement)
-    expect(scroller.backgroundManager).toBeInstanceOf(ScrollerImpl.Background)
+    expect(scroller.backgroundManager).toBeInstanceOf(ScrollerImplBackground)
   })
 
   it('should scroll to point correctly', () => {
@@ -623,12 +635,9 @@ describe('ScrollerImpl', () => {
 
     expect(addClassSpy).toHaveBeenCalledWith(
       scroller.container,
-      ScrollerImpl.transitionClassName,
+      transitionClassName,
     )
-    expect(offSpy).toHaveBeenCalledWith(
-      scroller.content,
-      ScrollerImpl.transitionEventName,
-    )
+    expect(offSpy).toHaveBeenCalledWith(scroller.content, transitionEventName)
     expect(cssSpy).toHaveBeenCalledWith(scroller.content, {
       transform: '',
       transformOrigin: '',
@@ -712,7 +721,7 @@ describe('Scroller padding & visibility', () => {
         ({
           containsRect: vi.fn(() => true),
           isIntersectWithRect: vi.fn(() => false),
-        } as any),
+        }) as any,
     )
 
     expect(scroller.isCellVisible(mockCell, { strict: true })).toBe(true)
@@ -725,7 +734,7 @@ describe('Scroller padding & visibility', () => {
       () =>
         ({
           containsPoint: vi.fn(() => true),
-        } as any),
+        }) as any,
     )
     expect(scroller.isPointVisible(point)).toBe(true)
   })

@@ -1,5 +1,5 @@
 import { Dom, FunctionExt, NumberExt } from '../../common'
-import { Point } from '../../geometry'
+import { Point, type PointLike } from '../../geometry'
 import type { Cell } from '../../model'
 import type { CellView } from '../../view/cell'
 import type { EdgeView } from '../../view/edge'
@@ -62,10 +62,16 @@ export class Button extends ToolItem<EdgeView | NodeView, Options> {
     x = NumberExt.normalizePercentage(x, bbox.width)
     y = NumberExt.normalizePercentage(y, bbox.height)
 
-    let matrix = Dom.createSVGMatrix().translate(
-      bbox.x + bbox.width / 2,
-      bbox.y + bbox.height / 2,
-    )
+    let matrix = Dom.createSVGMatrix()
+
+    if (this.parent.options.local) {
+      matrix = matrix.translate(bbox.width / 2, bbox.height / 2)
+    } else {
+      matrix = matrix.translate(
+        bbox.x + bbox.width / 2,
+        bbox.y + bbox.height / 2,
+      )
+    }
 
     if (rotate) {
       matrix = matrix.rotate(angle)
@@ -134,7 +140,7 @@ interface Options extends ToolItemOptions {
   x?: number | string
   y?: number | string
   distance?: number | string
-  offset?: number | Point.PointLike
+  offset?: number | PointLike
   rotate?: boolean
   useCellGeometry?: boolean
   onClick?: (

@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '../geometry'
+import { Point, Rectangle, PointLike, type RectangleLike } from '../geometry'
 import { Dom, NumberExt, Util } from '../common'
 import { Base } from './base'
 import { Cell } from '../model'
@@ -90,14 +90,17 @@ export class TransformManager extends Base {
     return Dom.matrixToScale(this.getMatrix())
   }
 
-  scale(sx: number, sy: number = sx, ox = 0, oy = 0) {
+  scale(sx: number, sy: number = sx, ox = 0, oy = 0, translate = true) {
     sx = this.clampScale(sx) // eslint-disable-line
     sy = this.clampScale(sy) // eslint-disable-line
 
-    if (ox || oy) {
+    if (translate && (ox || oy)) {
       const ts = this.getTranslation()
-      const tx = ts.tx - ox * (sx - 1)
-      const ty = ts.ty - oy * (sy - 1)
+      const scale = this.getScale()
+
+      const tx = ox - (ox - ts.tx) * (sx / scale.sx)
+      const ty = oy - (oy - ts.ty) * (sy / scale.sy)
+
       if (tx !== ts.tx || ty !== ts.ty) {
         this.translate(tx, ty)
       }
@@ -121,7 +124,7 @@ export class TransformManager extends Base {
     return this.getScale().sx
   }
 
-  zoom(factor: number, options?: TransformManager.ZoomOptions) {
+  zoom(factor: number, options?: ZoomOptions) {
     options = options || {} // eslint-disable-line
 
     let sx = factor
@@ -159,16 +162,7 @@ export class TransformManager extends Base {
     sx = this.clampScale(sx)
     sy = this.clampScale(sy)
 
-    if (cx || cy) {
-      const ts = this.getTranslation()
-      const tx = cx - (cx - ts.tx) * (sx / scale.sx)
-      const ty = cy - (cy - ts.ty) * (sy / scale.sy)
-      if (tx !== ts.tx || ty !== ts.ty) {
-        this.translate(tx, ty)
-      }
-    }
-
-    this.scale(sx, sy)
+    this.scale(sx, sy, cx, cy)
 
     return this
   }
@@ -213,10 +207,10 @@ export class TransformManager extends Base {
   }
 
   fitToContent(
-    gridWidth?: number | TransformManager.FitToContentFullOptions,
+    gridWidth?: number | FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: TransformManager.FitToContentOptions,
+    options?: FitToContentOptions,
   ) {
     if (typeof gridWidth === 'object') {
       const opts = gridWidth
@@ -313,12 +307,12 @@ export class TransformManager extends Base {
     return new Rectangle(-tx / sx, -ty / sy, width / sx, height / sy)
   }
 
-  scaleContentToFit(options: TransformManager.ScaleContentToFitOptions = {}) {
+  scaleContentToFit(options: ScaleContentToFitOptions = {}) {
     this.scaleContentToFitImpl(options)
   }
 
   scaleContentToFitImpl(
-    options: TransformManager.ScaleContentToFitOptions = {},
+    options: ScaleContentToFitOptions = {},
     translate = true,
   ) {
     let contentBBox
@@ -395,7 +389,7 @@ export class TransformManager extends Base {
     }
   }
 
-  getContentArea(options: TransformManager.GetContentAreaOptions = {}) {
+  getContentArea(options: GetContentAreaOptions = {}) {
     // use geometry calc default
     if (options.useCellGeometry !== false) {
       return this.model.getAllCellsBBox() || new Rectangle()
@@ -404,7 +398,7 @@ export class TransformManager extends Base {
     return Util.getBBox(this.stage)
   }
 
-  getContentBBox(options: TransformManager.GetContentAreaOptions = {}) {
+  getContentBBox(options: GetContentAreaOptions = {}) {
     return this.graph.localToGraph(this.getContentArea(options))
   }
 
@@ -413,10 +407,7 @@ export class TransformManager extends Base {
     return this.graph.graphToLocal(rect)
   }
 
-  zoomToRect(
-    rect: Rectangle.RectangleLike,
-    options: TransformManager.ScaleContentToFitOptions = {},
-  ) {
+  zoomToRect(rect: RectangleLike, options: ScaleContentToFitOptions = {}) {
     const area = Rectangle.create(rect)
     const graph = this.graph
 
@@ -437,10 +428,7 @@ export class TransformManager extends Base {
     return this
   }
 
-  zoomToFit(
-    options: TransformManager.GetContentAreaOptions &
-      TransformManager.ScaleContentToFitOptions = {},
-  ) {
+  zoomToFit(options: GetContentAreaOptions & ScaleContentToFitOptions = {}) {
     return this.zoomToRect(this.getContentArea(options), options)
   }
 
@@ -462,7 +450,7 @@ export class TransformManager extends Base {
     }
   }
 
-  centerContent(options?: TransformManager.GetContentAreaOptions) {
+  centerContent(options?: GetContentAreaOptions) {
     const rect = this.graph.getContentArea(options)
     const center = rect.getCenter()
     this.centerPoint(center.x, center.y)
@@ -472,11 +460,7 @@ export class TransformManager extends Base {
     return this.positionCell(cell, 'center')
   }
 
-  positionPoint(
-    point: Point.PointLike,
-    x: number | string,
-    y: number | string,
-  ) {
+  positionPoint(point: PointLike, x: number | string, y: number | string) {
     const clientSize = this.getComputedSize()
 
     // eslint-disable-next-line
@@ -501,7 +485,7 @@ export class TransformManager extends Base {
     }
   }
 
-  positionRect(rect: Rectangle.RectangleLike, pos: TransformManager.Direction) {
+  positionRect(rect: RectangleLike, pos: Direction) {
     const bbox = Rectangle.create(rect)
     switch (pos) {
       case 'center':
@@ -527,77 +511,72 @@ export class TransformManager extends Base {
     }
   }
 
-  positionCell(cell: Cell, pos: TransformManager.Direction) {
+  positionCell(cell: Cell, pos: Direction) {
     const bbox = cell.getBBox()
     return this.positionRect(bbox, pos)
   }
 
-  positionContent(
-    pos: TransformManager.Direction,
-    options?: TransformManager.GetContentAreaOptions,
-  ) {
+  positionContent(pos: Direction, options?: GetContentAreaOptions) {
     const rect = this.graph.getContentArea(options)
     return this.positionRect(rect, pos)
   }
 }
 
-export namespace TransformManager {
-  export interface FitToContentOptions extends GetContentAreaOptions {
-    minWidth?: number
-    minHeight?: number
-    maxWidth?: number
-    maxHeight?: number
-    contentArea?: Rectangle | Rectangle.RectangleLike
-    border?: number
-    allowNewOrigin?: 'negative' | 'positive' | 'any'
-  }
-
-  export interface FitToContentFullOptions extends FitToContentOptions {
-    gridWidth?: number
-    gridHeight?: number
-    padding?: NumberExt.SideOptions
-  }
-
-  export interface ScaleContentToFitOptions extends GetContentAreaOptions {
-    padding?: NumberExt.SideOptions
-    minScale?: number
-    maxScale?: number
-    minScaleX?: number
-    minScaleY?: number
-    maxScaleX?: number
-    maxScaleY?: number
-    scaleGrid?: number
-    contentArea?: Rectangle.RectangleLike
-    viewportArea?: Rectangle.RectangleLike
-    preserveAspectRatio?: boolean
-  }
-
-  export interface GetContentAreaOptions {
-    useCellGeometry?: boolean
-  }
-
-  export interface ZoomOptions {
-    absolute?: boolean
-    minScale?: number
-    maxScale?: number
-    scaleGrid?: number
-    center?: Point.PointLike
-  }
-
-  export type Direction =
-    | 'center'
-    | 'top'
-    | 'top-right'
-    | 'top-left'
-    | 'right'
-    | 'bottom-right'
-    | 'bottom'
-    | 'bottom-left'
-    | 'left'
-
-  export interface CenterOptions {
-    padding?: NumberExt.SideOptions
-  }
-
-  export type PositionContentOptions = GetContentAreaOptions & CenterOptions
+export interface FitToContentOptions extends GetContentAreaOptions {
+  minWidth?: number
+  minHeight?: number
+  maxWidth?: number
+  maxHeight?: number
+  contentArea?: Rectangle | RectangleLike
+  border?: number
+  allowNewOrigin?: 'negative' | 'positive' | 'any'
 }
+
+export interface FitToContentFullOptions extends FitToContentOptions {
+  gridWidth?: number
+  gridHeight?: number
+  padding?: NumberExt.SideOptions
+}
+
+export interface ScaleContentToFitOptions extends GetContentAreaOptions {
+  padding?: NumberExt.SideOptions
+  minScale?: number
+  maxScale?: number
+  minScaleX?: number
+  minScaleY?: number
+  maxScaleX?: number
+  maxScaleY?: number
+  scaleGrid?: number
+  contentArea?: RectangleLike
+  viewportArea?: RectangleLike
+  preserveAspectRatio?: boolean
+}
+
+export interface GetContentAreaOptions {
+  useCellGeometry?: boolean
+}
+
+export interface ZoomOptions {
+  absolute?: boolean
+  minScale?: number
+  maxScale?: number
+  scaleGrid?: number
+  center?: PointLike
+}
+
+export type Direction =
+  | 'center'
+  | 'top'
+  | 'top-right'
+  | 'top-left'
+  | 'right'
+  | 'bottom-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'left'
+
+export interface CenterOptions {
+  padding?: NumberExt.SideOptions
+}
+
+export type PositionContentOptions = GetContentAreaOptions & CenterOptions

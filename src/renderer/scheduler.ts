@@ -5,16 +5,37 @@ import {
   FunctionExt,
   type KeyValue,
 } from '../common'
+import { FLAG_INSERT, FLAG_REMOVE } from '../constants'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
-import type { Cell, Model } from '../model'
+import type { Cell, ModelEventArgs } from '../model'
 import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
 import { JOB_PRIORITY, JobQueue } from './queueJob'
 
+const INSERT_JOB_ID_SUFFIX = '#insert'
+
+export enum SchedulerViewState {
+  CREATED,
+  MOUNTED,
+  WAITING,
+}
+
+export interface SchedulerView {
+  view: CellView
+  flag: number
+  options: any
+  state: SchedulerViewState
+}
+
+export interface SchedulerEventArgs {
+  'view:mounted': { view: CellView }
+  'view:unmounted': { view: CellView }
+  'render:done': null
+}
 export class Scheduler extends Disposable {
-  public views: KeyValue<Scheduler.View> = {}
-  public willRemoveViews: KeyValue<Scheduler.View> = {}
+  public views: KeyValue<SchedulerView> = {}
+  public willRemoveViews: KeyValue<SchedulerView> = {}
   protected zPivots: KeyValue<Comment>
   private graph: Graph
   private renderArea?: Rectangle
@@ -56,31 +77,36 @@ export class Scheduler extends Disposable {
     this.model.off('cell:change:visible', this.onCellVisibleChanged, this)
   }
 
-  protected onModelReseted({ options }: Model.EventArgs['reseted']) {
-    this.queue.clearJobs()
-    this.removeZPivots()
-    this.resetViews()
-    const cells = this.model.getCells()
+  protected onModelReseted({ options, previous }: ModelEventArgs['reseted']) {
+    let cells = this.model.getCells()
+    if (!options?.diff) {
+      this.queue.clearJobs()
+      this.removeZPivots()
+      this.resetViews()
+    } else {
+      const previousSet = new Set(previous)
+      cells = cells.filter((cell) => !previousSet.has(cell))
+    }
     this.renderViews(cells, { ...options, queue: cells.map((cell) => cell.id) })
   }
 
-  protected onCellAdded({ cell, options }: Model.EventArgs['cell:added']) {
+  protected onCellAdded({ cell, options }: ModelEventArgs['cell:added']) {
     this.renderViews([cell], options)
   }
 
-  protected onCellRemoved({ cell }: Model.EventArgs['cell:removed']) {
+  protected onCellRemoved({ cell }: ModelEventArgs['cell:removed']) {
     this.removeViews([cell])
   }
 
   protected onCellZIndexChanged({
     cell,
     options,
-  }: Model.EventArgs['cell:change:zIndex']) {
+  }: ModelEventArgs['cell:change:zIndex']) {
     const viewItem = this.views[cell.id]
     if (viewItem) {
       this.requestViewUpdate(
         viewItem.view,
-        Scheduler.FLAG_INSERT,
+        FLAG_INSERT,
         options,
         JOB_PRIORITY.Update,
         true,
@@ -91,7 +117,7 @@ export class Scheduler extends Disposable {
   protected onCellVisibleChanged({
     cell,
     current,
-  }: Model.EventArgs['cell:change:visible']) {
+  }: ModelEventArgs['cell:change:visible']) {
     this.toggleVisible(cell, !!current)
   }
 
@@ -118,8 +144,10 @@ export class Scheduler extends Disposable {
       flush = false // eslint-disable-line
     }
 
+    // 对包含插入标记的任务使用独立的队列 id，避免与同一视图的后续更新任务去重合并
+    const jobId = flag & FLAG_INSERT ? `${id}${INSERT_JOB_ID_SUFFIX}` : id
     this.queue.queueJob({
-      id,
+      id: jobId,
       priority,
       cb: () => {
         this.renderViewInArea(view, flag, options)
@@ -148,6 +176,23 @@ export class Scheduler extends Disposable {
 
   setRenderArea(area?: Rectangle) {
     this.renderArea = area
+
+    // 当可视渲染区域变化时，卸载不在区域内且已挂载的视图
+    Object.values(this.views).forEach((viewItem) => {
+      if (!viewItem) return
+      const { view } = viewItem
+      if (viewItem.state === SchedulerViewState.MOUNTED) {
+        if (!this.isUpdatable(view)) {
+          // 卸载 DOM
+          view.remove()
+          // 切换到 WAITING 状态，等待重新进入区域时再插入
+          viewItem.state = SchedulerViewState.WAITING
+          // 确保重新进入可视区域后会重新插入
+          viewItem.flag |= FLAG_INSERT
+        }
+      }
+    })
+
     this.flushWaitingViews()
   }
 
@@ -162,7 +207,7 @@ export class Scheduler extends Disposable {
       return false
     }
 
-    return viewItem.state === Scheduler.ViewState.MOUNTED
+    return viewItem.state === SchedulerViewState.MOUNTED
   }
 
   protected renderViews(cells: Cell[], options: any = {}) {
@@ -180,17 +225,17 @@ export class Scheduler extends Disposable {
       let viewItem = views[id]
 
       if (viewItem) {
-        flag = Scheduler.FLAG_INSERT
+        flag = FLAG_INSERT
       } else {
         const cellView = this.createCellView(cell)
         if (cellView) {
           cellView.graph = this.graph
-          flag = Scheduler.FLAG_INSERT | cellView.getBootstrapFlag()
+          flag = FLAG_INSERT | cellView.getBootstrapFlag()
           viewItem = {
             view: cellView,
             flag,
             options,
-            state: Scheduler.ViewState.CREATED,
+            state: SchedulerViewState.CREATED,
           }
           this.views[id] = viewItem
         }
@@ -224,12 +269,16 @@ export class Scheduler extends Disposable {
       result = this.updateView(view, flag, options)
       viewItem.flag = result
     } else {
-      if (viewItem.state === Scheduler.ViewState.MOUNTED) {
-        result = this.updateView(view, flag, options)
-        viewItem.flag = result
-      } else {
-        viewItem.state = Scheduler.ViewState.WAITING
+      // 视图不在当前可渲染区域内
+      if (viewItem.state === SchedulerViewState.MOUNTED) {
+        // 将已挂载但不在可视区域的视图从 DOM 中卸载
+        view.remove()
+        result = 0
       }
+      // 标记为 WAITING 状态，以便在可视区域变化时重新渲染
+      viewItem.state = SchedulerViewState.WAITING
+      // 确保重新进入可视区域时能够重新插入到 DOM
+      viewItem.flag = flag | FLAG_INSERT
     }
 
     if (result) {
@@ -278,7 +327,7 @@ export class Scheduler extends Disposable {
 
   protected flushWaitingViews() {
     Object.values(this.views).forEach((viewItem) => {
-      if (viewItem && viewItem.state === Scheduler.ViewState.WAITING) {
+      if (viewItem && viewItem.state === SchedulerViewState.WAITING) {
         const { view, flag, options } = viewItem
         this.requestViewUpdate(
           view,
@@ -299,14 +348,14 @@ export class Scheduler extends Disposable {
     }
 
     if (CellView.isCellView(view)) {
-      if (flag & Scheduler.FLAG_REMOVE) {
+      if (flag & FLAG_REMOVE) {
         this.removeView(view.cell as any)
         return 0
       }
 
-      if (flag & Scheduler.FLAG_INSERT) {
+      if (flag & FLAG_INSERT) {
         this.insertView(view)
-        flag ^= Scheduler.FLAG_INSERT // eslint-disable-line
+        flag ^= FLAG_INSERT // eslint-disable-line
       }
     }
 
@@ -328,7 +377,7 @@ export class Scheduler extends Disposable {
         this.toggleVisible(view.cell, false)
       }
 
-      viewItem.state = Scheduler.ViewState.MOUNTED
+      viewItem.state = SchedulerViewState.MOUNTED
       this.graph.trigger('view:mounted', { view })
     }
   }
@@ -507,6 +556,14 @@ export class Scheduler extends Disposable {
 
     if (view.isEdgeView()) {
       const edge = view.cell
+      const intersects = this.renderArea
+        ? this.renderArea.isIntersectWithRect(edge.getBBox())
+        : true
+
+      if (this.graph.options.virtual) {
+        return intersects
+      }
+
       const sourceCell = edge.getSourceCell()
       const targetCell = edge.getTargetCell()
       if (this.renderArea && sourceCell && targetCell) {
@@ -534,30 +591,5 @@ export class Scheduler extends Disposable {
       this.views[id].view.dispose()
     })
     this.views = {}
-  }
-}
-export namespace Scheduler {
-  export const FLAG_INSERT = 1 << 30
-  export const FLAG_REMOVE = 1 << 29
-  export const FLAG_RENDER = (1 << 26) - 1
-}
-
-export namespace Scheduler {
-  export enum ViewState {
-    CREATED,
-    MOUNTED,
-    WAITING,
-  }
-  export interface View {
-    view: CellView
-    flag: number
-    options: any
-    state: ViewState
-  }
-
-  export interface EventArgs {
-    'view:mounted': { view: CellView }
-    'view:unmounted': { view: CellView }
-    'render:done': null
   }
 }

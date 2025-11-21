@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import { Table } from 'antd'
+import { Link } from 'react-router-dom'
 import './index.less'
 
 const dataSource = [
@@ -180,12 +180,49 @@ const dataSource = [
   },
   // ========= animation ========
   {
-    example: 'animation/transition',
-    description: '动画',
+    example: 'animation/complexAnimation',
+    description: '复杂些的动画',
+  },
+  {
+    example: 'animation/animationConf',
+    description: '动画的不同配置方式',
+  },
+  {
+    example: 'animation/animateElement',
+    description: '使用animate等svg元素实现动画',
+  },
+  {
+    example: 'animation/edgeAnimation',
+    description: '边动画',
+  },
+  {
+    example: 'animation/animationControl',
+    description: '动画控制',
+  },
+  {
+    example: 'animation/oscp',
+    description: '带动画的oscp示意图',
+  },
+  {
+    example: 'animation/scattering',
+    description: '炫酷的扩散动画',
+  },
+  {
+    example: 'animation/routePlanning',
+    description: '带动画的路线规划图',
   },
   {
     example: 'history',
     description: '时光回溯',
+  },
+  // ======== other ========
+  {
+    example: 'graph/from-json',
+    description: '增量更新',
+  },
+  {
+    example: 'virtual-render',
+    description: '虚拟渲染',
   },
 ].map((item, index) => ({ key: index, ...item }))
 

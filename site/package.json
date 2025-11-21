@@ -1,12 +1,12 @@
 {
   "private": true,
   "name": "@antv/x6-sites",
-  "version": "1.6.5",
+  "version": "2.19.0",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "prestart": "node ../scripts/check-node-version.js",
     "start": "dumi dev",
-    "build": "dumi build",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' dumi build",
     "clean": ""
   },
   "keywords": [
@@ -18,10 +18,9 @@
     "@antv/dumi-theme-antv": "^0.7.9",
     "@antv/hierarchy": "^0.6.6",
     "@antv/layout": "^0.3.12",
+    "@antv/x6": "workspace:*",
     "@antv/x6-react-components": "^2.x",
     "@antv/x6-react-shape": "^2.x",
-    "@antv/x6": "workspace:*",
-    "@antv/xflow": "^2.0.3",
     "antd": "^5.7.3",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
@@ -36,5 +35,8 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "repository": "https://github.com/antvis/x6"
+  "repository": "https://github.com/antvis/x6",
+  "devDependencies": {
+    "cross-env": "^10.1.0"
+  }
 }

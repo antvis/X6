@@ -8,41 +8,52 @@ redirect_from:
 
 ## 安装
 
-通过 npm 或 yarn 命令安装 X6。
+可以通过任意你使用的包管理工具来安装 X6。
+:::code-group
 
-```shell
-# npm
-$ npm install @antv/x6 --save
-
-# yarn
-$ yarn add @antv/x6
+```shell [npm]
+npm install @antv/x6 --save
 ```
+
+```shell [yarn]
+yarn add @antv/x6
+```
+
+```bash [pnpm]
+pnpm add @antv/x6
+```
+
+:::
 
 如果使用 `umd` 包，可以使用下面三个 CDN 中的任何一个，默认使用 X6 的最新版：
 
-- https://unpkg.com/@antv/x6/dist/index.js
-- https://cdn.jsdelivr.net/npm/@antv/x6/dist/index.js
-- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/2.0.0/index.js
+- <https://unpkg.com/@antv/x6/dist/index.js>
+- <https://cdn.jsdelivr.net/npm/@antv/x6/dist/index.js>
+- <https://cdnjs.cloudflare.com/ajax/libs/antv-x6/2.18.1/index.js>
 
 ## 开始使用
 
-在开始之前，推荐先学习 [SVG 基础知识](https://codepen.io/HunorMarton/full/PoGbgqj)，在有一些基础 SVG 知识储备下，我们以一个简单的例子开始体验 X6。
+在项目中安装或者引入完成 X6 之后就可以开始使用了，我们将以一个简单的例子开始体验 X6，再开始之前也强烈推荐先学习一些 [SVG 基础知识](https://codepen.io/HunorMarton/full/PoGbgqj)，不过没有 SVG 相关知识也可以轻松上手～
 
 ### 1. 初始化画布
 
-在页面中创建一个画布容器，然后初始化画布对象，可以通过配置设置画布的样式，比如背景颜色。
+在创建画布之前，首先需要在页面中创建一个 **画布容器** 用于挂载画布：
 
 ```html
 <div id="container"></div>
 ```
+
+然后初始化画布对象，可以通过配置设置画布的样式，比如背景颜色：
 
 ```ts
 import { Graph } from '@antv/x6'
 
 const graph = new Graph({
   container: document.getElementById('container'),
+  // 设置画布大小
   width: 800,
   height: 600,
+  // 设置画布背景颜色
   background: {
     color: '#F2F7FA',
   },
@@ -51,24 +62,373 @@ const graph = new Graph({
 
 ### 2. 渲染节点和边
 
-X6 支持 JSON 格式数据，该对象中 `nodes` 代表节点数据，`edges` 代表边数据，可以使用 `attrs` 属性来定制节点和边的样式（可以类比 CSS）。
+创建画布后，可在其中添加**节点**和**边**。X6 支持 JSON 格式数据，该对象中 `nodes` 代表节点数据，`edges` 代表边数据，可以使用 `attrs` 属性来定制节点和边的样式（可以类比 CSS）。
 
-<code id="helloworld" src="@/src/tutorial/getting-started/helloworld/index.tsx"></code>
+这样我们就得到了一个基础的 X6 画布：
 
-### 3. 使用 React 节点
+```js | ob { inject: true, pin: false }
+import { Graph } from '@antv/x6'
 
-X6 支持使用 `SVG`、`HTML` 来渲染节点内容，在此基础上，我们还可以使用 `React`、`Vue` 组件来渲染节点，这样在开发过程中会非常便捷。在拿到设计稿之后，你就需要权衡一下使用哪一种渲染方式，可以参考下面的一些建议：
+const data = {
+  // 表示节点
+  nodes: [
+    {
+      id: 'node1',
+      shape: 'rect',
+      x: 40,
+      y: 40,
+      width: 100,
+      height: 40,
+      label: 'hello',
+      attrs: {
+        // body 是选择器名称，选中的是 rect 元素
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+    {
+      id: 'node2',
+      shape: 'rect',
+      x: 160,
+      y: 180,
+      width: 100,
+      height: 40,
+      label: 'world',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+  ],
+  // 表示边
+  edges: [
+    {
+      shape: 'edge',
+      source: 'node1',
+      target: 'node2',
+      label: 'x6',
+      attrs: {
+        // line 是选择器名称，选中的边的 path 元素
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
+    },
+  ],
+}
 
-- 如果节点内容比较简单，而且需求比较固定，使用 `SVG` 节点
-- 其他场景，都推荐使用当前项目所使用的框架来渲染节点
+const graph = new Graph({
+  container: document.getElementById('container'),
+  height: 300,
+  // 设置画布背景颜色
+  background: {
+    color: '#F2F7FA',
+  },
+})
 
-例如：在上面节点基础上，我们有一个新的需求：给节点加上右键菜单。如果使用 `SVG` 来实现会比较复杂，我们直接使用 `React` 来渲染节点。这里我们使用 X6 配套的 React 渲染包 `@antv-x6-react-shape`。
+graph.fromJSON(data) // 渲染元素
+graph.centerContent() // 居中显示
+```
 
-<code id="react-shape" src="@/src/tutorial/getting-started/react-shape/index.tsx"></code>
+### 3. 前端框架集成
+
+X6 是基于 js 开发的包，不依赖任何的前端框架，可以在`html`中使用，也可以任意 js 框架中使用，但是实际开发中大多数业务都是在使用`React`、`Vue` 等前端框架进行开发，X6 也可以很简单地在这些框架中进行使用，下面的例子实现了上面 [步骤2渲染节点和边章节](#2-渲染节点和边) 相同的效果：
+:::code-group
+
+```jsx [React]
+import React from 'react'
+import { Graph } from '@antv/x6'
+
+export default class Example extends React.Component {
+  private container: HTMLDivElement
+
+  componentDidMount() {
+    const data = {
+      nodes: [
+        {
+          id: 'node1',
+          shape: 'rect',
+          x: 40,
+          y: 40,
+          width: 100,
+          height: 40,
+          label: 'hello',
+          attrs: {
+            // body 是选择器名称，选中的是 rect 元素
+            body: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+              fill: '#fff',
+              rx: 6,
+              ry: 6,
+            },
+          },
+        },
+        {
+          id: 'node2',
+          shape: 'rect',
+          x: 160,
+          y: 180,
+          width: 100,
+          height: 40,
+          label: 'world',
+          attrs: {
+            body: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+              fill: '#fff',
+              rx: 6,
+              ry: 6,
+            },
+          },
+        },
+      ],
+      edges: [
+        {
+          shape: 'edge',
+          source: 'node1',
+          target: 'node2',
+          label: 'x6',
+          attrs: {
+            // line 是选择器名称，选中的边的 path 元素
+            line: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+            },
+          },
+        },
+      ],
+    }
+
+    const graph = new Graph({
+      container: this.container,
+      width: 500,
+      height: 300,
+      // 设置画布背景颜色
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+
+    graph.fromJSON(data) // 渲染元素
+    graph.centerContent() // 居中显示
+  }
+
+  refContainer = (container: HTMLDivElement) => {
+    this.container = container
+  }
+
+  render() {
+    return (
+      <div className="app-content" ref={this.refContainer} />
+    )
+  }
+}
+
+```
+
+```vue [Vue]
+<template>
+  <div class="app-content">
+    <div id="container"></div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { Graph } from '@antv/x6'
+
+export default defineComponent({
+  name: 'App',
+  mounted() {
+     const data = {
+      nodes: [
+        {
+          id: 'node1',
+          shape: 'rect',
+          x: 40,
+          y: 40,
+          width: 100,
+          height: 40,
+          label: 'hello',
+          attrs: {
+            // body 是选择器名称，选中的是 rect 元素
+            body: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+              fill: '#fff',
+              rx: 6,
+              ry: 6,
+            },
+          },
+        },
+        {
+          id: 'node2',
+          shape: 'rect',
+          x: 160,
+          y: 180,
+          width: 100,
+          height: 40,
+          label: 'world',
+          attrs: {
+            body: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+              fill: '#fff',
+              rx: 6,
+              ry: 6,
+            },
+          },
+        },
+      ],
+      edges: [
+        {
+          shape: 'edge',
+          source: 'node1',
+          target: 'node2',
+          label: 'x6',
+          attrs: {
+            // line 是选择器名称，选中的边的 path 元素
+            line: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+            },
+          },
+        },
+      ],
+    }
+
+    const graph = new Graph({
+      container: document.getElementById('container'),
+      width: 500,
+      height: 300,
+      // 设置画布背景颜色
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+
+    graph.fromJSON(data) // 渲染元素
+    graph.centerContent() // 居中显示
+  }
+});
+</script>
+```
+
+```ts [Angular]
+// app.component.html
+<div>
+  <h1>{{ title }}</h1>
+  <div #container></div>
+</div>
+
+// app.component.ts
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Graph } from '@antv/x6'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+})
+export class AppComponent {
+  @ViewChild('container') container: ElementRef;
+
+  ngAfterViewInit() {
+    const data = {
+      nodes: [
+        {
+          id: 'node1',
+          shape: 'rect',
+          x: 40,
+          y: 40,
+          width: 100,
+          height: 40,
+          label: 'hello',
+          attrs: {
+            // body 是选择器名称，选中的是 rect 元素
+            body: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+              fill: '#fff',
+              rx: 6,
+              ry: 6,
+            },
+          },
+        },
+        {
+          id: 'node2',
+          shape: 'rect',
+          x: 160,
+          y: 180,
+          width: 100,
+          height: 40,
+          label: 'world',
+          attrs: {
+            body: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+              fill: '#fff',
+              rx: 6,
+              ry: 6,
+            },
+          },
+        },
+      ],
+      edges: [
+        {
+          shape: 'edge',
+          source: 'node1',
+          target: 'node2',
+          label: 'x6',
+          attrs: {
+            // line 是选择器名称，选中的边的 path 元素
+            line: {
+              stroke: '#8f8f8f',
+              strokeWidth: 1,
+            },
+          },
+        },
+      ],
+    }
+
+    const graph = new Graph({
+      container: this.container.nativeElement,
+      height: 300,
+      // 设置画布背景颜色
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+
+    graph.fromJSON(data) // 渲染元素
+    graph.centerContent() // 居中显示
+  }
+}
+```
+
+:::
+
+在上面的例子中，都使用了内置的`rect`节点，除此之外 X6 还支持使用框架组件来自定义节点，例如使用 `React` 组件、`Vue` 组件来渲染节点，这些进阶内容我们会在后续的章节中详细介绍，你也可以提前了解：
+
+- [React 节点](/tutorial/intermediate/react)
+- [Vue 节点](/tutorial/intermediate/vue)
+- [Angular 节点](/tutorial/intermediate/angular)
+- [HTML 节点](/tutorial/intermediate/html)
 
 ### 4. 使用插件
 
-除了基本的元素渲染能力，X6 还内置了大量的图编辑配套插件，使用这些成熟的插件，能很大程度上降低开发成本。下面为画布增加对齐线功能，当移动的节点与其他节点对齐时，会自动出现对齐线，可以方便用户进行位置排版。
+除了基本的元素渲染能力，X6 还内置了大量的图编辑配套插件，使用这些成熟的插件，能很大程度上降低开发成本。例如下面为画布增加对齐线功能，**当移动的节点与其他节点对齐时，会自动出现对齐线**，可以方便用户进行位置排版。
 
 ```ts
 import { Snapline } from '@antv/x6'
@@ -80,11 +440,86 @@ graph.use(
 )
 ```
 
-<code id="use-plugin" src="@/src/tutorial/getting-started/use-plugin/index.tsx"></code>
+```js | ob { inject: true, pin:false }
+import { Graph, Snapline } from '@antv/x6'
+
+const data = {
+  nodes: [
+    {
+      id: 'node1',
+      shape: 'rect',
+      x: 40,
+      y: 40,
+      width: 100,
+      height: 40,
+      label: 'hello',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+    {
+      id: 'node2',
+      shape: 'rect',
+      x: 160,
+      y: 180,
+      width: 100,
+      height: 40,
+      label: 'world',
+      attrs: {
+        body: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+          fill: '#fff',
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+  ],
+  edges: [
+    {
+      shape: 'edge',
+      source: 'node1',
+      target: 'node2',
+      label: 'x6',
+      attrs: {
+        line: {
+          stroke: '#8f8f8f',
+          strokeWidth: 1,
+        },
+      },
+    },
+  ],
+}
+
+const graph = new Graph({
+  container: document.getElementById('container'),
+  height: 300,
+  background: {
+    color: '#F2F7FA',
+  },
+})
+
+graph.use(
+  new Snapline({
+    enabled: true,
+  }),
+)
+graph.fromJSON(data) // 渲染元素
+graph.centerContent() // 居中显示
+```
+
+更多插件会在后续章节中详细介绍。
 
 ### 5. 数据导出
 
-在上面的步骤 2 `渲染节点和边` 中可以看到，可以使用 `fromJSON` 将 `JSON` 数据渲染到画布中，当然，也支持将画布中的数据导出成 `JSON`，这样我们就可以将画布数据序列化后存储到服务端。
+在上面 [步骤2渲染节点和边章节](#2-渲染节点和边) 中可以看到，可以使用 `fromJSON` 将 `JSON` 数据渲染到画布中，当然，也支持将画布中的数据导出成 `JSON`，这样我们就可以将画布数据序列化后存储到服务端。
 
 ```ts
 graph.toJSON()

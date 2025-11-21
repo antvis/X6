@@ -17,7 +17,7 @@ graph.addNode({
       fill: '#efdbff',
       stroke: '#9254de',
       // 指定 refPoints 属性，多边形顶点随图形大小自动缩放
-      // https://x6.antv.vision/zh/docs/api/registry/attr#refpointsresetoffset
+      // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
       refPoints: '0,10 10,0 20,10 10,20',
     },
   },
@@ -31,7 +31,7 @@ graph.addNode({
   height: 80,
   label: 'polygon',
   // 使用 points 属性指定多边形的顶点，相当于指定多边形的 refPoints 属性
-  // https://x6.antv.vision/zh/docs/api/registry/attr#refpointsresetoffset
+  // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
   points: '0,10 10,0 20,10 10,20',
   attrs: {
     body: {

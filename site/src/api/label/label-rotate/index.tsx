@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Interp } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import './index.less'
 
 export default class Example extends React.Component {
@@ -154,33 +154,23 @@ export default class Example extends React.Component {
       },
     })
 
-    let currentTransitions = 0
     let oscillateToggle = false
 
     function contract() {
-      edge.transition(
-        'source',
-        { x: 130, y: 120 },
+      edge.animate(
         {
-          delay: 1000,
-          duration: 4000,
-          timing: (time) => {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          'source/x': 130,
+          'source/y': 120,
+          'target/x': 330,
+          'target/y': 120,
         },
-      )
-
-      edge.transition(
-        'target',
-        { x: 330, y: 120 },
         {
           delay: 1000,
-          duration: 4000,
-          timing: (time) => {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          duration: 2000,
+          direction: 'alternate',
+          iterations: 2,
+          easing: 'linear',
+          fill: 'none',
         },
       )
 
@@ -188,61 +178,33 @@ export default class Example extends React.Component {
     }
 
     function oscillate() {
-      edge.transition(
-        'source',
-        { x: 30, y: 200 },
+      edge.animate(
         {
-          delay: 1000,
-          duration: 4000,
-          timing: (time) => {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          'source/x': 30,
+          'source/y': 200,
+          'vertices/0/x': 230,
+          'vertices/0/y': 120,
+          'target/x': 430,
+          'target/y': 200,
         },
-      )
-
-      edge.transition(
-        'vertices/0',
-        { x: 230, y: 120 },
         {
           delay: 1000,
-          duration: 4000,
-          timing: (time) => {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
-        },
-      )
-
-      edge.transition(
-        'target',
-        { x: 430, y: 200 },
-        {
-          delay: 1000,
-          duration: 4000,
-          timing: (time) => {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          duration: 2000,
+          direction: 'alternate',
+          iterations: 2,
+          easing: 'linear',
+          fill: 'none',
         },
       )
 
       oscillateToggle = false
     }
 
-    edge.on('transition:start', () => {
-      currentTransitions += 1
-    })
-
-    edge.on('transition:complete', () => {
-      currentTransitions -= 1
-
-      if (currentTransitions === 0) {
-        if (oscillateToggle) {
-          oscillate()
-        } else {
-          contract()
-        }
+    edge.on('animation:finish', () => {
+      if (oscillateToggle) {
+        oscillate()
+      } else {
+        contract()
       }
     })
 

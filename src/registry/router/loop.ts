@@ -1,4 +1,4 @@
-import { Angle, Line, Point } from '../../geometry'
+import { toRad, Line, Point, type PointLike } from '../../geometry'
 import type { RouterDefinition } from './index'
 
 export interface LoopRouterOptions {
@@ -8,7 +8,7 @@ export interface LoopRouterOptions {
   merge?: boolean | number
 }
 
-function rollup(points: Point.PointLike[], merge?: boolean | number) {
+function rollup(points: PointLike[], merge?: boolean | number) {
   if (merge != null && merge !== false) {
     const amount = typeof merge === 'boolean' ? 0 : merge
     if (amount > 0) {
@@ -41,7 +41,7 @@ export const loop: RouterDefinition<LoopRouterOptions> = (
 
   if (sourceAnchor.equals(targetAnchor)) {
     const getVertices = (angle: number) => {
-      const rad = Angle.toRad(angle)
+      const rad = toRad(angle)
       const sin = Math.sin(rad)
       const cos = Math.cos(rad)
 
@@ -59,7 +59,7 @@ export const loop: RouterDefinition<LoopRouterOptions> = (
       return [p1.toJSON(), center.toJSON(), p2.toJSON()]
     }
 
-    const validate = (end: Point.PointLike) => {
+    const validate = (end: PointLike) => {
       const start = sourceAnchor.clone().move(end, -1)
       const line = new Line(start, end)
       return (

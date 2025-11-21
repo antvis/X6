@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic/basic
 ---
 
-:::info{title=在本章节中主要介绍节点相关的知识,通过阅读,你可以了解到}
+:::info{title=在本章节中主要介绍节点相关的知识，通过阅读，你可以了解到}
 
 - X6 支持的节点渲染方式
 - 添加节点方法
@@ -27,7 +27,7 @@ X6 是基于 `SVG` 的渲染引擎，可以使用不同的 SVG 元素渲染节�
 - 其他场景，都推荐使用当前项目所使用的框架来渲染节点
 
 :::warning{title=注意}
-React/Vue/HTML 渲染方式也存在一些限制，因为浏览器的兼容性问题，有时会出现一些异常的渲染行为。主要表现形式为节点内容展示不全或者节点内容闪烁。可以通过一些方法规避，比如在节点内部元素的 css 样式中不要使用 `position:absolute`、`position:relative`、`tranform`、`opacity`。 
+React/Vue/HTML 渲染方式也存在一些限制，因为浏览器的兼容性问题，有时会出现一些异常的渲染行为。主要表现形式为节点内容展示不全或者节点内容闪烁。可以通过一些方法规避，比如在节点内部元素的 css 样式中不要使用 `position:absolute`、`position:relative`、`transform`、`opacity`。
 :::
 
 下面的介绍都是基于 `SVG` 节点，但是其他渲染形式的使用方式与其非常类似，在进阶教程中我们会再次介绍。
@@ -95,7 +95,7 @@ const node = graph.addNode({
   height: 40,
   x: 100,
   y: 100,
-  label: 'edge',
+  label: 'node',
 })
 console.log(node.prop())
 
@@ -141,10 +141,10 @@ console.log(node.prop())
 从上面结果可以看到，`prop` 是配置处理后的一份新的配置，它的值可以通过方法进行更新，更新之后，节点会立即刷新到最新状态。为了更快捷的修改节点的 `attrs`，X6 提供了 `attr` 方法。
 
 ```ts
-source.prop('size', { width: 120, height: 50 }) // 修改 x 坐标
+source.prop('size', { width: 120, height: 50 }) // 修改尺寸
 source.attr('rect/fill', '#ccc') // 修改填充色，等价于 source.prop('attrs/rect/fill', '#ccc')
 ```
 
 <code id="node-prop" src="@/src/tutorial/basic/node/prop/index.tsx"></code>
 
-在上面 json 数中，我们可以看到有一些属性 `refWidth`、`refHeight` 并不是 SVG 的原生属性，它们其实是 X6 内置的特殊属性，比如 `refWidth` 就是相对宽度。更多详细的特殊属性参考 [attrs](/api/model/attrs)。
+在上面的 JSON 数据中，我们可以看到有一些属性 `refWidth`、`refHeight` 并不是 SVG 的原生属性，它们其实是 X6 内置的特殊属性，比如 `refWidth` 就是相对宽度。更多详细的特殊属性参考 [attrs](/api/model/attrs)。
