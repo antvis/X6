@@ -449,7 +449,7 @@ Translates the node along with its child nodes and edges.
 | tx | number |  | `0` | The offset of the node in the X direction. |
 | ty | number |  | `0` | The offset of the node in the Y direction. |
 | options.restrict | Rectangle.RectangleLike |  | `undefined` | Restricts the movable range of the node to the specified rectangular area. |
-| options.transition | boolean \| Animation.Options |  | `false` | Whether to use animation or specify an [animation option](/en/api/model/cell#transition). |
+| options.transition | boolean \| KeyframeEffectOptions |  | `false` | Whether to use animation or specify an animation option. |
 | options.silent | boolean |  | `false` | When `true`, does not trigger `'change:position'` events and does not redraw the canvas. |
 | options...others | object |  |  | Other custom key-value pairs that can be used in event callbacks. |
 
