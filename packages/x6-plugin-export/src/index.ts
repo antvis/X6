@@ -4,12 +4,13 @@ import {
   Dom,
   FunctionExt,
   Graph,
-  KeyValue,
   NumberExt,
   Rectangle,
   Size,
   Vector,
 } from '@antv/x6'
+import type { KeyValue } from '@antv/x6'
+import { kebabCase } from './helper'
 import './api'
 
 export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
@@ -130,8 +131,10 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
         // by that next step when all the stylesheets are re-enabled again.
         const defaultComputedStyle: KeyValue<string> = {}
         Object.keys(computedStyle).forEach((property) => {
-          defaultComputedStyle[property] =
-            computedStyle.getPropertyValue(property)
+          const propertyValue = computedStyle.getPropertyValue(
+            kebabCase(property),
+          )
+          defaultComputedStyle[property] = propertyValue
         })
 
         defaultComputedStyles[index] = defaultComputedStyle
@@ -155,12 +158,14 @@ export class Export extends Basecoat<Export.EventArgs> implements Graph.Plugin {
         const customStyle: KeyValue<string> = {}
 
         Object.keys(computedStyle).forEach((property) => {
+          const propertyValue = computedStyle.getPropertyValue(
+            kebabCase(property),
+          )
           if (
             !NumberExt.isNumber(property) &&
-            computedStyle.getPropertyValue(property) !==
-              defaultComputedStyle[property]
+            propertyValue !== defaultComputedStyle[property]
           ) {
-            customStyle[property] = computedStyle.getPropertyValue(property)
+            customStyle[property] = propertyValue
           }
         })
 
