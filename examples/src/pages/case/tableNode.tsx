@@ -23,9 +23,6 @@ const TableNode = ({ node }: { node: Node }) => {
         overflow: 'hidden',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         boxSizing: 'border-box',
-        position: 'absolute',
-        top: 0,
-        left: 0,
       }}
     >
       <div
