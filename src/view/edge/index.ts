@@ -471,10 +471,10 @@ export class EdgeView<
 
     const { text, ...attrs } = this.cell.getAttrs()
     if (attrs != null) {
-      // FIXME: safari 兼容，重新渲染一次data-shape === 'edge' 的g元素，确保重排/重绘能渲染出marker
+      // FIXME: safari 兼容，重新渲染一次edge 的g元素，确保重排/重绘能渲染出marker
       if (
         this.container?.tagName === 'g' &&
-        this.container?.getAttribute?.('data-shape') === 'edge' &&
+        this.isEdgeElement(this.container) &&
         IS_SAFARI
       ) {
         const parent = this.container.parentNode
