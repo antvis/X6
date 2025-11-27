@@ -23,7 +23,7 @@ export class HistoryExample extends React.Component {
     graph.use(keyboard)
     graph.use(history)
 
-    graph.addNode({
+    const a = graph.addNode({
       x: 50,
       y: 50,
       width: 100,
@@ -31,7 +31,7 @@ export class HistoryExample extends React.Component {
       attrs: { label: { text: 'A' } },
     })
 
-    graph.addNode({
+    const b = graph.addNode({
       x: 250,
       y: 50,
       width: 100,
@@ -46,6 +46,8 @@ export class HistoryExample extends React.Component {
       height: 40,
       attrs: { label: { text: 'C' } },
     })
+
+    graph.addEdge({ source: a, target: b })
 
     keyboard.bindKey('backspace', () => {
       graph.removeCells(selection.getSelectedCells())
@@ -82,6 +84,25 @@ export class HistoryExample extends React.Component {
     history.redo()
   }
 
+  removeAll = () => {
+    const cells = this.graph.getCells()
+    this.graph.removeCells(cells)
+  }
+
+  removeOneNode = () => {
+    const nodes = this.graph.getNodes()
+    if (nodes.length) {
+      this.graph.removeNode(nodes[0])
+    }
+  }
+
+  removeOneEdge = () => {
+    const edges = this.graph.getEdges()
+    if (edges.length) {
+      this.graph.removeEdge(edges[0])
+    }
+  }
+
   render() {
     return (
       <div className="x6-graph-wrap">
@@ -90,6 +111,9 @@ export class HistoryExample extends React.Component {
         <Button onClick={this.disablePlugins}>disable</Button>
         <Button onClick={this.undo}>undo</Button>
         <Button onClick={this.redo}>redo</Button>
+        <Button onClick={this.removeAll}>remove all</Button>
+        <Button onClick={this.removeOneNode}>remove node</Button>
+        <Button onClick={this.removeOneEdge}>remove edge</Button>
       </div>
     )
   }
