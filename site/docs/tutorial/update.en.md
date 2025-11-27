@@ -73,8 +73,6 @@ See more: [Animation Docs](/en/tutorial/basic/animation).
 ### Shape Packages Upgrade (React/Vue/Angular)
 
 - X6 3.x must use the 3.x versions of the shape packages: `@antv/x6-react-shape@^3.x`, `@antv/x6-vue-shape@^3.x`, and `@antv/x6-angular-shape@^3.x`.
-- If your project uses React < 18, lock `@antv/x6-react-shape` to `2.0.8` and use the corresponding major X6 version.
-- For Angular, version 14+ is recommended.
 
 ```json
 {
