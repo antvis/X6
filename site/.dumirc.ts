@@ -14,12 +14,12 @@ export default defineConfig({
     description: 'JavaScript diagramming library',
     metas: {
       title: {
-        zh: 'X6 图编辑引擎',
-        en: 'X6',
+        zh: 'X6·图编辑引擎',
+        en: 'X6·Diagramming Engine',
       },
       description: {
-        zh: 'JavaScript 图编辑引擎',
-        en: 'JavaScript diagramming library',
+        zh: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
+        en: 'X6 is an HTML and SVG-based diagramming engine that provides low-cost customization capabilities and out-of-the-box built-in extensions, making it easy to quickly build DAG diagrams, ER diagrams, flowcharts, lineage diagrams, and other applications.',
       },
     },
     /** 站点地图配置 */
@@ -110,11 +110,11 @@ export default defineConfig({
       },
       title: {
         zh: 'X6·图编辑引擎',
-        en: 'X6·图编辑引擎',
+        en: 'X6·Diagramming Engine',
       },
       description: {
         zh: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
-        en: 'X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。',
+        en: 'X6 is an HTML and SVG-based diagramming engine that provides low-cost customization capabilities and out-of-the-box built-in extensions, making it easy to quickly build DAG diagrams, ER diagrams, flowcharts, lineage diagrams, and other applications.',
       },
       image:
         'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5qQsTo0dkOcAAAAAAAAAAAAADmJ7AQ/original',
