@@ -19,11 +19,7 @@ redirect_from:
 We provide a standalone package `@antv/x6-react-shape` for rendering nodes with React.
 
 :::warning{title=Note}
-Version compatibility: X6 1.x uses x6-react-shape 1.x; X6 2.x and 3.x use x6-react-shape 2.x.
-:::
-
-:::warning{title=Note}
-Since 2.0.8, x6-react-shape supports React 18+. If your project uses React < 18, lock x6-react-shape to 2.0.8.
+Version compatibility: X6 3.x must use x6-react-shape 3.x. Since 2.0.8, x6-react-shape supports React 18+ only; if your project uses React < 18, lock x6-react-shape to 2.0.8 and use X6 2.x.
 :::
 
 ```ts

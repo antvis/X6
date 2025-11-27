@@ -69,3 +69,31 @@ See more: [Animation Docs](/en/tutorial/basic/animation).
 - Graph panning `panning` is enabled by default (`enabled: true`). To disable, set `panning: false`.
 - When graph `panning` conflicts with Selection rubberband triggers, Selection takes precedence.
 - With `Scroller`, graph `panning` is disabled by default to avoid interaction conflicts, and virtual rendering can be enabled via `virtual: true`.
+
+### Shape Packages Upgrade (React/Vue/Angular)
+
+- X6 3.x must use the 3.x versions of the shape packages: `@antv/x6-react-shape@^3.x`, `@antv/x6-vue-shape@^3.x`, and `@antv/x6-angular-shape@^3.x`.
+- If your project uses React < 18, lock `@antv/x6-react-shape` to `2.0.8` and use the corresponding major X6 version.
+- For Angular, version 14+ is recommended.
+
+```json
+{
+  "@antv/x6-react-shape": "^3.0.0",
+  "@antv/x6-vue-shape": "^3.0.0",
+  "@antv/x6-angular-shape": "^3.0.0"
+}
+```
+
+#### React Provider API Change
+
+Change 2.x `Portal.getProvider()` to 3.x `getProvider()`:
+
+```ts
+// 2.x
+import { Portal } from '@antv/x6-react-shape'
+const Provider = Portal.getProvider()
+
+// 3.x
+import { getProvider } from '@antv/x6-react-shape'
+const Provider = getProvider()
+```
