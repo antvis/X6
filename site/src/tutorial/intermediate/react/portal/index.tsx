@@ -1,10 +1,10 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { register, Portal } from '@antv/x6-react-shape'
+import { register, getProvider } from '@antv/x6-react-shape'
 import { Progress, Button } from 'antd'
 import './index.less'
 
-const X6ReactPortalProvider = Portal.getProvider() // 注意，一个 graph 只能申明一个 portal provider
+const X6ReactPortalProvider = getProvider() // 注意，一个 graph 只能申明一个 portal provider
 const ProgressContext = React.createContext(30)
 
 const NodeComponent = () => {

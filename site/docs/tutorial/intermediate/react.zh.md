@@ -19,11 +19,7 @@ redirect_from:
 我们提供了一个独立的包 `@antv/x6-react-shape`，用于通过 React 渲染节点。
 
 :::warning{title=注意}
-版本兼容关系：X6 1.x 使用 x6-react-shape 1.x；X6 2.x 和 3.x 版本均使用 x6-react-shape 2.x。
-:::
-
-:::warning{title=注意}
-x6-react-shape 自 2.0.8 起仅支持 React 18 及以上；若项目低于 React 18，请将 x6-react-shape 锁定到 2.0.8。
+版本兼容关系：X6 3.x 须使用 x6-react-shape 3.x 版本。同时 x6-react-shape 自 2.0.8 起仅支持 React 18 及以上；若项目低于 React 18，请将 x6-react-shape 锁定到 2.0.8 并使用 X6 2.x。
 :::
 
 ```ts

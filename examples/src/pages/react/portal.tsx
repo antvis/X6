@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import { register, Portal } from '@antv/x6-react-shape'
+import { register, getProvider } from '@antv/x6-react-shape'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
-const X6ReactPortalProvider = Portal.getProvider() // 注意，一个 graph 只能申明一个 portal provider
+const X6ReactPortalProvider = getProvider() // 注意，一个 graph 只能申明一个 portal provider
 const ThemeContext = React.createContext('light')
 
 const NodeComponent = () => {
