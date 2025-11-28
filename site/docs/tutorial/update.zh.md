@@ -69,3 +69,29 @@ graph.use(new Selection())
 - 画布平移 `panning` 默认开启：`enabled: true`；若需禁用，设置 `panning: false` 即可。
 - 当画布 `panning` 与 `Selection` 框选触发存在冲突时，框选优先。
 - 使用 `Scroller` 插件时，默认禁用画布 `panning`，且支持开启虚拟渲染 `virtual: true`。
+
+### Shape 组件升级（React/Vue/Angular）
+
+  X6 3.x 须使用以下 3.x 版本的 shape 包：`@antv/x6-react-shape@^3.x`、`@antv/x6-vue-shape@^3.x`、`@antv/x6-angular-shape@^3.x`。
+
+```json
+{
+  "@antv/x6-react-shape": "^3.0.0",
+  "@antv/x6-vue-shape": "^3.0.0",
+  "@antv/x6-angular-shape": "^3.0.0"
+}
+```
+
+#### React Provider 使用变更
+
+将 2.x 的 `Portal.getProvider()` 改为 3.x 的 `getProvider()`：
+
+```ts
+// 2.x
+import { Portal } from '@antv/x6-react-shape'
+const Provider = Portal.getProvider()
+
+// 3.x
+import { getProvider } from '@antv/x6-react-shape'
+const Provider = getProvider()
+```

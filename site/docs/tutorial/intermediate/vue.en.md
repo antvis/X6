@@ -19,7 +19,7 @@ redirect_from:
 We provide a standalone package `@antv/x6-vue-shape` for rendering nodes with Vue components.
 
 :::warning{title=Note}
-Version compatibility: X6 1.x uses x6-vue-shape 1.x; X6 2.x and 3.x use x6-vue-shape 2.x.
+Version compatibility: X6 3.x must use x6-vue-shape 3.x.
 :::
 
 ```html
