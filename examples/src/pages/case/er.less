@@ -14,10 +14,6 @@
   r: 6;
 }
 
-.x6-port-body {
-  pointer-events: all;
-}
-
 .x6-node:hover .x6-port circle {
   visibility: visible !important;
   opacity: 1;
@@ -35,4 +31,35 @@
 
 .x6-edge-label text {
   cursor: pointer;
+}
+
+.x6-port-body {
+  pointer-events: all;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.x6-node:hover .x6-port-body {
+  opacity: 1;
+}
+.x6-port-body circle {
+  fill: #fff;
+  stroke: #1890ff;
+  stroke-width: 2;
+  cursor: crosshair;
+  r: 8;
+}
+.x6-port:hover .x6-port-body circle {
+  fill: #e6f7ff;
+  stroke: #40a9ff;
+  stroke-width: 3;
+  r: 10;
+}
+.x6-port-available .x6-port-body circle {
+  fill: #f6ffed;
+  stroke: #52c41a;
+  stroke-width: 3;
+  r: 10;
+}
+.x6-edge:hover path:nth-child(2) {
+  stroke: #1890ff;
 }

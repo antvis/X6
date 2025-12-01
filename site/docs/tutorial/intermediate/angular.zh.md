@@ -20,7 +20,7 @@ redirect_from:
 我们提供一个独立的包 `@antv/x6-angular-shape`，用于将 Angular 组件/模板渲染为节点。
 
 :::warning{title=注意}
-版本兼容关系：X6 1.x 使用 x6-angular-shape 1.x；X6 2.x 和 3.x 版本均使用 x6-angular-shape 2.x。
+版本兼容关系：X6 3.x 须使用 x6-angular-shape 3.x 版本。
 :::
 
 ### Component 渲染

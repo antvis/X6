@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Interp } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import './index.less'
 
 Graph.registerEdge(
@@ -272,33 +272,23 @@ export default class Example extends React.Component {
       },
     })
 
-    let currentTransitions = 0
     let oscillateToggle = false
 
     function contract() {
-      edge.transition(
-        'source',
-        { x: 200, y: 100 },
+      edge.animate(
         {
-          delay: 1000,
-          duration: 4000,
-          timing(time) {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          'source/x': 200,
+          'source/y': 100,
+          'target/x': 400,
+          'target/y': 100,
         },
-      )
-
-      edge.transition(
-        'target',
-        { x: 400, y: 100 },
         {
           delay: 1000,
-          duration: 4000,
-          timing(time) {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          duration: 2000,
+          direction: 'alternate',
+          iterations: 2,
+          easing: 'linear',
+          fill: 'none',
         },
       )
 
@@ -306,42 +296,22 @@ export default class Example extends React.Component {
     }
 
     function oscillate() {
-      edge.transition(
-        'source',
-        { x: 100, y: 200 },
+      edge.animate(
         {
-          delay: 1000,
-          duration: 4000,
-          timing(time) {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          'source/x': 100,
+          'source/y': 200,
+          'target/x': 500,
+          'target/y': 200,
+          'vertices/0/x': 300,
+          'vertices/0/y': 60,
         },
-      )
-
-      edge.transition(
-        'target',
-        { x: 500, y: 200 },
         {
           delay: 1000,
-          duration: 4000,
-          timing(time) {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
-        },
-      )
-
-      edge.transition(
-        'vertices/0',
-        { x: 300, y: 60 },
-        {
-          delay: 1000,
-          duration: 4000,
-          timing(time) {
-            return time <= 0.5 ? 2 * time : 2 * (1 - time)
-          },
-          interp: Interp.object,
+          duration: 2000,
+          direction: 'alternate',
+          iterations: 2,
+          easing: 'linear',
+          fill: 'none',
         },
       )
 
@@ -350,19 +320,11 @@ export default class Example extends React.Component {
 
     contract()
 
-    edge.on('transition:start', () => {
-      currentTransitions += 1
-    })
-
-    edge.on('transition:complete', () => {
-      currentTransitions -= 1
-
-      if (currentTransitions === 0) {
-        if (oscillateToggle) {
-          oscillate()
-        } else {
-          contract()
-        }
+    edge.on('animation:finish', () => {
+      if (oscillateToggle) {
+        oscillate()
+      } else {
+        contract()
       }
     })
   }

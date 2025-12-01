@@ -358,39 +358,14 @@ cell.on('change:custom', ({ cell, current, previous, options }) => {
 当通过 `cell.prop('custom', 'any data')` 方法修改 `custom` 属性的值时将触发 `change:custom` 事件。
 
 ### 动画
-
-- `transition:start` 动画开始时触发
-- `transition:progress` 动画过程中触发
-- `transition:complete` 动画完成时触发
-- `transition:stop` 动画被停止时触发
-- `transition:finish` 动画完成或被停止时触发
-
-```ts
-cell.on('transition:start', (args: Animation.CallbackArgs) => {})
-cell.on('transition:progress', (args: Animation.ProgressArgs) => {})
-cell.on('transition:complete', (args: Animation.CallbackArgs) => {})
-cell.on('transition:stop', (args: Animation.StopArgs) => {})
-cell.on('transition:finish', (args: Animation.CallbackArgs) => {})
-
-graph.on('cell:transition:start', (args: Animation.CallbackArgs) => {})
-graph.on('cell:transition:progress', (args: Animation.ProgressArgs) => {})
-graph.on('cell:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('cell:transition:stop', (args: Animation.StopArgs) => {})
-graph.on('cell:transition:finish', (args: Animation.CallbackArgs) => {})
-
-graph.on('node:transition:start', (args: Animation.CallbackArgs) => {})
-graph.on('node:transition:progress', (args: Animation.ProgressArgs) => {})
-graph.on('node:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('node:transition:stop', (args: Animation.StopArgs) => {})
-graph.on('node:transition:finish', (args: Animation.CallbackArgs) => {})
-
-graph.on('edge:transition:start', (args: Animation.CallbackArgs) => {})
-graph.on('edge:transition:progress', (args: Animation.ProgressArgs) => {})
-graph.on('edge:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('edge:transition:stop', (args: Animation.StopArgs) => {})
-graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
-```
-
+动画系统中支持以下事件：
+- `cell:animation:finish` 动画结束时触发
+- `cell:animation:cancel` 动画取消时触发
+- `node:animation:finish` 动画结束时触发（仅当 cell 是节点时才触发）
+- `node:animation:cancel` 动画取消时触发（仅当 cell 是节点时才触发）
+- `edge:animation:finish` 动画结束时触发（仅当 cell 是边时才触发）
+- `edge:animation:cancel` 动画取消时触发（仅当 cell 是边时才触发）
+  
 ## 视图
 
 由于 X6 实现了异步的渲染调度算法，所以节点的添加不一定意味着挂载到画布上。节点在被挂载到画布时以及从画布上卸载时会分别触发单独的事件。
