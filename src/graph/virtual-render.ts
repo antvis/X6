@@ -104,9 +104,9 @@ export class VirtualRenderManager extends Base {
     this.graph.renderer.setRenderArea(undefined)
   }
 
-  private isVirtualEnabled(): boolean {
+  public isVirtualEnabled(): boolean {
     const virtualOptions = this.options.virtual
-    return typeof virtualOptions === 'object'
+    return virtualOptions != null && typeof virtualOptions === 'object'
       ? (virtualOptions as VirtualOptions).enabled !== false
       : !!virtualOptions
   }

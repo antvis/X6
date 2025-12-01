@@ -562,13 +562,7 @@ export class Scheduler extends Disposable {
       const intersects = this.renderArea
         ? this.renderArea.isIntersectWithRect(edge.getBBox())
         : true
-
-      const virtualOptions = this.graph.options.virtual
-      const enabled =
-        typeof virtualOptions === 'object'
-          ? (virtualOptions as VirtualOptions).enabled !== false
-          : !!virtualOptions
-      if (enabled) {
+      if (this.graph.virtualRender.isVirtualEnabled()) {
         return intersects
       }
 
