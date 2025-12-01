@@ -30,10 +30,15 @@ import type { CellView, EdgeView, NodeView } from '../view'
 import type { CellViewInteracting } from '../view/cell/type'
 import type { MarkupSelectors } from '../view/markup'
 import type { BackgroundManagerOptions } from './background'
-import type { GridDrawOptions, GridCommonOptions, GridOptions } from './grid'
+import type { GridCommonOptions, GridDrawOptions, GridOptions } from './grid'
 import type { HighlightManagerOptions } from './highlight'
 import type { MouseWheelOptions } from './mousewheel'
 import type { PanningOptions } from './panning'
+
+export interface VirtualOptions {
+  enabled?: boolean
+  margin?: number
+}
 
 interface Common {
   container: HTMLElement
@@ -64,7 +69,7 @@ interface Common {
   interacting: CellViewInteracting
 
   async?: boolean
-  virtual?: boolean
+  virtual?: boolean | VirtualOptions
 
   guard: (e: Dom.EventObject, view?: CellView | null) => boolean
 
