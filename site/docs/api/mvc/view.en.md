@@ -15,7 +15,25 @@ Whether the canvas is rendered asynchronously. Asynchronous rendering does not b
 
 ### virtual
 
-Whether to render only the elements in the visible area, default is `false`. If set to `true`, the initial screen load will only render elements in the current visible area. When dragging, zooming the canvas, or moving the scrollbar in a scrolling canvas, the remaining elements will be automatically loaded based on the canvas window size. This significantly improves performance in scenarios with a large number of elements.
+Whether to render only the elements in the visible area. Supports passing a `boolean` or an object `VirtualOptions`, default is `false`.
+
+When set to the boolean value `true`, only the current visible area and the buffer margin (default: `120px`) are rendered.
+
+When an object `VirtualOptions` is provided:
+
+- `enabled`: Whether to enable virtual rendering.
+- `margin`: Buffer margin (px). Elements within this margin outside the viewport are pre-rendered to reduce repaint jitter during drag/zoom and improve interaction continuity.
+
+Example:
+
+```ts
+new Graph({
+  container: el,
+  virtual: { enabled: true, margin: 200 },
+})
+```
+
+When dragging, zooming the graph, or scrolling, the remaining elements are dynamically loaded based on the window size. This significantly improves performance in scenarios with a large number of elements.
 
 ### magnetThreshold
 

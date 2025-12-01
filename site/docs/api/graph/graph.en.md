@@ -35,7 +35,7 @@ new Graph(options: Options)
 | [preventDefaultContextMenu](/en/api/mvc/view#preventdefaultcontextmenu) | `boolean` |  | Whether to disable the browser's default right-click menu. | `true` |
 | [preventDefaultBlankAction](/en/api/mvc/view#preventdefaultblankaction) | `boolean` |  | Whether to disable the default mouse behavior when clicking on a blank area of the canvas. | `true` |
 | [async](/en/api/mvc/view#async) | `boolean` |  | Whether to render asynchronously. | `true` |
-| [virtual](/en/api/mvc/view#virtual) | `boolean` |  | Whether to only render the visible area of the canvas. | `false` |
+| [virtual](/en/api/mvc/view#virtual) | `boolean \| VirtualOptions` |  | Whether to only render the visible area of the canvas; when an object is provided, you can configure the buffer margin `margin` and the switch `enabled`. | `false` |
 | [onPortRendered](/en/api/mvc/view#onportrendered) | `(args: OnPortRenderedArgs) => void` |  | The callback triggered when a port is rendered. | - |
 | [onEdgeLabelRendered](/en/api/mvc/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void \| ((args: OnEdgeLabelRenderedArgs) => void)` |  | The callback triggered when an edge label is rendered, And it can return a cleanup function, which will be executed when the label is destroyed. | - |
 | [createCellView](/en/api/mvc/view#createcellview) | `(cell: Cell) => CellView \| null \| undefined` |  | Customizes the view of a cell. | - |
