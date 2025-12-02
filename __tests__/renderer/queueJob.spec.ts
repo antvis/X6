@@ -20,6 +20,15 @@ Object.defineProperty(window, 'cancelIdleCallback', {
   value: mockCancelIdleCallback,
 })
 
+const mockRequestAnimationFrame = vi.fn()
+const mockCancelAnimationFrame = vi.fn()
+Object.defineProperty(window, 'requestAnimationFrame', {
+  value: mockRequestAnimationFrame,
+})
+Object.defineProperty(window, 'cancelAnimationFrame', {
+  value: mockCancelAnimationFrame,
+})
+
 // Mock setTimeout and clearTimeout
 const mockSetTimeout = vi.fn()
 const mockClearTimeout = vi.fn()
@@ -100,7 +109,9 @@ describe('JobQueue', () => {
       jobQueue.queueFlush()
 
       expect(jobQueue['isFlushPending']).toBe(true)
-      if ('requestIdleCallback' in window) {
+      if ('requestAnimationFrame' in window) {
+        expect(mockRequestAnimationFrame).toHaveBeenCalled()
+      } else if ('requestIdleCallback' in window) {
         expect(mockRequestIdleCallback).toHaveBeenCalled()
       } else {
         expect(mockSetTimeout).toHaveBeenCalled()
@@ -113,6 +124,7 @@ describe('JobQueue', () => {
       jobQueue.queueFlush()
 
       expect(jobQueue['isFlushPending']).toBe(true)
+      expect(mockRequestAnimationFrame).not.toHaveBeenCalled()
       expect(mockRequestIdleCallback).not.toHaveBeenCalled()
       expect(mockSetTimeout).not.toHaveBeenCalled()
     })
@@ -123,6 +135,7 @@ describe('JobQueue', () => {
       jobQueue.queueFlush()
 
       expect(jobQueue['isFlushPending']).toBe(false)
+      expect(mockRequestAnimationFrame).not.toHaveBeenCalled()
       expect(mockRequestIdleCallback).not.toHaveBeenCalled()
       expect(mockSetTimeout).not.toHaveBeenCalled()
     })
