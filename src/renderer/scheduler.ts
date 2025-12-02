@@ -8,6 +8,7 @@ import {
 import { FLAG_INSERT, FLAG_REMOVE } from '../constants'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
+import type { VirtualOptions } from '../graph/options'
 import type { Cell, ModelEventArgs } from '../model'
 import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
@@ -185,10 +186,11 @@ export class Scheduler extends Disposable {
         if (!this.isUpdatable(view)) {
           // 卸载 DOM
           view.remove()
+          this.graph.trigger('view:unmounted', { view })
           // 切换到 WAITING 状态，等待重新进入区域时再插入
           viewItem.state = SchedulerViewState.WAITING
-          // 确保重新进入可视区域后会重新插入
-          viewItem.flag |= FLAG_INSERT
+          // 确保重新进入可视区域后会重新插入，并执行视图的 render 等动作，让 react 等节点能重新展示
+          viewItem.flag |= FLAG_INSERT | view.getBootstrapFlag()
         }
       }
     })
@@ -273,12 +275,13 @@ export class Scheduler extends Disposable {
       if (viewItem.state === SchedulerViewState.MOUNTED) {
         // 将已挂载但不在可视区域的视图从 DOM 中卸载
         view.remove()
+        this.graph.trigger('view:unmounted', { view })
         result = 0
       }
       // 标记为 WAITING 状态，以便在可视区域变化时重新渲染
       viewItem.state = SchedulerViewState.WAITING
       // 确保重新进入可视区域时能够重新插入到 DOM
-      viewItem.flag = flag | FLAG_INSERT
+      viewItem.flag = flag | FLAG_INSERT | view.getBootstrapFlag()
     }
 
     if (result) {
@@ -559,8 +562,7 @@ export class Scheduler extends Disposable {
       const intersects = this.renderArea
         ? this.renderArea.isIntersectWithRect(edge.getBBox())
         : true
-
-      if (this.graph.options.virtual) {
+      if (this.graph.virtualRender.isVirtualEnabled()) {
         return intersects
       }
 

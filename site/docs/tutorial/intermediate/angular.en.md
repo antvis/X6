@@ -20,7 +20,7 @@ redirect_from:
 We provide a standalone package `@antv/x6-angular-shape` for rendering Angular components/templates as nodes.
 
 :::warning{title=Note}
-Version compatibility: X6 1.x uses x6-angular-shape 1.x; X6 2.x and 3.x use x6-angular-shape 2.x.
+Version compatibility: X6 3.x must use x6-angular-shape 3.x.
 :::
 
 ### Component Rendering

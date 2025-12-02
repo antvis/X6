@@ -154,16 +154,16 @@ export class Collection extends Basecoat<CollectionEventArgs> {
       removed.push(cell)
       this.unreference(cell)
 
-      if (!options.dryrun) {
-        cell.remove()
-      }
-
       if (!options.silent) {
         this.trigger('removed', { cell, index, options })
 
         if (!options.dryrun) {
           cell.notify('removed', { cell, index, options })
         }
+      }
+
+      if (!options.dryrun) {
+        cell.remove()
       }
     }
 
@@ -216,8 +216,8 @@ export class Collection extends Basecoat<CollectionEventArgs> {
   }
 
   pop(options?: CollectionSetOptions) {
-    const cell = this.at(this.length - 1)!
-    return this.remove(cell, options)
+    const cell = this.at(this.length - 1)
+    return cell ? this.remove(cell, options) : null
   }
 
   unshift(cell: Cell, options?: CollectionSetOptions) {
@@ -225,8 +225,8 @@ export class Collection extends Basecoat<CollectionEventArgs> {
   }
 
   shift(options?: CollectionSetOptions) {
-    const cell = this.at(0)!
-    return this.remove(cell, options)
+    const cell = this.at(0)
+    return cell ? this.remove(cell, options) : null
   }
 
   get(cell?: string | number | Cell | null): Cell | null {
@@ -240,7 +240,7 @@ export class Collection extends Basecoat<CollectionEventArgs> {
   }
 
   has(cell: string | Cell): boolean {
-    return this.get(cell as any) != null
+    return this.get(cell) != null
   }
 
   at(index: number): Cell | null {
@@ -278,8 +278,10 @@ export class Collection extends Basecoat<CollectionEventArgs> {
   }
 
   clone() {
-    const constructor = this.constructor as any
-    return new constructor(this.cells.slice(), {
+    const Ctor = this.constructor as {
+      new (cells: Cell[], options: Options): Collection
+    }
+    return new Ctor(this.cells.slice(), {
       comparator: this.comparator,
     }) as Collection
   }
@@ -464,16 +466,6 @@ export interface NodeEventArgs {
 
   'node:batch:start': NodeEventCommonArgs & CellBaseEventArgs['batch:start']
   'node:batch:stop': NodeEventCommonArgs & CellBaseEventArgs['batch:stop']
-
-  // 'node:translate': NodeEventCommonArgs
-  // 'node:translating': NodeEventCommonArgs
-  // 'node:translated': NodeEventCommonArgs
-  // 'node:resize': NodeEventCommonArgs
-  // 'node:resizing': NodeEventCommonArgs
-  // 'node:resized': NodeEventCommonArgs
-  // 'node:rotate': NodeEventCommonArgs
-  // 'node:rotating': NodeEventCommonArgs
-  // 'node:rotated': NodeEventCommonArgs
 }
 
 export interface EdgeEventArgs {
