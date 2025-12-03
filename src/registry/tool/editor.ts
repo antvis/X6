@@ -46,7 +46,6 @@ export class CellEditor extends ToolItem<
     this.editor = createViewElement('div', false) as HTMLDivElement
     this.addClass(classNames, this.editor)
     this.editor.contentEditable = 'true'
-    this.editor.style.cursor = 'text'
     this.container.appendChild(this.editor)
   }
 
@@ -187,10 +186,6 @@ export class CellEditor extends ToolItem<
     if (this.editor && e.target !== this.editor) {
       this.updateCell()
     }
-  }
-
-  onMouseLeave() {
-    if (this.editor) this.updateCell()
   }
 
   onCellDblClick({ e }: { e: Dom.DoubleClickEvent }) {

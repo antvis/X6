@@ -1,9 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
+import { ensure } from '../../../src/common/css-loader'
 import { Point } from '../../../src/geometry/point'
 import { edgeToolRegistry, nodeToolRegistry } from '../../../src/registry/tool'
+import { content as coreCSS } from '../../../src/style/raw'
 
 describe('CellEditor', () => {
   it('NodeEditor creates editable div with text cursor on dblclick', () => {
+    ensure('core', coreCSS)
     const cell: any = {
       isNode: vi.fn().mockReturnValue(true),
       isEdge: vi.fn().mockReturnValue(false),
@@ -47,11 +50,12 @@ describe('CellEditor', () => {
     ) as HTMLDivElement
     expect(el).toBeTruthy()
     expect(el.contentEditable).toBe('true')
-    expect(el.style.cursor).toBe('text')
+    expect(getComputedStyle(el).cursor).toBe('text')
     expect(el.style.transform).toContain('translate(-50%, -50%)')
   })
 
   it('EdgeEditor creates editable div with text cursor on dblclick', () => {
+    ensure('core', coreCSS)
     const cell: any = {
       isNode: vi.fn().mockReturnValue(false),
       isEdge: vi.fn().mockReturnValue(true),
@@ -94,7 +98,7 @@ describe('CellEditor', () => {
     ) as HTMLDivElement
     expect(el).toBeTruthy()
     expect(el.contentEditable).toBe('true')
-    expect(el.style.cursor).toBe('text')
+    expect(getComputedStyle(el).cursor).toBe('text')
     expect(el.style.transform).toContain('translate(-50%, -50%)')
   })
   it('onRender attaches dblclick listener and onRemove detaches', () => {
@@ -258,7 +262,7 @@ describe('CellEditor', () => {
     })
   })
 
-  it('updateCell writes value and removes editor on mouseup and mouseleave', () => {
+  it('updateCell writes value and removes editor on mouseup and direct call', () => {
     const cell: any = {
       isNode: vi.fn().mockReturnValue(true),
       isEdge: vi.fn().mockReturnValue(false),
@@ -307,7 +311,7 @@ describe('CellEditor', () => {
       '.x6-cell-tool-editor',
     ) as HTMLDivElement
     el2.innerText = 'world\n'
-    ;(editor as any).onMouseLeave()
+    ;(editor as any).updateCell()
     expect(cell.attr).toHaveBeenCalledWith('text/text', 'world')
   })
 
