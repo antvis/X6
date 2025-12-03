@@ -16,7 +16,6 @@ export class CellEditor extends ToolItem<
     events: {
       mousedown: 'onMouseDown',
       touchstart: 'onMouseDown',
-      mouseleave: 'onMouseLeave',
     },
     documentEvents: {
       mouseup: 'onDocumentMouseUp',
@@ -47,6 +46,7 @@ export class CellEditor extends ToolItem<
     this.editor = createViewElement('div', false) as HTMLDivElement
     this.addClass(classNames, this.editor)
     this.editor.contentEditable = 'true'
+    this.editor.style.cursor = 'text'
     this.container.appendChild(this.editor)
   }
 
