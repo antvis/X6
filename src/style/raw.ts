@@ -158,6 +158,7 @@ export const content = `.x6-graph {
   outline: none;
   transform-origin: 0 0;
   -webkit-user-drag: none;
+  cursor: text;
 }
 .x6-edge-tool-editor {
   border: 1px solid #275fc5;
