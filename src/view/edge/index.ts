@@ -1828,7 +1828,12 @@ export class EdgeView<
           valid = false
         }
       } else {
-        valid = doValidate(allowLoop)
+        // valid = doValidate(allowLoop)
+        if (typeof allowLoop === 'function') {
+          if (!allowLoop.call(this.graph) && sourceView === targetView) {
+            valid = false
+          }
+        }
       }
     }
 
@@ -1838,7 +1843,12 @@ export class EdgeView<
           valid = false
         }
       } else {
-        valid = doValidate(allowPort)
+        // valid = doValidate(allowPort)
+        if (typeof allowPort === 'function') {
+          if (!allowPort.call(this.graph) && terminalMagnet) {
+            valid = false
+          }
+        }
       }
     }
 
@@ -1848,7 +1858,12 @@ export class EdgeView<
           valid = false
         }
       } else {
-        valid = doValidate(allowEdge)
+        // valid = doValidate(allowEdge)
+        if (typeof allowEdge === 'function') {
+          if (!allowEdge.call(this.graph) && EdgeView.isEdgeView(terminalView)) {
+            valid = false
+          }
+        }
       }
     }
 
@@ -1860,7 +1875,12 @@ export class EdgeView<
           valid = false
         }
       } else {
-        valid = doValidate(allowNode)
+        // valid = doValidate(allowNode)
+        if (typeof allowNode === 'function') {
+          if (!allowNode.call(this.graph) && NodeView.isNodeView(terminalView)) {
+            valid = false
+          }
+        }
       }
     }
 
