@@ -1830,7 +1830,7 @@ export class EdgeView<
       } else {
         // valid = doValidate(allowLoop)
         if (typeof allowLoop === 'function') {
-          if (!allowLoop.call(this.graph) && sourceView === targetView) {
+          if (sourceView === targetView && !doValidate(allowLoop)) {
             valid = false
           }
         }
