@@ -1,145 +1,188 @@
-import { EdgeView, Graph, ToolsView } from '@antv/x6'
-import { Tooltip } from 'antd'
+import { Edge, Graph, Shape } from '@antv/x6'
 import React from 'react'
-import type { Root } from 'react-dom/client'
 import { createRoot } from 'react-dom/client'
+import type { Root } from 'react-dom/client'
+import { Tooltip } from 'antd'
 
-class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
-  private knob: HTMLDivElement
-  private root: Root
+// 2.x的使用可以参考2.x文档： https://x6-v2.antv.vision/examples/edge/tool/#tooltip
 
-  render() {
-    if (!this.knob) {
-      this.knob = ToolsView.createElement('div', false) as HTMLDivElement
-      this.knob.style.position = 'absolute'
-      this.container.appendChild(this.knob)
-    }
-    return this
-  }
-
-  private toggleTooltip(visible: boolean) {
-    if (this.knob) {
-      this.root && this.root.unmount()
-      if (visible) {
-        this.root = createRoot(this.knob)
-        this.root.render(
-          <Tooltip
-            title={this.options.tooltip}
-            open={true}
-            arrow={false}
-            overlayStyle={{ padding: 0 }}
-            destroyTooltipOnHide
-          >
-            <div />
-          </Tooltip>,
-        )
-      }
-    }
-  }
-
-  private onMosueEnter({ e }: { e: MouseEvent }) {
-    this.updatePosition(e)
-    this.toggleTooltip(true)
-  }
-
-  private onMouseLeave() {
-    this.updatePosition()
-    this.toggleTooltip(false)
-  }
-
-  private onMouseMove() {
-    this.updatePosition()
-    this.toggleTooltip(false)
-  }
-
-  delegateEvents() {
-    this.cellView.on('cell:mouseenter', this.onMosueEnter, this)
-    this.cellView.on('cell:mouseleave', this.onMouseLeave, this)
-    this.cellView.on('cell:mousemove', this.onMouseMove, this)
-    return super.delegateEvents()
-  }
-
-  private updatePosition(e?: MouseEvent) {
-    const style = this.knob.style
-    if (e) {
-      const p = this.graph.clientToGraph(e.clientX, e.clientY)
-      style.display = 'block'
-      style.left = `${p.x}px`
-      style.top = `${p.y}px`
-    } else {
-      style.display = 'none'
-      style.left = '-1000px'
-      style.top = '-1000px'
-    }
-  }
-
-  protected onRemove() {
-    this.toggleTooltip(false)
-    this.cellView.off('cell:mouseenter', this.onMosueEnter, this)
-    this.cellView.off('cell:mouseleave', this.onMouseLeave, this)
-    this.cellView.off('cell:mousemove', this.onMouseMove, this)
-  }
-}
-
-TooltipTool.config({
-  tagName: 'div',
-  isSVGElement: false,
+Shape.Rect.config({
+  attrs: {
+    body: {
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+      strokeWidth: 1,
+    },
+  },
+  ports: {
+    groups: {
+      in: {
+        position: { name: 'top' },
+      },
+      out: {
+        position: { name: 'bottom' },
+      },
+    },
+  },
+  portMarkup: [
+    {
+      tagName: 'circle',
+      selector: 'portBody',
+      attrs: {
+        r: 5,
+        magnet: true,
+        stroke: '#31d0c6',
+        fill: '#fff',
+        strokeWidth: 2,
+      },
+    },
+  ],
 })
 
-export interface TooltipToolOptions extends ToolsView.ToolItem.Options {
-  tooltip?: string
+const magnetAvailabilityHighlighter = {
+  name: 'stroke',
+  args: {
+    padding: 3,
+    attrs: {
+      strokeWidth: 3,
+      stroke: '#52c41a',
+    },
+  },
 }
-
-Graph.registerEdgeTool('tooltip', TooltipTool, true)
 
 const graph = new Graph({
   container: document.getElementById('container'),
   grid: true,
+  highlighting: {
+    magnetAvailable: magnetAvailabilityHighlighter,
+  },
+  connecting: {
+    snap: true,
+    allowBlank: false,
+    allowLoop: false,
+    allowNode: false,
+    highlight: true,
+    validateMagnet({ magnet }) {
+      return magnet.getAttribute('port-group') !== 'in'
+    },
+
+    validateConnection({ sourceMagnet, targetMagnet }) {
+      // 只能从输出连接桩创建连接
+      if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'in') {
+        return false
+      }
+
+      // 只能连接到输入连接桩
+      if (!targetMagnet || targetMagnet.getAttribute('port-group') !== 'in') {
+        return false
+      }
+
+      return true
+    },
+  },
 })
 
 const source = graph.addNode({
-  x: 180,
-  y: 60,
+  x: 40,
+  y: 40,
   width: 100,
   height: 40,
-  attrs: {
-    body: {
-      stroke: '#5F95FF',
-      fill: '#EFF4FF',
-      strokeWidth: 1,
-    },
-  },
+  ports: [{ id: 'out-2', group: 'out' }],
 })
 
 const target = graph.addNode({
-  x: 320,
-  y: 250,
+  x: 140,
+  y: 240,
   width: 100,
   height: 40,
-  attrs: {
-    body: {
-      stroke: '#5F95FF',
-      fill: '#EFF4FF',
-      strokeWidth: 1,
-    },
-  },
+  ports: [{ id: 'in-1', group: 'in' }],
 })
 
 graph.addEdge({
-  source,
-  target,
-  attrs: {
-    line: {
-      stroke: '#A2B1C3',
-      strokeWidth: 2,
-    },
-  },
-  tools: [
-    {
-      name: 'tooltip',
-      args: {
-        tooltip: 'Tooltip Content',
+  source: { cell: source.id, port: 'out-2' },
+  target: { cell: target.id, port: 'in-1' },
+})
+
+let tooltipRoot: Root | null = null
+let tooltipContainer: HTMLDivElement | null = null
+let currentEdgeId: string | null = null
+
+// 显示 Tooltip
+function showTooltip(cell: Edge, x: number, y: number) {
+  // 如果是同一条边，只更新位置
+  if (currentEdgeId === cell.id && tooltipContainer) {
+    tooltipContainer.style.left = `${x + 6}px`
+    tooltipContainer.style.top = `${y - 6}px`
+    return
+  }
+
+  // 隐藏之前的 tooltip
+  hideTooltip()
+
+  currentEdgeId = cell.id
+
+  // 创建 tooltip 容器
+  tooltipContainer = document.createElement('div')
+  tooltipContainer.style.cssText = `
+    position: fixed;
+    left: ${x + 6}px;
+    top: ${y - 6}px;
+    z-index: 9999;
+    pointer-events: none;
+  `
+  document.body.appendChild(tooltipContainer)
+
+  // 获取边的信息
+  const sourceNode = graph.getCellById(cell.getSourceCellId())
+  const targetNode = graph.getCellById(cell.getTargetCellId())
+
+  // Tooltip 内容
+  const tooltipContent = (
+    <div>
+      <div>
+        <strong>边信息</strong>
+      </div>
+      <div>ID: {cell.id}</div>
+      <div>源节点: {sourceNode?.id || 'Unknown'}</div>
+      <div>目标节点: {targetNode?.id || 'Unknown'}</div>
+    </div>
+  )
+
+  // 渲染 Tooltip
+  tooltipRoot = createRoot(tooltipContainer)
+  tooltipRoot.render(
+    React.createElement(
+      Tooltip,
+      {
+        open: true,
+        title: tooltipContent,
+        placement: 'right',
       },
-    },
-  ],
+      React.createElement('span', {
+        style: { display: 'inline-block', width: 0, height: 0 },
+      }),
+    ),
+  )
+}
+
+// 隐藏 Tooltip
+function hideTooltip() {
+  if (tooltipRoot) {
+    tooltipRoot.unmount()
+    tooltipRoot = null
+  }
+  if (tooltipContainer && tooltipContainer.parentNode) {
+    tooltipContainer.parentNode.removeChild(tooltipContainer)
+    tooltipContainer = null
+  }
+  currentEdgeId = null
+}
+
+// 监听边的 hover 事件
+graph.on('edge:mouseenter', ({ cell, e }: { cell: Edge; e: MouseEvent }) => {
+  showTooltip(cell, e.clientX, e.clientY)
+})
+
+graph.on('edge:mouseleave', () => {
+  hideTooltip()
 })
