@@ -4,12 +4,6 @@ import { coverageConfigDefaults, defineConfig } from 'vitest/config'
 const enableCoverage = process.argv.includes('--coverage')
 
 export default defineConfig({
-  resolve: {
-    // 配置路径别名
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   test: {
     environment: 'jsdom',
     globals: true,

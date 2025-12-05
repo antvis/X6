@@ -2,7 +2,7 @@ import { type RectangleLike } from './rectangle'
 import { round, random, snapToGrid, containsPoint } from './util'
 import * as Angle from './angle'
 import { Geometry } from './geometry'
-import type { PointLike, PointData, PointBearing, PointOptions } from '@/types'
+import type { PointLike, PointData, PointBearing, PointOptions } from '../types'
 
 export { PointLike, PointData, PointBearing, PointOptions }
 export class Point extends Geometry implements PointLike {

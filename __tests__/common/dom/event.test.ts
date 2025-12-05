@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import sinon from 'sinon'
-import { Dom } from '@/common/dom'
-import * as Core from '@/common/dom/event/core'
+import { describe, expect, it } from 'vitest'
+import { Dom } from '../../../src/common/dom'
+import * as Core from '../../../src/common/dom/event/core'
 
 describe('EventDom', () => {
   describe('events', () => {
@@ -517,7 +517,7 @@ describe('EventDom', () => {
         const lk = new EventDom(a).appendTo(document.body)
 
         await new Promise<void>((resolve) => {
-          lk.on('click', function (e: any) {
+          lk.on('click', (e: any) => {
             expect('detail' in e).toBeTruthy()
             expect('cancelable' in e).toBeTruthy()
             expect('bubbles' in e).toBeTruthy()
