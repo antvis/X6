@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Color } from '@antv/x6'
+import { Graph, Color, CellView } from '@antv/x6'
 import './index.less'
 
 Graph.registerNodeTool(
@@ -35,7 +35,7 @@ Graph.registerNodeTool(
         },
       },
     ],
-    onClick({ view }: any) {
+    onClick({ view }: { view: CellView }) {
       const node = view.cell
       const fill = Color.randomHex()
       node.attr({
