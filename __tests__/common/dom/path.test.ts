@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { Vector } from '@/common/vector'
-import { Dom } from '@/common/dom'
+import { Dom } from '../../../src/common/dom'
+import { Vector } from '../../../src/common/vector'
 
 describe('Dom', () => {
   describe('path', () => {

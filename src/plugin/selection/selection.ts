@@ -2,26 +2,27 @@ import {
   Dom,
   disposable,
   FunctionExt,
+  isModifierKeyMatch,
   type KeyValue,
   type ModifierKey,
 } from '../../common'
 import {
   type Point,
-  Rectangle,
   type PointLike,
+  Rectangle,
   type RectangleLike,
 } from '../../geometry'
 import type { Graph } from '../../graph'
-import { Cell, Collection, type CollectionEventArgs } from '../../model'
 import type {
-  SetOptions,
-  Model,
-  Edge,
-  Node,
+  CollectionAddOptions,
   CollectionRemoveOptions,
   CollectionSetOptions,
-  CollectionAddOptions,
+  Edge,
+  Model,
+  Node,
+  SetOptions,
 } from '../../model'
+import { Cell, Collection, type CollectionEventArgs } from '../../model'
 import { type CellView, View } from '../../view'
 import type { Scroller } from '../scroller'
 
@@ -34,6 +35,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected boxesUpdated: boolean
   protected updateThrottleTimer: ReturnType<typeof setTimeout> | null = null
   protected isDragging: boolean = false
+  protected batchUpdating: boolean = false
   // 逐帧批处理拖拽位移，降低 translate 重绘频率
   protected dragRafId: number | null = null
   // 合并缩放/平移下的选择框刷新到每帧一次
@@ -96,6 +98,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       {
         [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
         [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+        [`mousedown .${this.prefixClassName(classNames.inner)}`]:
+          'onSelectionContainerMouseDown',
+        [`touchstart .${this.prefixClassName(classNames.inner)}`]:
+          'onSelectionContainerMouseDown',
       },
       true,
     )
@@ -235,12 +241,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   reset(cells?: Cell | Cell[], options: SelectionImplSetOptions = {}) {
     if (cells) {
-      if (options.batch) {
-        const filterCells = this.filter(Array.isArray(cells) ? cells : [cells])
-        this.collection.reset(filterCells, { ...options, ui: true })
-        return this
-      }
-
+      this.batchUpdating = !!options.batch
       const prev = this.cells
       const next = this.filter(Array.isArray(cells) ? cells : [cells])
       const prevMap: KeyValue<Cell> = {}
@@ -273,9 +274,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         this.select(added, { ...options, ui: true })
       }
 
-      if (removed.length === 0 && added.length === 0) {
-        this.updateContainer()
-      }
+      this.updateContainer()
+      this.batchUpdating = false
 
       return this
     }
@@ -285,11 +285,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   clean(options: SelectionImplSetOptions = {}) {
     if (this.length) {
-      if (options.batch === false) {
-        this.unselect(this.cells, options)
-      } else {
-        this.collection.reset([], { ...options, ui: true })
-      }
+      this.unselect(this.cells, options)
     }
     // 清理容器 transform 与位移累计
     this.containerOffsetX = 0
@@ -440,21 +436,65 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: Dom.MouseDownEvent) {
-    // 避免触发鼠标命中节点自身的拖拽逻辑
+    this.handleSelectionMouseDown(evt, true)
+  }
+
+  protected onSelectionContainerMouseDown(evt: Dom.MouseDownEvent) {
+    this.handleSelectionMouseDown(evt, false)
+  }
+
+  protected handleSelectionMouseDown(evt: Dom.MouseDownEvent, isBox: boolean) {
     evt.stopPropagation()
     evt.preventDefault?.()
 
     const e = this.normalizeEvent(evt)
+    const client = this.graph.snapToGrid(e.clientX, e.clientY)
+
+    // 容器内的多选切换：按下修饰键时，不拖拽，直接切换选中状态
+    if (
+      !isBox &&
+      isModifierKeyMatch(e, this.options.multipleSelectionModifiers)
+    ) {
+      const viewsUnderPoint = this.graph.findViewsFromPoint(client.x, client.y)
+      const nodeView = viewsUnderPoint.find((v) => v.isNodeView())
+      if (nodeView) {
+        const cell = nodeView.cell
+        if (this.isSelected(cell)) {
+          this.unselect(cell, { ui: true })
+        } else {
+          if (this.options.multiple === false) {
+            this.reset(cell, { ui: true })
+          } else {
+            this.select(cell, { ui: true })
+          }
+        }
+      }
+      return
+    }
 
     if (this.options.movable) {
       this.startTranslating(e)
     }
 
-    const activeView = this.getCellViewFromElem(e.target)
+    let activeView = isBox ? this.getCellViewFromElem(e.target) : null
+    if (!activeView) {
+      const viewsUnderPoint = this.graph
+        .findViewsFromPoint(client.x, client.y)
+        .filter((view) => this.isSelected(view.cell))
+      activeView = viewsUnderPoint[0] || null
+      if (!activeView) {
+        const firstSelected = this.collection.first()
+        if (firstSelected) {
+          activeView = this.graph.renderer.findViewByCell(firstSelected)
+        }
+      }
+    }
+
     if (activeView) {
       this.setEventData<SelectionBoxEventData>(e, { activeView })
-      const client = this.graph.snapToGrid(e.clientX, e.clientY)
-      this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      if (isBox) {
+        this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+      }
       this.delegateDocumentEvents(documentEvents, e.data)
     }
   }
@@ -920,7 +960,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     Dom.css(this.selectionContainer, {
       position: 'absolute',
-      pointerEvents: 'none',
+      pointerEvents: this.options.movable ? 'auto' : 'none',
+      cursor: this.options.movable ? 'move' : 'default',
       left: origin.x,
       top: origin.y,
       width: corner.x - origin.x,
@@ -1075,7 +1116,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
   protected onCellRemoved({ cell }: CollectionEventArgs['removed']) {
     this.destroySelectionBox(cell)
-    this.updateContainer()
+    if (!this.batchUpdating) this.updateContainer()
   }
 
   protected onReseted({ previous, current }: CollectionEventArgs['reseted']) {
@@ -1093,7 +1134,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     // manually listen to cell's remove event.
     this.listenCellRemoveEvent(cell)
     this.createSelectionBox(cell)
-    this.updateContainer()
+    if (!this.batchUpdating) this.updateContainer()
   }
 
   protected listenCellRemoveEvent(cell: Cell) {

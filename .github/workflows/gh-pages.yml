@@ -30,6 +30,10 @@ jobs:
           npm i pnpm@latest -g
           pnpm install
 
+      - name: 🚀　Build Core library @antv/x6
+        run: |
+          pnpm run build
+
       - name: 🚀　Build site
         run: |
           cd ./site && pnpm run build
@@ -37,14 +41,14 @@ jobs:
 
       - name: 👩‍⚕️　Verify build output
         run: |
-          if [ ! -d "dist" ]; then
-            echo "Build output directory not found!"
+          if [ ! -d "site/dist" ]; then
+            echo "Build output directory (site/dist) not found!"
             exit 1
           fi
 
       - name: 🗂　Commit changes
         run: |
-          cd dist
+          cd site/dist
           git init
           git config --local user.name antv
           git config --local user.email antv@antfin.com
@@ -54,6 +58,6 @@ jobs:
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
-          directory: dist
+          directory: site/dist
           branch: site
           force: true

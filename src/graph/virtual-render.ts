@@ -1,5 +1,8 @@
 import { Dom, disposable, FunctionExt } from '../common'
 import { Base } from './base'
+import type { VirtualOptions } from './options'
+
+const DEFAULT_MARGIN = 120
 
 export class VirtualRenderManager extends Base {
   private scrollerRef?: any
@@ -81,24 +84,51 @@ export class VirtualRenderManager extends Base {
     }
   }
 
+  private setVirtualEnabled(enabled: boolean) {
+    const virtualOptions = this.options.virtual
+    if (typeof virtualOptions === 'object') {
+      const tempVirtualOptions = virtualOptions as VirtualOptions
+      this.options.virtual = { ...tempVirtualOptions, enabled }
+    } else {
+      this.options.virtual = enabled
+    }
+  }
+
   enableVirtualRender() {
-    this.options.virtual = true
+    this.setVirtualEnabled(true)
     this.resetRenderArea()
   }
 
   disableVirtualRender() {
-    this.options.virtual = false
+    this.setVirtualEnabled(false)
     this.graph.renderer.setRenderArea(undefined)
   }
 
+  public isVirtualEnabled(): boolean {
+    const virtualOptions = this.options.virtual
+    return virtualOptions != null && typeof virtualOptions === 'object'
+      ? (virtualOptions as VirtualOptions).enabled !== false
+      : !!virtualOptions
+  }
+
+  private getVirtualMargin(): number {
+    const virtualOptions = this.options.virtual
+    if (typeof virtualOptions === 'object') {
+      const margin = (virtualOptions as VirtualOptions).margin
+      return typeof margin === 'number' ? margin : DEFAULT_MARGIN
+    }
+    return DEFAULT_MARGIN
+  }
+
   resetRenderArea() {
-    if (this.options.virtual) {
+    const enabled = this.isVirtualEnabled()
+    if (enabled) {
       const renderArea = this.graph.getGraphArea()
       if (renderArea) {
-        // 在开启虚拟渲染时，为可视区域增加固定缓冲边距
-        const VIRTUAL_RENDER_MARGIN = 120
+        // 开启虚拟渲染时，为可视区域添加缓冲边距
+        const margin = this.getVirtualMargin()
         const eff = renderArea.clone()
-        eff.inflate(VIRTUAL_RENDER_MARGIN, VIRTUAL_RENDER_MARGIN)
+        eff.inflate(margin, margin)
         this.graph.renderer.setRenderArea(eff)
         return
       }

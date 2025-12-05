@@ -1,293 +1,63 @@
-# [2.19.0](https://github.com/antvis/x6/compare/v2.0.6-beta.26...v2.19.0) (2025-10-20)
+# @antv/x6 3.1.0 (2025-12-01)
 
+## 功能增强
 
-### Bug Fixes
+- 虚拟渲染配置扩展：`virtual` 支持对象配置 `VirtualOptions`，可通过 `enabled` 与 `margin` 精细控制虚拟渲染开关与缓冲边距。
 
-*  `exportPNG` not display image markup ([#4672](https://github.com/antvis/x6/issues/4672)) ([3bd73a2](https://github.com/antvis/x6/commit/3bd73a268bf69a401bb52d76f4895df3364a3c2e))
-*  If the starting or ending point is the same as the intersection… ([#4279](https://github.com/antvis/x6/issues/4279)) ([0bbff8f](https://github.com/antvis/x6/commit/0bbff8fcc77555cc2e783d326f1181e652669863))
-* :bug: char ghosting when edit text ([#2560](https://github.com/antvis/x6/issues/2560)) ([#3043](https://github.com/antvis/x6/issues/3043)) ([15284e7](https://github.com/antvis/x6/commit/15284e778a09f4f2e5a8f777330744b0cfe88e9e))
-* "pnpm run build:watch" 在windows下无法正常运行 ([#3888](https://github.com/antvis/x6/issues/3888)) ([9823c7e](https://github.com/antvis/x6/commit/9823c7e7ba96a94f349a04539d66251c8806009b))
-* **$stencil:** compact mode Cannot add odd nodes ([#3647](https://github.com/antvis/x6/issues/3647)) ([9684766](https://github.com/antvis/x6/commit/9684766150f354b7bb309e72c6fd02f3e70180ce)), closes [#3535](https://github.com/antvis/x6/issues/3535)
-* 浮点数精度丢失导致画布缩放卡死 ([#4356](https://github.com/antvis/x6/issues/4356)) ([78179da](https://github.com/antvis/x6/commit/78179da0cdd2951efb4fef8840d42ea42d0dba13))
-* 修复 Angular 组件内部无法使用外部服务的问题 ([#4267](https://github.com/antvis/x6/issues/4267)) ([3bb9bee](https://github.com/antvis/x6/commit/3bb9bee3fa9de76236522a44d0d1ab63011af219))
-* 修复 Angular Component 节点被移除时没有触发销毁的生命周期 ([#3826](https://github.com/antvis/x6/issues/3826)) ([8cf1ed4](https://github.com/antvis/x6/commit/8cf1ed4841e9be25b6c9b6ed760709c7d521a221))
-* 修复示例中react组件渲染报错的问题 ([#4673](https://github.com/antvis/x6/issues/4673)) ([7d434e6](https://github.com/antvis/x6/commit/7d434e6f960fdd2eb2f833a9c599edb0db639cb5))
-* 修正画布配置 onEdgeLabelRendered 类型使用问题并且完善文档说明 ([#4691](https://github.com/antvis/x6/issues/4691)) ([3eda631](https://github.com/antvis/x6/commit/3eda631b4c5a7118177275f52ab63845c1223985))
-* add createView options ([#3075](https://github.com/antvis/x6/issues/3075)) ([96010e3](https://github.com/antvis/x6/commit/96010e3b52caa59e5ee9d110bac19bff44bade7b))
-* add defense for view in transform plugin ([#3092](https://github.com/antvis/x6/issues/3092)) ([fb8098c](https://github.com/antvis/x6/commit/fb8098c1c06440dd69f4e93881fd36f7e6de2a56))
-* add dependencies for x6-devtools ([#3381](https://github.com/antvis/x6/issues/3381)) ([37515c4](https://github.com/antvis/x6/commit/37515c45c8517f13f5d28431738beff5c814819f))
-* add excludeShapes options for manhattan router ([#3334](https://github.com/antvis/x6/issues/3334)) ([c76a23b](https://github.com/antvis/x6/commit/c76a23b53425f5cbb7f767c0fe5510f3f81c417c))
-* add execute permission ([5cd3809](https://github.com/antvis/x6/commit/5cd3809859b35fefb43c0d06eb63f20a66928211))
-* add getGraph provide ([#3072](https://github.com/antvis/x6/issues/3072)) ([a98e97d](https://github.com/antvis/x6/commit/a98e97db117d4bfc4b65f13c9713559819a893b8))
-* add judgment for edge view ([#3282](https://github.com/antvis/x6/issues/3282)) ([946582c](https://github.com/antvis/x6/commit/946582c2425193dbf45a7aebb9b5a72a5f81b21c))
-* add key for portal to avoid rerender ([#4183](https://github.com/antvis/x6/issues/4183)) ([5ebb6d3](https://github.com/antvis/x6/commit/5ebb6d32f987ff56d6ebc0416a39d44ddd7c7ef5))
-* add missing script for building style ([e683155](https://github.com/antvis/x6/commit/e68315528a202cbc5a9ad256d168943e001d7116))
-* add padding options for position api ([#3225](https://github.com/antvis/x6/issues/3225)) ([8fada57](https://github.com/antvis/x6/commit/8fada570e44b80f066a760451fd4aca849bd61d0))
-* add tests for geometry ([#4728](https://github.com/antvis/x6/issues/4728)) ([e1d6ed0](https://github.com/antvis/x6/commit/e1d6ed04f3b11a549d1acc137acf34ef74bf138c))
-* add textLength & lengthAdjust to CASE_SENSITIVE_ATTR ([#3281](https://github.com/antvis/x6/issues/3281)) ([76fb1ac](https://github.com/antvis/x6/commit/76fb1acf74b0f1c308f7c824d02c12244b7ac8f3))
-* add timeout to wait target node is connected ([#3392](https://github.com/antvis/x6/issues/3392)) ([adc06ad](https://github.com/antvis/x6/commit/adc06ada961c511dc651de36b6bfbfbe34ae55de))
-* arrowhead not get options bug ([#3065](https://github.com/antvis/x6/issues/3065)) ([3b668fe](https://github.com/antvis/x6/commit/3b668feb4eac47994f52d0cc977d22a8a2c06acd))
-* avoid access document or window in server side ([#4101](https://github.com/antvis/x6/issues/4101)) ([31be706](https://github.com/antvis/x6/commit/31be70633511dd1839eb042bf90687ce62db9e01))
-* bind dragstart after add group ([#4131](https://github.com/antvis/x6/issues/4131)) ([8030621](https://github.com/antvis/x6/commit/80306218c80846d2fc53bba0e4446b10398e4348))
-* bind minimap plugin to graph without scroller ([#4167](https://github.com/antvis/x6/issues/4167)) ([f6475ac](https://github.com/antvis/x6/commit/f6475ac75fe292bb1a7f8f599b04033dd19b9f14))
-* broken file ([d6df2d5](https://github.com/antvis/x6/commit/d6df2d59811dc18791208af36b452e11e6391f3b))
-* bump rule ([c9559f2](https://github.com/antvis/x6/commit/c9559f2f30790857ff066be7d0ce99ed8933e20c))
-* cache auto generated style file ([ffbaec3](https://github.com/antvis/x6/commit/ffbaec396c7253c454c08dd8986f728f71bad69f))
-* cancel debounce update for scroller plugin ([#3027](https://github.com/antvis/x6/issues/3027)) ([abeb009](https://github.com/antvis/x6/commit/abeb009d0a6127d6452eeee9ebc7ebe833c59c95))
-* cannot be invoked without new ([#3296](https://github.com/antvis/x6/issues/3296)) ([7656b38](https://github.com/antvis/x6/commit/7656b387351a924483acfeb6dfbe14aeb3bdea4c))
-* cannot read properties of undefined when unmount vue component ([#3024](https://github.com/antvis/x6/issues/3024)) ([187e318](https://github.com/antvis/x6/commit/187e318aee8622591781d3b8fc45d72a4d54a989))
-* Cannot use "this" here: [#2824](https://github.com/antvis/x6/issues/2824) ([#2855](https://github.com/antvis/x6/issues/2855)) ([10347d0](https://github.com/antvis/x6/commit/10347d069b23e4cfaf156138a39e2f5f996f0e29))
-* change dragging container options ([#3139](https://github.com/antvis/x6/issues/3139)) ([7b091f3](https://github.com/antvis/x6/commit/7b091f35dee147c5e7bf97577e14e11ceb7e8e3d))
-* change update prioriy in render ([#3740](https://github.com/antvis/x6/issues/3740)) ([ce15fba](https://github.com/antvis/x6/commit/ce15fbae18788ae2fbdb005821deb1b70a38dd7f))
-* check labelNode existed before change postion ([#3737](https://github.com/antvis/x6/issues/3737)) ([90324fc](https://github.com/antvis/x6/commit/90324fca58b8cc8fa096ab4dc317a98fd9fa678e))
-* clear old background when background enabled in background ([#3192](https://github.com/antvis/x6/issues/3192)) ([17b36e2](https://github.com/antvis/x6/commit/17b36e21c7058f0d6ea271fd05130cc80b068492))
-* codecov ([7a7f9b7](https://github.com/antvis/x6/commit/7a7f9b76579b620609276693aa387a92d507a853))
-* commit message E2BIG ([a2c5f9e](https://github.com/antvis/x6/commit/a2c5f9e943ccf1d7ae478af30cb5022dd72e2e99))
-* commit message for release ([e05aa85](https://github.com/antvis/x6/commit/e05aa85948226a2f4dec01ea526b7fa682e8807a))
-* confirm viewitem exist ([#3357](https://github.com/antvis/x6/issues/3357)) ([8b1f661](https://github.com/antvis/x6/commit/8b1f661585c161067c56cc8697c41ad3d8615159))
-* consider transform when calc bbox ([#3770](https://github.com/antvis/x6/issues/3770)) ([8ecfc86](https://github.com/antvis/x6/commit/8ecfc862024d6bc82adf88db4281b9cbed3c701b))
-* correct boundary tool position when setting local to true ([#4820](https://github.com/antvis/x6/issues/4820)) ([7afea2c](https://github.com/antvis/x6/commit/7afea2c9781dbd9b9ed4379f3986fb8b9921db75))
-* correct button tool  position when setting local to true ([#4817](https://github.com/antvis/x6/issues/4817)) ([3f7b72b](https://github.com/antvis/x6/commit/3f7b72bafb2eb120f936b108f534eea2f0895006))
-* create empty 'releasing' file for pr ([9f0f782](https://github.com/antvis/x6/commit/9f0f7824c9658dd1e5aaecc2d61eb01287908d77))
-* debounce update to improve performance ([#3061](https://github.com/antvis/x6/issues/3061)) ([9e37ea9](https://github.com/antvis/x6/commit/9e37ea9f7892c57e62fc3b6568b2ebcee0c226c3))
-* deep clone instead of shallow clone ([#2924](https://github.com/antvis/x6/issues/2924)) ([75f4297](https://github.com/antvis/x6/commit/75f42978cb0ed4c9e7c7ac141ffa29603cb27596))
-* delete return selection ([#4026](https://github.com/antvis/x6/issues/4026)) ([0178e48](https://github.com/antvis/x6/commit/0178e486aaa7b90cec605de47ff60397e193fa43))
-* deps version ([2aff4b4](https://github.com/antvis/x6/commit/2aff4b4cd0c23660066a43e182524d4515948b0a))
-* destroy custom label before render ([#4146](https://github.com/antvis/x6/issues/4146)) ([281209a](https://github.com/antvis/x6/commit/281209ac5623490973e9d9b331a9b9e017c83bf2))
-* do not exec gh-pages deploy on pull_request ([#4687](https://github.com/antvis/x6/issues/4687)) ([bdfdadd](https://github.com/antvis/x6/commit/bdfdaddad0fc4546ffdd91bdbf497adefd488df2))
-* doc incorrect text ([#3862](https://github.com/antvis/x6/issues/3862)) ([b5cc1dc](https://github.com/antvis/x6/commit/b5cc1dcd11c789d052a71b4a42227606d0502113))
-* doc path in .dumirc.ts ([#4699](https://github.com/antvis/x6/issues/4699)) ([440781e](https://github.com/antvis/x6/commit/440781e41b17c5580b829af64a7fd80dcd31b5d0))
-* dom matrix tests ([#4721](https://github.com/antvis/x6/issues/4721)) ([ef0089c](https://github.com/antvis/x6/commit/ef0089cc03e86ec26be0e38d08375ab91aea9a41))
-* dom.data support custom object ([#2954](https://github.com/antvis/x6/issues/2954)) ([c350371](https://github.com/antvis/x6/commit/c350371d3cc61056d030fd1c94d1f106ea405ec5))
-* don't dispose graph view ([#4023](https://github.com/antvis/x6/issues/4023)) ([3141593](https://github.com/antvis/x6/commit/3141593d6ada7a98ffd133b09248258249765078))
-* don't hide when click on color picker ([#3172](https://github.com/antvis/x6/issues/3172)) ([cae8625](https://github.com/antvis/x6/commit/cae8625feb20fd93cc8002fa6ed00d345d3cf33c))
-* donot empty text when only has title elem ([#3248](https://github.com/antvis/x6/issues/3248)) ([9ccda3e](https://github.com/antvis/x6/commit/9ccda3e96ffcae09b360cb5005e74cf10b20ea73))
-* edge does not display the label after setting the label and text… ([#3896](https://github.com/antvis/x6/issues/3896)) ([09a2c14](https://github.com/antvis/x6/commit/09a2c14339641941f403ec53ae51cc39b53b0132)), closes [#3892](https://github.com/antvis/x6/issues/3892)
-* edge editor text invalid when configuring the arrowhead ([#4801](https://github.com/antvis/x6/issues/4801)) ([863d569](https://github.com/antvis/x6/commit/863d5695242a223b61b6bca4a5e4e2e9cee1cc26))
-* edge rendering correct label attrs ([#4177](https://github.com/antvis/x6/issues/4177)) ([e399da4](https://github.com/antvis/x6/commit/e399da428951f426a1458c208a6540f883283a6a))
-* ensure the container in html view ([#3196](https://github.com/antvis/x6/issues/3196)) ([3a59703](https://github.com/antvis/x6/commit/3a59703f1c2da3ac8c8471eb9b864ac4cf468f97))
-* error -> ETXTBSY: text file is busy ([814e0dd](https://github.com/antvis/x6/commit/814e0dd137ab766b3f80e737bef9485d40a315f4))
-* export 插件导出自定义组件样式失效 ([#4814](https://github.com/antvis/x6/issues/4814)) ([f47eceb](https://github.com/antvis/x6/commit/f47eceb47fcf0dab93deb729458ab5fa5f3079d8))
-* export snap methods from snapline ([#2904](https://github.com/antvis/x6/issues/2904)) ([826ccdd](https://github.com/antvis/x6/commit/826ccdd9a033486ad5b90d666340e46f6c266af7))
-* export toJpeg methods in export plugin ([#2974](https://github.com/antvis/x6/issues/2974)) ([f920d5a](https://github.com/antvis/x6/commit/f920d5a4ee4626fc3dbf252246a49cefe74a84e9))
-* extra offset may occur when reverse selecting in Selection plugin ([#4812](https://github.com/antvis/x6/issues/4812)) ([c4b382c](https://github.com/antvis/x6/commit/c4b382cbe7d111bdef2c308443e738ed6e3db94b))
-* fix ci error ([1da0842](https://github.com/antvis/x6/commit/1da0842857064fab17cf8c8083f46f3227c26b07))
-* fix editor-tool for edge ([#3308](https://github.com/antvis/x6/issues/3308)) ([a3aa2a0](https://github.com/antvis/x6/commit/a3aa2a0da27d0428cb078b5799e0348d3d4bc27d))
-* fix error usage of parseInt ([#3455](https://github.com/antvis/x6/issues/3455)) ([506ab14](https://github.com/antvis/x6/commit/506ab145959e6a240f385e23ec950981129de281))
-* fix index error for priorityQueue ([#3179](https://github.com/antvis/x6/issues/3179)) ([d64150b](https://github.com/antvis/x6/commit/d64150bfadf10fe21f44734a0267261260b8c53b))
-* fix invalid history on vertices tool ([#3765](https://github.com/antvis/x6/issues/3765)) ([bc81583](https://github.com/antvis/x6/commit/bc81583e5d167d9830829d56f00efd3bbc0bf7fb))
-* fix scroller options typo ([#3224](https://github.com/antvis/x6/issues/3224)) ([1096bf1](https://github.com/antvis/x6/commit/1096bf171b443ccef1394b0a7478dadc5da32300))
-* fix some examples errors ([#4773](https://github.com/antvis/x6/issues/4773)) ([fe46148](https://github.com/antvis/x6/commit/fe46148b1b3eaa19e6cc83ab1f36155997197662))
-* fix transitionToPoint call error ([#3763](https://github.com/antvis/x6/issues/3763)) ([3b8dfcf](https://github.com/antvis/x6/commit/3b8dfcfc5160ef5cfc265bec54950245085b13a1))
-* fix typo for dom event handlers ([#3255](https://github.com/antvis/x6/issues/3255)) ([9b4fa86](https://github.com/antvis/x6/commit/9b4fa86daa587fe8818f3615bc1e40738a0f2319))
-* fix window incompatibility problem ([#3070](https://github.com/antvis/x6/issues/3070)) ([d8e1e63](https://github.com/antvis/x6/commit/d8e1e637d8027b9494cd26efc87815d74bd51366))
-* force bump to 2.0 ([ae7ad05](https://github.com/antvis/x6/commit/ae7ad05d9caddc1056afa17549bda74209cedfc0))
-* format keyboard arrow codes to Mousetrap special codes ([#4065](https://github.com/antvis/x6/issues/4065)) ([#4080](https://github.com/antvis/x6/issues/4080)) ([4641d39](https://github.com/antvis/x6/commit/4641d39dd8d664f7825f75a64216ccb97efb5c73))
-* get correct center when zoom ([#2934](https://github.com/antvis/x6/issues/2934)) ([557d2df](https://github.com/antvis/x6/commit/557d2df1529226e505e3488a43fa358191d79271))
-* get correct clipboard content when useLocalStorage enabed ([#3189](https://github.com/antvis/x6/issues/3189)) ([bcf3380](https://github.com/antvis/x6/commit/bcf3380d2b37bd2f2ea99fc1937f01f4b19e9afd))
-* get graph from right place ([#3078](https://github.com/antvis/x6/issues/3078)) ([844ee5f](https://github.com/antvis/x6/commit/844ee5fa043cbcd788ec1693f88576e797426228))
-* get wrong anchor when a node is invisible ([#4313](https://github.com/antvis/x6/issues/4313)) ([c5d19fd](https://github.com/antvis/x6/commit/c5d19fd4edc6b46e52220709f62769eea0ffa757))
-* **Group:** add Condition:Embeds the edge if source and target are not same ([#3659](https://github.com/antvis/x6/issues/3659)) ([e08c3a9](https://github.com/antvis/x6/commit/e08c3a9bd7dfe20580a6075a2eb9baf0d6dd350c))
-* guard parameter does not match the type ([#3779](https://github.com/antvis/x6/issues/3779)) ([79eb308](https://github.com/antvis/x6/commit/79eb3084f231c43d0cdf709311296a56f6114d3b))
-* hide elems when visible is false ([#3007](https://github.com/antvis/x6/issues/3007)) ([057d520](https://github.com/antvis/x6/commit/057d5209ff827d0231ecc6562e768907f75aff2d))
-* hotfix [#3351](https://github.com/antvis/x6/issues/3351) error when call resetViews ([#3356](https://github.com/antvis/x6/issues/3356)) ([d72ff80](https://github.com/antvis/x6/commit/d72ff80be79328b8eaecd27fed2a31aa80483661))
-* input required and not supplied: GITHUB_TOKEN ([e0e7e2d](https://github.com/antvis/x6/commit/e0e7e2d80f5cacc8b585de49804c96f46b97df52))
-* install deps ([105657d](https://github.com/antvis/x6/commit/105657d7c880c31968271dd4b8b23f93f10ca252))
-* judge interacting after remove tools ([#3933](https://github.com/antvis/x6/issues/3933)) ([90004ee](https://github.com/antvis/x6/commit/90004eeebbc6e4ad88cdd686b436c6d772b351b6))
-* leading reset render area when init ([#3272](https://github.com/antvis/x6/issues/3272)) ([9138978](https://github.com/antvis/x6/commit/913897891850aafb6b6d329e9cd3994c4ed764fd))
-* make resizing options take effect ([#3014](https://github.com/antvis/x6/issues/3014)) ([604c024](https://github.com/antvis/x6/commit/604c0244cd71ec8e911754dfe524f12c04e4e9ad))
-* memory leak of graph view dispose(introduce by [#4023](https://github.com/antvis/x6/issues/4023)) ([#4114](https://github.com/antvis/x6/issues/4114)) ([8d0a850](https://github.com/antvis/x6/commit/8d0a8506ec5a7f0ffe736ad50d9531579e23dd4e))
-* mindmap demo duplicate node id, close [#3256](https://github.com/antvis/x6/issues/3256) ([#3257](https://github.com/antvis/x6/issues/3257)) ([c510756](https://github.com/antvis/x6/commit/c510756fe4e96c8e7471c2fb558e6019ec69b057))
-* **mindmap demo:** can not find target id when create edge ([#3144](https://github.com/antvis/x6/issues/3144)) ([bfc8d7f](https://github.com/antvis/x6/commit/bfc8d7f17ac900f70b696c1fa7a3f3f3a389103f))
-* mock mouseenter and mouseleave event ([#3481](https://github.com/antvis/x6/issues/3481)) ([ffa0431](https://github.com/antvis/x6/commit/ffa0431e35e421b9cf23d1b609ee5c679b910f5b))
-* modify the semantics of filter ([#2927](https://github.com/antvis/x6/issues/2927)) ([bc261fb](https://github.com/antvis/x6/commit/bc261fb9929aa0b4d3fa4194bcc780ea701b029e))
-* not consider transform when get bbox ([#3878](https://github.com/antvis/x6/issues/3878)) ([548288c](https://github.com/antvis/x6/commit/548288c056ab2a12f9fa28774487037d652213f2))
-* not trigger keyboard event whith delete key in contenteditable elem ([#2965](https://github.com/antvis/x6/issues/2965)) ([4978110](https://github.com/antvis/x6/commit/4978110b4594aee801d39c74f5c190432846eba4))
-* npm version ([cb0cfde](https://github.com/antvis/x6/commit/cb0cfdeb4dbe8858569e6899db08ccb9ab8ba4e7))
-* optimize css loader ([#3156](https://github.com/antvis/x6/issues/3156)) ([9c48ad8](https://github.com/antvis/x6/commit/9c48ad8dfc99e623a57855295d07c35be5483073))
-* optimize dispoese minimap ([#3950](https://github.com/antvis/x6/issues/3950)) ([4dc74f1](https://github.com/antvis/x6/commit/4dc74f164593ca94f76caca8498cf0f346a2a004))
-* optimize rendering logic to prevent loops ([#3108](https://github.com/antvis/x6/issues/3108)) ([45337e4](https://github.com/antvis/x6/commit/45337e4a62224aaffd60fc8b2670a071c5560796))
-* optimize snapToGrid options for manhattan ([#3071](https://github.com/antvis/x6/issues/3071)) ([30c2ed2](https://github.com/antvis/x6/commit/30c2ed26551ce5c18b50c5313ad2fb9355612e4c))
-* optimize typo for react-shape ([#2870](https://github.com/antvis/x6/issues/2870)) ([86412e2](https://github.com/antvis/x6/commit/86412e23d242347d6ee1c9ccd63a6ccf3caf4c49))
-* paning mousewheel ([#4035](https://github.com/antvis/x6/issues/4035)) ([33152c3](https://github.com/antvis/x6/commit/33152c3b8f52723fb510877dd27b90a9540a1206))
-* panning cursor not match the behavior ([#4671](https://github.com/antvis/x6/issues/4671)) ([aab04f7](https://github.com/antvis/x6/commit/aab04f749ae345d5897324e454d5b3e9a9a79a9a))
-* parseint zindex to get correct max zindex node ([#3413](https://github.com/antvis/x6/issues/3413)) ([8f20c66](https://github.com/antvis/x6/commit/8f20c66b1d55d186fced65b6ce0eba087850d71d))
-* plugin-dnd horizontal scroll compatibility ([#3912](https://github.com/antvis/x6/issues/3912)) ([#3913](https://github.com/antvis/x6/issues/3913)) ([264e1e4](https://github.com/antvis/x6/commit/264e1e4eab260dbfedfc54fd7eaf005826c57a6e))
-* plugin-export API exportjpeg exports are PNG images ([#4238](https://github.com/antvis/x6/issues/4238)) ([c3b02e5](https://github.com/antvis/x6/commit/c3b02e5786559875c1560137f951ffd6122d5b0b))
-* plugin-selection unmatch after scale graph ([#3907](https://github.com/antvis/x6/issues/3907)) ([#3918](https://github.com/antvis/x6/issues/3918)) ([678883f](https://github.com/antvis/x6/commit/678883fb5481388acbaea72480bf1e8ce461e03d))
-* **plugin:export:** it should have default value 'true' through doc ([#4111](https://github.com/antvis/x6/issues/4111)) ([75e1ee9](https://github.com/antvis/x6/commit/75e1ee98bba8132e6098f37c48b87714a58889ab))
-* prevent highlighting new edge ([#3170](https://github.com/antvis/x6/issues/3170)) ([bd30f7f](https://github.com/antvis/x6/commit/bd30f7f61de530a9b6671aaedd4be2e026de8d44))
-* recoginze dirty flag on undefined attr ([#3951](https://github.com/antvis/x6/issues/3951)) ([5a4169a](https://github.com/antvis/x6/commit/5a4169a0ca9afc0f4179eae9613323f467f2468f))
-* refactor example ([#2831](https://github.com/antvis/x6/issues/2831)) ([3d8f005](https://github.com/antvis/x6/commit/3d8f005696021f1d9f91a96812ebadce179f2d73))
-* regex for excluding coverage ([16b6c89](https://github.com/antvis/x6/commit/16b6c89e6bb3272edd8a895ae7c51e28986ce523))
-* registry tools is not available ([#4799](https://github.com/antvis/x6/issues/4799)) ([79abd8a](https://github.com/antvis/x6/commit/79abd8a83a86cb57a08211331d9b3f641c0059d1))
-* remove connection strategy option ([#3456](https://github.com/antvis/x6/issues/3456)) ([ba370df](https://github.com/antvis/x6/commit/ba370df246a11c1e70baf2dedca7747a4fae389f))
-* remove editor before added ([#3504](https://github.com/antvis/x6/issues/3504)) ([0b1e0c7](https://github.com/antvis/x6/commit/0b1e0c754b30cbfafca8aaff188ec663966476e7))
-* remove lint error ([#2979](https://github.com/antvis/x6/issues/2979)) ([05d1fe3](https://github.com/antvis/x6/commit/05d1fe35d6914b5097f28d46f64604c789113be3))
-* remove unused type ([#3457](https://github.com/antvis/x6/issues/3457)) ([5edfc88](https://github.com/antvis/x6/commit/5edfc8885e17789b3eabf072ad538c1923c71cae))
-* remove useless repo url ([2f92e33](https://github.com/antvis/x6/commit/2f92e33d0e42801624b9e32f3e508445ed34e6d0))
-* remove x6-common and x6-geometry deps ([#2830](https://github.com/antvis/x6/issues/2830)) ([5b5f5aa](https://github.com/antvis/x6/commit/5b5f5aa7ea6fded1b15abc79b9b5a5e2281b3ab9))
-* render edge when source or target in render area ([#3730](https://github.com/antvis/x6/issues/3730)) ([fb10ef0](https://github.com/antvis/x6/commit/fb10ef087999e3e101c9c14d52532a8e1d4dcc0b))
-* render react shape in dnd graph ([#2970](https://github.com/antvis/x6/issues/2970)) ([6a81805](https://github.com/antvis/x6/commit/6a81805075959528572769a54dfb043200ea2a4e))
-* render vue shape in minimap with same cellid when using teleport ([#2949](https://github.com/antvis/x6/issues/2949)) ([b055515](https://github.com/antvis/x6/commit/b0555151e9822ad7b93535e8b24e8c52897eae7b))
-* replace children prop to childNodes ([#3645](https://github.com/antvis/x6/issues/3645)) ([075f540](https://github.com/antvis/x6/commit/075f54059e9acda668fa2c8782587db3a86de9bc))
-* reset all views when fromjson ([#3346](https://github.com/antvis/x6/issues/3346)) ([1de8ebe](https://github.com/antvis/x6/commit/1de8ebe77abe9820229c3e99f8b75ee6f6058112))
-* reset factor when calc factor is 1 ([#3658](https://github.com/antvis/x6/issues/3658)) ([ebee229](https://github.com/antvis/x6/commit/ebee22940217e5f3dcc29793efac5b80dd1e28a3))
-* reset undefined attrs when undo ([#3526](https://github.com/antvis/x6/issues/3526)) ([e071905](https://github.com/antvis/x6/commit/e0719054b599ba4d14a479cd7c14162e929c7e2e))
-* resize graph when scale scroller ([#2903](https://github.com/antvis/x6/issues/2903)) ([cee4aa4](https://github.com/antvis/x6/commit/cee4aa4e53b2821ed11d5602fccdb36625957c72))
-* same cell id when using portal [#2949](https://github.com/antvis/x6/issues/2949) ([#3591](https://github.com/antvis/x6/issues/3591)) ([876e8b9](https://github.com/antvis/x6/commit/876e8b91bb418ce9889d381e93eff03b23fac8b4))
-* scale event parameters always 0 ([#4824](https://github.com/antvis/x6/issues/4824)) ([0e307fe](https://github.com/antvis/x6/commit/0e307fe58bcc8713ca40a03bc00399b432352c05))
-* schedule edge when source and target is not ready ([#3090](https://github.com/antvis/x6/issues/3090)) ([019333d](https://github.com/antvis/x6/commit/019333d79d7f22c44c400f29d501497f4323af1a))
-* **scheduler:** remove spammy console.log ([#3200](https://github.com/antvis/x6/issues/3200)) ([1f83a2b](https://github.com/antvis/x6/commit/1f83a2b8a84b53303293e724e7f9d0ee49182efc))
-* select node with transform ([#4830](https://github.com/antvis/x6/issues/4830)) ([6be7b27](https://github.com/antvis/x6/commit/6be7b272bb3cb9c8694c1b2bb3d0098ace439ca5))
-* set correct scroller options ([#3195](https://github.com/antvis/x6/issues/3195)) ([45218c3](https://github.com/antvis/x6/commit/45218c36f6db8d263f4e9afd6163ace3d1b7e602))
-* set snapToGrid to false by default ([#3066](https://github.com/antvis/x6/issues/3066)) ([e2bb71d](https://github.com/antvis/x6/commit/e2bb71d95484b29187fafca97f1a386e9b984095))
-* set some function to own attrs ([#3726](https://github.com/antvis/x6/issues/3726)) ([37e8c22](https://github.com/antvis/x6/commit/37e8c2242cb68cda6c5382c48bb132ca0dc0a88b))
-* setText and getText support string ([#3586](https://github.com/antvis/x6/issues/3586)) ([01bb810](https://github.com/antvis/x6/commit/01bb8105c9389224914d39217267b3f52aaeb450))
-* should checkout repo ([3b06106](https://github.com/antvis/x6/commit/3b06106a16f0c0a8b82f5f16b04820a78a93f5c5))
-* should keep latest releases ([b27dbc0](https://github.com/antvis/x6/commit/b27dbc059721790a7aea09370bc392273d29cdc6))
-* site actions ([#4682](https://github.com/antvis/x6/issues/4682)) ([d0e3a0f](https://github.com/antvis/x6/commit/d0e3a0fc7238d769722f8fc1e7a901ee26ed0855))
-* snap anchor should be optional ([#4152](https://github.com/antvis/x6/issues/4152)) ([cf4cf1f](https://github.com/antvis/x6/commit/cf4cf1f010da54badb4a0e121bf6326e079c6118))
-* solve x6-examples-features startup error ([#4726](https://github.com/antvis/x6/issues/4726)) ([750dcfc](https://github.com/antvis/x6/commit/750dcfc1140a56fad314c97c02fb0c23552cd9c5))
-* stop listener event when transform dispose ([#3934](https://github.com/antvis/x6/issues/3934)) ([331a4f3](https://github.com/antvis/x6/commit/331a4f3c23b61080da26bad3c6cc5dba8164f244))
-* stop propagation when click menu item ([#3147](https://github.com/antvis/x6/issues/3147)) ([90dad14](https://github.com/antvis/x6/commit/90dad14d7e1ad8639b80b215596c8f4bad7b00ed))
-* subtract draggingContainer offset when position ([#3953](https://github.com/antvis/x6/issues/3953)) ([1c2d637](https://github.com/antvis/x6/commit/1c2d637c76317aa70ded0a999abf8621e17c41fd))
-* support antd5 in react components ([#2933](https://github.com/antvis/x6/issues/2933)) ([2ecc213](https://github.com/antvis/x6/commit/2ecc213094250b476b533b444c0f3716f88b7987))
-* support cancel editor no mobile ([#3968](https://github.com/antvis/x6/issues/3968)) ([e6da6fb](https://github.com/antvis/x6/commit/e6da6fb55fa2fe02a0bc99a31ae83a7792981330))
-* support react 17 ([#2968](https://github.com/antvis/x6/issues/2968)) ([94f9042](https://github.com/antvis/x6/commit/94f90425f658cb6f6a92f5fd9b5177048ff98f2d))
-* sync render tools ([#3780](https://github.com/antvis/x6/issues/3780)) ([7c25418](https://github.com/antvis/x6/commit/7c2541807baece33db385aea00cb16347419980c))
-* sync render when change position ([#2860](https://github.com/antvis/x6/issues/2860)) ([2194769](https://github.com/antvis/x6/commit/2194769e362ce60d19652b29047a394cac4077d0))
-* the `uses' attribute must be a path, a Docker image, or owner/repo@ref ([4f4d437](https://github.com/antvis/x6/commit/4f4d437006a38b4428def21f2d7b4252cdbfd00d))
-* the multi-entity issue caused by Vite deps ([#4780](https://github.com/antvis/x6/issues/4780)) ([0df719e](https://github.com/antvis/x6/commit/0df719efd0ec2648448d7c861d355417d8765c32))
-* The select box does not follow the mouse as you drag to move it ([#4233](https://github.com/antvis/x6/issues/4233)) ([eb45fbe](https://github.com/antvis/x6/commit/eb45fbe4c1b0c5f1ab7a3645b6d2e9d03034cd1e))
-* throw error when render edge without terminal ([#3331](https://github.com/antvis/x6/issues/3331)) ([a1d8642](https://github.com/antvis/x6/commit/a1d86424cf87c306d1b47243d270eacf1fb2e1c3))
-* toJSON({ diff: true })没有达到预期效果 [#4297](https://github.com/antvis/x6/issues/4297) ([#4299](https://github.com/antvis/x6/issues/4299)) ([a431f52](https://github.com/antvis/x6/commit/a431f520b2ea53b14abe3dc9cf7824406e494477))
-* transform active-handle class should remove when active removed ([#3298](https://github.com/antvis/x6/issues/3298)) ([709a141](https://github.com/antvis/x6/commit/709a141e28e9f25d54ece0ade353bd343ac0e55f))
-* trigger click event when click edge with vertices tool ([#3895](https://github.com/antvis/x6/issues/3895)) ([f84f7f0](https://github.com/antvis/x6/commit/f84f7f031332ce6fadd1eb32f823dca799947d12))
-* trigger dblclick event only one time ([#3577](https://github.com/antvis/x6/issues/3577)) ([aa65bfa](https://github.com/antvis/x6/commit/aa65bfaa8849dd22b9bf8e5c9f0fcb3e7063627d))
-* trigger preventDefault by origin event ([#3017](https://github.com/antvis/x6/issues/3017)) ([4a6a634](https://github.com/antvis/x6/commit/4a6a634a8acfad5c1a7bb93ac17fb3b97239e853))
-* trigger transform knob after click node ([#2956](https://github.com/antvis/x6/issues/2956)) ([d903e5a](https://github.com/antvis/x6/commit/d903e5a5b6dee7368181cb52b7d10e01748e99e0))
-* ts error ([#4785](https://github.com/antvis/x6/issues/4785)) ([e90f305](https://github.com/antvis/x6/commit/e90f305e432ef6d756c034b0aa5744f331ad308a))
-* type errors ([5472504](https://github.com/antvis/x6/commit/54725040f2215a12ec42502e6d947d6eefbfb4d2))
-* type of `moveThreshold` should be `number` ([#3450](https://github.com/antvis/x6/issues/3450)) ([9fa0f84](https://github.com/antvis/x6/commit/9fa0f844c70477f92ef3d3ae95f2ee7579201415))
-* undo crash when attr is null ([#3569](https://github.com/antvis/x6/issues/3569)) ([35aa68b](https://github.com/antvis/x6/commit/35aa68ba6fcec3bea942283e48c1605b600ddb98))
-* unembed edge only when have new parent ([#3773](https://github.com/antvis/x6/issues/3773)) ([a6c4509](https://github.com/antvis/x6/commit/a6c4509589701bf79cf88f835b78e39762f3ebd8))
-* unique cmd file name ([da18f12](https://github.com/antvis/x6/commit/da18f126ea3a9d09a2a3e6c2ff680bcd4d916845))
-* updae react-resize-detector version ([#2930](https://github.com/antvis/x6/issues/2930)) ([d6ae519](https://github.com/antvis/x6/commit/d6ae5199c00be6429a828f537b194adddd2b6aeb))
-* update group even group is empty ([#3117](https://github.com/antvis/x6/issues/3117)) ([6abd068](https://github.com/antvis/x6/commit/6abd0683eab22eb0fa1a4702642ab76b91320694))
-* update react type version ([#2937](https://github.com/antvis/x6/issues/2937)) ([d4df46a](https://github.com/antvis/x6/commit/d4df46ab40c0f2fb6e7a76fc0083d7b4710555b9))
-* updateCellId api bug ([#3816](https://github.com/antvis/x6/issues/3816)) ([dbd0219](https://github.com/antvis/x6/commit/dbd0219f0fd546b32fbf37f630783240d30f5820))
-* use `dom-align` to position dnd container ([#3978](https://github.com/antvis/x6/issues/3978)) ([#3979](https://github.com/antvis/x6/issues/3979)) ([2d3b365](https://github.com/antvis/x6/commit/2d3b365a2282fe9beb730349698bab4f5716106f))
-* use geometry in selection box ([#2992](https://github.com/antvis/x6/issues/2992)) ([1fb2d83](https://github.com/antvis/x6/commit/1fb2d8308a460cae58abb6e2c660c850260093b6))
-* **vue-shape:** remove deprecated `Vue` from import ([#4099](https://github.com/antvis/x6/issues/4099)) ([fa66d3a](https://github.com/antvis/x6/commit/fa66d3a514b0b90403845b3c4f2fa36b5a7418e9))
-* **vue-shape:** vue-shape's teleport is only registered once ([#4500](https://github.com/antvis/x6/issues/4500)) ([e5211f7](https://github.com/antvis/x6/commit/e5211f7b529b2ea3ef372d167f7c356eb17411b6))
-* website run failed ([#4777](https://github.com/antvis/x6/issues/4777)) ([46d310e](https://github.com/antvis/x6/commit/46d310eb0642832ca17934601c73bcd11ce23963))
-* widget ouside graph, close [#3595](https://github.com/antvis/x6/issues/3595) ([#3597](https://github.com/antvis/x6/issues/3597)) ([9a8fa8a](https://github.com/antvis/x6/commit/9a8fa8a925befd58c1f7d8488728108c203c943b))
-* x6 common deps ([#3404](https://github.com/antvis/x6/issues/3404)) ([5d4c599](https://github.com/antvis/x6/commit/5d4c5991cc084cf3fd04ce51d757453775e55d3f))
+## 修复
 
+- History 插件：修复批量删除与撤销场景下的异常，确保 `remove` 命令记录与回滚逻辑一致。
+- Safari 箭头渲染：在 Safari 下通过强制重排 `EdgeView` 容器以确保 `marker-start`/`marker-end` 正确渲染。
+- React/Vue/Angular 节点渲染：修复通过 x6-react/vue/angular-shape 注册节点在虚拟渲染场景下可能出现的渲染异常。
 
-### chore
+# @antv/x6 3.0.0 (2025-11-21)
 
-* bump to 2.0 ([04cd9de](https://github.com/antvis/x6/commit/04cd9de505bd92a70f33dbc0cfc75b4f9b8126c1))
-* bump to 2.0 ([94af7fa](https://github.com/antvis/x6/commit/94af7fa7ec96e3417db9aa5d245751507ae2671e))
-* bump to 2.0 ([ecffe1a](https://github.com/antvis/x6/commit/ecffe1a2a8bcf5538f027c3c54acaefc50215023))
-* bump to 2.0 ([1ffafce](https://github.com/antvis/x6/commit/1ffafcea22472f4e5b50319c91667a1eea457219))
-* bump to 2.0 ([8638d43](https://github.com/antvis/x6/commit/8638d4310b67b9107e8ef1f6d7a22311f1999df0))
-* bump to 2.0 ([0e258d0](https://github.com/antvis/x6/commit/0e258d0704b444103410a565fe033dae76426ad4))
-* force bump to 2.0.0 ([0cab334](https://github.com/antvis/x6/commit/0cab334e4b72a4df33a371c37dfbeff8dc0ae231))
-* force release 2.0-beta ([af8c588](https://github.com/antvis/x6/commit/af8c5887b3de721f125da6d71e40c3ec76d0f660))
-* release beta ([b5f3cfa](https://github.com/antvis/x6/commit/b5f3cfa2042f5196a995a38a8f41f140cabdce57))
-* update deps ([1283b74](https://github.com/antvis/x6/commit/1283b74cdb5ea77e2a27fedd23b2e67794326854))
+## 重大变更
 
+- 插件整合：所有 `@antv/x6-plugin-xxxx` 包并入主包并统一导出，原有 `graph.use(new Xxx())` 用法保持不变，仅需替换导入路径（参见 `src/plugin/index.ts:1-11`）。
+- 动画 API：移除 2.x 的 `transition` 用法，引入全新的动画系统 `animate`，支持命令式/配置式/自定义 Shape 动效（参见 `src/model/animation/animation.ts:10-21`, `src/model/animation/index.ts:1-8`）。
+- 交互默认值调整：画布平移 `panning` 默认开启；当使用 `Scroller` 时为避免交互冲突，默认禁用画布 `panning`（参见文档 `site/docs/tutorial/update.zh.md:69-71`）。
 
-### Documentation
+## 功能增强
 
-* clean up changelogs ([7c012f7](https://github.com/antvis/x6/commit/7c012f7360ad9b74e5292a7a8d0d04b0ec28987e))
-* refresh changelogs ([44f89a1](https://github.com/antvis/x6/commit/44f89a1e1a85513a9bf548be87be38e3cdc82574))
+- 虚拟渲染能力：在大图场景可开启 `virtual: true`，仅渲染可视区域并自动加入缓冲边距以提升性能（参见 `src/graph/virtual-render.ts:94-106`；示例见 `site/examples/showcase/practices/demo/virtualRender.ts:7-15`）。
+- 动画系统：提供 `Animation`、`KeyframeEffect` 与 `AnimationManager`，支持播放、暂停、反向、速率调整与完成/取消事件（参见 `src/model/animation/animation.ts:75-144`, `src/model/animation/animationManager.ts:3-19`, `src/model/animation/index.ts:1-8`）。
+- 插件统一导出：`Clipboard`、`Dnd`、`Export`、`History`、`Keyboard`、`Selection`、`MiniMap`、`Scroller`、`Stencil`、`Snapline`、`Transform` 统一从 `@antv/x6` 导出（参见 `src/plugin/index.ts:1-11`）。
 
+## 优化
 
-### Features
+- 交互体验：`panning` 默认开启，`Selection` 在与 `panning` 触发冲突时具备更合理的优先级（参见 `site/docs/tutorial/update.zh.md:69-71`）。
+- 虚拟渲染性能：滚动/平移/缩放事件节流控制与渲染区域动态扩展（固定边距 120px）（参见 `src/graph/virtual-render.ts:15-18,99-103`）。
 
-* ✨ add history plugin ([#2819](https://github.com/antvis/x6/issues/2819)) ([fd8d384](https://github.com/antvis/x6/commit/fd8d384a29d0f2e02bf066efd19ed3f92614c524))
-* ✨ add minimap plugin ([6cdecbb](https://github.com/antvis/x6/commit/6cdecbbba9a4db1f67189e23fb89f2a7ba2af99e))
-* ✨ add stencil plugin ([#2815](https://github.com/antvis/x6/issues/2815)) ([4e1fb7b](https://github.com/antvis/x6/commit/4e1fb7bef8ff5548edf2529eb27be0a66a600996))
-* ✨ add transform plugin ([#2818](https://github.com/antvis/x6/issues/2818)) ([660e2d7](https://github.com/antvis/x6/commit/660e2d7689bfa59a0f4a4a5e3c0ace70dec21e9e))
-* ✨ export common and geometry in x6 package ([#2820](https://github.com/antvis/x6/issues/2820)) ([df28200](https://github.com/antvis/x6/commit/df282000cc5e17521147c77c210e172c444c9938))
-* 修改文档错别字 ([#3788](https://github.com/antvis/x6/issues/3788)) ([c42a69e](https://github.com/antvis/x6/commit/c42a69ea2d0fac9521545f8b4e999e85a608d866))
-* 支持自定义节点/边的唯一标识 [#4442](https://github.com/antvis/x6/issues/4442) ([#4444](https://github.com/antvis/x6/issues/4444)) ([941b89e](https://github.com/antvis/x6/commit/941b89e150e039fa986016efb1046f31c27bfb5d))
-* add collaboration demo ([12ca0e1](https://github.com/antvis/x6/commit/12ca0e1816e48d55198fa72abdbe0e230a7ce58f))
-* add data processing dag example ([#3091](https://github.com/antvis/x6/issues/3091)) ([d3301d3](https://github.com/antvis/x6/commit/d3301d33d575269d9219ab1337a2ec1785d61494))
-* add exportSVG methods ([#2906](https://github.com/antvis/x6/issues/2906)) ([847f225](https://github.com/antvis/x6/commit/847f2256326db0589ac37f1e1fa185560b61bdb7))
-* add modifiers for vertices tool ([#3778](https://github.com/antvis/x6/issues/3778)) ([a00f06c](https://github.com/antvis/x6/commit/a00f06cd113c1b4d1f0fb0b033b3850ccc2d5784))
-* add multiple handles for segments ([#4796](https://github.com/antvis/x6/issues/4796)) ([231aaeb](https://github.com/antvis/x6/commit/231aaeb2d6018dbdc516009007d4cd4886c12812))
-* add options for positionCell api ([#3208](https://github.com/antvis/x6/issues/3208)) ([58c0fe4](https://github.com/antvis/x6/commit/58c0fe459c0314997440b4af7dc0443abe199924))
-* add plugin export example ([#4811](https://github.com/antvis/x6/issues/4811)) ([70e140c](https://github.com/antvis/x6/commit/70e140cc7fbf99c077fb8ba4a8b6649b7d570fc1))
-* add port events ([#3185](https://github.com/antvis/x6/issues/3185)) ([3265fe5](https://github.com/antvis/x6/commit/3265fe5b983f22e34d60c647212824961ecfdab5))
-* add render:done event ([#3919](https://github.com/antvis/x6/issues/3919)) ([016a2be](https://github.com/antvis/x6/commit/016a2be788b55f306915533607c435dbe1d019fc))
-* add rss command to run sharable scripts ([4a45fa7](https://github.com/antvis/x6/commit/4a45fa7d386dbb17ce60102cb406905d439a64bd))
-* add rss command to run sharable scripts ([65764be](https://github.com/antvis/x6/commit/65764bed3b3bd433aae2bb99183053915ed6dcef))
-* add snapToGrid options for manhattan router ([#3062](https://github.com/antvis/x6/issues/3062)) ([824560d](https://github.com/antvis/x6/commit/824560ddda7016158cce3166773e1af009bfe498))
-* add updateNode/updateEdge API [#3235](https://github.com/antvis/x6/issues/3235) ([#3239](https://github.com/antvis/x6/issues/3239)) ([04656f3](https://github.com/antvis/x6/commit/04656f33f40edbc6c913e91f8f6aa94864525fbe))
-* add view:mounted and view:unmounted event ([#3307](https://github.com/antvis/x6/issues/3307)) ([a30b663](https://github.com/antvis/x6/commit/a30b6632a0391fbd8776eb1c41d6b1b8ef80af5e))
-* add virtual render with scroller plugin ([#4815](https://github.com/antvis/x6/issues/4815)) ([bdea20d](https://github.com/antvis/x6/commit/bdea20da5273e1776369c3310766785c7ccd91d4))
-* add xflow docs ([#4171](https://github.com/antvis/x6/issues/4171)) ([d700d00](https://github.com/antvis/x6/commit/d700d006cb512a7f18855f3d302b96ffb2e56469))
-* adjust event source and package deps ([#2826](https://github.com/antvis/x6/issues/2826)) ([a1bdb18](https://github.com/antvis/x6/commit/a1bdb18b1d1e1967e8e27862fed2e4fe8787a8cb))
-* after a node moved, auto offset when it overlaps with other nodes ([#4625](https://github.com/antvis/x6/issues/4625)) ([a036572](https://github.com/antvis/x6/commit/a03657241a46742cb116964949ea3b7b3cd0469a))
-* allow calculate distance by bbox when snap to node ([#4126](https://github.com/antvis/x6/issues/4126)) ([8169d42](https://github.com/antvis/x6/commit/8169d423dc9f01e54ac3d20086c37576dafe8901))
-* attach plugin api and events to grpah instance ([#2864](https://github.com/antvis/x6/issues/2864)) ([774f547](https://github.com/antvis/x6/commit/774f547b85522eb2411dca949d36ecfe535503f3))
-* breakText method support line wrapping text ([#3910](https://github.com/antvis/x6/issues/3910)) ([f3efd68](https://github.com/antvis/x6/commit/f3efd68edc6c23c02935e4ea076bdfcf4f01f5bd))
-* call coveralls ([6b96f12](https://github.com/antvis/x6/commit/6b96f12f201d03902854235dcd4123687ef3d225))
-* change manifest for submit to chrome web store ([#3552](https://github.com/antvis/x6/issues/3552)) ([0bd4429](https://github.com/antvis/x6/commit/0bd4429fb3a4cb557d6896cbb5a2ae5b9dc32449))
-* create branch for auto release ([95d3b5d](https://github.com/antvis/x6/commit/95d3b5d5a8a7ccfe4ebecfac028fa719a84825a3))
-* createWidget and clearWidget ([#3337](https://github.com/antvis/x6/issues/3337)) ([4b1a0f8](https://github.com/antvis/x6/commit/4b1a0f8b31b4c0d3e0aa8d5f0a372cbcd70b71fd))
-* devtool show plugin ([#3373](https://github.com/antvis/x6/issues/3373)) ([68e3ef1](https://github.com/antvis/x6/commit/68e3ef15357ceef9cebfb95053c8815b5a63dcdb))
-* export options types ([9488c04](https://github.com/antvis/x6/commit/9488c0410e5f6ddee2504caddb2d86b3f5b2a845))
-* force release 2.0-beta ([6987d9c](https://github.com/antvis/x6/commit/6987d9ce64454cd76f697d33f96715dbdf56524a))
-* fromjson supports incremental updates ([#4802](https://github.com/antvis/x6/issues/4802)) ([26b9540](https://github.com/antvis/x6/commit/26b9540a9535aec6a49139cc3984d1bcfb54234a))
-* history add max stack size ([#3253](https://github.com/antvis/x6/issues/3253)) ([fba5310](https://github.com/antvis/x6/commit/fba531064ad8027c451a81b60d5efd7f7314a0fa))
-* keyboard support clear and custom trigger ([#3202](https://github.com/antvis/x6/issues/3202)) ([668c932](https://github.com/antvis/x6/commit/668c93242fbcebb987cccc3dcfd56982f7c66252))
-* node-editor新增width和height配置 ([#3827](https://github.com/antvis/x6/issues/3827)) ([9cc7737](https://github.com/antvis/x6/commit/9cc7737007926702f24dca20367071c68525c0ea))
-* panning modifiers add space ([#4166](https://github.com/antvis/x6/issues/4166)) ([fe3b7ac](https://github.com/antvis/x6/commit/fe3b7ace503936d94d78441709e989101f697719))
-* selection's pointerEvents support function type ([#4067](https://github.com/antvis/x6/issues/4067)) ([6decb75](https://github.com/antvis/x6/commit/6decb75c8597ef705194cd79fc202fc09436ce3b))
-* support  closest connection strategy ([#3447](https://github.com/antvis/x6/issues/3447)) ([fb3535d](https://github.com/antvis/x6/commit/fb3535dc75cee9860781b9d9cc612a445e680e14))
-* support angular shape for 2.x ([#3278](https://github.com/antvis/x6/issues/3278)) ([38bdf65](https://github.com/antvis/x6/commit/38bdf65ddedfcfed5dfd51eb4c6f6e07aa80a55a))
-* support both mouse selection with the left mouse button and panning with the middle mouse button in the graph ([#3965](https://github.com/antvis/x6/issues/3965)) ([cabfa0b](https://github.com/antvis/x6/commit/cabfa0b0779a3713cd2f78e5b682d8158a0e57cf))
-* support render simple view in minimap ([#3453](https://github.com/antvis/x6/issues/3453)) ([b2e1315](https://github.com/antvis/x6/commit/b2e1315f790ad266fc5d0e576eab4de9da004407))
-* support turbo ([1da55bf](https://github.com/antvis/x6/commit/1da55bfda73edaa96515998b5766e9ed5f241ee9))
-* supports dynamic modification of groups and nodes in stencil ([#3767](https://github.com/antvis/x6/issues/3767)) ([ccc7755](https://github.com/antvis/x6/commit/ccc77552d01a1045e9274515f22a71cd1cc8c817))
-* sync some commit from v1 ([#2851](https://github.com/antvis/x6/issues/2851)) ([a772025](https://github.com/antvis/x6/commit/a7720251ff42f2892bff9c3cd5159932322362b1))
-* trigger auto release on auto-release branch ([9377ddc](https://github.com/antvis/x6/commit/9377ddc0fcb68a2c7215135e6da9e879e5afec5d))
-* upgrade react to 18 in react-components ([#2836](https://github.com/antvis/x6/issues/2836)) ([5138562](https://github.com/antvis/x6/commit/5138562515ddbd3975adc9d93514f21d6fc2bb3e))
-* x6-vue-shape supports getting nodes and graph in the props  ([#3761](https://github.com/antvis/x6/issues/3761)) ([ab255df](https://github.com/antvis/x6/commit/ab255df4593f9462a26e172039c9e8d6d340b2ba))
+## 迁移指南
 
+1. 升级依赖：
 
-### Performance Improvements
+   ```json
+   {
+     "dependencies": {
+       "@antv/x6": "^3.0.0"
+     }
+   }
+   ```
 
-* update deps ([f20127a](https://github.com/antvis/x6/commit/f20127af555d9b7beaac3a07ac308d5c0d4e53a3))
+2. 移除旧插件依赖：`@antv/x6-plugin-selection`、`@antv/x6-plugin-transform`、`@antv/x6-plugin-scroller`、`@antv/x6-plugin-keyboard`、`@antv/x6-plugin-history`、`@antv/x6-plugin-clipboard`、`@antv/x6-plugin-snapline`、`@antv/x6-plugin-dnd`、`@antv/x6-plugin-minimap`、`@antv/x6-plugin-stencil`、`@antv/x6-plugin-export`（参见 `site/docs/tutorial/update.zh.md:30-43`）。
+3. 替换导入路径：
 
+   ```ts
+   // 2.x
+   import { Scroller } from '@antv/x6-plugin-scroller'
+   import { Selection } from '@antv/x6-plugin-selection'
+   graph.use(new Scroller())
+   graph.use(new Selection())
 
-### Reverts
+   // 3.x
+   import { Scroller, Selection } from '@antv/x6'
+   graph.use(new Scroller())
+   graph.use(new Selection())
+   ```
 
-* Revert "refactor: remove namespace of registry/tool and update its de… (#4794) ([2f42e4c](https://github.com/antvis/x6/commit/2f42e4c2f1042d0dca6d18f70d463fba8b4efd14)), closes [#4794](https://github.com/antvis/x6/issues/4794) [#4767](https://github.com/antvis/x6/issues/4767)
-
-
-### BREAKING CHANGES
-
-* for bump  packages/x6-vue-shape to 2.0
-* dump to 2.0
-* bump to 2.0
-* bump to 2.0
-* bump to 2.0
-* bump to 2.0
-* bump to 2.0
-* bump version
-* force bump to 2.0
-* bump to 2.0
-* force bump to 2.0.0
-* force release 2.0-beta
-* force release 2.0-beta
-* force release 2.0-beta
-* 2.0-beta
-
-
-
+4. 动画迁移：将 2.x 的 `transition` 用法迁移至 3.x 的 `animate` 能力，参考动画文档与 API（参见 `site/docs/tutorial/update.zh.md:61-66`）。
+5. 配置检查：
+   - 若需要关闭画布平移，显式设置 `panning: false`。
+   - 使用 `Scroller` 时可开启 `virtual: true` 以优化大图渲染。

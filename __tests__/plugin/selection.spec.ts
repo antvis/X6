@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Cell, Dom, type Graph } from '../../src'
-import { Selection, DefaultOptions } from '../../src/plugin/selection'
+import { DefaultOptions, Selection } from '../../src/plugin/selection'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
 
@@ -519,6 +519,8 @@ describe('Selection plugin', () => {
       graph.trigger('blank:click', { e })
       await sleep(100)
       expect(selection.cells.length).toBe(0)
+      // ensure node is not removed from graph
+      expect(graph.getCellById('n1')).not.toBeNull()
     })
   })
 
@@ -703,6 +705,174 @@ describe('Selection plugin', () => {
     })
   })
 
+  describe('outer selection container interactions', () => {
+    it('should set pointerEvents and cursor on outer container when movable', async () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'n2',
+        width: 80,
+        height: 40,
+        x: 120,
+        y: 10,
+      })
+      selection.select([n1, n2])
+
+      await sleep(20)
+
+      const style = (selection as any).selectionImpl.selectionContainer.style
+      expect(style.pointerEvents).toBe('auto')
+      expect(style.cursor).toBe('move')
+
+      graph.disableSelectionMovable()
+      ;(selection as any).selectionImpl.updateContainer()
+      const style2 = (selection as any).selectionImpl.selectionContainer.style
+      expect(style2.pointerEvents).toBe('none')
+      expect(style2.cursor).toBe('default')
+    })
+
+    it('should toggle node selection with modifier inside outer container', async () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'n2',
+        width: 80,
+        height: 40,
+        x: 120,
+        y: 10,
+      })
+      selection.select([n1])
+
+      const view2 = graph.renderer.findViewByCell(n2)!
+      const findViewsSpy = vi
+        .spyOn(graph, 'findViewsFromPoint')
+        .mockReturnValue([view2])
+
+      const e = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(e, 'clientX', { value: 100 })
+      Object.defineProperty(e, 'clientY', { value: 20 })
+      Object.defineProperty(e, 'ctrlKey', { value: true })
+      Object.defineProperty(e, 'metaKey', { value: true })
+      Object.defineProperty(e, 'shiftKey', { value: false })
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+
+      expect(findViewsSpy).toHaveBeenCalled()
+      expect(selection.isSelected(n2)).toBe(true)
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+      expect(selection.isSelected(n2)).toBe(false)
+    })
+
+    it('should not toggle edge selection with modifier inside outer container', () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+          showEdgeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'n2',
+        width: 80,
+        height: 40,
+        x: 120,
+        y: 10,
+      })
+      const e1 = graph.addEdge({ source: n1, target: n2 })
+      selection.select([n1])
+
+      const edgeView = graph.renderer.findViewByCell(e1)!
+      vi.spyOn(graph, 'findViewsFromPoint').mockReturnValue([edgeView])
+
+      const e = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(e, 'clientX', { value: 100 })
+      Object.defineProperty(e, 'clientY', { value: 20 })
+      Object.defineProperty(e, 'ctrlKey', { value: true })
+      Object.defineProperty(e, 'metaKey', { value: true })
+      Object.defineProperty(e, 'shiftKey', { value: false })
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+
+      expect(selection.length).toBe(1)
+      expect(selection.isSelected(n1)).toBe(true)
+      expect(selection.isSelected(e1)).toBe(false)
+    })
+
+    it('should start translating when clicking outer container without modifier', () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 80,
+        height: 40,
+        x: 10,
+        y: 10,
+      })
+      selection.select([n1])
+
+      const startSpy = vi.spyOn(
+        (selection as any).selectionImpl,
+        'startTranslating' as any,
+      )
+
+      const e = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(e, 'clientX', { value: 20 })
+      Object.defineProperty(e, 'clientY', { value: 20 })
+      Object.defineProperty(e, 'ctrlKey', { value: false })
+      Object.defineProperty(e, 'metaKey', { value: false })
+      Object.defineProperty(e, 'shiftKey', { value: false })
+
+      ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
+      expect(startSpy).toHaveBeenCalled()
+    })
+  })
+
   describe('on select node position change', () => {
     it('should translate selected nodes', async () => {
       const n1 = graph.addNode({
@@ -884,6 +1054,57 @@ describe('Selection plugin', () => {
 
       graph.cleanSelection()
       expect(graph.getSelectedCellCount()).toBe(0)
+      // ensure node still exists in graph after clean
+      expect(graph.getCellById(node.id)).not.toBeNull()
+    })
+
+    it('should call updateContainer once on batch reset', async () => {
+      graph.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          showNodeSelectionBox: true,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+
+      const n1 = graph.addNode({
+        id: 'bn1',
+        shape: 'rect',
+        width: 40,
+        height: 20,
+        x: 10,
+        y: 10,
+      })
+      const n2 = graph.addNode({
+        id: 'bn2',
+        shape: 'rect',
+        width: 40,
+        height: 20,
+        x: 60,
+        y: 10,
+      })
+
+      selection.select(n1)
+      const spy = vi.spyOn((selection as any).selectionImpl, 'updateContainer')
+
+      selection.reset([n1, n2], { batch: true })
+      await sleep(20)
+
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it('cleanSelection should not call collection.reset', () => {
+      const node = graph.addNode({ shape: 'rect' })
+      selection.select(node)
+      const resetSpy = vi.spyOn(
+        (selection as any).selectionImpl.collection,
+        'reset',
+      )
+
+      selection.clean()
+      expect(resetSpy).not.toHaveBeenCalled()
+      expect(selection.length).toBe(0)
     })
   })
 

@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { LineTo } from '@/geometry/path/lineto'
-import { Point, Line } from '@/geometry'
-import { Segment } from '@/geometry/path/segment'
+import { describe, expect, it } from 'vitest'
+import { Line, Point } from '../../../src/geometry'
+import { LineTo } from '../../../src/geometry/path/lineto'
+import type { Segment } from '../../../src/geometry/path/segment'
 
 describe('LineTo', () => {
   it('should construct from coordinates', () => {

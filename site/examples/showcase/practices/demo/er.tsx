@@ -292,7 +292,6 @@ insertCss(`
 
   .er-table:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
   }
 
   .er-table-header {
@@ -309,8 +308,8 @@ insertCss(`
     gap: 6px;
   }
 
-  .er-table-fields { 
-    flex: 1; 
+  .er-table-fields {
+    flex: 1;
     overflow: hidden;
     border-radius: 0 0 6px 6px;
   }
@@ -327,7 +326,7 @@ insertCss(`
 
   .er-table-field:hover { background-color: #f5f5f5; }
   .er-table-field.even { background-color: #fafafa; }
-  .er-table-field:last-child { 
+  .er-table-field:last-child {
     border-bottom: none;
     border-radius: 0 0 6px 6px;
   }

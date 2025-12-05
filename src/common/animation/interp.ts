@@ -1,7 +1,8 @@
 /**
  * @file 插值函数
- * 提供数字、对象、单位、颜色的插值函数。
+ * 提供数字、对象、单位、颜色、transform的插值函数。
  */
+import { unitReg } from './util'
 
 export type Definition<T> = (from: T, to: T) => (time: number) => T
 
@@ -25,7 +26,7 @@ export const object: Definition<{ [key: string]: number }> = (a, b) => {
 }
 
 export const unit: Definition<string> = (a, b) => {
-  const reg = /(-?[0-9]*.[0-9]*)(px|em|cm|mm|in|pt|pc|%)/
+  const reg = unitReg
   const ma = reg.exec(a)
   const mb = reg.exec(b)
 
@@ -59,5 +60,81 @@ export const color: Definition<string> = (a, b) => {
     const g = (ga + gd * t) & 0x0000ff00
     const b = (ba + bd * t) & 0x00ff0000
     return `#${((1 << 24) | r | g | b).toString(16).slice(1)}`
+  }
+}
+
+export const transform: Definition<string> = (a, b) => {
+  // 解析 transform 字符串中的函数和参数
+  const parseTransform = (str: string) => {
+    const result: Array<{ name: string; values: string[] }> = []
+    if (!str) return result
+
+    const regex = /(\w+)\(([^)]+)\)/g
+    let match: RegExpExecArray | null = regex.exec(str)
+    while (match !== null) {
+      if (match[1] && match[2]) {
+        result.push({
+          name: match[1],
+          values: match[2].split(/\s*,\s*/).filter(Boolean),
+        })
+      }
+      match = regex.exec(str)
+    }
+    return result
+  }
+
+  const from = parseTransform(a)
+  const to = parseTransform(b)
+  if (from.length === 0 || to.length === 0) {
+    return () => a // 如果无法解析，返回初始值
+  }
+
+  return (t: number) => {
+    const transforms: string[] = []
+
+    // 对每个 transform 函数进行插值
+    for (let i = 0; i < Math.min(from.length, to.length); i++) {
+      const fromFunc = from[i]
+      const toFunc = to[i]
+      if (!fromFunc || !toFunc) continue
+
+      if (
+        fromFunc.name === toFunc.name &&
+        fromFunc.values.length > 0 &&
+        fromFunc.values.length === toFunc.values.length
+      ) {
+        const values: string[] = []
+
+        // 对每个参数进行插值
+        for (let j = 0; j < fromFunc.values.length; j++) {
+          const fromVal = fromFunc.values[j]
+          const toVal = toFunc.values[j]
+          if (fromVal === undefined || toVal === undefined) continue
+
+          // 检查是否是带单位的值
+          if (unitReg.test(fromVal) || unitReg.test(toVal)) {
+            // 使用 unit 插值函数处理带单位的值
+            const interpolate = unit(fromVal, toVal)
+            values.push(interpolate(t))
+          } else if (
+            !Number.isNaN(parseFloat(fromVal)) &&
+            !Number.isNaN(parseFloat(toVal))
+          ) {
+            // 使用 number 插值函数处理纯数字
+            const interpolate = number(parseFloat(fromVal), parseFloat(toVal))
+            values.push(interpolate(t).toString())
+          } else {
+            // 无法解析的值保持原样
+            values.push(fromVal)
+          }
+        }
+
+        if (values.length > 0) {
+          transforms.push(`${fromFunc.name}(${values.join(', ')})`)
+        }
+      }
+    }
+
+    return transforms.length > 0 ? transforms.join(' ') : a
   }
 }
