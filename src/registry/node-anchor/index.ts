@@ -4,7 +4,7 @@ import type { TerminalType } from '../../model'
 import type { EdgeView, NodeView } from '../../view'
 import { Registry } from '../registry'
 import * as anchors from './main'
-import type { PointLike } from '@/types'
+import type { PointLike } from '../../types'
 
 export type NodeAnchorDefinition<T> = (
   this: EdgeView,
