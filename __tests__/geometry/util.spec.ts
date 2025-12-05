@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { RectangleLike } from '../../src/geometry'
+import type { PointLike, RectangleLike } from '../../src/geometry'
 import * as GeometryUtil from '../../src/geometry/util'
 
 describe('GeometryUtil', () => {
@@ -77,12 +77,12 @@ describe('GeometryUtil', () => {
   describe('containsPoint', () => {
     const rect: RectangleLike = { x: 0, y: 0, width: 10, height: 20 }
     it('should return true if point is inside rect', () => {
-      const pt: Point.PointLike = { x: 5, y: 10 }
+      const pt: PointLike = { x: 5, y: 10 }
       expect(GeometryUtil.containsPoint(rect, pt)).toBe(true)
     })
 
     it('should return false if point is outside rect', () => {
-      const pt: Point.PointLike = { x: 15, y: 10 }
+      const pt: PointLike = { x: 15, y: 10 }
       expect(GeometryUtil.containsPoint(rect, pt)).toBe(false)
     })
 
@@ -96,8 +96,8 @@ describe('GeometryUtil', () => {
 
   describe('squaredLength', () => {
     it('should return squared distance between two points', () => {
-      const p1: Point.PointLike = { x: 0, y: 0 }
-      const p2: Point.PointLike = { x: 3, y: 4 }
+      const p1: PointLike = { x: 0, y: 0 }
+      const p2: PointLike = { x: 3, y: 4 }
       expect(GeometryUtil.squaredLength(p1, p2)).toBe(25)
     })
   })
