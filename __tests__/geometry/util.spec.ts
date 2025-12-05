@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { Point, type RectangleLike } from '@/geometry'
-import * as GeometryUtil from '@/geometry/util'
+import { describe, expect, it } from 'vitest'
+import type { RectangleLike } from '../../src/geometry'
+import * as GeometryUtil from '../../src/geometry/util'
 
 describe('GeometryUtil', () => {
   describe('round', () => {

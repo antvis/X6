@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import * as Common from '@/common'
-import { MouseWheel } from '@/graph/mousewheel'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import * as Common from '../../src/common'
+import { MouseWheel } from '../../src/graph/mousewheel'
 
 describe('MouseWheel', () => {
   let mouseWheel: MouseWheel
