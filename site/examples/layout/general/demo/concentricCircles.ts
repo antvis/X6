@@ -110,36 +110,38 @@ const graph = new Graph({
 const center = [400, 300]
 
 // 设置各层节点的位置
+const nodeMap = new Map(data.nodes!.map((node) => [node.id, node]))
+const DEG_TO_RAD = Math.PI / 180
+const INNER_RADIUS = 110
+const OUTER_RADIUS = 260
+
+const positionNodesOnCircle = (
+  prefix: string,
+  count: number,
+  radius: number,
+) => {
+  for (let i = 0; i < count; i++) {
+    const node = nodeMap.get(`${prefix}-${i}`)
+    if (node) {
+      const angle = ((i * 360) / count) * DEG_TO_RAD
+      ;(node as any).x = center[0] + radius * Math.cos(angle)
+      ;(node as any).y = center[1] + radius * Math.sin(angle)
+    }
+  }
+}
+
 // 中心节点
-const centerNodeData = data.nodes!.find((n) => n.id === 'center')
+const centerNodeData = nodeMap.get('center')
 if (centerNodeData) {
-  centerNodeData.x = center[0]
-  centerNodeData.y = center[1]
+  ;(centerNodeData as any).x = center[0]
+  ;(centerNodeData as any).y = center[1]
 }
 
 // 内层节点
-const innerCount = innerNodes.length
-for (let i = 0; i < innerCount; i++) {
-  const node = data.nodes!.find((n) => n.id === `inner-${i}`)
-  if (node) {
-    const angle = (((i * 360) / innerCount) * Math.PI) / 180
-    node.x = center[0] + 110 * Math.cos(angle)
-    node.y = center[1] + 110 * Math.sin(angle)
-  }
-}
+positionNodesOnCircle('inner', innerNodes.length, INNER_RADIUS)
 
 // 外层节点
-const outerCount = outerNodes.length
-for (let i = 0; i < outerCount; i++) {
-  const node = data.nodes!.find((n) => n.id === `outer-${i}`)
-  if (node) {
-    const angle = (((i * 360) / outerCount) * Math.PI) / 180
-    node.x = center[0] + 260 * Math.cos(angle)
-    node.y = center[1] + 260 * Math.sin(angle)
-  }
-}
-
-const model = data
+positionNodesOnCircle('outer', outerNodes.length, OUTER_RADIUS)
 
 // 渲染图形
-graph.fromJSON(model)
+graph.fromJSON(data)
