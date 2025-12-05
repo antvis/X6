@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { PanningManager } from '@/graph/panning'
-import * as Common from '@/common'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import * as Common from '../../src/common'
+import { PanningManager } from '../../src/graph/panning'
 
 describe('PanningManager', () => {
   let panningManager: PanningManager

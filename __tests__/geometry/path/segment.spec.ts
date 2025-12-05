@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { Point, Line, Rectangle } from '@/geometry'
-import { Segment } from '@/geometry/path/segment'
+import { describe, expect, it } from 'vitest'
+import { Line, Point, Rectangle } from '../../../src/geometry'
+import { Segment } from '../../../src/geometry/path/segment'
 
 // Dummy 实现，用于测试 Segment 基类逻辑
 class DummySegment extends Segment {

@@ -1,4 +1,4 @@
-import { ViewEvents } from '@/types'
+import { ViewEvents } from '../../types'
 import { Dom, type KeyValue, ObjectExt } from '../../common'
 import type { CellView } from '../cell'
 import { Markup, type MarkupType } from '../markup'

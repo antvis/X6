@@ -1,5 +1,5 @@
 import { isEventSupported } from '../platform'
-import type { OnWheelCallback, OnWheelGuard } from '@/types'
+import type { OnWheelCallback, OnWheelGuard } from '../../types'
 export class MouseWheelHandle {
   private target: HTMLElement | Document
   private onWheelCallback: OnWheelCallback

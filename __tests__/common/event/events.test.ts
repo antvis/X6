@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
 import sinon from 'sinon'
-import { Events } from '@/common/event'
+import { describe, expect, it } from 'vitest'
+import { Events } from '../../../src/common/event'
 
 describe('events', () => {
   it('should trigger with context', () => {

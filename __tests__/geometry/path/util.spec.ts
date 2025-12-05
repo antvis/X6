@@ -1,6 +1,11 @@
-import { describe, it, expect } from 'vitest'
-import { Point } from '@/geometry'
-import { isValid, drawPoints, arcToCurves, drawArc } from '@/geometry/path/util'
+import { describe, expect, it } from 'vitest'
+import { Point } from '../../../src/geometry'
+import {
+  arcToCurves,
+  drawArc,
+  drawPoints,
+  isValid,
+} from '../../../src/geometry/path/util'
 
 describe('util.ts', () => {
   describe('isValid', () => {

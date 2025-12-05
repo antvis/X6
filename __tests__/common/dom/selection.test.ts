@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { Dom } from '@/common/dom'
+import { describe, expect, it } from 'vitest'
+import { Dom } from '../../../src/common/dom'
 
 describe('Dom', () => {
   describe('#clearSelection', () => {
