@@ -1828,7 +1828,12 @@ export class EdgeView<
           valid = false
         }
       } else {
-        valid = doValidate(allowLoop)
+        // valid = doValidate(allowLoop)
+        if (typeof allowLoop === 'function') {
+          if (sourceView === targetView && !doValidate(allowLoop)) {
+            valid = false
+          }
+        }
       }
     }
 
