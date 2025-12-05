@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import '@/plugin/transform/api'
-import { Graph } from '@/graph'
-import { Transform } from '@/plugin/transform'
-import { TransformImpl } from '@/plugin/transform/transform'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import '../../src/plugin/transform/api'
+import { Graph } from '../../src/graph'
+import { Transform } from '../../src/plugin/transform'
+import { TransformImpl } from '../../src/plugin/transform/transform'
 
 function createMockGraph() {
   const nodes: any[] = []

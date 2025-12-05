@@ -4,7 +4,7 @@ import type { Edge, TerminalCellData, TerminalType } from '../../model'
 import type { CellView } from '../../view'
 import { Registry } from '../registry'
 import * as strategies from './main'
-import type { PointLike } from '@/types'
+import type { PointLike } from '../../types'
 
 export type ConnectionStrategyDefinition = (
   this: Graph,
