@@ -1,16 +1,17 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Vertices } from '@antv/x6/es/registry/tool/vertices'
 import './index.less'
 
-const RedVertices = Vertices.define<Vertices.Options>({
-  name: 'red-vertices',
-  attrs: {
-    fill: 'red',
+Graph.registerEdgeTool(
+  'red-vertices',
+  {
+    inherit: 'vertices',
+    attrs: {
+      fill: 'red',
+    },
   },
-})
-
-Graph.registerEdgeTool('red-vertices', RedVertices, true)
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
