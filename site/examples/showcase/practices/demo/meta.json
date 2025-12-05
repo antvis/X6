@@ -111,6 +111,22 @@
         "en": "Batch Dragging Multiple Nodes with Selection"
       },
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*kxWSSLKG_tIAAAAAbkAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "timeline.ts",
+      "title": {
+        "zh": "简单时间轴",
+        "en": "timeline"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*r57tRIroEtIAAAAARoAAAAgAemJ7AQ/original"
+    },
+    {
+      "filename": "complexTimeline.ts",
+      "title": {
+        "zh": "复杂时间轴",
+        "en": "complexTimeline"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*MWQlQ5eCfq4AAAAASCAAAAgAemJ7AQ/original"
     }
   ]
 }
