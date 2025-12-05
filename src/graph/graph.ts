@@ -73,7 +73,7 @@ import type {
 } from './transform'
 import { GraphView } from './view'
 import { VirtualRenderManager as VirtualRender } from './virtual-render'
-import type { KeyPoint } from '@/types'
+import type { KeyPoint } from '../types'
 
 type FindViewsInAreaOptions = {
   strict?: boolean
