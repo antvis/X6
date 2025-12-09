@@ -33,6 +33,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Er8NQ7Qsap8AAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "concentric-circles.ts",
+      "title": {
+        "zh": "同心圆布局",
+        "en": "Concentric Circles"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*U5uxR5kSLU8AAAAAQsAAAAgAemJ7AQ/original"
+    },
+    {
       "filename": "force.ts",
       "title": {
         "zh": "力导向布局",
