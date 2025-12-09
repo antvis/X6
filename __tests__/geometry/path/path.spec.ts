@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { Curve, Line, Point, Polyline, Rectangle, Segment } from '@'
-import { Path } from '@/geometry/path'
-import { Close } from '@/geometry/path/close'
-import { LineTo } from '@/geometry/path/lineto'
-import { MoveTo } from '@/geometry/path/moveto'
+import { Curve, Line, Point, Polyline, Rectangle, Segment } from '../../../src'
+import { Path } from '../../../src/geometry/path'
+import { Close } from '../../../src/geometry/path/close'
+import { LineTo } from '../../../src/geometry/path/lineto'
+import { MoveTo } from '../../../src/geometry/path/moveto'
 
 describe('Path', () => {
   const p0 = new Point(0, 0)

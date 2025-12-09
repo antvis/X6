@@ -35,7 +35,7 @@ new Graph(options: Options)
 | [preventDefaultContextMenu](/api/mvc/view#preventdefaultcontextmenu) | `boolean` |  | 是否禁用浏览器默认右键菜单。 | `true` |
 | [preventDefaultBlankAction](/api/mvc/view#preventdefaultblankaction) | `boolean` |  | 在画布空白位置响应鼠标事件时，是否禁用鼠标默认行为。 | `true` |
 | [async](/api/mvc/view#async) | `boolean` |  | 是否异步渲染 | `true` |
-| [virtual](/api/mvc/view#virtual) | `boolean` |  | 是否只渲染可视区域内容 | `false` |
+| [virtual](/api/mvc/view#virtual) | `boolean \| VirtualOptions` |  | 是否只渲染可视区域内容；当传入对象时可配置缓冲边距 `margin` 与开关 `enabled` | `false` |
 | [onPortRendered](/api/mvc/view#onportrendered) | `(args: OnPortRenderedArgs) => void` |  | 当某个连接桩渲染完成时触发的回调。 | - |
 | [onEdgeLabelRendered](/api/mvc/view#onedgelabelrendered) | `(args: OnEdgeLabelRenderedArgs) => void \| ((args: OnEdgeLabelRenderedArgs) => void)` |  | 当边的文本标签渲染完成时触发的回调，并且它可以返回一个清理函数，该函数会在标签被销毁时执行。 | - |
 | [createCellView](/api/mvc/view#createcellview) | `(cell: Cell) => CellView \| null \| undefined` |  | 是自定义元素的视图。 | - |

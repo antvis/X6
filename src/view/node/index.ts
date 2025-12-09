@@ -26,7 +26,7 @@ import type {
   NodeViewPortCache,
   NodeViewPositionEventArgs,
 } from './type'
-import type { KeyPoint } from '@/types'
+import type { KeyPoint } from '../../types'
 
 export class NodeView<
   Entity extends Node = Node,

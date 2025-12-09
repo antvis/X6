@@ -1,3 +1,15 @@
+# @antv/x6 3.1.0 (2025-12-01)
+
+## 功能增强
+
+- 虚拟渲染配置扩展：`virtual` 支持对象配置 `VirtualOptions`，可通过 `enabled` 与 `margin` 精细控制虚拟渲染开关与缓冲边距。
+
+## 修复
+
+- History 插件：修复批量删除与撤销场景下的异常，确保 `remove` 命令记录与回滚逻辑一致。
+- Safari 箭头渲染：在 Safari 下通过强制重排 `EdgeView` 容器以确保 `marker-start`/`marker-end` 正确渲染。
+- React/Vue/Angular 节点渲染：修复通过 x6-react/vue/angular-shape 注册节点在虚拟渲染场景下可能出现的渲染异常。
+
 # @antv/x6 3.0.0 (2025-11-21)
 
 ## 重大变更

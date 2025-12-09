@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest'
-import { Line } from '@'
-import { Point } from '@/geometry'
-import { Close } from '@/geometry/path/close'
-import { MoveTo } from '@/geometry/path/moveto'
-import { LineTo } from '@/geometry/path/lineto'
+import { describe, expect, it } from 'vitest'
+import { Line } from '../../../src'
+import { Point } from '../../../src/geometry'
+import { Close } from '../../../src/geometry/path/close'
+import { LineTo } from '../../../src/geometry/path/lineto'
+import { MoveTo } from '../../../src/geometry/path/moveto'
 
 describe('Close', () => {
   const move = new MoveTo(0, 0)
