@@ -107,7 +107,7 @@ const graph = new Graph({
 })
 
 // 同心圆布局位置
-const center = [400, 300]
+const center = [300, 300]
 
 // 设置各层节点的位置
 const nodeMap = new Map(data.nodes!.map((node) => [node.id, node]))
@@ -124,8 +124,10 @@ const positionNodesOnCircle = (
     const node = nodeMap.get(`${prefix}-${i}`)
     if (node) {
       const angle = ((i * 360) / count) * DEG_TO_RAD
-      ;(node as any).x = center[0] + radius * Math.cos(angle)
-      ;(node as any).y = center[1] + radius * Math.sin(angle)
+      Object.assign(node, {
+        x: center[0] + radius * Math.cos(angle),
+        y: center[1] + radius * Math.sin(angle),
+      })
     }
   }
 }
@@ -133,8 +135,10 @@ const positionNodesOnCircle = (
 // 中心节点
 const centerNodeData = nodeMap.get('center')
 if (centerNodeData) {
-  ;(centerNodeData as any).x = center[0]
-  ;(centerNodeData as any).y = center[1]
+  Object.assign(centerNodeData, {
+    x: center[0],
+    y: center[1],
+  })
 }
 
 // 内层节点
