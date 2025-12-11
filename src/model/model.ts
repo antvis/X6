@@ -35,7 +35,7 @@ import {
   TerminalType,
 } from './edge'
 import { Node, NodeMetadata } from './node'
-import type { PointLike, KeyPoint } from '@/types'
+import type { PointLike, KeyPoint } from '../types'
 
 const toStringTag = 'X6.Model'
 export class Model extends Basecoat<ModelEventArgs> {

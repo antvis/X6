@@ -1,4 +1,4 @@
-import { ViewEvents } from '@/types'
+import { ViewEvents } from '../../types'
 import {
   Basecoat,
   Dom,
