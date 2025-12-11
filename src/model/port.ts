@@ -17,7 +17,7 @@ import {
   portLayoutRegistry,
 } from '../registry'
 import type { MarkupType } from '../view/markup'
-import type { PointData } from '@/types'
+import type { PointData } from '../types'
 
 export interface Metadata {
   groups?: { [name: string]: GroupMetadata }

@@ -1,16 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Util } from '@/common'
-import { Dom } from '@/common/dom'
-import { Rectangle } from '@/geometry'
-import { Graph } from '@/graph'
-import type { Cell } from '@/model'
-import { Scroller } from '@/plugin/scroller'
+import { Util } from '../../src/common'
+import { Dom } from '../../src/common/dom'
+import { Rectangle } from '../../src/geometry'
+import { Graph } from '../../src/graph'
+import type { Cell } from '../../src/model'
+import { Scroller } from '../../src/plugin/scroller'
 import {
   ScrollerImpl,
   ScrollerImplBackground,
   transitionClassName,
   transitionEventName,
-} from '@/plugin/scroller/scroller'
+} from '../../src/plugin/scroller/scroller'
 
 class MockCell {
   getBBox() {

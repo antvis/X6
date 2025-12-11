@@ -1,0 +1,47 @@
+[
+  {
+    "id": "event-1",
+    "title": "Design",
+    "content": "UI/UX design",
+    "date": "2024-02",
+    "color": "#4169E1",
+    "lightColor": "rgba(65, 105, 225, 0.1)",
+    "type": "normal"
+  },
+  {
+    "id": "event-2",
+    "title": "Build",
+    "content": "Development",
+    "date": "2024-03",
+    "color": "#FF8C00",
+    "lightColor": "rgba(255, 140, 0, 0.1)",
+    "type": "normal"
+  },
+  {
+    "id": "milestone-1",
+    "title": "V1.0",
+    "content": "First release",
+    "date": "2024-04",
+    "color": "#4169E1",
+    "lightColor": "rgba(65, 105, 225, 0.1)",
+    "type": "milestone"
+  },
+  {
+    "id": "event-3",
+    "title": "Test",
+    "content": "QA testing",
+    "date": "2024-05",
+    "color": "#FF1493",
+    "lightColor": "rgba(255, 20, 147, 0.1)",
+    "type": "normal"
+  },
+  {
+    "id": "event-4",
+    "title": "Launch",
+    "content": "Go live",
+    "date": "2024-06",
+    "color": "#2E8B57",
+    "lightColor": "rgba(46, 139, 87, 0.1)",
+    "type": "normal"
+  }
+]

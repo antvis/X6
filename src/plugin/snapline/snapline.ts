@@ -16,7 +16,7 @@ import type { EventArgs, Graph } from '../../graph'
 import type { ModelEventArgs, Node, ResizeOptions } from '../../model'
 import { type CellView, type NodeView, View } from '../../view'
 import type { SnaplineImplFilter, SnaplineImplOptions } from './type'
-import type { PointLike } from '@/types'
+import type { PointLike } from '../../types'
 
 export class SnaplineImpl extends View implements IDisablable {
   public readonly options: SnaplineImplOptions

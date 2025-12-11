@@ -16,7 +16,6 @@ export class CellEditor extends ToolItem<
     events: {
       mousedown: 'onMouseDown',
       touchstart: 'onMouseDown',
-      mouseleave: 'onMouseLeave',
     },
     documentEvents: {
       mouseup: 'onDocumentMouseUp',
@@ -187,10 +186,6 @@ export class CellEditor extends ToolItem<
     if (this.editor && e.target !== this.editor) {
       this.updateCell()
     }
-  }
-
-  onMouseLeave() {
-    if (this.editor) this.updateCell()
   }
 
   onCellDblClick({ e }: { e: Dom.DoubleClickEvent }) {
