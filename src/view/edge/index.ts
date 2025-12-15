@@ -1709,9 +1709,6 @@ export class EdgeView<
       this,
     ]
 
-    args[4] = type
-    args[5] = this
-
     let opposite: TerminalType
     let i = 0
     let j = 0
