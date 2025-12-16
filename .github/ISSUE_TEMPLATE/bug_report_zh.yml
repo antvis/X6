@@ -21,7 +21,7 @@ body:
     attributes:
       label: 重现链接
       description: |
-        1. 请提供一个精简的最小可复现链接，尽量去除你的业务代码, 它可以让我们更快的帮你复现，定位问题，这很重要，很重要，很重要。
+        1. 请提供一个精简的最小可复现链接，尽量去除你的业务代码，它可以让我们更快的帮你复现，定位问题，这很重要，很重要，很重要。
         2. 推荐使用 CodeSandbox(https://codesandbox.io/s/new) 重现你的问题。
         3. [官网示例中的 demo](https://x6.antv.antgroup.com/examples) 支持在线编写代码，你可以将代码转成 `codesandbox` 并将对应的链接发给我们，请不要将官网的代码原封不动的复制给我们。
       placeholder: |
