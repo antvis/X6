@@ -1,85 +1,72 @@
 name: '🐞 Bug Report'
-description: Report a reproducible error or regression
+description: Create a new issue. If your issue does not follow the guidelines, it may be closed automatically.
+title: '🐞'
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting an issue :pray:.
-
-        This issue tracker is for reporting bugs found in X6 (https://github.com/antvis/X6)
-        If you have a question about how to achieve something and are struggling, please post a question
-        inside of X6's Discussion's tab: https://github.com/antvis/X6/discussions
-
-        Before submitting a new bug/issue, please check the links below to see if there is a solution or question posted there already:
-         - X6's Issue's tab: https://github.com/antvis/X6/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
-         - X6's Closed issues tab: https://github.com/antvis/X6/issues?q=is%3Aissue+sort%3Aupdated-desc+is%3Aclosed
-         - X6 Discussion's tab: https://github.com/antvis/X6/discussions
-
-        The more information you fill in, the better the community can help you.
+        ### Issue Feedback
+        ⚠️ Before creating an issue, please make sure you have carefully read 👓 and searched 🔍 https://x6.antv.antgroup.com and https://x6.antv.antgroup.com/examples, and that you have already searched the relevant https://github.com/antvis/X6/issues?q=is%3Aissue and https://github.com/antvis/X6/discussions. Please only submit an issue when you believe there is no existing solution. ⚠️
+        ### Package / Version Maintenance Policy
+        All new features and enhancements are iterated on in the 3.x version; versions 1.x and 2.x mainly receive fixes for critical bugs.
   - type: textarea
     id: description
     attributes:
-      label: Describe the bug
-      description: Provide a clear and concise description of the challenge you are running into.
+      label: Describe the problem
+      description: Clearly describe the problem you ran into. Please do not be stingy with words; provide as much useful information as you can.
     validations:
       required: true
   - type: input
     id: link
     attributes:
-      label: Your Example Website or App
+      label: Minimal reproduction link
       description: |
-        Which website or app were you using when the bug happened?
-        Note:
-        - Your bug will may get fixed much faster if we can run your code and it doesn't have dependencies other than the X6 npm package.
-        - To create a shareable code example you can use Stackblitz (https://stackblitz.com/) or CodeSandbox (https://codesandbox.io/s/new). Please no localhost URLs.
-        - Please read these tips for providing a minimal example: https://stackoverflow.com/help/mcve.
+        1. Please provide a minimal reproducible example, and try to remove your business code as much as possible. This helps us reproduce and locate the issue faster; this is very important.
+        2. It is recommended to use CodeSandbox (https://codesandbox.io/s/new) to reproduce your problem.
+        3. The demos in the official examples (https://x6.antv.antgroup.com/examples) support editing code online. You can convert the code into a `codesandbox` and share the link with us. Please do not simply copy the official demo code to us without modification.
       placeholder: |
-        e.g. Stackblitz, Code Sandbox app url
+        Example: CodeSandbox URL
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Steps to Reproduce the Bug or Issue
-      description: Describe the steps we have to take to reproduce the behavior.
+      label: Steps to reproduce
+      description: Please do not just paste a screenshot or a single sentence. We need detailed steps that we can follow to reproduce the issue.
       placeholder: |
-        1. Go to '...'
-        2. Click on '....'
-        3. Scroll down to '....'
-        4. See error
+        1. Open page...
+        2. Click...
+        3. See error...
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
       label: Expected behavior
-      description: Provide a clear and concise description of what you expected to happen.
+      description: Describe the expected behavior. You know your code best, so please do not make us guess. For example: calling graph.centerContent() had no effect, but you expected the content to be centered after the call. If necessary, please use annotated screenshots to make the problem more obvious.
       placeholder: |
-        As a user, I expected ___ behavior but i am seeing ___
+        I expected to see..., but I saw...
     validations:
       required: true
-  - type: textarea
-    id: screenshots_or_videos
-    attributes:
-      label: Screenshots or Videos
-      description: |
-        If applicable, add screenshots or a video to help explain your problem.
-        For more information on the supported file image/file types and the file size limits, please refer
-        to the following link: https://docs.github.com/en/github/writing-on-github/working-with-advanced-formatting/attaching-files
-      placeholder: |
-        You can drag your video or image files inside of this editor ↓
   - type: textarea
     id: platform
     attributes:
       label: Platform
       value: |
-        - OS: [e.g. macOS, Windows, Linux]
-        - Browser: [e.g. Chrome, Safari, Firefox]
-        - Version: [e.g. 2.11.1]
+        - OS: [macOS, Windows, Linux, React Native ...]
+        - Browser: [Google Chrome, Safari, Firefox ...]
+        - X6 Version: [3.1.0 ...]
     validations:
       required: true
   - type: textarea
+    id: screenshots_or_videos
+    attributes:
+      label: Screenshots or videos (optional but recommended)
+      description: You can add screenshots or videos to help explain your problem.
+      placeholder: |
+        You can drag your image or video files here ↓
+  - type: textarea
     id: additional
     attributes:
-      label: Additional context
-      description: Add any other context about the problem here.
+      label: Additional context (optional)
+      description: For example, the business scenario or context where you ran into this bug.
