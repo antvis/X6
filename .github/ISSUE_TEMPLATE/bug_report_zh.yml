@@ -1,18 +1,19 @@
 name: '🐞 新 Issue'
 description: 创建一个新的 issue，如果你的 issue 不符合规范，它将会被自动关闭。
+title: '🐞'
 body:
   - type: markdown
     attributes:
       value: |
-        在提交新 issue 之前，先通过以下链接查看有没有类似的 bug 或者建议:
-         - [X6 Issues](https://github.com/antvis/X6/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
-         - [X6 Closed Issues](https://github.com/antvis/X6/issues?q=is%3Aissue+sort%3Aupdated-desc+is%3Aclosed)
-         - [X6 Discussions](https://github.com/antvis/X6/discussions)
+        ### 问题反馈
+        ⚠️ 在提出问题前，请确保你已经仔细阅读👓/搜索🔍过 [官方文档](https://x6.antv.antgroup.com) 和 [图表示例](https://x6.antv.antgroup.com/examples)，并且已经搜索查阅过相关 [Issues 列表](https://github.com/antvis/X6/issues?q=is%3Aissue) 和 [Discussions 列表](https://github.com/antvis/X6/discussions)。当你确定自己的问题没有解决方案时，请提交 issue。 ⚠️
+        ### 包/版本维护原则
+        所有新功能、新特性均在 3.x 版本中进行迭代；1.x、2.x 版本以修复痛点 bug 为主。
   - type: textarea
     id: description
     attributes:
       label: 问题描述
-      description: 简洁清晰地描述你遇到的问题。
+      description: 清晰地描述你遇到的问题，**请不要惜字如金，尽可能多提供一些你能想到的有用信息**。
     validations:
       required: true
   - type: input
@@ -20,16 +21,18 @@ body:
     attributes:
       label: 重现链接
       description: |
-        可以使用 CodeSandbox(https://codesandbox.io/s/new) 或者 StackBlitz(https://stackblitz.com/) 重现你的问题。
+        1. 请提供一个精简的最小可复现链接，尽量去除你的业务代码，它可以让我们更快的帮你复现，定位问题，这很重要，很重要，很重要。
+        2. 推荐使用 CodeSandbox(https://codesandbox.io/s/new) 重现你的问题。
+        3. [官网示例中的 demo](https://x6.antv.antgroup.com/examples) 支持在线编写代码，你可以将代码转成 `codesandbox` 并将对应的链接发给我们，请不要将官网的代码原封不动的复制给我们。
       placeholder: |
-        示例: CodeSandBox 或者 StackBlitz URL
+        示例: CodeSandBox URL
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
       label: 重现步骤
-      description: 简洁清晰的重现步骤能够帮助我们更迅速地定位问题所在。
+      description: 请不要贴一张图或一句话就草草了事，我们需要你详细的复现步骤，这个问题需要怎么样的操作步骤才能复现。
       placeholder: |
         1.进入页面...
         2.点击....
@@ -40,7 +43,7 @@ body:
     id: expected
     attributes:
       label: 预期行为
-      description: 描述你期望的结果以及实际的结果。
+      description: 说明这个问题的预期行为，只有你才最了解自己的代码，所以请不要让我们猜。比如：调用 graph.centerContent() 未生效，期望调用后画布居中。如有必要请使用截图工具标注一下，让问题更醒目。
       placeholder: |
         我期望看到...，但我看到了...
     validations:
@@ -52,16 +55,16 @@ body:
       value: |
         - 操作系统: [macOS, Windows, Linux, React Native ...]
         - 网页浏览器: [Google Chrome, Safari, Firefox ...]
-        - X6 版本: [2.11.1 ...]
+        - X6 版本: [3.1.0 ...]
     validations:
       required: true
   - type: textarea
     id: screenshots_or_videos
     attributes:
-      label: 屏幕截图或视频（可选）
+      label: 屏幕截图或视频（可选但最好有）
       description: 可以添加屏幕截图或视频帮助你解释问题。
       placeholder: |
-        可以将你的图片或者视频拖拽到此处↓
+        可以将你的图片或者视频拖拽到此处 ↓
   - type: textarea
     id: additional
     attributes:
