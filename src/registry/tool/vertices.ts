@@ -214,18 +214,15 @@ export class Vertices extends ToolItem<EdgeView, Options> {
       this.updatePath()
     }
 
-    if (!options.removeRedundancies) {
-      this.stopBatch(this.eventData(e).vertexAdded)
-      return
-    }
+    if (options.removeRedundancies) {
+      const verticesRemoved = edgeView.removeRedundantLinearVertices({
+        ui: true,
+        toolId: this.cid,
+      })
 
-    const verticesRemoved = edgeView.removeRedundantLinearVertices({
-      ui: true,
-      toolId: this.cid,
-    })
-
-    if (verticesRemoved) {
-      this.render()
+      if (verticesRemoved) {
+        this.render()
+      }
     }
 
     this.blur()

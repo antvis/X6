@@ -196,7 +196,10 @@ export class CellEditor extends ToolItem<
       this.createElement()
       this.updateEditor()
       this.autoFocus()
-      this.delegateDocumentEvents(this.options.documentEvents!)
+      const documentEvents = this.options.documentEvents
+      if (documentEvents) {
+        this.delegateDocumentEvents(documentEvents)
+      }
     }
   }
 
@@ -216,10 +219,10 @@ export class CellEditor extends ToolItem<
   selectText() {
     if (window.getSelection && this.editor) {
       const range = document.createRange()
-      const selection = window.getSelection()!
       range.selectNodeContents(this.editor)
-      selection.removeAllRanges()
-      selection.addRange(range)
+      const selection = window.getSelection()
+      selection?.removeAllRanges()
+      selection?.addRange(range)
     }
   }
 
@@ -256,9 +259,7 @@ export class CellEditor extends ToolItem<
     }
     if (typeof setText === 'string') {
       if (this.cell.isNode()) {
-        if (value !== null) {
-          this.cell.attr(setText, value)
-        }
+        this.cell.attr(setText, value === null ? '' : value)
         return
       }
       if (this.cell.isEdge()) {
@@ -277,7 +278,7 @@ export class CellEditor extends ToolItem<
         } else {
           if (value !== null) {
             edge.prop(`labels/${this.labelIndex}/attrs/${setText}`, value)
-          } else if (typeof this.labelIndex === 'number') {
+          } else {
             edge.removeLabelAt(this.labelIndex)
           }
         }
