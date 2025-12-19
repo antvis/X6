@@ -9,18 +9,21 @@ import {
 import type { AttrDefinition, QualifyFunction } from './index'
 
 export const text: AttrDefinition = {
-  qualify(text, { attrs }) {
+  qualify(_text, { attrs }) {
     return attrs.textWrap == null || !ObjectExt.isPlainObject(attrs.textWrap)
   },
   set(text, { view, elem, attrs }) {
     const cacheName = 'x6-text'
     const cache = Dom.data(elem, cacheName)
-    const json = <T>(str: any) => {
+    const json = <T>(str: unknown): T => {
       try {
-        return JSON.parse(str) as T
-      } catch (error) {
-        return str
+        if (typeof str === 'string') {
+          return JSON.parse(str)
+        }
+      } catch (_error) {
+        // Not a valid JSON string, return as is.
       }
+      return str as T
     }
     const options: Dom.TextOptions = {
       x: attrs.x as string | number,
@@ -45,10 +48,9 @@ export const text: AttrDefinition = {
     // Updates the text only if there was a change in the string
     // or any of its attributes.
     if (cache == null || cache !== textHash) {
-      // Text Along Path Selector
-      const textPath = options.textPath as any
+      const textPath = options.textPath
       if (textPath != null && typeof textPath === 'object') {
-        const selector = textPath.selector
+        const selector = (textPath as { selector?: string }).selector
         if (typeof selector === 'string') {
           const pathNode = view.find(selector)[0]
           if (pathNode instanceof SVGPathElement) {
@@ -56,7 +58,7 @@ export const text: AttrDefinition = {
             options.textPath = {
               'xlink:href': `#${pathNode.id}`,
               ...textPath,
-            }
+            } as { d?: string; 'xlink:href'?: string }
           }
         }
       }
@@ -95,12 +97,8 @@ export const textWrap: AttrDefinition = {
     }
 
     // option `text`
-    let wrappedText
-    let txt = info.text
-    if (txt == null) {
-      // the edge of the label is assigned to txt
-      txt = attrs.text || elem?.textContent
-    }
+    let wrappedText: string
+    const txt = info.text ?? attrs.text ?? elem?.textContent
 
     if (txt != null) {
       wrappedText = Dom.breakText(
@@ -113,10 +111,7 @@ export const textWrap: AttrDefinition = {
           lineHeight: attrs.lineHeight,
         },
         {
-          // svgDocument: view.graph.view.svg,
           ellipsis: info.ellipsis as string,
-          // hyphen: info.hyphen as string,
-          // breakWord: info.breakWord as boolean,
         },
       )
     } else {
@@ -133,7 +128,7 @@ export const textWrap: AttrDefinition = {
   },
 }
 
-const isTextInUse: QualifyFunction = (val, { attrs }) => {
+const isTextInUse: QualifyFunction = (_val, { attrs }) => {
   return attrs.text !== undefined
 }
 
