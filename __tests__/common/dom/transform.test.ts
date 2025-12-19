@@ -38,8 +38,8 @@ describe('Dom', () => {
         f: normalizeFloat(matrix.f),
       }).toEqual({
         a: normalizeFloat(Math.SQRT1_2),
-        b: normalizeFloat(-0.7071067811865475),
-        c: normalizeFloat(0.7071067811865475),
+        b: normalizeFloat(-Math.SQRT1_2),
+        c: normalizeFloat(Math.SQRT1_2),
         d: normalizeFloat(Math.SQRT1_2),
         e: normalizeFloat(0),
         f: normalizeFloat(0),
