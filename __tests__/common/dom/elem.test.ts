@@ -59,7 +59,7 @@ function setupTest() {
   }
 }
 
-function clearnTest() {
+function cleanTest() {
   Dom.remove(wrap)
 }
 
@@ -90,7 +90,7 @@ describe('Dom', () => {
       svgLinearGradient,
     } = setupTest()
 
-    afterAll(() => clearnTest())
+    afterAll(() => cleanTest())
 
     describe('#ensureId', () => {
       it('should set a id when id is empty', () => {
