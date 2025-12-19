@@ -129,18 +129,18 @@ export class JobQueue {
     if (this.scheduleId) {
       this.cancelScheduleJob()
     }
-    if ('requestIdleCallback' in window) {
+    if ('requestAnimationFrame' in window) {
+      this.scheduleMode = SCHEDULE_MODE.raf
+      this.scheduleId = (window as Window).requestAnimationFrame(() =>
+        this.flushJobs(),
+      )
+    } else if ('requestIdleCallback' in window) {
       this.scheduleMode = SCHEDULE_MODE.idle
-      this.scheduleId = window.requestIdleCallback(
+      this.scheduleId = (window as Window).requestIdleCallback(
         (deadline: IdleDeadline) => this.flushJobs(deadline),
         {
           timeout: 100,
         },
-      )
-    } else if ('requestAnimationFrame' in window) {
-      this.scheduleMode = SCHEDULE_MODE.raf
-      this.scheduleId = (window as Window).requestAnimationFrame(() =>
-        this.flushJobs(),
       )
     } else {
       this.scheduleMode = SCHEDULE_MODE.timeout

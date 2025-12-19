@@ -1,53 +1,55 @@
 import React from 'react'
-import { Graph, Color } from '@antv/x6'
-import { Button } from '@antv/x6/es/registry/tool/button'
+import { Graph, Color, CellView } from '@antv/x6'
 import './index.less'
 
-const MyButton = Button.define<Button.Options>({
-  markup: [
-    {
-      tagName: 'rect',
-      selector: 'button',
-      attrs: {
-        width: 40,
-        height: 20,
-        rx: 4,
-        ry: 4,
-        fill: 'white',
-        stroke: '#fe854f',
-        'stroke-width': 2,
-        cursor: 'pointer',
+Graph.registerNodeTool(
+  'my-btn',
+  {
+    inherit: 'button',
+    markup: [
+      {
+        tagName: 'rect',
+        selector: 'button',
+        attrs: {
+          width: 40,
+          height: 20,
+          rx: 4,
+          ry: 4,
+          fill: 'white',
+          stroke: '#fe854f',
+          'stroke-width': 2,
+          cursor: 'pointer',
+        },
       },
+      {
+        tagName: 'text',
+        selector: 'text',
+        textContent: 'btn',
+        attrs: {
+          fill: '#fe854f',
+          'font-size': 10,
+          'text-anchor': 'middle',
+          'pointer-events': 'none',
+          x: 20,
+          y: 13,
+        },
+      },
+    ],
+    onClick({ view }: { view: CellView }) {
+      const node = view.cell
+      const fill = Color.randomHex()
+      node.attr({
+        body: {
+          fill,
+        },
+        label: {
+          fill: Color.invert(fill, true),
+        },
+      })
     },
-    {
-      tagName: 'text',
-      selector: 'text',
-      textContent: 'btn',
-      attrs: {
-        fill: '#fe854f',
-        'font-size': 10,
-        'text-anchor': 'middle',
-        'pointer-events': 'none',
-        x: 20,
-        y: 13,
-      },
-    },
-  ],
-  onClick({ view }: any) {
-    const node = view.cell
-    const fill = Color.randomHex()
-    node.attr({
-      body: {
-        fill,
-      },
-      label: {
-        fill: Color.invert(fill, true),
-      },
-    })
   },
-})
-
-Graph.registerNodeTool('my-btn', MyButton, true)
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement

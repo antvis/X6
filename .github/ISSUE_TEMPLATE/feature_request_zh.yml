@@ -1,12 +1,19 @@
 name: 💡 新功能
-description: 给 X6 提出新的功能要求。
-labels: ["template: story"]
+description: 给 X6 提出新的功能要求（或者想参与共建）。
+title: '💡'
+labels: ["feature 💡"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        如果你遇到了问题，或者对 [Issues](https://github.com/antvis/X6/issues) 和 [Discussions](https://github.com/antvis/X6/discussions) 列表的问题感兴趣，**可以直接认领并尝试修复**，帮助 X6 变得更好，期待在 [贡献者列表](https://github.com/antvis/X6/graphs/contributors) 里看见你的头像。
   - type: textarea
     id: describe_feature
     attributes:
       label: 功能描述
       description: 请尽可能详尽地说明这个功能的场景以及解决了什么问题。
+      placeholder: |
+        这个功能能解决什么问题？ 现有功能不满足的点在哪？
     validations:
       required: true
   - type: textarea
@@ -14,5 +21,15 @@ body:
     attributes:
       label: 期望解决方案
       description: 描述你期望这个新功能的使用方式或者实现方式。
+    validations:
+      required: true
+  - type: dropdown
+    id: willing_to_contribute
+    attributes:
+      label: 是否愿意参与贡献？
+      options:
+        - 请选择
+        - ✅ 是
+        - ❌ 否
     validations:
       required: true

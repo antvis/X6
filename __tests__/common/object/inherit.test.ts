@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { ObjectExt } from '@/common'
+import { describe, expect, it } from 'vitest'
+import { ObjectExt } from '../../../src/common'
 
 describe('object', () => {
   class Parent {
