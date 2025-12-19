@@ -396,6 +396,63 @@ describe('plugin/stencil', () => {
     cleanup()
     destroy()
   })
+
+  it('should NOT auto resize graph height when searching if stencilGraphHeight is set to a fixed value', async () => {
+    const { div, destroy } = createDivElement()
+    const { graph, cleanup } = createTestGraph()
+
+    const fixedHeight = 200
+    const stencil = new Stencil({
+      target: graph,
+      stencilGraphHeight: fixedHeight,
+      collapsable: true,
+      search: { circle: true },
+      groups: [
+        {
+          name: 'group1',
+        },
+      ],
+    })
+
+    const nodes = []
+    for (let i = 0; i < 10; i++) {
+      nodes.push(
+        graph.addNode({
+          id: `n${i}`,
+          shape: i === 0 ? 'circle' : 'rect',
+          width: 80,
+          height: 40,
+        }),
+      )
+    }
+
+    stencil.load(nodes, 'group1')
+    div.appendChild(stencil.container)
+
+    await sleep(500)
+
+    const innerGraph = (stencil as any).getGraph('group1')
+    const initialHeight = innerGraph.options.height
+
+    // Height should be equal to the fixed height
+    expect(initialHeight).toBe(fixedHeight)
+
+    const searchTextEle = document.querySelector(
+      `.${stencil.prefixClassName(ClassNames.searchText)}`,
+    ) as HTMLInputElement
+    searchTextEle.value = 'any'
+    searchTextEle?.dispatchEvent(new Event('input', { bubbles: true }))
+
+    await sleep(1000)
+
+    const filteredHeight = innerGraph.options.height
+
+    // Height should remain fixed
+    expect(filteredHeight).toBe(fixedHeight)
+
+    cleanup()
+    destroy()
+  })
 })
 
 describe('plugin/stencil/search', () => {

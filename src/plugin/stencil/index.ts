@@ -551,17 +551,25 @@ export class Stencil extends View implements GraphPlugin {
         Dom.toggleClass(this.groups[groupName], 'unmatched', !found)
       }
 
-      graph.fitToContent({
-        gridWidth: 1,
-        gridHeight: 1,
-        padding: options.stencilGraphPadding || 10,
-        contentArea: model.getAllCellsBBox() || {
-          x: 0,
-          y: 0,
-          width: 0,
-          height: 0,
-        },
-      })
+      const group = this.getGroup(groupName)
+      let height = this.options.stencilGraphHeight
+      if (group && group.graphHeight != null) {
+        height = group.graphHeight
+      }
+
+      if (!height) {
+        graph.fitToContent({
+          gridWidth: 1,
+          gridHeight: 1,
+          padding: options.stencilGraphPadding || 10,
+          contentArea: model.getAllCellsBBox() || {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+          },
+        })
+      }
 
       return memo || found
     }, false)
