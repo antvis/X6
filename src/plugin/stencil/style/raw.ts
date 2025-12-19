@@ -147,7 +147,7 @@ export const content = `.x6-widget-dnd {
   }
 .x6-widget-stencil-group.collapsed {
   height: auto;
-  max-height: 31px;
+  max-height: 32px;
 }
 .x6-widget-stencil-title,
 .x6-widget-stencil-group > .x6-widget-stencil-group-title {

@@ -433,6 +433,14 @@ export class Stencil extends View implements GraphPlugin {
     graph.off('cell:mousedown', this.onDragStart, this)
   }
 
+  protected getGraphHeight(groupName?: string) {
+    const group = this.getGroup(groupName)
+    if (group && group.graphHeight != null) {
+      return group.graphHeight
+    }
+    return this.options.stencilGraphHeight
+  }
+
   protected loadGroup(
     cells: (Node | NodeMetadata)[],
     groupName?: string,
@@ -451,10 +459,7 @@ export class Stencil extends View implements GraphPlugin {
     }
 
     const group = this.getGroup(groupName)
-    let height = this.options.stencilGraphHeight
-    if (group && group.graphHeight != null) {
-      height = group.graphHeight
-    }
+    const height = this.getGraphHeight(groupName)
 
     const layout = (group && group.layout) || this.options.layout
     if (layout && model) {
@@ -551,11 +556,21 @@ export class Stencil extends View implements GraphPlugin {
         Dom.toggleClass(this.groups[groupName], 'unmatched', !found)
       }
 
-      graph.fitToContent({
-        gridWidth: 1,
-        gridHeight: 1,
-        padding: options.stencilGraphPadding || 10,
-      })
+      const height = this.getGraphHeight(groupName)
+
+      if (!height) {
+        graph.fitToContent({
+          gridWidth: 1,
+          gridHeight: 1,
+          padding: options.stencilGraphPadding || 10,
+          contentArea: model.getAllCellsBBox() || {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+          },
+        })
+      }
 
       return memo || found
     }, false)
