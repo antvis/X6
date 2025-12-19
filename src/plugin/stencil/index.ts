@@ -555,6 +555,12 @@ export class Stencil extends View implements GraphPlugin {
         gridWidth: 1,
         gridHeight: 1,
         padding: options.stencilGraphPadding || 10,
+        contentArea: model.getAllCellsBBox() || {
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+        },
       })
 
       return memo || found
