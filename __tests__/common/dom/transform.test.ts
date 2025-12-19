@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { Vector } from '../../../src/common/vector'
+import { afterAll, describe, expect, it } from 'vitest'
 import { Dom } from '../../../src/common/dom'
+import { Vector } from '../../../src/common/vector'
 
-describe.skip('Dom', () => {
+describe('Dom', () => {
   const fixture = document.createElement('div')
   const svgContainer = Vector.create('svg').node
   fixture.appendChild(svgContainer)
@@ -37,10 +37,10 @@ describe.skip('Dom', () => {
         e: normalizeFloat(matrix.e),
         f: normalizeFloat(matrix.f),
       }).toEqual({
-        a: normalizeFloat(0.7071067811865476),
-        b: normalizeFloat(-0.7071067811865475),
-        c: normalizeFloat(0.7071067811865475),
-        d: normalizeFloat(0.7071067811865476),
+        a: normalizeFloat(Math.SQRT1_2),
+        b: normalizeFloat(-Math.SQRT1_2),
+        c: normalizeFloat(Math.SQRT1_2),
+        d: normalizeFloat(Math.SQRT1_2),
         e: normalizeFloat(0),
         f: normalizeFloat(0),
       })
@@ -82,19 +82,6 @@ describe.skip('Dom', () => {
   })
 
   describe('#getTransformToParentElement', () => {
-    const isSimilar = (matrix1: DOMMatrix, matrix2: DOMMatrix) => {
-      const result = [
-        Math.abs(matrix1.a - matrix2.a),
-        Math.abs(matrix1.b - matrix2.b),
-        Math.abs(matrix1.c - matrix2.c),
-        Math.abs(matrix1.d - matrix2.d),
-        Math.abs(matrix1.e - matrix2.e),
-        Math.abs(matrix1.f - matrix2.f),
-      ]
-
-      return result.every((item) => item < 0.000001)
-    }
-
     it('translate', () => {
       const container = Vector.create(svgContainer)
       const group = Vector.create('g')
@@ -110,9 +97,12 @@ describe.skip('Dom', () => {
       rect.translate(20, 20)
 
       const matrix = Dom.getTransformToParentElement(rect.node, node.node)
-      const result = Dom.getTransformToElement(rect.node, node.node)
-
-      expect(isSimilar(matrix, result)).toEqual(true)
+      expect(matrix.a).toBe(1)
+      expect(matrix.b).toBe(0)
+      expect(matrix.c).toBe(0)
+      expect(matrix.d).toBe(1)
+      expect(matrix.e).toBe(20)
+      expect(matrix.f).toBe(20)
 
       rect.remove()
       node.remove()
@@ -134,9 +124,16 @@ describe.skip('Dom', () => {
       rect.rotate(20)
 
       const matrix = Dom.getTransformToParentElement(rect.node, group.node)
-      const result = Dom.getTransformToElement(rect.node, group.node)
+      const angle = 30 * (Math.PI / 180)
+      const cos = Math.cos(angle)
+      const sin = Math.sin(angle)
 
-      expect(isSimilar(matrix, result)).toEqual(true)
+      expect(matrix.a).toBeCloseTo(cos, 6)
+      expect(matrix.b).toBeCloseTo(sin, 6)
+      expect(matrix.c).toBeCloseTo(-sin, 6)
+      expect(matrix.d).toBeCloseTo(cos, 6)
+      expect(matrix.e).toBe(0)
+      expect(matrix.f).toBe(0)
 
       rect.remove()
       node.remove()

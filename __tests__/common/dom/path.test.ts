@@ -92,10 +92,27 @@ describe('Dom', () => {
         )
       })
 
-      it.skip('should convert SVGPolygonElement', () => {
+      it('should convert SVGPolygonElement', () => {
         const polygon = Vector.create('polygon', {
           points: '200,10 250,190 160,210',
         })
+
+        const node = polygon.node as SVGPolygonElement
+        if (!node.points || node.points.numberOfItems === 0) {
+          const points = [
+            { x: 200, y: 10 },
+            { x: 250, y: 190 },
+            { x: 160, y: 210 },
+          ]
+          Object.defineProperty(node, 'points', {
+            get: () => ({
+              numberOfItems: points.length,
+              getItem: (i: number) => points[i],
+            }),
+            configurable: true,
+          })
+        }
+
         expect(polygon.toPathData()).toEqual('M 200 10 L250 190 L160 210 Z')
       })
     })
