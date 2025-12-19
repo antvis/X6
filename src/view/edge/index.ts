@@ -8,31 +8,31 @@ import {
   Vector,
 } from '../../common'
 import {
-  normalize,
   Line,
+  normalize,
   Path,
   Point,
+  type PointLike,
   Polyline,
   Rectangle,
-  PointLike,
 } from '../../geometry'
 import type { Graph } from '../../graph'
-import {
-  Edge,
-  EdgeSetOptions,
-  LabelPosition,
-  LabelPositionObject,
-  LabelPositionOptions,
-  SetCellTerminalArgs,
-  TerminalCellData,
-  TerminalData,
-  TerminalPointData,
-  TerminalType,
-} from '../../model/edge'
 import type {
   OnEdgeLabelRenderedArgs,
   ValidateConnectionArgs,
 } from '../../graph/options'
+import {
+  Edge,
+  type EdgeSetOptions,
+  type LabelPosition,
+  type LabelPositionObject,
+  type LabelPositionOptions,
+  type SetCellTerminalArgs,
+  type TerminalCellData,
+  type TerminalData,
+  type TerminalPointData,
+  type TerminalType,
+} from '../../model/edge'
 import {
   type ConnectionPointManualItem,
   type ConnectorBaseOptions,
@@ -48,11 +48,7 @@ import {
   routerRegistry,
 } from '../../registry'
 import { CellView } from '../cell'
-import {
-  type MarkupJSONMarkup,
-  type MarkupSelectors,
-  type MarkupType,
-} from '../markup'
+import type { MarkupJSONMarkup, MarkupSelectors, MarkupType } from '../markup'
 import { NodeView } from '../node'
 import type { ToolsView, ToolsViewOptions } from '../tool'
 import type {
@@ -274,7 +270,7 @@ export class EdgeView<
     this.labelSelectors = {}
 
     if (count <= 0) {
-      if (container && container.parentNode) {
+      if (container?.parentNode) {
         container.parentNode.removeChild(container)
       }
       return this
@@ -293,8 +289,8 @@ export class EdgeView<
       const normalized = this.normalizeLabelMarkup(
         this.parseLabelMarkup(label.markup),
       )
-      let labelNode
-      let selectors
+      let labelNode: Element
+      let selectors: MarkupSelectors
       if (normalized) {
         labelNode = normalized.node
         selectors = normalized.selectors
@@ -416,7 +412,7 @@ export class EdgeView<
       throw new Error('Invalid label markup.')
     }
 
-    let vel
+    let vel: Vector
     const childNodes = fragment.childNodes
     if (childNodes.length > 1 || childNodes[0].nodeName.toUpperCase() !== 'G') {
       vel = Vector.create('g').append(fragment)
@@ -671,7 +667,7 @@ export class EdgeView<
     const secondMagnet = this.getTerminalMagnet(secondType)
 
     if (firstView) {
-      let firstRef
+      let firstRef: Point | Element | null
       if (firstPoint) {
         firstRef = Point.create(firstPoint)
       } else if (secondView) {
@@ -738,7 +734,7 @@ export class EdgeView<
       throw new Error(`Anchor should be specified.`)
     }
 
-    let anchor
+    let anchor: Point | undefined
 
     const name = config.name
     if (isEdge) {
@@ -779,7 +775,7 @@ export class EdgeView<
     const defaultRouter =
       this.graph.options.connecting.router || routerPresets.normal
     const router = this.cell.getRouter() || defaultRouter
-    let routePoints
+    let routePoints: PointLike[] | null | undefined
 
     if (typeof router === 'function') {
       routePoints = FunctionExt.call(
@@ -820,7 +816,7 @@ export class EdgeView<
     const lastRoutePoint = routePoints[routePoints.length - 1]
 
     // source
-    let sourcePoint
+    let sourcePoint: Point
     if (sourceView && !sourceView.isEdgeElement(this.sourceMagnet)) {
       const sourceMagnet = this.sourceMagnet || sourceView.container
       const sourcePointRef = firstRoutePoint || targetAnchor
@@ -841,7 +837,7 @@ export class EdgeView<
     }
 
     // target
-    let targetPoint
+    let targetPoint: Point
     if (targetView && !targetView.isEdgeElement(this.targetMagnet)) {
       const targetMagnet = this.targetMagnet || targetView.container
       const targetConnectionPointDef =
@@ -923,8 +919,8 @@ export class EdgeView<
 
     const firstRoutePoint = routePoints[0]
     const lastRoutePoint = routePoints[routePoints.length - 1]
-    let sourceMarkerPoint
-    let targetMarkerPoint
+    let sourceMarkerPoint: Point | undefined
+    let targetMarkerPoint: Point | undefined
 
     const sourceStrokeWidth = getLineWidth('source')
     if (sourceStrokeWidth) {
@@ -1267,7 +1263,7 @@ export class EdgeView<
 
     // normalize data from the two possible signatures
     let angle = 0
-    let options
+    let options: LabelPositionOptions | null | undefined
     if (typeof p3 === 'number') {
       angle = p3
       options = p4
@@ -1280,10 +1276,10 @@ export class EdgeView<
     }
 
     // identify distance/offset settings
-    const isOffsetAbsolute = options && options.absoluteOffset
-    const isDistanceRelative = !(options && options.absoluteDistance)
+    const isOffsetAbsolute = options?.absoluteOffset
+    const isDistanceRelative = !options?.absoluteDistance
     const isDistanceAbsoluteReverse =
-      options && options.absoluteDistance && options.reverseDistance
+      options?.absoluteDistance && options.reverseDistance
 
     // find closest point t
     const path = this.path
@@ -1292,7 +1288,7 @@ export class EdgeView<
     }
 
     const labelPoint = new Point(x, y)
-    const t = path.closestPointT(labelPoint, pathOptions)!
+    const t = path.closestPointT(labelPoint, pathOptions) ?? 0
 
     // distance
     const totalLength = this.getConnectionLength() || 0
@@ -1311,15 +1307,19 @@ export class EdgeView<
     // use absolute offset if:
     // - options.absoluteOffset is true,
     // - options.absoluteOffset is not true but there is no tangent
-    let tangent
+    let tangent: Line | null
     if (!isOffsetAbsolute) tangent = path.tangentAtT(t)
-    let labelOffset
+    let labelOffset: number | { x: number; y: number }
     if (tangent) {
       labelOffset = tangent.pointOffset(labelPoint)
     } else {
-      const closestPoint = path.pointAtT(t)!
-      const labelOffsetDiff = labelPoint.diff(closestPoint)
-      labelOffset = { x: labelOffsetDiff.x, y: labelOffsetDiff.y }
+      const closestPoint = path.pointAtT(t)
+      if (closestPoint) {
+        const labelOffsetDiff = labelPoint.diff(closestPoint)
+        labelOffset = { x: labelOffsetDiff.x, y: labelOffsetDiff.y }
+      } else {
+        labelOffset = { x: 0, y: 0 }
+      }
     }
 
     pos.offset = labelOffset
@@ -1373,11 +1373,11 @@ export class EdgeView<
     const pathOpt = { segmentSubdivisions: this.getConnectionSubdivisions() }
 
     const distance = isDistanceRelative
-      ? labelDistance * this.getConnectionLength()!
+      ? labelDistance * (this.getConnectionLength() || 0)
       : labelDistance
     const tangent = path.tangentAtLength(distance, pathOpt)
 
-    let translation
+    let translation: Point
     let angle = labelAngle
     if (tangent) {
       if (isOffsetAbsolute) {
@@ -1397,7 +1397,7 @@ export class EdgeView<
       }
     } else {
       // fallback - the connection has zero length
-      translation = path.start!
+      translation = path.pointAtLength(0, pathOpt) || new Point()
       if (isOffsetAbsolute) {
         translation.translate(offsetCoord)
       }
@@ -1700,10 +1700,14 @@ export class EdgeView<
   }
 
   protected createValidateConnectionArgs(type: TerminalType) {
-    const args: EventDataValidateConnectionArgs = [] as any
-
-    args[4] = type
-    args[5] = this
+    const args: EventDataValidateConnectionArgs = [
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      type,
+      this,
+    ]
 
     let opposite: TerminalType
     let i = 0
@@ -1720,8 +1724,9 @@ export class EdgeView<
     const terminal = this.cell[opposite]
     const cellId = (terminal as TerminalCellData).cell
     if (cellId) {
-      let magnet
-      const view = (args[i] = this.graph.findViewByCell(cellId))
+      let magnet: Element | undefined
+      const view = this.graph.findViewByCell(cellId)
+      args[i] = view
       if (view) {
         magnet = view.getMagnetFromEdgeTerminal(terminal)
         if (magnet === view.container) {
@@ -1797,16 +1802,16 @@ export class EdgeView<
             ? candidateTerminal.port
             : null
           : edge
-          ? edge.getSourcePortId()
-          : null
+            ? edge.getSourcePortId()
+            : null
       const targetPort =
         terminalType === 'target'
           ? candidateTerminal
             ? candidateTerminal.port
             : null
           : edge
-          ? edge.getTargetPortId()
-          : null
+            ? edge.getTargetPortId()
+            : null
       return FunctionExt.call(validate, this.graph, {
         edge,
         edgeView,
@@ -2145,7 +2150,10 @@ export class EdgeView<
       view.container.querySelectorAll('[magnet]').forEach((magnet) => {
         if (magnet.getAttribute('magnet') !== 'false') {
           const bbox = view.getBBoxOfElement(magnet)
-          distance = pos.distance(bbox.getCenter())
+          distance =
+            anchor === 'center'
+              ? pos.distance(bbox.getCenter())
+              : pos.distance(bbox.getNearestPointToPoint(pos))
           if (distance < radius && distance < minDistance) {
             if (
               prevMagnet === magnet ||
@@ -2169,7 +2177,6 @@ export class EdgeView<
       })
     })
 
-    let terminal
     const type = data.terminalType
     const closestView = data.closestView as any as CellView
     const closestMagnet = data.closestMagnet as any as Element
@@ -2188,18 +2195,15 @@ export class EdgeView<
       closestView.highlight(closestMagnet, {
         type: 'magnetAdsorbed',
       })
-      terminal = closestView.getEdgeTerminal(
-        closestMagnet,
-        x,
-        y,
-        this.cell,
+      this.cell.setTerminal(
         type,
+        closestView.getEdgeTerminal(closestMagnet, x, y, this.cell, type),
+        {},
+        { ...data.options, ui: true },
       )
     } else {
-      terminal = { x, y }
+      this.cell.setTerminal(type, { x, y }, {}, { ...data.options, ui: true })
     }
-
-    this.cell.setTerminal(type, terminal, {}, { ...data.options, ui: true })
   }
 
   protected snapArrowheadEnd(data: EventDataArrowheadDragging) {
@@ -2412,8 +2416,7 @@ export class EdgeView<
 
   // #region drag lable
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  startLabelDragging(e: Dom.MouseDownEvent, x: number, y: number) {
+  startLabelDragging(e: Dom.MouseDownEvent, _x: number, _y: number) {
     if (this.can('edgeLabelMovable')) {
       const target = e.currentTarget
       const index = parseInt(target.getAttribute('data-index'), 10)
@@ -2454,8 +2457,7 @@ export class EdgeView<
     this.cell.setLabelAt(data.index, label)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  stopLabelDragging(e: Dom.MouseUpEvent, x: number, y: number) {}
+  stopLabelDragging(_e: Dom.MouseUpEvent, _x: number, _y: number) {}
 
   // #endregion
 }
