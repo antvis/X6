@@ -15,13 +15,13 @@ export const text: AttrDefinition = {
   set(text, { view, elem, attrs }) {
     const cacheName = 'x6-text'
     const cache = Dom.data(elem, cacheName)
-    const json = <T>(str: unknown) => {
+    const json = <T>(str: unknown): T => {
       try {
         if (typeof str === 'string') {
-          return JSON.parse(str) as T
+          return JSON.parse(str)
         }
       } catch (_error) {
-        return str as T
+        // Not a valid JSON string, return as is.
       }
       return str as T
     }
