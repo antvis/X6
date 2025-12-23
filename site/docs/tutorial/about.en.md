@@ -47,7 +47,7 @@ If you have any questions, suggestions, feedback, or wish to communicate, you ca
 - Official Recommendation: [GitHub issues](https://github.com/antvis/X6/issues/new/choose)
 - Yuque Column: [https://www.yuque.com/antv/blog](https://www.yuque.com/antv/blog)
 
-<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*re6DTJv_Me8AAAAAQYAAAAgAemJ7AQ/original" alt="X6 Graph Editing Community" width="375" />
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*T_A1Q7etdAUAAAAASHAAAAgAemJ7AQ/original" alt="X6 Graph Editing Community" width="375" />
 
 ## 🤝 Contributing
 
