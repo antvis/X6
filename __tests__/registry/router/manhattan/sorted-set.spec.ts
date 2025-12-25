@@ -27,12 +27,15 @@ describe('SortedSet', () => {
       expect(sortedSet.isOpen('item1')).toBe(true)
     })
 
-    it('应该按值的大小顺序添加项目', () => {
+    it('应该按值的大小顺序弹出项目（堆不要求内部数组有序）', () => {
       sortedSet.add('item3', 3)
       sortedSet.add('item1', 1)
       sortedSet.add('item2', 2)
 
-      expect(sortedSet.items).toEqual(['item1', 'item2', 'item3'])
+      expect(sortedSet.pop()).toBe('item1')
+      expect(sortedSet.pop()).toBe('item2')
+      expect(sortedSet.pop()).toBe('item3')
+      expect(sortedSet.isEmpty()).toBe(true)
     })
 
     it('应该更新已存在项目的值和位置', () => {
@@ -118,16 +121,12 @@ describe('SortedSet', () => {
       sortedSet.add('A', 1)
       sortedSet.add('B', 2)
 
-      expect(sortedSet.items).toEqual(['A', 'B', 'C'])
-
       // 弹出最小值
       expect(sortedSet.pop()).toBe('A')
       expect(sortedSet.isClose('A')).toBe(true)
-      expect(sortedSet.items).toEqual(['B', 'C'])
 
       // 弹出下一个
       expect(sortedSet.pop()).toBe('B')
-      expect(sortedSet.items).toEqual(['C'])
 
       // 弹出最后一个
       expect(sortedSet.pop()).toBe('C')

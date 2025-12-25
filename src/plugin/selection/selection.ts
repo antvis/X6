@@ -23,6 +23,8 @@ import type {
   SetOptions,
 } from '../../model'
 import { Cell, Collection, type CollectionEventArgs } from '../../model'
+import type { RouterData } from '../../model/edge'
+import { routerRegistry } from '../../registry'
 import { type CellView, View } from '../../view'
 import type { Scroller } from '../scroller'
 
@@ -49,6 +51,12 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     nodeIdSet: Set<string>
     edgesToTranslate: Edge[]
   } | null = null
+  protected movingRouterRestoreCache: KeyValue<RouterData | undefined> | null =
+    null
+  protected movingRouterRestoreTimer: ReturnType<typeof setTimeout> | null =
+    null
+  protected lastMovingTs: number | null = null
+  protected movingDegradeActivatedTs: number | null = null
 
   public get graph() {
     return this.options.graph
@@ -410,6 +418,11 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         this.containerOffsetX = 0
         this.containerOffsetY = 0
         Dom.css(this.container, 'transform', '')
+        if (this.movingRouterRestoreTimer) {
+          clearTimeout(this.movingRouterRestoreTimer)
+          this.movingRouterRestoreTimer = null
+        }
+        this.restoreMovingRouters()
         this.graph.model.stopBatch('move-selection')
         // 清理本次拖拽缓存
         this.translatingCache = null
@@ -572,6 +585,87 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
   }
 
+  /**
+   * 在移动过程中对与当前选中节点相连的边进行临时路由降级
+   */
+  protected applyMovingRouterFallback() {
+    if (this.movingRouterRestoreCache) return
+    const nodeIdSet = this.translatingCache?.nodeIdSet
+    if (!nodeIdSet || nodeIdSet.size === 0) return
+    const selectedNodes = this.translatingCache?.selectedNodes
+    if (!selectedNodes || selectedNodes.length < 2) return
+    const fallbackRaw = this.options.movingRouterFallback
+    if (!fallbackRaw || !routerRegistry.exist(fallbackRaw)) return
+    const fallback = { name: fallbackRaw }
+    const restore: KeyValue<RouterData | undefined> = {}
+    this.graph.model.getEdges().forEach((edge) => {
+      const srcId = edge.getSourceCellId()
+      const tgtId = edge.getTargetCellId()
+      const connected =
+        (srcId != null && nodeIdSet.has(srcId)) ||
+        (tgtId != null && nodeIdSet.has(tgtId))
+      if (!connected) return
+      const current = edge.getRouter()
+      restore[edge.id] = current
+      edge.setRouter(fallback)
+    })
+    this.movingRouterRestoreCache = restore
+    this.movingDegradeActivatedTs = Date.now()
+  }
+
+  /**
+   * 恢复移动过程中被降级的边的原始路由：
+   * - 如果原始路由为空则移除路由设置
+   * - 完成恢复后清空缓存，等待下一次移动重新降级
+   */
+  protected restoreMovingRouters() {
+    const restore = this.movingRouterRestoreCache
+    if (!restore) return
+    Object.keys(restore).forEach((id) => {
+      const edge = this.graph.getCellById(id) as Edge | null
+      if (!edge || !edge.isEdge()) return
+      const original = restore[id]
+      if (original == null) {
+        edge.removeRouter()
+      } else {
+        edge.setRouter(original)
+      }
+    })
+    this.movingRouterRestoreCache = null
+  }
+
+  /**
+   * 在移动停止后延迟恢复路由，避免连线抖动：
+   * - `idle`：距离上次移动的空闲时间必须超过 100ms
+   * - `hold`：降级保持时间必须超过 150ms
+   * - 若条件未满足则按最小等待时间再次调度恢复
+   */
+  protected scheduleMovingRouterRestoreThrottle() {
+    if (this.movingRouterRestoreTimer) {
+      clearTimeout(this.movingRouterRestoreTimer)
+      this.movingRouterRestoreTimer = null
+    }
+    this.movingRouterRestoreTimer = setTimeout(() => {
+      const now = Date.now()
+      const lastMove = this.lastMovingTs || 0
+      const idle = now - lastMove
+      const hold =
+        this.movingDegradeActivatedTs != null
+          ? now - this.movingDegradeActivatedTs
+          : Infinity
+      if (idle < 100 || hold < 150) {
+        const wait = Math.max(100 - idle, 150 - hold, 50)
+        this.movingRouterRestoreTimer = setTimeout(() => {
+          this.movingRouterRestoreTimer = null
+          this.restoreMovingRouters()
+        }, wait)
+        return
+      }
+      this.movingRouterRestoreTimer = null
+      this.restoreMovingRouters()
+    }, 100)
+  }
+
   protected getSelectionOffset(client: Point, data: TranslatingEventData) {
     let dx = client.x - data.clientX
     let dy = client.y - data.clientY
@@ -699,6 +793,11 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         }
         if (offset.dy) {
           data.clientY = client.y
+        }
+        if (offset.dx !== 0 || offset.dy !== 0) {
+          this.lastMovingTs = Date.now()
+          this.applyMovingRouterFallback()
+          this.scheduleMovingRouterRestoreThrottle()
         }
         this.notifyBoxEvent('box:mousemove', evt, client.x, client.y)
         break
@@ -1216,6 +1315,7 @@ export interface SelectionImplCommonOptions {
 
   // with which mouse button the selection can be started
   eventTypes?: SelectionEventType[]
+  movingRouterFallback?: string
 }
 
 export interface SelectionImplOptions extends SelectionImplCommonOptions {
