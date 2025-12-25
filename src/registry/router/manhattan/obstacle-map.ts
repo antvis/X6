@@ -1,7 +1,7 @@
-import { Rectangle, Point } from '../../../geometry'
-import { ArrayExt, KeyValue } from '../../../common'
-import { Cell, Edge, Model, TerminalCellData } from '../../../model'
-import { ResolvedOptions } from './options'
+import { ArrayExt, type KeyValue } from '../../../common'
+import { Point, type Rectangle } from '../../../geometry'
+import type { Cell, Edge, Model, TerminalCellData } from '../../../model'
+import type { ResolvedOptions } from './options'
 
 /**
  * Helper structure to identify whether a point lies inside an obstacle.
@@ -114,4 +114,85 @@ export class ObstacleMap {
     const rects = this.map[key]
     return rects ? rects.every((rect) => !rect.containsPoint(point)) : true
   }
+}
+
+const CACHE = new WeakMap<
+  Model,
+  { map: ObstacleMap; dirty: boolean; installed?: boolean; optionsKey?: string }
+>()
+
+function markDirty(model: Model) {
+  const state = CACHE.get(model)
+  if (state) {
+    state.dirty = true
+  }
+}
+
+/**
+ * 绑定模型事件用于缓存失效，保证共享障碍图在下一次路由计算时重建
+ */
+function install(model: Model) {
+  const state = CACHE.get(model)
+  if (!state || state.installed) return
+  model.on('reseted', () => markDirty(model))
+  model.on('updated', () => markDirty(model))
+  model.on('cell:added', () => markDirty(model))
+  model.on('cell:removed', () => markDirty(model))
+  model.on('cell:change:position', () => markDirty(model))
+  model.on('cell:change:size', () => markDirty(model))
+  model.on('edge:change:source', () => markDirty(model))
+  model.on('edge:change:target', () => markDirty(model))
+  state.installed = true
+}
+
+/**
+ * 生成与障碍图相关的选项 key，当 key 变化时触发重建，避免不同配置共用缓存
+ */
+function getOptionsKey(options: ResolvedOptions) {
+  const padding = options.paddingBox
+  const pad =
+    padding == null
+      ? 'none'
+      : `${padding.x},${padding.y},${padding.width},${padding.height}`
+  const terms = (options.excludeTerminals || [])
+    .map((t) => t)
+    .sort()
+    .join('|')
+  const shapes = (options.excludeShapes || []).slice().sort().join('|')
+  const nodes = (options.excludeNodes || [])
+    .map((n) => (typeof n === 'string' ? n : (n as any)?.id || 'node'))
+    .slice()
+    .sort()
+    .join('|')
+  return `${pad}#${terms}#${shapes}#${nodes}`
+}
+
+/**
+ * 共享障碍图
+ */
+export function getSharedObstacleMap(
+  model: Model,
+  edge: Edge,
+  options: ResolvedOptions,
+) {
+  let state = CACHE.get(model)
+  if (!state) {
+    const map = new ObstacleMap(options).build(model, edge)
+    state = {
+      map,
+      dirty: false,
+      installed: false,
+      optionsKey: getOptionsKey(options),
+    }
+    CACHE.set(model, state)
+    install(model)
+    return map
+  }
+  const key = getOptionsKey(options)
+  if (state.dirty || state.optionsKey !== key) {
+    state.map = new ObstacleMap(options).build(model, edge)
+    state.dirty = false
+    state.optionsKey = key
+  }
+  return state.map
 }

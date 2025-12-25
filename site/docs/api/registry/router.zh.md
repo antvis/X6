@@ -160,7 +160,7 @@ graph.addEdge({
 
 ### manhattan
 
-曼哈顿路由 `'manhattan'` 路由是正交路由 `'orth'` 的智能版本，该路由由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。
+曼哈顿路由 `manhattan` 路由是正交路由 `orth` 的智能版本，该路由由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。
 
 我们为该路由算法提供了丰富的选项：
 
@@ -189,6 +189,18 @@ graph.addEdge({
     },
   },
 })
+```
+
+在使用 `manhattan` 路由和 `Selection` 插件时，如果出现批量拖拽节点卡顿的情况，推荐在 `Selection` 配置中加上 `movingRouterFallback: 'orth'`，将与选中节点相连的边在拖拽过程中临时切换为轻量的 `orth` 路由，避免频繁的路径计算，能有效提升拖拽流畅性：
+
+```ts
+graph.use(
+  new Selection({
+    ...
+     // 拖拽期路由降级为 orth 路由
+    movingRouterFallback: 'orth',
+  }),
+)
 ```
 
 :::warning{title=注意}

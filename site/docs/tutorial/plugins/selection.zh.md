@@ -64,6 +64,7 @@ graph.use(
 | showEdgeSelectionBox       | boolean              | `false`                               |      | 是否显示边的选择框                                                                                                                             |
 | pointerEvents              | `'none' \| 'auto'`   | `auto`                                |      | 如果打开 `showNodeSelectionBox` 时，会在节点上方盖一层元素，导致节点的事件无法响应，此时可以配置 `pointerEvents: none` 来解决，默认值是 `auto` |
 | eventTypes                 | SelectionEventType[] | `['leftMouseDown', 'mouseWheelDown']` |      | 用于设置框选的触发事件类型                                                                                                                     |
+| movingRouterFallback       | string               | -                                     |      | 批量拖拽框选节点过程中，支持临时将与选中节点相连边的路由降级为指定路由，拖拽停止并空闲后自动恢复为原始路由（推荐在拖拽大量节点且边的原始路由为 `manhattan` 时，将 `movingRouterFallback` 设置为 `orth`，能有效提升拖拽流畅性） |
 
 `Filter` 的类型定义如下：
 
