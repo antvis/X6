@@ -57,6 +57,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     null
   protected lastMovingTs: number | null = null
   protected movingDegradeActivatedTs: number | null = null
+  private static readonly RESTORE_IDLE_TIME = 100
+  private static readonly RESTORE_HOLD_TIME = 150
+  private static readonly MIN_RESTORE_WAIT_TIME = 50
 
   public get graph() {
     return this.options.graph
@@ -590,24 +593,23 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
    */
   protected applyMovingRouterFallback() {
     if (this.movingRouterRestoreCache) return
-    const nodeIdSet = this.translatingCache?.nodeIdSet
-    if (!nodeIdSet || nodeIdSet.size === 0) return
     const selectedNodes = this.translatingCache?.selectedNodes
     if (!selectedNodes || selectedNodes.length < 2) return
     const fallbackRaw = this.options.movingRouterFallback
     if (!fallbackRaw || !routerRegistry.exist(fallbackRaw)) return
     const fallback = { name: fallbackRaw }
     const restore: KeyValue<RouterData | undefined> = {}
-    this.graph.model.getEdges().forEach((edge) => {
-      const srcId = edge.getSourceCellId()
-      const tgtId = edge.getTargetCellId()
-      const connected =
-        (srcId != null && nodeIdSet.has(srcId)) ||
-        (tgtId != null && nodeIdSet.has(tgtId))
-      if (!connected) return
-      const current = edge.getRouter()
-      restore[edge.id] = current
-      edge.setRouter(fallback)
+    const processedEdges = new Set<string>()
+    selectedNodes.forEach((node) => {
+      this.graph.model.getConnectedEdges(node).forEach((edge) => {
+        if (processedEdges.has(edge.id)) {
+          return
+        }
+        processedEdges.add(edge.id)
+        const current = edge.getRouter()
+        restore[edge.id] = current
+        edge.setRouter(fallback)
+      })
     })
     this.movingRouterRestoreCache = restore
     this.movingDegradeActivatedTs = Date.now()
@@ -653,8 +655,15 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         this.movingDegradeActivatedTs != null
           ? now - this.movingDegradeActivatedTs
           : Infinity
-      if (idle < 100 || hold < 150) {
-        const wait = Math.max(100 - idle, 150 - hold, 50)
+      if (
+        idle < SelectionImpl.RESTORE_IDLE_TIME ||
+        hold < SelectionImpl.RESTORE_HOLD_TIME
+      ) {
+        const wait = Math.max(
+          SelectionImpl.RESTORE_IDLE_TIME - idle,
+          SelectionImpl.RESTORE_HOLD_TIME - hold,
+          SelectionImpl.MIN_RESTORE_WAIT_TIME,
+        )
         this.movingRouterRestoreTimer = setTimeout(() => {
           this.movingRouterRestoreTimer = null
           this.restoreMovingRouters()
@@ -663,7 +672,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       }
       this.movingRouterRestoreTimer = null
       this.restoreMovingRouters()
-    }, 100)
+    }, SelectionImpl.RESTORE_IDLE_TIME)
   }
 
   protected getSelectionOffset(client: Point, data: TranslatingEventData) {

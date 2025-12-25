@@ -192,7 +192,7 @@ export function getSharedObstacleMap(
     state = {
       map,
       dirty: false,
-      installed: true,
+      installed: false,
       optionsKey: getOptionsKey(options),
     }
     CACHE.set(model, state)
