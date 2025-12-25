@@ -133,7 +133,7 @@ function markDirty(model: Model) {
  */
 function install(model: Model) {
   const state = CACHE.get(model)
-  if (state?.installed) return
+  if (!state || state.installed) return
   model.on('reseted', () => markDirty(model))
   model.on('updated', () => markDirty(model))
   model.on('cell:added', () => markDirty(model))
@@ -144,16 +144,7 @@ function install(model: Model) {
   model.on('node:change:size', () => markDirty(model))
   model.on('edge:change:source', () => markDirty(model))
   model.on('edge:change:target', () => markDirty(model))
-  if (state) {
-    state.installed = true
-  } else {
-    CACHE.set(model, {
-      map: new ObstacleMap({} as any),
-      dirty: true,
-      installed: true,
-      optionsKey: undefined,
-    })
-  }
+  state.installed = true
 }
 
 /**
