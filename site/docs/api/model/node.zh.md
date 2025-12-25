@@ -291,7 +291,7 @@ console.log(size.width, size.height)
 | width | number |  |  | 节点宽度。 |
 | height | number |  |  | 节点高度。 |
 | options.direction | Direction |  | `'bottom-right'` | 向哪个方向改变大小，默认左上角固定，往右下角改变节点大小。 |
-| options.silent | boolean |  | `false` | 为 `true` 时不触不触发 `'change:size'` 和 `'change:position'` 事件和画布重绘。 |
+| options.silent | boolean |  | `false` | 为 `true` 时不触发 `'change:size'` 和 `'change:position'` 事件和画布重绘。 |
 | options...others | object |  |  | 其他自定义键值对，可以在事件回调中使用。 |
 
 支持向 8 个方向改变节点大小，默认为 `'bottom-right'` 表示左上角固定，往右下角改变节点大小。
