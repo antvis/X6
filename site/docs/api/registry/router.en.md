@@ -77,6 +77,7 @@ new Graph({
 ```
 
 Now let's take a look at how to use the built-in routing and how to define and register custom routing.
+
 ## Built-in Routing
 
 ### normal
@@ -159,7 +160,7 @@ graph.addEdge({
 
 ### manhattan
 
-The Manhattan routing `'manhattan'` is an intelligent version of the orthogonal routing `'orth'`, consisting of horizontal or vertical orthogonal line segments that automatically avoid other nodes (obstacles) along the path.
+The Manhattan routing `manhattan` is an intelligent version of the orthogonal routing `orth`, consisting of horizontal or vertical orthogonal line segments that automatically avoid other nodes (obstacles) along the path.
 
 We provide a rich set of options for this routing algorithm:
 
@@ -188,6 +189,17 @@ graph.addEdge({
     },
   },
 })
+```
+
+When using the `manhattan` router together with the `Selection` plugin, if batch dragging multiple nodes causes performance lag, it is recommended to enable temporary routing downgrade in the `Selection` configuration by setting `movingRouterFallback: 'orth'`. This temporarily switches edges connected to the selected nodes to the lightweight `orth` router during dragging, reduces frequent path recalculations, and restores the original routers after idle:
+
+```ts
+graph.use(
+  new Selection({
+    // Switch router during dragging to orth
+    movingRouterFallback: 'orth',
+  }),
+)
 ```
 
 :::warning{title=Note}
