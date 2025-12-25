@@ -64,6 +64,7 @@ graph.use(
 | showEdgeSelectionBox    | boolean              | `false`                               |          | Whether to show the selection box for edges                                                                                                    |
 | pointerEvents           | `'none' \| 'auto'`   | `auto`                                |          | When `showNodeSelectionBox` is enabled, an element overlays the node and its events may not respond; set `pointerEvents: none` to resolve this. Default is `auto`. |
 | eventTypes              | SelectionEventType[] | `['leftMouseDown', 'mouseWheelDown']` |          | Used to set the trigger event types for rubberband selection                                                                                   |
+| movingRouterFallback    | string               | -                                     |          | During batch dragging of multiple nodes, temporarily downgrade the routing of edges connected to the selected nodes to the specified router, and automatically restore to the original routers after idle (recommended to set `'orth'` when dragging many nodes and edges originally use `'manhattan'` to improve dragging smoothness) |
 
 The type definition for `Filter` is as follows:
 

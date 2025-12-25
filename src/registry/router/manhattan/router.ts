@@ -2,7 +2,7 @@ import { FunctionExt, type KeyValue } from '../../../common'
 import { Point, Rectangle } from '../../../geometry'
 import type { EdgeView } from '../../../view'
 import type { RouterDefinition } from '../index'
-import { ObstacleMap } from './obstacle-map'
+import { getSharedObstacleMap, type ObstacleMap } from './obstacle-map'
 import {
   type ManhattanRouterOptions,
   type ResolvedOptions,
@@ -23,8 +23,8 @@ function findRoute(
 ) {
   const precision = options.precision
 
-  let sourceEndpoint
-  let targetEndpoint
+  let sourceEndpoint: Point
+  let targetEndpoint: Point
 
   if (Rectangle.isRectangle(from)) {
     sourceEndpoint = util.round(
@@ -52,8 +52,8 @@ function findRoute(
 
   const startPoint = sourceEndpoint
   const endPoint = targetEndpoint
-  let startPoints
-  let endPoints
+  let startPoints: Point[]
+  let endPoints: Point[]
 
   if (Rectangle.isRectangle(from)) {
     startPoints = util.getRectPoints(
@@ -107,23 +107,21 @@ function findRoute(
     const isPathBeginning = previousRouteDirectionAngle === undefined
 
     // directions
-    let direction
-    let directionChange
+    let direction: ResolvedOptions['directions'][number]
+    let directionChange: number
     const directions = util.getGridOffsets(grid, options)
     const numDirections = directions.length
-    // @ts-expect-error
-    const endPointsKeys = endPoints.reduce<string[]>((res, endPoint) => {
-      const key = util.getKey(endPoint)
-      res.push(key)
-      return res
-    }, [])
+    const endPointsKeys = endPoints.map((endPoint) => util.getKey(endPoint))
 
     // main route finding loop
     const sameStartEndPoints = Point.equalPoints(startPoints, endPoints)
     let loopsRemaining = options.maxLoopCount
     while (!openSet.isEmpty() && loopsRemaining > 0) {
       // Get the closest item and mark it CLOSED
-      const currentKey = openSet.pop()!
+      const currentKey = openSet.pop()
+      if (currentKey == null) {
+        break
+      }
       const currentPoint = points[currentKey]
       const currentParent = parents[currentKey]
       const currentCost = costs[currentKey]
@@ -173,11 +171,11 @@ function findRoute(
       for (let i = 0; i < numDirections; i += 1) {
         direction = directions[i]
 
-        const directionAngle = direction.angle!
-        directionChange = util.getDirectionChange(
-          previousDirectionAngle!,
-          directionAngle,
-        )
+        const directionAngle = direction.angle ?? 0
+        directionChange =
+          previousDirectionAngle == null
+            ? 0
+            : util.getDirectionChange(previousDirectionAngle, directionAngle)
 
         // Don't use the point changed rapidly.
         if (
@@ -303,10 +301,7 @@ export const router: RouterDefinition<ManhattanRouterOptions> = function (
   const sourceEndpoint = util.getSourceEndpoint(edgeView, options)
 
   // pathfinding
-  const map = new ObstacleMap(options).build(
-    edgeView.graph.model,
-    edgeView.cell,
-  )
+  const map = getSharedObstacleMap(edgeView.graph.model, edgeView.cell, options)
 
   const oldVertices = vertices.map((p) => Point.create(p))
   const newVertices: Point[] = []
@@ -314,8 +309,8 @@ export const router: RouterDefinition<ManhattanRouterOptions> = function (
   // The origin of first route's grid, does not need snapping
   let tailPoint = sourceEndpoint
 
-  let from
-  let to
+  let from: Point | Rectangle
+  let to: Point | Rectangle | undefined
 
   for (let i = 0, len = oldVertices.length; i <= len; i += 1) {
     let partialRoute: Point[] | null = null
@@ -368,7 +363,7 @@ export const router: RouterDefinition<ManhattanRouterOptions> = function (
     // Remove the first point if the previous partial route has
     // the same point as last.
     const leadPoint = partialRoute[0]
-    if (leadPoint && leadPoint.equals(tailPoint)) {
+    if (leadPoint?.equals(tailPoint)) {
       partialRoute.shift()
     }
 

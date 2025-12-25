@@ -562,12 +562,13 @@ describe('Selection plugin', () => {
       )
       document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }))
       await sleep(100)
-      const selectionContainerStyle =
-        selection['selectionImpl']['container']['style']
-      expect(selectionContainerStyle['width']).toBe('10px')
-      expect(selectionContainerStyle['height']).toBe('10px')
-      expect(selectionContainerStyle['left']).toBe('0px')
-      expect(selectionContainerStyle['top']).toBe('0px')
+      const selectionContainerStyle = (
+        selection['selectionImpl']['container'] as HTMLElement
+      ).style
+      expect(selectionContainerStyle.width).toBe('10px')
+      expect(selectionContainerStyle.height).toBe('10px')
+      expect(selectionContainerStyle.left).toBe('0px')
+      expect(selectionContainerStyle.top).toBe('0px')
     })
 
     it('should update selection nodes position', async () => {
@@ -782,12 +783,10 @@ describe('Selection plugin', () => {
       Object.defineProperty(e, 'ctrlKey', { value: true })
       Object.defineProperty(e, 'metaKey', { value: true })
       Object.defineProperty(e, 'shiftKey', { value: false })
-
       ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
 
       expect(findViewsSpy).toHaveBeenCalled()
       expect(selection.isSelected(n2)).toBe(true)
-
       ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
       expect(selection.isSelected(n2)).toBe(false)
     })
@@ -829,7 +828,6 @@ describe('Selection plugin', () => {
       Object.defineProperty(e, 'ctrlKey', { value: true })
       Object.defineProperty(e, 'metaKey', { value: true })
       Object.defineProperty(e, 'shiftKey', { value: false })
-
       ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
 
       expect(selection.length).toBe(1)
@@ -867,7 +865,6 @@ describe('Selection plugin', () => {
       Object.defineProperty(e, 'ctrlKey', { value: false })
       Object.defineProperty(e, 'metaKey', { value: false })
       Object.defineProperty(e, 'shiftKey', { value: false })
-
       ;(selection as any).selectionImpl.onSelectionContainerMouseDown(e)
       expect(startSpy).toHaveBeenCalled()
     })
@@ -946,6 +943,79 @@ describe('Selection plugin', () => {
     })
   })
 
+  describe('moving router fallback', () => {
+    it('When batch dragging, the manhattan route of the connected edge should be temporarily downgraded to ortho, and restored after being idle.', async () => {
+      const { graph: g } = createTestGraph()
+      g.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          movable: true,
+          showNodeSelectionBox: true,
+          movingRouterFallback: 'orth',
+        }),
+      )
+      const sel = g.getPlugin('selection') as Selection
+      const n1 = g.addNode({ id: 'n1', x: 20, y: 20, width: 80, height: 40 })
+      const n2 = g.addNode({ id: 'n2', x: 200, y: 60, width: 80, height: 40 })
+      const e = g.addEdge({ source: 'n1', target: 'n2', router: 'manhattan' })
+      sel.select([n1, n2])
+      const md = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(md, 'clientX', { value: 30 })
+      Object.defineProperty(md, 'clientY', { value: 30 })
+      Object.defineProperty(md, 'ctrlKey', { value: false })
+      Object.defineProperty(md, 'metaKey', { value: false })
+      Object.defineProperty(md, 'shiftKey', { value: false })
+      ;(sel as any).selectionImpl.onSelectionContainerMouseDown(md)
+      const mm = new Dom.EventObject(new MouseEvent('mousemove'))
+      Object.defineProperty(mm, 'clientX', { value: 60 })
+      Object.defineProperty(mm, 'clientY', { value: 60 })
+      ;(mm as any).data = (md as any).data
+      ;(sel as any).selectionImpl.adjustSelection(mm as any)
+      const degraded = e.getRouter() as any
+      expect(typeof degraded === 'string' ? degraded : degraded?.name).toBe(
+        'orth',
+      )
+      await sleep(300)
+      const restored = e.getRouter() as any
+      expect(typeof restored === 'string' ? restored : restored?.name).toBe(
+        'manhattan',
+      )
+    })
+    it('When dragging a single node, the manhattan route of the connected edge should not be downgraded to ortho.', () => {
+      const { graph: g } = createTestGraph()
+      g.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          movable: true,
+          showNodeSelectionBox: true,
+          movingRouterFallback: 'orth',
+        }),
+      )
+      const sel = g.getPlugin('selection') as Selection
+      const n1 = g.addNode({ id: 'n1', x: 20, y: 20, width: 80, height: 40 })
+      const n2 = g.addNode({ id: 'n2', x: 200, y: 60, width: 80, height: 40 })
+      const e = g.addEdge({ source: 'n1', target: 'n2', router: 'manhattan' })
+      sel.select([n1])
+      const md = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(md, 'clientX', { value: 30 })
+      Object.defineProperty(md, 'clientY', { value: 30 })
+      Object.defineProperty(md, 'ctrlKey', { value: false })
+      Object.defineProperty(md, 'metaKey', { value: false })
+      Object.defineProperty(md, 'shiftKey', { value: false })
+      ;(sel as any).selectionImpl.onSelectionContainerMouseDown(md)
+      const mm = new Dom.EventObject(new MouseEvent('mousemove'))
+      Object.defineProperty(mm, 'clientX', { value: 60 })
+      Object.defineProperty(mm, 'clientY', { value: 60 })
+      ;(mm as any).data = (md as any).data
+      ;(sel as any).selectionImpl.adjustSelection(mm as any)
+      const current = e.getRouter() as any
+      expect(typeof current === 'string' ? current : current?.name).toBe(
+        'manhattan',
+      )
+    })
+  })
   describe('multiple selection', () => {
     it('should select multiple cells when multiple selection is enabled', () => {
       graph.enableMultipleSelection()
