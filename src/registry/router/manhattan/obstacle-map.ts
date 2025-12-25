@@ -140,8 +140,6 @@ function install(model: Model) {
   model.on('cell:removed', () => markDirty(model))
   model.on('cell:change:position', () => markDirty(model))
   model.on('cell:change:size', () => markDirty(model))
-  model.on('node:change:position', () => markDirty(model))
-  model.on('node:change:size', () => markDirty(model))
   model.on('edge:change:source', () => markDirty(model))
   model.on('edge:change:target', () => markDirty(model))
   state.installed = true
