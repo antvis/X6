@@ -982,6 +982,90 @@ describe('Selection plugin', () => {
         'manhattan',
       )
     })
+    it('router fallback should set router with silent option for degrade and restore', async () => {
+      const { graph: g } = createTestGraph()
+      g.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          movable: true,
+          showNodeSelectionBox: true,
+          movingRouterFallback: 'orth',
+        }),
+      )
+      const sel = g.getPlugin('selection') as Selection
+      const n1 = g.addNode({ id: 'sn1', x: 20, y: 20, width: 80, height: 40 })
+      const n2 = g.addNode({ id: 'sn2', x: 200, y: 60, width: 80, height: 40 })
+      const e = g.addEdge({ source: 'sn1', target: 'sn2', router: 'manhattan' })
+      sel.select([n1, n2])
+      const spySetRouter = vi.spyOn(e, 'setRouter')
+      const md = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(md, 'clientX', { value: 30 })
+      Object.defineProperty(md, 'clientY', { value: 30 })
+      Object.defineProperty(md, 'ctrlKey', { value: false })
+      Object.defineProperty(md, 'metaKey', { value: false })
+      Object.defineProperty(md, 'shiftKey', { value: false })
+      ;(sel as any).selectionImpl.onSelectionContainerMouseDown(md)
+      const mm = new Dom.EventObject(new MouseEvent('mousemove'))
+      Object.defineProperty(mm, 'clientX', { value: 60 })
+      Object.defineProperty(mm, 'clientY', { value: 60 })
+      ;(mm as any).data = (md as any).data
+      ;(sel as any).selectionImpl.adjustSelection(mm as any)
+      await sleep(300)
+      const degradeSilent = spySetRouter.mock.calls.some(
+        ([router, options]) =>
+          typeof router === 'object' &&
+          (router as any).name === 'orth' &&
+          (options as any)?.silent === true,
+      )
+      const restoreSilent = spySetRouter.mock.calls.some(
+        ([router, options]) =>
+          (typeof router === 'string' && router === 'manhattan') ||
+          (typeof router === 'object' &&
+            (router as any).name === 'manhattan' &&
+            (options as any)?.silent === true),
+      )
+      expect(degradeSilent).toBe(true)
+      expect(restoreSilent).toBe(true)
+    })
+    it('should request edge view update asynchronously when restoring routers', async () => {
+      const { graph: g } = createTestGraph()
+      g.use(
+        new Selection({
+          rubberband: true,
+          multiple: true,
+          movable: true,
+          showNodeSelectionBox: true,
+          movingRouterFallback: 'orth',
+        }),
+      )
+      const sel = g.getPlugin('selection') as Selection
+      const n1 = g.addNode({ id: 'rv1', x: 20, y: 20, width: 80, height: 40 })
+      const n2 = g.addNode({ id: 'rv2', x: 200, y: 60, width: 80, height: 40 })
+      const e = g.addEdge({ source: 'rv1', target: 'rv2', router: 'manhattan' })
+      sel.select([n1, n2])
+      const spy = vi.spyOn(g.renderer, 'requestViewUpdate')
+      const md = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(md, 'clientX', { value: 30 })
+      Object.defineProperty(md, 'clientY', { value: 30 })
+      Object.defineProperty(md, 'ctrlKey', { value: false })
+      Object.defineProperty(md, 'metaKey', { value: false })
+      Object.defineProperty(md, 'shiftKey', { value: false })
+      ;(sel as any).selectionImpl.onSelectionContainerMouseDown(md)
+      const mm = new Dom.EventObject(new MouseEvent('mousemove'))
+      Object.defineProperty(mm, 'clientX', { value: 60 })
+      Object.defineProperty(mm, 'clientY', { value: 60 })
+      ;(mm as any).data = (md as any).data
+      ;(sel as any).selectionImpl.adjustSelection(mm as any)
+      await sleep(300)
+      const view = g.findViewByCell(e)!
+      const expectedFlag = view.getFlag('update')
+      const called = spy.mock.calls.some(
+        ([v, flag, opts]) =>
+          v === view && flag === expectedFlag && opts?.async === true,
+      )
+      expect(called).toBe(true)
+    })
     it('When dragging a single node, the manhattan route of the connected edge should not be downgraded to ortho.', () => {
       const { graph: g } = createTestGraph()
       g.use(
