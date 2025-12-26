@@ -1,16 +1,17 @@
 import { ArrayExt, Dom, FunctionExt } from '../../common'
 import { Config } from '../../config'
 import {
-  snapToGrid,
   Point,
   Rectangle,
   type RectangleLike,
+  snapToGrid,
 } from '../../geometry'
 import { Cell } from '../../model/cell'
 import type { Edge } from '../../model/edge'
 import type { Node } from '../../model/node'
-import type { Port, Label } from '../../model/port'
+import type { Label, Port } from '../../model/port'
 import type { CellAttrs, PortLayoutResult } from '../../registry'
+import type { KeyPoint } from '../../types'
 import type { AttrManagerUpdateOptions } from '../attr'
 import { CellView } from '../cell'
 import type { EdgeView } from '../edge'
@@ -26,7 +27,8 @@ import type {
   NodeViewPortCache,
   NodeViewPositionEventArgs,
 } from './type'
-import type { KeyPoint } from '../../types'
+
+export * from './type'
 
 export class NodeView<
   Entity extends Node = Node,

@@ -7,6 +7,8 @@ import type { FlagManagerActions } from '../flag'
 import type { NodeViewEventArgs } from '../node/type'
 import type { CellView } from '.'
 
+export * from './type'
+
 export interface CellViewOptions {
   graph: Graph
   priority: number
