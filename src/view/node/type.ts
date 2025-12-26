@@ -2,7 +2,6 @@ import type { Dom } from '../../common'
 import type { PointLike, RectangleLike } from '../../geometry'
 import type { Graph } from '../../graph'
 import type { Node } from '../../model/node'
-import type { CellView } from '../cell'
 import type {
   CellViewHighlightOptions,
   CellViewMouseDeltaEventArgs,

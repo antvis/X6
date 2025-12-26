@@ -50,7 +50,7 @@ import {
 import { CellView } from '../cell'
 import type { MarkupJSONMarkup, MarkupSelectors, MarkupType } from '../markup'
 import { NodeView } from '../node'
-import type { ToolsView, ToolsViewOptions } from '../tool'
+import type { ToolsViewOptions } from '../tool'
 import type {
   EdgeViewMouseEventArgs,
   EdgeViewOptions,
@@ -60,6 +60,8 @@ import type {
   EventDataLabelDragging,
   EventDataValidateConnectionArgs,
 } from './type'
+
+export * from './type'
 
 export class EdgeView<
   Entity extends Edge = Edge,
