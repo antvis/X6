@@ -608,7 +608,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         processedEdges.add(edge.id)
         const current = edge.getRouter()
         restore[edge.id] = current
-        edge.setRouter(fallback)
+        edge.setRouter(fallback, { silent: true })
       })
     })
     this.movingRouterRestoreCache = restore
@@ -628,9 +628,15 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       if (!edge || !edge.isEdge()) return
       const original = restore[id]
       if (original == null) {
-        edge.removeRouter()
+        edge.removeRouter({ silent: true })
       } else {
-        edge.setRouter(original)
+        edge.setRouter(original, { silent: true })
+      }
+      const view = this.graph.findViewByCell(edge)
+      if (view) {
+        this.graph.renderer.requestViewUpdate(view, view.getFlag('update'), {
+          async: true,
+        })
       }
     })
     this.movingRouterRestoreCache = null
