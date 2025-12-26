@@ -49,6 +49,8 @@ import type {
   CellViewOptions,
 } from './type'
 
+export * from './type'
+
 export class CellView<
   Entity extends Cell = Cell,
   Options extends CellViewOptions = CellViewOptions,
