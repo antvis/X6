@@ -1,0 +1,65 @@
+[
+  {
+    "id": "milestone-1",
+    "headline": "Phase 1",
+    "subtitle": "Initial Setup",
+    "date": "01/01/25",
+    "color": "#8A2BE2",
+    "lightColor": "rgba(138, 43, 226, 0.1)",
+    "events": [
+      { "id": "e1-1", "title": "Kickoff", "content": "" },
+      { "id": "e1-2", "title": "Planning", "content": "" },
+      { "id": "e1-3", "title": "Team", "content": "" },
+      { "id": "e1-4", "title": "Resources", "content": "" },
+      { "id": "e1-5", "title": "Budget", "content": "" },
+      { "id": "e1-6", "title": "Setup", "content": "" }
+    ]
+  },
+  {
+    "id": "milestone-2",
+    "headline": "Phase 2",
+    "subtitle": "Design",
+    "date": "02/15/25",
+    "color": "#4169E1",
+    "lightColor": "rgba(65, 105, 225, 0.1)",
+    "events": [
+      { "id": "e2-1", "title": "Research", "content": "" },
+      { "id": "e2-2", "title": "Wireframes", "content": "" },
+      { "id": "e2-3", "title": "Mockups", "content": "" },
+      { "id": "e2-4", "title": "Prototype", "content": "" }
+    ]
+  },
+  {
+    "id": "milestone-3",
+    "headline": "Phase 3",
+    "subtitle": "Development",
+    "date": "04/01/25",
+    "color": "#FFD700",
+    "lightColor": "rgba(255, 215, 0, 0.1)",
+    "events": [
+      { "id": "e3-1", "title": "Frontend", "content": "" },
+      { "id": "e3-2", "title": "Backend", "content": "" },
+      { "id": "e3-3", "title": "Database", "content": "" },
+      { "id": "e3-4", "title": "API", "content": "" },
+      { "id": "e3-5", "title": "Testing", "content": "" },
+      { "id": "e3-6", "title": "Debug", "content": "" },
+      { "id": "e3-7", "title": "Optimize", "content": "" },
+      { "id": "e3-8", "title": "Review", "content": "" },
+      { "id": "e3-9", "title": "Deploy", "content": "" },
+      { "id": "e3-10", "title": "Monitor", "content": "" }
+    ]
+  },
+  {
+    "id": "milestone-4",
+    "headline": "Phase 4",
+    "subtitle": "Launch",
+    "date": "06/01/25",
+    "color": "#2E8B57",
+    "lightColor": "rgba(46, 139, 87, 0.1)",
+    "events": [
+      { "id": "e4-1", "title": "QA", "content": "" },
+      { "id": "e4-2", "title": "Release", "content": "" },
+      { "id": "e4-3", "title": "Support", "content": "" }
+    ]
+  }
+]
