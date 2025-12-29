@@ -9,8 +9,7 @@ Compared to 2.x, 3.x mainly focuses on plugin consolidation (unified export), op
 
 ## Overview
 
-- Plugin consolidation: all `@antv/x6-plugin-xxxx` packages are merged into the main `@antv/x6` package and exported from there.
-- Import path change: import plugins directly from `@antv/x6`; the existing `graph.use(new Xxx())` usage remains unchanged.
+- Plugin and subpackage consolidation: `@antv/x6-plugin-xxxx`, `@antv/x6-common`, and `@antv/x6-geometry` are merged into the main `@antv/x6` package and exported from there.
 - Default interaction tweak: canvas `panning` is enabled by default.
 - New animation capability: supports imperative, declarative, and custom Shape-based animations.
 - With `Scroller`, virtual rendering is available via `virtual: true` for large graphs.
@@ -19,7 +18,7 @@ Compared to 2.x, 3.x mainly focuses on plugin consolidation (unified export), op
 
 ### package.json
 
-3.x merges commonly used plugins into `@antv/x6`, so you no longer need to install separate `@antv/x6-plugin-xxxx` packages.
+3.x merges commonly used plugins and subpackages into `@antv/x6`, so you no longer need to install separate `@antv/x6-plugin-xxxx` packages. Additionally, the utility package `@antv/x6-common` and geometry package `@antv/x6-geometry` are now part of the main package, and their APIs should be imported from `@antv/x6`.
 
 ```json
 {
@@ -40,6 +39,8 @@ Remove the following dependencies if present:
 - `@antv/x6-plugin-minimap`
 - `@antv/x6-plugin-stencil`
 - `@antv/x6-plugin-export`
+- `@antv/x6-common`
+- `@antv/x6-geometry`
 
 ### Import Path Changes
 
@@ -56,6 +57,17 @@ graph.use(new Selection())
 import { Scroller, Selection } from '@antv/x6'
 graph.use(new Scroller())
 graph.use(new Selection())
+```
+
+In 3.x, utilities and geometry types previously imported from `@antv/x6-common` and `@antv/x6-geometry` are now exported directly from `@antv/x6`. You only need to update the import path:
+
+```ts
+// 2.x
+import { Dom, FunctionExt } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
+
+// 3.x
+import { Dom, FunctionExt, Point, Rectangle } from '@antv/x6'
 ```
 
 ### New Animation Capability
