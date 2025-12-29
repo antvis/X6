@@ -5,12 +5,11 @@ redirect_from:
   - /zh/docs/tutorial/update
 ---
 
-相比 2.x 版本，3.x 在对外使用上的变化主要集中在插件合并（统一导出），交互默认值优化，并新增动画能力，整体升级成本较低。
+相比 2.x 版本，3.x 在对外使用上的变化主要集中在插件及子包合并（统一导出），交互默认值优化，并新增动画能力，整体升级成本较低。
 
 ## 变更总览
 
-- 插件合并：`@antv/x6-plugin-xxxx` 全部整合到 `@antv/x6` 主包并统一导出。
-- 导入路径更改：插件从 `@antv/x6` 直接导入，原有插件的 `graph.use(new Xxx())` 方式保持不变。
+- 插件及子包合并：`@antv/x6-plugin-xxxx`、`@antv/x6-common`、`@antv/x6-geometry` 全部整合到 `@antv/x6` 主包并统一导出。
 - 交互默认值调整：画布 `panning` 默认开启。
 - 新增动画能力：支持指令式动画、配置式动画和自定义动画 Shape 实现丰富酷炫的效果。
 - 滚动画布（`Scroller`）下，支持虚拟渲染能力 `virtual: true`。
@@ -19,7 +18,7 @@ redirect_from:
 
 ### package.json
 
-3.x 将所有常用插件（Plugins）统一并入 `@antv/x6` 主包，不再需要单独安装 `@antv/x6-plugin-xxxx`。
+3.x 将所有常用插件（Plugins）统一并入 `@antv/x6` 主包，不再需要单独安装 `@antv/x6-plugin-xxxx`。同时，2.x 中的公共包 `@antv/x6-common` 与几何运算包 `@antv/x6-geometry` 也已并入主包，其 API 现在统一从 `@antv/x6` 导入。
 
 ```json
 {
@@ -40,6 +39,8 @@ redirect_from:
 - `@antv/x6-plugin-minimap`
 - `@antv/x6-plugin-stencil`
 - `@antv/x6-plugin-export`
+- `@antv/x6-common`
+- `@antv/x6-geometry`
 
 ### 导入路径变更
 
@@ -56,6 +57,17 @@ graph.use(new Selection())
 import { Scroller, Selection } from '@antv/x6'
 graph.use(new Scroller())
 graph.use(new Selection())
+```
+
+在 3.x 版本中，之前从 `@antv/x6-common` 和 `@antv/x6-geometry` 导入的工具与几何类型，现在统一从 `@antv/x6` 导出，仅需替换导入路径即可：
+
+```ts
+// 2.x
+import { Dom, FunctionExt } from '@antv/x6-common'
+import { Point, Rectangle } from '@antv/x6-geometry'
+
+// 3.x
+import { Dom, FunctionExt, Point, Rectangle } from '@antv/x6'
 ```
 
 ### 新增动画能力
