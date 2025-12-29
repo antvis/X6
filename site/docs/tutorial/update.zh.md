@@ -18,7 +18,7 @@ redirect_from:
 
 ### package.json
 
-3.x 将所有常用插件（Plugins）统一并入 `@antv/x6` 主包，不再需要单独安装 `@antv/x6-plugin-xxxx`。同时，2.x 中的公共包 `@antv/x6-common` 与几何运算包 `@antv/x6-geometry` 的导出也统一并入主包，相关 API 改为从 `@antv/x6` 导入。
+3.x 将所有常用插件（Plugins）统一并入 `@antv/x6` 主包，不再需要单独安装 `@antv/x6-plugin-xxxx`。同时，2.x 中的公共包 `@antv/x6-common` 与几何运算包 `@antv/x6-geometry` 也已并入主包，其 API 现在统一从 `@antv/x6` 导入。
 
 ```json
 {
@@ -59,9 +59,7 @@ graph.use(new Scroller())
 graph.use(new Selection())
 ```
 
-来自 x6-common / x6-geometry 的导入
-
-2.x 中从 `@antv/x6-common`、`@antv/x6-geometry` 引入的工具与几何类型，3.x 统一从 `@antv/x6` 导出，仅需替换导入路径：
+在 3.x 版本中，之前从 `@antv/x6-common` 和 `@antv/x6-geometry` 导入的工具与几何类型，现在统一从 `@antv/x6` 导出，仅需替换导入路径即可：
 
 ```ts
 // 2.x

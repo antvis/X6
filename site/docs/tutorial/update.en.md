@@ -18,7 +18,7 @@ Compared to 2.x, 3.x mainly focuses on plugin consolidation (unified export), op
 
 ### package.json
 
-3.x merges commonly used plugins into `@antv/x6`, so you no longer need to install separate `@antv/x6-plugin-xxxx` packages. Meanwhile, exports from the 2.x utility package `@antv/x6-common` and geometry package `@antv/x6-geometry` are unified into the main package; import related APIs from `@antv/x6`.
+3.x merges commonly used plugins and subpackages into `@antv/x6`, so you no longer need to install separate `@antv/x6-plugin-xxxx` packages. Additionally, the utility package `@antv/x6-common` and geometry package `@antv/x6-geometry` are now part of the main package, and their APIs should be imported from `@antv/x6`.
 
 ```json
 {
@@ -59,9 +59,7 @@ graph.use(new Scroller())
 graph.use(new Selection())
 ```
 
-Imports from x6-common / x6-geometry
-
-In 2.x, utilities and geometry types imported from `@antv/x6-common` and `@antv/x6-geometry` are unified and exported from `@antv/x6` in 3.x. You only need to replace the import path:
+In 3.x, utilities and geometry types previously imported from `@antv/x6-common` and `@antv/x6-geometry` are now exported directly from `@antv/x6`. You only need to update the import path:
 
 ```ts
 // 2.x
