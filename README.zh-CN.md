@@ -20,6 +20,10 @@
 </p>
 
 <p align="center">
+  <a href="https://trendshift.io/repositories/4515" target="_blank"><img src="https://trendshift.io/api/badge/repositories/4515" alt="antvis%2FX6 | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="http://x6.antv.antgroup.com/tutorial/about">官网文档</a> •
   <a href="https://x6.antv.antgroup.com/tutorial/getting-started">快速开始</a> •
   <a href="http://x6.antv.antgroup.com/examples">图表示例</a> •
