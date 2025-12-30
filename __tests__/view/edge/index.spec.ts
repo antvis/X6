@@ -1,11 +1,11 @@
 // @ts-nocheck
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Dom } from '../../../src/common'
+import * as Platform from '../../../src/common/platform'
 import { Path, Point, Rectangle } from '../../../src/geometry'
 import { Graph } from '../../../src/graph'
 import { Edge } from '../../../src/model/edge'
 import { EdgeView } from '../../../src/view/edge'
-import * as Platform from '../../../src/common/platform'
 
 describe('EdgeView', () => {
   let graph: Graph
@@ -613,6 +613,134 @@ describe('EdgeView', () => {
       const initialTerminal = { x: 100, y: 100 }
       const isValid = edgeView.validateEdge(edge, 'source', initialTerminal)
       expect(typeof isValid).toBe('boolean')
+    })
+
+    it('allowNode=false 不影响端口连接', () => {
+      graph.options.connecting.allowNode = false
+      graph.options.connecting.allowPort = true
+
+      const sourceNode = graph.addNode({
+        x: 50,
+        y: 50,
+        width: 100,
+        height: 100,
+        ports: {
+          groups: { out: { position: 'right' } },
+          items: [{ id: 'p_out', group: 'out' }],
+        },
+      })
+      const targetNode = graph.addNode({
+        x: 250,
+        y: 250,
+        width: 100,
+        height: 100,
+        ports: {
+          groups: { in: { position: 'left' } },
+          items: [{ id: 'p_in', group: 'in' }],
+        },
+      })
+      const sourceView = sourceNode.findView(graph)!
+      const targetView = targetNode.findView(graph)!
+
+      edge.setSource({ cell: sourceNode.id, port: 'p_out' })
+      sourceView.update()
+      targetView.update()
+      const targetMagnet = (targetView as any).findPortElem('p_in')
+
+      const isValidToPort = edgeView.validateConnection(
+        sourceView,
+        sourceView.container,
+        targetView,
+        targetMagnet,
+        'target',
+        edgeView,
+        targetView.getEdgeTerminal(targetMagnet, 0, 0, edge, 'target'),
+      )
+      expect(isValidToPort).toBe(true)
+
+      const isValidToNode = edgeView.validateConnection(
+        sourceView,
+        sourceView.container,
+        targetView,
+        null,
+        'target',
+        edgeView,
+        { cell: targetNode.id },
+      )
+      expect(isValidToNode).toBe(false)
+    })
+
+    it('allowLoop=false 禁止同节点端口互连', () => {
+      graph.options.connecting.allowLoop = false
+      graph.options.connecting.allowPort = true
+      graph.options.connecting.allowNode = true
+
+      const node = graph.addNode({
+        x: 100,
+        y: 100,
+        width: 120,
+        height: 60,
+        ports: {
+          groups: { l: { position: 'left' }, r: { position: 'right' } },
+          items: [
+            { id: 'p_in', group: 'l' },
+            { id: 'p_out', group: 'r' },
+          ],
+        },
+      })
+      const view = node.findView(graph)!
+
+      edge.setSource({ cell: node.id, port: 'p_out' })
+      view.update()
+      const targetMagnet = (view as any).findPortElem('p_in')
+
+      const isValid = edgeView.validateConnection(
+        view,
+        (view as any).findPortElem('p_out'),
+        view,
+        targetMagnet,
+        'target',
+        edgeView,
+        view.getEdgeTerminal(targetMagnet, 0, 0, edge, 'target'),
+      )
+      expect(isValid).toBe(false)
+    })
+
+    it('allowLoop 为函数时可放行同节点端口互连', () => {
+      graph.options.connecting.allowLoop = ({ sourcePort, targetPort }) =>
+        !!sourcePort || !!targetPort
+      graph.options.connecting.allowPort = true
+      graph.options.connecting.allowNode = true
+
+      const node = graph.addNode({
+        x: 200,
+        y: 120,
+        width: 120,
+        height: 60,
+        ports: {
+          groups: { l: { position: 'left' }, r: { position: 'right' } },
+          items: [
+            { id: 'p_in', group: 'l' },
+            { id: 'p_out', group: 'r' },
+          ],
+        },
+      })
+      const view = node.findView(graph)!
+
+      edge.setSource({ cell: node.id, port: 'p_out' })
+      view.update()
+      const targetMagnet = (view as any).findPortElem('p_in')
+
+      const isValid = edgeView.validateConnection(
+        view,
+        (view as any).findPortElem('p_out'),
+        view,
+        targetMagnet,
+        'target',
+        edgeView,
+        view.getEdgeTerminal(targetMagnet, 0, 0, edge, 'target'),
+      )
+      expect(isValid).toBe(true)
     })
   })
 
