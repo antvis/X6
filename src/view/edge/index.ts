@@ -1829,9 +1829,9 @@ export class EdgeView<
       })
     }
 
-    if (allowLoop != null) {
+    if (allowLoop != null && sourceView != null && sourceView === targetView) {
       if (typeof allowLoop === 'boolean') {
-        if (!allowLoop && sourceView === targetView) {
+        if (!allowLoop) {
           valid = false
         }
       } else {
