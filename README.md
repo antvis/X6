@@ -21,6 +21,10 @@
 </p>
 
 <p align="center">
+  <a href="https://trendshift.io/repositories/4515" target="_blank"><img src="https://trendshift.io/api/badge/repositories/4515" alt="antvis%2FX6 | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="http://x6.antv.antgroup.com/tutorial/about">Official Documentation</a> •
   <a href="https://x6.antv.antgroup.com/tutorial/getting-started">Quick Start</a> •
   <a href="http://x6.antv.antgroup.com/examples">Graph Examples</a> •
@@ -28,8 +32,6 @@
   <a href="https://codesandbox.io/s/mo-ban-55i8dp">Demo Template</a> •
   <a href="https://github.com/lloydzhou/awesome-x6">Awesome X6</a>
 </p>
-
-<a href="https://trendshift.io/repositories/4515" target="_blank"><img src="https://trendshift.io/api/badge/repositories/4515" alt="antvis%2FX6 | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
 AntV `X6` is a graph editing engine based on HTML and SVG, providing low-cost customization capabilities and out-of-the-box built-in extensions that make it easy to quickly build applications such as DAG diagrams, ER diagrams, flowcharts, lineage graphs, and more. We hope developers can use X6 to rapidly build various graph editing applications they need, making process relationship data controllable, interactive, and visualized.
 
