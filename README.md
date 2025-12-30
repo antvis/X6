@@ -21,6 +21,10 @@
 </p>
 
 <p align="center">
+  <a href="https://trendshift.io/repositories/4515" target="_blank"><img src="https://trendshift.io/api/badge/repositories/4515" alt="antvis%2FX6 | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="http://x6.antv.antgroup.com/tutorial/about">Official Documentation</a> •
   <a href="https://x6.antv.antgroup.com/tutorial/getting-started">Quick Start</a> •
   <a href="http://x6.antv.antgroup.com/examples">Graph Examples</a> •
