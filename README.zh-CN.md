@@ -28,6 +28,8 @@
   <a href="https://github.com/lloydzhou/awesome-x6">Awesome X6</a>
 </p>
 
+<a href="https://trendshift.io/repositories/4515" target="_blank"><img src="https://trendshift.io/api/badge/repositories/4515" alt="antvis%2FX6 | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+
 AntV `X6` 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。我们期望开发者基于 X6 可以快速构建自己需要的各种图编辑应用，让流程关系数据变得可控、可交互，以及可视化。
 
 ## ✨ 特性
