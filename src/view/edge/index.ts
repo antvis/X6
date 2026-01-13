@@ -126,9 +126,13 @@ export class EdgeView<
 
   get sourceBBox() {
     const sourceView = this.sourceView
-    if (!sourceView) {
-      const sourceDef = this.cell.getSource() as TerminalPointData
-      return new Rectangle(sourceDef.x, sourceDef.y)
+    if (!sourceView || !this.graph.renderer.isViewMounted(sourceView)) {
+      const sourceCell = this.cell.getSourceCell()
+      if (sourceCell) {
+        return sourceCell.getBBox()
+      }
+      const sourcePoint = this.cell.getSourcePoint()
+      return new Rectangle(sourcePoint.x, sourcePoint.y)
     }
     const sourceMagnet = this.sourceMagnet
     if (sourceView.isEdgeElement(sourceMagnet)) {
@@ -139,9 +143,13 @@ export class EdgeView<
 
   get targetBBox() {
     const targetView = this.targetView
-    if (!targetView) {
-      const targetDef = this.cell.getTarget() as TerminalPointData
-      return new Rectangle(targetDef.x, targetDef.y)
+    if (!targetView || !this.graph.renderer.isViewMounted(targetView)) {
+      const targetCell = this.cell.getTargetCell()
+      if (targetCell) {
+        return targetCell.getBBox()
+      }
+      const targetPoint = this.cell.getTargetPoint()
+      return new Rectangle(targetPoint.x, targetPoint.y)
     }
     const targetMagnet = this.targetMagnet
     if (targetView.isEdgeElement(targetMagnet)) {
