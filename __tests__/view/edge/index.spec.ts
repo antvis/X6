@@ -87,6 +87,44 @@ describe('EdgeView', () => {
       expect(bbox).toBeInstanceOf(Rectangle)
     })
 
+    it('should fallback to cell bbox when source view is not mounted', () => {
+      const sourceNode = graph.addNode({
+        x: 50,
+        y: 60,
+        width: 110,
+        height: 120,
+      })
+      edge.setSource(sourceNode)
+      edgeView.update()
+
+      const sourceView = sourceNode.findView(graph)
+      expect(sourceView).toBeTruthy()
+
+      vi.spyOn(graph.renderer, 'isViewMounted').mockReturnValue(false)
+      const bbox = edgeView.sourceBBox
+      expect(bbox.toJSON()).toEqual(sourceNode.getBBox().toJSON())
+    })
+
+    it('should fallback to cell bbox when source view is missing', () => {
+      const sourceNode = graph.addNode({
+        x: 10,
+        y: 20,
+        width: 80,
+        height: 40,
+      })
+      edge.setSource(sourceNode)
+      edgeView.update()
+
+      edgeView.sourceView = null
+      const bbox = edgeView.sourceBBox
+      expect(bbox.toJSON()).toEqual(sourceNode.getBBox().toJSON())
+    })
+
+    it('should return point bbox when source is a point', () => {
+      const bbox = edgeView.sourceBBox
+      expect(bbox.toJSON()).toEqual({ x: 100, y: 100, width: 0, height: 0 })
+    })
+
     it('should return target bbox', () => {
       const targetNode = graph.addNode({
         x: 150,
@@ -99,6 +137,42 @@ describe('EdgeView', () => {
 
       const bbox = edgeView.targetBBox
       expect(bbox).toBeInstanceOf(Rectangle)
+    })
+
+    it('should fallback to cell bbox when target view is not mounted', () => {
+      const targetNode = graph.addNode({
+        id: 'target-not-mounted',
+        x: 200,
+        y: 210,
+        width: 70,
+        height: 90,
+      })
+      edge.setTarget(targetNode)
+      edgeView.update()
+
+      const targetView = targetNode.findView(graph)
+      expect(targetView).toBeTruthy()
+      expect(edge.getTargetCellId()).toBe('target-not-mounted')
+      expect(edge.getTargetCell()).toBe(targetNode)
+
+      vi.spyOn(graph.renderer, 'isViewMounted').mockReturnValue(false)
+      const bbox = edgeView.targetBBox
+      expect(bbox.toJSON()).toEqual(targetNode.getBBox().toJSON())
+    })
+
+    it('should fallback to cell bbox when target view is missing', () => {
+      const targetNode = graph.addNode({
+        x: 220,
+        y: 230,
+        width: 60,
+        height: 50,
+      })
+      edge.setTarget(targetNode)
+      edgeView.update()
+
+      edgeView.targetView = null
+      const bbox = edgeView.targetBBox
+      expect(bbox.toJSON()).toEqual(targetNode.getBBox().toJSON())
     })
   })
 
