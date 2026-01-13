@@ -1,6 +1,6 @@
 import { type KeyValue, ObjectExt, type Size, StringExt } from '../common'
 import { Point, Polyline } from '../geometry'
-import type { PointOptions, PointLike } from '../geometry/point'
+import type { PointLike, PointOptions } from '../geometry/point'
 import type {
   CellAttrs,
   ConnectionPointManualItem,
@@ -18,14 +18,14 @@ import { Registry } from '../registry/registry'
 import { Markup, type MarkupType } from '../view/markup'
 import {
   Cell,
-  CellConfig,
-  CellMetadata,
-  CellProperties,
-  CellSetOptions,
-  CellDefaults,
-  CellTranslateOptions,
-  CellCommon,
-  CellChangeArgs,
+  type CellChangeArgs,
+  type CellCommon,
+  type CellConfig,
+  type CellDefaults,
+  type CellMetadata,
+  type CellProperties,
+  type CellSetOptions,
+  type CellTranslateOptions,
 } from './cell'
 import type { Node } from './node'
 import { exist, setEdgeRegistry } from './registry'
@@ -166,7 +166,7 @@ export class Edge<
     const { constructorName, overwrite, ...others } = config
     const ctor = ObjectExt.createClass<Definition>(
       getClassName(constructorName || others.shape),
-      this as Definition,
+      Edge as Definition,
     )
 
     ctor.config(others)
@@ -453,7 +453,7 @@ export class Edge<
     return this.getTerminalPoint('target')
   }
 
-  protected getTerminalPoint(type: TerminalType): Point {
+  getTerminalPoint(type: TerminalType): Point {
     const terminal = this[type]
     if (Point.isPointLike(terminal)) {
       return Point.create(terminal)
@@ -475,7 +475,7 @@ export class Edge<
     return this.getTerminalCell('target')
   }
 
-  protected getTerminalCell(type: TerminalType) {
+  getTerminalCell(type: TerminalType) {
     if (this.model) {
       const cellId =
         type === 'source' ? this.getSourceCellId() : this.getTargetCellId()
@@ -697,8 +697,8 @@ export class Edge<
             return null
           })
         : current
-        ? [...current]
-        : []
+          ? [...current]
+          : []
 
     const removed =
       previous && current
@@ -714,8 +714,8 @@ export class Edge<
             return null
           })
         : previous
-        ? [...previous]
-        : []
+          ? [...previous]
+          : []
 
     if (added.length > 0) {
       this.notify('labels:added', { added, cell: this, edge: this })
@@ -815,8 +815,8 @@ export class Edge<
             return null
           })
         : current
-        ? [...current]
-        : []
+          ? [...current]
+          : []
 
     const removed =
       previous && current
@@ -827,8 +827,8 @@ export class Edge<
             return null
           })
         : previous
-        ? [...previous]
-        : []
+          ? [...previous]
+          : []
 
     if (added.length > 0) {
       this.notify('vertexs:added', { added, cell: this, edge: this })
