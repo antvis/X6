@@ -147,12 +147,12 @@ export class Collection extends Basecoat<CollectionEventArgs> {
         continue
       }
 
+      const parent = cell.getParent()
+
       const index = this.cells.indexOf(cell)
       this.cells.splice(index, 1)
       this.length -= 1
-      delete this.map[cell.id]
       removed.push(cell)
-      this.unreference(cell)
 
       if (!options.silent) {
         this.trigger('removed', { cell, index, options })
@@ -163,7 +163,13 @@ export class Collection extends Basecoat<CollectionEventArgs> {
       }
 
       if (!options.dryrun) {
+        if (parent) {
+          parent.removeChild(cell)
+        }
+        this.unreference(cell)
         cell.remove()
+      } else {
+        this.unreference(cell)
       }
     }
 

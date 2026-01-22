@@ -13,15 +13,26 @@ class FakeCell {
   public removed = false
   private changedKeys = new Set<string>()
 
+  private parent?: FakeCell
+
   constructor(
     id: string,
     opts: { zIndex?: number; type?: 'node' | 'edge' | null } = {},
+    parent?: FakeCell
   ) {
     this.id = id
     this.zIndex = opts.zIndex ?? 0
     this.type = opts.type ?? null
     this.props = {}
     this.listeners = {}
+    this.parent = parent
+  }
+
+  getParent() {
+    if (this.parent) {
+      return this.parent
+    }
+    return null
   }
 
   toJSON() {
