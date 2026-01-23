@@ -233,6 +233,45 @@ describe('Scheduler', () => {
 
       expect(queueJobSpy).not.toHaveBeenCalled()
     })
+
+    it('should merge multiple view updates before flushing', () => {
+      const renderSpy = vi
+        .spyOn(scheduler as any, 'renderViewInArea')
+        .mockImplementation(() => {})
+
+      const mockView: any = {
+        cell: { id: 'test-cell' },
+        hasAction: vi.fn(() => false),
+        dispose: vi.fn(),
+      }
+
+      scheduler.views['test-cell'] = {
+        view: mockView,
+        flag: 0,
+        options: {},
+        state: 1,
+      }
+
+      scheduler.requestViewUpdate(
+        mockView,
+        1,
+        { foo: 1 },
+        JOB_PRIORITY.Update,
+        false,
+      )
+      scheduler.requestViewUpdate(
+        mockView,
+        2,
+        { bar: 2 },
+        JOB_PRIORITY.Update,
+        false,
+      )
+
+      jobQueue.flushJobsSync()
+
+      expect(renderSpy).toHaveBeenCalledTimes(1)
+      expect(renderSpy).toHaveBeenCalledWith(mockView, 3, { bar: 2 })
+    })
   })
 
   describe('view state management', () => {
