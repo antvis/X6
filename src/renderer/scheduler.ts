@@ -8,13 +8,10 @@ import {
 import { FLAG_INSERT, FLAG_REMOVE } from '../constants'
 import type { Rectangle } from '../geometry'
 import type { Graph } from '../graph'
-import type { VirtualOptions } from '../graph/options'
 import type { Cell, ModelEventArgs } from '../model'
 import { CellView, EdgeView, NodeView, type View } from '../view'
 import type { FlagManagerAction } from '../view/flag'
 import { JOB_PRIORITY, JobQueue } from './queueJob'
-
-const INSERT_JOB_ID_SUFFIX = '#insert'
 
 export enum SchedulerViewState {
   CREATED,
@@ -25,7 +22,7 @@ export enum SchedulerViewState {
 export interface SchedulerView {
   view: CellView
   flag: number
-  options: any
+  options: KeyValue
   state: SchedulerViewState
 }
 
@@ -125,7 +122,7 @@ export class Scheduler extends Disposable {
   requestViewUpdate(
     view: CellView,
     flag: number,
-    options: any = {},
+    options: KeyValue = {},
     priority: JOB_PRIORITY = JOB_PRIORITY.Update,
     flush = true,
   ) {
@@ -136,25 +133,36 @@ export class Scheduler extends Disposable {
       return
     }
 
-    viewItem.flag = flag
-    viewItem.options = options
+    const nextFlag = viewItem.flag | flag
+    viewItem.flag = nextFlag
+    const prevOptions = viewItem.options || {}
+    const nextOptions = options || {}
+    if (prevOptions.queue && nextOptions.queue == null) {
+      nextOptions.queue = prevOptions.queue
+    }
+    if (prevOptions.async === false || nextOptions.async === false) {
+      nextOptions.async = false
+    }
+    viewItem.options = nextOptions
 
     const priorAction = view.hasAction(flag, ['translate', 'resize', 'rotate'])
-    if (priorAction || options.async === false) {
+    if (priorAction || nextOptions.async === false) {
       priority = JOB_PRIORITY.PRIOR // eslint-disable-line
       flush = false // eslint-disable-line
     }
 
-    // 对包含插入标记的任务使用独立的队列 id，避免与同一视图的后续更新任务去重合并
-    const jobId = flag & FLAG_INSERT ? `${id}${INSERT_JOB_ID_SUFFIX}` : id
     this.queue.queueJob({
-      id: jobId,
+      id,
       priority,
       cb: () => {
-        this.renderViewInArea(view, flag, options)
-        const queue = options.queue
+        const current = this.views[id]
+        if (!current) return
+
+        const currentOptions = current.options || {}
+        this.renderViewInArea(current.view, current.flag, currentOptions)
+        const queue = currentOptions.queue
         if (queue) {
-          const index = queue.indexOf(view.cell.id)
+          const index = queue.indexOf(current.view.cell.id)
           if (index >= 0) {
             queue.splice(index, 1)
           }
@@ -345,14 +353,14 @@ export class Scheduler extends Disposable {
     this.flush()
   }
 
-  protected updateView(view: View, flag: number, options: any = {}) {
+  protected updateView(view: View, flag: number, options: KeyValue = {}) {
     if (view == null) {
       return 0
     }
 
     if (CellView.isCellView(view)) {
       if (flag & FLAG_REMOVE) {
-        this.removeView(view.cell as any)
+        this.removeView(view)
         return 0
       }
 

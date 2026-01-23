@@ -4,13 +4,20 @@ import { Graph } from '../../src/graph/graph'
 import { HTML, type HTMLShapeConfig } from '../../src/shape/html'
 
 describe('HTML Shape', () => {
+  type HTMLViewLike = {
+    selectors: Record<string, unknown> | null
+    renderHTMLComponent: () => void
+    dispose: () => void
+    onCellChangeAny: (...args: unknown[]) => void
+  }
+
   let graph: Graph
   let container: HTMLElement
 
   beforeEach(() => {
     container = document.createElement('div')
     document.body.appendChild(container)
-    graph = new Graph({ container })
+    graph = new Graph({ container, async: false })
   })
 
   afterEach(() => {
@@ -42,10 +49,9 @@ describe('HTML Shape', () => {
         inherit: 'custom-base',
       }
 
-      // @ts-expect-error
       const registerSpy = vi
         .spyOn(Graph, 'registerNode')
-        .mockImplementation(() => {})
+        .mockImplementation(() => HTML)
       HTML.register(config)
 
       expect(registerSpy).toHaveBeenCalledWith(
@@ -87,7 +93,7 @@ describe('HTML Shape', () => {
 
   describe('View', () => {
     let node: HTML
-    let view: any
+    let view: HTMLViewLike
 
     beforeEach(() => {
       HTML.register({
@@ -104,7 +110,7 @@ describe('HTML Shape', () => {
         height: 50,
       }) as HTML
 
-      view = graph.findViewByCell(node)
+      view = graph.findViewByCell(node) as unknown as HTMLViewLike
     })
 
     it('should re-render when affected property changes', () => {
@@ -142,7 +148,6 @@ describe('HTML Shape', () => {
     it('should render string HTML content', () => {
       const mockContainer = document.createElement('div')
       view.selectors = { foContent: mockContainer }
-
       view.renderHTMLComponent()
       expect(mockContainer.innerHTML).toBe('<div>test content</div>')
     })

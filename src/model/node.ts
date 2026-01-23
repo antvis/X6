@@ -1183,6 +1183,16 @@ export interface FitEmbedsOptions extends NodeSetOptions {
 }
 
 Node.config<NodeConfig>({
+  markup: [
+    {
+      tagName: 'rect',
+      selector: 'body',
+    },
+    {
+      tagName: 'text',
+      selector: 'label',
+    },
+  ],
   propHooks({ ports, ...metadata }) {
     if (ports) {
       metadata.ports = Array.isArray(ports) ? { items: ports } : ports
