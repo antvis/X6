@@ -1,5 +1,5 @@
-import { ViewEvents } from '../../types'
 import { Dom, type KeyValue, ObjectExt } from '../../common'
+import type { ViewEvents } from '../../types'
 import type { CellView } from '../cell'
 import { Markup, type MarkupType } from '../markup'
 import { View } from '../view'
@@ -66,9 +66,10 @@ export class ToolItem<
   }
 
   public static define<T extends ToolItemOptions>(options: T) {
+    const Base = this as any as ToolItemDefinition
     const tool = ObjectExt.createClass<ToolItemDefinition>(
       getClassName(options.name),
-      ToolItem as ToolItemDefinition,
+      Base,
     ) as typeof ToolItem
 
     tool.config(options)
