@@ -7,16 +7,14 @@ on:
   workflow_run:
     workflows: ['🏷️　Label(Status) Dummy'] # the workflow in step 1
     types: [requested]
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-      - uses: wow-actions/use-app-token@v1
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
       - uses: wow-actions/pr-triage@v1
         with:
-          GITHUB_TOKEN: ${{ env.bot_token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WORKFLOW_ID: ${{ github.event.workflow_run.id }}
