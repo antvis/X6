@@ -118,6 +118,26 @@ describe('ToolItem', () => {
       expect(CustomTool).toBeDefined()
       expect(CustomTool.name).toBe('CustomTool')
     })
+
+    it('should define tool class with inheritance and merged defaults', () => {
+      class BaseTool extends ToolItem {
+        public static defaults = {
+          ...ToolItem.getDefaults(),
+          name: 'base-tool',
+          focusOpacity: 0.5,
+        }
+
+        customMethod() {
+          return 'ok'
+        }
+      }
+
+      const SubTool = BaseTool.define({ name: 'sub-tool' })
+      const instance = new (SubTool as any)() as any
+      expect(instance).toBeInstanceOf(BaseTool)
+      expect(instance.customMethod()).toBe('ok')
+      expect(instance.options.focusOpacity).toBe(0.5)
+    })
   })
 
   describe('constructor', () => {
@@ -211,13 +231,13 @@ describe('ToolItem', () => {
           {
             tagName: 'circle',
             selector: 'circle',
-            attributes: { r: 5 },
+            attrs: { r: 5 },
           },
         ],
       })
       markupTool.render()
-      expect(markupTool.childNodes).toBeDefined()
-      expect(markupTool.childNodes.circle).toBeDefined()
+      const circle = markupTool.container.querySelector('circle')
+      expect(circle).toBeDefined()
     })
   })
 
