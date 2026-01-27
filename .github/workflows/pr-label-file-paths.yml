@@ -3,16 +3,14 @@
 
 name: 🏷️　Label(File Paths)
 on: pull_request_target
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - uses: wow-actions/use-app-token@v1
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
       - uses: actions/labeler@v4
         with:
-          repo-token: ${{ env.bot_token }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/workflows/config/pr-label-file-paths.yml
