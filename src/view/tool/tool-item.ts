@@ -1,5 +1,5 @@
-import { ViewEvents } from '../../types'
 import { Dom, type KeyValue, ObjectExt } from '../../common'
+import type { ViewEvents } from '../../types'
 import type { CellView } from '../cell'
 import { Markup, type MarkupType } from '../markup'
 import { View } from '../view'
@@ -20,7 +20,9 @@ export interface ToolItemOptions {
 
 export type ToolItemDefinition =
   | typeof ToolItem
-  | (new (options: ToolItemOptions) => ToolItem)
+  | (new (
+      options: ToolItemOptions,
+    ) => ToolItem)
 
 export class ToolItem<
   TargetView extends CellView = CellView,
@@ -66,9 +68,10 @@ export class ToolItem<
   }
 
   public static define<T extends ToolItemOptions>(options: T) {
+    const Base = ToolItem as any as ToolItemDefinition
     const tool = ObjectExt.createClass<ToolItemDefinition>(
       getClassName(options.name),
-      ToolItem as ToolItemDefinition,
+      Base,
     ) as typeof ToolItem
 
     tool.config(options)
@@ -76,20 +79,20 @@ export class ToolItem<
   }
 
   public static getDefaults<T extends ToolItemOptions>() {
-    return this.defaults as T
+    return ToolItem.defaults as T
   }
 
   public static config<T extends ToolItemOptions = ToolItemOptions>(
     options: Partial<T>,
   ) {
-    this.defaults = this.getOptions(options)
+    ToolItem.defaults = ToolItem.getOptions(options)
   }
 
   public static getOptions<T extends ToolItemOptions = ToolItemOptions>(
     options: Partial<T>,
   ): T {
     return ObjectExt.merge(
-      ObjectExt.cloneDeep(this.getDefaults()),
+      ObjectExt.cloneDeep(ToolItem.getDefaults()),
       options,
     ) as T
   }
