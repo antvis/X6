@@ -1190,11 +1190,15 @@ export class Cell<
         const outgoings = this.model.getOutgoingEdges(this)
 
         if (incomings) {
-          incomings.forEach((edge) => edge.updateParent(options))
+          incomings.forEach((edge) => {
+            edge.updateParent(options)
+          })
         }
 
         if (outgoings) {
-          outgoings.forEach((edge) => edge.updateParent(options))
+          outgoings.forEach((edge) => {
+            edge.updateParent(options)
+          })
         }
       }
 
@@ -1234,10 +1238,23 @@ export class Cell<
 
   remove(options: CellRemoveOptions = {}) {
     this.batchUpdate('remove', () => {
-      const parent = this.getParent()
+      const parentId = this.getParentId()
+      const parent =
+        parentId && this.model ? this.model.getCell(parentId) : this._parent
       if (parent) {
-        parent.removeChild(this, options)
+        const childrenIds = parent.store.get('children') as string[] | undefined
+        if (childrenIds && childrenIds.length) {
+          const nextChildrenIds = childrenIds.filter((id) => id !== this.id)
+          if (nextChildrenIds.length !== childrenIds.length) {
+            if (nextChildrenIds.length) {
+              parent.store.set('children', nextChildrenIds, options)
+            } else {
+              parent.store.remove('children', options)
+            }
+          }
+        }
       }
+      this.setParent(null, options)
 
       if (options.deep !== false) {
         this.eachChild((child) => child.remove(options))
@@ -1434,14 +1451,14 @@ export class Cell<
       ? EdgeProperties
       : Properties {
     const props = { ...this.store.get() }
-    const toString = Object.prototype.toString
+    const objectToString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
 
     if (!props.shape) {
       const ctor = this.constructor
       throw new Error(
         `Unable to serialize ${cellType} missing "shape" prop, check the ${cellType} "${
-          ctor.name || toString.call(ctor)
+          ctor.name || objectToString.call(ctor)
         }"`,
       )
     }
