@@ -163,6 +163,29 @@ describe('Cell core API', () => {
     expect(p.getChildCount()).toBe(0)
   })
 
+  it('remove clears parent children ids to avoid duplicates when recreating same id', () => {
+    const parent = new Cell({ id: 'parent' } as any)
+    const child = new Cell({ id: 'child' } as any)
+    parent.model = model as any
+    child.model = model as any
+
+    model.addCell(parent)
+    model.addCell(child)
+
+    parent.addChild(child)
+    expect((parent.getProp('children') as any as string[])?.length).toBe(1)
+
+    child.remove()
+    expect(parent.getProp('children')).toBeUndefined()
+
+    const recreated = new Cell({ id: 'child' } as any)
+    recreated.model = model as any
+    model.addCell(recreated)
+
+    parent.addChild(recreated)
+    expect(parent.getChildren()?.map((c) => c.id)).toEqual(['child'])
+  })
+
   it('tools APIs: normalizeTools, set/get/add/remove/has', () => {
     expect(Cell.normalizeTools('a').items[0]).toBe('a')
     expect(Cell.normalizeTools(['a', 'b']).items.length).toBe(2)
@@ -221,16 +244,16 @@ describe('Cell core API', () => {
     c.notify('changed', { options: {}, cell: c } as any)
     expect(model.notify).toHaveBeenCalled()
     if (typeof c.startBatch === 'function') {
-      c.startBatch('test', { a: 1 })
+      c.startBatch('test' as any, { a: 1 })
       expect(model.startBatch).toHaveBeenCalled()
     }
     if (typeof c.stopBatch === 'function') {
-      c.stopBatch('test', { a: 1 })
+      c.stopBatch('test' as any, { a: 1 })
       expect(model.stopBatch).toHaveBeenCalled()
     }
     const res =
       typeof c.batchUpdate === 'function'
-        ? c.batchUpdate('b', () => 'ok', { x: 1 })
+        ? c.batchUpdate('b' as any, () => 'ok', { x: 1 })
         : 'ok'
     expect(res).toBe('ok')
   })
@@ -249,16 +272,19 @@ describe('Cell core API', () => {
 
   it('transition proxies to animation start/stop/get without throwing', () => {
     const c = new Cell({})
-    if (typeof c.transition === 'function') {
-      const stop = c.transition('data', 1)
+    const anyCell = c as any
+    if (typeof anyCell.transition === 'function') {
+      const stop = anyCell.transition('data', 1)
       expect(typeof stop).toBe('function')
     }
     expect(() =>
-      typeof c.getTransitions === 'function' ? c.getTransitions() : undefined,
+      typeof anyCell.getTransitions === 'function'
+        ? anyCell.getTransitions()
+        : undefined,
     ).not.toThrow()
     expect(() =>
-      typeof c.stopTransition === 'function'
-        ? c.stopTransition('data')
+      typeof anyCell.stopTransition === 'function'
+        ? anyCell.stopTransition('data')
         : undefined,
     ).not.toThrow()
   })
