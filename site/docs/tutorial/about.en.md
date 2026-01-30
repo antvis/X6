@@ -25,7 +25,7 @@ If you haven't used X6 yet, we recommend experiencing its charm through the [Get
 
 ## ✨ Features
 
-- 🌱  Highly Customizable: Supports customizing node styles and interactions using SVG/HTML/React/Vue.
+- 🌱  Highly Customizable: Supports customizing node styles and interactions using SVG/HTML/React/Vue/Angular.
 - 🚀  Ready to Use: Comes with 10+ built-in graph editing extensions, such as selection, alignment lines, mini-map, etc.
 - 🧲  Data-Driven: Based on MVC architecture, allowing users to focus more on data logic and business logic.
 - 💯  Event-Driven: Can listen to any events occurring within the graph.
