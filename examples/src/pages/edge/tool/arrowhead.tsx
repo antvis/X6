@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph } from '@antv/x6'
 import '../../index.less'
 
@@ -36,7 +36,7 @@ Graph.registerNode(
         },
       },
     ],
-  },
+  } as any,
   true,
 )
 
@@ -51,12 +51,15 @@ const magnetAvailabilityHighlighter = {
   },
 }
 
-export class ToolArrowheadExample extends React.Component {
-  private container!: HTMLDivElement
+export const ToolArrowheadExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 400,
       highlighting: {
@@ -165,17 +168,18 @@ export class ToolArrowheadExample extends React.Component {
     graph.on('edge:mouseleave', ({ cell }) => {
       cell.removeTools()
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

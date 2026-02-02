@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
-import { Graph, Markup, ToolsView, EdgeView } from '@antv/x6'
+import { Graph, Markup, EdgeView, ToolItem, CellViewOptions } from '@antv/x6'
 import '../index.less'
 
-class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
+class TooltipTool extends ToolItem<EdgeView, CellViewOptions> {
   private delay = 100
-  private moveTimer: number
-  private enterTimer: number
-  private leaveTimer: number
-  private tooltipVisible: boolean
+  private moveTimer: number = 0
+  private enterTimer: number = 0
+  private leaveTimer: number = 0
+  private tooltipVisible: boolean = false
 
   protected onRender() {
     this.updatePosition()
@@ -95,7 +95,7 @@ namespace TooltipTool {
     markup: Markup.getForeignObjectMarkup(),
   })
 
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends CellViewOptions {
     follow?: boolean
     tooltip?: string
   }
@@ -103,12 +103,15 @@ namespace TooltipTool {
 
 Graph.registerEdgeTool('tooltip', TooltipTool, true)
 
-export default class Example extends React.Component {
-  private container!: HTMLDivElement
+const Example: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 400,
       grid: true,
@@ -158,17 +161,20 @@ export default class Example extends React.Component {
         args: { follow: true, tooltip: 'tooltip test 2' },
       },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
+
+export default Example

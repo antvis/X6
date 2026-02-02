@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { register } from '@antv/x6-react-shape'
 import { Graph, Node, Cell, Path, Selection, Snapline } from '@antv/x6'
 import '../index.less'
 import './index.less'
+
 interface NodeStatus {
   id: string
   status: string
@@ -18,34 +19,22 @@ const image = {
   running:
     'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t8fURKfgSOgAAAAAAAAAAAAAARQnAQ',
 }
-export class AlgoNode extends React.Component<{ node?: Node }> {
-  shouldComponentUpdate() {
-    const { node } = this.props
-    if (node) {
-      if (node.hasChanged('data')) {
-        return true
-      }
-    }
-    return false
-  }
 
-  render() {
-    const { node } = this.props
-    const data = node?.getData() as NodeStatus
-    const { label, status = 'default' } = data
+export const AlgoNode: React.FC<{ node?: Node }> = ({ node }) => {
+  const data = node?.getData() as NodeStatus
+  const { label, status = 'default' } = data
 
-    return (
-      <div className={`node ${status}`}>
-        <img src={image.logo} alt="logo" />
-        <span className="label">{label}</span>
-        <span className="status">
-          {status === 'success' && <img src={image.success} alt="success" />}
-          {status === 'failed' && <img src={image.failed} alt="failed" />}
-          {status === 'running' && <img src={image.running} alt="running" />}
-        </span>
-      </div>
-    )
-  }
+  return (
+    <div className={`node ${status}`}>
+      <img src={image.logo} alt="logo" />
+      <span className="label">{label}</span>
+      <span className="status">
+        {status === 'success' && <img src={image.success} alt="success" />}
+        {status === 'failed' && <img src={image.failed} alt="failed" />}
+        {status === 'running' && <img src={image.running} alt="running" />}
+      </span>
+    </div>
+  )
 }
 
 register({
@@ -315,12 +304,16 @@ const nodeStatusList = [
     },
   ],
 ]
-export class CaseDagExample extends React.Component {
-  private container!: HTMLDivElement
 
-  componentDidMount() {
-    const graph: Graph = new Graph({
-      container: this.container,
+export const CaseDagExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const graph = new Graph({
+      container: containerRef.current,
       width: 800,
       height: 600,
       panning: {
@@ -416,36 +409,44 @@ export class CaseDagExample extends React.Component {
       graph.resetCells(cells)
     }
 
+    let timer: number
     // 显示节点状态
-    const showNodeStatus = async (statusList: NodeStatus[][]) => {
-      const status = statusList.shift()
+    const showNodeStatus = (statusList: NodeStatus[][]) => {
+      const list = [...statusList]
+      const status = list.shift()
       status?.forEach((item) => {
         const { id, status } = item
         const node = graph.getCellById(id)
-        const data = node.getData() as NodeStatus
-        node.setData({
-          ...data,
-          status: status,
-        })
+        if (node) {
+          const data = node.getData() as NodeStatus
+          node.setData({
+            ...data,
+            status: status,
+          })
+        }
       })
-      setTimeout(() => {
-        showNodeStatus(statusList)
-      }, 3000)
+      if (list.length > 0) {
+        timer = window.setTimeout(() => {
+          showNodeStatus(list)
+        }, 3000)
+      }
     }
 
     init(data)
     showNodeStatus(nodeStatusList)
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="dag" />
-      </div>
-    )
-  }
+    return () => {
+      clearTimeout(timer)
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="dag" />
+    </div>
+  )
 }

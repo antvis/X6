@@ -1,14 +1,38 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
-export default class Example extends React.Component {
-  private container!: HTMLDivElement
-  private graph!: Graph
+const Example: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
-    this.graph = new Graph({
-      container: this.container,
+  const getPortCoord = () => {
+    const port = document.getElementById('side-port')!
+    const bbox = port.getBoundingClientRect()
+    const center = { x: bbox.x + bbox.width / 2, y: bbox.y + bbox.height / 2 }
+    return graphRef.current?.clientToLocal(center).toJSON()
+  }
+
+  const setupEdge = (edge: Edge, trigger?: boolean) => {
+    const updateConnectionPoint = () => {
+      const coord = getPortCoord()
+      if (coord) {
+        edge.setSource(coord)
+      }
+    }
+    graphRef.current?.on('scale', updateConnectionPoint)
+    graphRef.current?.on('translate', updateConnectionPoint)
+
+    if (trigger) {
+      updateConnectionPoint()
+    }
+  }
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const graph = new Graph({
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -16,7 +40,9 @@ export default class Example extends React.Component {
       mousewheel: true,
     })
 
-    this.graph.addNode({
+    graphRef.current = graph
+
+    graph.addNode({
       id: 'rect1',
       x: 100,
       y: 50,
@@ -28,7 +54,7 @@ export default class Example extends React.Component {
       },
     })
 
-    this.graph.addNode({
+    graph.addNode({
       id: 'rect2',
       x: 200,
       y: 240,
@@ -40,42 +66,28 @@ export default class Example extends React.Component {
       },
     })
 
-    const edge = this.graph.addEdge({
+    const edge = graph.addEdge({
       source: [0, 0],
       target: { cell: 'rect1' },
     })
 
-    this.setupEdge(edge, true)
-  }
+    setupEdge(edge, true)
 
-  getPortCoord() {
-    const port = document.getElementById('side-port')!
-    const bbox = port.getBoundingClientRect()
-    const center = { x: bbox.x + bbox.width / 2, y: bbox.y + bbox.height / 2 }
-    return this.graph.clientToLocal(center).toJSON()
-  }
-
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  setupEdge(edge: Edge, trigger?: boolean) {
-    const updateConnectionPoint = () => {
-      edge.setSource(this.getPortCoord())
+    return () => {
+      graph.dispose()
+      graphRef.current = null
     }
-    this.graph.on('scale', updateConnectionPoint)
-    this.graph.on('translate', updateConnectionPoint)
+  }, [])
 
-    if (trigger) {
-      updateConnectionPoint()
-    }
-  }
+  const startConnect = () => {
+    if (!graphRef.current) return
 
-  startConnect = () => {
-    const source = this.getPortCoord()
+    const source = getPortCoord()
+    if (!source) return
+
     const target = { ...source }
-    const edge = this.graph.addEdge({ source, target })
-    const view = this.graph.findView(edge) as EdgeView
+    const edge = graphRef.current.addEdge({ source, target })
+    const view = graphRef.current.findView(edge) as EdgeView
 
     let dragging = false
     let data: any
@@ -85,25 +97,29 @@ export default class Example extends React.Component {
       if (!dragging) {
         data = view.prepareArrowheadDragging('target', { ...source })
         view.setEventData(evt, data)
-        this.graph.view.undelegateEvents()
+        graphRef.current?.view.undelegateEvents()
         dragging = true
       }
 
       view.setEventData(evt, data)
-      const pos = this.graph.clientToLocal(e.clientX, e.clientY)
-      data = view.onMouseMove(evt, pos.x, pos.y)
+      const pos = graphRef.current?.clientToLocal(e.clientX, e.clientY)
+      if (pos) {
+        data = view.onMouseMove(evt, pos.x, pos.y)
+      }
     }
 
     const onMouseUp = (e: MouseEvent) => {
       const evt = e as any
-      const pos = this.graph.clientToLocal(e.clientX, e.clientY)
-      view.setEventData(evt, data)
-      view.onMouseUp(evt, pos.x, pos.y)
+      const pos = graphRef.current?.clientToLocal(e.clientX, e.clientY)
+      if (pos) {
+        view.setEventData(evt, data)
+        view.onMouseUp(evt, pos.x, pos.y)
+      }
       data = null
       dragging = false
 
-      this.setupEdge(edge)
-      this.graph.view.delegateEvents()
+      setupEdge(edge)
+      graphRef.current?.view.delegateEvents()
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseup', onMouseUp)
     }
@@ -112,40 +128,40 @@ export default class Example extends React.Component {
     document.addEventListener('mouseup', onMouseUp)
   }
 
-  render() {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          width: 840,
-          height: 600,
-          margin: '32px auto',
-          flexDirection: 'row',
-        }}
-      >
-        <div style={{ flex: 1, background: '#f5f5f5', position: 'relative' }}>
-          <div
-            id="side-port"
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: 120,
-              zIndex: 9,
-              marginRight: -8,
-              cursor: 'pointer',
-              border: '2px solid #873bf4',
-              background: '#fff',
-              borderRadius: 16,
-              width: 16,
-              height: 16,
-            }}
-            onMouseDown={this.startConnect}
-          />
-        </div>
-        <div className="x6-graph-wrap" style={{ width: 800, padding: 0 }}>
-          <div ref={this.refContainer} className="x6-graph" />
-        </div>
+  return (
+    <div
+      style={{
+        display: 'flex',
+        width: 840,
+        height: 600,
+        margin: '32px auto',
+        flexDirection: 'row',
+      }}
+    >
+      <div style={{ flex: 1, background: '#f5f5f5', position: 'relative' }}>
+        <div
+          id="side-port"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 120,
+            zIndex: 9,
+            marginRight: -8,
+            cursor: 'pointer',
+            border: '2px solid #873bf4',
+            background: '#fff',
+            borderRadius: 16,
+            width: 16,
+            height: 16,
+          }}
+          onMouseDown={startConnect}
+        />
       </div>
-    )
-  }
+      <div className="x6-graph-wrap" style={{ width: 800, padding: 0 }}>
+        <div ref={containerRef} className="x6-graph" />
+      </div>
+    </div>
+  )
 }
+
+export default Example

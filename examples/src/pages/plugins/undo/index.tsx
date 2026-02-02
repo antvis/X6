@@ -1,43 +1,32 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Space } from 'antd'
 import { Graph, History } from '@antv/x6'
 import '../../index.less'
 
-interface UndoExampleProps {}
+export const UndoExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
+  const historyRef = useRef<History | null>(null)
 
-interface UndoExampleState {
-  canUndo: boolean
-  canRedo: boolean
-}
+  const [canUndo, setCanUndo] = useState(false)
+  const [canRedo, setCanRedo] = useState(false)
 
-export class UndoExample extends React.Component<
-  UndoExampleProps,
-  UndoExampleState
-> {
-  private container!: HTMLDivElement
-  private history!: History
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  state: UndoExampleState = {
-    canRedo: false,
-    canUndo: false,
-  }
-
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
     })
 
-    this.history = new History()
-    this.history.on('change', () => {
-      this.setState({
-        canRedo: this.history.canRedo(),
-        canUndo: this.history.canUndo(),
-      })
+    const history = new History()
+    history.on('change', () => {
+      setCanRedo(history.canRedo())
+      setCanUndo(history.canUndo())
     })
-    graph.use(this.history)
+    graph.use(history)
 
     const source = graph.addNode({
       x: 120,
@@ -70,36 +59,39 @@ export class UndoExample extends React.Component<
     })
 
     graph.addEdge({ source, target, arrts: { line: { strokeWidth: 1 } } })
+
+    historyRef.current = history
+    graphRef.current = graph
+
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+      historyRef.current = null
+    }
+  }, [])
+
+  const onUndo = () => {
+    historyRef.current?.undo()
   }
 
-  onUndo = () => {
-    this.history.undo()
+  const onRedo = () => {
+    historyRef.current?.redo()
   }
 
-  onRedo = () => {
-    this.history.redo()
-  }
-
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <h1>Default Settings</h1>
-        <div className="x6-graph-tools">
-          <Space.Compact>
-            <Button onClick={this.onUndo} disabled={!this.state.canUndo}>
-              Undo
-            </Button>
-            <Button onClick={this.onRedo} disabled={!this.state.canRedo}>
-              Redo
-            </Button>
-          </Space.Compact>
-        </div>
-        <div ref={this.refContainer} className="x6-graph" />
+  return (
+    <div className="x6-graph-wrap">
+      <h1>Default Settings</h1>
+      <div className="x6-graph-tools">
+        <Space.Compact>
+          <Button onClick={onUndo} disabled={!canUndo}>
+            Undo
+          </Button>
+          <Button onClick={onRedo} disabled={!canRedo}>
+            Redo
+          </Button>
+        </Space.Compact>
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

@@ -1,5 +1,5 @@
 import { Graph, Shape } from '@antv/x6'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import '../index.less'
 
 Graph.registerNode(
@@ -76,12 +76,15 @@ Graph.registerNode(
   true,
 )
 
-export class OSCPExample extends React.Component {
-  private container!: HTMLDivElement
+export const OSCPExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       grid: true,
       height: 600,
       connecting: {
@@ -406,21 +409,21 @@ export class OSCPExample extends React.Component {
           ],
           ...edge,
         }
-      }),
+      }) as any,
     )
 
     graph.centerContent()
-  }
+    graphRef.current = graph
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

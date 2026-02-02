@@ -1,13 +1,16 @@
 import { Graph } from '@antv/x6'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import '../index.less'
 
-export class AnimateElementExample extends React.Component {
-  private container!: HTMLDivElement
+export const AnimateElementExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 650,
       height: 400,
       background: {
@@ -66,17 +69,18 @@ export class AnimateElementExample extends React.Component {
 
       view?.container?.querySelector('rect')?.appendChild(animateEle)
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

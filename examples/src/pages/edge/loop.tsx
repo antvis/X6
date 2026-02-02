@@ -1,12 +1,15 @@
 import { Graph } from '@antv/x6'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
-export default class Example extends React.Component {
-  private container!: HTMLDivElement
+const Example: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 800,
       grid: true,
@@ -444,39 +447,35 @@ export default class Example extends React.Component {
 
     const pathAngle = 'router/args/angle'
     const pathMerge = 'router/args/merge'
-    const animateAngle = () => {
-      edge.animate(
-        { [pathAngle]: 360 },
-        {
-          duration: 5000,
-          iterations: Infinity,
-        },
-      )
-    }
-
-    const animateMerge = () => {
-      edge.animate(
-        { [pathMerge]: 20 },
-        {
-          duration: 1000,
-          iterations: Infinity,
-        },
-      )
-    }
-
-    animateAngle()
-    animateMerge()
-  }
-
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
+    edge.animate(
+      { [pathAngle]: 360 },
+      {
+        duration: 5000,
+        iterations: Infinity,
+      },
     )
-  }
+
+    edge.animate(
+      { [pathMerge]: 20 },
+      {
+        duration: 1000,
+        iterations: Infinity,
+      },
+    )
+
+    graphRef.current = graph
+
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
+
+export default Example

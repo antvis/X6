@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { Graph, Rectangle } from '@antv/x6'
 import { render } from './render'
 import { createEffect } from './effect'
@@ -11,39 +11,34 @@ import { ScaleContentToFitCard } from './scale-card'
 import '../index.less'
 import './index.less'
 
-type Props = Record<string, never>
-interface State {
-  attrs: {
-    width: number
-    height: number
-    originX: number
-    originY: number
-    scaleX: number
-    scaleY: number
-  }
-  contentBBox: Rectangle
-}
+export const GraphExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
+  const effectRef = useRef<ReturnType<typeof createEffect> | null>(null)
 
-export class GraphExample extends React.Component<Props, State> {
-  private container!: HTMLDivElement
-  private graph!: Graph
-  private effect!: ReturnType<typeof createEffect>
+  const [contentBBox, setContentBBox] = useState(new Rectangle())
+  const [attrs, setAttrs] = useState({
+    width: 0,
+    height: 0,
+    originX: 0,
+    originY: 0,
+    scaleX: 1,
+    scaleY: 1,
+  })
 
-  state = {
-    contentBBox: new Rectangle(),
-    attrs: {
-      width: 0,
-      height: 0,
-      originX: 0,
-      originY: 0,
-      scaleX: 1,
-      scaleY: 1,
-    },
-  }
+  const updateContentBBox = useCallback(() => {
+    if (graphRef.current) {
+      const bbox = graphRef.current.getContentBBox()
+      setContentBBox(bbox)
+      effectRef.current?.updateContentBbox(bbox)
+    }
+  }, [])
 
-  componentDidMount() {
-    this.graph = new Graph({
-      container: this.container,
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const graph = new Graph({
+      container: containerRef.current,
       width: 600,
       height: 400,
       grid: { visible: true },
@@ -52,152 +47,136 @@ export class GraphExample extends React.Component<Props, State> {
       },
     })
 
-    render(this.graph)
-    this.effect = createEffect(this.graph)
-    this.updateContentBBox()
+    render(graph)
+    const effect = createEffect(graph)
+    effectRef.current = effect
+    graphRef.current = graph
 
-    const options = this.graph.options
-    this.setState((prevState) => ({
-      attrs: {
-        ...prevState.attrs,
-        width: options.width,
-        height: options.height,
-        originX: options.x,
-        originY: options.y,
-      },
+    const bbox = graph.getContentBBox()
+    setContentBBox(bbox)
+    effect.updateContentBbox(bbox)
+
+    const options = graph.options
+    setAttrs((prev) => ({
+      ...prev,
+      width: options.width,
+      height: options.height,
+      originX: options.x,
+      originY: options.y,
     }))
 
-    let attrs = {}
-    const getAttrs = (partial: Partial<State['attrs']>) => {
-      attrs = {
-        ...this.state.attrs,
-        ...attrs,
-        ...partial,
-      }
-      return attrs as State['attrs']
-    }
-
-    this.graph
+    graph
       .on('scale', ({ sx, sy }) => {
-        this.effect.hideAll()
-        this.setState({
-          attrs: getAttrs({
-            scaleX: sx,
-            scaleY: sy,
-          }),
-        })
+        effect.hideAll()
+        setAttrs((prev) => ({
+          ...prev,
+          scaleX: sx,
+          scaleY: sy,
+        }))
       })
       .on('translate', ({ tx, ty }) => {
-        this.effect.hideAll()
-        this.setState({
-          attrs: getAttrs({
-            originX: tx,
-            originY: ty,
-          }),
-        })
+        effect.hideAll()
+        setAttrs((prev) => ({
+          ...prev,
+          originX: tx,
+          originY: ty,
+        }))
       })
       .on('resize', ({ width, height }) => {
-        this.effect.hideAll()
-        this.setState({
-          attrs: getAttrs({ width, height }),
-        })
+        effect.hideAll()
+        setAttrs((prev) => ({
+          ...prev,
+          width,
+          height,
+        }))
       })
       .on('cell:change:*', () => {
-        this.updateContentBBox()
+        updateContentBBox()
       })
-  }
 
-  updateContentBBox() {
-    const contentBBox = this.graph.getContentBBox()
-    this.setState({ contentBBox })
-    this.effect.updateContentBbox(contentBBox)
-  }
-
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  onBackgroundChanged = (options: Graph.BackgroundManager.Options) => {
-    this.graph.drawBackground(options)
-  }
-
-  onGridChanged = (options: Graph.GridManager.Options) => {
-    this.graph.drawGrid(options)
-  }
-
-  onGridSizeChanged = (size: number) => {
-    this.graph.setGridSize(size)
-  }
-
-  onGraphSizeChanged = (width: number, height: number) => {
-    this.graph.resize(width, height)
-  }
-
-  onGraphOriginChanged = (ox: number, oy: number) => {
-    this.graph.translate(ox, oy)
-    this.setState((prevState) => ({
-      attrs: {
-        ...prevState.attrs,
-        originX: ox,
-        originY: oy,
-      },
-    }))
-  }
-
-  onGraphScaleChanged = (sx: number, sy: number) => {
-    this.graph.scale(sx, sy)
-    this.setState((prevState) => ({
-      attrs: {
-        ...prevState.attrs,
-        scaleX: sx,
-        scaleY: sy,
-      },
-    }))
-  }
-
-  onFitOptionsChanged = (options: FitToContentCard.State) => {
-    if (!options.allowNewOrigin) {
-      delete options.allowNewOrigin
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+      effectRef.current = null
     }
-    this.effect.removeAll()
-    this.graph.fitToContent(options)
-    this.effect.afterFit(this.graph, options)
+  }, [updateContentBBox])
+
+  const onBackgroundChanged = (options: Graph.BackgroundManager.Options) => {
+    graphRef.current?.drawBackground(options)
   }
 
-  onScaleContentChanged = (options: ScaleContentToFitCard.State) => {
-    this.effect.removeAll()
-    this.graph.scaleContentToFit(options)
-    this.effect.afterScaleToFit(this.graph, options)
+  const onGridChanged = (options: Graph.GridManager.Options) => {
+    graphRef.current?.drawGrid(options)
   }
 
-  render() {
-    return (
-      <div className="x6-example-wrap">
-        <div className="left-side">
-          <BackgroundCard onChange={this.onBackgroundChanged} />
-          <GridCard
-            onChange={this.onGridChanged}
-            onGridSizeChange={this.onGridSizeChanged}
-          />
-          <BBoxCard
-            x={this.state.contentBBox.x}
-            y={this.state.contentBBox.y}
-            width={this.state.contentBBox.width}
-            height={this.state.contentBBox.height}
-          />
-        </div>
-        <div ref={this.refContainer} className="x6-graph" />
-        <div className="right-side">
-          <AttributeCard
-            attrs={this.state.attrs}
-            onSizeChange={this.onGraphSizeChanged}
-            onOriginChange={this.onGraphOriginChanged}
-            onScaleChange={this.onGraphScaleChanged}
-          />
-          <FitToContentCard onChange={this.onFitOptionsChanged} />
-          <ScaleContentToFitCard onChange={this.onScaleContentChanged} />
-        </div>
+  const onGridSizeChanged = (size: number) => {
+    graphRef.current?.setGridSize(size)
+  }
+
+  const onGraphSizeChanged = (width: number, height: number) => {
+    graphRef.current?.resize(width, height)
+  }
+
+  const onGraphOriginChanged = (ox: number, oy: number) => {
+    graphRef.current?.translate(ox, oy)
+    setAttrs((prev) => ({
+      ...prev,
+      originX: ox,
+      originY: oy,
+    }))
+  }
+
+  const onGraphScaleChanged = (sx: number, sy: number) => {
+    graphRef.current?.scale(sx, sy)
+    setAttrs((prev) => ({
+      ...prev,
+      scaleX: sx,
+      scaleY: sy,
+    }))
+  }
+
+  const onFitOptionsChanged = (options: any) => {
+    if (graphRef.current && effectRef.current) {
+      if (!options.allowNewOrigin) {
+        delete options.allowNewOrigin
+      }
+      effectRef.current.removeAll()
+      graphRef.current.fitToContent(options)
+      effectRef.current.afterFit(graphRef.current, options)
+    }
+  }
+
+  const onScaleContentChanged = (options: any) => {
+    if (graphRef.current && effectRef.current) {
+      effectRef.current.removeAll()
+      graphRef.current.scaleContentToFit(options)
+      effectRef.current.afterScaleToFit(graphRef.current, options)
+    }
+  }
+
+  return (
+    <div className="x6-example-wrap">
+      <div className="left-side">
+        <BackgroundCard onChange={onBackgroundChanged} />
+        <GridCard onChange={onGridChanged} onGridSizeChange={onGridSizeChanged} />
+        <BBoxCard
+          x={contentBBox.x}
+          y={contentBBox.y}
+          width={contentBBox.width}
+          height={contentBBox.height}
+        />
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+      <div className="right-side">
+        <AttributeCard
+          attrs={attrs}
+          onSizeChange={onGraphSizeChanged}
+          onOriginChange={onGraphOriginChanged}
+          onScaleChange={onGraphScaleChanged}
+        />
+        <FitToContentCard onChange={onFitOptionsChanged} />
+        <ScaleContentToFitCard onChange={onScaleContentChanged} />
+      </div>
+    </div>
+  )
 }

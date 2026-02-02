@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Snapline } from '@antv/x6'
 import '../../index.less'
 
-export class SnaplineExample extends React.Component {
-  private container!: HTMLDivElement
+export const SnaplineExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -44,17 +47,18 @@ export class SnaplineExample extends React.Component {
       height: 40,
       attrs: { label: { text: 'C' } },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

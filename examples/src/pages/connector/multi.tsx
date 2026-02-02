@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Edge, Line } from '@antv/x6'
 import '../index.less'
 
-export default class Example extends React.Component {
-  private container!: HTMLDivElement
+const MultiExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       mousewheel: true,
       grid: true,
       width: 1000,
@@ -69,9 +72,7 @@ export default class Example extends React.Component {
 
       for (let i = split; i < total; i += 1) {
         const edge = edges[i]
-        const vertice = line
-          .pointAt(0.5 + (i - split + 1) * factor)
-          .rotate(90, mid)
+        const vertice = line.pointAt(0.5 + (i - split + 1) * factor).rotate(90, mid)
         edge.setVertices([vertice])
       }
     }
@@ -79,17 +80,20 @@ export default class Example extends React.Component {
     graph.on('node:change:position', update)
 
     update()
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
+
+export default MultiExample

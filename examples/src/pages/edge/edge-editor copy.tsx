@@ -120,8 +120,6 @@ export const EdgeEditorExample: React.FC = () => {
 
     graphRef.current = graph
 
-    init({ x: 100, y: 100 })
-
     return () => {
       containerRef.current?.removeEventListener('mousemove', onMouseMove)
       graph.dispose()

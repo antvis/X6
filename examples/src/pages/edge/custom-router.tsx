@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Point } from '@antv/x6'
 import { routerRegistry } from '@antv/x6'
 import '../index.less'
@@ -26,12 +26,15 @@ routerRegistry.register(
   true,
 )
 
-export class CustomRouterExample extends React.Component {
-  private container!: HTMLDivElement
+export const CustomRouterExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 1000,
       height: 600,
       grid: 10,
@@ -59,17 +62,18 @@ export class CustomRouterExample extends React.Component {
         },
       },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
