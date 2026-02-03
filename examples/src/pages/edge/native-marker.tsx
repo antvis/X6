@@ -16,7 +16,6 @@ const markers = [
 
 export const NativeMarkerExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
   const edge1Ref = useRef<Edge | null>(null)
   const edge2Ref = useRef<Edge | null>(null)
 
@@ -115,11 +114,8 @@ export const NativeMarkerExample: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
       edge1Ref.current = null
       edge2Ref.current = null
     }

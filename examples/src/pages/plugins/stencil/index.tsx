@@ -6,7 +6,6 @@ import './index.less'
 export const StencilExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const stencilContainerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
 
   useEffect(() => {
     if (!containerRef.current || !stencilContainerRef.current) return
@@ -115,11 +114,8 @@ export const StencilExample: React.FC = () => {
     stencil.load([r, c, c2, r2.clone()], 'group1')
     stencil.load([c2.clone(), r2, r3, c3], 'group2')
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

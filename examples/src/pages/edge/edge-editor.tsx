@@ -4,8 +4,6 @@ import '../index.less'
 
 export const EdgeEditorExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -118,14 +116,11 @@ export const EdgeEditorExample: React.FC = () => {
       finish(false)
     })
 
-    graphRef.current = graph
-
     init({ x: 100, y: 100 })
 
     return () => {
       containerRef.current?.removeEventListener('mousemove', onMouseMove)
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

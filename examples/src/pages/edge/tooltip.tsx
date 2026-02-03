@@ -1,7 +1,14 @@
 import React, { useEffect, useRef } from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
-import { Graph, Markup, EdgeView, ToolItem, CellViewOptions } from '@antv/x6'
+import {
+  Graph,
+  Markup,
+  EdgeView,
+  ToolItem,
+  CellViewOptions,
+  EventArgs,
+} from '@antv/x6'
 import '../index.less'
 
 class TooltipTool extends ToolItem<EdgeView, CellViewOptions> {
@@ -20,6 +27,7 @@ class TooltipTool extends ToolItem<EdgeView, CellViewOptions> {
 
     if (visible) {
       ReactDom.render(
+        // @ts-expect-error ignore type error
         <Tooltip title={this.options.tooltip} visible={true}>
           <div />
         </Tooltip>,
@@ -41,13 +49,14 @@ class TooltipTool extends ToolItem<EdgeView, CellViewOptions> {
     }
   }
 
-  private onMouseEnter({ e }: EdgeView.EventArgs['edge:mouseenter']) {
+  private onMouseEnter({ e }: EventArgs['edge:mouseenter']) {
     this.updatePosition(e.originalEvent)
     window.clearTimeout(this.leaveTimer)
     this.enterTimer = window.setTimeout(
       () => this.toggleTooltip(true),
       this.delay,
     )
+    // @ts-expect-error ignore type error
     if (this.options.follow !== false) {
       document.addEventListener('mousemove', this.onMouseMove)
     }
@@ -60,6 +69,7 @@ class TooltipTool extends ToolItem<EdgeView, CellViewOptions> {
       () => this.toggleTooltip(false),
       this.delay,
     )
+    // @ts-expect-error ignore type error
     if (this.options.follow !== false) {
       document.removeEventListener('mousemove', this.onMouseMove)
     }
@@ -105,8 +115,6 @@ Graph.registerEdgeTool('tooltip', TooltipTool, true)
 
 const Example: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -162,11 +170,8 @@ const Example: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

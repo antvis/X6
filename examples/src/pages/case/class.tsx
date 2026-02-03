@@ -339,8 +339,6 @@ const data = [
 
 export const CaseClassExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -367,11 +365,8 @@ export const CaseClassExample: React.FC = () => {
     })
     graph.resetCells(cells)
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

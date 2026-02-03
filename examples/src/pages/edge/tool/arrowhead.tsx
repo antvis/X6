@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { Graph } from '@antv/x6'
 import '../../index.less'
 
+// @ts-expect-error ignore type error
 Graph.registerNode(
   'custom-port-rect',
   {
@@ -36,7 +37,7 @@ Graph.registerNode(
         },
       },
     ],
-  } as any,
+  },
   true,
 )
 
@@ -53,8 +54,6 @@ const magnetAvailabilityHighlighter = {
 
 export const ToolArrowheadExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -169,11 +168,8 @@ export const ToolArrowheadExample: React.FC = () => {
       cell.removeTools()
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

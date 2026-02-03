@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import ELK, { ElkNode, ElkExtendedEdge, ElkEdge } from 'elkjs/lib/elk-api.js'
+import ELK, { ElkNode, ElkEdge } from 'elkjs/lib/elk-api.js'
 import elkWorker from 'elkjs/lib/elk-worker.js'
 import { Graph, Cell } from '@antv/x6'
 import elkdata from './elkdata.json'
@@ -76,8 +76,6 @@ interface Position {
 
 export const CaseElkExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -101,7 +99,7 @@ export const CaseElkExample: React.FC = () => {
         if (typeof child.labels === 'string') {
           label = child.labels
         } else if (Array.isArray(child.labels) && child.labels[0]) {
-          label = child.labels[0].text
+          label = child.labels[0].text as string
         }
         const node = graph.createNode({
           shape: 'elk-node',
@@ -141,10 +139,11 @@ export const CaseElkExample: React.FC = () => {
     }
 
     const addEdges = (edges: ElkEdge[], pos?: Position) => {
-      edges.forEach((edge: ElkExtendedEdge) => {
-        const { bendPoints = [] } = edge.sections[0]
+      edges.forEach((edge: ElkEdge) => {
+        // @ts-expect-error ignore type error
+        const { bendPoints = [] } = edge?.sections?.[0] || {}
 
-        const currentBendPoints = bendPoints.map((p) => ({ ...p }))
+        const currentBendPoints = bendPoints.map((p: Position) => ({ ...p }))
         if (pos) {
           currentBendPoints.forEach((bendPoint: Position) => {
             bendPoint.x += pos.x
@@ -152,7 +151,9 @@ export const CaseElkExample: React.FC = () => {
           })
         }
 
+        // @ts-expect-error ignore type error
         const sourcePortId = edge.sources[0]
+        // @ts-expect-error ignore type error
         const targetPortId = edge.targets[0]
         const sourceNodeId = portIdToNodeIdMap[sourcePortId]
         const targetNodeId = portIdToNodeIdMap[targetPortId]
@@ -175,6 +176,7 @@ export const CaseElkExample: React.FC = () => {
     }
 
     const elk = new ELK({
+      // @ts-expect-error ignore type error
       workerFactory: (url: string) => new elkWorker.Worker(url),
     })
 
@@ -185,11 +187,8 @@ export const CaseElkExample: React.FC = () => {
       graph.zoomToFit({ padding: 10, maxScale: 1 })
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

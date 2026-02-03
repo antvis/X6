@@ -29,8 +29,6 @@ Graph.registerNode(
 
 export const CustomNodeExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -48,11 +46,8 @@ export const CustomNodeExample: React.FC = () => {
       label: 'Custom Rect',
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

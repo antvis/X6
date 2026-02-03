@@ -3,8 +3,6 @@ import { Graph } from '@antv/x6'
 
 export const SegmentsExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -43,11 +41,8 @@ export const SegmentsExample: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

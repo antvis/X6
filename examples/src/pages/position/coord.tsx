@@ -4,8 +4,6 @@ import '../index.less'
 
 export const CoordExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -96,15 +94,12 @@ export const CoordExample: React.FC = () => {
 
     document.addEventListener('mousemove', onMouseMove)
 
-    graphRef.current = graph
-
     return () => {
       document.removeEventListener('mousemove', onMouseMove)
       document.body.removeChild(v)
       document.body.removeChild(h)
       document.body.removeChild(c)
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

@@ -4,8 +4,6 @@ import '../index.less'
 
 const Example: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -42,11 +40,8 @@ const Example: React.FC = () => {
 
     graph.model.addCells([r1, r2, r3, l1, l2, l3] as any)
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

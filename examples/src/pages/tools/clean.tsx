@@ -4,8 +4,6 @@ import '../index.less'
 
 export const ToolsCleanExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -86,11 +84,8 @@ export const ToolsCleanExample: React.FC = () => {
       tools: ['vertices', 'segments'],
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

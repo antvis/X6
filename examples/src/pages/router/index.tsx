@@ -5,7 +5,6 @@ import '../index.less'
 
 export const RouterExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
   const edgeRef = useRef<Edge | null>(null)
 
   const [router, setRouter] = useState('manhattan')
@@ -97,11 +96,8 @@ export const RouterExample: React.FC = () => {
     graph.addNode(obstacle.clone().translate(200, 100))
     graph.addNode(obstacle.clone().translate(-200, 150))
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
       edgeRef.current = null
     }
   }, [])

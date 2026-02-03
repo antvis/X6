@@ -4,8 +4,6 @@ import '../index.less'
 
 const MultiExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -81,11 +79,8 @@ const MultiExample: React.FC = () => {
 
     update()
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

@@ -5,8 +5,6 @@ import '../index.less'
 
 export const XmindCurveExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -391,11 +389,8 @@ export const XmindCurveExample: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

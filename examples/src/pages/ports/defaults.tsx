@@ -5,7 +5,6 @@ import '../index.less'
 
 export const PortsDefaultsExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
   const rectRef = useRef<Node | null>(null)
 
   useEffect(() => {
@@ -100,11 +99,9 @@ export const PortsDefaultsExample: React.FC = () => {
     })
 
     rectRef.current = rect
-    graphRef.current = graph
 
     return () => {
       graph.dispose()
-      graphRef.current = null
       rectRef.current = null
     }
   }, [])

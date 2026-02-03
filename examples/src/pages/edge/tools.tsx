@@ -54,8 +54,6 @@ registerEdgeTool('custom-boundary', 'boundary', {
 
 const Example: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -784,11 +782,8 @@ const Example: React.FC = () => {
       }
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

@@ -307,8 +307,6 @@ const nodeStatusList = [
 
 export const CaseDagExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -435,12 +433,9 @@ export const CaseDagExample: React.FC = () => {
     init(data)
     showNodeStatus(nodeStatusList)
 
-    graphRef.current = graph
-
     return () => {
       clearTimeout(timer)
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

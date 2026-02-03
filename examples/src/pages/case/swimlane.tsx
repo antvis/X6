@@ -307,8 +307,6 @@ const data = [
 
 export const CaseSwimlaneExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -349,11 +347,8 @@ export const CaseSwimlaneExample: React.FC = () => {
     })
     graph.resetCells(cells)
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

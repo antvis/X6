@@ -19,8 +19,6 @@ Shape.HTML.register({
 
 export const HtmlExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -53,12 +51,9 @@ export const HtmlExample: React.FC = () => {
 
     change()
 
-    graphRef.current = graph
-
     return () => {
       clearTimeout(timer)
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

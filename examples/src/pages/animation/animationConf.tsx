@@ -24,7 +24,6 @@ Graph.registerNode(
 
 export const AnimationConfExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -85,11 +84,8 @@ export const AnimationConfExample: React.FC = () => {
       label: '动画shape',
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

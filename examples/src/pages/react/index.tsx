@@ -28,8 +28,6 @@ register({
 
 export const ReactExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -59,12 +57,9 @@ export const ReactExample: React.FC = () => {
 
     update()
 
-    graphRef.current = graph
-
     return () => {
       clearTimeout(timer)
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

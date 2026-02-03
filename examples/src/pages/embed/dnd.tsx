@@ -4,8 +4,6 @@ import '../index.less'
 
 export const EmbedDndExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -89,11 +87,8 @@ export const EmbedDndExample: React.FC = () => {
       console.log('node:embedded', args)
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

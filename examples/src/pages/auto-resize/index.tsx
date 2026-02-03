@@ -9,10 +9,6 @@ export const AutoResizeExample: React.FC = () => {
   const containerRef1 = useRef<HTMLDivElement>(null)
   const containerRef2 = useRef<HTMLDivElement>(null)
   const containerRef3 = useRef<HTMLDivElement>(null)
-  const graphRef1 = useRef<Graph | null>(null)
-  const graphRef2 = useRef<Graph | null>(null)
-  const graphRef3 = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef1.current || !containerRef2.current || !containerRef3.current)
       return
@@ -42,17 +38,10 @@ export const AutoResizeExample: React.FC = () => {
     })
     graph3.use(new Scroller())
 
-    graphRef1.current = graph1
-    graphRef2.current = graph2
-    graphRef3.current = graph3
-
     return () => {
       graph1.dispose()
       graph2.dispose()
       graph3.dispose()
-      graphRef1.current = null
-      graphRef2.current = null
-      graphRef3.current = null
     }
   }, [])
 

@@ -37,8 +37,6 @@ Graph.registerConnector(
 
 export const CustomConnectorExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -78,11 +76,8 @@ export const CustomConnectorExample: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

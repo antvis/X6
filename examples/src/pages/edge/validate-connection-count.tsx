@@ -3,8 +3,6 @@ import { Graph, Edge, EdgeView } from '@antv/x6'
 
 const ValidateConnectionCountExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -69,11 +67,8 @@ const ValidateConnectionCountExample: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

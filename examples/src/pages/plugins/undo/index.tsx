@@ -5,7 +5,6 @@ import '../../index.less'
 
 export const UndoExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
   const historyRef = useRef<History | null>(null)
 
   const [canUndo, setCanUndo] = useState(false)
@@ -61,11 +60,9 @@ export const UndoExample: React.FC = () => {
     graph.addEdge({ source, target, arrts: { line: { strokeWidth: 1 } } })
 
     historyRef.current = history
-    graphRef.current = graph
 
     return () => {
       graph.dispose()
-      graphRef.current = null
       historyRef.current = null
     }
   }, [])

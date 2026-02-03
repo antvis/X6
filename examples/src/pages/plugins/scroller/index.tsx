@@ -7,7 +7,6 @@ import './index.less'
 export const ScrollerExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const minimapContainerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
   const scrollerRef = useRef<Scroller | null>(null)
   const exportRef = useRef<Export | null>(null)
 
@@ -88,13 +87,11 @@ export const ScrollerExample: React.FC = () => {
       target: circle,
     })
 
-    graphRef.current = graph
     scrollerRef.current = scroller
     exportRef.current = exportInstance
 
     return () => {
       graph.dispose()
-      graphRef.current = null
       scrollerRef.current = null
       exportRef.current = null
     }

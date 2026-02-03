@@ -32,7 +32,6 @@ register({
 
 export const ReactPortalExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
   const [theme, setTheme] = useState('light')
 
   useEffect(() => {
@@ -53,11 +52,8 @@ export const ReactPortalExample: React.FC = () => {
       },
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

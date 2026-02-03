@@ -4,8 +4,6 @@ import '../index.less'
 
 const ValidateConnectionExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -142,11 +140,8 @@ const ValidateConnectionExample: React.FC = () => {
       target: [560, 200],
     })
 
-    graphRef.current = graph
-
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 
