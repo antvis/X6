@@ -1,20 +1,20 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Radio } from 'antd'
 import { Graph, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
-export class RouterExample extends React.Component {
-  private container!: HTMLDivElement
-  private edge!: Edge
+export const RouterExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const edgeRef = useRef<Edge | null>(null)
 
-  state = {
-    router: 'manhattan',
-    connector: 'rounded',
-  }
+  const [router, setRouter] = useState('manhattan')
+  const [connector, setConnector] = useState('rounded')
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 1000,
       height: 600,
     })
@@ -53,11 +53,11 @@ export class RouterExample extends React.Component {
 
     graph.addNode(target)
 
-    this.edge = graph.addEdge({
+    const edge = graph.addEdge({
       source,
       target,
-      router: { name: this.state.router },
-      connector: { name: this.state.connector },
+      router: { name: router },
+      connector: { name: connector },
       attrs: {
         connection: {
           stroke: '#333333',
@@ -65,6 +65,8 @@ export class RouterExample extends React.Component {
         },
       },
     })
+
+    edgeRef.current = edge
 
     const obstacle = source
       .clone()
@@ -84,7 +86,7 @@ export class RouterExample extends React.Component {
       })
 
     const update = () => {
-      const edgeView = graph.findViewByCell(this.edge) as EdgeView
+      const edgeView = graph.findViewByCell(edge) as EdgeView
       edgeView.update()
     }
 
@@ -94,96 +96,60 @@ export class RouterExample extends React.Component {
     graph.addNode(obstacle.clone().translate(200, 100))
     graph.addNode(obstacle.clone().translate(-200, 150))
 
-    // graph.on('edge:mouseenter', ({ cell, view }) => {
-    //   if (cell) {
-    //     console.log(cell.toJSON())
-    //     view.addTools({
-    //       tools: [
-    //         {
-    //           name: 'vertices',
-    //           args: {
-    //             snapRadius: 0,
-    //             redundancyRemoval: false,
-    //           },
-    //         },
-    //         {
-    //           name: 'segments',
-    //           args: { stopPropagation: false },
-    //         },
-    //       ],
-    //       name: 'onhover',
-    //     })
-    //   }
-    // })
+    return () => {
+      graph.dispose()
+      edgeRef.current = null
+    }
+  }, [])
 
-    // graph.on('edge:mouseleave', ({ view }) => {
-    //   if (view.hasTools('onhover')) {
-    //     view.removeTools()
-    //   }
-    // })
-  }
-
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  onRouterChange = (e: any) => {
-    const router = e.target.value
-    this.setState({ router })
-    if (router === 'none') {
-      this.edge.removeRouter()
-    } else {
-      this.edge.setRouter(router)
+  const onRouterChange = (e: any) => {
+    const val = e.target.value
+    setRouter(val)
+    if (edgeRef.current) {
+      if (val === 'none') {
+        edgeRef.current.removeRouter()
+      } else {
+        edgeRef.current.setRouter(val)
+      }
     }
   }
 
-  onConnectorChange = (e: any) => {
-    const connector = e.target.value
-    this.setState({ connector })
-    if (connector === 'narmal') {
-      this.edge.removeConnector()
-    } else {
-      this.edge.setConnector(connector)
+  const onConnectorChange = (e: any) => {
+    const val = e.target.value
+    setConnector(val)
+    if (edgeRef.current) {
+      if (val === 'narmal') {
+        edgeRef.current.removeConnector()
+      } else {
+        edgeRef.current.setConnector(val)
+      }
     }
   }
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div className="x6-graph-tools">
-          <div>
-            <span style={{ display: 'inline-block', width: 88 }}>
-              Connector:
-            </span>
-            <Radio.Group
-              onChange={this.onConnectorChange}
-              value={this.state.connector}
-            >
-              <Radio.Button value="narmal">Normal</Radio.Button>
-              <Radio.Button
-                value="smooth"
-                disabled={this.state.router !== 'none'}
-              >
-                Smooth
-              </Radio.Button>
-              <Radio.Button value="rounded">Rounded</Radio.Button>
-            </Radio.Group>
-          </div>
-          <div style={{ padding: '16px 0' }}>
-            <span style={{ display: 'inline-block', width: 88 }}>Router:</span>
-            <Radio.Group
-              onChange={this.onRouterChange}
-              value={this.state.router}
-            >
-              <Radio.Button value="none">None</Radio.Button>
-              <Radio.Button value="orth">Orthogonal</Radio.Button>
-              <Radio.Button value="manhattan">Manhattan</Radio.Button>
-              <Radio.Button value="metro">Metro</Radio.Button>
-            </Radio.Group>
-          </div>
+  return (
+    <div className="x6-graph-wrap">
+      <div className="x6-graph-tools">
+        <div>
+          <span style={{ display: 'inline-block', width: 88 }}>Connector:</span>
+          <Radio.Group onChange={onConnectorChange} value={connector}>
+            <Radio.Button value="narmal">Normal</Radio.Button>
+            <Radio.Button value="smooth" disabled={router !== 'none'}>
+              Smooth
+            </Radio.Button>
+            <Radio.Button value="rounded">Rounded</Radio.Button>
+          </Radio.Group>
         </div>
-        <div ref={this.refContainer} className="x6-graph" />
+        <div style={{ padding: '16px 0' }}>
+          <span style={{ display: 'inline-block', width: 88 }}>Router:</span>
+          <Radio.Group onChange={onRouterChange} value={router}>
+            <Radio.Button value="none">None</Radio.Button>
+            <Radio.Button value="orth">Orthogonal</Radio.Button>
+            <Radio.Button value="manhattan">Manhattan</Radio.Button>
+            <Radio.Button value="metro">Metro</Radio.Button>
+          </Radio.Group>
+        </div>
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

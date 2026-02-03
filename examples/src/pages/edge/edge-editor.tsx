@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Node, Edge, EdgeView } from '@antv/x6'
 import '../index.less'
 
-export class EdgeEditorExample extends React.Component {
-  private container!: HTMLDivElement
+export const EdgeEditorExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -93,13 +94,13 @@ export class EdgeEditorExample extends React.Component {
             edge = null
           }
         }
-        this.container.removeEventListener('mousemove', onMouseMove)
+        containerRef.current?.removeEventListener('mousemove', onMouseMove)
       }
     }
 
     graph.on('blank:click', ({ x, y }) => {
       init({ x, y })
-      this.container.addEventListener('mousemove', onMouseMove)
+      containerRef.current?.addEventListener('mousemove', onMouseMove)
     })
 
     graph.on('edge:click', ({ x, y }) => {
@@ -114,17 +115,18 @@ export class EdgeEditorExample extends React.Component {
     graph.on('edge:contextmenu', () => {
       finish(false)
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    init({ x: 100, y: 100 })
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      containerRef.current?.removeEventListener('mousemove', onMouseMove)
+      graph.dispose()
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

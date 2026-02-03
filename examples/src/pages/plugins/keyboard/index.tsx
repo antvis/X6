@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Button } from 'antd'
 import { Graph, Keyboard, Selection } from '@antv/x6'
 import '../../index.less'
 
-export class KeyboardExample extends React.Component {
-  private container!: HTMLDivElement
-  private graph!: Graph
+export const KeyboardExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -48,28 +50,27 @@ export class KeyboardExample extends React.Component {
       graph.removeCells(selection.getSelectedCells())
     })
 
-    this.graph = graph
+    graphRef.current = graph
+
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  const enablePlugins = () => {
+    graphRef.current?.enablePlugins('keyboard')
   }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
+  const disablePlugins = () => {
+    graphRef.current?.disablePlugins('keyboard')
   }
 
-  enablePlugins = () => {
-    this.graph.enablePlugins('keyboard')
-  }
-
-  disablePlugins = () => {
-    this.graph.disablePlugins('keyboard')
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-        <Button onClick={this.enablePlugins}>enable</Button>
-        <Button onClick={this.disablePlugins}>disable</Button>
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+      <Button onClick={enablePlugins}>enable</Button>
+      <Button onClick={disablePlugins}>disable</Button>
+    </div>
+  )
 }

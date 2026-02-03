@@ -1,4 +1,4 @@
-import { Graph, Path, Point } from '@antv/x6'
+import { Graph, Path, Point, PointLike } from '@antv/x6'
 export interface ConnectorBaseOptions {
   raw?: boolean
 }
@@ -15,12 +15,12 @@ interface RootCurveOptions extends ConnectorBaseOptions {
 Graph.registerConnector(
   connectors.root,
   (sourcePoint, targetPoint, _routerPoints, options: RootCurveOptions) => {
-    const normalize = (p: Point.PointLike, width: number) => {
+    const normalize = (p: PointLike, width: number) => {
       const factor = Math.hypot(p.x, p.y) / width
       return { x: p.x / factor, y: p.y / factor }
     }
 
-    const cross = (p1: Point.PointLike, p2: Point.PointLike, width: number) => {
+    const cross = (p1: PointLike, p2: PointLike, width: number) => {
       if (Point.equals(p1, p2)) {
         return p1
       }
@@ -36,7 +36,7 @@ Graph.registerConnector(
       }
     }
 
-    const pivot = (p1: Point.PointLike, p2: Point.PointLike) => {
+    const pivot = (p1: PointLike, p2: PointLike) => {
       return {
         x: p1.x * 2 - p2.x,
         y: p1.y * 2 - p2.y,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Cell, ObjectExt } from '@antv/x6'
 import '../index.less'
 
@@ -96,11 +96,11 @@ Graph.registerNode(
 
       let offsetY = 0
       rects.forEach((rect) => {
-        const height = rect.text.length * 12 + 16
+        const height = (rect.text as string[]).length * 12 + 16
         ObjectExt.setByPath(
           others,
           `attrs/${rect.type}-text/text`,
-          rect.text.join('\n'),
+          (rect.text as string[]).join('\n'),
         )
         ObjectExt.setByPath(others, `attrs/${rect.type}-rect/height`, height)
         ObjectExt.setByPath(
@@ -337,12 +337,13 @@ const data = [
   },
 ]
 
-export class CaseClassExample extends React.Component {
-  private container!: HTMLDivElement
+export const CaseClassExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
     })
@@ -357,23 +358,21 @@ export class CaseClassExample extends React.Component {
     ]
     data.forEach((item) => {
       if (edgeShapes.includes(item.shape)) {
-        cells.push(graph.createEdge(item))
+        cells.push(graph.createEdge(item as any))
       } else {
-        cells.push(graph.createNode(item))
+        cells.push(graph.createNode(item as any))
       }
     })
     graph.resetCells(cells)
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

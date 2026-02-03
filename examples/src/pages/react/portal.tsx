@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { register, getProvider } from '@antv/x6-react-shape'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
@@ -30,16 +30,15 @@ register({
   component: NodeComponent,
 })
 
-export class ReactPortalExample extends React.Component {
-  private container!: HTMLDivElement
+export const ReactPortalExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [theme, setTheme] = useState('light')
 
-  state = {
-    theme: 'light',
-  }
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
     })
@@ -52,31 +51,25 @@ export class ReactPortalExample extends React.Component {
         name: '逻辑回归',
       },
     })
+
+    return () => {
+      graph.dispose()
+    }
+  }, [])
+
+  const changeTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
   }
 
-  changeTheme = () => {
-    this.setState({
-      theme: this.state.theme === 'light' ? 'dark' : 'light',
-    })
-  }
-
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <ThemeContext.Provider value={this.state.theme}>
-          <X6ReactPortalProvider />
-        </ThemeContext.Provider>
-        <div className="x6-graph-tools">
-          <Button onClick={this.changeTheme}>
-            {this.state.theme === 'light' ? 'Dark' : 'Light'}
-          </Button>
-        </div>
-        <div ref={this.refContainer} className="x6-graph" />
+  return (
+    <div className="x6-graph-wrap">
+      <ThemeContext.Provider value={theme}>
+        <X6ReactPortalProvider />
+      </ThemeContext.Provider>
+      <div className="x6-graph-tools">
+        <Button onClick={changeTheme}>{theme === 'light' ? 'Dark' : 'Light'}</Button>
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

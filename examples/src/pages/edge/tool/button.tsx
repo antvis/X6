@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph } from '@antv/x6'
 import '../../index.less'
 
-export class ToolButtonExample extends React.Component {
-  private container!: HTMLDivElement
+export const ToolButtonExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 400,
       grid: true,
@@ -128,17 +129,15 @@ export class ToolButtonExample extends React.Component {
         },
       },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

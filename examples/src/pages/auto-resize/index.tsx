@@ -1,74 +1,68 @@
 import { SplitBox } from '@antv/x6-react-components'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import '@antv/x6-react-components/es/split-box/style/index.css'
 import { Graph, Scroller } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
-export class AutoResizeExample extends React.Component {
-  private graphContainer1!: HTMLDivElement
-  private graphContainer2!: HTMLDivElement
-  private graphContainer3!: HTMLDivElement
+export const AutoResizeExample: React.FC = () => {
+  const containerRef1 = useRef<HTMLDivElement>(null)
+  const containerRef2 = useRef<HTMLDivElement>(null)
+  const containerRef3 = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef1.current || !containerRef2.current || !containerRef3.current)
+      return
 
-  componentDidMount() {
-    new Graph({
-      container: this.graphContainer1,
+    const graph1 = new Graph({
+      container: containerRef1.current,
       background: {
         color: '#D94111',
       },
       autoResize: true,
     })
 
-    new Graph({
-      container: this.graphContainer2,
+    const graph2 = new Graph({
+      container: containerRef2.current,
       background: {
         color: '#90C54C',
       },
       autoResize: true,
     })
 
-    const graph = new Graph({
-      container: this.graphContainer3,
+    const graph3 = new Graph({
+      container: containerRef3.current,
       background: {
         color: '#0491E4',
       },
       autoResize: true,
     })
-    graph.use(new Scroller())
-  }
+    graph3.use(new Scroller())
 
-  refContainer1 = (container: HTMLDivElement) => {
-    this.graphContainer1 = container
-  }
+    return () => {
+      graph1.dispose()
+      graph2.dispose()
+      graph3.dispose()
+    }
+  }, [])
 
-  refContainer2 = (container: HTMLDivElement) => {
-    this.graphContainer2 = container
-  }
-
-  refContainer3 = (container: HTMLDivElement) => {
-    this.graphContainer3 = container
-  }
-
-  render() {
-    return (
-      <div
-        className="x6-graph-wrap"
-        style={{ width: 800, height: 800, margin: '0 auto' }}
-      >
-        <SplitBox split="horizontal">
+  return (
+    <div
+      className="x6-graph-wrap"
+      style={{ width: 800, height: 800, margin: '0 auto' }}
+    >
+      <SplitBox split="horizontal">
+        <div className="full">
+          <div ref={containerRef1} className="x6-graph" />
+        </div>
+        <SplitBox split="vertical">
           <div className="full">
-            <div ref={this.refContainer1} className="x6-graph" />
+            <div ref={containerRef2} className="x6-graph" />
           </div>
-          <SplitBox split="vertical">
-            <div className="full">
-              <div ref={this.refContainer2} className="x6-graph" />
-            </div>
-            <div className="full">
-              <div ref={this.refContainer3} className="x6-graph" />
-            </div>
-          </SplitBox>
+          <div className="full">
+            <div ref={containerRef3} className="x6-graph" />
+          </div>
         </SplitBox>
-      </div>
-    )
-  }
+      </SplitBox>
+    </div>
+  )
 }

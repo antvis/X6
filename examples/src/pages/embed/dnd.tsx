@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Node, Color } from '@antv/x6'
 import '../index.less'
 
-export class EmbedDndExample extends React.Component {
-  private container!: HTMLDivElement
+export const EmbedDndExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 880,
       height: 600,
       grid: true,
@@ -85,17 +86,15 @@ export class EmbedDndExample extends React.Component {
     graph.on('node:embedded', (args) => {
       console.log('node:embedded', args)
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

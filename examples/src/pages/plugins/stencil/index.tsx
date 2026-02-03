@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Shape, Stencil } from '@antv/x6'
 import '../../index.less'
 import './index.less'
 
-export class StencilExample extends React.Component {
-  private container!: HTMLDivElement
-  private stencilContainer!: HTMLDivElement
+export const StencilExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const stencilContainerRef = useRef<HTMLDivElement>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current || !stencilContainerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 800,
       grid: {
@@ -53,7 +55,7 @@ export class StencilExample extends React.Component {
       stencilGraphOptions: { panning: true },
     })
 
-    this.stencilContainer.appendChild(stencil.container)
+    stencilContainerRef.current.appendChild(stencil.container)
 
     const r = new Shape.Rect({
       position: { x: 10, y: 10 },
@@ -111,32 +113,26 @@ export class StencilExample extends React.Component {
 
     stencil.load([r, c, c2, r2.clone()], 'group1')
     stencil.load([c2.clone(), r2, r3, c3], 'group2')
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  refStencil = (container: HTMLDivElement) => {
-    this.stencilContainer = container
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <h1>Default Settings</h1>
-        <div
-          ref={this.refStencil}
-          style={{
-            position: 'absolute',
-            left: 32,
-            top: 40,
-            width: 200,
-            height: 600,
-          }}
-        />
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <h1>Default Settings</h1>
+      <div
+        ref={stencilContainerRef}
+        style={{
+          position: 'absolute',
+          left: 32,
+          top: 40,
+          width: 200,
+          height: 600,
+        }}
+      />
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

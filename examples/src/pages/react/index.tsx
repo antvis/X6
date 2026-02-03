@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { register } from '@antv/x6-react-shape'
 import { Graph, Node } from '@antv/x6'
 import '../index.less'
@@ -26,13 +26,13 @@ register({
   component: NodeComponent,
 })
 
-export class ReactExample extends React.Component {
-  private container!: HTMLDivElement
-  private count = 0
+export const ReactExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
     })
@@ -46,23 +46,26 @@ export class ReactExample extends React.Component {
       },
     })
 
+    let count = 0
+    let timer: number
+
     const update = () => {
-      node.setData({ name: `逻辑回归 ${(this.count += 1)}` })
-      setTimeout(update, 1000)
+      count += 1
+      node.setData({ name: `逻辑回归 ${count}` })
+      timer = window.setTimeout(update, 1000)
     }
 
     update()
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      clearTimeout(timer)
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

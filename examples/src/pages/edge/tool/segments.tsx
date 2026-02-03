@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph } from '@antv/x6'
 
-export class SegmentsExample extends React.Component {
-  private container = React.createRef<HTMLDivElement>()
+export const SegmentsExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container.current,
+      container: containerRef.current,
       width: 800,
       height: 600,
     })
@@ -39,13 +40,15 @@ export class SegmentsExample extends React.Component {
         },
       },
     })
-  }
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.container} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

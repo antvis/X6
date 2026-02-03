@@ -1,5 +1,5 @@
 import { Graph } from '@antv/x6'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import '../index.less'
 
 Graph.registerNode(
@@ -22,12 +22,14 @@ Graph.registerNode(
   true,
 )
 
-export class AnimationConfExample extends React.Component {
-  private container!: HTMLDivElement
+export const AnimationConfExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 650,
       height: 400,
       background: {
@@ -81,17 +83,15 @@ export class AnimationConfExample extends React.Component {
       y: 280,
       label: '动画shape',
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
