@@ -1,6 +1,14 @@
-import React, { useEffect, useRef } from 'react'
+import React, { ComponentType, useEffect, useRef } from 'react'
 import { register } from '@antv/x6-react-shape'
-import { Graph, Node, Cell, Path, Selection, Snapline } from '@antv/x6'
+import {
+  Graph,
+  Node,
+  Cell,
+  Path,
+  Selection,
+  Snapline,
+  CellMetadata,
+} from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -20,28 +28,39 @@ const image = {
     'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t8fURKfgSOgAAAAAAAAAAAAAARQnAQ',
 }
 
-export const AlgoNode: React.FC<{ node?: Node }> = ({ node }) => {
-  const data = node?.getData() as NodeStatus
-  const { label, status = 'default' } = data
+export const AlgoNode: React.FC<{ node?: Node }> = React.memo(
+  ({ node }) => {
+    const data = node?.getData() as NodeStatus
+    const { label, status = 'default' } = data
 
-  return (
-    <div className={`node ${status}`}>
-      <img src={image.logo} alt="logo" />
-      <span className="label">{label}</span>
-      <span className="status">
-        {status === 'success' && <img src={image.success} alt="success" />}
-        {status === 'failed' && <img src={image.failed} alt="failed" />}
-        {status === 'running' && <img src={image.running} alt="running" />}
-      </span>
-    </div>
-  )
-}
+    return (
+      <div className={`node ${status}`}>
+        <img src={image.logo} alt="logo" />
+        <span className="label">{label}</span>
+        <span className="status">
+          {status === 'success' && <img src={image.success} alt="success" />}
+          {status === 'failed' && <img src={image.failed} alt="failed" />}
+          {status === 'running' && <img src={image.running} alt="running" />}
+        </span>
+      </div>
+    )
+  },
+  (_prevProps, nextProps) => {
+    const node = nextProps.node
+    if (node) {
+      // Only re-render if the 'data' property of the node has not changed.
+      return !node.hasChanged('data')
+    }
+    // If no node, no need to re-render.
+    return true
+  },
+)
 
 register({
   shape: 'dag-node',
   width: 180,
   height: 36,
-  component: AlgoNode,
+  component: AlgoNode as ComponentType<{ node: Node; graph: Graph }>,
   ports: {
     groups: {
       top: {
@@ -97,13 +116,14 @@ Graph.registerConnector(
     const v1 = { x: s.x, y: s.y + offset + control }
     const v2 = { x: e.x, y: e.y - offset - control }
 
-    return Path.normalize(
-      `M ${s.x} ${s.y}
-       L ${s.x} ${s.y + offset}
-       C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
-       L ${e.x} ${e.y}
-      `,
-    )
+    return Path.parse(
+      `
+      M ${s.x} ${s.y}
+      L ${s.x} ${s.y + offset}
+      C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
+      L ${e.x} ${e.y}
+    `,
+    ).serialize()
   },
   true,
 )
@@ -310,7 +330,7 @@ export const CaseDagExample: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current) return
 
-    const graph = new Graph({
+    const graph: Graph = new Graph({
       container: containerRef.current,
       width: 800,
       height: 600,
@@ -395,7 +415,7 @@ export const CaseDagExample: React.FC = () => {
     })
 
     // 初始化节点/边
-    const init = (data: Cell.Metadata[]) => {
+    const init = (data: CellMetadata[]) => {
       const cells: Cell[] = []
       data.forEach((item) => {
         if (item.shape === 'dag-node') {
