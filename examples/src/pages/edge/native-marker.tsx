@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Select } from 'antd'
 import { Graph, Edge } from '@antv/x6'
 import '../index.less'
@@ -14,14 +14,16 @@ const markers = [
   'async',
 ]
 
-export class NativeMarkerExample extends React.Component {
-  private container!: HTMLDivElement
-  private edge1: Edge
-  private edge2: Edge
+export const NativeMarkerExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const edge1Ref = useRef<Edge | null>(null)
+  const edge2Ref = useRef<Edge | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -57,15 +59,18 @@ export class NativeMarkerExample extends React.Component {
       y: 100,
     })
 
-    this.edge1 = graph.addEdge({
+    const edge1 = graph.addEdge({
       source: 'a',
       target: 'b',
     })
 
-    this.edge2 = graph.addEdge({
+    const edge2 = graph.addEdge({
       source: 'b',
       target: 'c',
     })
+
+    edge1Ref.current = edge1
+    edge2Ref.current = edge2
 
     markers.forEach((marker, i) => {
       graph.addEdge({
@@ -108,32 +113,31 @@ export class NativeMarkerExample extends React.Component {
         },
       },
     })
+
+    return () => {
+      graph.dispose()
+      edge1Ref.current = null
+      edge2Ref.current = null
+    }
+  }, [])
+
+  const onMarkerChanged = (marker: string) => {
+    edge1Ref.current?.attr('line/targetMarker', marker)
+    edge2Ref.current?.attr('line/targetMarker', marker)
   }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  onMarkerChanged = (marker: string) => {
-    console.log(marker)
-    this.edge1.attr('line/targetMarker', marker)
-    this.edge2.attr('line/targetMarker', marker)
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div className="x6-graph-tools">
-          <Select style={{ width: 120 }} onChange={this.onMarkerChanged}>
-            {markers.map((marker) => (
-              <Select.Option key={marker} value={marker}>
-                {marker}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-        <div ref={this.refContainer} className="x6-graph" />
+  return (
+    <div className="x6-graph-wrap">
+      <div className="x6-graph-tools">
+        <Select style={{ width: 120 }} onChange={onMarkerChanged}>
+          {markers.map((marker) => (
+            <Select.Option key={marker} value={marker}>
+              {marker}
+            </Select.Option>
+          ))}
+        </Select>
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

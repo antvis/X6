@@ -1,15 +1,22 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
-import { Graph, Markup, ToolsView, EdgeView } from '@antv/x6'
+import {
+  Graph,
+  Markup,
+  EdgeView,
+  ToolItem,
+  CellViewOptions,
+  EventArgs,
+} from '@antv/x6'
 import '../index.less'
 
-class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
+class TooltipTool extends ToolItem<EdgeView, CellViewOptions> {
   private delay = 100
-  private moveTimer: number
-  private enterTimer: number
-  private leaveTimer: number
-  private tooltipVisible: boolean
+  private moveTimer: number = 0
+  private enterTimer: number = 0
+  private leaveTimer: number = 0
+  private tooltipVisible: boolean = false
 
   protected onRender() {
     this.updatePosition()
@@ -20,6 +27,7 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
 
     if (visible) {
       ReactDom.render(
+        // @ts-expect-error ignore type error
         <Tooltip title={this.options.tooltip} visible={true}>
           <div />
         </Tooltip>,
@@ -41,13 +49,14 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
     }
   }
 
-  private onMouseEnter({ e }: EdgeView.EventArgs['edge:mouseenter']) {
+  private onMouseEnter({ e }: EventArgs['edge:mouseenter']) {
     this.updatePosition(e.originalEvent)
     window.clearTimeout(this.leaveTimer)
     this.enterTimer = window.setTimeout(
       () => this.toggleTooltip(true),
       this.delay,
     )
+    // @ts-expect-error ignore type error
     if (this.options.follow !== false) {
       document.addEventListener('mousemove', this.onMouseMove)
     }
@@ -60,6 +69,7 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipTool.Options> {
       () => this.toggleTooltip(false),
       this.delay,
     )
+    // @ts-expect-error ignore type error
     if (this.options.follow !== false) {
       document.removeEventListener('mousemove', this.onMouseMove)
     }
@@ -95,7 +105,7 @@ namespace TooltipTool {
     markup: Markup.getForeignObjectMarkup(),
   })
 
-  export interface Options extends ToolsView.ToolItem.Options {
+  export interface Options extends CellViewOptions {
     follow?: boolean
     tooltip?: string
   }
@@ -103,12 +113,13 @@ namespace TooltipTool {
 
 Graph.registerEdgeTool('tooltip', TooltipTool, true)
 
-export default class Example extends React.Component {
-  private container!: HTMLDivElement
+const Example: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 400,
       grid: true,
@@ -158,17 +169,17 @@ export default class Example extends React.Component {
         args: { follow: true, tooltip: 'tooltip test 2' },
       },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
+
+export default Example

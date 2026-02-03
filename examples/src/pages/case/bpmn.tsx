@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Cell } from '@antv/x6'
 import '../index.less'
 
@@ -211,12 +211,14 @@ const data = [
   },
 ]
 
-export class CaseBpmnExample extends React.Component {
-  private container!: HTMLDivElement
+export const CaseBpmnExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       connecting: {
@@ -227,23 +229,21 @@ export class CaseBpmnExample extends React.Component {
     const cells: Cell[] = []
     data.forEach((item) => {
       if (item.shape === 'bpmn-edge') {
-        cells.push(graph.createEdge(item))
+        cells.push(graph.createEdge(item as any))
       } else {
-        cells.push(graph.createNode(item))
+        cells.push(graph.createNode(item as any))
       }
     })
     graph.resetCells(cells)
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

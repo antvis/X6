@@ -4,8 +4,6 @@ import '../../index.less'
 
 export const SelectionExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const graphRef = useRef<Graph | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -29,8 +27,6 @@ export const SelectionExample: React.FC = () => {
     const selection = new Selection(selectionOptions)
     graph.use(keyboard)
     graph.use(selection)
-
-    graphRef.current = graph
 
     // 生成500个节点
     const nodes = []
@@ -147,7 +143,6 @@ export const SelectionExample: React.FC = () => {
 
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

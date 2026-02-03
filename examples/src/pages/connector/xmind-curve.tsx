@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { connectors } from './xmind-definitions'
 import { Graph } from '@antv/x6'
 import '../index.less'
 
-export class XmindCurveExample extends React.Component {
-  private container!: HTMLDivElement
+export const XmindCurveExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       grid: true,
       width: 1000,
       height: 600,
@@ -387,17 +388,15 @@ export class XmindCurveExample extends React.Component {
         },
       },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

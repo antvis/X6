@@ -1,5 +1,5 @@
-import React from 'react'
-import { Graph, Timing, markerNormalize } from '@antv/x6'
+import React, { useEffect, useRef } from 'react'
+import { Cell, Edge, Graph, Timing, markerNormalize } from '@antv/x6'
 import '../index.less'
 
 function registerEdgeTool(name: string, inherit: string, options: any) {
@@ -52,12 +52,13 @@ registerEdgeTool('custom-boundary', 'boundary', {
   },
 })
 
-export default class Example extends React.Component {
-  private container!: HTMLDivElement
+const Example: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: 10,
@@ -394,20 +395,25 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.on('myclick:circle', ({ cell, e }) => {
+    graph.on('myclick:circle', ({ cell, e }: { cell: Cell; e: MouseEvent }) => {
       e.stopPropagation()
-      var edge = cell
-      var t = edge.attr('c1/atConnectionRatio') > 0.2 ? 0.2 : 0.9
-      var transitionOpt = {
+      const edge = cell
+      const t = edge.attr<number>('c1/atConnectionRatio') > 0.2 ? 0.2 : 0.9
+      const transitionOpt = {
         delay: 100,
         duration: 2000,
         timingFunction: Timing.inout,
       }
-      edge.transition('attrs/c1/atConnectionRatio', t, transitionOpt)
-      edge.transition('attrs/c2/atConnectionRatio', t, transitionOpt)
+      edge.animate(
+        {
+          'attrs/c1/atConnectionRatio': t,
+          'attrs/c2/atConnectionRatio': t,
+        },
+        transitionOpt,
+      )
     })
 
-    const path = graph.addNode({
+    const pathNode = graph.addNode({
       shape: 'path',
       x: 500,
       y: 450,
@@ -423,7 +429,7 @@ export default class Example extends React.Component {
 
     const edge10 = graph.addEdge({
       source: { x: 300, y: 400 },
-      targetCell: path,
+      targetCell: pathNode,
       attrs: {
         line: {
           sourceMarker: {
@@ -551,14 +557,14 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.on('edge:source:click', ({ cell }) => {
+    graph.on('edge:source:click', ({ cell }: { cell: Cell }) => {
       cell.attr({
         sourceReferenceBody: { fill: 'white' },
         targetReferenceBody: { fill: '#fe854f' },
       })
     })
 
-    graph.on('edge:target:click', ({ cell }) => {
+    graph.on('edge:target:click', ({ cell }: { cell: Cell }) => {
       cell.attr({
         sourceReferenceBody: { fill: '#fe854f' },
         targetReferenceBody: { fill: 'white' },
@@ -614,7 +620,7 @@ export default class Example extends React.Component {
     })
 
     // tools
-    graph.on('edge:mouseenter', ({ cell, view }) => {
+    graph.on('edge:mouseenter', ({ cell }: { cell: Edge }) => {
       const items: any[] = []
       switch (cell) {
         // case edge1:
@@ -666,9 +672,9 @@ export default class Example extends React.Component {
                 ],
                 distance: -30,
                 onClick() {
-                  var edge = this.cell
-                  var source = edge.getSource()
-                  var target = edge.getTarget()
+                  const edge = cell
+                  const source = edge.getSource()
+                  const target = edge.getTarget()
                   edge.setSource(target)
                   edge.setTarget(source)
                 },
@@ -705,12 +711,12 @@ export default class Example extends React.Component {
                 ],
                 distance: -50,
                 onClick() {
-                  var edge = this.cell
+                  const edge = cell
                   edge.attr({
                     line: {
                       strokeDasharray: '5,1',
                       strokeDashoffset:
-                        (edge.attr('line/strokeDashoffset') | 0) + 20,
+                        (edge.attr<number>('line/strokeDashoffset') | 0) + 20,
                     },
                   })
                 },
@@ -775,17 +781,17 @@ export default class Example extends React.Component {
         cell.removeTools()
       }
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
+
+export default Example

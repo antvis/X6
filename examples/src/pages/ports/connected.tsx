@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Node, Path } from '@antv/x6'
 import '../index.less'
 
@@ -12,13 +12,14 @@ Graph.registerConnector(
     const v1 = { x: s.x, y: s.y + offset + control }
     const v2 = { x: e.x, y: e.y - offset - control }
 
-    return Path.normalize(
-      `M ${s.x} ${s.y}
-       L ${s.x} ${s.y + offset}
-       C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
-       L ${e.x} ${e.y}
-      `,
-    )
+    return Path.parse(
+      `
+      M ${s.x} ${s.y}
+      L ${s.x} ${s.y + offset}
+      C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
+      L ${e.x} ${e.y}
+    `,
+    ).serialize()
   },
   true,
 )
@@ -97,12 +98,13 @@ Graph.registerNode(
   true,
 )
 
-export class PortsConnectedExample extends React.Component {
-  private container!: HTMLDivElement
+export const PortsConnectedExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       connecting: {
@@ -171,17 +173,15 @@ export class PortsConnectedExample extends React.Component {
         },
       ])
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

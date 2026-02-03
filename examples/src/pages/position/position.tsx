@@ -1,32 +1,34 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Button } from 'antd'
 import { Graph, Scroller } from '@antv/x6'
 import '../index.less'
 
-export class PositionExample extends React.Component {
-  private container1: HTMLDivElement
-  private container2: HTMLDivElement
+export const PositionExample: React.FC = () => {
+  const containerRef1 = useRef<HTMLDivElement>(null)
+  const containerRef2 = useRef<HTMLDivElement>(null)
+  const graphRef1 = useRef<Graph | null>(null)
+  const graphRef2 = useRef<Graph | null>(null)
+  const scrollerRef = useRef<Scroller | null>(null)
 
-  private graph1: Graph
-  private graph2: Graph
-  private scroller: Scroller
-  componentDidMount() {
-    this.graph1 = new Graph({
-      container: this.container1,
+  useEffect(() => {
+    if (!containerRef1.current || !containerRef2.current) return
+
+    const graph1 = new Graph({
+      container: containerRef1.current,
       width: 600,
       height: 400,
       grid: true,
     })
 
-    this.graph2 = new Graph({
-      container: this.container2,
+    const graph2 = new Graph({
+      container: containerRef2.current,
       width: 600,
       height: 400,
       grid: true,
     })
 
-    this.scroller = new Scroller()
-    this.graph2.use(this.scroller)
+    const scroller = new Scroller()
+    graph2.use(scroller)
 
     const data = [
       {
@@ -122,144 +124,135 @@ export class PositionExample extends React.Component {
       },
     ]
 
-    this.graph1.fromJSON(data)
-    this.graph2.fromJSON(data)
+    graph1.fromJSON(data)
+    graph2.fromJSON(data)
+
+    graphRef1.current = graph1
+    graphRef2.current = graph2
+    scrollerRef.current = scroller
+
+    return () => {
+      graph1.dispose()
+      graph2.dispose()
+      graphRef1.current = null
+      graphRef2.current = null
+      scrollerRef.current = null
+    }
+  }, [])
+
+  const onZoom = (factor: number, options?: any) => {
+    graphRef1.current?.zoom(factor, options)
+    scrollerRef.current?.zoom(factor, options)
   }
 
-  refContainer1 = (container: HTMLDivElement) => {
-    this.container1 = container
-  }
-  refContainer2 = (container: HTMLDivElement) => {
-    this.container2 = container
+  const onZoomTo = (factor: number, options?: any) => {
+    graphRef1.current?.zoomTo(factor, options)
+    scrollerRef.current?.zoomTo(factor, options)
   }
 
-  onZoom = (factor: number, options?: any) => {
-    this.graph1.zoom(factor, options)
-    this.scroller.zoom(factor, options)
-  }
-
-  onZoomTo = (factor: number, options?: any) => {
-    this.graph1.zoomTo(factor, options)
-    this.scroller.zoomTo(factor, options)
-  }
-
-  onZoomToRect = () => {
-    this.graph1.zoomToRect({
+  const onZoomToRect = () => {
+    const rect = {
       x: 120,
       y: 60,
       width: 300,
       height: 150,
-    })
-    this.scroller.zoomToRect({
-      x: 120,
-      y: 60,
-      width: 300,
-      height: 150,
-    })
+    }
+    graphRef1.current?.zoomToRect(rect)
+    scrollerRef.current?.zoomToRect(rect)
   }
 
-  onZoomToFit = () => {
-    this.graph1.zoomToFit()
-    this.scroller.zoomToFit()
+  const onZoomToFit = () => {
+    graphRef1.current?.zoomToFit()
+    scrollerRef.current?.zoomToFit()
   }
 
-  onCenterPoint = () => {
-    this.graph1.centerPoint(100, 50)
-    this.scroller.centerPoint(100, 50)
+  const onCenterPoint = () => {
+    graphRef1.current?.centerPoint(100, 50)
+    scrollerRef.current?.centerPoint(100, 50)
   }
 
-  onCenter = () => {
-    this.graph1.center()
-    this.scroller.center()
+  const onCenter = () => {
+    graphRef1.current?.center()
+    scrollerRef.current?.center()
   }
 
-  onCenterContent = () => {
-    this.graph1.centerContent()
-    this.scroller.centerContent()
+  const onCenterContent = () => {
+    graphRef1.current?.centerContent()
+    scrollerRef.current?.centerContent()
   }
 
-  onCenterCell = () => {
-    const cell1 = this.graph1.getCellById('1')
-    const cell2 = this.graph2.getCellById('1')
-    this.graph1.centerCell(cell1)
-    this.scroller.centerCell(cell2)
+  const onCenterCell = () => {
+    const cell1 = graphRef1.current?.getCellById('1')
+    const cell2 = graphRef2.current?.getCellById('1')
+    if (cell1) graphRef1.current?.centerCell(cell1)
+    if (cell2) scrollerRef.current?.centerCell(cell2)
   }
 
-  onPositionPoint = () => {
-    this.graph1.positionPoint({ x: 50, y: 60 }, 100, 100)
-    this.scroller.positionPoint({ x: 50, y: 60 }, 100, 100)
+  const onPositionPoint = () => {
+    graphRef1.current?.positionPoint({ x: 50, y: 60 }, 100, 100)
+    scrollerRef.current?.positionPoint({ x: 50, y: 60 }, 100, 100)
   }
 
-  onPositionRect = () => {
+  const onPositionRect = () => {
     const r = {
       x: 0,
       y: 0,
       width: 160,
       height: 60,
     }
-    this.graph1.positionRect(r, 'top')
-    this.scroller.positionRect(r, 'top')
+    graphRef1.current?.positionRect(r, 'top')
+    scrollerRef.current?.positionRect(r, 'top')
   }
 
-  onPositionContent = () => {
-    this.graph1.positionContent('center')
-    this.scroller.positionContent('center')
+  const onPositionContent = () => {
+    graphRef1.current?.positionContent('center')
+    scrollerRef.current?.positionContent('center')
   }
 
-  onPositionCell = () => {
-    const cell1 = this.graph1.getCellById('1')
-    const cell2 = this.graph2.getCellById('1')
-    this.graph1.positionCell(cell1, 'center')
-    this.scroller.positionCell(cell2, 'center')
+  const onPositionCell = () => {
+    const cell1 = graphRef1.current?.getCellById('1')
+    const cell2 = graphRef2.current?.getCellById('1')
+    if (cell1) graphRef1.current?.positionCell(cell1, 'center')
+    if (cell2) scrollerRef.current?.positionCell(cell2, 'center')
   }
 
-  render() {
-    return (
-      <div>
-        <div className="x6-graph-wrap" style={{ display: 'flex' }}>
-          <div ref={this.refContainer1} className="x6-graph" />
-          <div ref={this.refContainer2} className="x6-graph" />
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexFlow: 'wrap',
-            flexShrink: 0,
-            padding: '24px 48px',
-          }}
-        >
-          <Button onClick={() => this.onZoom(0.1)}>ZoomIn</Button>
-          <Button onClick={() => this.onZoom(-0.1)}>ZoomOut</Button>
-          <Button
-            onClick={() => this.onZoom(0.1, { center: { x: 300, y: 200 } })}
-          >
-            ZoomIn At [300, 200]
-          </Button>
-          <Button
-            onClick={() => this.onZoom(-0.1, { center: { x: 300, y: 200 } })}
-          >
-            ZoomOut At [300, 200]
-          </Button>
-          <Button onClick={() => this.onZoomTo(1.5)}>ZoomTo</Button>
-          <Button
-            onClick={() => this.onZoomTo(1.5, { center: { x: 200, y: 100 } })}
-          >
-            ZoomTo At [200, 100]
-          </Button>
-          <Button onClick={() => this.onZoomToRect()}>ZoomToRect</Button>
-          <Button onClick={() => this.onZoomToFit()}>ZoomToFit</Button>
-          <Button onClick={() => this.onCenterPoint()}>CenterPoint</Button>
-          <Button onClick={() => this.onCenter()}>Center</Button>
-          <Button onClick={() => this.onCenterContent()}>CenterContent</Button>
-          <Button onClick={() => this.onCenterCell()}>CenterCell</Button>
-          <Button onClick={() => this.onPositionPoint()}>PositionPoint</Button>
-          <Button onClick={() => this.onPositionRect()}>PositionRect</Button>
-          <Button onClick={() => this.onPositionContent()}>
-            PositionContent
-          </Button>
-          <Button onClick={() => this.onPositionCell()}>PositionCell</Button>
-        </div>
+  return (
+    <div>
+      <div className="x6-graph-wrap" style={{ display: 'flex' }}>
+        <div ref={containerRef1} className="x6-graph" />
+        <div ref={containerRef2} className="x6-graph" />
       </div>
-    )
-  }
+      <div
+        style={{
+          display: 'flex',
+          flexFlow: 'wrap',
+          flexShrink: 0,
+          padding: '24px 48px',
+        }}
+      >
+        <Button onClick={() => onZoom(0.1)}>ZoomIn</Button>
+        <Button onClick={() => onZoom(-0.1)}>ZoomOut</Button>
+        <Button onClick={() => onZoom(0.1, { center: { x: 300, y: 200 } })}>
+          ZoomIn At [300, 200]
+        </Button>
+        <Button onClick={() => onZoom(-0.1, { center: { x: 300, y: 200 } })}>
+          ZoomOut At [300, 200]
+        </Button>
+        <Button onClick={() => onZoomTo(1.5)}>ZoomTo</Button>
+        <Button onClick={() => onZoomTo(1.5, { center: { x: 200, y: 100 } })}>
+          ZoomTo At [200, 100]
+        </Button>
+        <Button onClick={() => onZoomToRect()}>ZoomToRect</Button>
+        <Button onClick={() => onZoomToFit()}>ZoomToFit</Button>
+        <Button onClick={() => onCenterPoint()}>CenterPoint</Button>
+        <Button onClick={() => onCenter()}>Center</Button>
+        <Button onClick={() => onCenterContent()}>CenterContent</Button>
+        <Button onClick={() => onCenterCell()}>CenterCell</Button>
+        <Button onClick={() => onPositionPoint()}>PositionPoint</Button>
+        <Button onClick={() => onPositionRect()}>PositionRect</Button>
+        <Button onClick={() => onPositionContent()}>PositionContent</Button>
+        <Button onClick={() => onPositionCell()}>PositionCell</Button>
+      </div>
+    </div>
+  )
 }

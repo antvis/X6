@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Path, Point } from '@antv/x6'
 import '../index.less'
 
@@ -11,13 +11,13 @@ Graph.registerConnector(
     const path = new Path()
     path.appendSegment(Path.createSegment('M', prev))
 
-    for (var i = 0, n = points.length; i < n; i += 1) {
+    for (let i = 0, n = points.length; i < n; i += 1) {
       const next = points[i]
       const distance = prev.distance(next)
       let d = spread
 
       while (d < distance) {
-        var current = prev.clone().move(next, -d)
+        const current = prev.clone().move(next, -d)
         current.translate(
           Math.floor(7 * Math.random()) - 3,
           Math.floor(7 * Math.random()) - 3,
@@ -35,12 +35,13 @@ Graph.registerConnector(
   true,
 )
 
-export class CustomConnectorExample extends React.Component {
-  private container!: HTMLDivElement
+export const CustomConnectorExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 1000,
       height: 600,
       grid: 10,
@@ -74,17 +75,15 @@ export class CustomConnectorExample extends React.Component {
         },
       },
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

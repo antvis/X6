@@ -6,7 +6,6 @@ import './index.less'
 
 export const VirtualRenderExample: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const graphRef = useRef<Graph | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -26,8 +25,6 @@ export const VirtualRenderExample: React.FC = () => {
         pannable: true,
       }),
     )
-
-    graphRef.current = graph
 
     const cells: Cell[] = []
     const cols = 50 // 列数
@@ -131,7 +128,6 @@ export const VirtualRenderExample: React.FC = () => {
 
     return () => {
       graph.dispose()
-      graphRef.current = null
     }
   }, [])
 

@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Button } from 'antd'
 import { Graph, History, Keyboard, Selection } from '@antv/x6'
 import '../index.less'
 
-export class HistoryExample extends React.Component {
-  private container!: HTMLDivElement
-  private graph!: Graph
+export const HistoryExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -52,69 +54,72 @@ export class HistoryExample extends React.Component {
     keyboard.bindKey('backspace', () => {
       graph.removeCells(selection.getSelectedCells())
     })
-    keyboard.bindKey('command+z', () => {
-      this.undo()
+    keyboard.bindKey(['command+z', 'ctrl+z'], () => {
+      const h = graph.getPlugin('history') as History
+      h.undo()
     })
-    keyboard.bindKey('command+shift+z', () => {
-      this.redo()
+    keyboard.bindKey(['command+shift+z', 'ctrl+shift+z'], () => {
+      const h = graph.getPlugin('history') as History
+      h.redo()
     })
 
-    this.graph = graph
+    graphRef.current = graph
+
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  const enablePlugins = () => {
+    graphRef.current?.enablePlugins('history')
   }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
+  const disablePlugins = () => {
+    graphRef.current?.disablePlugins('history')
   }
 
-  enablePlugins = () => {
-    this.graph.enablePlugins('history')
+  const undo = () => {
+    const history = graphRef.current?.getPlugin('history') as History
+    history?.undo()
   }
 
-  disablePlugins = () => {
-    this.graph.disablePlugins('history')
+  const redo = () => {
+    const history = graphRef.current?.getPlugin('history') as History
+    history?.redo()
   }
 
-  undo = () => {
-    const history = this.graph.getPlugin('history') as History
-    history.undo()
-  }
-
-  redo = () => {
-    const history = this.graph.getPlugin('history') as History
-    history.redo()
-  }
-
-  removeAll = () => {
-    const cells = this.graph.getCells()
-    this.graph.removeCells(cells)
-  }
-
-  removeOneNode = () => {
-    const nodes = this.graph.getNodes()
-    if (nodes.length) {
-      this.graph.removeNode(nodes[0])
+  const removeAll = () => {
+    const cells = graphRef.current?.getCells()
+    if (cells) {
+      graphRef.current?.removeCells(cells)
     }
   }
 
-  removeOneEdge = () => {
-    const edges = this.graph.getEdges()
-    if (edges.length) {
-      this.graph.removeEdge(edges[0])
+  const removeOneNode = () => {
+    const nodes = graphRef.current?.getNodes()
+    if (nodes && nodes.length) {
+      graphRef.current?.removeNode(nodes[0])
     }
   }
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-        <Button onClick={this.enablePlugins}>enable</Button>
-        <Button onClick={this.disablePlugins}>disable</Button>
-        <Button onClick={this.undo}>undo</Button>
-        <Button onClick={this.redo}>redo</Button>
-        <Button onClick={this.removeAll}>remove all</Button>
-        <Button onClick={this.removeOneNode}>remove node</Button>
-        <Button onClick={this.removeOneEdge}>remove edge</Button>
-      </div>
-    )
+  const removeOneEdge = () => {
+    const edges = graphRef.current?.getEdges()
+    if (edges && edges.length) {
+      graphRef.current?.removeEdge(edges[0])
+    }
   }
+
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+      <Button onClick={enablePlugins}>enable</Button>
+      <Button onClick={disablePlugins}>disable</Button>
+      <Button onClick={undo}>undo</Button>
+      <Button onClick={redo}>redo</Button>
+      <Button onClick={removeAll}>remove all</Button>
+      <Button onClick={removeOneNode}>remove node</Button>
+      <Button onClick={removeOneEdge}>remove edge</Button>
+    </div>
+  )
 }
