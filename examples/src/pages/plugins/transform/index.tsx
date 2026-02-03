@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Transform } from '@antv/x6'
 import '../../index.less'
 
-export class TransformExample extends React.Component {
-  private container!: HTMLDivElement
+export const TransformExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: 1,
@@ -69,17 +70,15 @@ export class TransformExample extends React.Component {
     graph.on('node:rotated', (args) => {
       console.log('node:rotated', args)
     })
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

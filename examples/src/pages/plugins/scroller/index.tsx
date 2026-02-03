@@ -1,20 +1,20 @@
 import { Export, Graph, MiniMap, Scroller, Selection } from '@antv/x6'
 import { Button } from 'antd'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import '../../index.less'
 import './index.less'
 
-export class ScrollerExample extends React.Component {
-  private graph!: Graph
-  private graphContainer!: HTMLDivElement
-  private minimapContainer!: HTMLDivElement
-  private scroller!: Scroller
-  private selection!: Selection
-  private exportInstance!: Export
+export const ScrollerExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const minimapContainerRef = useRef<HTMLDivElement>(null)
+  const scrollerRef = useRef<Scroller | null>(null)
+  const exportRef = useRef<Export | null>(null)
 
-  componentDidMount() {
-    this.graph = new Graph({
-      container: this.graphContainer,
+  useEffect(() => {
+    if (!containerRef.current || !minimapContainerRef.current) return
+
+    const graph = new Graph({
+      container: containerRef.current,
       width: 800,
       height: 500,
       background: {
@@ -26,14 +26,13 @@ export class ScrollerExample extends React.Component {
       panning: false,
       mousewheel: {
         enabled: true,
-        // fixed: false,
         modifiers: ['ctrl', 'meta'],
         minScale: 0.5,
         maxScale: 2,
       },
     })
 
-    this.scroller = new Scroller({
+    const scroller = new Scroller({
       pageVisible: true,
       pageBreak: true,
       pannable: {
@@ -41,24 +40,24 @@ export class ScrollerExample extends React.Component {
         eventTypes: ['leftMouseDown', 'rightMouseDown'],
       },
     })
-    this.selection = new Selection({
+    const selection = new Selection({
       rubberband: true,
       modifiers: 'shift',
     })
     const minimap = new MiniMap({
-      container: this.minimapContainer,
+      container: minimapContainerRef.current,
       width: 300,
       height: 200,
       padding: 10,
     })
-    this.exportInstance = new Export()
+    const exportInstance = new Export()
 
-    this.graph.use(this.scroller)
-    this.graph.use(this.selection)
-    this.graph.use(minimap)
-    this.graph.use(this.exportInstance)
+    graph.use(scroller)
+    graph.use(selection)
+    graph.use(minimap)
+    graph.use(exportInstance)
 
-    const rect = this.graph.addNode({
+    const rect = graph.addNode({
       shape: 'rect',
       x: 300,
       y: 300,
@@ -71,7 +70,7 @@ export class ScrollerExample extends React.Component {
       ports: [{}],
     })
 
-    const circle = this.graph.addNode({
+    const circle = graph.addNode({
       shape: 'circle',
       x: 400,
       y: 400,
@@ -83,70 +82,69 @@ export class ScrollerExample extends React.Component {
       },
     })
 
-    this.graph.addEdge({
+    graph.addEdge({
       source: rect,
       target: circle,
     })
+
+    scrollerRef.current = scroller
+    exportRef.current = exportInstance
+
+    return () => {
+      graph.dispose()
+      scrollerRef.current = null
+      exportRef.current = null
+    }
+  }, [])
+
+  const onCenterClick = () => {
+    scrollerRef.current?.center()
   }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.graphContainer = container
+  const onCenterContentClick = () => {
+    scrollerRef.current?.centerContent()
   }
 
-  refMinimap = (container: HTMLDivElement) => {
-    this.minimapContainer = container
+  const onZoomOutClick = () => {
+    scrollerRef.current?.zoom(-0.2)
   }
 
-  onCenterClick = () => {
-    this.scroller.center()
+  const onZoomInClick = () => {
+    scrollerRef.current?.zoom(0.2)
   }
 
-  onCenterContentClick = () => {
-    this.scroller.centerContent()
+  const onZoomToFitClick = () => {
+    scrollerRef.current?.zoomToFit()
   }
 
-  onZoomOutClick = () => {
-    this.scroller.zoom(-0.2)
+  const onDownload = () => {
+    exportRef.current?.exportPNG('scroller')
   }
 
-  onZoomInClick = () => {
-    this.scroller.zoom(0.2)
-  }
-
-  onZoomToFitClick = () => {
-    this.scroller.zoomToFit()
-  }
-
-  onDownload = () => {
-    this.exportInstance.exportPNG('scroller')
-  }
-
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <h1>Scroller</h1>
-        <div className="x6-graph-tools">
-          <Button onClick={this.onCenterClick}>Center</Button>
-          <Button onClick={this.onCenterContentClick}>Center Content</Button>
-          <Button onClick={this.onZoomOutClick}>Zoom Out</Button>
-          <Button onClick={this.onZoomInClick}>Zoom In</Button>
-          <Button onClick={this.onZoomToFitClick}>Zoom To Fit</Button>
-          <Button onClick={this.onDownload}>Download</Button>
-        </div>
-        <div
-          ref={this.refMinimap}
-          style={{
-            position: 'absolute',
-            right: '50%',
-            top: 40,
-            marginRight: -720,
-            width: 300,
-            height: 200,
-            boxShadow: '0 0 10px 1px #e9e9e9',
-          }}
-        />
-        <div ref={this.refContainer} className="x6-graph" />
+  return (
+    <div className="x6-graph-wrap">
+      <h1>Scroller</h1>
+      <div className="x6-graph-tools">
+        <Button onClick={onCenterClick}>Center</Button>
+        <Button onClick={onCenterContentClick}>Center Content</Button>
+        <Button onClick={onZoomOutClick}>Zoom Out</Button>
+        <Button onClick={onZoomInClick}>Zoom In</Button>
+        <Button onClick={onZoomToFitClick}>Zoom To Fit</Button>
+        <Button onClick={onDownload}>Download</Button>
       </div>
-    )
-  }
+      <div
+        ref={minimapContainerRef}
+        style={{
+          position: 'absolute',
+          right: '50%',
+          top: 40,
+          marginRight: -720,
+          width: 300,
+          height: 200,
+          boxShadow: '0 0 10px 1px #e9e9e9',
+        }}
+      />
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

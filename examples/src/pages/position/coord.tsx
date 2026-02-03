@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph } from '@antv/x6'
 import '../index.less'
 
-export class CoordExample extends React.Component {
-  private container!: HTMLDivElement
+export const CoordExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -68,7 +69,7 @@ export class CoordExample extends React.Component {
     document.body.appendChild(h)
     document.body.appendChild(c)
 
-    document.addEventListener('mousemove', (e) => {
+    const onMouseMove = (e: MouseEvent) => {
       const pageX = e.pageX
       const pageY = e.pageY
       const clientX = e.clientX
@@ -89,18 +90,22 @@ export class CoordExample extends React.Component {
       <div>Local Point: ${p1.x} x ${p1.y}</div>
       <div>Graph Point: ${p2.x} x ${p2.y}</div>
       `
-    })
-  }
+    }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    document.addEventListener('mousemove', onMouseMove)
 
-  render() {
-    return (
-      <div className="x6-graph-wrap" style={{ width: 3000, height: 3000 }}>
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove)
+      document.body.removeChild(v)
+      document.body.removeChild(h)
+      document.body.removeChild(c)
+      graph.dispose()
+    }
+  }, [])
+
+  return (
+    <div className="x6-graph-wrap" style={{ width: 3000, height: 3000 }}>
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

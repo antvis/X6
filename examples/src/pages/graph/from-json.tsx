@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph } from '@antv/x6'
 
 const JSON1 = {
@@ -74,44 +74,39 @@ const JSON2 = {
   ],
 }
 
-export class GraphFromJSONExample extends React.Component {
-  private container!: HTMLDivElement
-  private graph!: Graph
+export const GraphFromJSONExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
 
-  componentDidMount() {
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 400,
       grid: true,
     })
 
     graph.fromJSON(JSON1)
-    this.graph = graph
+    graphRef.current = graph
+
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+    }
+  }, [])
+
+  const updateJSON = () => {
+    graphRef.current?.fromJSON(JSON2, { diff: true })
   }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
-
-  render() {
-    return (
-      <div
-        className="x6-graph-wrap"
-        style={{ width: 800, margin: '20px auto' }}
-      >
-        <button
-          style={{ marginBottom: 12 }}
-          onClick={() => this.graph.fromJSON(JSON2, { diff: true })}
-        >
-          Update JSON
-        </button>
-        <div
-          style={{ height: 500 }}
-          ref={this.refContainer}
-          className="x6-graph"
-        />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap" style={{ width: 800, margin: '20px auto' }}>
+      <button style={{ marginBottom: 12 }} onClick={updateJSON}>
+        Update JSON
+      </button>
+      <div style={{ height: 500 }} ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

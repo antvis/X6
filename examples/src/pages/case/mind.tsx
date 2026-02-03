@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Hierarchy from '@antv/hierarchy'
-import { Graph, Node, Keyboard } from '@antv/x6'
+import { Graph, Node, Keyboard, Selection } from '@antv/x6'
 import { connectors } from '../connector/xmind-definitions'
 import '../index.less'
 import './mind.less'
@@ -170,12 +170,13 @@ const data: MindMapData = {
   ],
 }
 
-export class CaseMindExample extends React.Component {
-  private container!: HTMLDivElement
+export const CaseMindExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
 
-  componentDidMount() {
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       connecting: {
@@ -361,6 +362,7 @@ export class CaseMindExample extends React.Component {
         render()
       }
     })
+
     keyboard.bindKey(['backspace', 'delete'], () => {
       const selectedNodes = selection
         .getSelectedCells()
@@ -388,17 +390,15 @@ export class CaseMindExample extends React.Component {
     })
 
     render()
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap mindmap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap mindmap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

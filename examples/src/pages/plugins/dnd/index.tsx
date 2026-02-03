@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Node, Dnd } from '@antv/x6'
 import '../../index.less'
 
-export class DndExample extends React.Component {
-  private graph!: Graph
-  private dnd!: Dnd
-  private container!: HTMLDivElement
+export const DndExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const graphRef = useRef<Graph | null>(null)
+  const dndRef = useRef<Dnd | null>(null)
 
-  componentDidMount() {
-    const graph = (this.graph = new Graph({
-      container: this.container,
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const graph = new Graph({
+      container: containerRef.current,
       width: 800,
       height: 800,
       grid: {
@@ -25,7 +27,7 @@ export class DndExample extends React.Component {
           })
         },
       },
-    }))
+    })
 
     const source = graph.addNode({
       x: 130,
@@ -64,22 +66,28 @@ export class DndExample extends React.Component {
     graph.addEdge({ source, target })
     graph.centerContent()
 
-    this.dnd = new Dnd({
+    const dnd = new Dnd({
       target: graph,
     })
-    this.graph = graph
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    graphRef.current = graph
+    dndRef.current = dnd
 
-  startDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    return () => {
+      graph.dispose()
+      graphRef.current = null
+      dndRef.current = null
+    }
+  }, [])
+
+  const startDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!graphRef.current || !dndRef.current) return
+
     const target = e.currentTarget
     const type = target.getAttribute('data-type')
     let node: Node | undefined
     if (type === 'rect') {
-      node = this.graph.createNode({
+      node = graphRef.current.createNode({
         shape: 'rect',
         width: 100,
         height: 40,
@@ -95,7 +103,7 @@ export class DndExample extends React.Component {
         },
       })
     } else if (type === 'circle') {
-      node = this.graph.createNode({
+      node = graphRef.current.createNode({
         shape: 'circle',
         width: 60,
         height: 60,
@@ -113,63 +121,61 @@ export class DndExample extends React.Component {
     }
 
     if (node) {
-      this.dnd.start(node, e.nativeEvent as any)
+      dndRef.current.start(node, e.nativeEvent as any)
     }
   }
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <h1>Dnd</h1>
+  return (
+    <div className="x6-graph-wrap">
+      <h1>Dnd</h1>
+      <div
+        style={{
+          position: 'absolute',
+          left: 32,
+          top: 40,
+          width: 200,
+          height: 300,
+          padding: 16,
+          border: '1px solid #f0f0f0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          userSelect: 'none',
+        }}
+      >
         <div
+          data-type="rect"
+          onMouseDown={startDrag}
           style={{
-            position: 'absolute',
-            left: 32,
-            top: 40,
-            width: 200,
-            height: 300,
-            padding: 16,
-            border: '1px solid #f0f0f0',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            userSelect: 'none',
+            width: 100,
+            height: 40,
+            border: '2px solid #31d0c6',
+            textAlign: 'center',
+            lineHeight: '40px',
+            margin: 16,
+            cursor: 'move',
           }}
         >
-          <div
-            data-type="rect"
-            onMouseDown={this.startDrag}
-            style={{
-              width: 100,
-              height: 40,
-              border: '2px solid #31d0c6',
-              textAlign: 'center',
-              lineHeight: '40px',
-              margin: 16,
-              cursor: 'move',
-            }}
-          >
-            Rect
-          </div>
-          <div
-            data-type="circle"
-            onMouseDown={this.startDrag}
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: '100%',
-              border: '2px solid #31d0c6',
-              textAlign: 'center',
-              lineHeight: '60px',
-              margin: 16,
-              cursor: 'move',
-            }}
-          >
-            Circle
-          </div>
+          Rect
         </div>
-        <div ref={this.refContainer} className="x6-graph" />
+        <div
+          data-type="circle"
+          onMouseDown={startDrag}
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: '100%',
+            border: '2px solid #31d0c6',
+            textAlign: 'center',
+            lineHeight: '60px',
+            margin: 16,
+            cursor: 'move',
+          }}
+        >
+          Circle
+        </div>
       </div>
-    )
-  }
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }

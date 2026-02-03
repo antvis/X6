@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { ComponentType, useEffect, useRef } from 'react'
 import { register } from '@antv/x6-react-shape'
-import { Graph, Node, Cell, Path, Selection, Snapline } from '@antv/x6'
+import {
+  Graph,
+  Node,
+  Cell,
+  Path,
+  Selection,
+  Snapline,
+  CellMetadata,
+} from '@antv/x6'
 import '../index.less'
 import './index.less'
+
 interface NodeStatus {
   id: string
   status: string
@@ -18,19 +27,9 @@ const image = {
   running:
     'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t8fURKfgSOgAAAAAAAAAAAAAARQnAQ',
 }
-export class AlgoNode extends React.Component<{ node?: Node }> {
-  shouldComponentUpdate() {
-    const { node } = this.props
-    if (node) {
-      if (node.hasChanged('data')) {
-        return true
-      }
-    }
-    return false
-  }
 
-  render() {
-    const { node } = this.props
+export const AlgoNode: React.FC<{ node?: Node }> = React.memo(
+  ({ node }) => {
     const data = node?.getData() as NodeStatus
     const { label, status = 'default' } = data
 
@@ -45,14 +44,23 @@ export class AlgoNode extends React.Component<{ node?: Node }> {
         </span>
       </div>
     )
-  }
-}
+  },
+  (_prevProps, nextProps) => {
+    const node = nextProps.node
+    if (node) {
+      // Only re-render if the 'data' property of the node has not changed.
+      return !node.hasChanged('data')
+    }
+    // If no node, no need to re-render.
+    return true
+  },
+)
 
 register({
   shape: 'dag-node',
   width: 180,
   height: 36,
-  component: AlgoNode,
+  component: AlgoNode as ComponentType<{ node: Node; graph: Graph }>,
   ports: {
     groups: {
       top: {
@@ -108,13 +116,14 @@ Graph.registerConnector(
     const v1 = { x: s.x, y: s.y + offset + control }
     const v2 = { x: e.x, y: e.y - offset - control }
 
-    return Path.normalize(
-      `M ${s.x} ${s.y}
-       L ${s.x} ${s.y + offset}
-       C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
-       L ${e.x} ${e.y}
-      `,
-    )
+    return Path.parse(
+      `
+      M ${s.x} ${s.y}
+      L ${s.x} ${s.y + offset}
+      C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
+      L ${e.x} ${e.y}
+    `,
+    ).serialize()
   },
   true,
 )
@@ -315,12 +324,14 @@ const nodeStatusList = [
     },
   ],
 ]
-export class CaseDagExample extends React.Component {
-  private container!: HTMLDivElement
 
-  componentDidMount() {
+export const CaseDagExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph: Graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       panning: {
@@ -404,7 +415,7 @@ export class CaseDagExample extends React.Component {
     })
 
     // 初始化节点/边
-    const init = (data: Cell.Metadata[]) => {
+    const init = (data: CellMetadata[]) => {
       const cells: Cell[] = []
       data.forEach((item) => {
         if (item.shape === 'dag-node') {
@@ -416,36 +427,41 @@ export class CaseDagExample extends React.Component {
       graph.resetCells(cells)
     }
 
+    let timer: number
     // 显示节点状态
-    const showNodeStatus = async (statusList: NodeStatus[][]) => {
-      const status = statusList.shift()
+    const showNodeStatus = (statusList: NodeStatus[][]) => {
+      const list = [...statusList]
+      const status = list.shift()
       status?.forEach((item) => {
         const { id, status } = item
         const node = graph.getCellById(id)
-        const data = node.getData() as NodeStatus
-        node.setData({
-          ...data,
-          status: status,
-        })
+        if (node) {
+          const data = node.getData() as NodeStatus
+          node.setData({
+            ...data,
+            status: status,
+          })
+        }
       })
-      setTimeout(() => {
-        showNodeStatus(statusList)
-      }, 3000)
+      if (list.length > 0) {
+        timer = window.setTimeout(() => {
+          showNodeStatus(list)
+        }, 3000)
+      }
     }
 
     init(data)
     showNodeStatus(nodeStatusList)
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      clearTimeout(timer)
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="dag" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="dag" />
+    </div>
+  )
 }

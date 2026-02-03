@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Graph, Cell, Shape } from '@antv/x6'
 import '../index.less'
 import './index.less'
@@ -16,12 +16,14 @@ Shape.HTML.register({
     return div
   },
 })
-export class HtmlExample extends React.Component {
-  private container!: HTMLDivElement
 
-  componentDidMount() {
+export const HtmlExample: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!containerRef.current) return
+
     const graph = new Graph({
-      container: this.container,
+      container: containerRef.current,
       width: 800,
       height: 600,
       grid: true,
@@ -35,10 +37,11 @@ export class HtmlExample extends React.Component {
         time: Date.now(),
       },
     })
-    console.log(graph.toJSON())
+
+    let timer: number
 
     const change = () => {
-      setTimeout(() => {
+      timer = window.setTimeout(() => {
         node.setData({
           time: Date.now(),
         })
@@ -47,17 +50,16 @@ export class HtmlExample extends React.Component {
     }
 
     change()
-  }
 
-  refContainer = (container: HTMLDivElement) => {
-    this.container = container
-  }
+    return () => {
+      clearTimeout(timer)
+      graph.dispose()
+    }
+  }, [])
 
-  render() {
-    return (
-      <div className="x6-graph-wrap">
-        <div ref={this.refContainer} className="x6-graph" />
-      </div>
-    )
-  }
+  return (
+    <div className="x6-graph-wrap">
+      <div ref={containerRef} className="x6-graph" />
+    </div>
+  )
 }
