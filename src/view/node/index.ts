@@ -107,6 +107,11 @@ export class NodeView<
 
   confirmUpdate(flag: number, options: any = {}) {
     let ret = flag
+    const toolRelatedGeometryChanged = this.hasAction(flag, [
+      'resize',
+      'translate',
+      'rotate',
+    ])
     if (this.hasAction(ret, 'ports')) {
       this.removePorts()
       this.cleanPortsCache()
@@ -143,7 +148,12 @@ export class NodeView<
       ret = this.handleAction(ret, 'rotate', () => this.rotate())
       ret = this.handleAction(ret, 'ports', () => this.renderPorts())
       ret = this.handleAction(ret, 'tools', () => {
-        if (this.getFlag('tools') === flag) {
+        const hasModelTools = this.cell.getTools() != null
+        if (
+          !toolRelatedGeometryChanged ||
+          this.tools == null ||
+          !hasModelTools
+        ) {
           this.renderTools()
         } else {
           this.updateTools(options)
