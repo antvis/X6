@@ -62,19 +62,18 @@ function metroFallbackRoute(
   const l2 = new Line(to, p2)
 
   const intersectionPoint = l1.intersectsWithLine(l2)
-  const point = intersectionPoint || to
-
-  const directionFrom = intersectionPoint ? point : from
-
+  const directionFrom = intersectionPoint || from
   const quadrant = 360 / options.directions.length
   const angleTheta = directionFrom.theta(to)
   const normalizedAngle = normalize(angleTheta + quadrant / 2)
   const directionAngle = quadrant * Math.floor(normalizedAngle / quadrant)
-
   options.previousDirectionAngle = directionAngle
-
-  if (intersectionPoint && point && !point.equals(from) && !point.equals(to)) {
-    route.push(point.round())
+  if (
+    intersectionPoint &&
+    !intersectionPoint.equals(from) &&
+    !intersectionPoint.equals(to)
+  ) {
+    route.push(intersectionPoint.round())
   }
 
   return route

@@ -94,7 +94,7 @@ describe('metro router', () => {
     const to = new Point(100, 80)
     const route: Point[] = fallbackRoute(from, to, resolvedOptions)
 
-    expect(route.length === 0 || route.length === 1).toBe(true)
+    expect(route.length).toBeLessThanOrEqual(1)
     if (route.length === 1) {
       expect(route[0].equals(from)).toBe(false)
       expect(route[0].equals(to)).toBe(false)
