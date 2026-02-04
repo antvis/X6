@@ -1,8 +1,12 @@
 import { FunctionExt } from '../../common'
-import { toRad, normalize, Line, Point } from '../../geometry'
+import { Line, normalize, Point, toRad } from '../../geometry'
 import type { RouterDefinition } from './index'
 import { manhattan } from './manhattan/index'
-import { type ManhattanRouterOptions, resolve } from './manhattan/options'
+import {
+  type ManhattanRouterOptions,
+  type ResolvedOptions,
+  resolve,
+} from './manhattan/options'
 
 export interface MetroRouterOptions extends ManhattanRouterOptions {}
 
@@ -28,49 +32,51 @@ const defaults: Partial<MetroRouterOptions> = {
     ]
   },
 
-  // a simple route used in situations when main routing method fails
-  // (exceed max number of loop iterations, inaccessible)
-  fallbackRoute(from, to, options) {
-    // Find a route which breaks by 45 degrees ignoring all obstacles.
+  fallbackRoute: metroFallbackRoute,
+}
 
-    const theta = from.theta(to)
+function metroFallbackRoute(
+  this: any,
+  from: Point,
+  to: Point,
+  options: ResolvedOptions,
+) {
+  const theta = from.theta(to)
+  const route: Point[] = []
 
-    const route = []
+  let a = { x: to.x, y: from.y }
+  let b = { x: from.x, y: to.y }
 
-    let a = { x: to.x, y: from.y }
-    let b = { x: from.x, y: to.y }
+  if (theta % 180 > 90) {
+    const t = a
+    a = b
+    b = t
+  }
 
-    if (theta % 180 > 90) {
-      const t = a
-      a = b
-      b = t
-    }
+  const p1 = theta % 90 < 45 ? a : b
+  const l1 = new Line(from, p1)
 
-    const p1 = theta % 90 < 45 ? a : b
-    const l1 = new Line(from, p1)
+  const alpha = 90 * Math.ceil(theta / 90)
 
-    const alpha = 90 * Math.ceil(theta / 90)
+  const p2 = Point.fromPolar(l1.squaredLength(), toRad(alpha + 135), p1)
+  const l2 = new Line(to, p2)
 
-    const p2 = Point.fromPolar(l1.squaredLength(), toRad(alpha + 135), p1)
-    const l2 = new Line(to, p2)
+  const intersectionPoint = l1.intersectsWithLine(l2)
+  const directionFrom = intersectionPoint || from
+  const quadrant = 360 / options.directions.length
+  const angleTheta = directionFrom.theta(to)
+  const normalizedAngle = normalize(angleTheta + quadrant / 2)
+  const directionAngle = quadrant * Math.floor(normalizedAngle / quadrant)
+  options.previousDirectionAngle = directionAngle
+  if (
+    intersectionPoint &&
+    !intersectionPoint.equals(from) &&
+    !intersectionPoint.equals(to)
+  ) {
+    route.push(intersectionPoint.round())
+  }
 
-    const intersectionPoint = l1.intersectsWithLine(l2)
-    const point = intersectionPoint || to
-
-    const directionFrom = intersectionPoint ? point : from
-
-    const quadrant = 360 / options.directions.length
-    const angleTheta = directionFrom.theta(to)
-    const normalizedAngle = normalize(angleTheta + quadrant / 2)
-    const directionAngle = quadrant * Math.floor(normalizedAngle / quadrant)
-
-    options.previousDirectionAngle = directionAngle
-
-    if (point) route.push(point.round())
-    route.push(to)
-
-    return route
-  },
+  return route
 }
 
 export const metro: RouterDefinition<Partial<MetroRouterOptions>> = function (
