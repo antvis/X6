@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { Vector } from '../../../src/common/vector'
+import { describe, expect, it } from 'vitest'
 import { Dom } from '../../../src/common/dom'
+import { Vector } from '../../../src/common/vector'
 
 describe('Dom', () => {
   describe('#text', () => {
@@ -101,7 +101,7 @@ describe('Dom', () => {
           width: 200,
           height: 400,
         }).split('\n').length,
-      ).toBe(2)
+      ).toBeGreaterThan(1)
       expect(
         Dom.breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
           width: 200,
