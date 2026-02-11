@@ -73,11 +73,13 @@ export const ClipboardExample = () => {
 
     keyboard.bindKey('meta+c', (e) => {
       e.preventDefault()
+      e.stopPropagation()
       onCopy()
     })
 
     keyboard.bindKey('meta+v', (e) => {
       e.preventDefault()
+      e.stopPropagation()
       onPaste()
     })
 
@@ -87,6 +89,12 @@ export const ClipboardExample = () => {
 
     selectionRef.current = selection
     clipboardRef.current = clipboard
+
+    return () => {
+      selectionRef.current = null
+      clipboardRef.current = null
+      graph.dispose()
+    }
   }, [])
 
   return (
