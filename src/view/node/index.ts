@@ -321,7 +321,7 @@ export class NodeView<
     const edges = graph.model.getConnectedEdges(node)
     for (let i = 0, n = edges.length; i < n; i += 1) {
       const edge = edges[i]
-      const edgeView = edge.findView(graph) as any
+      const edgeView = edge.findView(graph) as EdgeView
       if (!edgeView || !graph.renderer.isViewMounted(edgeView)) {
         continue
       }
@@ -332,7 +332,10 @@ export class NodeView<
       if (edge.getTargetCell() === node) {
         actions.push('target')
       }
-      graph.renderer.requestViewUpdate(edgeView, edgeView.getFlag(actions))
+      graph.renderer.requestViewUpdate(
+        edgeView,
+        edgeView.getFlag(actions as any),
+      )
     }
   }
 
