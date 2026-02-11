@@ -119,7 +119,7 @@ describe('NodeView', () => {
 
   describe('confirmUpdate', () => {
     beforeEach(() => {
-      vi.spyOn(nodeView, 'hasAction').mockReturnValue(false)
+      vi.spyOn(nodeView, 'hasAction').mockReturnValue(0)
       vi.spyOn(nodeView, 'removeAction').mockReturnValue(0)
       vi.spyOn(nodeView, 'handleAction').mockReturnValue(0)
       vi.spyOn(nodeView, 'getFlag').mockReturnValue(1)
@@ -137,7 +137,7 @@ describe('NodeView', () => {
 
     it('should handle ports action', () => {
       vi.spyOn(nodeView, 'hasAction').mockImplementation(
-        (flag: any, action: any) => action === 'ports',
+        (flag: any, action: any) => (action === 'ports' ? 1 : 0),
       )
 
       const result = nodeView.confirmUpdate(1)
@@ -149,7 +149,7 @@ describe('NodeView', () => {
 
     it('should handle render action', () => {
       vi.spyOn(nodeView, 'hasAction').mockImplementation(
-        (flag: any, action: any) => action === 'render',
+        (flag: any, action: any) => (action === 'render' ? 1 : 0),
       )
 
       const result = nodeView.confirmUpdate(1)
@@ -160,7 +160,7 @@ describe('NodeView', () => {
     })
 
     it('should handle individual actions when not rendering', () => {
-      vi.spyOn(nodeView, 'hasAction').mockReturnValue(false)
+      vi.spyOn(nodeView, 'hasAction').mockReturnValue(0)
 
       const result = nodeView.confirmUpdate(1)
 
@@ -213,6 +213,31 @@ describe('NodeView', () => {
       expect(nodeView.resize).toHaveBeenCalled()
       expect((nodeView as any).updateTransform).toHaveBeenCalled()
       expect(result).toBe(nodeView)
+    })
+  })
+
+  describe('ports and edges', () => {
+    it('should request connected edge update after rendering ports', () => {
+      const node2 = graph.addNode({
+        x: 300,
+        y: 100,
+        width: 80,
+        height: 40,
+        markup: [{ tagName: 'rect', selector: 'body' }],
+      })
+      const edge = graph.addEdge({
+        source: { cell: node.id },
+        target: { cell: node2.id },
+      })
+
+      const edgeView = edge.findView(graph) as any
+      const requestSpy = vi
+        .spyOn(graph.renderer as any, 'requestViewUpdate')
+        .mockImplementation(() => {})
+      vi.spyOn(graph.renderer as any, 'isViewMounted').mockReturnValue(true)
+      ;(nodeView as any).renderPorts()
+
+      expect(requestSpy).toHaveBeenCalledWith(edgeView, expect.any(Number))
     })
   })
 
@@ -292,7 +317,6 @@ describe('NodeView', () => {
 
     it('should clean ports cache', () => {
       ;(nodeView as any).portsCache['port1'] = {} as any
-
       ;(nodeView as any).cleanPortsCache()
 
       expect((nodeView as any).portsCache).toEqual({})
@@ -590,7 +614,6 @@ describe('NodeView', () => {
       vi.spyOn(node, 'getParent').mockReturnValue(null)
       // @ts-expect-error
       vi.spyOn(nodeView, 'notify').mockImplementation(() => {})
-
       ;(nodeView as any).prepareEmbedding(event)
 
       expect(nodeView.notify).toHaveBeenCalledWith(
@@ -665,7 +688,6 @@ describe('NodeView', () => {
       vi.spyOn(nodeView, 'setEventData').mockImplementation(() => {})
       vi.spyOn(node, 'getPosition').mockReturnValue({ x: 100, y: 200 })
       vi.spyOn(nodeView as any, 'getRestrictArea').mockReturnValue(null)
-
       ;(nodeView as any).startNodeDragging(event, 150, 250)
 
       expect(nodeView.setEventData).toHaveBeenCalled()
@@ -677,7 +699,6 @@ describe('NodeView', () => {
       vi.spyOn(nodeView as any, 'notifyUnhandledMouseDown').mockImplementation(
         () => {},
       )
-
       ;(nodeView as any).startNodeDragging(event, 150, 250)
 
       expect((nodeView as any).notifyUnhandledMouseDown).toHaveBeenCalledWith(
@@ -694,7 +715,6 @@ describe('NodeView', () => {
       vi.spyOn(nodeView as any, 'notifyUnhandledMouseDown').mockImplementation(
         () => {},
       )
-
       ;(nodeView as any).startNodeDragging(event, 150, 250)
 
       expect((nodeView as any).notifyUnhandledMouseDown).toHaveBeenCalledWith(
@@ -719,7 +739,6 @@ describe('NodeView', () => {
       vi.spyOn(graph, 'getGridSize').mockReturnValue(10)
       vi.spyOn(node, 'setPosition').mockImplementation(() => {})
       vi.spyOn(graph.options.embedding, 'enabled', 'get').mockReturnValue(false)
-
       ;(nodeView as any).dragNode(event, 150, 250)
 
       expect(nodeView.addClass).toHaveBeenCalledWith('node-moving')
@@ -740,7 +759,6 @@ describe('NodeView', () => {
         autoScroll: vi.fn(),
       }
       vi.spyOn(graph, 'getPlugin').mockReturnValue(mockScroller)
-
       ;(nodeView as any).autoScrollGraph(100, 200)
 
       expect(mockScroller.autoScroll).toHaveBeenCalledWith(100, 200)
@@ -760,8 +778,7 @@ describe('NodeView', () => {
       const event = { type: 'mousemove' } as any
 
       vi.spyOn(graph, 'getPlugin').mockReturnValue(mockSelection)
-      vi.spyOn(nodeView, 'notify').mockImplementation(() => {})
-
+      vi.spyOn(nodeView, 'notify').mockImplementation(() => nodeView)
       ;(nodeView as any).notifyNodeMove('node:move', event, 100, 200, node)
 
       expect(nodeView.notify).toHaveBeenCalledWith(
@@ -847,7 +864,7 @@ describe('NodeView', () => {
         mockCandidate,
       ])
       vi.spyOn(nodeView, 'clearEmbedding').mockImplementation(() => {})
-      vi.spyOn(nodeView, 'notify').mockImplementation(() => {})
+      vi.spyOn(nodeView, 'notify').mockImplementation(() => nodeView)
       vi.spyOn(graph, 'snapToGrid').mockReturnValue({ x: 150, y: 250 })
       vi.spyOn(graph, 'findViewByCell').mockReturnValue(nodeView)
       vi.spyOn(node, 'getParent').mockReturnValue(null)

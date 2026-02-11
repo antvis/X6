@@ -311,6 +311,29 @@ export class NodeView<
     })
 
     this.updatePorts()
+    this.cleanCache()
+    this.updateConnectedEdges()
+  }
+
+  protected updateConnectedEdges() {
+    const graph = this.graph
+    const node = this.cell
+    const edges = graph.model.getConnectedEdges(node)
+    for (let i = 0, n = edges.length; i < n; i += 1) {
+      const edge = edges[i]
+      const edgeView = edge.findView(graph) as any
+      if (!edgeView || !graph.renderer.isViewMounted(edgeView)) {
+        continue
+      }
+      const actions = ['update']
+      if (edge.getSourceCell() === node) {
+        actions.push('source')
+      }
+      if (edge.getTargetCell() === node) {
+        actions.push('target')
+      }
+      graph.renderer.requestViewUpdate(edgeView, edgeView.getFlag(actions))
+    }
   }
 
   protected appendPorts(ports: Port[], zIndex: number, refs: Element[]) {
