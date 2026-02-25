@@ -186,6 +186,32 @@ describe('Cell core API', () => {
     expect(parent.getChildren()?.map((c) => c.id)).toEqual(['child'])
   })
 
+  it('removeCells on parent removes children even when model is null (simulates collection flow)', () => {
+    const parent = new Cell({ id: 'parent' } as any)
+    const child1 = new Cell({ id: 'child1' } as any)
+    const child2 = new Cell({ id: 'child2' } as any)
+    parent.model = model as any
+    child1.model = model as any
+    child2.model = model as any
+
+    model.addCell(parent)
+    model.addCell(child1)
+    model.addCell(child2)
+
+    parent.addChild(child1)
+    parent.addChild(child2)
+    expect((parent.getProp('children') as any as string[])?.length).toBe(2)
+
+    // Simulate what collection.removeCells does:
+    // it sets model=null before calling cell.remove()
+    parent.model = null
+    parent.remove()
+
+    // Children should have been removed from the model
+    expect(model.map['child1']).toBeUndefined()
+    expect(model.map['child2']).toBeUndefined()
+  })
+
   it('tools APIs: normalizeTools, set/get/add/remove/has', () => {
     expect(Cell.normalizeTools('a').items[0]).toBe('a')
     expect(Cell.normalizeTools(['a', 'b']).items.length).toBe(2)

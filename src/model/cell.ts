@@ -1248,8 +1248,14 @@ export class Cell<
           if (nextChildrenIds.length !== childrenIds.length) {
             if (nextChildrenIds.length) {
               parent.store.set('children', nextChildrenIds, options)
+              if (parent._children) {
+                parent._children = parent._children.filter(
+                  (c) => c.id !== this.id,
+                )
+              }
             } else {
               parent.store.remove('children', options)
+              parent._children = null
             }
           }
         }
@@ -1257,7 +1263,14 @@ export class Cell<
       this.setParent(null, options)
 
       if (options.deep !== false) {
-        this.eachChild((child) => child.remove(options))
+        // When called from collection.removeCells, this.model is already null.
+        // Fall back to _children cache so children are still recursively removed.
+        const children =
+          this.getChildren() ??
+          (this._children ? [...this._children] : null)
+        if (children) {
+          children.forEach((child) => child.remove(options))
+        }
       }
 
       if (this.model) {
