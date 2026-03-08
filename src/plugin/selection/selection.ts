@@ -980,18 +980,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected getSelectionBBox(): Rectangle {
     const nodes = this.getSelectedNodes()
     if (nodes.length === 0) return new Rectangle()
-    let minX = Infinity
-    let minY = Infinity
-    let maxX = -Infinity
-    let maxY = -Infinity
-    for (const node of nodes) {
-      const bbox = node.getBBox()
-      minX = Math.min(minX, bbox.x)
-      minY = Math.min(minY, bbox.y)
-      maxX = Math.max(maxX, bbox.x + bbox.width)
-      maxY = Math.max(maxY, bbox.y + bbox.height)
-    }
-    return new Rectangle(minX, minY, maxX - minX, maxY - minY)
+    const bbox = this.graph.model.getCellsBBox(nodes)
+    return bbox || new Rectangle()
   }
 
   protected renderGroupTransformHandles() {
@@ -1234,10 +1224,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
 
     // Enforce minimum dimensions for the group
-    const totalMinW = minWidth * this.groupResizeSnapshots.length
-    const totalMinH = minHeight * this.groupResizeSnapshots.length
-    const groupMinW = Math.max(totalMinW > 0 ? minWidth : 1, 10)
-    const groupMinH = Math.max(totalMinH > 0 ? minHeight : 1, 10)
+    const MIN_GROUP_DIMENSION = 10
+    const groupMinW = Math.max(minWidth, MIN_GROUP_DIMENSION)
+    const groupMinH = Math.max(minHeight, MIN_GROUP_DIMENSION)
 
     if (newW < groupMinW) {
       if (direction.includes('left')) {
