@@ -165,6 +165,16 @@ describe('shape/util', () => {
     expect(result.otherProp).toBe('value')
   })
 
+  it('Base propHooks should set empty string label to attrs/text/text', () => {
+    const result = Base.applyPropHooks({} as any, { label: '' })
+    expect(ObjectExt.getByPath(result, 'attrs/text/text')).toBe('')
+  })
+
+  it('Base propHooks should set numeric 0 label to attrs/text/text', () => {
+    const result = Base.applyPropHooks({} as any, { label: 0 as any })
+    expect(ObjectExt.getByPath(result, 'attrs/text/text')).toBe(0)
+  })
+
   it('createShape should create shape with default options', () => {
     const result = createShape('rect', { width: 100 })
 
