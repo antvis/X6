@@ -1,5 +1,5 @@
 ---
-title: Selection Box
+title: Selection
 order: 5
 redirect_from:
   - /en/docs
@@ -51,10 +51,13 @@ graph.use(
 
 | Property Name            | Type                 | Default Value                          | Required | Description                                                                                                                                    |
 |-------------------------|----------------------|---------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| enabled                 | boolean              | `true`                                |          | Whether to enable the Selection plugin                                                                                                         |
 | className               | string               | -                                     |          | Additional style name for customizing styles                                                                                                   |
 | multiple                | boolean              | `true`                                |          | Whether to enable multi-selection; when enabled, hold down the `ctrl` or `command` key to click nodes for multi-selection                      |
 | multipleSelectionModifiers | ModifierKey        | `['ctrl', 'meta']`                   |          | Used to set the modifier keys for multi-selection                                                                                              |
 | rubberband              | boolean              | `false`                               |          | Whether to enable the rubberband selection feature                                                                                             |
+| rubberNode              | boolean              | `true`                                |          | Whether nodes are included in rubberband hit testing                                                                                           |
+| rubberEdge              | boolean              | `false`                               |          | Whether edges are included in rubberband hit testing                                                                                           |
 | modifiers               | ModifierKey          | -                                     |          | Used to set the modifier keys for rubberband selection                                                                                         |
 | strict                  | boolean              | `false`                               |          | Whether the selection box needs to completely enclose nodes to select them                                                                      |
 | movable                 | boolean              | `true`                                |          | Whether the selected nodes move together when dragging the selection box                                                                        |
