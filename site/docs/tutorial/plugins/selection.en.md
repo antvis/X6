@@ -352,6 +352,8 @@ setSelectionFilter(
 
 Sets the filtering criteria for selection; only nodes/edges that meet the filtering criteria can be selected.
 
+When `filter` is enabled, the `nodes` and `edges` returned by `box:mousemove` and `box:mouseup` during blank-area rubberband selection also apply the same filtering rule, so the preview result stays consistent with the final selection.
+
 ### graph.setRubberbandModifiers(...)
 
 ```ts
@@ -384,11 +386,29 @@ Sets additional display content for selected nodes/edges.
 | `cell:unselected`     | `{ cell: Cell; options: Model.SetOptions }`                                          | Triggered when a node/edge is unselected |
 | `node:unselected`     | `{ node: Node; options: Model.SetOptions }`                                          | Triggered when a node is unselected      |
 | `edge:unselected`     | `{ edge: Edge; options: Model.SetOptions }`                                          | Triggered when an edge is unselected     |
+| `box:mousedown`       | `{ e: Dom.MouseDownEvent; view: CellView \| null; cell: Cell \| null; x: number; y: number; nodes: Node[]; edges: Edge[] }` | Triggered when pressing a selection box, or when starting rubberband selection on a blank area |
+| `box:mousemove`       | `{ e: Dom.MouseMoveEvent; view: CellView \| null; cell: Cell \| null; x: number; y: number; nodes: Node[]; edges: Edge[] }` | Triggered while dragging a selection box, or continuously during rubberband selection |
+| `box:mouseup`         | `{ e: Dom.MouseUpEvent; view: CellView \| null; cell: Cell \| null; x: number; y: number; nodes: Node[]; edges: Edge[] }` | Triggered when finishing selection-box dragging, or when finishing rubberband selection |
 | `selection:changed`   | `{added: Cell[]; removed: Cell[]; selected: Cell[]; options: Model.SetOptions}`     | Triggered when the selected nodes/edges change (add/remove) |
+
+The parameters of `box:*` events are:
+
+- `x` and `y`: the current graph coordinates of the pointer.
+- `nodes` and `edges`: the current node/edge collection represented by the box.
+- `view` and `cell`: the related view and cell; they can be `null` during blank-area rubberband interactions.
+
+`nodes` and `edges` mean slightly different things depending on the interaction mode:
+
+- During blank-area rubberband selection, `nodes` and `edges` are the nodes and edges currently hit by the rubberband box in real time. The `strict` and `filter` options affect this result.
+- During selection-box dragging, `nodes` and `edges` are the nodes and edges currently contained in the selection.
 
 ```ts
 graph.on('node:selected', ({ node }) => {
   console.log(node)
+})
+
+graph.on('box:mousemove', ({ nodes, edges, cell }) => {
+  console.log(nodes, edges, cell)
 })
 
 // We can also listen to events on the plugin instance

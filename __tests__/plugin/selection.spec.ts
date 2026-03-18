@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { type Cell, Dom, type Graph } from '../../src'
+import { type Cell, Dom, type Graph, Rectangle } from '../../src'
 import { DefaultOptions, Selection } from '../../src/plugin/selection'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
@@ -703,6 +703,343 @@ describe('Selection plugin', () => {
       selection['selectionImpl']['onSelectionBoxMouseDown'](e as any)
       expect(notifyBoxEventSpy).toBeCalled()
       expect(snapToGridSpy).toBeCalledWith(10, 10)
+    })
+  })
+
+  describe('box events', () => {
+    const createMouseEvent = (
+      type: 'mousedown' | 'mousemove' | 'mouseup',
+      props: Record<string, unknown> = {},
+    ) => {
+      const event = new Dom.EventObject(new MouseEvent(type))
+      Object.entries(props).forEach(([key, value]) => {
+        Object.defineProperty(event, key, {
+          configurable: true,
+          value,
+        })
+      })
+      return event
+    }
+
+    const getCellIds = (cells: { id: string }[]) =>
+      cells.map((cell) => cell.id).sort()
+
+    const replaceSelection = (
+      options: ConstructorParameters<typeof Selection>[0],
+    ) => {
+      graph.disposePlugins('selection')
+      selection = new Selection(options)
+      graph.use(selection)
+      return selection
+    }
+
+    const startBlankSelecting = (x: number, y: number) => {
+      const event = createMouseEvent('mousedown', {
+        clientX: x,
+        clientY: y,
+        offsetX: x,
+        offsetY: y,
+        target: graph.container,
+      })
+
+      graph.trigger('blank:mousedown', { e: event })
+
+      return event
+    }
+
+    const moveSelecting = (
+      startEvent: Dom.MouseDownEvent,
+      x: number,
+      y: number,
+    ) => {
+      const event = createMouseEvent('mousemove', {
+        clientX: x,
+        clientY: y,
+      })
+      ;(event as any).data = (startEvent as any).data
+      ;(selection as any).selectionImpl.adjustSelection(event)
+      return event
+    }
+
+    const stopSelecting = (
+      startEvent: Dom.MouseDownEvent,
+      x: number,
+      y: number,
+    ) => {
+      const event = createMouseEvent('mouseup', {
+        clientX: x,
+        clientY: y,
+      })
+      ;(event as any).data = (startEvent as any).data
+      ;(selection as any).selectionImpl.stopSelecting(event)
+      return event
+    }
+
+    it('should emit an empty preview on blank box:mousedown', () => {
+      replaceSelection({
+        rubberband: true,
+        multiple: true,
+        rubberEdge: true,
+      })
+
+      const onMouseDown = vi.fn()
+      graph.on('box:mousedown', onMouseDown)
+
+      startBlankSelecting(0, 0)
+
+      expect(onMouseDown).toHaveBeenCalledTimes(1)
+      expect(onMouseDown.mock.calls[0][0]).toMatchObject({
+        cell: null,
+        view: null,
+        x: 0,
+        y: 0,
+        nodes: [],
+        edges: [],
+      })
+    })
+
+    it('should use the area preview result in rubberband box:mousemove and box:mouseup payloads', () => {
+      replaceSelection({
+        rubberband: true,
+        multiple: true,
+        rubberEdge: true,
+      })
+
+      const nodeA = graph.addNode({
+        id: 'node-a',
+        x: 20,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const nodeB = graph.addNode({
+        id: 'node-b',
+        x: 90,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const edge = graph.addEdge({
+        id: 'edge-allowed',
+        source: nodeA,
+        target: nodeB,
+      })
+      vi.spyOn(
+        selection['selectionImpl'],
+        'getSelectingRect' as any,
+      ).mockReturnValue(new Rectangle(0, 0, 140, 140))
+      vi.spyOn(
+        selection['selectionImpl'],
+        'getCellsInArea' as any,
+      ).mockReturnValue([nodeA, edge])
+
+      const onMouseMove = vi.fn()
+      const onMouseUp = vi.fn()
+      graph.on('box:mousemove', onMouseMove)
+      graph.on('box:mouseup', onMouseUp)
+
+      const start = startBlankSelecting(0, 0)
+      moveSelecting(start, 140, 140)
+      stopSelecting(start, 140, 140)
+
+      expect(getCellIds(onMouseMove.mock.calls.at(-1)![0].nodes)).toEqual([
+        'node-a',
+      ])
+      expect(getCellIds(onMouseMove.mock.calls.at(-1)![0].edges)).toEqual([
+        'edge-allowed',
+      ])
+      expect(getCellIds(onMouseUp.mock.calls.at(-1)![0].nodes)).toEqual([
+        'node-a',
+      ])
+      expect(getCellIds(onMouseUp.mock.calls.at(-1)![0].edges)).toEqual([
+        'edge-allowed',
+      ])
+      expect(getCellIds(selection.getSelectedCells())).toEqual([
+        'edge-allowed',
+        'node-a',
+      ])
+    })
+
+    it('should apply filter in getCellsInArea', async () => {
+      replaceSelection({
+        rubberband: true,
+        multiple: true,
+        rubberEdge: true,
+      })
+
+      const nodeA = graph.addNode({
+        id: 'node-a',
+        x: 20,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const nodeB = graph.addNode({
+        id: 'node-b',
+        x: 90,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const filteredNode = graph.addNode({
+        id: 'node-filtered',
+        x: 20,
+        y: 90,
+        width: 40,
+        height: 40,
+        data: { role: 'filtered' },
+      })
+      graph.addEdge({
+        id: 'edge-inside',
+        source: nodeA,
+        target: nodeB,
+      })
+      graph.addEdge({
+        id: 'edge-filtered',
+        source: nodeB,
+        target: filteredNode,
+        data: { role: 'filtered' },
+      })
+
+      selection.setSelectionFilter((cell: Cell) => {
+        return cell.getData<Record<string, unknown>>()?.role !== 'filtered'
+      })
+
+      await sleep(20)
+
+      const cells = selection['selectionImpl']['getCellsInArea'](
+        new Rectangle(0, 0, 140, 140),
+      )
+
+      expect(getCellIds(cells)).toEqual(['edge-inside', 'node-a', 'node-b'])
+    })
+
+    it('should respect strict in getCellsInArea', async () => {
+      replaceSelection({
+        rubberband: true,
+        multiple: true,
+        rubberEdge: true,
+        strict: false,
+      })
+
+      const insideA = graph.addNode({
+        id: 'inside-a',
+        x: 20,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const insideB = graph.addNode({
+        id: 'inside-b',
+        x: 90,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const partial = graph.addNode({
+        id: 'partial-node',
+        x: 170,
+        y: 170,
+        width: 60,
+        height: 60,
+      })
+      graph.addEdge({
+        id: 'edge-inside',
+        source: insideA,
+        target: insideB,
+      })
+      graph.addEdge({
+        id: 'edge-partial',
+        source: insideB,
+        target: partial,
+      })
+
+      await sleep(20)
+
+      const rect = new Rectangle(0, 0, 180, 180)
+      const looseCells = selection['selectionImpl']['getCellsInArea'](rect)
+      selection['selectionImpl']['options']['strict'] = true
+      const strictCells = selection['selectionImpl']['getCellsInArea'](rect)
+
+      expect(getCellIds(looseCells)).toEqual([
+        'edge-inside',
+        'edge-partial',
+        'inside-a',
+        'inside-b',
+        'partial-node',
+      ])
+      expect(getCellIds(strictCells)).toEqual([
+        'edge-inside',
+        'inside-a',
+        'inside-b',
+      ])
+    })
+
+    it('should include the current selection when dragging an existing selection box', () => {
+      replaceSelection({
+        rubberband: true,
+        multiple: true,
+        movable: true,
+        showNodeSelectionBox: true,
+        showEdgeSelectionBox: true,
+      })
+
+      const nodeA = graph.addNode({
+        id: 'node-a',
+        x: 20,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const nodeB = graph.addNode({
+        id: 'node-b',
+        x: 120,
+        y: 20,
+        width: 40,
+        height: 40,
+      })
+      const edge = graph.addEdge({
+        id: 'edge-1',
+        source: nodeA,
+        target: nodeB,
+      })
+      selection.select([nodeA, edge])
+
+      const target = document.createElement('g')
+      target.setAttribute('data-cell-id', nodeA.id)
+
+      const onMouseDown = vi.fn()
+      const onMouseMove = vi.fn()
+      graph.on('box:mousedown', onMouseDown)
+      graph.on('box:mousemove', onMouseMove)
+
+      const down = createMouseEvent('mousedown', {
+        clientX: 30,
+        clientY: 30,
+        target,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      })
+      ;(selection as any).selectionImpl.onSelectionBoxMouseDown(down)
+
+      const move = createMouseEvent('mousemove', {
+        clientX: 40,
+        clientY: 40,
+      })
+      ;(move as any).data = (down as any).data
+      ;(selection as any).selectionImpl.adjustSelection(move)
+
+      expect(onMouseDown.mock.calls[0][0].cell?.id).toBe('node-a')
+      expect(getCellIds(onMouseDown.mock.calls[0][0].nodes)).toEqual(['node-a'])
+      expect(getCellIds(onMouseDown.mock.calls[0][0].edges)).toEqual(['edge-1'])
+      expect(onMouseMove.mock.calls.at(-1)![0].cell?.id).toBe('node-a')
+      expect(getCellIds(onMouseMove.mock.calls.at(-1)![0].nodes)).toEqual([
+        'node-a',
+      ])
+      expect(getCellIds(onMouseMove.mock.calls.at(-1)![0].edges)).toEqual([
+        'edge-1',
+      ])
     })
   })
 
