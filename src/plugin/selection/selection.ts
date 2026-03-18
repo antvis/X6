@@ -7,11 +7,13 @@ import {
   type ModifierKey,
 } from '../../common'
 import {
-  type Point,
+  Point,
   type PointLike,
   Rectangle,
   type RectangleLike,
+  snapToGrid,
 } from '../../geometry'
+import * as Angle from '../../geometry/angle'
 import type { Graph } from '../../graph'
 import type {
   CollectionAddOptions,
@@ -20,6 +22,7 @@ import type {
   Edge,
   Model,
   Node,
+  ResizeDirection,
   SetOptions,
 } from '../../model'
 import { Cell, Collection, type CollectionEventArgs } from '../../model'
@@ -60,6 +63,18 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   private static readonly RESTORE_IDLE_TIME = 100
   private static readonly RESTORE_HOLD_TIME = 150
   private static readonly MIN_RESTORE_WAIT_TIME = 50
+
+  // Group transform state
+  protected groupHandlesRendered: boolean = false
+  protected groupRotating: boolean = false
+  protected groupResizing: boolean = false
+  protected groupRotateSnapshots: RotateNodeSnapshot[] = []
+  protected groupRotateCenter: PointLike = { x: 0, y: 0 }
+  protected groupRotatePrevTheta: number = 0
+  protected groupRotateTotalAngle: number = 0
+  protected groupResizeSnapshots: NodeSnapshot[] = []
+  protected groupResizeOrigBBox: Rectangle | null = null
+  protected groupResizeDirection: ResizeDirection | null = null
 
   public get graph() {
     return this.options.graph
@@ -113,6 +128,14 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
           'onSelectionContainerMouseDown',
         [`touchstart .${this.prefixClassName(classNames.inner)}`]:
           'onSelectionContainerMouseDown',
+        [`mousedown .${this.prefixClassName(classNames.groupResize)}`]:
+          'onGroupResizeMouseDown',
+        [`touchstart .${this.prefixClassName(classNames.groupResize)}`]:
+          'onGroupResizeMouseDown',
+        [`mousedown .${this.prefixClassName(classNames.groupRotate)}`]:
+          'onGroupRotateMouseDown',
+        [`touchstart .${this.prefixClassName(classNames.groupRotate)}`]:
+          'onGroupRotateMouseDown',
       },
       true,
     )
@@ -429,6 +452,31 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         this.translatingCache = null
         this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
         this.repositionSelectionBoxesInPlace()
+        break
+      }
+
+      case 'group-rotating': {
+        this.groupRotating = false
+        this.graph.model.stopBatch('group-rotate')
+        this.trigger('selection:rotated', {
+          cells: this.getSelectedNodes(),
+          angle: this.groupRotateTotalAngle,
+        })
+        this.groupRotateSnapshots = []
+        this.refreshSelectionBoxes()
+        break
+      }
+
+      case 'group-resizing': {
+        this.groupResizing = false
+        this.groupResizeSnapshots = []
+        this.groupResizeOrigBBox = null
+        this.groupResizeDirection = null
+        this.graph.model.stopBatch('group-resize')
+        this.trigger('selection:resized', {
+          cells: this.getSelectedNodes(),
+        })
+        this.refreshSelectionBoxes()
         break
       }
 
@@ -821,6 +869,16 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         break
       }
 
+      case 'group-rotating': {
+        this.doGroupRotating(e)
+        break
+      }
+
+      case 'group-resizing': {
+        this.doGroupResizing(e)
+        break
+      }
+
       default:
         break
     }
@@ -913,6 +971,333 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       edge.translate(dx, dy, options)
     })
   }
+
+  // #region Group Transform
+
+  protected getSelectedNodes(): Node[] {
+    return this.collection
+      .toArray()
+      .filter((cell): cell is Node => cell.isNode())
+  }
+
+  protected getSelectionBBox(): Rectangle {
+    const nodes = this.getSelectedNodes()
+    if (nodes.length === 0) return new Rectangle()
+    const bbox = this.graph.model.getCellsBBox(nodes)
+    return bbox || new Rectangle()
+  }
+
+  protected renderGroupTransformHandles() {
+    if (this.boxCount < 2) {
+      this.removeGroupTransformHandles()
+      return
+    }
+
+    const resizable = this.options.resizable
+    const rotatable = this.options.rotatable
+
+    if (!resizable && !rotatable) return
+
+    if (!this.groupHandlesRendered) {
+      if (resizable) {
+        const positions: ResizeDirection[] = [
+          'top-left', 'top', 'top-right', 'right',
+          'bottom-right', 'bottom', 'bottom-left', 'left',
+        ]
+        for (const pos of positions) {
+          const handle = document.createElement('div')
+          Dom.addClass(
+            handle,
+            this.prefixClassName(classNames.groupResize),
+          )
+          handle.setAttribute('data-position', pos)
+          this.selectionContainer.appendChild(handle)
+        }
+      }
+
+      if (rotatable) {
+        const handle = document.createElement('div')
+        Dom.addClass(
+          handle,
+          this.prefixClassName(classNames.groupRotate),
+        )
+        this.selectionContainer.appendChild(handle)
+      }
+
+      this.groupHandlesRendered = true
+    }
+  }
+
+  protected removeGroupTransformHandles() {
+    if (!this.groupHandlesRendered) return
+    const resizeHandles = this.selectionContainer.querySelectorAll(
+      `.${this.prefixClassName(classNames.groupResize)}`,
+    )
+    const rotateHandles = this.selectionContainer.querySelectorAll(
+      `.${this.prefixClassName(classNames.groupRotate)}`,
+    )
+    resizeHandles.forEach((el) => el.remove())
+    rotateHandles.forEach((el) => el.remove())
+    this.groupHandlesRendered = false
+  }
+
+  protected onGroupRotateMouseDown(evt: Dom.MouseDownEvent) {
+    evt.stopPropagation()
+    evt.preventDefault?.()
+
+    const e = this.normalizeEvent(evt)
+    const pos = this.graph.clientToLocal(e.clientX, e.clientY)
+    const bbox = this.getSelectionBBox()
+    const center = bbox.getCenter()
+
+    const nodes = this.getSelectedNodes()
+
+    // Snapshot each node's original position and angle
+    const snapshots: RotateNodeSnapshot[] = []
+    for (const node of nodes) {
+      const nodeBBox = node.getBBox()
+      snapshots.push({
+        node,
+        centerX: nodeBBox.x + nodeBBox.width / 2,
+        centerY: nodeBBox.y + nodeBBox.height / 2,
+        width: nodeBBox.width,
+        height: nodeBBox.height,
+        angle: node.getAngle(),
+      })
+    }
+
+    this.groupRotating = true
+    this.groupRotateSnapshots = snapshots
+    this.groupRotateCenter = center
+    this.groupRotatePrevTheta = Point.create(pos).theta(center)
+    this.groupRotateTotalAngle = 0
+
+    this.graph.model.startBatch('group-rotate')
+    this.trigger('selection:rotate', { cells: nodes, angle: 0 })
+
+    this.setEventData<GroupTransformEventData>(e, {
+      action: 'group-rotating',
+      center,
+    })
+    this.delegateDocumentEvents(documentEvents, e.data)
+  }
+
+  protected doGroupRotating(e: Dom.MouseMoveEvent) {
+    const pos = this.graph.clientToLocal(e.clientX, e.clientY)
+    const center = this.groupRotateCenter
+
+    // Accumulate angle using frame-to-frame deltas to avoid 0/360 wrap issues
+    const currentTheta = Point.create(pos).theta(center)
+    let frameDelta = this.groupRotatePrevTheta - currentTheta
+    // Normalize to [-180, 180] to handle wrap-around
+    if (frameDelta > 180) frameDelta -= 360
+    if (frameDelta < -180) frameDelta += 360
+    this.groupRotatePrevTheta = currentTheta
+
+    this.groupRotateTotalAngle += frameDelta
+
+    // Apply grid snapping to total angle
+    let snappedAngle = this.groupRotateTotalAngle
+    const rotateGrid = this.getRotateGrid()
+    if (rotateGrid > 0) {
+      snappedAngle = snapToGrid(snappedAngle, rotateGrid)
+    }
+
+    // Apply absolute rotation from original snapshots (no cumulative error)
+    const rad = (snappedAngle * Math.PI) / 180
+    const cosA = Math.cos(rad)
+    const sinA = Math.sin(rad)
+    const cx = center.x
+    const cy = center.y
+
+    for (const snapshot of this.groupRotateSnapshots) {
+      // Rotate original center around group center
+      const dx = snapshot.centerX - cx
+      const dy = snapshot.centerY - cy
+      // Screen-coords clockwise rotation (Y-down)
+      const newCenterX = cx + dx * cosA - dy * sinA
+      const newCenterY = cy + dx * sinA + dy * cosA
+
+      // Set position (top-left corner from center)
+      snapshot.node.setPosition(
+        newCenterX - snapshot.width / 2,
+        newCenterY - snapshot.height / 2,
+      )
+
+      // Set absolute angle
+      const newAngle = Angle.normalize(snapshot.angle + snappedAngle)
+      snapshot.node.rotate(newAngle, { absolute: true })
+    }
+
+    this.trigger('selection:rotating', {
+      cells: this.getSelectedNodes(),
+      angle: snappedAngle,
+    })
+
+    this.refreshSelectionBoxes()
+  }
+
+  protected getRotateGrid(): number {
+    const rotatable = this.options.rotatable
+    if (typeof rotatable === 'object' && rotatable != null) {
+      return rotatable.grid ?? 15
+    }
+    return 15
+  }
+
+  protected onGroupResizeMouseDown(evt: Dom.MouseDownEvent) {
+    evt.stopPropagation()
+    evt.preventDefault?.()
+
+    const e = this.normalizeEvent(evt)
+    const target = e.target as HTMLElement
+    const position = target.getAttribute('data-position') as ResizeDirection
+    if (!position) return
+
+    const bbox = this.getSelectionBBox()
+    const nodes = this.getSelectedNodes()
+    const snapshots: NodeSnapshot[] = []
+
+    for (const node of nodes) {
+      const nodeBBox = node.getBBox()
+      snapshots.push({
+        node,
+        relX: (nodeBBox.x - bbox.x) / (bbox.width || 1),
+        relY: (nodeBBox.y - bbox.y) / (bbox.height || 1),
+        relW: nodeBBox.width / (bbox.width || 1),
+        relH: nodeBBox.height / (bbox.height || 1),
+        angle: node.getAngle(),
+      })
+    }
+
+    this.groupResizing = true
+    this.groupResizeSnapshots = snapshots
+    this.groupResizeOrigBBox = bbox
+    this.groupResizeDirection = position
+
+    this.graph.model.startBatch('group-resize')
+    this.trigger('selection:resize', { cells: nodes })
+
+    this.setEventData<GroupResizingEventData>(e, {
+      action: 'group-resizing',
+      direction: position,
+      origBBox: bbox,
+      startX: e.clientX,
+      startY: e.clientY,
+    })
+    this.delegateDocumentEvents(documentEvents, e.data)
+  }
+
+  protected doGroupResizing(e: Dom.MouseMoveEvent) {
+    const data = this.getEventData<GroupResizingEventData>(e)
+    const origBBox = data.origBBox
+    const direction = data.direction
+
+    const startLocal = this.graph.clientToLocal(data.startX, data.startY)
+    const currentLocal = this.graph.clientToLocal(e.clientX, e.clientY)
+    const dx = currentLocal.x - startLocal.x
+    const dy = currentLocal.y - startLocal.y
+
+    const resizeOpts = this.getResizeOptions()
+    const minWidth = resizeOpts.minWidth ?? 1
+    const minHeight = resizeOpts.minHeight ?? 1
+
+    let newX = origBBox.x
+    let newY = origBBox.y
+    let newW = origBBox.width
+    let newH = origBBox.height
+
+    switch (direction) {
+      case 'top-left':
+        newX += dx; newY += dy; newW -= dx; newH -= dy; break
+      case 'top':
+        newY += dy; newH -= dy; break
+      case 'top-right':
+        newY += dy; newW += dx; newH -= dy; break
+      case 'right':
+        newW += dx; break
+      case 'bottom-right':
+        newW += dx; newH += dy; break
+      case 'bottom':
+        newH += dy; break
+      case 'bottom-left':
+        newX += dx; newW -= dx; newH += dy; break
+      case 'left':
+        newX += dx; newW -= dx; break
+    }
+
+    // Enforce minimum dimensions for the group
+    const MIN_GROUP_DIMENSION = 10
+    const groupMinW = Math.max(minWidth, MIN_GROUP_DIMENSION)
+    const groupMinH = Math.max(minHeight, MIN_GROUP_DIMENSION)
+
+    if (newW < groupMinW) {
+      if (direction.includes('left')) {
+        newX = origBBox.x + origBBox.width - groupMinW
+      }
+      newW = groupMinW
+    }
+    if (newH < groupMinH) {
+      if (direction.includes('top')) {
+        newY = origBBox.y + origBBox.height - groupMinH
+      }
+      newH = groupMinH
+    }
+
+    // Preserve aspect ratio if configured
+    if (resizeOpts.preserveAspectRatio && origBBox.width > 0 && origBBox.height > 0) {
+      const ratio = origBBox.width / origBBox.height
+      if (direction === 'top' || direction === 'bottom') {
+        newW = newH * ratio
+      } else if (direction === 'left' || direction === 'right') {
+        newH = newW / ratio
+      } else {
+        // corner: use the larger scale
+        const scaleX = newW / origBBox.width
+        const scaleY = newH / origBBox.height
+        const scale = Math.max(scaleX, scaleY)
+        newW = origBBox.width * scale
+        newH = origBBox.height * scale
+        if (direction.includes('left')) {
+          newX = origBBox.x + origBBox.width - newW
+        }
+        if (direction.includes('top')) {
+          newY = origBBox.y + origBBox.height - newH
+        }
+      }
+    }
+
+    // Apply proportional transform to each node
+    for (const snapshot of this.groupResizeSnapshots) {
+      const nodeW = Math.max(newW * snapshot.relW, minWidth)
+      const nodeH = Math.max(newH * snapshot.relH, minHeight)
+      const nodeX = newX + newW * snapshot.relX
+      const nodeY = newY + newH * snapshot.relY
+
+      snapshot.node.setPosition(nodeX, nodeY)
+      snapshot.node.resize(nodeW, nodeH)
+    }
+
+    this.trigger('selection:resizing', {
+      cells: this.getSelectedNodes(),
+    })
+
+    this.refreshSelectionBoxes()
+  }
+
+  protected getResizeOptions(): {
+    minWidth?: number
+    minHeight?: number
+    preserveAspectRatio?: boolean
+  } {
+    const resizable = this.options.resizable
+    if (typeof resizable === 'object' && resizable != null) {
+      return resizable
+    }
+    return {}
+  }
+
+  // #endregion
 
   protected getCellViewsInArea(rect: Rectangle) {
     const graph = this.graph
@@ -1041,6 +1426,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     this.hide()
     Dom.remove(this.$boxes)
     this.boxCount = 0
+    this.removeGroupTransformHandles()
   }
 
   hide() {
@@ -1164,6 +1550,8 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     } else if (this.collection.length <= 0 && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container)
     }
+
+    this.renderGroupTransformHandles()
   }
 
   protected canShowSelectionBox(cell: Cell) {
@@ -1386,6 +1774,20 @@ export interface SelectionImplCommonOptions {
   // with which mouse button the selection can be started
   eventTypes?: SelectionEventType[]
   movingRouterFallback?: string
+
+  // Group transform: resize/rotate all selected nodes as a whole
+  resizable?:
+    | boolean
+    | {
+        minWidth?: number
+        minHeight?: number
+        preserveAspectRatio?: boolean
+      }
+  rotatable?:
+    | boolean
+    | {
+        grid?: number
+      }
 }
 
 export interface SelectionImplOptions extends SelectionImplCommonOptions {
@@ -1444,6 +1846,12 @@ export interface SelectionImplEventArgsRecord {
     selected: Cell[]
     options: SetOptions
   }
+  'selection:rotate': { cells: Node[]; angle: number }
+  'selection:rotating': { cells: Node[]; angle: number }
+  'selection:rotated': { cells: Node[]; angle: number }
+  'selection:resize': { cells: Node[] }
+  'selection:resizing': { cells: Node[] }
+  'selection:resized': { cells: Node[] }
 }
 
 export interface SelectionImplEventArgs
@@ -1461,6 +1869,8 @@ export const classNames = {
   content: `${baseClassName}-content`,
   rubberband: `${baseClassName}-rubberband`,
   selected: `${baseClassName}-selected`,
+  groupResize: `${baseClassName}-group-resize`,
+  groupRotate: `${baseClassName}-group-rotate`,
 }
 
 export const documentEvents = {
@@ -1476,7 +1886,7 @@ export function depthComparator(cell: Cell) {
 }
 
 export interface CommonEventData {
-  action: 'selecting' | 'translating'
+  action: 'selecting' | 'translating' | 'group-rotating' | 'group-resizing'
 }
 
 export interface SelectingEventData extends CommonEventData {
@@ -1515,4 +1925,39 @@ export interface ResizingEventData {
   cells: Cell[]
   minWidth: number
   minHeight: number
+}
+
+export interface GroupTransformEventData extends CommonEventData {
+  center: PointLike
+}
+
+export interface GroupRotatingEventData extends CommonEventData {
+  action: 'group-rotating'
+  center: PointLike
+}
+
+export interface GroupResizingEventData extends CommonEventData {
+  action: 'group-resizing'
+  direction: ResizeDirection
+  origBBox: Rectangle
+  startX: number
+  startY: number
+}
+
+export interface NodeSnapshot {
+  node: Node
+  relX: number
+  relY: number
+  relW: number
+  relH: number
+  angle: number
+}
+
+export interface RotateNodeSnapshot {
+  node: Node
+  centerX: number
+  centerY: number
+  width: number
+  height: number
+  angle: number
 }

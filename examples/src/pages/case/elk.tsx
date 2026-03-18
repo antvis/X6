@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import ELK, { ElkNode, ElkEdge } from 'elkjs/lib/elk-api.js'
 import elkWorker from 'elkjs/lib/elk-worker.js'
-import { Graph, Cell } from '@antv/x6'
+import { Graph, Cell, Selection } from '@antv/x6'
 import elkdata from './elkdata.json'
 import '../index.less'
 
@@ -83,8 +83,17 @@ export const CaseElkExample: React.FC = () => {
       container: containerRef.current,
       width: 1000,
       height: 600,
-      interacting: false,
     })
+
+    graph.use(
+      new Selection({
+        multiple: true,
+        rubberband: true,
+        showNodeSelectionBox: true,
+        resizable: true,
+        rotatable: { grid: 15 },
+      }),
+    )
 
     const portIdToNodeIdMap: Record<string, string> = {}
     const cells: Cell[] = []

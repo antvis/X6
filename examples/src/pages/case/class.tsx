@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Graph, Cell, ObjectExt } from '@antv/x6'
+import { Graph, Cell, ObjectExt, Selection } from '@antv/x6'
 import '../index.less'
 
 Graph.registerNode(
@@ -347,6 +347,16 @@ export const CaseClassExample: React.FC = () => {
       width: 800,
       height: 600,
     })
+
+    graph.use(
+      new Selection({
+        multiple: true,
+        rubberband: true,
+        showNodeSelectionBox: true,
+        resizable: true,
+        rotatable: { grid: 15 },
+      }),
+    )
 
     const cells: Cell[] = []
     const edgeShapes = [
