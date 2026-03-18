@@ -52,7 +52,7 @@ Base.config({
   attrs: { text: { ...BaseLabelAttr } },
   propHooks(metadata) {
     const { label, ...others } = metadata
-    if (label) {
+    if (label != null) {
       ObjectExt.setByPath(others, 'attrs/text/text', label)
     }
     return others
