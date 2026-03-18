@@ -354,6 +354,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
       moving: false,
     })
 
+    const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
+    this.notifyBoxEvent('box:mousedown', evt, client.x, client.y, [])
+
     this.delegateDocumentEvents(documentEvents, evt.data)
   }
 
@@ -391,17 +394,12 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     const action = eventData.action
     switch (action) {
       case 'selecting': {
-        let width = Dom.width(this.container)
-        let height = Dom.height(this.container)
-        const offset = Dom.offset(this.container)
-        const origin = graph.pageToLocal(offset.left, offset.top)
-        const scale = graph.transform.getScale()
-        width /= scale.sx
-        height /= scale.sy
-        const rect = new Rectangle(origin.x, origin.y, width, height)
-        const cells = this.getCellViewsInArea(rect).map((view) => view.cell)
+        const client = graph.snapToGrid(evt.clientX, evt.clientY)
+        const rect = this.getSelectingRect()
+        const cells = this.getCellsInArea(rect)
         this.reset(cells, { batch: true })
         this.hideRubberband()
+        this.notifyBoxEvent('box:mouseup', evt, client.x, client.y, cells)
         break
       }
 
@@ -790,6 +788,11 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
           width: Math.abs(dx),
           height: Math.abs(dy),
         })
+
+        const client = this.graph.snapToGrid(e.clientX, e.clientY)
+        const rect = this.getSelectingRect()
+        const cells = this.getCellsInArea(rect)
+        this.notifyBoxEvent('box:mousemove', evt, client.x, client.y, cells)
         break
       }
 
@@ -939,13 +942,65 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     return views
   }
 
+  protected getCellsInArea(rect: Rectangle) {
+    return this.filter(this.getCellViewsInArea(rect).map((view) => view.cell))
+  }
+
+  protected getSelectingRect() {
+    let width = Dom.width(this.container)
+    let height = Dom.height(this.container)
+    const offset = Dom.offset(this.container)
+    const origin = this.graph.pageToLocal(offset.left, offset.top)
+    const scale = this.graph.transform.getScale()
+    width /= scale.sx
+    height /= scale.sy
+    return new Rectangle(origin.x, origin.y, width, height)
+  }
+
+  protected getBoxEventCells(
+    cells?: Cell[],
+    activeView: CellView | null = null,
+  ) {
+    const nodes: Node[] = []
+    const edges: Edge[] = []
+    let view = activeView
+
+    ;(cells ?? this.cells).forEach((cell) => {
+      const current = this.graph.getCellById(cell.id)
+      if (!current) {
+        return
+      }
+
+      if (!view) {
+        view = this.graph.renderer.findViewByCell(current)
+      }
+
+      if (current.isNode()) {
+        nodes.push(current)
+      } else if (current.isEdge()) {
+        edges.push(current)
+      }
+    })
+
+    return {
+      view,
+      cell: view?.cell ?? null,
+      nodes,
+      edges,
+    }
+  }
+
   protected notifyBoxEvent<
     K extends keyof SelectionImplBoxEventArgsRecord,
     T extends Dom.EventObject,
-  >(name: K, e: T, x: number, y: number) {
-    const data = this.getEventData<SelectionBoxEventData>(e)
-    const view = data.activeView
-    this.trigger(name, { e, view, x, y, cell: view.cell })
+  >(name: K, e: T, x: number, y: number, cells?: Cell[]) {
+    const activeView =
+      this.getEventData<SelectionBoxEventData | null>(e)?.activeView ?? null
+    const { view, cell, nodes, edges } = this.getBoxEventCells(
+      cells,
+      activeView,
+    )
+    this.trigger(name, { e, view, x, y, cell, nodes, edges })
   }
 
   protected getSelectedClassName(cell: Cell) {
@@ -1362,10 +1417,12 @@ export interface SelectionImplRemoveOptions extends CollectionRemoveOptions {}
 
 interface BaseSelectionBoxEventArgs<T> {
   e: T
-  view: CellView
-  cell: Cell
+  view: CellView | null
+  cell: Cell | null
   x: number
   y: number
+  nodes: Node[]
+  edges: Edge[]
 }
 
 export interface SelectionImplBoxEventArgsRecord {

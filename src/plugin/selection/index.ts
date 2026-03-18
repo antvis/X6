@@ -378,7 +378,9 @@ export class Selection
   protected allowBlankMouseDown(e: Dom.MouseDownEvent) {
     const eventTypes = this.options.eventTypes
 
-    const isTouchEvent = (typeof e.type === 'string' && e.type.startsWith('touch')) || e.pointerType === 'touch'
+    const isTouchEvent =
+      (typeof e.type === 'string' && e.type.startsWith('touch')) ||
+      e.pointerType === 'touch'
     if (isTouchEvent) return eventTypes?.includes('leftMouseDown')
 
     return (
@@ -482,7 +484,7 @@ export class Selection
     e,
     cell,
   }: SelectionImplEventArgs['box:mousedown']) {
-    if (!this.disabled) {
+    if (!this.disabled && cell) {
       if (this.allowMultipleSelection(e)) {
         this.unselect(cell)
         this.unselectMap.set(cell, true)
