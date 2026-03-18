@@ -352,6 +352,8 @@ setSelectionFilter(
 
 设置选择的过滤条件，满足过滤条件的节点/边才能被选中。
 
+开启 `filter` 后，blank 上 rubberband 框选过程中 `box:mousemove` 和 `box:mouseup` 事件返回的 `nodes`、`edges` 也会应用相同的过滤规则，因此其预览结果会和最终 selection 保持一致。
+
 ### graph.setRubberbandModifiers(...)
 
 ```ts
@@ -384,11 +386,29 @@ setSelectionDisplayContent(
 | `cell:unselected`   | `{ cell: Cell; options: Model.SetOptions }`                                     | 节点/边被取消选中时触发           |
 | `node:unselected`   | `{ node: Node; options: Model.SetOptions }`                                     | 节点被取消选中时触发              |
 | `edge:unselected`   | `{ edge: Edge; options: Model.SetOptions }`                                     | 边被取消选中时触发                |
+| `box:mousedown`     | `{ e: Dom.MouseDownEvent; view: CellView \| null; cell: Cell \| null; x: number; y: number; nodes: Node[]; edges: Edge[] }` | 按下 selection box，或在画布空白处开始 rubberband 框选时触发 |
+| `box:mousemove`     | `{ e: Dom.MouseMoveEvent; view: CellView \| null; cell: Cell \| null; x: number; y: number; nodes: Node[]; edges: Edge[] }` | 拖动 selection box，或 rubberband 框选过程中实时触发 |
+| `box:mouseup`       | `{ e: Dom.MouseUpEvent; view: CellView \| null; cell: Cell \| null; x: number; y: number; nodes: Node[]; edges: Edge[] }` | 结束拖动 selection box，或结束 rubberband 框选时触发 |
 | `selection:changed` | `{added: Cell[]; removed: Cell[]; selected: Cell[]; options: Model.SetOptions}` | 选中的节点/边发生改变(增删)时触发 |
+
+`box:*` 事件中的参数说明：
+
+- `x`、`y`：当前鼠标所在的图坐标。
+- `nodes`、`edges`：当前 box 对应的节点和边集合。
+- `view`、`cell`：当前关联的视图和单元，在 blank 上进行 rubberband 框选时可能为 `null`。
+
+`nodes` 和 `edges` 在不同交互阶段表示的含义如下：
+
+- 在画布空白处开始或拖动 rubberband 框选时，`nodes` 和 `edges` 表示当前选框实时命中的节点和边； `strict` 和 `filter` 配置会影响该结果。
+- 在拖动已有 selection box 时，`nodes` 和 `edges` 表示当前 selection 中的节点和边。
 
 ```ts
 graph.on('node:selected', ({ node }) => {
   console.log(node)
+})
+
+graph.on('box:mousemove', ({ nodes, edges, cell }) => {
+  console.log(nodes, edges, cell)
 })
 
 // 我们也可以在插件实例上监听事件
