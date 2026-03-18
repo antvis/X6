@@ -630,6 +630,150 @@ describe('Selection plugin', () => {
     })
   })
 
+  describe('drag preview', () => {
+    const replaceSelection = (
+      options: ConstructorParameters<typeof Selection>[0],
+    ) => {
+      graph.disposePlugins('selection')
+      selection = new Selection(options)
+      graph.use(selection)
+      return selection
+    }
+
+    const getSelectionBox = (cellId: string) =>
+      selection['selectionImpl']['container'].querySelector(
+        `[data-cell-id="${cellId}"]`,
+      ) as HTMLElement
+
+    const getBoxRect = (cellId: string) => {
+      const box = getSelectionBox(cellId)
+      return {
+        left: Number.parseFloat(box.style.left || '0'),
+        top: Number.parseFloat(box.style.top || '0'),
+        width: Number.parseFloat(box.style.width || '0'),
+        height: Number.parseFloat(box.style.height || '0'),
+      }
+    }
+
+    it('should keep node-only dragging in translate preview mode', () => {
+      replaceSelection({
+        multiple: true,
+        following: true,
+        showNodeSelectionBox: true,
+      })
+
+      const node = graph.addNode({
+        id: 'node-only',
+        x: 20,
+        y: 30,
+        width: 100,
+        height: 40,
+      })
+
+      selection.select(node)
+
+      const initialBox = getBoxRect(node.id)
+      selection['selectionImpl']['draggingPreviewMode'] =
+        selection['selectionImpl']['getDraggingPreviewMode']()
+
+      selection['selectionImpl']['applyDraggingPreview']({ dx: 15, dy: 10 })
+
+      const currentBox = getBoxRect(node.id)
+      expect(selection['selectionImpl']['draggingPreviewMode']).toBe(
+        'translate',
+      )
+      expect(selection['selectionImpl']['container'].style.transform).toContain(
+        'translate3d(',
+      )
+      expect(node.position()).toMatchObject({ x: 35, y: 40 })
+      expect(currentBox).toEqual(initialBox)
+    })
+
+    it('should update edge selection box geometry during dragging', () => {
+      replaceSelection({
+        multiple: true,
+        following: true,
+        showNodeSelectionBox: true,
+        showEdgeSelectionBox: true,
+      })
+
+      const source = graph.addNode({
+        id: 'source',
+        x: 20,
+        y: 20,
+        width: 80,
+        height: 40,
+      })
+      const target = graph.addNode({
+        id: 'target',
+        x: 220,
+        y: 20,
+        width: 80,
+        height: 40,
+      })
+      const edge = graph.addEdge({
+        id: 'edge-under-test',
+        source,
+        target,
+      })
+
+      selection.select([source, edge])
+
+      const initialEdgeBox = getBoxRect(edge.id)
+      selection['selectionImpl']['draggingPreviewMode'] =
+        selection['selectionImpl']['getDraggingPreviewMode']()
+
+      selection['selectionImpl']['applyDraggingPreview']({ dx: 40, dy: 30 })
+
+      const nextEdgeBox = getBoxRect(edge.id)
+      expect(selection['selectionImpl']['draggingPreviewMode']).toBe('geometry')
+      expect(selection['selectionImpl']['container'].style.transform).toBe('')
+      expect(source.position()).toMatchObject({ x: 60, y: 50 })
+      expect(nextEdgeBox.left).not.toBe(initialEdgeBox.left)
+      expect(nextEdgeBox.width).not.toBe(initialEdgeBox.width)
+      expect(nextEdgeBox.height).not.toBe(initialEdgeBox.height)
+    })
+
+    it('should resync node boxes on graph scale while dragging', async () => {
+      replaceSelection({
+        multiple: true,
+        following: true,
+        showNodeSelectionBox: true,
+      })
+
+      const node = graph.addNode({
+        id: 'scaled-node',
+        x: 20,
+        y: 30,
+        width: 100,
+        height: 40,
+      })
+
+      selection.select(node)
+      selection['selectionImpl']['draggingPreviewMode'] =
+        selection['selectionImpl']['getDraggingPreviewMode']()
+      selection['selectionImpl']['applyDraggingPreview']({ dx: 10, dy: 5 })
+      selection['selectionImpl']['isDragging'] = true
+
+      expect(selection['selectionImpl']['container'].style.transform).toContain(
+        'translate3d(',
+      )
+
+      graph.scale(2)
+      await sleep(30)
+
+      const box = getSelectionBox(node.id)
+      const view = graph.renderer.findViewByCell(node)!
+      const bbox = view.getBBox({ useCellGeometry: true })
+
+      expect(selection['selectionImpl']['container'].style.transform).toBe('')
+      expect(Number.parseFloat(box.style.left)).toBeCloseTo(bbox.x)
+      expect(Number.parseFloat(box.style.top)).toBeCloseTo(bbox.y)
+      expect(Number.parseFloat(box.style.width)).toBeCloseTo(bbox.width)
+      expect(Number.parseFloat(box.style.height)).toBeCloseTo(bbox.height)
+    })
+  })
+
   describe('onCellAdded', () => {
     it('should add listener', () => {
       const n1 = graph.addNode({
