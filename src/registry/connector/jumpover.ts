@@ -379,14 +379,11 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
       // iterate all links and grab the intersections with this line
       // these are then sorted by distance so the line can be split more easily
       // Filter lines based on jumpDirection
-      const dx = Math.abs(line.end.x - line.start.x)
-      const dy = Math.abs(line.end.y - line.start.y)
-      const isHorizontal = dy < 1
-      const isVertical = dx < 1
       const shouldJump =
         jumpDirection === 'both' ||
-        (jumpDirection === 'horizontal' && isHorizontal) ||
-        (jumpDirection === 'vertical' && isVertical)
+        (jumpDirection === 'horizontal'
+          ? Math.abs(line.end.y - line.start.y) < 1
+          : Math.abs(line.end.x - line.start.x) < 1)
 
       if (!shouldJump) {
         jumpingLines.push(line)
