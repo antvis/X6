@@ -16,6 +16,7 @@ import { CaseElkExample } from './pages/case/elk'
 import { CaseErExample } from './pages/case/er'
 import { CaseMindExample } from './pages/case/mind'
 import { CaseSwimlaneExample } from './pages/case/swimlane'
+import { JumpoverDirectionExample } from './pages/connector/jumpover-direction'
 import { OffsetRoundedExample } from './pages/connector/offset-rounded'
 import { XmindCurveExample } from './pages/connector/xmind-curve'
 import { EdgeExample } from './pages/edge'
@@ -93,6 +94,10 @@ function App() {
         element={<OffsetRoundedExample />}
       />
       <Route path="/connector/xmind-curve" element={<XmindCurveExample />} />
+      <Route
+        path="/connector/jumpover-direction"
+        element={<JumpoverDirectionExample />}
+      />
       <Route path="/tools/clean" element={<ToolsCleanExample />} />
       <Route path="/case/bpmn" element={<CaseBpmnExample />} />
       <Route path="/case/class" element={<CaseClassExample />} />

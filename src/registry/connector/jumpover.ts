@@ -295,6 +295,7 @@ export interface JumpoverConnectorOptions extends ConnectorBaseOptions {
   radius?: number
   type?: JumpType
   ignoreConnectors?: string[]
+  jumpDirection?: 'both' | 'horizontal' | 'vertical'
 }
 
 export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
@@ -324,6 +325,7 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
       )
     }
 
+    const jumpDirection = options.jumpDirection || 'both'
     const edge = this.cell
     const thisIndex = allLinks.indexOf(edge)
     const defaultConnector = graph.options.connecting.connector || {}
@@ -336,10 +338,18 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
       if (ignoreConnectors.includes(connector.name)) {
         return false
       }
-      // filter out links that are above this one and  have the same connector type
-      // otherwise there would double hoops for each intersection
-      if (idx > thisIndex) {
-        return connector.name !== 'jumpover'
+      // Deduplicate jumpover connectors to prevent double arcs.
+      if (connector.name === 'jumpover') {
+        const otherJumpDirection = connector.args?.jumpDirection || 'both'
+        // If this is 'both' but the other has a specific direction, let the other take
+        // responsibility.
+        if (jumpDirection === 'both' && otherJumpDirection !== 'both') {
+          return false
+        }
+        // If both have the same setting, use index-based tie-breaking.
+        if (jumpDirection === otherJumpDirection && idx > thisIndex) {
+          return false
+        }
       }
       return true
     })
@@ -374,7 +384,17 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
     thisLines.forEach((line) => {
       // iterate all links and grab the intersections with this line
       // these are then sorted by distance so the line can be split more easily
+      // Filter lines based on jumpDirection
+      const shouldJump =
+        jumpDirection === 'both' ||
+        (jumpDirection === 'horizontal'
+          ? Math.abs(line.end.y - line.start.y) < 1
+          : Math.abs(line.end.x - line.start.x) < 1)
 
+      if (!shouldJump) {
+        jumpingLines.push(line)
+        return
+      }
       const intersections = edges
         .reduce<Point[]>((memo, link, i) => {
           // don't intersection with itself

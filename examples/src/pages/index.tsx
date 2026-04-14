@@ -103,6 +103,10 @@ const dataSource = [
     example: 'connector/xmind-curve',
     description: '脑图连接器',
   },
+  {
+    example: 'connector/jumpover-direction',
+    description: 'jumpover jumpDirection 演示',
+  },
   // ========= tools =========
   {
     example: 'tools/clean',
