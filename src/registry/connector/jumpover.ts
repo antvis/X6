@@ -295,7 +295,7 @@ export interface JumpoverConnectorOptions extends ConnectorBaseOptions {
   radius?: number
   type?: JumpType
   ignoreConnectors?: string[]
-  jumpDirection?: 'both' | 'horizontal' | 'vertical' // 新增
+  jumpDirection?: 'both' | 'horizontal' | 'vertical'
 }
 
 export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
@@ -325,6 +325,7 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
       )
     }
 
+    const jumpDirection = options.jumpDirection || 'both'
     const edge = this.cell
     const thisIndex = allLinks.indexOf(edge)
     const defaultConnector = graph.options.connecting.connector || {}
@@ -337,9 +338,11 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
       if (ignoreConnectors.includes(connector.name)) {
         return false
       }
-      // filter out links that are above this one and  have the same connector type
-      // otherwise there would double hoops for each intersection
-      if (idx > thisIndex) {
+      // When jumpDirection is 'both', use index-based deduplication to prevent double arcs.
+      // When jumpDirection specifies an orientation, the shouldJump check below acts as
+      // deduplication: only lines with the matching orientation will produce arcs, so
+      // including all edges here is safe and necessary for the correct edge to jump.
+      if (jumpDirection === 'both' && idx > thisIndex) {
         return connector.name !== 'jumpover'
       }
       return true
@@ -371,7 +374,6 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
     // transform lines for this link by splitting with jump lines at
     // points of intersection with other links
     const jumpingLines: Line[] = []
-    const jumpDirection = options.jumpDirection || 'both'
 
     thisLines.forEach((line) => {
       // iterate all links and grab the intersections with this line
