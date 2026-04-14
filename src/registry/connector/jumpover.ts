@@ -295,6 +295,7 @@ export interface JumpoverConnectorOptions extends ConnectorBaseOptions {
   radius?: number
   type?: JumpType
   ignoreConnectors?: string[]
+  jumpDirection?: 'both' | 'horizontal' | 'vertical' // 新增
 }
 
 export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
@@ -370,11 +371,25 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
     // transform lines for this link by splitting with jump lines at
     // points of intersection with other links
     const jumpingLines: Line[] = []
+    const jumpDirection = options.jumpDirection || 'both'
 
     thisLines.forEach((line) => {
       // iterate all links and grab the intersections with this line
       // these are then sorted by distance so the line can be split more easily
+      // Filter lines based on jumpDirection
+      const dx = Math.abs(line.end.x - line.start.x)
+      const dy = Math.abs(line.end.y - line.start.y)
+      const isHorizontal = dy < 1
+      const isVertical = dx < 1
+      const shouldJump =
+        jumpDirection === 'both' ||
+        (jumpDirection === 'horizontal' && isHorizontal) ||
+        (jumpDirection === 'vertical' && isVertical)
 
+      if (!shouldJump) {
+        jumpingLines.push(line)
+        return
+      }
       const intersections = edges
         .reduce<Point[]>((memo, link, i) => {
           // don't intersection with itself
