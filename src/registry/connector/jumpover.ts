@@ -341,13 +341,18 @@ export const jumpover: ConnectorDefinition<JumpoverConnectorOptions> =
       // Deduplicate jumpover connectors to prevent double arcs.
       if (connector.name === 'jumpover') {
         const otherJumpDirection = connector.args?.jumpDirection || 'both'
-        // If this is 'both' but the other has a specific direction, let the other take
-        // responsibility.
-        if (jumpDirection === 'both' && otherJumpDirection !== 'both') {
+        // Only tie-break if both edges are in 'both' mode. For specific directions,
+        // the orientation-based filtering in the loop below naturally prevents
+        // double arcs for orthogonal lines.
+        if (
+          jumpDirection === 'both' &&
+          otherJumpDirection === 'both' &&
+          idx > thisIndex
+        ) {
           return false
         }
-        // If both have the same setting, use index-based tie-breaking.
-        if (jumpDirection === otherJumpDirection && idx > thisIndex) {
+        // If directions are different specific values, prefer horizontal to avoid double arcs.
+        if (jumpDirection === 'vertical' && otherJumpDirection === 'horizontal') {
           return false
         }
       }
