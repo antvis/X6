@@ -13,11 +13,15 @@ jobs:
       contents: read
       issues: write
     steps:
-      - name: Mark duplicate issue
-        uses: actions-cool/issues-helper@v3.6.0
-        with:
-          actions: "mark-duplicate"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          duplicate-labels: "duplicate"
-          remove-labels: "waiting for maintainer"
-          close-issue: true
+      - name: actions-cool temporarily disabled
+        if: ${{ false }}
+        run: echo "actions-cool/issues-helper is temporarily disabled"
+
+      # - name: Mark duplicate issue
+      #   uses: actions-cool/issues-helper@v3.6.0
+      #   with:
+      #     actions: "mark-duplicate"
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     duplicate-labels: "duplicate"
+      #     remove-labels: "waiting for maintainer"
+      #     close-issue: true
