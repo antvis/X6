@@ -37,6 +37,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   protected boxesUpdated: boolean
   protected updateThrottleTimer: ReturnType<typeof setTimeout> | null = null
   protected isDragging: boolean = false
+  protected isSelectionTranslating: boolean = false
   protected batchUpdating: boolean = false
   // 逐帧批处理拖拽位移，降低 translate 重绘频率
   protected dragRafId: number | null = null
@@ -310,12 +311,10 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   clean(options: SelectionImplSetOptions = {}) {
+    this.cancelSelectionTranslating()
     if (this.length) {
       this.unselect(this.cells, options)
     }
-    // 清理容器 transform 与位移累计
-    this.resetContainerPosition()
-    this.draggingPreviewMode = 'translate'
     return this
   }
 
@@ -435,7 +434,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
           this.movingRouterRestoreTimer = null
         }
         this.restoreMovingRouters()
-        this.graph.model.stopBatch('move-selection')
+        this.stopSelectionTranslatingBatch()
         // 清理本次拖拽缓存
         this.translatingCache = null
         this.draggingPreviewMode = 'translate'
@@ -526,7 +525,9 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected startTranslating(evt: Dom.MouseDownEvent) {
+    this.cancelSelectionTranslating()
     this.graph.model.startBatch('move-selection')
+    this.isSelectionTranslating = true
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
     this.setEventData<TranslatingEventData>(evt, {
       action: 'translating',
@@ -537,6 +538,33 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     })
     this.prepareTranslatingCache()
     this.draggingPreviewMode = this.getDraggingPreviewMode()
+  }
+
+  protected stopSelectionTranslatingBatch() {
+    if (this.isSelectionTranslating) {
+      this.graph.model.stopBatch('move-selection')
+      this.isSelectionTranslating = false
+    }
+  }
+
+  protected cancelSelectionTranslating() {
+    if (this.dragRafId != null) {
+      cancelAnimationFrame(this.dragRafId)
+      this.dragRafId = null
+    }
+    this.dragPendingOffset = null
+    this.isDragging = false
+    this.boxesUpdated = false
+    this.translatingCache = null
+    this.draggingPreviewMode = 'translate'
+    this.resetContainerPosition()
+
+    if (this.movingRouterRestoreTimer) {
+      clearTimeout(this.movingRouterRestoreTimer)
+      this.movingRouterRestoreTimer = null
+    }
+    this.restoreMovingRouters()
+    this.stopSelectionTranslatingBatch()
   }
 
   private getRestrictArea(): RectangleLike | null {
