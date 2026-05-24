@@ -394,6 +394,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected stopSelecting(evt: Dom.MouseUpEvent) {
+    const e = this.normalizeEvent(evt)
     // 重置拖拽状态和清理定时器
     this.isDragging = false
     this.boxesUpdated = false
@@ -403,21 +404,21 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     }
 
     const graph = this.graph
-    const eventData = this.getEventData<CommonEventData>(evt)
+    const eventData = this.getEventData<CommonEventData>(e)
     const action = eventData.action
     switch (action) {
       case 'selecting': {
-        const client = graph.snapToGrid(evt.clientX, evt.clientY)
+        const client = graph.snapToGrid(e.clientX, e.clientY)
         const rect = this.getSelectingRect()
         const cells = this.getCellsInArea(rect)
         this.reset(cells, { batch: true })
         this.hideRubberband()
-        this.notifyBoxEvent('box:mouseup', evt, client.x, client.y, cells)
+        this.notifyBoxEvent('box:mouseup', e, client.x, client.y, cells)
         break
       }
 
       case 'translating': {
-        const client = graph.snapToGrid(evt.clientX, evt.clientY)
+        const client = graph.snapToGrid(e.clientX, e.clientY)
         if (this.dragPendingOffset) {
           const toApply = this.dragPendingOffset
           this.dragPendingOffset = null
@@ -438,7 +439,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
         // 清理本次拖拽缓存
         this.translatingCache = null
         this.draggingPreviewMode = 'translate'
-        this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
+        this.notifyBoxEvent('box:mouseup', e, client.x, client.y)
         this.repositionSelectionBoxesInPlace()
         break
       }
@@ -456,7 +457,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
     const e = this.normalizeEvent(evt)
     const eventData = this.getEventData<CommonEventData>(e)
     if (eventData) {
-      this.stopSelecting(evt)
+      this.stopSelecting(e)
     }
   }
 
