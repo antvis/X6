@@ -153,7 +153,7 @@ X6 默认提供了以下几种连接器，点击下面的链接查看每种连�
 
 ### labels
 
-用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将与 [defaultLabel](/api/model/edge#labels-和-defaultlabel) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
+用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将与 [defaultLabel](/api/model/edge#labels-和-defaultlabel) 进行 [merge](https://lodash.com/docs/4.18.1#_mergeobject-sources) 后使用。
 
 ```ts
 const edge = graph.addEdge({
