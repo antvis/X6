@@ -764,7 +764,7 @@ setAttrs(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
 | options.silent    | boolean                             |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。                                      |
 | options...others  | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
-默认情况，指定的属性将与旧属性进行[深度 merge](https://lodash.com/docs/4.18.1#_mergeobject-sources)：
+默认情况，指定的属性将与旧属性进行[深度 merge](https://lodash.com/docs/4.17.15#merge)：
 
 ```ts
 console.log(cell.getAttrs())

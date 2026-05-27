@@ -764,7 +764,7 @@ Set attributes. By default, it triggers the `change:attrs` event and canvas redr
 | options.silent    | boolean                             |          | `false` | When `true`, do not trigger `change:attrs` event and canvas redraw.                                                        |
 | options...others  | object                              |          |         | Other custom key-value pairs that can be used in event callbacks.                                                          |
 
-By default, the specified attributes will be [deeply merged](https://lodash.com/docs/4.18.1#_mergeobject-sources) with the old attributes:
+By default, the specified attributes will be [deeply merged](https://lodash.com/docs/4.17.15#merge) with the old attributes:
 
 ```ts
 console.log(cell.getAttrs())
