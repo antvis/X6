@@ -24,9 +24,9 @@
 </p>
 
 <p align="center">
-  <a href="http://x6.antv.antgroup.com/tutorial/about">官网文档</a> •
+  <a href="https://x6.antv.antgroup.com/tutorial/about">官网文档</a> •
   <a href="https://x6.antv.antgroup.com/tutorial/getting-started">快速开始</a> •
-  <a href="http://x6.antv.antgroup.com/examples">图表示例</a> •
+  <a href="https://x6.antv.antgroup.com/examples">图表示例</a> •
   <a href="https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy">常见问题</a> •
   <a href="https://codesandbox.io/s/mo-ban-55i8dp">Demo 模板</a> •
   <a href="https://github.com/lloydzhou/awesome-x6">Awesome X6</a>
