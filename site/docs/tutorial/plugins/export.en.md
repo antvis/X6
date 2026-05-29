@@ -34,10 +34,10 @@ graph.use(new Export())
 ### graph.exportSVG(...)
 
 ```ts
-exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
+exportSVG(fileName?: string, options?: ExportToSVGOptions): void
 ```
 
-`fileName` is the name of the file, defaulting to `chart`. `Export.ToSVGOptions` is described as follows:
+`fileName` is the name of the file, defaulting to `chart`. `ExportToSVGOptions` is described as follows:
 
 | Property Name      | Type                                       | Default Value | Required | Description                                                                                                                                                                            |
 |--------------------|--------------------------------------------|---------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -51,10 +51,10 @@ exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
 ### graph.exportPNG(...)
 
 ```ts
-exportPNG(fileName?: string, options?: Export.ToImageOptions): void
+exportPNG(fileName?: string, options?: ExportToImageOptions): void
 ```
 
-`fileName` is the name of the file, defaulting to `chart`. `Export.ToImageOptions` inherits from the above `Export.ToSVGOptions` and has the following additional configurations:
+`fileName` is the name of the file, defaulting to `chart`. `ExportToImageOptions` inherits from the above `ExportToSVGOptions` and has the following additional configurations:
 
 | Property Name      | Type                  | Default Value | Required | Description                                                                               |
 |--------------------|-----------------------|---------------|----------|-------------------------------------------------------------------------------------------|
@@ -68,23 +68,23 @@ exportPNG(fileName?: string, options?: Export.ToImageOptions): void
 ### graph.exportJPEG(...)
 
 ```ts
-exportJPEG(fileName?: string, options?: Export.ToImageOptions): void
+exportJPEG(fileName?: string, options?: ExportToImageOptions): void
 ```
 
 ### graph.toSVG(...)
 
 ```ts
-toSVG(callback: (dataUri: string) => any, options?: Export.ToSVGOptions): void
+toSVG(callback: (dataUri: string) => any, options?: ExportToSVGOptions): void
 ```
 
 ### graph.toPNG(...)
 
 ```ts
-toPNG(callback: (dataUri: string) => any, options?: Export.ToImageOptions): void
+toPNG(callback: (dataUri: string) => any, options?: ExportToImageOptions): void
 ```
 
 ### graph.toJPEG(...)
 
 ```ts
-toJPEG(callback: (dataUri: string) => any, options?: Export.ToImageOptions): void
+toJPEG(callback: (dataUri: string) => any, options?: ExportToImageOptions): void
 ```

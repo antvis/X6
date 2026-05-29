@@ -34,10 +34,10 @@ graph.use(new Export())
 ### graph.exportSVG(...)
 
 ```ts
-exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
+exportSVG(fileName?: string, options?: ExportToSVGOptions): void
 ```
 
-`fileName` 为文件名称，缺省为 `chart`，`Export.ToSVGOptions` 描述如下：
+`fileName` 为文件名称，缺省为 `chart`，`ExportToSVGOptions` 描述如下：
 
 | 属性名             | 类型                                       | 默认值 | 必选 | 描述                                                                                                                                                                            |
 |--------------------|--------------------------------------------|--------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -51,10 +51,10 @@ exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
 ### graph.exportPNG(...)
 
 ```ts
-exportPNG(fileName?: string, options?: Export.ToImageOptions): void
+exportPNG(fileName?: string, options?: ExportToImageOptions): void
 ```
 
-`fileName` 为文件名称，缺省为 `chart`，`Export.ToImageOptions` 除了继承上面 `Export.ToSVGOptions` 外，还有以下配置：
+`fileName` 为文件名称，缺省为 `chart`，`ExportToImageOptions` 除了继承上面 `ExportToSVGOptions` 外，还有以下配置：
 
 | 属性名          | 类型                  | 默认值 | 必选 | 描述                                                                               |
 |-----------------|-----------------------|--------|------|----------------------------------------------------------------------------------|
@@ -68,23 +68,23 @@ exportPNG(fileName?: string, options?: Export.ToImageOptions): void
 ### graph.exportJPEG(...)
 
 ```ts
-exportJPEG(fileName?: string, options?: Export.ToImageOptions): void
+exportJPEG(fileName?: string, options?: ExportToImageOptions): void
 ```
 
 ### graph.toSVG(...)
 
 ```ts
-toSVG(callback: (dataUri: string) => any, options?: Export.ToSVGOptions): void
+toSVG(callback: (dataUri: string) => any, options?: ExportToSVGOptions): void
 ```
 
 ### graph.toPNG(...)
 
 ```ts
-toPNG(callback: (dataUri: string) => any, options?: Export.ToImageOptions): void
+toPNG(callback: (dataUri: string) => any, options?: ExportToImageOptions): void
 ```
 
 ### graph.toJPEG(...)
 
 ```ts
-toJPEG(callback: (dataUri: string) => any, options?: Export.ToImageOptions): void
+toJPEG(callback: (dataUri: string) => any, options?: ExportToImageOptions): void
 ```
