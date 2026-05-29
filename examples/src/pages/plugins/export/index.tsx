@@ -42,10 +42,13 @@ function downloadTextFile(content: string, filename: string, mime: string) {
 /** toPNG、toJPEG、toPNGAsync、toJPEGAsync 的返回值可由此预览 */
 function previewDataUri(dataUri: string, title: string) {
   const tab = window.open()
-  if (tab) {
-    tab.document.title = title
-    tab.document.body.innerHTML = `<img src="${dataUri}" alt="${title}" style="max-width:100%" />`
-  }
+  if (!tab) return
+  tab.document.title = title
+  const img = tab.document.createElement('img')
+  img.src = dataUri
+  img.alt = title
+  img.style.maxWidth = '100%'
+  tab.document.body.appendChild(img)
 }
 
 export const ExportExample: React.FC = () => {
@@ -98,17 +101,23 @@ export const ExportExample: React.FC = () => {
 
   // exportSVG、exportPNG、exportJPEG
   const onDownloadSVG = () => {
-    graphRef.current?.exportSVG(FILE_NAME, svgExportOptions)
+    const graph = graphRef.current
+    if (!graph) return
+    graph.exportSVG(FILE_NAME, svgExportOptions)
     message.success('SVG 已开始下载')
   }
 
   const onDownloadPNG = () => {
-    graphRef.current?.exportPNG(FILE_NAME, imageExportOptions)
+    const graph = graphRef.current
+    if (!graph) return
+    graph.exportPNG(FILE_NAME, imageExportOptions)
     message.success('PNG 已开始下载')
   }
 
   const onDownloadJPEG = () => {
-    graphRef.current?.exportJPEG(FILE_NAME, {
+    const graph = graphRef.current
+    if (!graph) return
+    graph.exportJPEG(FILE_NAME, {
       ...imageExportOptions,
       quality: 0.92,
     })
@@ -117,7 +126,9 @@ export const ExportExample: React.FC = () => {
 
   // toSVG、toPNG、toJPEG
   const onToSVG = () => {
-    graphRef.current?.toSVG(
+    const graph = graphRef.current
+    if (!graph) return
+    graph.toSVG(
       (svg) => {
         // toSVG 回调：SVG XML 字符串
         downloadTextFile(svg, `${FILE_NAME}.svg`, 'image/svg+xml')
@@ -128,7 +139,9 @@ export const ExportExample: React.FC = () => {
   }
 
   const onToPNG = () => {
-    graphRef.current?.toPNG(
+    const graph = graphRef.current
+    if (!graph) return
+    graph.toPNG(
       (dataUri) => {
         // toPNG 回调：data:image/png;base64,...
         previewDataUri(dataUri, 'PNG export')
@@ -139,7 +152,9 @@ export const ExportExample: React.FC = () => {
   }
 
   const onToJPEG = () => {
-    graphRef.current?.toJPEG(
+    const graph = graphRef.current
+    if (!graph) return
+    graph.toJPEG(
       (dataUri) => {
         // toJPEG 回调：data:image/jpeg;base64,...
         previewDataUri(dataUri, 'JPEG export')
