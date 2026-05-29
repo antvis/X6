@@ -74,17 +74,35 @@ exportJPEG(fileName?: string, options?: ExportToImageOptions): void
 ### graph.toSVG(...)
 
 ```ts
-toSVG(callback: (svg: string) => any, options?: ExportToSVGOptions): void
+toSVG(callback: ExportToSVGCallback, options?: ExportToSVGOptions): void
 ```
 
 ### graph.toPNG(...)
 
 ```ts
-toPNG(callback: (dataUri: string) => any, options?: ExportToImageOptions): void
+toPNG(callback: ExportToSVGCallback, options?: ExportToImageOptions): void
 ```
 
 ### graph.toJPEG(...)
 
 ```ts
-toJPEG(callback: (dataUri: string) => any, options?: ExportToImageOptions): void
+toJPEG(callback: ExportToSVGCallback, options?: ExportToImageOptions): void
+```
+
+### graph.toSVGAsync(...)
+
+```ts
+toSVGAsync(options?: ExportToSVGOptions): Promise<string>
+```
+
+### graph.toPNGAsync(...)
+
+```ts
+toPNGAsync(options?: ExportToImageOptions): Promise<string>
+```
+
+### graph.toJPEGAsync(...)
+
+```ts
+toJPEGAsync(options?: ExportToImageOptions): Promise<string>
 ```
