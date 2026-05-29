@@ -1,4 +1,5 @@
 name: build
+
 on:
   push:
     branches: [master]
@@ -10,24 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️　Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      - name: 🎉　Setup Node.js
+      - name: 🎉 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: 🚧 Install
-        run: |
-          npm i pnpm@latest -g
-          pnpm install
+        run: pnpm install
 
-      - name: 🚀　Build
+      - name: 🚀 Build
         run: pnpm run build
 
-      - name: ✅　Test
+      - name: ✅ Test
         run: pnpm run test:coverage
 
       - name: 💡 Upload coverage to Codecov
