@@ -42,10 +42,10 @@ exportSVG(fileName?: string, options?: ExportToSVGOptions): void
 | Property Name      | Type                                       | Default Value | Required | Description                                                                                                                                                                            |
 |--------------------|--------------------------------------------|---------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | preserveDimensions | `boolean \| Size`                          | -             |          | Controls the exported SVG size. When unset, width/height are `100%`; when `true`, they are auto-calculated to the actual content size; you can also pass `{ width, height }` to explicitly set the export size. |
-| viewBox            | RectangleLike                               | -             |          | Sets the viewBox of the exported SVG.                                                                                                                                                 |
-| copyStyles         | boolean                                    | `true`        |          | Whether to copy styles from external stylesheets. When enabled, computed style differences of nodes are inlined into the exported SVG to keep visuals consistent with the page; this adds export time. If you prefer speed or styles are set via `attrs`, set to `false` and pair with `stylesheet` to inject necessary CSS. |
-| stylesheet         | string                                     | -             |          | Custom stylesheet.                                                                                                                                                                     |
-| serializeImages    | boolean                                    | `true`        |          | Whether to convert the `xlink:href`/`href` of image elements to DataURI (forced for PNG/JPEG).                                                                                       |
+| viewBox            | `RectangleLike`                            | -             |          | Sets the viewBox of the exported SVG.                                                                                                                                                 |
+| copyStyles         | `boolean`                                  | `true`        |          | Whether to copy styles from external stylesheets. When enabled, computed style differences of nodes are inlined into the exported SVG to keep visuals consistent with the page; this adds export time. If you prefer speed or styles are set via `attrs`, set to `false` and pair with `stylesheet` to inject necessary CSS. |
+| stylesheet         | `string`                                   | -             |          | Custom stylesheet.                                                                                                                                                                     |
+| serializeImages    | `boolean`                                  | `true`        |          | Whether to convert the `xlink:href`/`href` of image elements to DataURI (forced for PNG/JPEG).                                                                                       |
 | beforeSerialize    | `(this: Graph, svg: SVGSVGElement) => any` | -             |          | You can call `beforeSerialize` to modify the SVG string before exporting it.                                                                                                         |
 
 ### graph.exportPNG(...)
@@ -58,12 +58,12 @@ exportPNG(fileName?: string, options?: ExportToImageOptions): void
 
 | Property Name      | Type                  | Default Value | Required | Description                                                                               |
 |--------------------|-----------------------|---------------|----------|-------------------------------------------------------------------------------------------|
-| width              | number                | -             |          | Width of the exported image.                                                              |
-| height             | number                | -             |          | Height of the exported image.                                                             |
-| ratio              | number                | `1`           |          | Scale factor (e.g., device pixel ratio) used to compute export resolution.                |
-| backgroundColor    | string                | -             |          | Background color of the exported image, defaults to white.                                |
-| padding            | NumberExt.SideOptions | -             |          | Padding for the image.                                                                     |
-| quality            | number                | -             |          | Image quality (0–1). If out of range, the default value `0.92` is used.                  |
+| width              | `number`                | -             |          | Width of the exported image.                                                              |
+| height             | `number`                | -             |          | Height of the exported image.                                                             |
+| ratio              | `number`                | `1`           |          | Scale factor (e.g., device pixel ratio) used to compute export resolution.                |
+| backgroundColor    | `string`                | `'white'`     |          | Background color of the exported image.                                                   |
+| padding            | `NumberExt.SideOptions` | -             |          | Padding for the image.                                                                     |
+| quality            | `number`                | -             |          | Image quality (0–1). If out of range, the default value `0.92` is used.                  |
 
 ### graph.exportJPEG(...)
 
@@ -74,7 +74,7 @@ exportJPEG(fileName?: string, options?: ExportToImageOptions): void
 ### graph.toSVG(...)
 
 ```ts
-toSVG(callback: (dataUri: string) => any, options?: ExportToSVGOptions): void
+toSVG(callback: (svg: string) => any, options?: ExportToSVGOptions): void
 ```
 
 ### graph.toPNG(...)
