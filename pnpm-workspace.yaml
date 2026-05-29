@@ -2,3 +2,13 @@ packages:
   - '.'
   - 'examples'
   - 'site'
+
+# pnpm 11 默认禁止未审批的依赖 postinstall 脚本，CI 会报 ERR_PNPM_IGNORED_BUILDS。
+# 以下包安装时需要执行 build scripts，在此显式允许。详见 https://pnpm.io/settings#allowbuilds
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  less: true
