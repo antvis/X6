@@ -25,9 +25,9 @@
 </p>
 
 <p align="center">
-  <a href="http://x6.antv.antgroup.com/tutorial/about">Official Documentation</a> •
+  <a href="https://x6.antv.antgroup.com/tutorial/about">Official Documentation</a> •
   <a href="https://x6.antv.antgroup.com/tutorial/getting-started">Quick Start</a> •
-  <a href="http://x6.antv.antgroup.com/examples">Graph Examples</a> •
+  <a href="https://x6.antv.antgroup.com/examples">Graph Examples</a> •
   <a href="https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy">FAQ</a> •
   <a href="https://codesandbox.io/s/mo-ban-55i8dp">Demo Template</a> •
   <a href="https://github.com/lloydzhou/awesome-x6">Awesome X6</a>

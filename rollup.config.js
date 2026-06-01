@@ -2,7 +2,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import visualizer from "rollup-plugin-visualizer";
 
 const isBundleVis = !!process.env.BUNDLE_VIS;
@@ -29,13 +29,19 @@ export default [
       },
     ],
     plugins: [
-      resolve(),
-      commonjs(),
+      resolve({
+        extensions: [".mjs", ".js", ".json", ".node", ".ts", ".tsx"],
+      }),
       typescript({
-        useTsconfigDeclarationDir: true,
         tsconfig: "./tsconfig.json",
         exclude: ["__tests__/**"],
+        compilerOptions: {
+          declaration: false,
+          declarationMap: false,
+          sourceMap: false,
+        },
       }),
+      commonjs(),
       json(),
       terser(),
     ],
