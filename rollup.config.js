@@ -32,7 +32,6 @@ export default [
       resolve({
         extensions: [".mjs", ".js", ".json", ".node", ".ts", ".tsx"],
       }),
-      commonjs(),
       typescript({
         tsconfig: "./tsconfig.json",
         exclude: ["__tests__/**"],
@@ -42,6 +41,7 @@ export default [
           sourceMap: false,
         },
       }),
+      commonjs(),
       json(),
       terser(),
     ],
