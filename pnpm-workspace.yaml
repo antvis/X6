@@ -2,3 +2,19 @@ packages:
   - '.'
   - 'examples'
   - 'site'
+
+# allowBuilds：pnpm 11+ 安装时允许哪些依赖执行 postinstall（构建脚本白名单）。
+# 配置须写在本文件（pnpm-workspace.yaml），pnpm 11 已不再读取 package.json 的 pnpm 字段或 .npmrc 中的同类项。
+#
+# 为何需要：pnpm 默认拦截未审批包的 postinstall；CI 无法交互确认，会报 ERR_PNPM_IGNORED_BUILDS。
+# 下列包：安装时要下载平台二进制（esbuild / @swc/core 等），必须放行，否则 pnpm install 失败。
+#
+# 如何维护：依赖变更后若 install 提示 ignored builds，执行 `pnpm approve-builds` 并提交本段。
+# 文档：https://pnpm.io/settings#allowbuilds 、https://pnpm.io/migration#moves-settings-out-of-packagejsonpnpm-into-pnpm-workspaceyaml
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+
