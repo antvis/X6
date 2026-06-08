@@ -29,7 +29,9 @@ export class CoordManager extends Base {
       typeof x === 'number'
         ? this.clientToLocalPoint(x, y as number)
         : this.clientToLocalPoint(x.x, x.y)
-    return p.snapToGrid(this.graph.getGridSize())
+    return this.graph.grid.isSnapToGridEnabled()
+      ? p.snapToGrid(this.graph.getGridSize())
+      : p
   }
 
   localToGraphPoint(x: number | Point | PointLike, y?: number) {

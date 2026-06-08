@@ -418,8 +418,10 @@ export class TransformImpl extends View<TransformImplEventArgs> {
         const rawWidth = width
         const rawHeight = height
 
-        width = snapToGrid(width, gridSize)
-        height = snapToGrid(height, gridSize)
+        if (this.graph.grid.isSnapToGridEnabled()) {
+          width = snapToGrid(width, gridSize)
+          height = snapToGrid(height, gridSize)
+        }
         width = Math.max(width, options.minWidth || gridSize)
         height = Math.max(height, options.minHeight || gridSize)
         width = Math.min(width, options.maxWidth || Infinity)

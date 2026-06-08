@@ -340,11 +340,15 @@ export function getOptions(options: Partial<GraphManual>) {
 
   // grid
   // ----
-  const defaultGrid: GridCommonOptions = { size: 10, visible: false }
+  const defaultGrid: GridCommonOptions = {
+    size: 10,
+    visible: false,
+    snapToGrid: true,
+  }
   if (typeof grid === 'number') {
-    result.grid = { size: grid, visible: false }
+    result.grid = { size: grid, visible: false, snapToGrid: true }
   } else if (typeof grid === 'boolean') {
-    result.grid = { ...defaultGrid, visible: grid }
+    result.grid = { ...defaultGrid, visible: grid, snapToGrid: grid }
   } else {
     result.grid = { ...defaultGrid, ...grid }
   }
@@ -400,6 +404,7 @@ export const defaults: Partial<GraphDefinition> = {
   grid: {
     size: 10,
     visible: false,
+    snapToGrid: true,
   },
   background: false,
 

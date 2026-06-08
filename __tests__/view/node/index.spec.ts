@@ -751,6 +751,54 @@ describe('NodeView', () => {
       )
       expect(node.setPosition).toHaveBeenCalled()
     })
+
+    it('should snap node position when grid.snapToGrid is true', () => {
+      const event = { clientX: 153, clientY: 257 } as any
+      const data = {
+        moving: true,
+        offset: { x: -50, y: -50 },
+        restrict: null,
+      }
+
+      graph.options.grid.snapToGrid = true
+      vi.spyOn(nodeView, 'getEventData').mockReturnValue(data)
+      vi.spyOn(nodeView as any, 'autoScrollGraph').mockImplementation(() => {})
+      vi.spyOn(graph, 'getGridSize').mockReturnValue(10)
+      vi.spyOn(node, 'setPosition').mockImplementation(() => {})
+      vi.spyOn(graph.options.embedding, 'enabled', 'get').mockReturnValue(false)
+
+      ;(nodeView as any).dragNode(event, 153, 257)
+
+      expect(node.setPosition).toHaveBeenCalledWith(100, 210, {
+        restrict: null,
+        deep: true,
+        ui: true,
+      })
+    })
+
+    it('should not snap node position when grid.snapToGrid is false', () => {
+      const event = { clientX: 153, clientY: 257 } as any
+      const data = {
+        moving: true,
+        offset: { x: -50, y: -50 },
+        restrict: null,
+      }
+
+      graph.options.grid.snapToGrid = false
+      vi.spyOn(nodeView, 'getEventData').mockReturnValue(data)
+      vi.spyOn(nodeView as any, 'autoScrollGraph').mockImplementation(() => {})
+      vi.spyOn(graph, 'getGridSize').mockReturnValue(10)
+      vi.spyOn(node, 'setPosition').mockImplementation(() => {})
+      vi.spyOn(graph.options.embedding, 'enabled', 'get').mockReturnValue(false)
+
+      ;(nodeView as any).dragNode(event, 153, 257)
+
+      expect(node.setPosition).toHaveBeenCalledWith(103, 207, {
+        restrict: null,
+        deep: true,
+        ui: true,
+      })
+    })
   })
 
   describe('additional methods', () => {

@@ -1179,8 +1179,14 @@ export class NodeView<
 
     this.autoScrollGraph(e.clientX, e.clientY)
 
-    const posX = snapToGrid(x + offset.x, gridSize)
-    const posY = snapToGrid(y + offset.y, gridSize)
+    const rawX = x + offset.x
+    const rawY = y + offset.y
+    const posX = graph.grid.isSnapToGridEnabled()
+      ? snapToGrid(rawX, gridSize)
+      : rawX
+    const posY = graph.grid.isSnapToGridEnabled()
+      ? snapToGrid(rawY, gridSize)
+      : rawY
     node.setPosition(posX, posY, {
       restrict,
       deep: true,

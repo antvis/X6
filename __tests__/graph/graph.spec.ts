@@ -725,6 +725,44 @@ describe('Graph: Grid / 网格', () => {
     cleanup()
   })
 
+  it('snapToGrid: 支持通过 grid.snapToGrid 关闭自动吸附', () => {
+    const { graph, cleanup } = createTestGraph({
+      grid: { size: 10, snapToGrid: false },
+    })
+
+    expect(graph.snapToGrid(12, 18)).toEqual({ x: 12, y: 18 })
+
+    cleanup()
+  })
+
+  it('snapToGrid: grid 为 false 时默认关闭自动吸附', () => {
+    const { graph, cleanup } = createTestGraph({
+      grid: false,
+    })
+
+    expect(graph.snapToGrid(12, 18)).toEqual({ x: 12, y: 18 })
+
+    cleanup()
+  })
+
+  it('drawGrid: 支持动态切换 snapToGrid', () => {
+    const { graph, cleanup } = createTestGraph({
+      grid: { size: 10, visible: true },
+    })
+
+    expect(graph.snapToGrid(12, 18)).toEqual({ x: 10, y: 20 })
+
+    graph.drawGrid({ snapToGrid: false })
+    expect(graph.options.grid.snapToGrid).toBe(false)
+    expect(graph.snapToGrid(12, 18)).toEqual({ x: 12, y: 18 })
+
+    graph.drawGrid({ snapToGrid: true })
+    expect(graph.options.grid.snapToGrid).toBe(true)
+    expect(graph.snapToGrid(12, 18)).toEqual({ x: 10, y: 20 })
+
+    cleanup()
+  })
+
   it('showGrid / hideGrid / drawGrid: 网格显示控制', () => {
     const { graph, cleanup } = createTestGraph()
 
