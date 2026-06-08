@@ -289,6 +289,24 @@ describe('Dnd', () => {
       expect((result as Node).position()).toEqual({ x: 450, y: 350 })
     })
 
+    it('should keep snapline alignment when snapOffset is set', () => {
+      const node = new Rect({
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+      })
+
+      graph.options.grid.snapToGrid = true
+      dnd['snapOffset'] = { x: 7, y: -8 }
+      const result = dnd['drop'](node, {
+        x: 401,
+        y: 303,
+      })
+
+      expect((result as Node).position()).toEqual({ x: 451, y: 353 })
+    })
+
     it('should not snap dropped node position when grid.snapToGrid is false', () => {
       const node = new Rect({
         x: 100,

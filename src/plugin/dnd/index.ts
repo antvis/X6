@@ -476,7 +476,7 @@ export class Dnd extends View implements GraphPlugin {
       local.x += bbox.x - bbox.width / 2
       local.y += bbox.y - bbox.height / 2
       const shouldSnapToGrid =
-        this.snapOffset || targetGraph.grid.isSnapToGridEnabled()
+        !this.snapOffset && targetGraph.grid.isSnapToGridEnabled()
       const gridSize = shouldSnapToGrid ? targetGraph.getGridSize() : 1
 
       droppingNode.position(
