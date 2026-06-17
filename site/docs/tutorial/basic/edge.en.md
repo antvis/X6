@@ -153,7 +153,7 @@ Additionally, we can register custom connectors. For more details, please refer 
 
 ### labels
 
-Used to set label text, position, style, etc. Supports multiple labels in array form, and each item specified in `labels` will be used after being [merged](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the [defaultLabel](/en/api/model/edge#labels-and-default-label).
+Used to set label text, position, style, etc. Supports multiple labels in array form, and each item specified in `labels` will be used after being [merged](https://lodash.com/docs/4.17.15#merge) with the [defaultLabel](/en/api/model/edge#labels-and-default-label).
 
 ```ts
 const edge = graph.addEdge({

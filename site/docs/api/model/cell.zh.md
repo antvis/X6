@@ -764,7 +764,7 @@ setAttrs(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
 | options.silent    | boolean                             |      | `false` | 为 `true` 时不触发 `change:attrs` 事件和画布重绘。                                      |
 | options...others  | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
-默认情况，指定的属性将与旧属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)：
+默认情况，指定的属性将与旧属性进行[深度 merge](https://lodash.com/docs/4.17.15#merge)：
 
 ```ts
 console.log(cell.getAttrs())
@@ -1098,7 +1098,7 @@ console.log(cell.attr())
 // }
 ```
 
-通过属性对象设置属性值，与就属性对象进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。
+通过属性对象设置属性值，与就属性对象进行[深度 merge](https://lodash.com/docs/4.17.15#merge)。
 
 ```ts
 cell.attr({
@@ -1342,7 +1342,7 @@ setData(data: any, options?: Cell.SetDataOptions): this
 | options.silent    | boolean |      | `false` | 为 `true` 时不触发 `change:data` 事件和画布重绘。                                       |
 | options...others  | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
-默认与原数据进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，并触发 `change:data` 事件和画布重绘：
+默认与原数据进行[深度 merge](https://lodash.com/docs/4.17.15#merge)，并触发 `change:data` 事件和画布重绘：
 
 ```ts
 cell.setData(data)
@@ -1735,7 +1735,7 @@ setProp(props: Partial<Properties>, options?: Cell.SetOptions): this
 |------------------|-----------------------|:----:|---------|---------------------------------------------------------------------------------------------------|
 | key              | string                |  ✓   |         | 属性名称。                                                                                           |
 | value            | any                   |  ✓   |         | 属性值。                                                                                             |
-| props            | `Partial<Properties>` |  ✓   |         | 属性键值对，将与现有属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。 |
+| props            | `Partial<Properties>` |  ✓   |         | 属性键值对，将与现有属性进行[深度 merge](https://lodash.com/docs/4.17.15#merge)。 |
 | options.silent   | boolean               |      | `false` | 为 `true` 时不触发 `change:markup` 事件和画布重绘。                                                  |
 | options...others | object                |      |         | 其他自定义键值对，可以在事件回调中使用。                                                              |
 
@@ -1939,7 +1939,7 @@ const rect = graph.addNode({
 })
 ```
 
-每次调用 `config(presets)` 都是与当前预设值进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，例如下面代码分别将矩形的边框默认颜色修改为红色和将默认文本颜色修改为蓝色，最终效果是两者的叠加：
+每次调用 `config(presets)` 都是与当前预设值进行[深度 merge](https://lodash.com/docs/4.17.15#merge)，例如下面代码分别将矩形的边框默认颜色修改为红色和将默认文本颜色修改为蓝色，最终效果是两者的叠加：
 
 ```ts
 // 只修改边框的默认颜色
