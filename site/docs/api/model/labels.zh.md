@@ -99,7 +99,7 @@ interface Label {
 }
 ```
 
-该默认标签包含一个 `<text>` 元素（表示标签文本）和一个 `<rect>` 元素（表示标签背景），默认居中对齐，并拥有白色圆角背景。由于所有自定义标签都将与该默认标签进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，所以我们可以像下面这样简单提供一个标签的文本属性来添加一个标签。
+该默认标签包含一个 `<text>` 元素（表示标签文本）和一个 `<rect>` 元素（表示标签背景），默认居中对齐，并拥有白色圆角背景。由于所有自定义标签都将与该默认标签进行 [merge](https://lodash.com/docs/4.17.15#merge)，所以我们可以像下面这样简单提供一个标签的文本属性来添加一个标签。
 
 ```ts
 edge.appendLabel({

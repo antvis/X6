@@ -764,7 +764,7 @@ Set attributes. By default, it triggers the `change:attrs` event and canvas redr
 | options.silent    | boolean                             |          | `false` | When `true`, do not trigger `change:attrs` event and canvas redraw.                                                        |
 | options...others  | object                              |          |         | Other custom key-value pairs that can be used in event callbacks.                                                          |
 
-By default, the specified attributes will be [deeply merged](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the old attributes:
+By default, the specified attributes will be [deeply merged](https://lodash.com/docs/4.17.15#merge) with the old attributes:
 
 ```ts
 console.log(cell.getAttrs())
@@ -1098,7 +1098,7 @@ console.log(cell.attr())
 // }
 ```
 
-Set attribute values through the attribute object, and perform a [deep merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the existing attribute object.
+Set attribute values through the attribute object, and perform a [deep merge](https://lodash.com/docs/4.17.15#merge) with the existing attribute object.
 
 ```ts
 cell.attr({
@@ -1342,7 +1342,7 @@ Set the associated business data. By default, it triggers the `change:data` even
 | options.silent    | boolean |          | `false` | When `true`, doesn't trigger `change:data` event and redraw.                                   |
 | options...others  | object  |          |         | Other custom key-value pairs that can be used in event callbacks.                              |
 
-By default, it performs a [deep merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the original data and triggers the `change:data` event and canvas redraw:
+By default, it performs a [deep merge](https://lodash.com/docs/4.17.15#merge) with the original data and triggers the `change:data` event and canvas redraw:
 
 ```ts
 cell.setData(data)
@@ -1938,7 +1938,7 @@ const rect = graph.addNode({
 })
 ```
 
-Each call to `config(presets)` performs a [deep merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with the current preset values. For example, the following code modifies the default border color of the rectangle to red and the default text color to blue, respectively. The final effect is the combination of both:
+Each call to `config(presets)` performs a [deep merge](https://lodash.com/docs/4.17.15#merge) with the current preset values. For example, the following code modifies the default border color of the rectangle to red and the default text color to blue, respectively. The final effect is the combination of both:
 
 ```ts
 // Only modify the default border color

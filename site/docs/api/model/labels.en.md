@@ -99,7 +99,7 @@ When creating an Edge, you can set the default label using the [defaultLabel opt
 }
 ```
 
-This default label includes a `<text>` element (representing the label text) and a `<rect>` element (representing the label background), which is centered by default and has a white rounded background. Since all custom labels will be [merged](https://www.lodashjs.com/docs/latest#_mergeobject-sources) with this default label, we can simply provide a text attribute for a label as shown below.
+This default label includes a `<text>` element (representing the label text) and a `<rect>` element (representing the label background), which is centered by default and has a white rounded background. Since all custom labels will be [merged](https://lodash.com/docs/4.17.15#merge) with this default label, we can simply provide a text attribute for a label as shown below.
 
 ```ts
 edge.appendLabel({

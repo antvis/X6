@@ -822,7 +822,7 @@ setPortProp(
 ): this
 ```
 
-设置连接桩的属性，提供的属性选项与当前值进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。
+设置连接桩的属性，提供的属性选项与当前值进行[深度 merge](https://lodash.com/docs/4.17.15#merge)。
 
 | 名称 | 类型 | 必选 | 默认值 | 描述 |
 | --- | --- | :-: | --- | --- |

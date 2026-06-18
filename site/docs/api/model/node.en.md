@@ -822,7 +822,7 @@ setPortProp(
 ): this
 ```
 
-Sets the properties of the port, merging the provided property options with the current values using [deep merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources).
+Sets the properties of the port, merging the provided property options with the current values using [deep merge](https://lodash.com/docs/4.17.15#merge).
 
 | Name     | Type                          | Required | Default Value | Description                     |
 |----------|-------------------------------|:--------:|---------------|---------------------------------|
