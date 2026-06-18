@@ -34,57 +34,75 @@ graph.use(new Export())
 ### graph.exportSVG(...)
 
 ```ts
-exportSVG(fileName?: string, options?: Export.ToSVGOptions): void
+exportSVG(fileName?: string, options?: ExportToSVGOptions): void
 ```
 
-`fileName` 为文件名称，缺省为 `chart`，`Export.ToSVGOptions` 描述如下：
+`fileName` 为文件名称，缺省为 `chart`，`ExportToSVGOptions` 描述如下：
 
 | 属性名             | 类型                                       | 默认值 | 必选 | 描述                                                                                                                                                                            |
 |--------------------|--------------------------------------------|--------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | preserveDimensions | `boolean \| Size`                          | -      |      | 控制导出 SVG 的尺寸；未设置时 width/height 为 100%；设置为 true 时自动计算为图形区域的实际大小；也可传入 `{ width, height }` 显式指定导出尺寸。                              |
-| viewBox            | RectangleLike                               | -      |      | 设置导出 SVG 的 viewBox                                                                                                                                                         |
-| copyStyles         | boolean                                    | `true` |      | 是否复制外部样式表中的样式，默认 true。开启后会将节点的计算样式按差异内联到导出的 SVG，以保持页面与导出视觉一致，但会增加导出耗时；若样式已通过 `attrs` 指定或追求速度，可设为 `false`，并结合 `stylesheet` 注入必要 CSS。 |
-| stylesheet         | string                                     | -      |      | 自定义样式表                                                                                                                                                                    |
-| serializeImages    | boolean                                    | `true` |      | 是否将 image 元素的 `xlink:href`/`href` 链接转化为 DataURI（导出 PNG/JPEG 时会强制启用）。                                                                                      |
+| viewBox            | `RectangleLike`                            | -      |      | 设置导出 SVG 的 viewBox                                                                                                                                                         |
+| copyStyles         | `boolean`                                  | `true` |      | 是否复制外部样式表中的样式，默认 true。开启后会将节点的计算样式按差异内联到导出的 SVG，以保持页面与导出视觉一致，但会增加导出耗时；若样式已通过 `attrs` 指定或追求速度，可设为 `false`，并结合 `stylesheet` 注入必要 CSS。 |
+| stylesheet         | `string`                                   | -      |      | 自定义样式表                                                                                                                                                                    |
+| serializeImages    | `boolean`                                  | `true` |      | 是否将 image 元素的 `xlink:href`/`href` 链接转化为 DataURI（导出 PNG/JPEG 时会强制启用）。                                                                                      |
 | beforeSerialize    | `(this: Graph, svg: SVGSVGElement) => any` | -      |      | 可以在导出 svg 字符串之前调用 beforeSerialize 来修改它                                                                                                                          |
 
 ### graph.exportPNG(...)
 
 ```ts
-exportPNG(fileName?: string, options?: Export.ToImageOptions): void
+exportPNG(fileName?: string, options?: ExportToImageOptions): void
 ```
 
-`fileName` 为文件名称，缺省为 `chart`，`Export.ToImageOptions` 除了继承上面 `Export.ToSVGOptions` 外，还有以下配置：
+`fileName` 为文件名称，缺省为 `chart`，`ExportToImageOptions` 除了继承上面 `ExportToSVGOptions` 外，还有以下配置：
 
 | 属性名          | 类型                  | 默认值 | 必选 | 描述                                                                               |
 |-----------------|-----------------------|--------|------|----------------------------------------------------------------------------------|
-| width           | number                | -      |      | 导出图片的宽度                                                                     |
-| height          | number                | -      |      | 导出图片的高度                                                                     |
-| ratio           | number                | `1`    |      | 输出缩放比例（如设备像素比），用于计算导出分辨率。                                   |
-| backgroundColor | string                | -      |      | 导出图片的背景色，缺省为白色。                                                     |
-| padding         | NumberExt.SideOptions | -      |      | 图片的 padding                                                                     |
-| quality         | number                | -      |      | 图片质量，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92 |
+| width           | `number`                | -         |      | 导出图片的宽度                                                                     |
+| height          | `number`                | -         |      | 导出图片的高度                                                                     |
+| ratio           | `number`                | `1`       |      | 输出缩放比例（如设备像素比），用于计算导出分辨率。                                   |
+| backgroundColor | `string`                | `'white'` |      | 导出图片的背景色。                                                                 |
+| padding         | `NumberExt.SideOptions` | -         |      | 图片的 padding                                                                     |
+| quality         | `number`                | -         |      | 图片质量，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92 |
 
 ### graph.exportJPEG(...)
 
 ```ts
-exportJPEG(fileName?: string, options?: Export.ToImageOptions): void
+exportJPEG(fileName?: string, options?: ExportToImageOptions): void
 ```
 
 ### graph.toSVG(...)
 
 ```ts
-toSVG(callback: (dataUri: string) => any, options?: Export.ToSVGOptions): void
+toSVG(callback: ExportToSVGCallback, options?: ExportToSVGOptions): void
 ```
 
 ### graph.toPNG(...)
 
 ```ts
-toPNG(callback: (dataUri: string) => any, options?: Export.ToImageOptions): void
+toPNG(callback: ExportToSVGCallback, options?: ExportToImageOptions): void
 ```
 
 ### graph.toJPEG(...)
 
 ```ts
-toJPEG(callback: (dataUri: string) => any, options?: Export.ToImageOptions): void
+toJPEG(callback: ExportToSVGCallback, options?: ExportToImageOptions): void
+```
+
+### graph.toSVGAsync(...)
+
+```ts
+toSVGAsync(options?: ExportToSVGOptions): Promise<string>
+```
+
+### graph.toPNGAsync(...)
+
+```ts
+toPNGAsync(options?: ExportToImageOptions): Promise<string>
+```
+
+### graph.toJPEGAsync(...)
+
+```ts
+toJPEGAsync(options?: ExportToImageOptions): Promise<string>
 ```
