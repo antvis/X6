@@ -101,8 +101,12 @@ export class MouseWheel extends Base {
         // multiplication, preserving the classic mouse-wheel feel, while
         // small trackpad deltas produce small steps. Negative delta zooms
         // in, matching the quantized path below.
+        // Guard against a malformed event (non-finite delta) or a
+        // misconfigured negative factor so a bad input cannot produce
+        // `zoom(NaN)` — the quantized path below is NaN-safe by construction.
         const d = deltaY != null ? deltaY : delta
-        this.cumulatedFactor = factor ** (-d / 100)
+        const base = factor > 0 ? factor : 1.2
+        this.cumulatedFactor = Number.isFinite(d) ? base ** (-d / 100) : 1
       } else if (delta < 0) {
         // zoomin
         // ------
