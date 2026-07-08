@@ -145,5 +145,18 @@ describe('MouseWheel', () => {
       // classic path: a single event zooms by the fixed >= 5% step, not delta-scaled
       expect(targetScaleOf(-10)).toBeCloseTo(1.2, 5)
     })
+
+    it('does not zoom on a non-finite delta (never calls zoom(NaN))', () => {
+      // a malformed event yields cumulatedFactor 1 → targetScale === currentScale → no zoom
+      mockGraph.zoom.mockClear()
+      const e = new WheelEvent('wheel', { clientX: 0, clientY: 0 })
+      mouseWheel['onMouseWheel'](e, 0, Number.NaN)
+      expect(mockGraph.zoom).not.toHaveBeenCalled()
+    })
+
+    it('falls back to the default factor when misconfigured negative', () => {
+      mouseWheel.widgetOptions.factor = -2
+      expect(targetScaleOf(-100)).toBeCloseTo(1.2, 5) // uses 1.2, not NaN
+    })
   })
 })
