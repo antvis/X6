@@ -11,6 +11,17 @@ export interface MouseWheelOptions {
   modifiers?: string | ModifierKey[] | null
   guard?: (e: WheelEvent) => boolean
   zoomAtMousePosition?: boolean
+  /**
+   * Scale the zoom step by the wheel-delta magnitude instead of applying a
+   * fixed quantized step per event. A standard ~100px wheel notch keeps the
+   * classic `factor` feel, while the many small high-frequency events emitted
+   * by a trackpad pinch produce proportionally small, smooth zoom steps
+   * (the default quantized path applies a >= 5% step to every event, which
+   * makes trackpad pinch zoom far too fast).
+   *
+   * Defaults to `false` to preserve the existing behavior.
+   */
+  factorByDelta?: boolean
 }
 
 export class MouseWheel extends Base {
@@ -67,7 +78,7 @@ export class MouseWheel extends Base {
     )
   }
 
-  protected onMouseWheel(e: WheelEvent) {
+  protected onMouseWheel(e: WheelEvent, _deltaX?: number, deltaY?: number) {
     const guard = this.widgetOptions.guard
 
     if (
@@ -82,7 +93,17 @@ export class MouseWheel extends Base {
       }
 
       const delta = e.deltaY
-      if (delta < 0) {
+
+      if (this.widgetOptions.factorByDelta) {
+        // Continuous, delta-proportional zoom (trackpad-friendly).
+        // Prefer the delta accumulated per rAF frame by `MouseWheelHandle`
+        // over a single event's delta. A ~100px notch equals one `factor`
+        // multiplication, preserving the classic mouse-wheel feel, while
+        // small trackpad deltas produce small steps. Negative delta zooms
+        // in, matching the quantized path below.
+        const d = deltaY != null ? deltaY : delta
+        this.cumulatedFactor = factor ** (-d / 100)
+      } else if (delta < 0) {
         // zoomin
         // ------
         // Switches to 1% zoom steps below 15%
