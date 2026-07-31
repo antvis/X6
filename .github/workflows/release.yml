@@ -20,7 +20,7 @@ jobs:
       - name: 🎉　Setup nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - name: 🎉　Setup pnpm
         uses: pnpm/action-setup@v2
