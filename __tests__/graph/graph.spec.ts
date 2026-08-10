@@ -10,6 +10,66 @@ const testGraphJSON = {
   edges: [{ id: 'json-edge1', source: 'json-node1', target: 'json-node2' }],
 }
 
+describe('Graph: container syntax', () => {
+  it('resolves a bare string as a container id', () => {
+    const container = document.createElement('div')
+    container.id = 'graph-container-by-id'
+    document.body.appendChild(container)
+
+    const graph = new Graph({ container: 'graph-container-by-id' })
+
+    expect(graph.container).toBe(container)
+    graph.dispose()
+    container.remove()
+  })
+
+  it('resolves a container id with Graph.render', () => {
+    const container = document.createElement('div')
+    container.id = 'graph-render-container-by-id'
+    document.body.appendChild(container)
+
+    const graph = Graph.render('graph-render-container-by-id', testGraphJSON)
+
+    expect(graph.container).toBe(container)
+    expect(graph.getCellById('json-node1')).not.toBeNull()
+    graph.dispose()
+    container.remove()
+  })
+
+  it('does not resolve a string as a CSS selector', () => {
+    const container = document.createElement('div')
+    container.className = 'graph-container-by-selector'
+    document.body.appendChild(container)
+
+    expect(() => Graph.render('.graph-container-by-selector')).toThrow(
+      'Cannot find the graph container: ".graph-container-by-selector"',
+    )
+
+    container.remove()
+  })
+
+  it('rejects a non-HTML element resolved by id', () => {
+    const container = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg',
+    )
+    container.id = 'graph-svg-container'
+    document.body.appendChild(container)
+
+    expect(() => new Graph({ container: 'graph-svg-container' })).toThrow(
+      'Cannot find the graph container: "graph-svg-container"',
+    )
+
+    container.remove()
+  })
+
+  it('throws a clear error when a string container cannot be resolved', () => {
+    expect(() => new Graph({ container: 'missing-graph-container' })).toThrow(
+      'Cannot find the graph container: "missing-graph-container"',
+    )
+  })
+})
+
 describe('Graph: 基础节点/边操作', () => {
   it('addNode / getCell / removeNode', async () => {
     const { graph, cleanup } = createTestGraph()
