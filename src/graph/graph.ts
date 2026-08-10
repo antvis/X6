@@ -110,13 +110,13 @@ export class Graph extends Basecoat<EventArgs> {
     return false
   }
   static render(options: Partial<Options>, data?: FromJSONData): Graph
-  static render(container: HTMLElement, data?: FromJSONData): Graph
+  static render(container: HTMLElement | string, data?: FromJSONData): Graph
   static render(
-    options: Partial<Options> | HTMLElement,
+    options: Partial<Options> | HTMLElement | string,
     data?: FromJSONData,
   ): Graph {
     const graph =
-      options instanceof HTMLElement
+      typeof options === 'string' || options instanceof HTMLElement
         ? new Graph({ container: options })
         : new Graph(options)
 

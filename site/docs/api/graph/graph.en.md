@@ -15,7 +15,7 @@ new Graph(options: Options)
 
 | Option | Type | Required | Description | Default Value |
 | --- | --- | :-: | --- | --- |
-| container | `HTMLElement` | ✓ | The container of the canvas. |  |
+| container | `HTMLElement \| string` | ✓ | The container of the canvas. A string is resolved only as an element ID, without a leading `#`. |  |
 | width | `number` |  | The width of the canvas, defaults to the container width. | - |
 | height | `number` |  | The height of the canvas, defaults to the container height. | - |
 | scaling | `{ min?: number, max?: number }` |  | The minimum and maximum zoom levels of the canvas. | `{ min: 0.01, max: 16 }` |
