@@ -41,7 +41,6 @@ export interface VirtualOptions {
 }
 
 interface Common {
-  container: HTMLElement
   model?: Model
 
   x: number
@@ -84,6 +83,9 @@ interface Common {
   ) => typeof CellView | (new (...args: any[]) => CellView) | null | undefined
 }
 
+/** An HTML element or its ID (without the leading `#`). */
+export type GraphContainer = HTMLElement | string
+
 export interface ManualBooleans {
   panning: boolean | Partial<PanningOptions>
   mousewheel: boolean | Partial<MouseWheelOptions>
@@ -91,6 +93,7 @@ export interface ManualBooleans {
 }
 
 export interface GraphManual extends Partial<Common>, Partial<ManualBooleans> {
+  container?: GraphContainer
   grid?: boolean | number | (Partial<GridCommonOptions> & GridDrawOptions)
   connecting?: Partial<Connecting>
   translating?: Partial<Translating>
@@ -98,6 +101,7 @@ export interface GraphManual extends Partial<Common>, Partial<ManualBooleans> {
 }
 
 export interface GraphDefinition extends Common {
+  container: HTMLElement
   grid: GridOptions
   panning: PanningOptions
   mousewheel: MouseWheelOptions
@@ -319,24 +323,29 @@ export interface Highlighting {
 }
 
 export function getOptions(options: Partial<GraphManual>) {
-  const { grid, panning, mousewheel, embedding, ...others } = options
+  const {
+    container: containerOption,
+    grid,
+    panning,
+    mousewheel,
+    embedding,
+    ...others
+  } = options
 
   // size
   // ----
-  const container = options.container
-  if (container != null) {
-    if (others.width == null) {
-      others.width = container.clientWidth
-    }
-
-    if (others.height == null) {
-      others.height = container.clientHeight
-    }
-  } else {
-    throw new Error(`Ensure the container of the graph is specified and valid`)
+  const container = resolveContainer(containerOption)
+  if (others.width == null) {
+    others.width = container.clientWidth
   }
 
-  const result = ObjectExt.merge({}, defaults, others) as GraphDefinition
+  if (others.height == null) {
+    others.height = container.clientHeight
+  }
+
+  const result = ObjectExt.merge({}, defaults, others, {
+    container,
+  }) as GraphDefinition
 
   // grid
   // ----
@@ -370,6 +379,33 @@ export function getOptions(options: Partial<GraphManual>) {
   })
 
   return result
+}
+
+function resolveContainer(container: GraphContainer | undefined): HTMLElement {
+  if (typeof container !== 'string') {
+    if (isHTMLElement(container)) {
+      return container
+    }
+    throw new Error(`Ensure the container of the graph is specified and valid`)
+  }
+
+  const id = container.trim()
+  const resolved = id ? document.getElementById(id) : null
+
+  if (!isHTMLElement(resolved)) {
+    throw new Error(`Cannot find the graph container: "${container}"`)
+  }
+
+  return resolved
+}
+
+function isHTMLElement(element: unknown): element is HTMLElement {
+  if (element == null || typeof element !== 'object') {
+    return false
+  }
+
+  const ownerWindow = (element as HTMLElement).ownerDocument?.defaultView
+  return ownerWindow != null && element instanceof ownerWindow.HTMLElement
 }
 
 export interface OnPortRenderedArgs {
