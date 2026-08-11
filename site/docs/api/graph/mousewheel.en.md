@@ -33,6 +33,7 @@ interface MouseWheelOptions {
   enabled?: boolean
   global?: boolean
   factor?: number
+  factorByDelta?: boolean
   zoomAtMousePosition?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   guard?: (this: Graph, e: WheelEvent) => boolean
@@ -46,6 +47,12 @@ Whether to enable mouse wheel zooming interaction.
 ### factor
 
 The zoom factor. Defaults to `1.2`.
+
+### factorByDelta
+
+Whether to scale the zoom step by the wheel-delta magnitude instead of applying a fixed quantized step per event. Defaults to `false`.
+
+When `false` (default), every wheel event applies a fixed step (at least 5%), which makes a trackpad pinch — emitting many small high-frequency wheel events — zoom far too fast. When `true`, the zoom step is proportional to the wheel delta: a standard ~100px notch keeps the classic `factor` feel, while small trackpad deltas produce smooth, proportionally small steps.
 
 ### zoomAtMousePosition
 

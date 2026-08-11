@@ -33,6 +33,7 @@ interface MouseWheelOptions {
   enabled?: boolean
   global?: boolean
   factor?: number
+  factorByDelta?: boolean
   zoomAtMousePosition?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   guard?: (this: Graph, e: WheelEvent) => boolean
@@ -46,6 +47,12 @@ interface MouseWheelOptions {
 ### factor
 
 滚动缩放因子。默认为 `1.2`。
+
+### factorByDelta
+
+是否按滚轮 delta 的大小来缩放，而不是每个事件都套用固定的缩放步长。默认为 `false`。
+
+为 `false`（默认）时，每个 wheel 事件都套用固定步长（至少 5%）；触控板捏合会连发大量高频的小 wheel 事件，导致缩放过快。为 `true` 时，缩放步长与滚轮 delta 成正比：约 100px 的标准滚动一格保持原有 `factor` 手感，而触控板的小 delta 则产生平滑、按比例的小步缩放。
 
 ### zoomAtMousePosition
 
