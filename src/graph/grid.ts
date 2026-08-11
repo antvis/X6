@@ -47,6 +47,10 @@ export class GridManager extends Base {
     return this.grid.size
   }
 
+  isSnapToGridEnabled() {
+    return this.grid.snapToGrid
+  }
+
   setGridSize(size: number) {
     this.grid.size = Math.max(size, 1)
     this.update()
@@ -66,7 +70,7 @@ export class GridManager extends Base {
     this.elem.style.backgroundImage = ''
   }
 
-  draw(options?: GridDrawOptions) {
+  draw(options?: GridManager.Options) {
     this.clear()
     this.instance = null
     Object.assign(this.grid, options)
@@ -200,6 +204,11 @@ export type GridDrawOptions =
 export interface GridCommonOptions {
   size: number
   visible: boolean
+  snapToGrid: boolean
 }
 
 export type GridOptions = GridCommonOptions & GridDrawOptions
+
+export namespace GridManager {
+  export type Options = Partial<GridCommonOptions> & GridDrawOptions
+}

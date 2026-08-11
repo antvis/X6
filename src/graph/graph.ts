@@ -54,7 +54,11 @@ import { CSSManager as Css } from './css'
 import { DefsManager as Defs } from './defs'
 import type { FilterOptions, GradientOptions, MarkerOptions } from './defs'
 import type { EventArgs } from './events'
-import { GridManager as Grid, GridDrawOptions } from './grid'
+import {
+  GridManager as Grid,
+  type GridCommonOptions,
+  type GridDrawOptions,
+} from './grid'
 import { HighlightManager as Highlight } from './highlight'
 import { MouseWheel as Wheel } from './mousewheel'
 import { GraphDefinition, GraphManual, getOptions } from './options'
@@ -1177,7 +1181,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawGrid(options?: GridDrawOptions) {
+  drawGrid(options?: Graph.GridManager.Options) {
     this.grid.draw(options)
     return this
   }
@@ -1420,4 +1424,10 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
+}
+
+export namespace Graph {
+  export namespace GridManager {
+    export type Options = Partial<GridCommonOptions> & GridDrawOptions
+  }
 }

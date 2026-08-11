@@ -12,6 +12,9 @@ function createMockGraph() {
     off: vi.fn(),
     trigger: vi.fn(),
     getPlugin: vi.fn(),
+    grid: {
+      isSnapToGridEnabled: () => true,
+    },
     snapToGrid: (x: number, y: number) => ({ x, y }),
     getGridSize: () => 1,
     findViewByCell: (node: any) => ({
