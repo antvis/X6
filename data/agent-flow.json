@@ -1,0 +1,58 @@
+{
+  "llm": {
+    "key": "llm",
+    "iconText": "LLM",
+    "title": "文本大模型",
+    "desc": "处理文本指令与上下文。",
+    "inputPlaceholder": "输入",
+    "theme": "blue"
+  },
+  "code": {
+    "key": "code",
+    "iconText": "</>",
+    "title": "代码",
+    "desc": "运行脚本和逻辑。",
+    "inputPlaceholder": "输入",
+    "theme": "green"
+  },
+  "branch": {
+    "key": "branch",
+    "iconText": "IF",
+    "title": "分支",
+    "desc": "根据条件执行不同业务逻辑。",
+    "inputPlaceholder": "输入",
+    "theme": "orange"
+  },
+  "loop": {
+    "key": "loop",
+    "iconText": "FOR",
+    "title": "循环",
+    "desc": "迭代处理重复执行步骤。",
+    "inputPlaceholder": "输入",
+    "theme": "orange"
+  },
+  "kb": {
+    "key": "kb",
+    "iconText": "KB",
+    "title": "知识库",
+    "desc": "检索信息，提供丰富上下文。",
+    "inputPlaceholder": "输入",
+    "theme": "blue"
+  },
+  "mcp": {
+    "key": "mcp",
+    "iconText": "MCP",
+    "title": "MCP 插件",
+    "desc": "扩展外部能力。",
+    "inputPlaceholder": "输入",
+    "theme": "green"
+  },
+  "db": {
+    "key": "db",
+    "iconText": "DB",
+    "title": "数据库",
+    "desc": "读写数据，支撑数据持久化。",
+    "inputPlaceholder": "输入",
+    "theme": "blue"
+  }
+}
