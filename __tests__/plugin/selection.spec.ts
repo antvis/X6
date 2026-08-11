@@ -772,6 +772,53 @@ describe('Selection plugin', () => {
       expect(Number.parseFloat(box.style.width)).toBeCloseTo(bbox.width)
       expect(Number.parseFloat(box.style.height)).toBeCloseTo(bbox.height)
     })
+
+    it('should discard pending drag offset when blank touch click cleans selection', async () => {
+      replaceSelection({
+        rubberband: true,
+        multiple: true,
+        following: true,
+        showNodeSelectionBox: true,
+      })
+
+      const node = graph.addNode({
+        id: 'pending-drag-node',
+        x: 20,
+        y: 30,
+        width: 100,
+        height: 40,
+      })
+      selection.select(node)
+
+      const touchstart = new Event('touchstart', { bubbles: true })
+      Object.defineProperty(touchstart, 'changedTouches', {
+        value: [
+          {
+            identifier: 1,
+            target: graph.container,
+            clientX: 20,
+            clientY: 30,
+          },
+        ],
+      })
+      const down = new Dom.EventObject(touchstart)
+      Object.defineProperty(down, 'clientX', { configurable: true, value: 20 })
+      Object.defineProperty(down, 'clientY', { configurable: true, value: 30 })
+      selection['selectionImpl']['startTranslating'](down)
+      selection['selectionImpl']['updateSelectedNodesPosition']({
+        dx: 40,
+        dy: 20,
+      })
+
+      const click = new Dom.EventObject(new MouseEvent('click'))
+      graph.trigger('blank:click', { e: click })
+
+      await sleep(40)
+
+      expect(node.position()).toEqual({ x: 20, y: 30 })
+      expect(selection['selectionImpl']['dragPendingOffset']).toBe(null)
+      expect(graph.model.hasActiveBatch('move-selection')).toBe(false)
+    })
   })
 
   describe('onCellAdded', () => {
