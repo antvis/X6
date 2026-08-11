@@ -378,4 +378,177 @@ describe('jumpover connector', () => {
       expect(typeof result).toBe('string')
     })
   })
+
+  describe('jumpDirection option', () => {
+    // Helper: set up two crossing edges.
+    // otherCell is placed BEFORE mockCell in the edges array so it passes
+    // the idx <= thisIndex filter and participates in intersection detection.
+    function setupCrossingEdges(
+      thisSource: Point,
+      thisTarget: Point,
+      otherSource: Point,
+      otherTarget: Point,
+    ) {
+      const otherCell = { getConnector: vi.fn(() => ({ name: 'jumpover' })) }
+      const otherView = {
+        sourcePoint: otherSource,
+        targetPoint: otherTarget,
+        routePoints: [],
+      }
+
+      // otherCell at index 0, mockCell at index 1 => thisIndex=1, otherCell is always included
+      mockGraph.model.getEdges.mockReturnValue([otherCell, mockCell])
+      mockGraph.findViewByCell.mockImplementation((cell: any) =>
+        cell === mockCell ? mockView : otherView,
+      )
+
+      mockView.sourcePoint = thisSource
+      mockView.targetPoint = thisTarget
+      mockView.routePoints = []
+
+      return { otherCell, otherView }
+    }
+
+    describe('jumpDirection: "horizontal"', () => {
+      it('should create jump arc on a horizontal line crossing a vertical line', () => {
+        setupCrossingEdges(
+          new Point(0, 50),
+          new Point(100, 50), // this edge: horizontal
+          new Point(50, 0),
+          new Point(50, 100), // other edge: vertical
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(0, 50),
+          new Point(100, 50),
+          [],
+          { jumpDirection: 'horizontal' },
+        ) as string
+
+        // arc jump produces 'C' (cubic bezier) segments in the serialized path
+        expect(result).toContain('C')
+      })
+
+      it('should NOT create jump arc on a vertical line crossing a horizontal line', () => {
+        setupCrossingEdges(
+          new Point(50, 0),
+          new Point(50, 100), // this edge: vertical
+          new Point(0, 50),
+          new Point(100, 50), // other edge: horizontal
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(50, 0),
+          new Point(50, 100),
+          [],
+          { jumpDirection: 'horizontal' },
+        ) as string
+
+        // vertical line should pass through without a jump arc
+        expect(result).not.toContain('C')
+      })
+    })
+
+    describe('jumpDirection: "vertical"', () => {
+      it('should create jump arc on a vertical line crossing a horizontal line', () => {
+        setupCrossingEdges(
+          new Point(50, 0),
+          new Point(50, 100), // this edge: vertical
+          new Point(0, 50),
+          new Point(100, 50), // other edge: horizontal
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(50, 0),
+          new Point(50, 100),
+          [],
+          { jumpDirection: 'vertical' },
+        ) as string
+
+        expect(result).toContain('C')
+      })
+
+      it('should NOT create jump arc on a horizontal line crossing a vertical line', () => {
+        setupCrossingEdges(
+          new Point(0, 50),
+          new Point(100, 50), // this edge: horizontal
+          new Point(50, 0),
+          new Point(50, 100), // other edge: vertical
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(0, 50),
+          new Point(100, 50),
+          [],
+          { jumpDirection: 'vertical' },
+        ) as string
+
+        // horizontal line should pass through without a jump arc
+        expect(result).not.toContain('C')
+      })
+    })
+
+    describe('jumpDirection: "both" (default)', () => {
+      it('should create jump arc on a horizontal line when jumpDirection is "both"', () => {
+        setupCrossingEdges(
+          new Point(0, 50),
+          new Point(100, 50), // this edge: horizontal
+          new Point(50, 0),
+          new Point(50, 100), // other edge: vertical
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(0, 50),
+          new Point(100, 50),
+          [],
+          { jumpDirection: 'both' },
+        ) as string
+
+        expect(result).toContain('C')
+      })
+
+      it('should create jump arc on a vertical line when jumpDirection is "both"', () => {
+        setupCrossingEdges(
+          new Point(50, 0),
+          new Point(50, 100), // this edge: vertical
+          new Point(0, 50),
+          new Point(100, 50), // other edge: horizontal
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(50, 0),
+          new Point(50, 100),
+          [],
+          { jumpDirection: 'both' },
+        ) as string
+
+        expect(result).toContain('C')
+      })
+
+      it('should default to "both" behavior when jumpDirection is omitted', () => {
+        setupCrossingEdges(
+          new Point(0, 50),
+          new Point(100, 50), // this edge: horizontal
+          new Point(50, 0),
+          new Point(50, 100), // other edge: vertical
+        )
+
+        const result = jumpover.call(
+          mockView,
+          new Point(0, 50),
+          new Point(100, 50),
+          [],
+          {}, // no jumpDirection
+        ) as string
+
+        expect(result).toContain('C')
+      })
+    })
+  })
 })
