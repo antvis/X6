@@ -1547,5 +1547,7 @@ export type BatchName =
   | 'move-segment'
   | 'move-arrowhead'
   | 'move-selection'
+  | 'group-rotate'
+  | 'group-resize'
 
 export interface ToJSONOptions extends CellToJSONOptions {}

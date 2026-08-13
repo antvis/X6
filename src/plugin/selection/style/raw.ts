@@ -69,4 +69,71 @@ export const content = `.x6-widget-selection {
   font-size: 10px;
   background-color: #6a6b8a;
 }
+.x6-widget-selection-group-resize {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #fff;
+  border: 2px solid #feb663;
+  box-sizing: border-box;
+  z-index: 10;
+}
+.x6-widget-selection-group-resize[data-position='top-left'] {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+.x6-widget-selection-group-resize[data-position='top'] {
+  top: -5px;
+  left: 50%;
+  margin-left: -5px;
+  cursor: ns-resize;
+}
+.x6-widget-selection-group-resize[data-position='top-right'] {
+  top: -5px;
+  right: -5px;
+  cursor: nesw-resize;
+}
+.x6-widget-selection-group-resize[data-position='right'] {
+  top: 50%;
+  right: -5px;
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+.x6-widget-selection-group-resize[data-position='bottom-right'] {
+  bottom: -5px;
+  right: -5px;
+  cursor: nwse-resize;
+}
+.x6-widget-selection-group-resize[data-position='bottom'] {
+  bottom: -5px;
+  left: 50%;
+  margin-left: -5px;
+  cursor: ns-resize;
+}
+.x6-widget-selection-group-resize[data-position='bottom-left'] {
+  bottom: -5px;
+  left: -5px;
+  cursor: nesw-resize;
+}
+.x6-widget-selection-group-resize[data-position='left'] {
+  top: 50%;
+  left: -5px;
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+.x6-widget-selection-group-rotate {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #31d0c6;
+  box-sizing: border-box;
+  top: -22px;
+  left: -22px;
+  cursor: crosshair;
+  z-index: 10;
+}
 `

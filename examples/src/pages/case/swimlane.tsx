@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Graph, Cell, CellView, Node } from '@antv/x6'
+import { Graph, Cell, CellView, Node, Selection } from '@antv/x6'
 import '../index.less'
 
 Graph.registerNode(
@@ -336,6 +336,16 @@ export const CaseSwimlaneExample: React.FC = () => {
         },
       },
     })
+
+    graph.use(
+      new Selection({
+        multiple: true,
+        rubberband: true,
+        showNodeSelectionBox: true,
+        resizable: true,
+        rotatable: { grid: 15 },
+      }),
+    )
 
     const cells: Cell[] = []
     data.forEach((item) => {

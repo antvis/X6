@@ -183,7 +183,13 @@ export const CaseMindExample: React.FC = () => {
         connectionPoint: 'anchor',
       },
     })
-    const selection = new Selection()
+    const selection = new Selection({
+      multiple: true,
+      rubberband: true,
+      showNodeSelectionBox: true,
+      resizable: true,
+      rotatable: { grid: 15 },
+    })
     graph.use(selection)
     const keyboard = new Keyboard()
     graph.use(keyboard)

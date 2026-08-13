@@ -388,6 +388,9 @@ export const CaseDagExample: React.FC = () => {
       rubberNode: true,
       modifiers: 'shift',
       rubberband: true,
+      showNodeSelectionBox: true,
+      resizable: true,
+      rotatable: { grid: 15 },
     })
     graph.use(selection)
     graph.use(new Snapline())

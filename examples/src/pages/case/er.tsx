@@ -1,4 +1,4 @@
-import { Graph, Shape, Edge } from '@antv/x6'
+import { Graph, Shape, Edge, Selection } from '@antv/x6'
 import React, { useEffect, useRef } from 'react'
 import './er.less'
 import './tableNode'
@@ -261,6 +261,16 @@ export const ErDiagram: React.FC<ErDiagramProps> = ({ tables }) => {
 
     const graph = createErGraph(containerRef.current)
     graphRef.current = graph
+
+    graph.use(
+      new Selection({
+        multiple: true,
+        rubberband: true,
+        showNodeSelectionBox: true,
+        resizable: true,
+        rotatable: { grid: 15 },
+      }),
+    )
 
     graph.on('edge:click', ({ edge }) => {
       toggleType(edge)

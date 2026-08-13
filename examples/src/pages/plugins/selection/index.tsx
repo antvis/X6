@@ -23,6 +23,8 @@ export const SelectionExample: React.FC = () => {
       strict: true,
       showNodeSelectionBox: true,
       showEdgeSelectionBox: true,
+      resizable: true,
+      rotatable: { grid: 15 },
     }
     const selection = new Selection(selectionOptions)
     graph.use(keyboard)
