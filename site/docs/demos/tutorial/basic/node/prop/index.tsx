@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import React from 'react'
 import { Graph, Color } from '@antv/x6'
@@ -143,23 +143,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.node-prop-app {
-  padding: 0;
-  font-family: sans-serif;
-}
-.node-prop-app .app-btns {
-  bottom: 0;
-  margin: 0;
-  padding: 0 8px;
-}
-.node-prop-app .app-content {
-  width: 100%;
-  height: 240px;
-  margin: 0;
-  margin-top: 16px;
-  border-radius: 5px;
-  box-shadow: 0 12px 5px -10px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.1);
-}
-`)

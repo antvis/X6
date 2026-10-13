@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import React from 'react'
 import { Graph, Node, Point } from '@antv/x6'
@@ -150,58 +150,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.port-ellipse-app {
-  display: flex;
-  padding: 0;
-  padding: 16px 8px;
-  font-family: sans-serif;
-}
-.port-ellipse-app .app-side {
-  bottom: 0;
-  padding: 0 8px;
-}
-.port-ellipse-app .app-content {
-  flex: 1;
-  margin-right: 8px;
-  margin-left: 8px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.port-ellipse-app .ant-card {
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.port-ellipse-app .ant-card-head-title {
-  text-align: center;
-}
-.port-ellipse-app .ant-row {
-  margin: 16px 0;
-  text-align: left;
-}
-.port-ellipse-app .slider-value {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 3px 7px;
-  color: #333;
-  font-size: 12px;
-  line-height: 1.25;
-  background: #eee;
-  border-radius: 10px;
-}
-
-@media (max-width: 640px) {
-  .port-ellipse-app {
-    flex-wrap: wrap;
-    height: auto;
-  }
-  .port-ellipse-app .app-side {
-    width: 100%;
-    max-width: 100%;
-  }
-  .port-ellipse-app .app-content {
-    flex-basis: 100%;
-    min-height: 280px;
-    min-width: 0;
-  }
-}
-`)

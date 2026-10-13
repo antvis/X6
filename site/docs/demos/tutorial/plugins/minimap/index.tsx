@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
 import { Graph, MiniMap, Scroller } from '@antv/x6'
@@ -171,27 +171,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.minimap-app {
-  position: relative;
-  padding: 0;
-  font-family: sans-serif;
-}
-.minimap-app .app-btns {
-  margin-bottom: 8px;
-}
-.minimap-app .app-minimap {
-  position: absolute;
-  bottom: 0;
-  left: 620px;
-  width: 200px;
-  height: 150px;
-}
-.minimap-app .x6-widget-minimap-viewport {
-  border: 2px solid #8f8f8f;
-}
-.minimap-app .x6-widget-minimap-viewport-zoom {
-  border: 2px solid #8f8f8f;
-}
-`)

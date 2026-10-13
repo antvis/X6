@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import React from 'react'
 import { Graph, Selection } from '@antv/x6'
@@ -125,53 +125,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.selection-app {
-  display: flex;
-  padding: 0;
-  font-family: sans-serif;
-}
-.selection-app .app-side {
-  bottom: 0;
-  padding: 0 8px;
-}
-.selection-app .app-content {
-  flex: 1;
-  margin-right: 8px;
-  margin-left: 8px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.selection-app .ant-card {
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.selection-app .ant-card-head-title {
-  text-align: center;
-}
-.selection-app .ant-row {
-  margin: 16px 0;
-  text-align: left;
-}
-.selection-app .x6-widget-selection-box {
-  border: 2px dashed #239edd;
-}
-.selection-app .x6-widget-selection-inner {
-  border: 1px solid #239edd;
-}
-
-@media (max-width: 640px) {
-  .selection-app {
-    flex-wrap: wrap;
-    height: auto;
-  }
-  .selection-app .app-side {
-    width: 100%;
-    max-width: 100%;
-  }
-  .selection-app .app-content {
-    flex-basis: 100%;
-    min-height: 280px;
-    min-width: 0;
-  }
-}
-`)

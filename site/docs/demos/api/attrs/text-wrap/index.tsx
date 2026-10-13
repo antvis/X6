@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
 import { Graph } from '@antv/x6'
@@ -188,19 +188,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.attrs-text-wrap-app {
-  display: flex;
-  width: 100%;
-  padding: 0;
-  font-family: sans-serif;
-}
-.attrs-text-wrap-app .app-content {
-  flex: 1;
-  height: 216px;
-  margin-right: 8px;
-  margin-left: 8px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-`)

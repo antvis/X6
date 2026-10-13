@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import React from 'react'
 import { Button } from 'antd'
@@ -145,58 +145,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.scroller-app {
-  display: flex;
-  padding: 0;
-  font-family: sans-serif;
-}
-.scroller-app .app-side {
-  bottom: 0;
-  padding: 0 8px;
-}
-.scroller-app .app-side .slider-value {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 3px 7px;
-  color: #333;
-  font-size: 12px;
-  line-height: 1.25;
-  background: #eee;
-  border-radius: 10px;
-}
-.scroller-app .app-main {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-right: 8px;
-  margin-left: 8px;
-}
-.scroller-app .app-main .app-btns {
-  display: flex;
-  padding-top: 4px;
-  padding-bottom: 12px;
-}
-.scroller-app .app-main .app-btns .ant-btn {
-  margin-right: 16px;
-}
-.scroller-app .app-main .app-content {
-  flex: 1;
-  margin-right: 8px;
-  margin-left: 8px;
-}
-.scroller-app .x6-graph-scroller {
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.scroller-app .ant-card {
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.scroller-app .ant-card-head-title {
-  text-align: center;
-}
-.scroller-app .ant-row {
-  margin: 16px 0;
-  text-align: left;
-}
-`)

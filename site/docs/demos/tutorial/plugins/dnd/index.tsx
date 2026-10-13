@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react'
@@ -156,47 +156,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.dnd-app {
-  display: flex;
-  padding: 0;
-  font-family: sans-serif;
-}
-.dnd-app .app-content {
-  flex: 1;
-  height: 240px;
-  margin-right: 8px;
-  margin-left: 8px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.dnd-app .dnd-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  padding: 16px;
-  border: 1px solid #f0f0f0;
-  user-select: none;
-}
-.dnd-app .dnd-wrap .dnd-rect {
-  width: 100px;
-  height: 40px;
-  margin: 16px;
-  line-height: 40px;
-  text-align: center;
-  border: 1px solid #8f8f8f;
-  border-radius: 6px;
-  cursor: move;
-}
-.dnd-app .dnd-wrap .dnd-circle {
-  width: 60px;
-  height: 60px;
-  margin: 16px;
-  line-height: 60px;
-  text-align: center;
-  border: 1px solid #8f8f8f;
-  border-radius: 100%;
-  cursor: move;
-}
-`)
