@@ -1,3 +1,4 @@
+import exampleData from '../../../data/bpmn.json'
 import { type Cell, type CellView, Graph, type Node } from '@antv/x6'
 
 function registerGateway(name: string, symbol: string) {
@@ -330,8 +331,7 @@ graph.on('subproc:toggle', ({ node }: { node: Node }) => {
   node.setData({ ...data, expanded: next })
 })
 
-fetch('/data/bpmn.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     const cells: Cell[] = []
     const nodeMap: Record<string, Node> = {}

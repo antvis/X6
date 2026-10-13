@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         ### Issue Feedback
-        ⚠️ Before creating an issue, please make sure you have carefully read 👓 and searched 🔍 https://x6.antv.antgroup.com and https://x6.antv.antgroup.com/examples, and that you have already searched the relevant https://github.com/antvis/X6/issues?q=is%3Aissue and https://github.com/antvis/X6/discussions. Please only submit an issue when you believe there is no existing solution. ⚠️
+        ⚠️ Before creating an issue, please make sure you have carefully read 👓 and searched 🔍 https://x6.antv.antgroup.com and https://x6.antv.antgroup.com/en/examples, and that you have already searched the relevant https://github.com/antvis/X6/issues?q=is%3Aissue and https://github.com/antvis/X6/discussions. Please only submit an issue when you believe there is no existing solution. ⚠️
         ### Package / Version Maintenance Policy
         All new features and enhancements are iterated on in the 3.x version; versions 1.x and 2.x mainly receive fixes for critical bugs.
   - type: textarea
@@ -23,7 +23,7 @@ body:
       description: |
         1. Please provide a minimal reproducible example, and try to remove your business code as much as possible. This helps us reproduce and locate the issue faster; this is very important.
         2. It is recommended to use CodeSandbox (https://codesandbox.io/s/new) to reproduce your problem.
-        3. The demos in the official examples (https://x6.antv.antgroup.com/examples) support editing code online. You can convert the code into a `codesandbox` and share the link with us. Please do not simply copy the official demo code to us without modification.
+        3. The demos in the official examples (https://x6.antv.antgroup.com/en/examples) support editing code online. You can convert the code into a `StackBlitz` and share the link with us. Please do not simply copy the official demo code to us without modification.
       placeholder: |
         Example: CodeSandbox URL
     validations:

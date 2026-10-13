@@ -1,3 +1,4 @@
+import exampleData from '../../../data/class.json'
 import { Graph, ObjectExt, Cell } from '@antv/x6'
 
 // #region 注册基础图形
@@ -239,8 +240,7 @@ const graph = new Graph({
   container: document.getElementById('container')!,
 })
 
-fetch('/data/class.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     const cells: Cell[] = []
     const edgeShapes = [

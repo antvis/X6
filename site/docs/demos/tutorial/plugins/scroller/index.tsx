@@ -1,0 +1,202 @@
+import insertDemoCss from 'insert-css'
+import { createRoot } from 'react-dom/client'
+import React from 'react'
+import { Button } from 'antd'
+import { Graph, Scroller } from '@antv/x6'
+import { Settings, State } from './settings.tsx'
+
+const data = {
+  hello: {
+    id: 'hello',
+    x: 32,
+    y: 32,
+    width: 100,
+    height: 40,
+    label: 'Hello',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
+  },
+  world: {
+    id: 'world',
+    shape: 'circle',
+    x: 160,
+    y: 180,
+    width: 60,
+    height: 60,
+    label: 'World',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+      },
+    },
+  },
+  rect: {
+    id: 'rect',
+    x: -60,
+    y: 100,
+    width: 100,
+    height: 40,
+    label: 'Rect',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6,
+      },
+    },
+  },
+}
+
+export default class Example extends React.Component {
+  private container: HTMLDivElement
+  private graph: Graph
+
+  componentDidMount() {
+    this.renderGraph()
+  }
+
+  renderGraph(options: State | null = null) {
+    if (this.graph) {
+      this.graph.dispose()
+    }
+
+    const graph = new Graph({
+      container: this.container,
+      panning: false,
+      background: {
+        color: '#F2F7FA',
+      },
+    })
+    graph.use(
+      new Scroller({
+        enabled: true,
+        pageVisible: true,
+        pageBreak: true,
+        pannable: true,
+        ...options,
+      }),
+    )
+
+    graph.fromJSON({ nodes: Object.keys(data).map((key) => data[key]) })
+
+    graph.on('node:change:position', ({ node, current }) => {
+      const item = data[node.id]
+      item.x = current!.x
+      item.y = current!.y
+    })
+
+    graph.centerContent()
+    this.graph = graph
+  }
+
+  onSettingsChanged = (options: State) => {
+    this.renderGraph(options)
+  }
+
+  onCenter = () => {
+    this.graph.center()
+  }
+
+  onCenterContent = () => {
+    this.graph.centerContent()
+  }
+
+  onCenterCircle = () => {
+    const circle = this.graph.getCellById('world')
+    if (circle) {
+      this.graph.centerCell(circle)
+    }
+  }
+
+  refContainer = (container: HTMLDivElement) => {
+    this.container = container
+  }
+
+  render() {
+    return (
+      <div className="scroller-app">
+        <div className="app-side">
+          <Settings onChange={this.onSettingsChanged} />
+        </div>
+        <div className="app-main">
+          <div className="app-btns">
+            <Button onClick={this.onCenter}>Center Graph</Button>
+            <Button onClick={this.onCenterContent}>Center Whole Content</Button>
+            <Button onClick={this.onCenterCircle}>Center The Circle</Button>
+          </div>
+          <div className="app-content" ref={this.refContainer} />
+        </div>
+      </div>
+    )
+  }
+}
+
+const root = createRoot(document.getElementById('container')!)
+root.render(<Example />)
+window.addEventListener('pagehide', () => root.unmount(), { once: true })
+
+insertDemoCss(`
+.scroller-app {
+  display: flex;
+  padding: 0;
+  font-family: sans-serif;
+}
+.scroller-app .app-side {
+  bottom: 0;
+  padding: 0 8px;
+}
+.scroller-app .app-side .slider-value {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 7px;
+  color: #333;
+  font-size: 12px;
+  line-height: 1.25;
+  background: #eee;
+  border-radius: 10px;
+}
+.scroller-app .app-main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-right: 8px;
+  margin-left: 8px;
+}
+.scroller-app .app-main .app-btns {
+  display: flex;
+  padding-top: 4px;
+  padding-bottom: 12px;
+}
+.scroller-app .app-main .app-btns .ant-btn {
+  margin-right: 16px;
+}
+.scroller-app .app-main .app-content {
+  flex: 1;
+  margin-right: 8px;
+  margin-left: 8px;
+}
+.scroller-app .x6-graph-scroller {
+  box-shadow: 0 0 10px 1px #e9e9e9;
+}
+.scroller-app .ant-card {
+  box-shadow: 0 0 10px 1px #e9e9e9;
+}
+.scroller-app .ant-card-head-title {
+  text-align: center;
+}
+.scroller-app .ant-row {
+  margin: 16px 0;
+  text-align: left;
+}
+`)

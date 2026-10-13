@@ -1,10 +1,6 @@
 ---
 title: Model
 order: 1
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/mvc
 ---
 
 ## Configuration

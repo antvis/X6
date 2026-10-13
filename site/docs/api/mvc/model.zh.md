@@ -1,10 +1,6 @@
 ---
 title: 模型
 order: 1
-redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/mvc
 ---
 
 ## 配置
@@ -650,7 +646,7 @@ toJSON(options?: ToJSONOptions): object
 
 | 名称         | 类型 | 必选 | 默认值  | 描述                                                                                              |
 |--------------|------|:----:|---------|-------------------------------------------------------------------------------------------------|
-| options.deep | diff |      | `false` | 是否导出节点和边的差异数据（与节点和边的[默认配置](/api/model/cell#选项默认值)不同的部分）。 |
+| options.deep | diff |      | `false` | 是否导出节点和边的差异数据（与节点和边的[默认配置](/zh/api/model/cell#选项默认值)不同的部分）。 |
 
 ### parseJSON(...)
 

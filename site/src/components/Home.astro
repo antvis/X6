@@ -1,0 +1,101 @@
+---
+import type { HomeSlotProps, LocalizedText } from '@antv/astro-theme-antv'
+import { Updates } from '@antv/astro-theme-antv/components'
+import sendIcon from '@tabler/icons/outline/send.svg?raw'
+import bookIcon from '@tabler/icons/outline/book-2.svg?raw'
+import githubIcon from '@tabler/icons/filled/brand-github.svg?raw'
+
+type Props = HomeSlotProps
+const { locale, config, slotName } = Astro.props
+const zh = locale === 'zh'
+const home = config.home
+const localize = (value: string | LocalizedText) => typeof value === 'string' ? value : value[locale] ?? value.zh
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const localHref = (href: string) => `${base}/${locale}${href}`
+const actionClass = 'inline-flex h-[54px] items-center justify-center gap-2 rounded-xl border text-lg font-normal shadow-[0_8px_28px_rgb(0_0_0/5%)] transition-colors hover:border-[var(--brand)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--brand)] max-[600px]:text-base'
+const companies = [{"name":"阿里云","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*V_xMRIvw2iwAAAAAAAAAAABkARQnAQ"},{"name":"支付宝","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*lYDrRZvcvD4AAAAAAAAAAABkARQnAQ"},{"name":"天猫","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*BQrxRK6oemMAAAAAAAAAAABkARQnAQ"},{"name":"淘宝网","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*1l8-TqUr7UcAAAAAAAAAAABkARQnAQ"},{"name":"网上银行","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ZAKFQJ5Bz4MAAAAAAAAAAABkARQnAQ"},{"name":"京东","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*yh-HRr3hCpgAAAAAAAAAAABkARQnAQ"},{"name":"yunos","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_js7SaNosUwAAAAAAAAAAABkARQnAQ"},{"name":"菜鸟","img":"https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*TgV-RZDODJIAAAAAAAAAAABkARQnAQ"}]
+---
+
+{slotName === 'hero' && (
+  <section class="relative isolate h-[clamp(586px,calc(80.3vh_-_64px),836px)] max-[900px]:h-auto" aria-labelledby="x6-home-title">
+    <div class="pointer-events-none absolute inset-x-0 top-0 bottom-[90px] -z-1 bg-[linear-gradient(225deg,#fff,#f0f5ff)]"></div>
+    <div class="relative mx-auto h-full w-[calc(100%_-_80px)] max-w-[1440px] max-[900px]:w-full max-[900px]:px-6">
+      <div class="relative z-1 ml-[4.5%] pt-[clamp(105px,calc(20.9vh_-_64px),170px)] max-[900px]:ml-0 max-[900px]:pt-16 max-[900px]:text-center">
+        <h1 id="x6-home-title" class="m-0 text-[clamp(32px,3.5vw,52px)] font-semibold leading-[1.2] tracking-[-1.6px] text-black [@media(width<=760px)]:text-[32px] [@media(width<=760px)]:tracking-[-1px]">
+          <span class="text-[var(--brand)]">{config.site.title}</span>{localize(home.title).slice(config.site.title.length)}
+        </h1>
+        <p class="mt-[11px] mb-0 max-w-[520px] text-lg font-normal leading-[1.5715] text-[#424e66] max-[900px]:mx-auto max-[600px]:text-sm">{localize(home.description)}</p>
+        <div class="mt-10 flex flex-wrap items-center gap-5 max-[900px]:justify-center max-[600px]:gap-3">
+          {home.actions.map((action, index) => (
+            <a href={localHref(action.href)} class:list={[actionClass, 'px-8 max-[600px]:px-5', index === 0 ? 'border-[var(--brand)] bg-[var(--brand)] text-white hover:bg-[var(--brand-strong)] hover:text-white' : 'border-[#e8e8e8] bg-white text-[#1d2129] hover:text-[var(--brand)]']}>
+              <span class="size-5 [&_svg]:size-full" aria-hidden="true" set:html={index === 0 ? sendIcon : bookIcon}></span>
+              {localize(action.text)}
+            </a>
+          ))}
+          <a class:list={[actionClass, 'border-[#e8e8e8] bg-white px-4 text-[#1d2129] hover:text-[var(--brand)] max-[480px]:hidden']} href={config.site.repository} aria-label={zh ? '在 GitHub 上关注 X6' : 'Star X6 on GitHub'}>
+            <span class="size-5 [&_svg]:size-full" aria-hidden="true" set:html={githubIcon}></span>
+            <span data-x6-stars>GitHub</span>
+          </a>
+        </div>
+      </div>
+      <img src={home.image} alt={zh ? 'X6 吉祥物' : 'X6 mascot'} fetchpriority="high" class="absolute top-[94px] right-[-10px] w-[min(31%,419px)] max-[900px]:relative max-[900px]:top-auto max-[900px]:right-auto max-[900px]:mx-auto max-[900px]:mt-8 max-[900px]:block max-[900px]:w-[min(70%,300px)]" />
+      <img src="https://gw.alipayobjects.com/zos/basement_prod/441d5eaf-e623-47cd-b9b9-2a581d9ce1e3.svg" alt="" class="pointer-events-none absolute bottom-[-20px] left-[-8%] -z-1 w-[358px] max-[900px]:hidden" />
+      <div class="absolute inset-x-[4.5%] bottom-[30px] max-[900px]:relative max-[900px]:inset-auto max-[900px]:mt-10 max-[900px]:pb-6">
+        <Updates locale={locale} variant="compact" />
+      </div>
+    </div>
+  </section>
+)}
+
+{slotName === 'features' && (
+  <section class="bg-white px-10 pt-20 pb-[90px] max-[900px]:px-6 max-[900px]:py-14" aria-label={zh ? 'X6 产品特性' : 'X6 features'}>
+    <div class="mx-auto grid max-w-[1440px] grid-cols-3 gap-6 max-[900px]:grid-cols-1">
+      {home.features.map((feature) => (
+        <article class="flex min-h-[266px] flex-col items-center rounded-2xl border border-[#e5e8ef] bg-white px-[clamp(24px,4.8vw,70px)] py-9">
+          <img src={feature.icon} alt="" loading="lazy" class="h-[60px] w-auto" />
+          <h2 class="mt-7 mb-[22px] text-center text-2xl font-medium leading-8 text-[#1d2129]">{localize(feature.title)}</h2>
+          <p class="m-0 w-full text-sm leading-[1.8] text-[#697b8c]/60">{localize(feature.description)}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+{slotName === 'afterFeatures' && (
+  <>
+    <section class="bg-[#f9fafb] px-10 max-[900px]:px-6" aria-labelledby="x6-workflow-title">
+      <div class="relative mx-auto grid max-w-[1440px] grid-cols-2 gap-12 max-[900px]:grid-cols-1 max-[900px]:gap-6 max-[900px]:py-12">
+        <div class="ml-[16%] pt-[110px] max-[900px]:ml-0 max-[900px]:pt-0">
+          <img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*DALaSKBxyEcAAAAAAAAAAAAADtOHAQ/original" alt="" loading="lazy" class="w-20 drop-shadow-[0_12px_12px_rgb(105_123_140/30%)]" />
+          <h2 id="x6-workflow-title" class="mt-12 mb-0 text-lg font-bold leading-7 text-black">{zh ? '流程编排' : 'Workflow orchestration'}</h2>
+          <p class="mt-4 max-w-[368px] text-sm leading-[1.8] text-[#a3b1bf]">{zh ? '可视化编排可以用简单的方式将复杂的流程呈现出来，让用户更容易理解工作流' : 'Visual orchestration makes complex processes easier to understand.'}</p>
+        </div>
+        <a href={localHref('/examples/showcase/practices/dag/')} class="block focus-visible:outline-2 focus-visible:outline-[var(--brand)]" aria-label={zh ? '体验流程编排示例' : 'Explore the workflow example'}>
+          <img src="https://mdn.alipayobjects.com/huamei_f4t1bn/afts/img/A*QsT0TpxA8-AAAAAAAAAAAAAADtOHAQ/original" alt={zh ? '流程编排案例' : 'Workflow example'} loading="lazy" class="block w-full" />
+        </a>
+      </div>
+    </section>
+    <section class="bg-white px-10 pt-[118px] pb-[72px] max-[900px]:px-6 max-[900px]:py-14" aria-labelledby="x6-customers-title">
+      <div class="mx-auto max-w-[1440px]">
+        <h2 id="x6-customers-title" class="m-0 text-center text-[38px] font-medium leading-[1.5715] text-black max-[600px]:text-[28px]">{zh ? '感谢信赖' : 'Trusted by'}</h2>
+        <ul class="mt-[60px] mb-0 grid list-none grid-cols-4 items-center gap-x-12 gap-y-[34px] p-0 max-[900px]:grid-cols-2 max-[600px]:gap-6">
+          {companies.map(company => <li class="flex justify-center"><img src={company.img} alt={company.name} loading="lazy" class="w-[207px] max-w-full" /></li>)}
+        </ul>
+      </div>
+    </section>
+  </>
+)}
+
+<script>
+  const stars = document.querySelector('[data-x6-stars]')
+  if (stars) {
+    fetch('https://api.github.com/repos/antvis/X6', { signal: AbortSignal.timeout(5000) })
+      .then(response => response.ok ? response.json() : null)
+      .then(repository => {
+        if (Number.isInteger(repository?.stargazers_count)) {
+          stars.textContent = String(repository.stargazers_count)
+        }
+      })
+      .catch(() => { /* Keep the usable GitHub link when the public API is unavailable. */ })
+  }
+</script>

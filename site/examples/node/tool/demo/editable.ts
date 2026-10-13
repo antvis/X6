@@ -1,5 +1,4 @@
 import { Graph } from '@antv/x6'
-import '../index.less'
 
 const container = document.getElementById('container')!
 const graph = new Graph({

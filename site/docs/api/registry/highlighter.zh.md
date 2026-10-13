@@ -1,10 +1,6 @@
 ---
 title: 高亮器
 order: 14
-redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/registry
 ---
 
 节点/边的高亮器，用于高亮指定的元素。X6 内置了以下几种高亮器。
