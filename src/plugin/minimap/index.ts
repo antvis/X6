@@ -315,23 +315,22 @@ export class MiniMap extends View implements GraphPlugin {
   protected scrollTo(evt: Dom.MouseDownEvent) {
     const e = this.normalizeEvent(evt)
 
-    let x: number
-    let y: number
+    // 使用 pageX/pageY 相对于 targetGraph.container 的偏移，避免 offsetX/offsetY
+    // 相对于内部子元素导致坐标基准不一致的问题
+    const containerOffset = Dom.offset(this.targetGraph.container)
+    const x = e.pageX - containerOffset.left
+    const y = e.pageY - containerOffset.top
 
     const ts = this.targetGraph.translate()
     ts.ty = ts.ty || 0
 
-    if (e.offsetX == null) {
-      const offset = Dom.offset(this.targetGraph.container)
-      x = e.pageX - offset.left
-      y = e.pageY - offset.top
-    } else {
-      x = e.offsetX
-      y = e.offsetY
-    }
+    // 使用 targetGraph 的实际缩放比替代 this.ratio
+    // 原版用 this.ratio，但非 scroller 模式下 zoomToFit() 会重新计算缩放比，
+    // 导致 this.ratio 与 targetGraph 实际缩放比不一致，坐标转换产生偏差
+    const targetScale = this.targetGraph.transform.getScale()
 
-    const cx = (x - ts.tx) / this.ratio
-    const cy = (y - ts.ty) / this.ratio
+    const cx = (x - ts.tx) / targetScale.sx
+    const cy = (y - ts.ty) / targetScale.sy
     this.sourceGraph.centerPoint(cx, cy)
   }
 
