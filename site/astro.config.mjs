@@ -230,23 +230,11 @@ const config = defineConfig({
   },
   demo: {
     height: 600,
+    // Native iframe imports need named ESM exports for React's CommonJS entries.
     dependencies: {
-      '@antv/x6': '@antv/x6',
-      '@antv/x6-react-shape': '@antv/x6-react-shape',
-      '@antv/x6-react-components/es/split-box':
-        '@antv/x6-react-components/es/split-box',
-      '@antv/hierarchy': '@antv/hierarchy',
-      '@antv/layout': '@antv/layout',
-      antd: 'antd',
       react: './src/demo/react.ts',
       'react/jsx-runtime': './src/demo/jsx-runtime.ts',
       'react-dom/client': './src/demo/react-dom-client.ts',
-      classnames: 'classnames',
-      dagre: 'dagre',
-      'elkjs/lib/elk.bundled.js': 'elkjs/lib/elk.bundled.js',
-      'insert-css': 'insert-css',
-      'highlight.js/lib/core': 'highlight.js/lib/core',
-      'highlight.js/lib/languages/json': 'highlight.js/lib/languages/json',
     },
   },
 })
