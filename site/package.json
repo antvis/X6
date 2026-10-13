@@ -15,7 +15,7 @@
     "sites"
   ],
   "dependencies": {
-    "@antv/astro-theme-antv": "link:../../astro-theme-antv",
+    "@antv/astro-theme-antv": "^0.1.0-beta.11",
     "@antv/hierarchy": "^0.6.6",
     "@antv/layout": "^0.3.12",
     "@antv/x6": "workspace:*",
