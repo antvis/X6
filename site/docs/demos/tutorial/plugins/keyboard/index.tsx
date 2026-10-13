@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
 import { Graph, Clipboard, Keyboard, Selection } from '@antv/x6'
@@ -134,37 +134,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.keyboard-app {
-  padding: 0;
-  font-family: sans-serif;
-}
-.keyboard-app .app-info {
-  bottom: 0;
-  margin: 0;
-  padding: 0 8px;
-}
-.keyboard-app .app-info span {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 2px 8px;
-  font-size: 12px;
-  line-height: 18px;
-  background: #e9e9e9;
-  border-radius: 4px;
-}
-.keyboard-app .app-content {
-  width: 100%;
-  height: 280px;
-  margin-right: 8px;
-  margin-left: 8px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.keyboard-app .x6-widget-selection-box {
-  border: 2px dashed #239edd;
-}
-.keyboard-app .x6-widget-selection-inner {
-  border: 1px solid #239edd;
-}
-`)

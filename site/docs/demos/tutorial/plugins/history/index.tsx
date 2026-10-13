@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import React from 'react'
 import { Button } from 'antd'
@@ -95,22 +95,3 @@ export default class App extends React.Component<Props, State> {
 const root = createRoot(document.getElementById('container')!)
 root.render(<App />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.history-app {
-  padding: 0;
-  font-family: sans-serif;
-}
-.history-app .app-btns {
-  bottom: 0;
-  margin: 0;
-  padding: 0 8px;
-}
-.history-app .app-content {
-  width: 100%;
-  height: 240px;
-  margin: 0;
-  margin-top: 16px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-`)

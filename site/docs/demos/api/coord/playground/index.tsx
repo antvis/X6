@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
 import { Graph } from '@antv/x6'
@@ -109,7 +109,7 @@ export default class Example extends React.Component {
   }
 
   start() {
-    const root = document.getElementById('root')!
+    const root = document.getElementById('container')!
     const v = document.createElement('div')
     const h = document.createElement('div')
     const c = document.createElement('div')
@@ -175,64 +175,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.bar {
-  position: absolute;
-  top: 48px;
-  right: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(to right, #9198e5, #e66465);
-}
-.coord-app {
-  display: flex;
-  padding: 0;
-  padding: 16px 8px;
-  font-family: sans-serif;
-}
-.coord-app .app-left {
-  top: 64px;
-  z-index: 10;
-  width: 336px;
-  padding: 0 8px;
-}
-.coord-app .app-content {
-  flex: 1;
-  height: 318px;
-  margin-right: 8px;
-  overflow: auto;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.coord-app .ant-card {
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.coord-app .ant-card-head-title {
-  text-align: center;
-}
-.coord-app .ant-row {
-  margin: 16px 0;
-  text-align: left;
-}
-.coord-app .slider-value {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 3px 7px;
-  color: #333;
-  font-size: 12px;
-  line-height: 1.25;
-  background: #eee;
-  border-radius: 10px;
-}
-.coord-app #elapsed {
-  padding: 0 7px;
-  color: #52c41a;
-  font-size: 12px;
-  font-variant: tabular-nums;
-  line-height: 20px;
-  white-space: nowrap;
-  background: #f6ffed;
-  border-color: #b7eb8f;
-  border-radius: 2px;
-}
-`)

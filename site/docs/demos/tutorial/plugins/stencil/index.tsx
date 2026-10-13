@@ -1,4 +1,4 @@
-import insertDemoCss from 'insert-css'
+import './index.less'
 import { createRoot } from 'react-dom/client'
 import React from 'react'
 import { Graph, Stencil, Snapline } from '@antv/x6'
@@ -168,26 +168,3 @@ export default class Example extends React.Component {
 const root = createRoot(document.getElementById('container')!)
 root.render(<Example />)
 window.addEventListener('pagehide', () => root.unmount(), { once: true })
-
-insertDemoCss(`
-.stencil-app {
-  display: flex;
-  padding: 0;
-  font-family: sans-serif;
-}
-.stencil-app .app-stencil {
-  position: relative;
-  width: 200px;
-  border: 1px solid #f0f0f0;
-}
-.stencil-app .app-content {
-  flex: 1;
-  height: 380px;
-  margin-right: 8px;
-  margin-left: 8px;
-  box-shadow: 0 0 10px 1px #e9e9e9;
-}
-.stencil-app .x6-widget-stencil-group-title {
-  margin-top: 0 !important;
-}
-`)
