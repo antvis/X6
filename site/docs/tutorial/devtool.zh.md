@@ -1,9 +1,6 @@
 ---
 title: 开发者工具
 order: 6
-redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
 ---
 
 我们提供了一个对页面元素进行审查的插件来帮助开发者更方便的开发应用。

@@ -1,3 +1,4 @@
+import exampleData from '../../../data/mindmap.json'
 import { Graph, Node, Edge, Shape } from '@antv/x6'
 
 // 定义节点
@@ -171,8 +172,7 @@ graph.on('node:collapse', ({ node }: { node: TreeNode }) => {
   run(node)
 })
 
-fetch('/data/mindmap.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     const nodes = data.nodes.map(({ leaf, ...metadata }: any) => {
       const node = new TreeNode(metadata)

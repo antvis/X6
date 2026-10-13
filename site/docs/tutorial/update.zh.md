@@ -1,8 +1,6 @@
 ---
 title: 升级到 3.x 版本
 order: 5
-redirect_from:
-  - /zh/docs/tutorial/update
 ---
 
 相比 2.x 版本，3.x 在对外使用上的变化主要集中在插件及子包合并（统一导出），交互默认值优化，并新增动画能力，整体升级成本较低。
@@ -74,7 +72,7 @@ import { Dom, FunctionExt, Point, Rectangle } from '@antv/x6'
 
 3.x 新增 `animate` 动画，移除 2.x 中的 `transition` 使用方式，更加方便地为节点和边添加动效。
 
-更多用法可参考：[动画说明文档](/tutorial/basic/animation)。
+更多用法可参考：[动画说明文档](/zh/tutorial/basic/animation)。
 
 ### 配置修改说明
 

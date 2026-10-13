@@ -1,17 +1,12 @@
 ---
 title: 导出
 order: 9
-redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/plugins
 ---
 
-:::info{title="本章节主要介绍导出插件相关的知识，通过阅读，你可以了解到"}
+> **本章节主要介绍导出插件相关的知识，通过阅读，你可以了解到**
 
 - 如何将画布内容通过图片格式导出
 
-:::
 
 ## 使用
 

@@ -1,9 +1,6 @@
 ---
 title: Developer Tools
 order: 6
-redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
 ---
 
 We provide a plugin for inspecting page elements to help developers more easily develop applications.

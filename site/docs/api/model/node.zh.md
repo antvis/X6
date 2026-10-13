@@ -1,17 +1,13 @@
 ---
 title: 节点
 order: 1
-redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/model
 ---
 
-Node 是所有节点的基类，继承自 [Cell](/api/model/cell)，并定义了节点的通用属性和方法。
+Node 是所有节点的基类，继承自 [Cell](/zh/api/model/cell)，并定义了节点的通用属性和方法。
 
 ## 属性
 
-除了从 Cell 继承[属性](/api/model/cell#属性)外，还支持以下属性。
+除了从 Cell 继承[属性](/zh/api/model/cell#属性)外，还支持以下属性。
 
 | 选项 | 类型 | 默认值 | 必选 | 描述 |
 | --- | --- | --- | :-: | --- |

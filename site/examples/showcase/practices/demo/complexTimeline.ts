@@ -1,3 +1,4 @@
+import exampleData from '../../../data/complex-timeline.json'
 import { Graph, type Node, type Cell } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import insertCss from 'insert-css'
@@ -344,8 +345,7 @@ function showGraph() {
 }
 
 // 数据加载与渲染
-fetch('/data/complex-timeline.json')
-  .then((res) => res.json())
+Promise.resolve(exampleData)
   .then((data) => {
     const cells = transformTimelineData(data)
     graph.resetCells(cells)

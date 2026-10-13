@@ -1,9 +1,6 @@
 ---
 title: Introduction
 order: 0
-redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
 ---
 
 X6 is a graph editing engine based on HTML and SVG, offering low-cost customization capabilities and out-of-the-box built-in extensions, making it easy for us to quickly build applications such as DAG diagrams, ER diagrams, flowcharts, and lineage graphs.
@@ -17,7 +14,7 @@ If you haven't used X6 yet, we recommend experiencing its charm through the [Get
 </p>
 
 <p align="left">
-<a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=flat-square" alt="MIT License" /></a>
+<a href="https://github.com/antvis/X6/blob/master/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=flat-square" alt="MIT License" /></a>
 <a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=flat-square" /></a>
 <a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square" /></a>
 <a href="https://x6.antv.antgroup.com"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=flat-square&logo=google-chrome&logoColor=0076D6" /></a>

@@ -20,6 +20,18 @@ jobs:
         with:
           persist-credentials: false
 
+      # Match the sibling directory used by site's local theme dependency.
+      - name: Checkout Astro theme
+        uses: actions/checkout@v4
+        with:
+          repository: antvis/astro-theme-antv
+          ref: main
+          path: .astro-theme-source
+          persist-credentials: false
+
+      - name: Prepare sibling theme checkout
+        run: mv .astro-theme-source ../astro-theme-antv
+
       - name: 🎉　Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,17 +40,14 @@ jobs:
 
       - name: 🚧　Install
         run: |
-          npm i pnpm@latest -g
-          pnpm install
-
-      - name: 🚀　Build Core library @antv/x6
-        run: |
-          pnpm run build
+          npm i pnpm@10.34.5 -g
+          pnpm --dir ../astro-theme-antv install --frozen-lockfile
+          pnpm --dir ../astro-theme-antv run build
+          pnpm install --frozen-lockfile
 
       - name: 🚀　Build site
         run: |
           cd ./site && pnpm run build
-          cp ./CNAME ./dist/CNAME
 
       - name: 👩‍⚕️　Verify build output
         run: |

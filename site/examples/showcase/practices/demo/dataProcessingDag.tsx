@@ -1,3 +1,4 @@
+import exampleData from '../../../data/data-processing-dag.json'
 import React from 'react'
 import {
   Graph,
@@ -675,8 +676,7 @@ const stopAnimate = () => {
   graph.select('node-2')
 }
 
-fetch('/data/data-processing-dag.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     graph.fromJSON(data)
     const zoomOptions = {

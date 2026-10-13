@@ -1,3 +1,4 @@
+import exampleData from '../../../data/er.json'
 import React from 'react'
 import { Graph, Node, Edge } from '@antv/x6'
 import insertCss from 'insert-css'
@@ -261,8 +262,7 @@ graph.on('edge:mouseleave', ({ edge }) => {
 
 // 初始化
 const initializeGraph = async () => {
-  const response = await fetch('/data/er.json')
-  const { nodes, edges } = transformToGraphData(await response.json())
+  const { nodes, edges } = transformToGraphData(exampleData)
   graph.addNodes(nodes)
   graph.addEdges(edges)
 
