@@ -1,10 +1,6 @@
 ---
 title: Interaction
 order: 6
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/model
 ---
 
 One of the most appealing aspects of X6 for developers is its comprehensive interaction customization capabilities, which allow us to achieve a wide range of complex effects. Below are some common interactive behaviors.
@@ -117,7 +113,7 @@ Whether to allow multiple edges to be created between the same starting and endi
 highlight: boolean
 ```
 
-Whether to highlight all available connection ports or nodes while dragging an edge. The default value is `false`. This is generally used in conjunction with [highlighting](/en/api/interacting/interacting#highlighting)highlighting
+Whether to highlight all available connection ports or nodes while dragging an edge. The default value is `false`. This is generally used in conjunction with [highlighting](/en/tutorial/basic/interacting#highlighting)highlighting
 ### anchor
 
 ```typescript
