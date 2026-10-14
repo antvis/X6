@@ -89,7 +89,7 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className="manhattan-router-app">
+      <div className="metro-router-app">
         <div className="app-content" ref={this.refContainer} />
       </div>
     )
