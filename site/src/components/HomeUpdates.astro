@@ -1,0 +1,33 @@
+---
+import { Updates } from '@antv/astro-theme-antv/components'
+
+interface Props { locale: 'zh' | 'en' }
+const { locale } = Astro.props
+const cardClass = 'relative h-32 rounded-2xl border border-[#e5e8ef] bg-white px-5 py-2.5 text-center shadow-[0_8px_28px_rgb(0_0_0/5%)] max-[767px]:h-40'
+---
+
+<div class="[--x6-updates-gap:26px] max-[767px]:[--x6-updates-gap:14px]">
+  <Updates
+    locale={locale}
+    style="min-height:128px;--carousel-gap:var(--x6-updates-gap);--carousel-pagination-margin:16px"
+  >
+    <Fragment slot="skeleton">
+      {[0, 1, 2].map(() => (
+        <div class:list={[cardClass, 'flex flex-col justify-center gap-3']} aria-hidden="true">
+          <span class="h-[22px] w-[65%] rounded-md bg-[var(--brand-soft)]"></span>
+          <span class="h-[22px] rounded-md bg-[var(--brand-soft)]"></span>
+        </div>
+      ))}
+    </Fragment>
+    <a
+      slot="card"
+      target="_blank"
+      rel="noreferrer"
+      class:list={[cardClass, 'group block text-inherit no-underline transition-[border-color,box-shadow,transform] duration-250 hover:[transform:translateY(-8px)] hover:shadow-[0_8px_20px_rgb(0_0_0/10%)] focus-visible:[transform:translateY(-8px)] focus-visible:shadow-[0_8px_20px_rgb(0_0_0/10%)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--brand)] motion-reduce:transition-none motion-reduce:hover:transform-none motion-reduce:focus-visible:transform-none']}
+    >
+      <img alt="" width="24" height="24" loading="lazy" decoding="async" class="mr-1.5 inline-block size-6 object-contain align-middle [&[hidden]]:hidden" />
+      <strong class="inline text-xl leading-7 font-medium text-[#1d2129] group-hover:text-[#691eff] group-focus-visible:text-[#691eff]"></strong>
+      <span data-update-description class="mt-1.5 line-clamp-3 text-sm leading-[22px] font-light text-[#424e66] [font-family:var(--antv-copy-font,var(--font-sans,sans-serif))]"></span>
+    </a>
+  </Updates>
+</div>

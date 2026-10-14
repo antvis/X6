@@ -1,26 +1,21 @@
 ---
 title: Vue Nodes
 order: 5
-redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
-  - /en/docs/tutorial/intermediate
 ---
 
-:::info{title="This chapter mainly introduces knowledge related to Vue nodes. By reading, you can learn"}
+> **This chapter mainly introduces knowledge related to Vue nodes. By reading, you can learn**
 
 - How to use Vue components to render node content
 - How to update node content
 
-:::
 
 ## Rendering Nodes
 
 We provide a standalone package `@antv/x6-vue-shape` for rendering nodes with Vue components.
 
-:::warning{title=Note}
+> **Note**
+
 Version compatibility: X6 3.x must use x6-vue-shape 3.x.
-:::
 
 ```html
 <template>
@@ -195,6 +190,6 @@ In the above example, we used `Teleport`, a feature in `Vue 3`. How can we use i
 
 The node component is written in the same way as above.
 
-:::warning{title=Note}
+> **Note**
+
 In Vue 2, node components have some limitations, such as the inability to use Vuex, i18n, and Element UI.
-:::

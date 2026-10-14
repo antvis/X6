@@ -1,10 +1,6 @@
 ---
 title: Viewport Transformation
 order: 6
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/graph
 ---
 
 ## Configuration

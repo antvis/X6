@@ -1,10 +1,6 @@
 ---
 title: Edge
 order: 2
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/model
 ---
 
 Edge is the base class for edges, inheriting from [Cell](/en/api/model/cell), and defines the common properties and methods for edges.

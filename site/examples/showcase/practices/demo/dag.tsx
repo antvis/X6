@@ -1,3 +1,4 @@
+import exampleData from '../../../data/dag.json'
 import React from 'react'
 import { Graph, Path, Cell, Selection } from '@antv/x6'
 import insertCss from 'insert-css'
@@ -295,8 +296,7 @@ const showNodeStatus = async (statusList: NodeStatus[][]) => {
   }, 3000)
 }
 
-fetch('/data/dag.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     init(data)
     showNodeStatus(nodeStatusList)

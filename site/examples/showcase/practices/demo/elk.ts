@@ -1,5 +1,6 @@
+import exampleData from '../../../data/elkdata.json'
 import { Graph, Cell } from '@antv/x6'
-import ELK, { ElkNode, ElkEdge, ElkExtendedEdge } from 'elkjs'
+import ELK, { ElkNode, ElkEdge, ElkExtendedEdge } from 'elkjs/lib/elk.bundled.js'
 
 Graph.registerNode(
   'elk-node',
@@ -165,8 +166,7 @@ const addEdges = (edges: ElkEdge[], pos?: Position) => {
   })
 }
 
-fetch('/data/elkdata.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     elk.layout(data).then((res) => {
       addChildren(res.children || [])

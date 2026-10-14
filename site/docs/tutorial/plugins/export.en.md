@@ -1,17 +1,12 @@
 ---
 title: Export
 order: 9
-redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
-  - /en/docs/tutorial/plugins
 ---
 
-:::info{title="This chapter mainly introduces the knowledge of the export plugin. By reading, you can learn about"}
+> **This chapter mainly introduces the knowledge of the export plugin. By reading, you can learn about**
 
 - How to export the canvas content in image format
 
-:::
 
 ## Usage
 

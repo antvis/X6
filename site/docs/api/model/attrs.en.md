@@ -1,10 +1,6 @@
 ---
 title: Element Attributes
 order: 5
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/model
 ---
 
 For native SVG attributes, there are many tutorials available online, such as the [SVG Attribute Reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) provided by MDN. Here, we will focus more on how to define and use special attributes. Special attributes provide more flexible and powerful functionality than native SVG attributes. When applying attributes, native attributes are directly passed to the corresponding element, while special attributes are further processed and converted into native attributes recognized by the browser before being passed to the corresponding element.
@@ -58,9 +54,8 @@ graph.addNode({
 
 The above attributes are calculated relative to the node size by default. We can also use the `ref` attribute to provide a sub-element selector, so that all calculations are relative to the element referred to by `ref`, achieving relative size and position to sub-elements.
 
-::: warning
+> **Warning**
 Note that setting `ref` will make all calculations dependent on the sub-element's bbox measurement in the browser, which may affect performance.
-:::
 
 ```ts
 graph.addNode({

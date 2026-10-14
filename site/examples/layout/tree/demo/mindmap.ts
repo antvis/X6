@@ -1,3 +1,4 @@
+import exampleData from '../../../data/algorithm-category.json'
 import { Graph, Model } from '@antv/x6'
 import Hierarchy from '@antv/hierarchy'
 
@@ -8,8 +9,7 @@ const graph = new Graph({
   },
 })
 
-fetch('/data/algorithm-category.json')
-  .then((response) => response.json())
+Promise.resolve(exampleData)
   .then((data) => {
     const result = Hierarchy.mindmap(data, {
       direction: 'H',

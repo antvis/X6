@@ -1,27 +1,22 @@
 ---
 title: Angular Nodes
 order: 6
-redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
-  - /en/docs/tutorial/intermediate
 ---
 
-:::info{title="This chapter mainly introduces knowledge related to Angular nodes. By reading, you can learn"}
+> **This chapter mainly introduces knowledge related to Angular nodes. By reading, you can learn**
 
 - How to use Angular to render node content
 - How to update node content
 - FAQ
 
-:::
 
 ## Rendering Nodes
 
 We provide a standalone package `@antv/x6-angular-shape` for rendering Angular components/templates as nodes.
 
-:::warning{title=Note}
+> **Note**
+
 Version compatibility: X6 3.x must use x6-angular-shape 3.x.
-:::
 
 ### Component Rendering
 

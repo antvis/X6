@@ -1,10 +1,6 @@
 ---
 title: View
 order: 7
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/mvc
 ---
 
 ## Configuration

@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         ### 问题反馈
-        ⚠️ 在提出问题前，请确保你已经仔细阅读👓/搜索🔍过 [官方文档](https://x6.antv.antgroup.com) 和 [图表示例](https://x6.antv.antgroup.com/examples)，并且已经搜索查阅过相关 [Issues 列表](https://github.com/antvis/X6/issues?q=is%3Aissue) 和 [Discussions 列表](https://github.com/antvis/X6/discussions)。当你确定自己的问题没有解决方案时，请提交 issue。 ⚠️
+        ⚠️ 在提出问题前，请确保你已经仔细阅读👓/搜索🔍过 [官方文档](https://x6.antv.antgroup.com) 和 [图表示例](https://x6.antv.antgroup.com/zh/examples)，并且已经搜索查阅过相关 [Issues 列表](https://github.com/antvis/X6/issues?q=is%3Aissue) 和 [Discussions 列表](https://github.com/antvis/X6/discussions)。当你确定自己的问题没有解决方案时，请提交 issue。 ⚠️
         ### 包/版本维护原则
         所有新功能、新特性均在 3.x 版本中进行迭代；1.x、2.x 版本以修复痛点 bug 为主。
   - type: textarea
@@ -23,7 +23,7 @@ body:
       description: |
         1. 请提供一个精简的最小可复现链接，尽量去除你的业务代码，它可以让我们更快的帮你复现，定位问题，这很重要，很重要，很重要。
         2. 推荐使用 CodeSandbox(https://codesandbox.io/s/new) 重现你的问题。
-        3. [官网示例中的 demo](https://x6.antv.antgroup.com/examples) 支持在线编写代码，你可以将代码转成 `codesandbox` 并将对应的链接发给我们，请不要将官网的代码原封不动的复制给我们。
+        3. [官网示例中的 demo](https://x6.antv.antgroup.com/zh/examples) 支持在线编写代码，你可以将代码转成 `StackBlitz` 并将对应的链接发给我们，请不要将官网的代码原封不动的复制给我们。
       placeholder: |
         示例: CodeSandBox URL
     validations:
