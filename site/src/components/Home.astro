@@ -1,6 +1,6 @@
 ---
 import type { HomeSlotProps, LocalizedText } from '@antv/astro-theme-antv'
-import { Updates } from '@antv/astro-theme-antv/components'
+import HomeUpdates from './HomeUpdates.astro'
 import sendIcon from '@tabler/icons/outline/send.svg?raw'
 import bookIcon from '@tabler/icons/outline/book-2.svg?raw'
 import githubIcon from '@tabler/icons/filled/brand-github.svg?raw'
@@ -41,7 +41,7 @@ const companies = [{"name":"阿里云","img":"https://gw.alipayobjects.com/mdn/r
       <img src={home.image} alt={zh ? 'X6 吉祥物' : 'X6 mascot'} fetchpriority="high" class="absolute top-[94px] right-[-10px] w-[min(31%,419px)] max-[900px]:relative max-[900px]:top-auto max-[900px]:right-auto max-[900px]:mx-auto max-[900px]:mt-8 max-[900px]:block max-[900px]:w-[min(70%,300px)]" />
       <img src="https://gw.alipayobjects.com/zos/basement_prod/441d5eaf-e623-47cd-b9b9-2a581d9ce1e3.svg" alt="" class="pointer-events-none absolute bottom-[-20px] left-[-8%] -z-1 w-[358px] max-[900px]:hidden" />
       <div class="absolute inset-x-[4.5%] bottom-[30px] max-[900px]:relative max-[900px]:inset-auto max-[900px]:mt-10 max-[900px]:pb-6">
-        <Updates locale={locale} variant="compact" />
+        <HomeUpdates locale={locale} />
       </div>
     </div>
   </section>
