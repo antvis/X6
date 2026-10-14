@@ -1,10 +1,6 @@
 ---
 title: 视图
 order: 7
-redirect_from:
-  - /zh/docs
-  - /zh/docs/api
-  - /zh/docs/api/mvc
 ---
 
 ## 配置

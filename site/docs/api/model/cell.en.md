@@ -1,10 +1,6 @@
 ---
 title: Cell
 order: 0
-redirect_from:
-  - /docs
-  - /docs/api
-  - /docs/api/model
 ---
 
 Cell is the base class for [Node](/en/api/model/node) and [Edge](/en/api/model/edge), containing common property and method definitions for nodes and edges, such as attribute styles, visibility, business data, etc. It also exhibits the same behavior in terms of instantiation, style customization, default options, and custom options.
@@ -1253,9 +1249,9 @@ Hide the node/edge.
 | options.silent   | boolean |          | `false` | When `true`, doesn't trigger `change:visible` event and redraw. |
 | options...others | object  |          |         | Other custom key-value pairs that can be used in event callbacks. |
 
-:::info{title="Note"}
+> **Note**
+
 X6 2.x implements element hiding by adding `display: none` to the node label.
-:::
 
 #### isVisible()
 
@@ -1360,9 +1356,9 @@ When `options.deep` is `false`, it performs a shallow merge with the original da
 cell.setData(data, { deep: false })
 ```
 
-:::info{title="Note"}
+> **Note**
+
 The `setData` method uses shallow comparison to determine if the data has been updated, thus deciding whether to trigger node redraw.
-:::
 
 ```ts
 const obj = { name: 'x6', star: true }

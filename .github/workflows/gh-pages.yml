@@ -28,17 +28,12 @@ jobs:
 
       - name: 🚧　Install
         run: |
-          npm i pnpm@latest -g
-          pnpm install
-
-      - name: 🚀　Build Core library @antv/x6
-        run: |
-          pnpm run build
+          npm i pnpm@10.34.5 -g
+          pnpm install --no-frozen-lockfile
 
       - name: 🚀　Build site
         run: |
           cd ./site && pnpm run build
-          cp ./CNAME ./dist/CNAME
 
       - name: 👩‍⚕️　Verify build output
         run: |

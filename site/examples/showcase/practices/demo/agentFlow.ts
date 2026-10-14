@@ -1,3 +1,4 @@
+import exampleData from '../../../data/agent-flow.json'
 import { type Edge, Graph, type Node, Snapline, Stencil } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import insertCss from 'insert-css'
@@ -482,7 +483,7 @@ graph.on('node:added', ({ node }: { node: Node }) => {
   }
 })
 ;(async () => {
-  AGENT_CONFIGS = await fetch('/data/agent-flow.json').then((res) => res.json())
+  AGENT_CONFIGS = await Promise.resolve(exampleData)
 
   stencil.load(
     [

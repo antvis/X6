@@ -1,10 +1,6 @@
 ---
 title: Graph
 order: 0
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/graph
 ---
 
 ## Configuration

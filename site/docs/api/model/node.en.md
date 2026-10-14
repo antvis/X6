@@ -1,10 +1,6 @@
 ---
 title: Node
 order: 1
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/model
 ---
 
 Node is the base class for all nodes, inheriting from [Cell](/en/api/model/cell), and defines the common properties and methods for nodes.

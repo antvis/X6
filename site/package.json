@@ -4,10 +4,10 @@
   "version": "3.1.0",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
-    "prestart": "node ../scripts/check-node-version.js",
-    "start": "dumi dev",
-    "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' dumi build",
-    "clean": ""
+    "start": "astro dev",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
   },
   "keywords": [
     "x6",
@@ -15,28 +15,27 @@
     "sites"
   ],
   "dependencies": {
-    "@antv/dumi-theme-antv": "^0.7.10",
+    "@antv/astro-theme-antv": "^0.1.0-beta.11",
     "@antv/hierarchy": "^0.6.6",
     "@antv/layout": "^0.3.12",
     "@antv/x6": "workspace:*",
     "@antv/x6-react-components": "^2.x",
-    "@antv/x6-react-shape": "^3.x",
+    "@antv/x6-react-shape": "^3.0.1",
+    "@tabler/icons": "^3.49.0",
     "antd": "^5.7.3",
+    "astro": "^7.2.0",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
-    "dumi": "2.4.18",
     "elkjs": "^0.8.2",
     "highlight.js": "^10.1.2",
     "insert-css": "^2.0.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-i18next": "^11.5.0"
+    "less": "^4.8.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.12.0"
   },
   "repository": "https://github.com/antvis/x6",
-  "devDependencies": {
-    "cross-env": "^10.1.0"
-  }
+  "type": "module"
 }

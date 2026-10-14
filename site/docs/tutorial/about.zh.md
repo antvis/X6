@@ -1,14 +1,11 @@
 ---
 title: 简介
 order: 0
-redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
 ---
 
 X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和开箱即用的内置扩展，方便我们快速搭建 DAG 图、ER 图、流程图、血缘图等应用。
 
-如果你还没有使用过 X6， 建议通过 [快速上手](/tutorial/getting-started) 抢先体验 X6 的魅力。
+如果你还没有使用过 X6， 建议通过 [快速上手](/zh/tutorial/getting-started) 抢先体验 X6 的魅力。
 
 <p align="left">
 <a href="https://github.com/antvis/X6/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/antvis/x6/ci.yml?branch=master&logo=github&style=flat-square" /></a>
@@ -17,7 +14,7 @@ X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和
 </p>
 
 <p align="left">
-<a href="/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=flat-square" alt="MIT License" /></a>
+<a href="https://github.com/antvis/X6/blob/master/LICENSE"><img src="https://img.shields.io/github/license/antvis/x6?style=flat-square" alt="MIT License" /></a>
 <a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=flat-square" /></a>
 <a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square" /></a>
 <a href="https://x6.antv.antgroup.com"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=flat-square&logo=google-chrome&logoColor=0076D6" /></a>
@@ -32,11 +29,11 @@ X6 是基于 HTML 和 SVG 的图编辑引擎，提供低成本的定制能力和
 
 ## 🍉 使用文档
 
-- [快速上手](/tutorial/getting-started)
-- [基础](/tutorial/basic/graph)
-- [进阶](/tutorial/intermediate/connection-point)
-- [插件](/tutorial/plugins/transform)
-- [API](/api/graph/graph)
+- [快速上手](/zh/tutorial/getting-started)
+- [基础](/zh/tutorial/basic/graph)
+- [进阶](/zh/tutorial/intermediate/connection-point)
+- [插件](/zh/tutorial/plugins/transform)
+- [API](/zh/api/graph/graph)
 
 X6 文档整体分为文档和 API 两部分，建议仔细阅读文档内容，会帮助你更好的上手开发，API 文档内容比较多，可以等遇到问题时，通过搜索定位到相关的文档。
 

@@ -1,3 +1,4 @@
+import exampleData from '../../../data/timeline.json'
 import { Graph, type Cell } from '@antv/x6'
 import insertCss from 'insert-css'
 
@@ -521,8 +522,7 @@ function showGraph() {
 }
 
 // 加载数据
-fetch('/data/timeline.json')
-  .then((r) => r.json())
+Promise.resolve(exampleData)
   .then((d) => graph.resetCells(transformTimelineData(d)))
   .catch(() => console.error('数据加载失败'))
 

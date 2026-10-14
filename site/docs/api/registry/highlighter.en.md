@@ -1,10 +1,6 @@
 ---
 title: Highlighter
 order: 14
-redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/registry
 ---
 
 Node/edge highlighters used to highlight specified elements. X6 includes the following types of highlighters.

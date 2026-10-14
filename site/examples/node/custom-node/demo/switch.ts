@@ -1,5 +1,5 @@
 import { Graph } from '@antv/x6'
-import insertCss from '../../edge/demo/node_modules/insert-css'
+import insertCss from 'insert-css'
 
 const graph = new Graph({
   container: document.getElementById('container'),

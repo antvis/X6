@@ -1,8 +1,6 @@
 ---
 title: Upgrade to 3.x
 order: 5
-redirect_from:
-  - /en/docs/tutorial/update
 ---
 
 Compared to 2.x, 3.x mainly focuses on plugin consolidation (unified export), optimized default interactions, introduces animation capabilities, and adds virtual rendering support. The upgrade cost is low.
