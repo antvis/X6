@@ -147,4 +147,80 @@ describe('plugin/clipboard', () => {
 
     cleanup()
   })
+
+  it('inherits local storage when checking a clipboard populated by another graph', () => {
+    const source = createTestGraph()
+    const target = createTestGraph()
+    source.graph.use(new Clipboard({ useLocalStorage: true }))
+    target.graph.use(new Clipboard({ useLocalStorage: true }))
+
+    try {
+      expect(target.graph.isClipboardEmpty()).toBe(true)
+      const node = source.graph.addNode({
+        shape: 'rect',
+        width: 80,
+        height: 40,
+      })
+      source.graph.copy([node])
+
+      expect(target.graph.isClipboardEmpty()).toBe(false)
+      expect(target.graph.paste()).toHaveLength(1)
+    } finally {
+      source.cleanup()
+      target.cleanup()
+    }
+  })
+
+  it('allows an empty-check call to opt out of configured local storage', () => {
+    const source = createTestGraph()
+    const target = createTestGraph()
+    source.graph.use(new Clipboard({ useLocalStorage: true }))
+    target.graph.use(new Clipboard({ useLocalStorage: true }))
+
+    try {
+      const node = source.graph.addNode({
+        shape: 'rect',
+        width: 80,
+        height: 40,
+      })
+      source.graph.copy([node])
+
+      expect(target.graph.isClipboardEmpty({ useLocalStorage: false })).toBe(
+        true,
+      )
+      expect(target.graph.getCellsInClipboard()).toEqual([])
+      expect(target.graph.isClipboardEmpty()).toBe(false)
+    } finally {
+      source.cleanup()
+      target.cleanup()
+    }
+  })
+
+  it.each([undefined, false])(
+    'keeps a clipboard local when useLocalStorage is %s unless explicitly enabled',
+    (useLocalStorage) => {
+      const source = createTestGraph()
+      const target = createTestGraph()
+      source.graph.use(new Clipboard({ useLocalStorage: true }))
+      target.graph.use(new Clipboard({ useLocalStorage }))
+
+      try {
+        const node = source.graph.addNode({
+          shape: 'rect',
+          width: 80,
+          height: 40,
+        })
+        source.graph.copy([node])
+
+        expect(target.graph.isClipboardEmpty()).toBe(true)
+        expect(target.graph.getCellsInClipboard()).toEqual([])
+        expect(target.graph.isClipboardEmpty({ useLocalStorage: true })).toBe(
+          false,
+        )
+      } finally {
+        source.cleanup()
+        target.cleanup()
+      }
+    },
+  )
 })
