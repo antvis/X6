@@ -1028,9 +1028,10 @@ export class Cell<
 
       // depth first
       {
-        const cells = this.getChildren() || []
-        cells.forEach((cell) => {
-          cells.push(...cell.getDescendants(options))
+        const cells: Cell[] = []
+        const children = this.getChildren() || []
+        children.forEach((cell) => {
+          cells.push(cell, ...cell.getDescendants(options))
         })
         return cells
       }
