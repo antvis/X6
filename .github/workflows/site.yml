@@ -1,0 +1,59 @@
+name: site
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: ⤵️　Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: 🎉　Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # pnpm 11.5+ 依赖 node:sqlite，需要 Node >= 22.13
+          node-version: 22
+
+      - name: 🚧　Install
+        run: |
+          npm i pnpm@10.34.5 -g
+          pnpm install --no-frozen-lockfile
+
+      - name: 🚀　Build site
+        run: |
+          cd ./site && pnpm run build
+
+      - name: 👩‍⚕️　Verify build output
+        run: |
+          if [ ! -d "site/dist" ]; then
+            echo "Build output directory (site/dist) not found!"
+            exit 1
+          fi
+
+      - name: 🗂　Commit changes
+        run: |
+          cd site/dist
+          git init
+          git config --local user.name antv
+          git config --local user.email antv@antfin.com
+          git add .
+          git commit -m "update by release action"
+
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+          directory: site/dist
+          branch: site
+          force: true

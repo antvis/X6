@@ -1,0 +1,35 @@
+name: 🔁 Sync site to Gitee
+
+on:
+  workflow_run:
+    workflows: ["site"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    # 仅在 site 构建 workflow 成功完成后触发
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Checkout site branch
+        uses: actions/checkout@v3
+        with:
+          ref: site
+          persist-credentials: false
+
+      - name: 🔁 Sync site branch to Gitee
+        env:
+          GITEE_SSH_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          echo "$GITEE_SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts 2>/dev/null
+
+          git remote set-url origin git@gitee.com:antv/X6.git
+          git push origin HEAD:site --force
