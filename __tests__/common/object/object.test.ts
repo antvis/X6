@@ -48,6 +48,32 @@ describe('Object', () => {
   })
 
   describe('#getByPath#setByPath', () => {
+    it('should preserve and reuse array paths when reading', () => {
+      const value = { attr: { node: { fontSize: 14 } } }
+      const path = ['attr', 'node', 'fontSize']
+
+      expect(ObjectExt.getByPath(value, path)).toBe(14)
+      expect(path).toEqual(['attr', 'node', 'fontSize'])
+      expect(ObjectExt.getByPath(value, path)).toBe(14)
+    })
+
+    it('should preserve array paths when a property is missing', () => {
+      const path = ['attr', 'missing', 'fontSize']
+
+      expect(ObjectExt.getByPath({ attr: {} }, path)).toBeUndefined()
+      expect(path).toEqual(['attr', 'missing', 'fontSize'])
+    })
+
+    it('should preserve and reuse array paths when writing', () => {
+      const value = {}
+      const path = ['attr', 'node', 'fontSize']
+
+      ObjectExt.setByPath(value, path, 14)
+      expect(path).toEqual(['attr', 'node', 'fontSize'])
+      ObjectExt.setByPath(value, path, 20)
+      expect(value).toEqual({ attr: { node: { fontSize: 20 } } })
+    })
+
     const project = {
       name: 'x6',
       version: ['0.1', '0.2', '0.3'],

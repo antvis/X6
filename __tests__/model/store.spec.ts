@@ -2,6 +2,15 @@ import { describe, expect, it, vi } from 'vitest'
 import { Store } from '../../src/model/store'
 
 describe('Store', () => {
+  it('should allow repeated reads with the same array path', () => {
+    const store = new Store({ attr: { fill: 'red' } })
+    const path = ['attr', 'fill']
+
+    expect(store.getByPath(path)).toBe('red')
+    expect(path).toEqual(['attr', 'fill'])
+    expect(store.getByPath(path)).toBe('red')
+  })
+
   it('should create a store with default data', () => {
     const store = new Store()
     expect(store.get()).toEqual({})
