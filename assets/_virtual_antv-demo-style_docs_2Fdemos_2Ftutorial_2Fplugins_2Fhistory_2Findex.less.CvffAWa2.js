@@ -1,0 +1,1 @@
+var e=`.history-app{border:1px solid #f0f0f0;padding:16px 8px;font-family:sans-serif}.history-app .app-btns{margin:0;padding:0 8px;bottom:0}.history-app .app-content{width:100%;height:240px;margin:16px 0 0;box-shadow:0 0 10px 1px #e9e9e9}`,t=document.createElement(`style`);t.textContent=e,document.head.appendChild(t);var n=e;export{n as default};
