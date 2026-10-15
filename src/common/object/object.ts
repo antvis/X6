@@ -57,7 +57,7 @@ export function getByPath(
   delimiter: string | RegExp = '/',
 ) {
   let ret
-  const keys = Array.isArray(path) ? path : path.split(delimiter)
+  const keys = Array.isArray(path) ? path.slice() : path.split(delimiter)
   if (keys.length) {
     ret = obj
     while (keys.length) {
@@ -79,7 +79,7 @@ export function setByPath(
   value: any,
   delimiter: string | RegExp = '/',
 ) {
-  const keys = Array.isArray(path) ? path : path.split(delimiter)
+  const keys = Array.isArray(path) ? path.slice() : path.split(delimiter)
   const lastKey = keys.pop()
   if (lastKey && !isMaliciousProp(lastKey)) {
     let diver = obj
