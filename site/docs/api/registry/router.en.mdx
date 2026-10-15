@@ -172,17 +172,20 @@ We provide a rich set of options for this routing algorithm:
 | startDirections     | string[]                      |    No    | `['top', 'right', 'bottom', 'left']`     | Supported directions to start routing.                         |
 | endDirections       | string[]                      |    No    | `['top', 'right', 'bottom', 'left']`     | Supported directions to end routing.                           |
 | padding             | SideOptions                   |    No    | -                                           | Sets the minimum distance from the anchor point to the corner. |
-| fallbackRouter      | Router                        |    No    | `Registry.Router.presets.orth`             | In scenarios where obstacles cannot be avoided, downgrade to the specified routing. |
+| fallbackRouter      | Router                        |    No    | `routerPresets.orth`                       | In scenarios where obstacles cannot be avoided, downgrade to the specified routing. |
 
-For example:
+For example, import `routerPresets` from `@antv/x6` to set the fallback explicitly:
 
 ```ts
+import { routerPresets } from '@antv/x6'
+
 graph.addEdge({
   source,
   target,
   router: {
     name: 'manhattan',
     args: {
+      fallbackRouter: routerPresets.orth,
       startDirections: ['top'],
       endDirections: ['bottom'],
     },
