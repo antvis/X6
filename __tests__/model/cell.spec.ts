@@ -186,6 +186,53 @@ describe('Cell core API', () => {
     expect(parent.getChildren()?.map((c) => c.id)).toEqual(['child'])
   })
 
+  describe('getDescendants traversal order', () => {
+    function createTree() {
+      const [parent, first, second, child, sibling, grandchild] = [
+        'parent', 'first', 'second', 'child', 'sibling', 'grandchild',
+      ].map((id) => new Cell({ id }))
+
+      for (const cell of [parent, first, second, child, sibling, grandchild]) {
+        cell.model = model as unknown as Cell['model']
+        model.addCell(cell)
+      }
+      parent.addChild(first)
+      parent.addChild(second)
+      first.addChild(child)
+      first.addChild(sibling)
+      child.addChild(grandchild)
+      return { parent, first, second, child, sibling, grandchild }
+    }
+
+    it('visits each child subtree before the next sibling by default', () => {
+      const { parent, first, second, child, sibling, grandchild } = createTree()
+
+      expect(parent.getDescendants()).toEqual([
+        first, child, grandchild, sibling, second,
+      ])
+      expect(parent.getChildren()).toEqual([first, second])
+      expect(child.getParent()).toBe(first)
+      expect(second.getDescendants()).toEqual([])
+    })
+
+    it('keeps breadth-first traversal when requested', () => {
+      const { parent, first, second, child, sibling, grandchild } = createTree()
+
+      expect(parent.getDescendants({ breadthFirst: true })).toEqual([
+        first, second, child, sibling, grandchild,
+      ])
+    })
+
+    it('returns only immediate children when deep is false', () => {
+      const { parent, first, second } = createTree()
+
+      expect(parent.getDescendants({ deep: false })).toEqual([first, second])
+      expect(parent.getDescendants({ deep: false, breadthFirst: true })).toEqual([
+        first, second,
+      ])
+    })
+  })
+
   it('tools APIs: normalizeTools, set/get/add/remove/has', () => {
     expect(Cell.normalizeTools('a').items[0]).toBe('a')
     expect(Cell.normalizeTools(['a', 'b']).items.length).toBe(2)
