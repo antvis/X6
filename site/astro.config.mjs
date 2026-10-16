@@ -87,20 +87,6 @@ const config = defineConfig({
     },
     {
       text: {
-        zh: '社区 FAQ',
-        en: 'Community FAQ',
-      },
-      href: 'https://www.yuque.com/sxd_panda/antv/x6',
-    },
-    {
-      text: {
-        zh: '官方 FAQ',
-        en: 'Official FAQ',
-      },
-      href: 'https://www.yuque.com/antv/x6/tox1ukbz5cw57qfy',
-    },
-    {
-      text: {
         zh: '更新日志',
         en: 'Change Log',
       },

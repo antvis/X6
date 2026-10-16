@@ -58,6 +58,8 @@ We have a [Code of Conduct](https://github.com/antvis/X6/blob/master/CONTRIBUTIN
 
 ### Join the Community
 
+Explore the [Community FAQ](https://www.yuque.com/sxd_panda/antv/x6) for common questions and answers collected by the community.
+
 You can also refer to the contribution guidelines below to become a contributor to X6 step by step:
 
 - [How to Participate in X6 Open Source Development](https://www.yuque.com/antv/x6/gcinvi)

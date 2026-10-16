@@ -58,6 +58,8 @@ X6 文档整体分为文档和 API 两部分，建议仔细阅读文档内容，
 
 ### 加入社区
 
+欢迎查阅[社区 FAQ](https://www.yuque.com/sxd_panda/antv/x6)，了解社区整理的常见问题与解答。
+
 还可以参考下面的贡献指南，一步一步成为 X6 的贡献者吧：
 
 - [如何参与到 X6 开源开发](https://www.yuque.com/antv/x6/gcinvi)
