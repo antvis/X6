@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Model } from '../../../../src'
+import { Model, Node } from '../../../../src'
 import { Line, Point, Rectangle } from '../../../../src/geometry'
 import { getSharedObstacleMap } from '../../../../src/registry/router/manhattan/obstacle-map'
 import {
@@ -201,6 +201,37 @@ describe('shared Manhattan obstacle map', () => {
     )
     expect(map.isAccessible(new Point(20, 20))).toBe(false)
     expect(map.isAccessible(new Point(120, 20))).toBe(true)
+  })
+
+  it('distinguishes an indexed node exclusion from a foreign node with the same ID', () => {
+    const model = new Model()
+    const obstacle = addNode(model, 'obstacle', 0)
+    const foreign = new Node({ id: obstacle.id, shape: 'rect' })
+    const edge = model.addEdge({
+      source: { x: -100, y: 20 },
+      target: { x: 100, y: 20 },
+    })
+
+    const excluded = getSharedObstacleMap(
+      model,
+      edge,
+      options({ excludeNodes: [obstacle] }),
+    )
+    expect(excluded.isAccessible(new Point(20, 20))).toBe(true)
+    const included = getSharedObstacleMap(
+      model,
+      edge,
+      options({ excludeNodes: [foreign] }),
+    )
+    expect(included.isAccessible(new Point(20, 20))).toBe(false)
+    const equivalent = getSharedObstacleMap(model, edge, options())
+    expect(equivalent).toBe(included)
+    const byId = getSharedObstacleMap(
+      model,
+      edge,
+      options({ excludeNodes: [obstacle.id] }),
+    )
+    expect(byId.isAccessible(new Point(20, 20))).toBe(true)
   })
 
   it('retains invalidation on position and size changes', () => {
