@@ -96,7 +96,7 @@ const config = defineConfig({
   versions: {
     '3.x': 'https://x6.antv.antgroup.com',
     '2.x': 'https://x6-v2.antv.vision',
-    '1.x': 'https://x6.antv.vision',
+    '1.x': 'https://x6-v1.antv.vision',
   },
   llms: {
     locales: ['zh', 'en'],
