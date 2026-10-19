@@ -1236,8 +1236,10 @@ export class Model extends Basecoat<ModelEventArgs> {
       }
       const neighbors = this.getNeighbors(next, options)
       neighbors.forEach((neighbor) => {
-        distance[neighbor.id] = distance[next.id] + 1
-        queue.push(neighbor)
+        if (distance[neighbor.id] == null) {
+          distance[neighbor.id] = distance[next.id] + 1
+          queue.push(neighbor)
+        }
       })
     }
   }
