@@ -228,10 +228,10 @@ yarn build:watch:cjs
 
 如果你在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。
 
-如需提交代码，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。我们会收集贡献者的 Github 头像到下面贡献者清单中。
+如需提交代码，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。感谢所有为 X6 做出贡献的开发者。
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+  Contributors
 </a>
 
 ## 开源协议

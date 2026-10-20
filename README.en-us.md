@@ -228,7 +228,7 @@ To become a contributor, please follow our [contributing guide](/CONTRIBUTING.md
 ## Contributors
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+  Contributors
 </a>
 
 ## License
