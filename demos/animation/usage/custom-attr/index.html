@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/usage/custom-attr</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/usage/custom-attr/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="animation/usage/custom-attr" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>animation/usage/custom-attr</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/animation/usage/custom-attr/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Dom, Graph, Shape } from &#39;@antv/x6&#39;
+
+Shape.HTML.register({
+  shape: &#39;custom-html&#39;,
+  width: 160,
+  height: 80,
+  effect: [&#39;data&#39;],
+  html(cell) {
+    // 自定义的html节点接收一个面积数据来控制div大小，可以对该自定义属性添加动画效果
+    const { ratio } = cell.getData() ?? {}
+    const div = document.createElement(&#39;div&#39;)
+    const area = 12000
+    const width = Math.sqrt(area / ratio)
+    const height = width * ratio
+    Dom.css(div, {
+      width,
+      height,
+      background: &#39;#72C240&#39;,
+      borderRadius: 10,
+    })
+
+    return div
+  },
+})
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addNode({
+  shape: &#39;custom-html&#39;,
+  x: 80,
+  y: 80,
+  data: { ratio: 1 },
+  animation: [
+    // 对自定义节点的面积数据添加动画效果
+    [{ &#39;data/ratio&#39;: 3 / 5 }, { duration: 1000, iterations: Infinity }],
+  ],
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

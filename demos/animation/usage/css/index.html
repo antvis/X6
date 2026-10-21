@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/usage/css</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/usage/css/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="animation/usage/css" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>animation/usage/css</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/animation/usage/css/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph } from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 60,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;none&#39;,
+      rx: 10,
+      style: {
+        // 也可以使用CSS动画，具体如何选择可参考文档中的详细说明
+        animation: &#39;trans 1s infinite linear&#39;,
+      },
+    },
+  },
+})
+
+graph.addNode({
+  x: 200,
+  y: 40,
+  width: 100,
+  height: 60,
+  attrs: {
+    body: {
+      fill: &#39;#85C054&#39;,
+      stroke: &#39;none&#39;,
+      rx: 10,
+      // 也可以通过添加class来添加动画
+      class: &#39;css-animation-node&#39;,
+    },
+  },
+})
+
+// 我们用 insert-css 协助demo演示
+// 实际项目中只要将下面样式添加到样式文件中
+insertCss(`
+  @keyframes trans {
+    to {
+        transform: translateX(50px);
+    }
+  }
+
+  .css-animation-node {
+    animation: trans 1s infinite linear;
+  }
+`)
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

@@ -1,0 +1,2 @@
+import{g as e}from"./src.B2JqLNiB.js";var t=new e({container:document.getElementById(`container`),grid:!0,translating:{restrict(e){let t=e.cell;if(t.isNode()){let e=t.getParent();if(e)return e.getBBox()}return null}}}),n=t.addNode({x:120,y:80,width:80,height:40,label:`Child`,zIndex:10,attrs:{body:{stroke:`none`,fill:`#3199FF`},label:{fill:`#fff`,fontSize:12}}});t.addNode({x:40,y:40,width:240,height:160,zIndex:1,label:`Parent
+(try to move me)`,attrs:{label:{refY:120,fontSize:12},body:{fill:`#fffbe6`,stroke:`#ffe7ba`}}}).addChild(n);

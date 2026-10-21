@@ -1,0 +1,1 @@
+import{t as e}from"./insert-css.Bh27PzyC.js";export default e();

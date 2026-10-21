@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/er</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/er/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="showcase/practices/er" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>showcase/practices/er</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/showcase/practices/er/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import exampleData from &#39;../../../data/er.json&#39;
+import React from &#39;react&#39;
+import { Graph, Node, Edge } from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+import { register } from &#39;@antv/x6-react-shape&#39;
+
+// 类型定义
+interface TableField {
+  name: string
+  type: string
+  keyType?: &#39;primary&#39; | &#39;foreign&#39; | &#39;unique&#39;
+  ref?: { table: string; field: string }
+  defaultValue?: string
+}
+
+interface TableNodeData {
+  id: string
+  name: string
+  fields: TableField[]
+}
+
+interface RelationshipData {
+  type: &#39;1:1&#39; | &#39;1:N&#39; | &#39;N:N&#39;
+}
+
+// 图标映射
+const ICONS: Record&lt;NonNullable&lt;TableField[&#39;keyType&#39;]&gt;, string&gt; = {
+  primary: &#39;🔑&#39;,
+  foreign: &#39;🔗&#39;,
+  unique: &#39;⭐&#39;,
+}
+
+// React节点组件
+const ERTableNode = React.memo(({ node }: { node: Node }) =&gt; {
+  const { name, fields = [] } = node.getData&lt;TableNodeData&gt;()
+  const height = 36 + fields.length * 24 + 12
+
+  return (
+    &lt;div className=&quot;er-table&quot; style={{ height }}&gt;
+      &lt;div className=&quot;er-table-header&quot;&gt;{name}&lt;/div&gt;
+      &lt;div className=&quot;er-table-fields&quot;&gt;
+        {fields.length === 0 ? (
+          &lt;div className=&quot;er-table-empty&quot;&gt;No fields&lt;/div&gt;
+        ) : (
+          fields.map((field, i) =&gt; (
+            &lt;div
+              key={field.name}
+              className={`er-table-field ${i % 2 === 0 ? &#39;even&#39; : &#39;odd&#39;} ${
+                field.keyType || &#39;&#39;
+              }`}
+            &gt;
+              &lt;span className=&quot;er-field-icon&quot;&gt;
+                {field.keyType ? ICONS[field.keyType] : &#39;&#39;}
+              &lt;/span&gt;
+              &lt;span className=&quot;er-field-name&quot;&gt;{field.name}&lt;/span&gt;
+              &lt;span className=&quot;er-field-type&quot;&gt;{field.type}&lt;/span&gt;
+            &lt;/div&gt;
+          ))
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+})
+
+// 注册节点
+register({
+  shape: &#39;er-table&#39;,
+  width: 240,
+  height: 300,
+  component: ERTableNode,
+  effect: [&#39;data&#39;],
+  ports: {
+    // 连接点配置
+    groups: {
+      top: {
+        position: &#39;top&#39;,
+        attrs: {
+          circle: { r: 4, magnet: true, stroke: &#39;#1890ff&#39;, fill: &#39;#fff&#39; },
+        },
+      },
+      right: {
+        position: &#39;right&#39;,
+        attrs: {
+          circle: { r: 4, magnet: true, stroke: &#39;#1890ff&#39;, fill: &#39;#fff&#39; },
+        },
+      },
+      bottom: {
+        position: &#39;bottom&#39;,
+        attrs: {
+          circle: { r: 4, magnet: true, stroke: &#39;#1890ff&#39;, fill: &#39;#fff&#39; },
+        },
+      },
+      left: {
+        position: &#39;left&#39;,
+        attrs: {
+          circle: { r: 4, magnet: true, stroke: &#39;#1890ff&#39;, fill: &#39;#fff&#39; },
+        },
+      },
+    },
+    items: [
+      { id: &#39;top&#39;, group: &#39;top&#39; },
+      { id: &#39;right&#39;, group: &#39;right&#39; },
+      { id: &#39;bottom&#39;, group: &#39;bottom&#39; },
+      { id: &#39;left&#39;, group: &#39;left&#39; },
+    ],
+  },
+})
+
+// 注销边，防止重复注册报错
+Graph.unregisterEdge(&#39;er-relationship&#39;)
+// 注册边
+Graph.registerEdge(&#39;er-relationship&#39;, {
+  inherit: &#39;edge&#39;,
+  attrs: {
+    line: {
+      stroke: &#39;#666&#39;,
+      strokeWidth: 2,
+      targetMarker: { name: &#39;classic&#39;, size: 8 },
+    },
+  },
+  labels: [
+    {
+      attrs: {
+        text: { text: &#39;1:1&#39;, fill: &#39;#666&#39;, fontSize: 12, fontWeight: &#39;bold&#39; },
+        rect: { fill: &#39;#fff&#39;, stroke: &#39;#666&#39;, rx: 3, ry: 3 },
+      },
+    },
+  ],
+})
+
+// 图配置
+const graph: Graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+  background: { color: &#39;#f8f9fa&#39; },
+  grid: { visible: true, type: &#39;dot&#39;, args: { color: &#39;#e0e0e0&#39; } },
+  mousewheel: { enabled: true, modifiers: &#39;ctrl&#39;, minScale: 0.3, maxScale: 2 },
+  panning: { enabled: true, eventTypes: [&#39;leftMouseDown&#39;, &#39;rightMouseDown&#39;] },
+  connecting: {
+    snap: true,
+    allowBlank: false,
+    allowLoop: false,
+    allowMulti: false,
+    highlight: true,
+    router: { name: &#39;manhattan&#39; },
+    connector: { name: &#39;rounded&#39;, args: { radius: 8 } },
+    createEdge: (): Edge =&gt;
+      graph.createEdge({
+        shape: &#39;er-relationship&#39;,
+        data: { type: &#39;1:1&#39; } as RelationshipData,
+        labels: [{ attrs: { text: { text: &#39;1:1&#39; } } }],
+      }),
+    validateMagnet: ({ magnet }) =&gt; magnet.getAttribute(&#39;port-group&#39;) !== null,
+  },
+})
+
+// 工具函数
+const transformToGraphData = (tables: TableNodeData[]) =&gt; {
+  const layout = { cols: 2, nodeWidth: 240, spacing: 100 }
+  return tables.reduce(
+    (acc, table, index) =&gt; {
+      const row = Math.floor(index / layout.cols)
+      const col = index % layout.cols
+      const height = 36 + table.fields.length * 24 + 12
+
+      acc.nodes.push({
+        id: table.id,
+        shape: &#39;er-table&#39;,
+        x: col * (layout.nodeWidth + layout.spacing),
+        y: row * (height + layout.spacing),
+        width: layout.nodeWidth,
+        height,
+        data: table,
+      })
+
+      table.fields.forEach((field) =&gt; {
+        if (field.keyType === &#39;foreign&#39; &amp;&amp; field.ref) {
+          acc.edges.push({
+            id: `${table.id}-${field.ref.table}-${field.name}`,
+            shape: &#39;er-relationship&#39;,
+            source: { cell: table.id, port: &#39;right&#39; },
+            target: { cell: field.ref.table, port: &#39;left&#39; },
+            data: { type: &#39;1:N&#39; } as RelationshipData,
+            labels: [{ attrs: { text: { text: &#39;1:N&#39; } } }],
+          })
+        }
+      })
+
+      return acc
+    },
+    { nodes: [] as Node[], edges: [] as any[] },
+  )
+}
+
+const toggleRelationshipType = (edge: Edge) =&gt; {
+  const types: RelationshipData[&#39;type&#39;][] = [&#39;1:1&#39;, &#39;1:N&#39;, &#39;N:N&#39;]
+  const current = edge.getData&lt;RelationshipData&gt;()?.type || &#39;1:1&#39;
+  const next = types[(types.indexOf(current) + 1) % types.length]
+
+  edge.setData({ ...edge.getData(), type: next })
+  edge.setLabels([
+    {
+      attrs: {
+        text: { text: next, fill: &#39;#666&#39;, fontSize: 12, fontWeight: &#39;bold&#39; },
+        rect: { fill: &#39;#fff&#39;, stroke: &#39;#666&#39;, rx: 3, ry: 3 },
+      },
+      position: 0.5,
+    },
+  ])
+}
+
+// 事件绑定
+graph.on(&#39;edge:click&#39;, ({ edge, e }) =&gt; {
+  if (edge.shape === &#39;er-relationship&#39;) {
+    e.stopPropagation()
+    toggleRelationshipType(edge)
+  }
+})
+
+graph.on(&#39;edge:mouseenter&#39;, ({ edge }) =&gt; {
+  if (edge.shape === &#39;er-relationship&#39;) {
+    edge.attr(&#39;line/stroke&#39;, &#39;#1890ff&#39;)
+    edge.addTools([
+      {
+        name: &#39;button-remove&#39;,
+        args: {
+          distance: -40,
+          markup: [
+            {
+              tagName: &#39;circle&#39;,
+              selector: &#39;button&#39;,
+              attrs: {
+                r: 8,
+                fill: &#39;#ff4d4f&#39;,
+                stroke: &#39;#fff&#39;,
+                strokeWidth: 2,
+                cursor: &#39;pointer&#39;,
+              },
+            },
+            {
+              tagName: &#39;text&#39;,
+              selector: &#39;icon&#39;,
+              textContent: &#39;×&#39;,
+              attrs: {
+                fill: &#39;#fff&#39;,
+                fontSize: 12,
+                fontWeight: &#39;bold&#39;,
+                textAnchor: &#39;middle&#39;,
+                dominantBaseline: &#39;central&#39;,
+              },
+            },
+          ],
+        },
+      },
+    ])
+  }
+})
+
+graph.on(&#39;edge:mouseleave&#39;, ({ edge }) =&gt; {
+  edge.attr(&#39;line/stroke&#39;, &#39;#666&#39;)
+  edge.removeTools()
+})
+
+// 初始化
+const initializeGraph = async () =&gt; {
+  const { nodes, edges } = transformToGraphData(exampleData)
+  graph.addNodes(nodes)
+  graph.addEdges(edges)
+
+  graph.centerContent()
+}
+
+initializeGraph()
+
+export default function ERDiagram() {
+  return &lt;div id=&quot;container&quot; style={{ width: &#39;100%&#39;, height: &#39;100vh&#39; }} /&gt;
+}
+
+// 样式
+insertCss(`
+  .er-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border: 2px solid #1890ff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .er-table:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .er-table-header {
+    background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+    color: white;
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .er-table-fields {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 0 0 6px 6px;
+  }
+  .er-table-empty { padding: 20px; text-align: center; color: #999; font-style: italic; }
+
+  .er-table-field {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-bottom: 1px solid #e8e8e8;
+    transition: background-color 0.2s ease;
+  }
+
+  .er-table-field:hover { background-color: #f5f5f5; }
+  .er-table-field.even { background-color: #fafafa; }
+  .er-table-field:last-child {
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
+  }
+  .er-table-field.primary { background-color: #e6f7ff; }
+  .er-table-field.foreign { background-color: #fff7e6; }
+  .er-table-field.unique { background-color: #f6ffed; }
+
+  .er-field-icon { margin-right: 4px; font-size: 10px; }
+  .er-field-name { flex: 1; font-weight: 500; color: #262626; }
+  .er-field-type { color: #666; font-family: &#39;Monaco&#39;, &#39;Menlo&#39;, monospace; font-size: 10px; }
+  .er-field-not-null { color: #ff4d4f; font-size: 9px; font-weight: bold; margin-left: 4px; }
+
+  .x6-port-body { opacity: 0; transition: opacity 0.2s ease; }
+  .x6-node:hover .x6-port-body { opacity: 1; }
+  .x6-port-body circle { fill: #fff; stroke: #1890ff; stroke-width: 2; cursor: crosshair; r: 8; }
+  .x6-port:hover .x6-port-body circle { fill: #e6f7ff; stroke: #40a9ff; stroke-width: 3; r: 10; }
+  .x6-port-available .x6-port-body circle { fill: #f6ffed; stroke: #52c41a; stroke-width: 3; r: 10; }
+  .x6-edge:hover path:nth-child(2) { stroke: #1890ff; }
+`)
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

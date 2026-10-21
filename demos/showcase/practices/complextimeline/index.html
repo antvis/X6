@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/complextimeline</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/complextimeline/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="showcase/practices/complextimeline" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>showcase/practices/complextimeline</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/showcase/practices/complextimeline/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import exampleData from &#39;../../../data/complex-timeline.json&#39;
+import { Graph, type Node, type Cell } from &#39;@antv/x6&#39;
+import { register } from &#39;@antv/x6-react-shape&#39;
+import insertCss from &#39;insert-css&#39;
+import React from &#39;react&#39;
+
+preWork()
+
+// 类型定义
+interface EventCard {
+  id: string
+  title: string
+  content: string
+}
+
+interface Milestone {
+  id: string
+  headline: string
+  subtitle: string
+  date: string
+  color: string
+  lightColor: string
+  events: EventCard[]
+}
+
+interface PyramidPosition {
+  x: number
+  y: number
+  row: number
+}
+
+interface MilestoneColumnData {
+  headline: string
+  date: string
+  color: string
+  lineHeight: number
+}
+
+// 常量配置
+const CONFIG = {
+  card: { width: 80, height: 104, gap: 16 },
+  layout: { columnSpacing: 40, cardsBottomOffset: 68, milestoneSpacing: 500 },
+  timeline: { y: 750, startX: 200, endX: 2200, height: 16 },
+  gradient: &#39;timeline-gradient&#39;,
+}
+
+// React 组件（使用 memo 优化）
+const MilestoneColumn = React.memo(({ node }: { node: Node }) =&gt; {
+  const { headline, date, color, lineHeight } =
+    node.getData() as MilestoneColumnData
+
+  return React.createElement(&#39;div&#39;, { className: &#39;milestone-column&#39; }, [
+    React.createElement(&#39;div&#39;, { className: &#39;milestone-top&#39;, key: &#39;top&#39; }, [
+      React.createElement(&#39;div&#39;, {
+        className: &#39;milestone-big-dot&#39;,
+        key: &#39;dot&#39;,
+        style: { backgroundColor: color },
+      }),
+      React.createElement(
+        &#39;div&#39;,
+        {
+          className: &#39;milestone-headline&#39;,
+          key: &#39;headline&#39;,
+          style: { color },
+        },
+        headline,
+      ),
+    ]),
+    React.createElement(&#39;div&#39;, {
+      className: &#39;milestone-spine&#39;,
+      key: &#39;spine&#39;,
+      style: { backgroundColor: color, height: `${lineHeight}px` },
+    }),
+    React.createElement(
+      &#39;div&#39;,
+      { className: &#39;milestone-date&#39;, key: &#39;date&#39; },
+      date,
+    ),
+  ])
+})
+
+const SubtitleNode = React.memo(({ node }: { node: Node }) =&gt; {
+  const { subtitle } = node.getData() as { subtitle: string }
+  return React.createElement(&#39;div&#39;, { className: &#39;subtitle-text&#39; }, subtitle)
+})
+
+const EventCardNode = React.memo(({ node }: { node: Node }) =&gt; {
+  const { title, bgColor } = node.getData() as {
+    title: string
+    bgColor: string
+  }
+  return React.createElement(
+    &#39;div&#39;,
+    { className: &#39;event-card-vertical&#39;, style: { backgroundColor: bgColor } },
+    React.createElement(&#39;div&#39;, { className: &#39;event-card-title&#39; }, title),
+  )
+})
+
+// 注册节点
+register({
+  shape: &#39;milestone-column-node&#39;,
+  width: 250,
+  height: 800,
+  effect: [&#39;data&#39;],
+  component: MilestoneColumn,
+})
+
+register({
+  shape: &#39;subtitle-node&#39;,
+  width: 150,
+  height: 20,
+  effect: [&#39;data&#39;],
+  component: SubtitleNode,
+})
+
+register({
+  shape: &#39;event-card-node&#39;,
+  width: CONFIG.card.width,
+  height: CONFIG.card.height,
+  effect: [&#39;data&#39;],
+  component: EventCardNode,
+})
+
+// 创建画布
+const graph = new Graph({
+  container: document.getElementById(&#39;graph-container&#39;)!,
+  background: { color: &#39;#FFFFFF&#39; },
+  grid: { size: 24, visible: true, args: { color: &#39;#E0E0E0&#39;, thickness: 2 } },
+  panning: { enabled: true, eventTypes: [&#39;leftMouseDown&#39;, &#39;mouseWheel&#39;] },
+  mousewheel: {
+    enabled: true,
+    modifiers: &#39;ctrl&#39;,
+    factor: 1.1,
+    maxScale: 3,
+    minScale: 0.1,
+  },
+  interacting: {
+    nodeMovable: (view) =&gt; view.cell.shape === &#39;event-card-node&#39;,
+    edgeMovable: false,
+  },
+})
+
+// 定义渐变色
+graph.defineGradient({
+  type: &#39;linearGradient&#39;,
+  id: CONFIG.gradient,
+  attrs: { x1: &#39;0%&#39;, y1: &#39;0%&#39;, x2: &#39;100%&#39;, y2: &#39;0%&#39; },
+  stops: [
+    { offset: &#39;0%&#39;, color: &#39;#8A2BE2&#39; },
+    { offset: &#39;33%&#39;, color: &#39;#4169E1&#39; },
+    { offset: &#39;66%&#39;, color: &#39;#FFD700&#39; },
+    { offset: &#39;100%&#39;, color: &#39;#2E8B57&#39; },
+  ],
+})
+
+// 工具函数：计算金字塔布局
+function calculatePyramidLayout(
+  totalCards: number,
+  startX: number,
+  timelineY: number,
+): { positions: PyramidPosition[]; topY: number } {
+  let totalRows = 0
+  let tempCount = 0
+  while (tempCount &lt; totalCards) {
+    totalRows++
+    tempCount += totalRows
+  }
+
+  const rows: Array&lt;{ y: number; count: number }&gt; = []
+  let currentY = timelineY - CONFIG.layout.cardsBottomOffset
+  let cardIndex = 0
+
+  for (let row = totalRows; row &gt;= 1; row--) {
+    const count = Math.min(row, totalCards - cardIndex)
+    if (count &lt;= 0) break
+    const y = currentY - CONFIG.card.height
+    rows.push({ y, count })
+    cardIndex += count
+    currentY = y - CONFIG.card.gap
+  }
+
+  rows.reverse()
+
+  const positions: PyramidPosition[] = []
+  rows.forEach((row, rowIndex) =&gt; {
+    for (let col = 0; col &lt; row.count; col++) {
+      positions.push({
+        x: startX + col * (CONFIG.card.width + CONFIG.card.gap),
+        y: row.y,
+        row: rowIndex + 1,
+      })
+    }
+  })
+
+  return {
+    positions,
+    topY:
+      rows.length &gt; 0 ? rows[0].y : timelineY - CONFIG.layout.cardsBottomOffset,
+  }
+}
+
+// 工具函数：数据转换
+function transformTimelineData(data: Milestone[]): Cell[] {
+  const cells: Cell[] = []
+  const { timeline, layout } = CONFIG
+
+  // 时间轴主体
+  cells.push(
+    graph.createNode({
+      shape: &#39;rect&#39;,
+      x: timeline.startX,
+      y: timeline.y - timeline.height / 2,
+      width: timeline.endX - timeline.startX,
+      height: timeline.height,
+      attrs: {
+        body: {
+          fill: `url(#${CONFIG.gradient})`,
+          stroke: &#39;none&#39;,
+          rx: 8,
+          ry: 8,
+        },
+      },
+      zIndex: 5,
+    }),
+  )
+
+  // 时间轴端点
+  ;[timeline.startX, timeline.endX].forEach((x) =&gt; {
+    cells.push(
+      graph.createNode({
+        shape: &#39;circle&#39;,
+        x: x - 10,
+        y: timeline.y - 10,
+        width: 20,
+        height: 20,
+        attrs: { body: { fill: &#39;#333333&#39;, stroke: &#39;none&#39; } },
+        zIndex: 10,
+      }),
+    )
+  })
+
+  // 遍历里程碑
+  data.forEach((milestone, index) =&gt; {
+    const baseX = timeline.startX + 100 + index * layout.milestoneSpacing
+    const leftX = baseX
+    const rightX = baseX + layout.columnSpacing
+
+    const { positions, topY } = calculatePyramidLayout(
+      milestone.events.length,
+      rightX,
+      timeline.y,
+    )
+
+    const subtitleY = topY - 35
+    const headlineY = subtitleY - 45
+    const spineHeight = timeline.y - (headlineY + 34)
+    const columnHeight = timeline.y - headlineY + 40
+
+    // 里程碑列
+    cells.push(
+      graph.createNode({
+        id: `${milestone.id}-column`,
+        shape: &#39;milestone-column-node&#39;,
+        x: leftX - 125,
+        y: headlineY,
+        width: 250,
+        height: columnHeight,
+        data: {
+          headline: milestone.headline,
+          date: milestone.date,
+          color: milestone.color,
+          lineHeight: spineHeight,
+        },
+        zIndex: 3,
+      }),
+    )
+
+    // 时间轴圆点
+    cells.push(
+      graph.createNode({
+        id: `${milestone.id}-timeline-dot`,
+        shape: &#39;circle&#39;,
+        x: leftX - 9,
+        y: timeline.y - 9,
+        width: 18,
+        height: 18,
+        attrs: {
+          body: { fill: milestone.color, stroke: &#39;#FFFFFF&#39;, strokeWidth: 2 },
+        },
+        zIndex: 15,
+      }),
+    )
+
+    // 副标题
+    cells.push(
+      graph.createNode({
+        shape: &#39;subtitle-node&#39;,
+        x: rightX,
+        y: subtitleY,
+        data: { subtitle: milestone.subtitle },
+        zIndex: 7,
+      }),
+    )
+
+    // 事件卡片
+    milestone.events.forEach((event, eventIndex) =&gt; {
+      const pos = positions[eventIndex]
+      cells.push(
+        graph.createNode({
+          id: event.id,
+          shape: &#39;event-card-node&#39;,
+          x: pos.x,
+          y: pos.y,
+          data: { title: event.title, bgColor: milestone.lightColor },
+          zIndex: 8,
+        }),
+      )
+    })
+  })
+
+  return cells
+}
+
+// 交互效果
+graph.on(&#39;node:mouseenter&#39;, ({ node }) =&gt; {
+  if (node.shape === &#39;event-card-node&#39;) node.setZIndex(100)
+})
+
+graph.on(&#39;node:mouseleave&#39;, ({ node }) =&gt; {
+  if (node.shape === &#39;event-card-node&#39;) node.setZIndex(8)
+})
+
+// 使用 render:done 钩子
+let isFirstRender = true
+graph.on(&#39;render:done&#39;, () =&gt; {
+  if (!isFirstRender) return
+  isFirstRender = false
+
+  graph.zoomToFit({ padding: 20, maxScale: 1 })
+  showGraph()
+})
+
+function showGraph() {
+  document.getElementById(&#39;graph-container&#39;)?.classList.add(&#39;graph-visible&#39;)
+}
+
+// 数据加载与渲染
+Promise.resolve(exampleData)
+  .then((data) =&gt; {
+    const cells = transformTimelineData(data)
+    graph.resetCells(cells)
+  })
+  .catch(() =&gt; {
+    console.error(&#39;数据加载失败&#39;)
+  })
+
+// 预处理
+function preWork() {
+  const container = document.getElementById(&#39;container&#39;) as HTMLElement
+  if (!container) return
+
+  const graphContainer = document.createElement(&#39;div&#39;)
+  graphContainer.id = &#39;graph-container&#39;
+  container.appendChild(graphContainer)
+
+  insertCss(`
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    #container { width: 100vw; height: 100vh; overflow: hidden; background: #FFFFFF; }
+    #graph-container {
+      width: 100%; height: 100%; background: #FFFFFF;
+      opacity: 0; transition: opacity 0.3s ease-in-out;
+      position: absolute; top: 0; left: 0;
+    }
+    #graph-container.graph-visible { opacity: 1; }
+
+    .milestone-column {
+      display: flex; flex-direction: column; align-items: center;
+      font-family: Inter, Helvetica, Arial, sans-serif;
+      width: 100%; height: 100%;
+    }
+    .milestone-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .milestone-big-dot { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; }
+    .milestone-headline { font-size: 18px; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+    .milestone-spine { width: 2px; flex-shrink: 0; }
+    .milestone-date { font-size: 12px; color: #888888; text-align: center; margin-top: 30px; }
+
+    .subtitle-text { font-size: 13px; font-weight: 400; color: #888888; font-family: Inter, Helvetica, Arial, sans-serif; }
+
+    .event-card-vertical {
+      width: 100%; height: 100%; border-radius: 4px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+      display: flex; align-items: center; justify-content: center;
+      padding: 14px 8px; font-family: Inter, Helvetica, Arial, sans-serif;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: move;
+    }
+    .event-card-vertical:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12); }
+    .event-card-title {
+      font-size: 11px; color: #333333; text-align: center;
+      line-height: 1.4; word-break: break-word; pointer-events: none;
+    }
+  `)
+}
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

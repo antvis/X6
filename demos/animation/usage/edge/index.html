@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/usage/edge</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/usage/edge/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="animation/usage/edge" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>animation/usage/edge</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/animation/usage/edge/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph, Shape } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+graph.addEdge({
+  source: { x: 60, y: 60 },
+  target: { x: 240, y: 60 },
+  attrs: {
+    line: {
+      strokeDasharray: 5,
+      strokeDashoffset: 0,
+    },
+  },
+  animation: [
+    [
+      { &#39;attrs/line/strokeDashoffset&#39;: -20 },
+      {
+        duration: 1000,
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+graph.addEdge({
+  source: { x: 60, y: 120 },
+  target: { x: 240, y: 120 },
+  vertices: [{ x: 160, y: 140 }],
+  connector: { name: &#39;smooth&#39; },
+  markup: [
+    {
+      tagName: &#39;circle&#39;,
+      selector: &#39;marker&#39;,
+      attrs: {
+        stroke: &#39;none&#39;,
+        r: 5,
+      },
+    },
+    ...Shape.Edge.getMarkup(),
+  ],
+  attrs: {
+    line: {
+      strokeDasharray: 5,
+      strokeDashoffset: 0,
+      stroke: &#39;#9DADCE&#39;,
+    },
+    marker: {
+      fill: &#39;#C7D5F6&#39;,
+      atConnectionRatio: 0,
+    },
+  },
+  animation: [
+    [
+      { &#39;attrs/marker/atConnectionRatio&#39;: 1 },
+      {
+        duration: 2000,
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+graph.addEdge({
+  source: { x: 60, y: 180 },
+  target: { x: 240, y: 180 },
+  vertices: [{ x: 160, y: 200 }],
+  connector: { name: &#39;smooth&#39; },
+  attrs: {
+    line: {
+      stroke: &#39;#7d8fff&#39;,
+      strokeWidth: 2,
+      opacity: 0.6,
+      style: {
+        filter: &#39;drop-shadow(0 0 2px #7d8fff)&#39;,
+      },
+    },
+  },
+  animation: [
+    [
+      { &#39;attrs/line/strokeWidth&#39;: 4 },
+      {
+        duration: 2500,
+        iterations: Infinity,
+        direction: &#39;alternate&#39;,
+        easing: &#39;ease-in-out-back&#39;,
+      },
+    ],
+    [
+      &#39;attrs/line/opacity&#39;,
+      1,
+      {
+        duration: 2500,
+        iterations: Infinity,
+        direction: &#39;alternate&#39;,
+        easing: &#39;ease-in-out-quad&#39;,
+      },
+    ],
+  ],
+})
+
+graph.addEdge({
+  source: { x: 60, y: 240 },
+  target: { x: 240, y: 240 },
+  vertices: [{ x: 160, y: 260 }],
+  connector: { name: &#39;smooth&#39; },
+  markup: [
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;line&#39;,
+    },
+  ],
+  attrs: {
+    line: {
+      connection: true,
+      strokeWidth: 8,
+      strokeLinecap: &#39;round&#39;,
+      targetMarker: null,
+      strokeDasharray: &#39;10,20&#39;,
+      fill: &#39;none&#39;,
+      stroke: {
+        type: &#39;linearGradient&#39;,
+        stops: [
+          { offset: &#39;0%&#39;, color: &#39;#4874EE&#39;, opacity: 1 },
+          { offset: &#39;50%&#39;, color: &#39;#f0f&#39;, opacity: 0.8 },
+          { offset: &#39;100%&#39;, color: &#39;#DB655C&#39; },
+        ],
+      },
+    },
+  },
+  animation: [
+    [
+      {
+        &#39;attrs/line/opacity&#39;: [0.7, 1],
+      },
+      {
+        duration: 1000,
+        fill: &#39;forwards&#39;,
+        direction: &#39;alternate&#39;,
+        iterations: Infinity,
+      },
+    ],
+    [
+      {
+        &#39;attrs/line/strokeDashoffset&#39;: [30, 0],
+      },
+      {
+        duration: 500,
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

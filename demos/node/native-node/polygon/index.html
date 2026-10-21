@@ -1,0 +1,184 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/native-node/polygon</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/native-node/polygon/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="node/native-node/polygon" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>node/native-node/polygon</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/node/native-node/polygon/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 40,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polygon&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+      // 指定 refPoints 属性，多边形顶点随图形大小自动缩放
+      // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
+      refPoints: &#39;0,10 10,0 20,10 10,20&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 180,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polygon&#39;,
+  // 使用 points 属性指定多边形的顶点，相当于指定多边形的 refPoints 属性
+  // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
+  points: &#39;0,10 10,0 20,10 10,20&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 320,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polygon&#39;,
+  // 使用 points 属性指定多边形的顶点数组
+  points: [
+    [0, 10],
+    [10, 0],
+    [20, 10],
+    [10, 20],
+  ],
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 460,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polygon&#39;,
+  // 使用 points 属性指定多边形的顶点数组
+  points: [
+    { x: 0, y: 10 },
+    { x: 10, y: 0 },
+    { x: 20, y: 10 },
+    { x: 10, y: 20 },
+  ],
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 600,
+  y: 70,
+  width: 80,
+  height: 80,
+  label: &#39;polygon&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+      // 直接指定 points 属性，多边形顶点不随随图形大小自动缩放
+      points: &#39;0,10 10,0 20,10 10,20&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 40,
+  y: 180,
+  width: 80,
+  height: 80,
+  attrs: {
+    body: {
+      fill: &#39;#73d13d&#39;,
+      stroke: &#39;#237804&#39;,
+      refPoints: &#39;0,100 50,25 50,75 100,0&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 180,
+  y: 180,
+  width: 80,
+  height: 80,
+  points: &#39;100,10 40,198 190,78 10,78 160,198&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#ffd591&#39;,
+      stroke: &#39;#ffa940&#39;,
+      strokeWidth: 2,
+      fillRule: &#39;evenodd&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 320,
+  y: 180,
+  width: 80,
+  height: 80,
+  points: &#39;100,10 40,198 190,78 10,78 160,198&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#ffd591&#39;,
+      stroke: &#39;#ffa940&#39;,
+      strokeWidth: 2,
+      fillRule: &#39;nonzero&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polygon&#39;,
+  x: 460,
+  y: 180,
+  width: 80,
+  height: 80,
+  points:
+    &#39;26.934,1.318 35.256,18.182 53.867,20.887 40.4,34.013 43.579,52.549 26.934,43.798 10.288,52.549 13.467,34.013 0,20.887 18.611,18.182&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#ED8A19&#39;,
+      stroke: &#39;none&#39;,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

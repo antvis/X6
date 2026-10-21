@@ -1,0 +1,95 @@
+---
+title: "Text Editor"
+language: "en"
+canonical: "https://x6.antv.antgroup.com/en/examples/node/tool/editable/"
+version: "3.x"
+---
+
+# Text Editor
+
+[Live example](https://x6.antv.antgroup.com/en/examples/node/tool/editable/)
+
+[Resource index](/llms.txt)
+
+Provide a DOM element with `id="container"`. The original example source follows.
+
+## Source
+
+```ts
+import { Graph } from '@antv/x6'
+
+const container = document.getElementById('container')!
+const graph = new Graph({
+  container,
+  grid: true,
+})
+
+const source = graph.addNode({
+  x: 180,
+  y: 60,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      stroke: '#5F95FF',
+      fill: '#EFF4FF',
+      strokeWidth: 1,
+    },
+  },
+  tools: [
+    {
+      name: 'node-editor',
+      args: {
+        attrs: {
+          backgroundColor: '#EFF4FF',
+        },
+      },
+    },
+  ],
+})
+
+const target = graph.addNode({
+  x: 320,
+  y: 250,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      stroke: '#5F95FF',
+      fill: '#EFF4FF',
+      strokeWidth: 1,
+    },
+  },
+  tools: [
+    {
+      name: 'node-editor',
+      args: {
+        attrs: {
+          backgroundColor: '#EFF4FF',
+        },
+      },
+    },
+  ],
+})
+
+graph.addEdge({
+  source,
+  target,
+  attrs: {
+    line: {
+      stroke: '#A2B1C3',
+      strokeWidth: 2,
+    },
+  },
+  tools: [
+    {
+      name: 'edge-editor',
+      args: {
+        attrs: {
+          backgroundColor: '#fff',
+        },
+      },
+    },
+  ],
+})
+```

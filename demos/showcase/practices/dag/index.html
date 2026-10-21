@@ -1,0 +1,398 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/dag</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/dag/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="showcase/practices/dag" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>showcase/practices/dag</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/showcase/practices/dag/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import exampleData from &#39;../../../data/dag.json&#39;
+import React from &#39;react&#39;
+import { Graph, Path, Cell, Selection } from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+import { register } from &#39;@antv/x6-react-shape&#39;
+
+interface NodeStatus {
+  id: string
+  status: &#39;default&#39; | &#39;success&#39; | &#39;failed&#39; | &#39;running&#39;
+  label?: string
+}
+
+const image = {
+  logo: &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*evDjT5vjkX0AAAAAAAAAAAAAARQnAQ&#39;,
+  success:
+    &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*6l60T6h8TTQAAAAAAAAAAAAAARQnAQ&#39;,
+  failed:
+    &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SEISQ6My-HoAAAAAAAAAAAAAARQnAQ&#39;,
+  running:
+    &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t8fURKfgSOgAAAAAAAAAAAAAARQnAQ&#39;,
+}
+
+const AlgoNode = (props: { node: Cell }) =&gt; {
+  const { node } = props
+  const data = node?.getData() as NodeStatus
+  const { label, status = &#39;default&#39; } = data
+
+  return (
+    &lt;div className={`node ${status}`}&gt;
+      &lt;img src={image.logo} alt=&quot;logo&quot; /&gt;
+      &lt;span className=&quot;label&quot;&gt;{label}&lt;/span&gt;
+      &lt;span className=&quot;status&quot;&gt;
+        {status === &#39;success&#39; &amp;&amp; &lt;img src={image.success} alt=&quot;success&quot; /&gt;}
+        {status === &#39;failed&#39; &amp;&amp; &lt;img src={image.failed} alt=&quot;failed&quot; /&gt;}
+        {status === &#39;running&#39; &amp;&amp; &lt;img src={image.running} alt=&quot;running&quot; /&gt;}
+      &lt;/span&gt;
+    &lt;/div&gt;
+  )
+}
+
+register({
+  shape: &#39;dag-node&#39;,
+  width: 180,
+  height: 36,
+  component: AlgoNode,
+  ports: {
+    groups: {
+      top: {
+        position: &#39;top&#39;,
+        attrs: {
+          circle: {
+            r: 4,
+            magnet: true,
+            stroke: &#39;#C2C8D5&#39;,
+            strokeWidth: 1,
+            fill: &#39;#fff&#39;,
+          },
+        },
+      },
+      bottom: {
+        position: &#39;bottom&#39;,
+        attrs: {
+          circle: {
+            r: 4,
+            magnet: true,
+            stroke: &#39;#C2C8D5&#39;,
+            strokeWidth: 1,
+            fill: &#39;#fff&#39;,
+          },
+        },
+      },
+    },
+  },
+})
+
+Graph.registerEdge(
+  &#39;dag-edge&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        stroke: &#39;#C2C8D5&#39;,
+        strokeWidth: 1,
+        targetMarker: null,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerConnector(
+  &#39;algo-connector&#39;,
+  (s, e) =&gt; {
+    const offset = 4
+    const deltaY = Math.abs(e.y - s.y)
+    const control = Math.floor((deltaY / 3) * 2)
+
+    const v1 = { x: s.x, y: s.y + offset + control }
+    const v2 = { x: e.x, y: e.y - offset - control }
+
+    return Path.parse(
+      `
+      M ${s.x} ${s.y}
+      L ${s.x} ${s.y + offset}
+      C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${e.x} ${e.y - offset}
+      L ${e.x} ${e.y}
+    `,
+    ).serialize()
+  },
+  true,
+)
+
+const nodeStatusList: NodeStatus[][] = [
+  [
+    {
+      id: &#39;1&#39;,
+      status: &#39;running&#39;,
+    },
+    {
+      id: &#39;2&#39;,
+      status: &#39;default&#39;,
+    },
+    {
+      id: &#39;3&#39;,
+      status: &#39;default&#39;,
+    },
+    {
+      id: &#39;4&#39;,
+      status: &#39;default&#39;,
+    },
+  ],
+  [
+    {
+      id: &#39;1&#39;,
+      status: &#39;success&#39;,
+    },
+    {
+      id: &#39;2&#39;,
+      status: &#39;running&#39;,
+    },
+    {
+      id: &#39;3&#39;,
+      status: &#39;default&#39;,
+    },
+    {
+      id: &#39;4&#39;,
+      status: &#39;default&#39;,
+    },
+  ],
+  [
+    {
+      id: &#39;1&#39;,
+      status: &#39;success&#39;,
+    },
+    {
+      id: &#39;2&#39;,
+      status: &#39;success&#39;,
+    },
+    {
+      id: &#39;3&#39;,
+      status: &#39;running&#39;,
+    },
+    {
+      id: &#39;4&#39;,
+      status: &#39;running&#39;,
+    },
+  ],
+  [
+    {
+      id: &#39;1&#39;,
+      status: &#39;success&#39;,
+    },
+    {
+      id: &#39;2&#39;,
+      status: &#39;success&#39;,
+    },
+    {
+      id: &#39;3&#39;,
+      status: &#39;success&#39;,
+    },
+    {
+      id: &#39;4&#39;,
+      status: &#39;failed&#39;,
+    },
+  ],
+]
+
+const graph: Graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+  panning: {
+    enabled: true,
+    eventTypes: [&#39;leftMouseDown&#39;, &#39;mouseWheel&#39;],
+  },
+  mousewheel: {
+    enabled: true,
+    modifiers: &#39;ctrl&#39;,
+    factor: 1.1,
+    maxScale: 1.5,
+    minScale: 0.5,
+  },
+  highlighting: {
+    magnetAdsorbed: {
+      name: &#39;stroke&#39;,
+      args: {
+        attrs: {
+          fill: &#39;#fff&#39;,
+          stroke: &#39;#31d0c6&#39;,
+          strokeWidth: 4,
+        },
+      },
+    },
+  },
+  connecting: {
+    snap: true,
+    allowBlank: false,
+    allowLoop: false,
+    highlight: true,
+    connector: &#39;algo-connector&#39;,
+    connectionPoint: &#39;anchor&#39;,
+    anchor: &#39;center&#39;,
+    validateMagnet({ magnet }) {
+      return magnet.getAttribute(&#39;port-group&#39;) !== &#39;top&#39;
+    },
+    createEdge() {
+      return graph.createEdge({
+        shape: &#39;dag-edge&#39;,
+        attrs: {
+          line: {
+            strokeDasharray: &#39;5 5&#39;,
+          },
+        },
+        zIndex: -1,
+      })
+    },
+  },
+})
+graph.use(
+  new Selection({
+    multiple: true,
+    rubberEdge: true,
+    rubberNode: true,
+    modifiers: &#39;shift&#39;,
+    rubberband: true,
+  }),
+)
+
+graph.on(&#39;edge:connected&#39;, ({ edge }) =&gt; {
+  edge.attr({
+    line: {
+      strokeDasharray: &#39;&#39;,
+    },
+  })
+})
+
+graph.on(&#39;node:change:data&#39;, ({ node }) =&gt; {
+  const edges = graph.getIncomingEdges(node)
+  const { status } = node.getData() as NodeStatus
+  edges?.forEach((edge) =&gt; {
+    if (status === &#39;running&#39;) {
+      edge.attr(&#39;line/strokeDasharray&#39;, 5)
+      edge.attr(&#39;line/style/animation&#39;, &#39;running-line 30s infinite linear&#39;)
+    } else {
+      edge.attr(&#39;line/strokeDasharray&#39;, &#39;&#39;)
+      edge.attr(&#39;line/style/animation&#39;, &#39;&#39;)
+    }
+  })
+})
+
+// 初始化节点/边
+const init = (data: any[]) =&gt; {
+  const cells: Cell[] = []
+  data.forEach((item) =&gt; {
+    if (item.shape === &#39;dag-node&#39;) {
+      cells.push(graph.createNode(item))
+    } else {
+      cells.push(graph.createEdge(item))
+    }
+  })
+  graph.resetCells(cells)
+}
+
+// 显示节点状态
+const showNodeStatus = async (statusList: NodeStatus[][]) =&gt; {
+  const status = statusList.shift()
+  status?.forEach((item) =&gt; {
+    const { id, status } = item
+    const node = graph.getCellById(id)
+    const data = node.getData() as NodeStatus
+    node.setData({
+      ...data,
+      status,
+    })
+  })
+  setTimeout(() =&gt; {
+    showNodeStatus(statusList)
+  }, 3000)
+}
+
+Promise.resolve(exampleData)
+  .then((data) =&gt; {
+    init(data)
+    showNodeStatus(nodeStatusList)
+    graph.centerContent()
+  })
+
+insertCss(`
+.node {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border: 1px solid #c2c8d5;
+  border-left: 4px solid #5F95FF;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06);
+}
+.node img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+.node .label {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 104px;
+  margin-left: 8px;
+  color: #666;
+  font-size: 12px;
+}
+.node .status {
+  flex-shrink: 0;
+}
+.node.success {
+  border-left: 4px solid #52c41a;
+}
+.node.failed {
+  border-left: 4px solid #ff4d4f;
+}
+.node.running .status img {
+  animation: spin 1s linear infinite;
+}
+.x6-node-selected .node {
+  border-color: #1890ff;
+  border-radius: 2px;
+  box-shadow: 0 0 0 4px #d4e8fe;
+}
+.x6-node-selected .node.success {
+  border-color: #52c41a;
+  border-radius: 2px;
+  box-shadow: 0 0 0 4px #ccecc0;
+}
+.x6-node-selected .node.failed {
+  border-color: #ff4d4f;
+  border-radius: 2px;
+  box-shadow: 0 0 0 4px #fedcdc;
+}
+.x6-edge:hover path:nth-child(2){
+  stroke: #1890ff;
+  stroke-width: 1px;
+}
+
+.x6-edge-selected path:nth-child(2){
+  stroke: #1890ff;
+  stroke-width: 1.5px !important;
+}
+
+@keyframes running-line {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+@keyframes spin {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+`)
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

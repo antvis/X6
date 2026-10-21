@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>layout/tree/mindmap</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/layout/tree/mindmap/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="layout/tree/mindmap" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>layout/tree/mindmap</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/layout/tree/mindmap/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import exampleData from &#39;../../../data/algorithm-category.json&#39;
+import { Graph, Model } from &#39;@antv/x6&#39;
+import Hierarchy from &#39;@antv/hierarchy&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+  connecting: {
+    connector: &#39;smooth&#39;,
+  },
+})
+
+Promise.resolve(exampleData)
+  .then((data) =&gt; {
+    const result = Hierarchy.mindmap(data, {
+      direction: &#39;H&#39;,
+      getHeight() {
+        return 16
+      },
+      getWidth() {
+        return 16
+      },
+      getHGap() {
+        return 80
+      },
+      getVGap() {
+        return 1
+      },
+      getSide: () =&gt; {
+        return &#39;right&#39;
+      },
+    })
+
+    const model: Model.FromJSONData = { nodes: [], edges: [] }
+    const traverse = (data: HierarchyResult) =&gt; {
+      if (data) {
+        model.nodes?.push({
+          id: `${data.id}`,
+          x: data.x + 250,
+          y: data.y + 250,
+          shape: &#39;circle&#39;,
+          width: 16,
+          height: 16,
+          attrs: {
+            body: {
+              fill: &#39;#5F95FF&#39;,
+              stroke: &#39;transparent&#39;,
+            },
+          },
+        })
+      }
+      if (data.children) {
+        data.children.forEach((item: HierarchyResult) =&gt; {
+          model.edges?.push({
+            source: `${data.id}`,
+            target: `${item.id}`,
+            attrs: {
+              line: {
+                stroke: &#39;#A2B1C3&#39;,
+                strokeWidth: 1,
+                targetMarker: null,
+              },
+            },
+          })
+          traverse(item)
+        })
+      }
+    }
+    traverse(result)
+
+    graph.fromJSON(model)
+  })
+
+interface HierarchyResult {
+  id: number
+  x: number
+  y: number
+  children: HierarchyResult[]
+}
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

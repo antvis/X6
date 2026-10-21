@@ -1,0 +1,290 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>edge/tool/context-menu</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/edge/tool/context-menu/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="edge/tool/context-menu" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>edge/tool/context-menu</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/edge/tool/context-menu/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Edge, Graph, Shape } from &#39;@antv/x6&#39;
+import { Dropdown } from &#39;antd&#39;
+import type { MenuProps } from &#39;antd&#39;
+import React, { useState, useEffect, useRef, useCallback } from &#39;react&#39;
+import { createRoot } from &#39;react-dom/client&#39;
+import type { Root } from &#39;react-dom/client&#39;
+
+// 如果项目中使用的是 antd@4，使用方式参考：https://codesandbox.io/s/contextmenu-z8gpq3
+
+// 2.x的使用可以参考2.x文档： https://x6-v2.antv.vision/examples/edge/tool/#context-menu
+
+
+Shape.Rect.config({
+  attrs: {
+    body: {
+      fill: &#39;#f5f5f5&#39;,
+      stroke: &#39;#d9d9d9&#39;,
+      strokeWidth: 1,
+    },
+  },
+  ports: {
+    groups: {
+      in: { position: { name: &#39;top&#39; } },
+      out: { position: { name: &#39;bottom&#39; } },
+    },
+  },
+  portMarkup: [
+    {
+      tagName: &#39;circle&#39;,
+      selector: &#39;portBody&#39;,
+      attrs: {
+        r: 5,
+        magnet: true,
+        stroke: &#39;#31d0c6&#39;,
+        fill: &#39;#fff&#39;,
+        strokeWidth: 2,
+      },
+    },
+  ],
+})
+
+const magnetAvailabilityHighlighter = {
+  name: &#39;stroke&#39;,
+  args: {
+    padding: 3,
+    attrs: {
+      strokeWidth: 3,
+      stroke: &#39;#52c41a&#39;,
+    },
+  },
+}
+
+// 工具函数：检查点击是否在 dropdown 内
+const isClickInDropdown = (target: HTMLElement): boolean =&gt; {
+  const checkElement = (el: HTMLElement | null): boolean =&gt; {
+    if (!el || el === document.body) return false
+
+    const className = el.className?.toString() || &#39;&#39;
+
+    if (
+      className.includes(&#39;ant-dropdown&#39;) ||
+      className.includes(&#39;ant-dropdown-menu&#39;)
+    ) {
+      return true
+    }
+
+    return checkElement(el.parentElement)
+  }
+
+  return checkElement(target)
+}
+
+// 右键菜单组件
+interface ContextMenuProps {
+  x: number
+  y: number
+  cell: Edge
+  onClose: () =&gt; void
+}
+
+const ContextMenu: React.FC&lt;ContextMenuProps&gt; = ({ x, y, cell, onClose }) =&gt; {
+  const [visible, setVisible] = useState(true)
+  const containerRef = useRef&lt;HTMLDivElement&gt;(null)
+
+  // 关闭菜单
+  const handleClose = useCallback(() =&gt; {
+    setVisible(false)
+    // 异步调用 onClose，避免同步 unmount
+    Promise.resolve().then(onClose)
+  }, [onClose])
+
+  // 处理菜单项点击
+  const handleMenuClick: MenuProps[&#39;onClick&#39;] = useCallback(({ key }) =&gt; {
+    const actions: Record&lt;string, () =&gt; void&gt; = {
+      &#39;color-blue&#39;: () =&gt; cell.setAttrs({ line: { stroke: &#39;#1890ff&#39; } }),
+      &#39;color-green&#39;: () =&gt; cell.setAttrs({ line: { stroke: &#39;#52c41a&#39; } }),
+      &#39;color-red&#39;: () =&gt; cell.setAttrs({ line: { stroke: &#39;#ff4d4f&#39; } }),
+      &#39;style-solid&#39;: () =&gt; cell.setAttrs({ line: { strokeDasharray: &#39;&#39; } }),
+      &#39;style-dashed&#39;: () =&gt; cell.setAttrs({ line: { strokeDasharray: &#39;5 5&#39; } }),
+      &#39;delete&#39;: () =&gt; cell.remove(),
+    }
+
+    actions[key]?.()
+    handleClose()
+  }, [cell, handleClose])
+
+  // 监听外部点击
+  useEffect(() =&gt; {
+    if (!visible) return
+
+    const handleClickOutside = (e: MouseEvent) =&gt; {
+      const target = e.target as HTMLElement
+      const isInContainer = containerRef.current?.contains(target)
+      const isInDropdown = isClickInDropdown(target)
+
+      if (!isInContainer &amp;&amp; !isInDropdown) {
+        handleClose()
+      }
+    }
+
+    // 延迟添加监听器，避免立即触发
+    const timer = setTimeout(() =&gt; {
+      document.addEventListener(&#39;mousedown&#39;, handleClickOutside, true)
+    }, 200)
+
+    return () =&gt; {
+      clearTimeout(timer)
+      document.removeEventListener(&#39;mousedown&#39;, handleClickOutside, true)
+    }
+  }, [visible, handleClose])
+
+  // 菜单配置
+  const menuItems: MenuProps[&#39;items&#39;] = [
+    {
+      key: &#39;changeColor&#39;,
+      label: &#39;修改颜色&#39;,
+      children: [
+        { key: &#39;color-blue&#39;, label: &#39;蓝色&#39; },
+        { key: &#39;color-green&#39;, label: &#39;绿色&#39; },
+        { key: &#39;color-red&#39;, label: &#39;红色&#39; },
+      ],
+    },
+    {
+      key: &#39;changeStyle&#39;,
+      label: &#39;修改样式&#39;,
+      children: [
+        { key: &#39;style-solid&#39;, label: &#39;实线&#39; },
+        { key: &#39;style-dashed&#39;, label: &#39;虚线&#39; },
+      ],
+    },
+    { type: &#39;divider&#39; },
+    { key: &#39;delete&#39;, label: &#39;删除&#39;, danger: true },
+  ]
+
+  return (
+    &lt;div
+      ref={containerRef}
+      style={{
+        position: &#39;fixed&#39;,
+        left: x,
+        top: y,
+        zIndex: 9999,
+      }}
+    &gt;
+      &lt;Dropdown
+        open={visible}
+        onOpenChange={(open) =&gt; !open &amp;&amp; handleClose()}
+        menu={{ items: menuItems, onClick: handleMenuClick }}
+        trigger={[]}
+        getPopupContainer={() =&gt; document.body}
+      &gt;
+        &lt;span style={{ display: &#39;inline-block&#39;, width: 0, height: 0 }} /&gt;
+      &lt;/Dropdown&gt;
+    &lt;/div&gt;
+  )
+}
+
+// Graph 配置
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+  grid: true,
+  highlighting: {
+    magnetAvailable: magnetAvailabilityHighlighter,
+  },
+  connecting: {
+    snap: true,
+    allowBlank: false,
+    allowLoop: false,
+    allowNode: false,
+    highlight: true,
+    validateMagnet({ magnet }) {
+      return magnet.getAttribute(&#39;port-group&#39;) !== &#39;in&#39;
+    },
+    validateConnection({ sourceMagnet, targetMagnet }) {
+      if (!sourceMagnet || sourceMagnet.getAttribute(&#39;port-group&#39;) === &#39;in&#39;) {
+        return false
+      }
+      if (!targetMagnet || targetMagnet.getAttribute(&#39;port-group&#39;) !== &#39;in&#39;) {
+        return false
+      }
+      return true
+    },
+  },
+})
+
+// 添加节点和边
+const source = graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  ports: [{ id: &#39;out-2&#39;, group: &#39;out&#39; }],
+})
+
+const target = graph.addNode({
+  x: 140,
+  y: 240,
+  width: 100,
+  height: 40,
+  ports: [{ id: &#39;in-1&#39;, group: &#39;in&#39; }],
+})
+
+graph.addEdge({
+  source: { cell: source.id, port: &#39;out-2&#39; },
+  target: { cell: target.id, port: &#39;in-1&#39; },
+})
+
+// 菜单管理器
+class MenuManager {
+  private root: Root | null = null
+  private container: HTMLDivElement | null = null
+  private isCleaningUp = false
+
+  cleanup = () =&gt; {
+    if (this.isCleaningUp) return
+    this.isCleaningUp = true
+
+    requestAnimationFrame(() =&gt; {
+      try {
+        this.root?.unmount()
+        this.container?.parentNode?.removeChild(this.container)
+      } catch (error) {
+        console.error(&#39;Error cleaning up menu:&#39;, error)
+      } finally {
+        this.root = null
+        this.container = null
+        this.isCleaningUp = false
+      }
+    })
+  }
+
+  show = (x: number, y: number, cell: Edge) =&gt; {
+    this.cleanup()
+
+    requestAnimationFrame(() =&gt; {
+      this.container = document.createElement(&#39;div&#39;)
+      document.body.appendChild(this.container)
+
+      this.root = createRoot(this.container)
+      this.root.render(
+        &lt;ContextMenu x={x} y={y} cell={cell} onClose={this.cleanup} /&gt;
+      )
+    })
+  }
+}
+
+const menuManager = new MenuManager()
+
+// 监听边的右键菜单事件
+graph.on(&#39;edge:contextmenu&#39;, ({ cell, e }: { cell: Edge; e: MouseEvent }) =&gt; {
+  e.preventDefault()
+  e.stopPropagation()
+  menuManager.show(e.clientX, e.clientY, cell)
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

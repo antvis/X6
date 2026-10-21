@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>edge/edge/custom-click-event</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/edge/edge/custom-click-event/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="edge/edge/custom-click-event" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>edge/edge/custom-click-event</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/edge/edge/custom-click-event/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.on(&#39;edge:customevent&#39;, ({ name, e, edge }) =&gt; {
+  if (name === &#39;click:circle&#39; || name === &#39;click:rect&#39;) {
+    e.stopPropagation()
+    const t = edge.attr&lt;number&gt;(&#39;c1/atConnectionRatio&#39;) &gt; 0.3 ? 0.3 : 0.9
+    edge.animate(
+      {
+        &#39;attrs/c1/atConnectionRatio&#39;: t,
+        &#39;attrs/c2/atConnectionRatio&#39;: t,
+      },
+      {
+        delay: 100,
+        duration: 1000,
+        easing: &#39;ease-in-out-back&#39;,
+        fill: &#39;forwards&#39;,
+      },
+    )
+  }
+})
+
+graph.addEdge({
+  source: { x: 320, y: 60 },
+  target: { x: 380, y: 300 },
+  vertices: [{ x: 320, y: 200 }],
+  connector: { name: &#39;rounded&#39; },
+  markup: [
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;p1&#39;,
+    },
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;p2&#39;,
+    },
+    {
+      tagName: &#39;rect&#39;,
+      selector: &#39;sign&#39;,
+    },
+    {
+      tagName: &#39;circle&#39;,
+      selector: &#39;c1&#39;,
+    },
+    {
+      tagName: &#39;circle&#39;,
+      selector: &#39;c2&#39;,
+    },
+    {
+      tagName: &#39;text&#39;,
+      selector: &#39;signText&#39;,
+    },
+  ],
+  attrs: {
+    p1: {
+      connection: true,
+      fill: &#39;none&#39;,
+      stroke: &#39;#237804&#39;,
+      strokeWidth: 6,
+      strokeLinejoin: &#39;round&#39;,
+    },
+    p2: {
+      connection: true,
+      fill: &#39;none&#39;,
+      stroke: &#39;#73d13d&#39;,
+      strokeWidth: 4,
+      pointerEvents: &#39;none&#39;,
+      strokeLinejoin: &#39;round&#39;,
+      targetMarker: {
+        tagName: &#39;path&#39;,
+        fill: &#39;#73d13d&#39;,
+        stroke: &#39;#237804&#39;,
+        strokeWidth: 1,
+        d: &#39;M 10 -3 10 -10 -2 0 10 10 10 3&#39;,
+      },
+    },
+    sign: {
+      x: -20,
+      y: -10,
+      width: 50,
+      height: 20,
+      stroke: &#39;#237804&#39;,
+      fill: &#39;#73d13d&#39;,
+      atConnectionLength: 30,
+      strokeWidth: 1,
+      event: &#39;click:rect&#39;,
+      cursor: &#39;pointer&#39;,
+    },
+    signText: {
+      atConnectionLength: 34,
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;middle&#39;,
+      text: &#39;Token&#39;,
+      event: &#39;click:rect&#39;,
+      cursor: &#39;pointer&#39;,
+    },
+    c1: {
+      r: 10,
+      stroke: &#39;#f5222d&#39;,
+      fill: &#39;#fe854f&#39;,
+      atConnectionRatio: 0.68,
+      strokeWidth: 1,
+      event: &#39;click:circle&#39;,
+      cursor: &#39;pointer&#39;,
+    },
+    c2: {
+      r: 5,
+      stroke: &#39;#f5222d&#39;,
+      fill: &#39;white&#39;,
+      atConnectionRatio: 0.68,
+      strokeWidth: 1,
+      pointerEvents: &#39;none&#39;,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

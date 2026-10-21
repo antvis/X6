@@ -1,0 +1,187 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/group/expand-shrink</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/group/expand-shrink/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="node/group/expand-shrink" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>node/group/expand-shrink</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/node/group/expand-shrink/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+  embedding: {
+    enabled: true,
+  },
+  highlighting: {
+    embedding: {
+      name: &#39;stroke&#39;,
+      args: {
+        padding: -1,
+        attrs: {
+          stroke: &#39;#73d13d&#39;,
+        },
+      },
+    },
+  },
+})
+
+const source = graph.addNode({
+  x: 80,
+  y: 100,
+  width: 80,
+  height: 40,
+  label: &#39;Child&#39;,
+  zIndex: 10,
+  attrs: {
+    body: {
+      stroke: &#39;none&#39;,
+      fill: &#39;#3199FF&#39;,
+    },
+    label: {
+      fill: &#39;#fff&#39;,
+      fontSize: 12,
+    },
+  },
+})
+
+const target = graph.addNode({
+  x: 280,
+  y: 80,
+  width: 80,
+  height: 40,
+  label: &#39;Child&#39;,
+  zIndex: 10,
+  attrs: {
+    body: {
+      stroke: &#39;none&#39;,
+      fill: &#39;#47C769&#39;,
+    },
+    label: {
+      fill: &#39;#fff&#39;,
+      fontSize: 12,
+    },
+  },
+})
+
+const parent = graph.addNode({
+  x: 40,
+  y: 40,
+  width: 360,
+  height: 160,
+  zIndex: 1,
+  label: &#39;Parent&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#fffbe6&#39;,
+      stroke: &#39;#ffe7ba&#39;,
+    },
+    label: {
+      fontSize: 12,
+    },
+  },
+})
+
+parent.addChild(source)
+parent.addChild(target)
+
+let ctrlPressed = false
+const embedPadding = 20
+
+graph.on(&#39;node:embedding&#39;, ({ e }: { e: JQuery.MouseMoveEvent }) =&gt; {
+  ctrlPressed = e.metaKey || e.ctrlKey
+})
+
+graph.on(&#39;node:embedded&#39;, () =&gt; {
+  ctrlPressed = false
+})
+
+graph.on(&#39;node:change:size&#39;, ({ node, options }) =&gt; {
+  if (options.skipParentHandler) {
+    return
+  }
+
+  const children = node.getChildren()
+  if (children &amp;&amp; children.length) {
+    node.prop(&#39;originSize&#39;, node.getSize())
+  }
+})
+
+graph.on(&#39;node:change:position&#39;, ({ node, options }) =&gt; {
+  if (options.skipParentHandler || ctrlPressed) {
+    return
+  }
+
+  const children = node.getChildren()
+  if (children &amp;&amp; children.length) {
+    node.prop(&#39;originPosition&#39;, node.getPosition())
+  }
+
+  const parent = node.getParent()
+  if (parent &amp;&amp; parent.isNode()) {
+    let originSize = parent.prop(&#39;originSize&#39;)
+    if (originSize == null) {
+      originSize = parent.getSize()
+      parent.prop(&#39;originSize&#39;, originSize)
+    }
+
+    let originPosition = parent.prop(&#39;originPosition&#39;)
+    if (originPosition == null) {
+      originPosition = parent.getPosition()
+      parent.prop(&#39;originPosition&#39;, originPosition)
+    }
+
+    let x = originPosition.x
+    let y = originPosition.y
+    let cornerX = originPosition.x + originSize.width
+    let cornerY = originPosition.y + originSize.height
+    let hasChange = false
+
+    const children = parent.getChildren()
+    if (children) {
+      children.forEach((child) =&gt; {
+        const bbox = child.getBBox().inflate(embedPadding)
+        const corner = bbox.getCorner()
+
+        if (bbox.x &lt; x) {
+          x = bbox.x
+          hasChange = true
+        }
+
+        if (bbox.y &lt; y) {
+          y = bbox.y
+          hasChange = true
+        }
+
+        if (corner.x &gt; cornerX) {
+          cornerX = corner.x
+          hasChange = true
+        }
+
+        if (corner.y &gt; cornerY) {
+          cornerY = corner.y
+          hasChange = true
+        }
+      })
+    }
+
+    if (hasChange) {
+      parent.prop(
+        {
+          position: { x, y },
+          size: { width: cornerX - x, height: cornerY - y },
+        },
+        { skipParentHandler: true },
+      )
+    }
+  }
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

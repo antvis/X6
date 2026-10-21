@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>layout/general/force</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/layout/general/force/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="layout/general/force" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>layout/general/force</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/layout/general/force/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import {
+  ForceLayout,
+  type Edge as LayoutEdge,
+  type OutNode as LayoutNode,
+} from &#39;@antv/layout&#39;
+import { FunctionExt, Graph, type Model, type Node } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+})
+
+const originData: {
+  nodes: LayoutNode[]
+  edges: LayoutEdge[]
+} = {
+  nodes: [
+    { id: &#39;node0&#39;, size: 50, x: 0, y: 0 },
+    { id: &#39;node1&#39;, size: 30, x: 0, y: 0 },
+    { id: &#39;node2&#39;, size: 30, x: 0, y: 0 },
+    { id: &#39;node3&#39;, size: 30, x: 0, y: 0 },
+    { id: &#39;node4&#39;, size: 30, x: 0, y: 0 },
+    { id: &#39;node5&#39;, size: 30, x: 0, y: 0 },
+    { id: &#39;node6&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node7&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node8&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node9&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node10&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node11&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node12&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node13&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node14&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node15&#39;, size: 15, x: 0, y: 0 },
+    { id: &#39;node16&#39;, size: 15, x: 0, y: 0 },
+  ],
+  edges: [
+    { source: &#39;node0&#39;, target: &#39;node1&#39; },
+    { source: &#39;node0&#39;, target: &#39;node2&#39; },
+    { source: &#39;node0&#39;, target: &#39;node3&#39; },
+    { source: &#39;node0&#39;, target: &#39;node4&#39; },
+    { source: &#39;node0&#39;, target: &#39;node5&#39; },
+    { source: &#39;node1&#39;, target: &#39;node6&#39; },
+    { source: &#39;node1&#39;, target: &#39;node7&#39; },
+    { source: &#39;node2&#39;, target: &#39;node8&#39; },
+    { source: &#39;node2&#39;, target: &#39;node9&#39; },
+    { source: &#39;node2&#39;, target: &#39;node10&#39; },
+    { source: &#39;node2&#39;, target: &#39;node11&#39; },
+    { source: &#39;node2&#39;, target: &#39;node12&#39; },
+    { source: &#39;node2&#39;, target: &#39;node13&#39; },
+    { source: &#39;node3&#39;, target: &#39;node14&#39; },
+    { source: &#39;node3&#39;, target: &#39;node15&#39; },
+    { source: &#39;node3&#39;, target: &#39;node16&#39; },
+  ],
+}
+
+const getModelFromOriginData = (data: typeof originData) =&gt; {
+  const model: Model.FromJSONData = {
+    nodes: [],
+    edges: [],
+  }
+  originData.nodes.forEach((item) =&gt; {
+    model.nodes?.push({
+      id: item.id,
+      shape: &#39;circle&#39;,
+      width: item.size as number,
+      height: item.size as number,
+      x: item.x,
+      y: item.y,
+      attrs: {
+        body: {
+          fill: &#39;#5F95FF&#39;,
+          stroke: &#39;transparent&#39;,
+        },
+      },
+    })
+  })
+  originData.edges.forEach((item) =&gt; {
+    model.edges?.push({
+      source: item.source,
+      target: item.target,
+      attrs: {
+        line: {
+          stroke: &#39;#A2B1C3&#39;,
+          strokeWidth: 2,
+          targetMarker: null,
+        },
+      },
+    })
+  })
+  return model
+}
+
+// helper function to update node positions
+function update() {
+  for (const n of originData.nodes) {
+    const node: Node = graph.getCellById(n.id) as Node
+    node.position(n.x, n.y)
+  }
+}
+
+// Store the current layout promise to prevent concurrent executions
+let currentLayoutPromise: Promise&lt;void&gt; | null = null
+
+const forceLayout = new ForceLayout({
+  type: &#39;force&#39;,
+  center: [369, 180],
+  preventOverlap: true,
+  // Adjust alpha parameters for faster convergence
+  alpha: 0.5, // 初始&quot;温度&quot;，默认 0.3，提高到 0.5 使初始运动更快
+  alphaDecay: 0.05, // 温度衰减率，默认 0.028，增加到 0.05 使其更快收敛
+  alphaMin: 0.01, // 停止阈值，默认 0.001，增加到 0.01 使其更早停止
+  linkDistance: (d) =&gt; {
+    if (d.source.id === &#39;node0&#39;) {
+      return 100
+    }
+    return 30
+  },
+  nodeStrength: (d) =&gt; {
+    if (d.isLeaf) {
+      return -50
+    }
+    return -10
+  },
+  edgeStrength: (d) =&gt; {
+    if (
+      d.source.id === &#39;node1&#39; ||
+      d.source.id === &#39;node2&#39; ||
+      d.source.id === &#39;node3&#39;
+    ) {
+      return 0.7
+    }
+    return 0.1
+  },
+  tick: update,
+})
+
+// Helper function to run layout and return a promise
+function runLayout(): Promise&lt;void&gt; {
+  return new Promise((resolve) =&gt; {
+    // Set onLayoutEnd callback to resolve the promise
+    forceLayout.updateCfg({
+      onLayoutEnd: () =&gt; {
+        currentLayoutPromise = null
+        resolve()
+      },
+    } as any)
+
+    // Start the layout
+    forceLayout.layout(originData)
+  })
+}
+
+// Helper to ensure layout runs, chaining if one is already running
+async function scheduleLayout(): Promise&lt;void&gt; {
+  if (currentLayoutPromise) {
+    // Wait for current layout to finish, then run a new one
+    await currentLayoutPromise
+  }
+
+  // Start new layout
+  currentLayoutPromise = runLayout()
+  return currentLayoutPromise
+}
+
+// initial render
+const model = getModelFromOriginData(originData)
+graph.fromJSON(model)
+
+// run initial layout
+scheduleLayout()
+
+// Debounced layout function to prevent too frequent calls during dragging
+const debouncedScheduleLayout = FunctionExt.debounce(
+  () =&gt; scheduleLayout(),
+  16, // Wait 16ms (~1 frame at 60fps) after last movement before running layout
+)
+
+// rerun layout on node drag, keep the dragged node fixed
+graph.on(&#39;node:moving&#39;, (e) =&gt; {
+  // Update the fixed position immediately for responsive dragging
+  for (const n of originData.nodes) {
+    if (n.id === e.cell.id) {
+      n.fx = e.x
+      n.fy = e.y
+    } else {
+      delete n.fx
+      delete n.fy
+    }
+  }
+
+  // Use debounced layout to avoid too frequent calls
+  debouncedScheduleLayout()
+})
+
+// When node drag ends, ensure layout runs one final time
+graph.on(&#39;node:moved&#39;, () =&gt; {
+  // Cancel any pending debounced layout
+  debouncedScheduleLayout.cancel?.()
+
+  // Run final layout immediately when drag ends
+  // This ensures the final state is correctly calculated
+  scheduleLayout()
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

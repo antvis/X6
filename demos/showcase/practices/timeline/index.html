@@ -1,0 +1,559 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/timeline</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/timeline/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="showcase/practices/timeline" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>showcase/practices/timeline</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/showcase/practices/timeline/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import exampleData from &#39;../../../data/timeline.json&#39;
+import { Graph, type Cell } from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+
+preWork()
+
+// 类型定义
+interface TimelineEvent {
+  id: string
+  title: string
+  content: string
+  date: string
+  color: string
+  lightColor: string
+  type: &#39;normal&#39; | &#39;milestone&#39;
+}
+
+// 常量配置
+const CONFIG = {
+  card: { width: 100, height: 80 },
+  marker: { diameter: 12 },
+  diamond: { size: 80 },
+  layout: { timelineY: 400, cardsY: 250, tipsGap: 160 },
+  timeline: { startX: 250, endX: 1850 },
+  text: { fontFamily: &#39;Inter, Helvetica, Arial, sans-serif&#39; },
+}
+
+const PORTS = {
+  groups: {
+    top: {
+      position: &#39;top&#39;,
+      attrs: {
+        circle: {
+          r: 4,
+          magnet: true,
+          stroke: &#39;#31d0c6&#39;,
+          fill: &#39;#fff&#39;,
+          strokeWidth: 2,
+        },
+      },
+    },
+    bottom: {
+      position: &#39;bottom&#39;,
+      attrs: {
+        circle: {
+          r: 4,
+          magnet: true,
+          stroke: &#39;#31d0c6&#39;,
+          fill: &#39;#fff&#39;,
+          strokeWidth: 2,
+        },
+      },
+    },
+  },
+}
+
+// 滤镜配置
+const FILTERS = {
+  card: [
+    &#39;drop-shadow(0 6px 16px rgba(0,0,0,0.12))&#39;,
+    &#39;drop-shadow(0 3px 6px rgba(0,0,0,0.06))&#39;,
+  ],
+  tips: [
+    &#39;drop-shadow(0 6px 20px rgba(0,0,0,0.25))&#39;,
+    &#39;drop-shadow(0 4px 12px rgba(0,0,0,0.15))&#39;,
+  ],
+  diamond: [
+    &#39;drop-shadow(0 6px 20px rgba(65,105,225,0.5))&#39;,
+    &#39;drop-shadow(0 4px 12px rgba(65,105,225,0.3))&#39;,
+  ],
+}
+
+// 注册节点
+Graph.registerNode(
+  &#39;tips-node&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: 200,
+    height: 140,
+    markup: [
+      { tagName: &#39;rect&#39;, selector: &#39;body&#39; },
+      { tagName: &#39;rect&#39;, selector: &#39;header&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;headerText&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;line1&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;line2&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;line3&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;line4&#39; },
+    ],
+    attrs: {
+      body: {
+        width: 200,
+        height: 140,
+        fill: &#39;#FFFFFF&#39;,
+        stroke: &#39;none&#39;,
+        rx: 6,
+        ry: 6,
+        filter: FILTERS.tips[1],
+      },
+      header: {
+        width: 200,
+        height: 40,
+        fill: &#39;#1a1a1a&#39;,
+        stroke: &#39;none&#39;,
+        rx: 6,
+        ry: 6,
+      },
+      headerText: {
+        refX: 100,
+        refY: 20,
+        text: &#39;Timeline&#39;,
+        fill: &#39;#FFFFFF&#39;,
+        fontSize: 18,
+        fontWeight: &#39;bold&#39;,
+        textAnchor: &#39;middle&#39;,
+        dominantBaseline: &#39;middle&#39;,
+        ...CONFIG.text,
+      },
+      line1: {
+        refX: 16,
+        refY: 60,
+        text: &#39;A simple linear&#39;,
+        fill: &#39;#666&#39;,
+        fontSize: 12,
+        textAnchor: &#39;start&#39;,
+        ...CONFIG.text,
+      },
+      line2: {
+        refX: 16,
+        refY: 78,
+        text: &#39;timeline showing&#39;,
+        fill: &#39;#666&#39;,
+        fontSize: 12,
+        textAnchor: &#39;start&#39;,
+        ...CONFIG.text,
+      },
+      line3: {
+        refX: 16,
+        refY: 96,
+        text: &#39;events connected&#39;,
+        fill: &#39;#666&#39;,
+        fontSize: 12,
+        textAnchor: &#39;start&#39;,
+        ...CONFIG.text,
+      },
+      line4: {
+        refX: 16,
+        refY: 114,
+        text: &#39;to horizontal axis.&#39;,
+        fill: &#39;#666&#39;,
+        fontSize: 12,
+        textAnchor: &#39;start&#39;,
+        ...CONFIG.text,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;event-card&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: CONFIG.card.width,
+    height: CONFIG.card.height,
+    markup: [
+      { tagName: &#39;rect&#39;, selector: &#39;body&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;title&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;content&#39; },
+    ],
+    attrs: {
+      body: {
+        width: CONFIG.card.width,
+        height: CONFIG.card.height,
+        fill: &#39;#EFF4FF&#39;,
+        stroke: &#39;none&#39;,
+        rx: 4,
+        ry: 4,
+        filter: FILTERS.card[1],
+        cursor: &#39;move&#39;,
+      },
+      title: {
+        refX: &#39;50%&#39;,
+        refY: 30,
+        fill: &#39;#333&#39;,
+        fontSize: 14,
+        fontWeight: &#39;600&#39;,
+        textAnchor: &#39;middle&#39;,
+        dominantBaseline: &#39;middle&#39;,
+        ...CONFIG.text,
+      },
+      content: {
+        refX: &#39;50%&#39;,
+        refY: 50,
+        fill: &#39;#666&#39;,
+        fontSize: 11,
+        textAnchor: &#39;middle&#39;,
+        dominantBaseline: &#39;middle&#39;,
+        ...CONFIG.text,
+      },
+    },
+    ports: PORTS,
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;diamond-milestone&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: CONFIG.diamond.size,
+    height: CONFIG.diamond.size,
+    markup: [
+      { tagName: &#39;path&#39;, selector: &#39;body&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;label&#39; },
+    ],
+    attrs: {
+      body: {
+        refD: &#39;M 40 0 L 80 40 L 40 80 L 0 40 Z&#39;,
+        fill: &#39;#4169E1&#39;,
+        stroke: &#39;none&#39;,
+        filter: FILTERS.diamond[1],
+        cursor: &#39;move&#39;,
+      },
+      label: {
+        refX: &#39;50%&#39;,
+        refY: &#39;50%&#39;,
+        fill: &#39;#FFF&#39;,
+        fontSize: 12,
+        fontWeight: &#39;600&#39;,
+        textAnchor: &#39;middle&#39;,
+        dominantBaseline: &#39;middle&#39;,
+        ...CONFIG.text,
+      },
+    },
+    ports: {
+      groups: {
+        top: {
+          position: { name: &#39;absolute&#39;, args: { x: &#39;50%&#39;, y: &#39;0%&#39; } },
+          attrs: PORTS.groups.top.attrs,
+        },
+        bottom: {
+          position: { name: &#39;absolute&#39;, args: { x: &#39;50%&#39;, y: &#39;100%&#39; } },
+          attrs: PORTS.groups.bottom.attrs,
+        },
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;endpoint-label&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: 100,
+    height: 40,
+    markup: [
+      { tagName: &#39;rect&#39;, selector: &#39;body&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;label&#39; },
+    ],
+    attrs: {
+      body: {
+        width: 100,
+        height: 40,
+        fill: &#39;#FFF&#39;,
+        stroke: &#39;#555&#39;,
+        strokeWidth: 1,
+        rx: 4,
+        ry: 4,
+      },
+      label: {
+        refX: &#39;50%&#39;,
+        refY: &#39;50%&#39;,
+        fill: &#39;#333&#39;,
+        fontSize: 14,
+        textAnchor: &#39;middle&#39;,
+        dominantBaseline: &#39;middle&#39;,
+        ...CONFIG.text,
+      },
+    },
+    ports: { groups: { top: PORTS.groups.top } },
+  },
+  true,
+)
+
+// 创建画布
+const graph = new Graph({
+  container: document.getElementById(&#39;graph-container&#39;)!,
+  background: { color: &#39;#FFF&#39; },
+  grid: { size: 24, visible: true, args: { color: &#39;#E0E0E0&#39;, thickness: 2 } },
+  panning: { enabled: true, eventTypes: [&#39;leftMouseDown&#39;, &#39;mouseWheel&#39;] },
+  mousewheel: {
+    enabled: true,
+    modifiers: &#39;ctrl&#39;,
+    factor: 1.1,
+    maxScale: 3,
+    minScale: 0.1,
+  },
+  connecting: {
+    anchor: &#39;center&#39;,
+    connectionPoint: &#39;anchor&#39;,
+    router: {
+      name: &#39;metro&#39;,
+      args: { startDirections: [&#39;bottom&#39;], endDirections: [&#39;top&#39;] },
+    },
+    connector: { name: &#39;rounded&#39;, args: { radius: 10 } },
+  },
+  interacting: { nodeMovable: true, edgeMovable: false },
+})
+
+// 工具函数
+const createPorts = (id: string) =&gt; [
+  { id: `${id}-top`, group: &#39;top&#39; },
+  { id: `${id}-bottom`, group: &#39;bottom&#39; },
+]
+
+const createEndpoint = (
+  id: string,
+  x: number,
+  label: string,
+  y = CONFIG.layout.timelineY,
+) =&gt; [
+  graph.createNode({
+    id: `${id}-anchor`,
+    shape: &#39;circle&#39;,
+    x: x - 8,
+    y: y - 8,
+    width: 16,
+    height: 16,
+    attrs: { body: { fill: &#39;#000&#39;, stroke: &#39;none&#39; } },
+    zIndex: 10,
+  }),
+  graph.createNode({
+    id: `${id}-label`,
+    shape: &#39;endpoint-label&#39;,
+    x: x - 50,
+    y: y + 20,
+    attrs: { label: { text: label } },
+    ports: [{ id: `${id}-label-top`, group: &#39;top&#39; }],
+    zIndex: 2,
+  }),
+  graph.createEdge({
+    id: `${id}-connector`,
+    source: `${id}-anchor`,
+    target: { cell: `${id}-label`, port: `${id}-label-top` },
+    attrs: { line: { stroke: &#39;#555&#39;, strokeWidth: 1.5, targetMarker: null } },
+    router: { name: &#39;orth&#39;, args: { padding: 1 } },
+    zIndex: 3,
+  }),
+]
+
+// 数据转换
+function transformTimelineData(data: TimelineEvent[]): Cell[] {
+  const cells: Cell[] = []
+  const { timeline, layout, card, marker, diamond } = CONFIG
+  const spacing = (timeline.endX - timeline.startX) / (data.length + 1)
+
+  // 时间轴主线
+  cells.push(
+    graph.createEdge({
+      id: &#39;timeline-main-axis&#39;,
+      source: { x: timeline.startX, y: layout.timelineY },
+      target: { x: timeline.endX, y: layout.timelineY },
+      attrs: { line: { stroke: &#39;#AAA&#39;, strokeWidth: 2, targetMarker: null } },
+      zIndex: 5,
+    }),
+  )
+
+  // 端点
+  cells.push(...createEndpoint(&#39;start&#39;, timeline.startX, &#39;Start Point&#39;))
+  cells.push(...createEndpoint(&#39;end&#39;, timeline.endX, &#39;End Point&#39;))
+
+  // Tips
+  cells.push(
+    graph.createNode({
+      id: &#39;tips-node&#39;,
+      shape: &#39;tips-node&#39;,
+      x: timeline.startX - 100,
+      y: layout.timelineY - layout.tipsGap - 80,
+      zIndex: 20,
+    }),
+  )
+
+  // 事件
+  data.forEach((event, i) =&gt; {
+    const x = timeline.startX + (i + 1) * spacing
+
+    if (event.type === &#39;milestone&#39;) {
+      const dY = layout.cardsY - diamond.size - 20
+      const diamondId = `${event.id}-diamond`
+
+      cells.push(
+        graph.createNode({
+          id: diamondId,
+          shape: &#39;diamond-milestone&#39;,
+          x: x - diamond.size / 2,
+          y: dY,
+          attrs: {
+            body: { fill: event.color },
+            label: { text: event.title },
+          },
+          ports: createPorts(diamondId),
+          zIndex: 25,
+        }),
+        graph.createEdge({
+          id: `${event.id}-diamond-to-card`,
+          source: { cell: diamondId, port: `${diamondId}-bottom` },
+          target: { cell: `${event.id}-card`, port: `${event.id}-card-top` },
+          attrs: {
+            line: {
+              stroke: event.color,
+              strokeWidth: 2,
+              strokeDasharray: &#39;4 4&#39;,
+              targetMarker: null,
+            },
+          },
+          router: { name: &#39;orth&#39;, args: { padding: 1 } },
+          connector: { name: &#39;rounded&#39;, args: { radius: 8 } },
+          zIndex: 20,
+        }),
+      )
+    }
+
+    cells.push(
+      graph.createNode({
+        id: `${event.id}-card`,
+        shape: &#39;event-card&#39;,
+        x: x - card.width / 2,
+        y: layout.cardsY,
+        attrs: {
+          body: { fill: event.lightColor },
+          title: { text: event.title },
+          content: { text: event.content },
+        },
+        ports: createPorts(`${event.id}-card`),
+        zIndex: 15,
+      }),
+      graph.createNode({
+        id: `${event.id}-marker`,
+        shape: &#39;circle&#39;,
+        x: x - marker.diameter / 2,
+        y: layout.timelineY - marker.diameter / 2,
+        width: marker.diameter,
+        height: marker.diameter,
+        attrs: { body: { fill: event.color, stroke: &#39;none&#39; } },
+        zIndex: 8,
+      }),
+      graph.createEdge({
+        id: `${event.id}-card-to-marker`,
+        source: { cell: `${event.id}-card`, port: `${event.id}-card-bottom` },
+        target: { cell: `${event.id}-marker`, anchor: &#39;top&#39; },
+        attrs: {
+          line: { stroke: &#39;#888&#39;, strokeWidth: 1.5, targetMarker: null },
+        },
+        router: { name: &#39;orth&#39;, args: { padding: 1 } },
+        connector: { name: &#39;rounded&#39;, args: { radius: 8 } },
+        zIndex: 3,
+      }),
+    )
+  })
+
+  return cells
+}
+
+// 交互
+graph.on(&#39;node:mouseenter&#39;, ({ node }) =&gt; {
+  const shape = node.shape
+  const id = node.id
+  if (shape === &#39;event-card&#39;) node.attr(&#39;body/filter&#39;, FILTERS.card[0])
+  else if (id === &#39;tips-node&#39;)
+    node.attr({ &#39;body/cursor&#39;: &#39;move&#39;, &#39;body/filter&#39;: FILTERS.tips[0] })
+  else if (shape === &#39;diamond-milestone&#39;)
+    node.attr(&#39;body/filter&#39;, FILTERS.diamond[0])
+  else if (id?.includes(&#39;-marker&#39;))
+    node.attr(&#39;body/filter&#39;, `drop-shadow(0 0 8px ${node.attr(&#39;body/fill&#39;)})`)
+})
+
+graph.on(&#39;node:mouseleave&#39;, ({ node }) =&gt; {
+  const shape = node.shape
+  const id = node.id
+  if (shape === &#39;event-card&#39;) node.attr(&#39;body/filter&#39;, FILTERS.card[1])
+  else if (id === &#39;tips-node&#39;) node.attr(&#39;body/filter&#39;, FILTERS.tips[1])
+  else if (shape === &#39;diamond-milestone&#39;)
+    node.attr(&#39;body/filter&#39;, FILTERS.diamond[1])
+  else if (id?.includes(&#39;-marker&#39;)) node.attr(&#39;body/filter&#39;, &#39;&#39;)
+})
+
+graph.on(&#39;edge:mouseenter&#39;, ({ edge }) =&gt; {
+  const id = edge.id
+  if (id?.includes(&#39;diamond-to-card&#39;)) edge.attr(&#39;line/strokeWidth&#39;, 3)
+  else if (
+    id?.includes(&#39;-connector&#39;) &amp;&amp;
+    !id.includes(&#39;start&#39;) &amp;&amp;
+    !id.includes(&#39;end&#39;)
+  )
+    edge.attr({ &#39;line/stroke&#39;: &#39;#555&#39;, &#39;line/strokeWidth&#39;: 2 })
+})
+
+graph.on(&#39;edge:mouseleave&#39;, ({ edge }) =&gt; {
+  const id = edge.id
+  if (id?.includes(&#39;diamond-to-card&#39;)) edge.attr(&#39;line/strokeWidth&#39;, 2)
+  else if (
+    id?.includes(&#39;-connector&#39;) &amp;&amp;
+    !id.includes(&#39;start&#39;) &amp;&amp;
+    !id.includes(&#39;end&#39;)
+  )
+    edge.attr({ &#39;line/stroke&#39;: &#39;#888&#39;, &#39;line/strokeWidth&#39;: 1.5 })
+})
+
+// 自动缩放居中
+let isFirstRender = true
+graph.on(&#39;render:done&#39;, () =&gt; {
+  if (!isFirstRender) return
+  isFirstRender = false
+
+  graph.zoomToFit({ padding: 20, maxScale: 1 })
+  showGraph()
+})
+
+function showGraph() {
+  document.getElementById(&#39;graph-container&#39;)?.classList.add(&#39;graph-visible&#39;)
+}
+
+// 加载数据
+Promise.resolve(exampleData)
+  .then((d) =&gt; graph.resetCells(transformTimelineData(d)))
+  .catch(() =&gt; console.error(&#39;数据加载失败&#39;))
+
+// 预处理
+function preWork() {
+  const container = document.getElementById(&#39;container&#39;)
+  if (!container) return
+  const graphContainer = document.createElement(&#39;div&#39;)
+  graphContainer.id = &#39;graph-container&#39;
+  container.appendChild(graphContainer)
+  insertCss(`
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    #container { width: 100vw; height: 100vh; background: #FFF; }
+    #graph-container { width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s; }
+    #graph-container.graph-visible { opacity: 1; }
+  `)
+}
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

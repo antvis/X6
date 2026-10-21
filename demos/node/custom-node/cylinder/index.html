@@ -1,0 +1,153 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/custom-node/cylinder</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/custom-node/cylinder/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="node/custom-node/cylinder" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>node/custom-node/cylinder</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/node/custom-node/cylinder/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph, NumberExt } from &#39;@antv/x6&#39;
+
+Graph.registerNode(&#39;cylinder&#39;, {
+  markup: [
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;body&#39;,
+    },
+    {
+      tagName: &#39;ellipse&#39;,
+      selector: &#39;top&#39;,
+    },
+    {
+      tagName: &#39;text&#39;,
+      selector: &#39;label&#39;,
+    },
+  ],
+  attrs: {
+    body: {
+      fill: &#39;#ffffff&#39;,
+      stroke: &#39;#333333&#39;,
+      strokeWidth: 2,
+      lateral: 10,
+    },
+    top: {
+      fill: &#39;#ffffff&#39;,
+      stroke: &#39;#333333&#39;,
+      strokeWidth: 2,
+      refCx: &#39;50%&#39;,
+      refRx: &#39;50%&#39;,
+      cy: 10,
+      ry: 10,
+    },
+  },
+  attrHooks: {
+    lateral: {
+      set(t: number | string, { refBBox }) {
+        const isPercentage = NumberExt.isPercentage(t)
+        if (isPercentage) {
+          // eslint-disable-next-line
+          t = parseFloat(t as string) / 100
+        }
+
+        const x = refBBox.x
+        const y = refBBox.y
+        const w = refBBox.width
+        const h = refBBox.height
+
+        // curve control point variables
+        const rx = w / 2
+        const ry = isPercentage ? h * (t as number) : (t as number)
+
+        const kappa = 0.551784
+        const cx = kappa * rx
+        const cy = kappa * ry
+
+        // shape variables
+        const xLeft = x
+        const xCenter = x + w / 2
+        const xRight = x + w
+
+        const ySideTop = y + ry
+        const yCurveTop = ySideTop - ry
+        const ySideBottom = y + h - ry
+        const yCurveBottom = y + h
+
+        // return calculated shape
+        const data = [
+          &#39;M&#39;,
+          xLeft,
+          ySideTop,
+          &#39;L&#39;,
+          xLeft,
+          ySideBottom,
+          &#39;C&#39;,
+          x,
+          ySideBottom + cy,
+          xCenter - cx,
+          yCurveBottom,
+          xCenter,
+          yCurveBottom,
+          &#39;C&#39;,
+          xCenter + cx,
+          yCurveBottom,
+          xRight,
+          ySideBottom + cy,
+          xRight,
+          ySideBottom,
+          &#39;L&#39;,
+          xRight,
+          ySideTop,
+          &#39;C&#39;,
+          xRight,
+          ySideTop - cy,
+          xCenter + cx,
+          yCurveTop,
+          xCenter,
+          yCurveTop,
+          &#39;C&#39;,
+          xCenter - cx,
+          yCurveTop,
+          xLeft,
+          ySideTop - cy,
+          xLeft,
+          ySideTop,
+          &#39;Z&#39;,
+        ]
+
+        return { d: data.join(&#39; &#39;) }
+      },
+    },
+  },
+})
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addNode({
+  shape: &#39;cylinder&#39;,
+  x: 320,
+  y: 120,
+  width: 80,
+  height: 120,
+  label: &#39;cylinder&#39;,
+  attrs: {
+    top: {
+      fill: &#39;#fe854f&#39;,
+      fillOpacity: 0.5,
+    },
+    body: {
+      fill: &#39;#ED8A19&#39;,
+      fillOpacity: 0.8,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

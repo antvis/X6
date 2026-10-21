@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/bpmn</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/bpmn/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="showcase/practices/bpmn" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>showcase/practices/bpmn</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/showcase/practices/bpmn/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import exampleData from &#39;../../../data/bpmn.json&#39;
+import { type Cell, type CellView, Graph, type Node } from &#39;@antv/x6&#39;
+
+function registerGateway(name: string, symbol: string) {
+  Graph.registerNode(
+    name,
+    {
+      inherit: &#39;polygon&#39;,
+      attrs: {
+        body: {
+          refPoints: &#39;0,10 10,0 20,10 10,20&#39;,
+          strokeWidth: 2,
+          stroke: &#39;#5F95FF&#39;,
+          fill: &#39;#EFF4FF&#39;,
+        },
+        label: {
+          text: symbol,
+          fontSize: 32,
+          fontWeight: &#39;bold&#39;,
+          fill: &#39;#5F95FF&#39;,
+        },
+      },
+    },
+    true,
+  )
+}
+
+Graph.registerNode(
+  &#39;event&#39;,
+  {
+    inherit: &#39;circle&#39;,
+    attrs: {
+      body: {
+        strokeWidth: 2,
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#FFF&#39;,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;start-event&#39;,
+  {
+    inherit: &#39;circle&#39;,
+    attrs: {
+      body: {
+        strokeWidth: 2,
+        stroke: &#39;#52C41A&#39;,
+        fill: &#39;#FFF&#39;,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;end-event&#39;,
+  {
+    inherit: &#39;circle&#39;,
+    attrs: {
+      body: {
+        strokeWidth: 4,
+        stroke: &#39;#FF4D4F&#39;,
+        fill: &#39;#FFF&#39;,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;activity&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    markup: [
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;body&#39;,
+      },
+      {
+        tagName: &#39;image&#39;,
+        selector: &#39;img&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;label&#39;,
+      },
+    ],
+    attrs: {
+      body: {
+        rx: 6,
+        ry: 6,
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#EFF4FF&#39;,
+        strokeWidth: 1,
+      },
+      img: {
+        x: 6,
+        y: 6,
+        width: 16,
+        height: 16,
+        &#39;xlink:href&#39;:
+          &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwLpRr7QPGwAAAAAAAAAAAAAARQnAQ&#39;,
+      },
+      label: {
+        fontSize: 12,
+        fill: &#39;#262626&#39;,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;subprocess&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    markup: [
+      { tagName: &#39;rect&#39;, selector: &#39;body&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;label&#39; },
+      { tagName: &#39;image&#39;, selector: &#39;badge&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;expand&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;details&#39; },
+    ],
+    attrs: {
+      body: {
+        rx: 6,
+        ry: 6,
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#FAFBFF&#39;,
+        strokeWidth: 1,
+      },
+      label: {
+        ref: &#39;body&#39;,
+        refX: &#39;50%&#39;,
+        refY: &#39;50%&#39;,
+        textAnchor: &#39;middle&#39;,
+        textVerticalAnchor: &#39;middle&#39;,
+        fontSize: 12,
+        fill: &#39;#262626&#39;,
+      },
+      badge: {
+        ref: &#39;body&#39;,
+        refX: 0,
+        refY: 0,
+        x: 6,
+        y: 6,
+        width: 16,
+        height: 16,
+        &#39;xlink:href&#39;:
+          &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwLpRr7QPGwAAAAAAAAAAAAAARQnAQ&#39;,
+      },
+      expand: {
+        ref: &#39;body&#39;,
+        refX: &#39;100%&#39;,
+        refY: &#39;100%&#39;,
+        x: -8,
+        y: -8,
+        textVerticalAnchor: &#39;bottom&#39;,
+        textAnchor: &#39;end&#39;,
+        fontSize: 16,
+        fontWeight: &#39;bold&#39;,
+        fill: &#39;#5F95FF&#39;,
+        cursor: &#39;pointer&#39;,
+        text: &#39;+&#39;,
+        event: &#39;subproc:toggle&#39;,
+      },
+      details: {
+        ref: &#39;body&#39;,
+        refX: &#39;50%&#39;,
+        refY: 44,
+        y: 0,
+        textAnchor: &#39;middle&#39;,
+        textVerticalAnchor: &#39;top&#39;,
+        fontSize: 12,
+        fill: &#39;#8C8C8C&#39;,
+        display: &#39;none&#39;,
+        textWrap: {
+          width: -24,
+        },
+        text: &#39;&#39;,
+      },
+    },
+  },
+  true,
+)
+
+registerGateway(&#39;gateway-parallel&#39;, &#39;⨁&#39;)
+registerGateway(&#39;gateway-exclusive&#39;, &#39;×&#39;)
+
+Graph.registerNode(
+  &#39;lane&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    markup: [
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;body&#39;,
+      },
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;name-rect&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;name-text&#39;,
+      },
+    ],
+    attrs: {
+      body: {
+        fill: &#39;#FFF&#39;,
+        stroke: &#39;#5F95FF&#39;,
+        strokeWidth: 1,
+      },
+      &#39;name-rect&#39;: {
+        width: 240,
+        height: 30,
+        fill: &#39;#5F95FF&#39;,
+        stroke: &#39;#fff&#39;,
+        strokeWidth: 0,
+      },
+      &#39;name-text&#39;: {
+        ref: &#39;name-rect&#39;,
+        refY: 0.5,
+        refX: 0.5,
+        textAnchor: &#39;middle&#39;,
+        fontWeight: &#39;bold&#39;,
+        fill: &#39;#fff&#39;,
+        fontSize: 12,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerEdge(
+  &#39;bpmn-edge&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        stroke: &#39;#A2B1C3&#39;,
+        strokeWidth: 2,
+        targetMarker: &#39;classic&#39;,
+      },
+    },
+  },
+  true,
+)
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;) as HTMLElement,
+  grid: true,
+  connecting: {
+    router: &#39;orth&#39;,
+  },
+  mousewheel: true,
+  translating: {
+    restrict(this: Graph, cellView: CellView | null) {
+      if (cellView?.cell?.isNode()) {
+        const cell = cellView.cell as Node
+        if (cell.shape === &#39;lane&#39;) {
+          return this.transform.getGraphArea()
+        }
+        const parentId = cell.prop(&#39;parent&#39;)
+        if (parentId) {
+          const parentNode = this.getCellById(parentId)
+          if (parentNode?.isNode()) {
+            return parentNode.getBBox().moveAndExpand({
+              x: 0,
+              y: 30,
+              width: 0,
+              height: -30,
+            })
+          }
+        }
+        return this.transform.getGraphArea()
+      }
+      return this.transform.getGraphArea()
+    },
+  },
+})
+
+graph.on(&#39;subproc:toggle&#39;, ({ node }: { node: Node }) =&gt; {
+  if (!node || node.shape !== &#39;subprocess&#39;) return
+
+  const data = node.getData() || {}
+  const expanded = !!data.expanded
+  const next = !expanded
+
+  node.attr(&#39;expand/text&#39;, next ? &#39;-&#39; : &#39;+&#39;)
+  node.attr(&#39;details/display&#39;, next ? &#39;block&#39; : &#39;none&#39;)
+
+  const defaultDetails = &#39;1、病例证明（如有）\n2、工作 backup&#39;
+  const rawDetails = data.details
+  const detailsText = rawDetails
+    ? Array.isArray(rawDetails)
+      ? rawDetails.join(&#39;\n&#39;)
+      : String(rawDetails)
+    : defaultDetails
+  if (next) {
+    node.attr(&#39;details/text&#39;, detailsText)
+  }
+
+  const lines = String(detailsText).split(/\n/).length
+  const size = node.getSize()
+  const expandedHeight = Math.max(70, 40 + lines * 18 + 24)
+  node.size(size.width, next ? expandedHeight : 70)
+
+  if (next) {
+    node.attr({
+      label: { textVerticalAnchor: &#39;top&#39;, refY: 18, refX: &#39;50%&#39;, ref: &#39;body&#39; },
+      details: {
+        textVerticalAnchor: &#39;top&#39;,
+        refY: 40,
+        refX: &#39;50%&#39;,
+        ref: &#39;body&#39;,
+      },
+    })
+  } else {
+    node.attr(&#39;label&#39;, {
+      textVerticalAnchor: &#39;middle&#39;,
+      refY: &#39;50%&#39;,
+      refX: &#39;50%&#39;,
+      ref: &#39;body&#39;,
+    })
+  }
+
+  node.setData({ ...data, expanded: next })
+})
+
+Promise.resolve(exampleData)
+  .then((data) =&gt; {
+    const cells: Cell[] = []
+    const nodeMap: Record&lt;string, Node&gt; = {}
+
+    data.forEach((item: any) =&gt; {
+      if (item.shape !== &#39;bpmn-edge&#39;) {
+        const node = graph.createNode(item)
+        nodeMap[item.id] = node as Node
+        cells.push(node)
+      }
+    })
+
+    data.forEach((item: any) =&gt; {
+      if (item.shape === &#39;bpmn-edge&#39;) {
+        const edge = graph.createEdge(item)
+        if (item.label) {
+          edge.setLabels([
+            {
+              attrs: {
+                label: {
+                  text: item.label,
+                  fill: &#39;#8C8C8C&#39;,
+                  fontSize: 11,
+                },
+              },
+            },
+          ])
+        }
+        const sourceId = edge.getSourceCellId()
+        const targetId = edge.getTargetCellId()
+        const sParent = nodeMap[sourceId]?.prop(&#39;parent&#39;)
+        const tParent = nodeMap[targetId]?.prop(&#39;parent&#39;)
+        if (sParent &amp;&amp; tParent &amp;&amp; sParent !== tParent) {
+          edge.attr(&#39;line/strokeDasharray&#39;, &#39;5,5&#39;)
+        }
+        cells.push(edge)
+      }
+    })
+    graph.resetCells(cells)
+
+    Object.values(nodeMap).forEach((node) =&gt; {
+      const parentId = node.prop(&#39;parent&#39;) as string | undefined
+      if (parentId) {
+        const parentNode = nodeMap[parentId]
+        if (parentNode) {
+          parentNode.addChild(node)
+        }
+      }
+    })
+
+    Object.values(nodeMap).forEach((node) =&gt; {
+      if (node.shape === &#39;activity&#39; &amp;&amp; node.prop(&#39;parent&#39;) === &#39;lane-system&#39;) {
+        node.attr(
+          &#39;img/xlink:href&#39;,
+          &#39;https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*mUotQqntWJQAAAAAF_AAAAgAemJ7AQ/original&#39;,
+        )
+      }
+    })
+
+    graph.zoomToFit({ padding: 10, maxScale: 1 })
+  })
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>

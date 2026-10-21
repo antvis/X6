@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-j5fshjnq><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/case/scattering</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/case/scattering/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CzEeEQTN.css"></head><body data-demo-key="animation/case/scattering" data-astro-cid-j5fshjnq><section id="demo-source" data-astro-cid-j5fshjnq><h1 data-astro-cid-j5fshjnq>animation/case/scattering</h1><p data-astro-cid-j5fshjnq><a href="/zh/examples/animation/case/scattering/" data-astro-cid-j5fshjnq>Example page</a></p><pre data-astro-cid-j5fshjnq><code data-astro-cid-j5fshjnq>import { Graph } from &#39;@antv/x6&#39;
+
+const circleRadius = 20
+const rippleCounts = 5
+const centerPoint = { x: 400, y: 400 }
+
+function getPoint(
+  start: { x: number; y: number },
+  angleDeg: number,
+  dist: number,
+) {
+  const rad = (angleDeg * Math.PI) / 180
+  return {
+    x: start.x + dist * Math.cos(rad),
+    y: start.y + dist * Math.sin(rad),
+  }
+}
+
+const rippleMarkups = Array.from({ length: rippleCounts }).map((_, index) =&gt; ({
+  tagName: &#39;circle&#39;,
+  selector: `ripple${index}`,
+  groupSelector: &#39;rippleGroup&#39;,
+  attrs: {
+    cx: circleRadius,
+    cy: circleRadius,
+  },
+}))
+
+const rippleAnimations = Array.from({ length: rippleCounts }).map(
+  (_, index) =&gt; [
+    {
+      [`attrs/ripple${index}/r`]: [0, 350],
+      [`attrs/ripple${index}/strokeOpacity`]: [0.5, 0],
+    },
+    {
+      duration: 2000,
+      fill: &#39;forwards&#39;,
+      delay: index * 150,
+      iterations: Infinity,
+      easing: &#39;ease-out-sine&#39;,
+    },
+  ],
+) as AnimateParams[]
+
+Graph.registerNode(
+  &#39;custom-circle&#39;,
+  {
+    inherit: &#39;circle&#39;,
+    width: circleRadius * 2,
+    height: circleRadius * 2,
+    markup: [
+      ...rippleMarkups,
+      {
+        selector: &#39;center&#39;,
+        tagName: &#39;circle&#39;,
+      },
+      {
+        selector: &#39;body&#39;,
+        tagName: &#39;circle&#39;,
+      },
+    ],
+    attrs: {
+      body: {
+        fill: &#39;#fff&#39;,
+        stroke: &#39;none&#39;,
+        magnet: true,
+      },
+      center: {
+        fill: &#39;#DEE9EB&#39;,
+        stroke: &#39;none&#39;,
+        r: circleRadius,
+        cx: circleRadius,
+        cy: circleRadius,
+        filter: {
+          name: &#39;dropShadow&#39;,
+          args: {
+            dx: 0,
+            dy: 0,
+            blur: 10,
+            color: &#39;#fff&#39;,
+          },
+        },
+      },
+      rippleGroup: {
+        fill: &#39;transparent&#39;,
+        strokeWidth: 4,
+        stroke: &#39;#0ff&#39;,
+      },
+    },
+    animation: [
+      ...rippleAnimations,
+      [
+        {
+          &#39;attrs/center/r&#39;: [circleRadius, circleRadius * 1.2],
+        },
+        {
+          duration: 1000,
+          fill: &#39;forwards&#39;,
+          iterations: Infinity,
+          direction: &#39;alternate&#39;,
+        },
+      ],
+    ],
+  },
+  true,
+)
+
+Graph.registerEdge(
+  &#39;custom-edge&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    markup: [
+      {
+        tagName: &#39;path&#39;,
+        selector: &#39;line&#39;,
+      },
+      {
+        tagName: &#39;path&#39;,
+        selector: &#39;fill&#39;,
+      },
+    ],
+    attrs: {
+      line: {
+        connection: true,
+        strokeWidth: 8,
+        strokeLinecap: &#39;round&#39;,
+        opacity: 0.7,
+        targetMarker: null,
+        strokeDasharray: &#39;10,20&#39;,
+        stroke: {
+          type: &#39;linearGradient&#39;,
+          stops: [
+            { offset: &#39;0%&#39;, color: &#39;#0ff&#39;, opacity: 1 },
+            { offset: &#39;50%&#39;, color: &#39;#f0f&#39;, opacity: 0.8 },
+            { offset: &#39;100%&#39;, color: &#39;#ff0&#39; },
+          ],
+        },
+      },
+    },
+    animation: [
+      [
+        {
+          &#39;attrs/line/opacity&#39;: [0.7, 1],
+        },
+        {
+          duration: 1000,
+          fill: &#39;forwards&#39;,
+          direction: &#39;alternate&#39;,
+          iterations: Infinity,
+        },
+      ],
+      [
+        {
+          &#39;attrs/line/strokeDashoffset&#39;: [30, 0],
+        },
+        {
+          duration: 500,
+          iterations: Infinity,
+        },
+      ],
+    ],
+  },
+  true,
+)
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  connecting: {
+    connectionPoint: {
+      name: &#39;anchor&#39;,
+      args: {
+        offset: 20,
+      },
+    },
+  },
+  background: {
+    color: &#39;#000&#39;,
+  },
+})
+graph.addNode({
+  id: &#39;main&#39;,
+  shape: &#39;custom-circle&#39;,
+  ...centerPoint,
+})
+
+const edgeDistances = [300, 250, 280, 240, 230, 260, 210, 240, 270, 220]
+
+edgeDistances.forEach((d, index) =&gt; {
+  const p = getPoint(centerPoint, (360 / 10) * index, d)
+
+  graph.addNode({
+    id: `node${index}`,
+    shape: &#39;circle&#39;,
+    x: p.x,
+    y: p.y,
+  })
+
+  graph.addEdge({
+    source: &#39;main&#39;,
+    target: `node${index}`,
+    shape: &#39;custom-edge&#39;,
+    zIndex: -1,
+  })
+})
+
+graph.centerContent()
+</code></pre></section><div id="container" data-astro-cid-j5fshjnq></div><pre id="demo-error" hidden data-astro-cid-j5fshjnq></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.Cm6ZV5mZ.js"></script></body></html>
