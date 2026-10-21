@@ -1,4 +1,4 @@
-name: site
+name: Deploy site to gh-pages
 
 on:
   workflow_dispatch:
@@ -35,25 +35,27 @@ jobs:
         run: |
           cd ./site && pnpm run build
 
-      - name: 👩‍⚕️　Verify build output
+      - name: 👩‍⚕️　Verify site build output
         run: |
           if [ ! -d "site/dist" ]; then
-            echo "Build output directory (site/dist) not found!"
+            echo "Site build output directory (site/dist) not found; cannot publish to gh-pages."
             exit 1
           fi
 
-      - name: 🗂　Commit changes
+      - name: 🗂　Commit site build output
         run: |
           cd site/dist
+          touch .nojekyll
           git init
           git config --local user.name antv
           git config --local user.email antv@antfin.com
           git add .
-          git commit -m "update by release action"
+          git commit -m "docs: deploy site to gh-pages"
 
-      - uses: ad-m/github-push-action@master
+      - name: 📦　Push site build output to gh-pages
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
           directory: site/dist
-          branch: site
+          branch: gh-pages
           force: true
