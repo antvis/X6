@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           # pnpm 11.5+ 依赖 node:sqlite，需要 Node >= 22.13
-          node-version: 22
+          node-version: 22.23.4
 
       - name: 🚧　Install
         run: |
