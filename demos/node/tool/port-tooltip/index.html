@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/tool/port-tooltip</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/tool/port-tooltip/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/tool/port-tooltip" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/tool/port-tooltip</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/tool/port-tooltip/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+import { Tooltip } from &#39;antd&#39;
+import React from &#39;react&#39;
+import { createRoot } from &#39;react-dom/client&#39;
+
+const registerPortTooltip = (container: Element, text: string) =&gt; {
+  container.addEventListener(&#39;mouseenter&#39;, (e: MouseEvent) =&gt; {
+    const tooltip = document.querySelector(&#39;.x6-tooltip&#39;) as HTMLElement
+    const content = tooltip?.querySelector(&#39;.ant-tooltip-inner&#39;) as HTMLElement
+    if (content) {
+      content.innerText = text
+      tooltip.style.left = `${e.clientX - content.offsetWidth / 2}px`
+      tooltip.style.top = `${e.clientY - 50}px`
+    }
+  })
+  container.addEventListener(&#39;mouseleave&#39;, () =&gt; {
+    const tooltip = document.querySelector(&#39;.x6-tooltip&#39;) as HTMLElement
+    tooltip.style.left = &#39;-1000px&#39;
+    tooltip.style.top = &#39;-1000px&#39;
+  })
+}
+
+class Example extends React.Component {
+  private container!: HTMLDivElement
+
+  componentDidMount() {
+    const graph = new Graph({
+      container: this.container,
+      width: 800,
+      height: 600,
+      grid: true,
+      onPortRendered({ contentContainer, port, node }) {
+        const text = node.portProp(port.id, &#39;tip&#39;) as string
+        registerPortTooltip(contentContainer, text)
+      },
+    })
+
+    const source = graph.addNode({
+      x: 180,
+      y: 60,
+      width: 100,
+      height: 40,
+      attrs: {
+        body: {
+          stroke: &#39;#5F95FF&#39;,
+          fill: &#39;#EFF4FF&#39;,
+          strokeWidth: 1,
+        },
+      },
+      ports: {
+        groups: {
+          bottom: {
+            position: &#39;bottom&#39;,
+            attrs: {
+              circle: {
+                stroke: &#39;#5F95FF&#39;,
+                strokeWidth: 1,
+                r: 4,
+                magnet: true,
+              },
+            },
+          },
+        },
+        items: [
+          {
+            id: &#39;port-1&#39;,
+            group: &#39;bottom&#39;,
+            tip: &#39;port-1-tip&#39;,
+          },
+        ],
+      },
+    })
+
+    const target = graph.addNode({
+      x: 320,
+      y: 250,
+      width: 100,
+      height: 40,
+      attrs: {
+        body: {
+          stroke: &#39;#5F95FF&#39;,
+          fill: &#39;#EFF4FF&#39;,
+          strokeWidth: 1,
+        },
+      },
+      ports: {
+        groups: {
+          top: {
+            position: &#39;top&#39;,
+            attrs: {
+              circle: {
+                stroke: &#39;#5F95FF&#39;,
+                strokeWidth: 1,
+                r: 4,
+              },
+            },
+          },
+        },
+        items: [
+          {
+            id: &#39;port-2&#39;,
+            group: &#39;top&#39;,
+            tip: &#39;port-2-tip&#39;,
+          },
+        ],
+      },
+    })
+
+    graph.addEdge({
+      source: { cell: source, port: &#39;port-1&#39; },
+      target: { cell: target, port: &#39;port-2&#39; },
+      attrs: {
+        line: {
+          stroke: &#39;#A2B1C3&#39;,
+          strokeWidth: 2,
+        },
+      },
+      zIndex: -1,
+    })
+  }
+
+  refContainer = (container: HTMLDivElement) =&gt; {
+    this.container = container
+  }
+
+  render() {
+    return (
+      &lt;div className=&quot;x6-graph-wrap&quot;&gt;
+        &lt;div ref={this.refContainer} className=&quot;x6-graph&quot; /&gt;
+        &lt;Tooltip title=&quot;content&quot; overlayClassName=&quot;x6-tooltip&quot; visible={true}&gt;
+          &lt;span style={{ position: &#39;relative&#39;, left: -1000, top: -1000 }} /&gt;
+        &lt;/Tooltip&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+
+const container = document.getElementById(&#39;container&#39;)
+const root = createRoot(container)
+root.render(&lt;Example /&gt;)
+
+// ReactDOM.render(&lt;Example /&gt;, document.getElementById(&#39;container&#39;))
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

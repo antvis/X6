@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/group/collapsable</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/group/collapsable/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/group/collapsable" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/group/collapsable</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/group/collapsable/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Node } from &#39;@antv/x6&#39;
+
+class Group extends Node {
+  private collapsed = false
+  private expandSize: { width: number; height: number }
+
+  protected postprocess() {
+    this.toggleCollapse(false)
+  }
+
+  isCollapsed() {
+    return this.collapsed
+  }
+
+  toggleCollapse(collapsed?: boolean) {
+    const target = collapsed == null ? !this.collapsed : collapsed
+    if (target) {
+      this.attr(&#39;buttonSign&#39;, { d: &#39;M 1 5 9 5 M 5 1 5 9&#39; })
+      this.expandSize = this.getSize()
+      this.resize(100, 32)
+    } else {
+      this.attr(&#39;buttonSign&#39;, { d: &#39;M 2 5 8 5&#39; })
+      if (this.expandSize) {
+        this.resize(this.expandSize.width, this.expandSize.height)
+      }
+    }
+    this.collapsed = target
+  }
+}
+
+Group.config({
+  markup: [
+    {
+      tagName: &#39;rect&#39;,
+      selector: &#39;body&#39;,
+    },
+    {
+      tagName: &#39;text&#39;,
+      selector: &#39;label&#39;,
+    },
+    {
+      tagName: &#39;g&#39;,
+      selector: &#39;buttonGroup&#39;,
+      children: [
+        {
+          tagName: &#39;rect&#39;,
+          selector: &#39;button&#39;,
+          attrs: {
+            &#39;pointer-events&#39;: &#39;visiblePainted&#39;,
+          },
+        },
+        {
+          tagName: &#39;path&#39;,
+          selector: &#39;buttonSign&#39;,
+          attrs: {
+            fill: &#39;none&#39;,
+            &#39;pointer-events&#39;: &#39;none&#39;,
+          },
+        },
+      ],
+    },
+  ],
+  attrs: {
+    body: {
+      refWidth: &#39;100%&#39;,
+      refHeight: &#39;100%&#39;,
+      strokeWidth: 1,
+      fill: &#39;#ffffff&#39;,
+      stroke: &#39;none&#39;,
+    },
+    buttonGroup: {
+      refX: 8,
+      refY: 8,
+    },
+    button: {
+      height: 14,
+      width: 16,
+      rx: 2,
+      ry: 2,
+      fill: &#39;#f5f5f5&#39;,
+      stroke: &#39;#ccc&#39;,
+      cursor: &#39;pointer&#39;,
+      event: &#39;node:collapse&#39;,
+    },
+    buttonSign: {
+      refX: 3,
+      refY: 2,
+      stroke: &#39;#808080&#39;,
+    },
+    label: {
+      fontSize: 12,
+      fill: &#39;#fff&#39;,
+      refX: 32,
+      refY: 10,
+    },
+  },
+})
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+function createGroup(
+  id: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  fill: string,
+  stroke: string,
+) {
+  const group = new Group({
+    id,
+    x,
+    y,
+    width,
+    height,
+    attrs: {
+      body: { fill, stroke },
+      label: { text: id },
+    },
+  })
+  graph.addNode(group)
+  return group
+}
+
+function createNode(
+  id: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  fill: string,
+) {
+  return graph.addNode({
+    id,
+    x,
+    y,
+    width,
+    height,
+    attrs: {
+      body: {
+        fill: fill || &#39;blue&#39;,
+        stroke: &#39;none&#39;,
+      },
+      label: {
+        text: id,
+        fill: &#39;#fff&#39;,
+        fontSize: 12,
+      },
+    },
+  })
+}
+
+function createEdge(
+  id: string,
+  source: string,
+  target: string,
+  vertices?: { x: number; y: number }[],
+) {
+  return graph.addEdge({
+    id,
+    source,
+    target,
+    vertices,
+    label: id,
+    attrs: {
+      label: {
+        fontSize: 12,
+      },
+    },
+  })
+}
+
+const a = createGroup(&#39;a&#39;, 100, 40, 420, 240, &#39;#fffbe6&#39;, &#39;#ffe7ba&#39;)
+const aa = createGroup(&#39;aa&#39;, 150, 100, 160, 120, &#39;#47C769&#39;, &#39;none&#39;)
+const aaa = createGroup(&#39;aaa&#39;, 180, 150, 100, 50, &#39;#3199FF&#39;, &#39;none&#39;)
+const c = createNode(&#39;c&#39;, 400, 180, 60, 40, &#39;orange&#39;)
+
+a.addChild(aa)
+aa.addChild(aaa)
+a.addChild(c)
+
+createNode(&#39;d&#39;, 580, 140, 60, 40, &#39;#000&#39;)
+
+createEdge(&#39;edge1&#39;, &#39;aa&#39;, &#39;c&#39;)
+createEdge(&#39;edge3&#39;, &#39;c&#39;, &#39;d&#39;)
+aa.addChild(
+  createEdge(&#39;edge2&#39;, &#39;aa&#39;, &#39;aaa&#39;, [
+    { x: 60, y: 140 },
+    { x: 60, y: 220 },
+  ]),
+)
+
+graph.on(&#39;node:collapse&#39;, ({ node }: { node: Group }) =&gt; {
+  node.toggleCollapse()
+  const collapsed = node.isCollapsed()
+  const collapse = (parent: Group) =&gt; {
+    const cells = parent.getChildren()
+    if (cells) {
+      cells.forEach((cell) =&gt; {
+        if (collapsed) {
+          cell.hide()
+        } else {
+          cell.show()
+        }
+
+        if (cell instanceof Group) {
+          if (!cell.isCollapsed()) {
+            collapse(cell)
+          }
+        }
+      })
+    }
+  }
+
+  collapse(node)
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

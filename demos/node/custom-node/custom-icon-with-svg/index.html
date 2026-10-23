@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/custom-node/custom-icon-with-svg</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/custom-node/custom-icon-with-svg/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/custom-node/custom-icon-with-svg" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/custom-node/custom-icon-with-svg</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/custom-node/custom-icon-with-svg/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addNode({
+  x: 320,
+  y: 120,
+  width: 96,
+  height: 96,
+  markup: [
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;eye1&#39;,
+      groupSelector: &#39;eye&#39;,
+      attrs: {
+        d: &#39;M24.82,48.678c5.422,0,9.832-6.644,9.832-14.811c0-8.165-4.41-14.809-9.832-14.809s-9.833,6.644-9.833,14.809C14.987,42.034,19.399,48.678,24.82,48.678z&#39;,
+      },
+    },
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;eye2&#39;,
+      groupSelector: &#39;eye&#39;,
+      attrs: {
+        d: &#39;M71.606,48.678c5.422,0,9.833-6.644,9.833-14.811c0-8.165-4.411-14.809-9.833-14.809c-5.421,0-9.831,6.644-9.831,14.809C61.775,42.034,66.186,48.678,71.606,48.678z&#39;,
+      },
+    },
+    {
+      tagName: &#39;path&#39;,
+      selector: &#39;lip&#39;,
+      attrs: {
+        d: &#39;M95.855,55.806c-0.6-0.605-1.516-0.77-2.285-0.4C81.232,61.29,65.125,64.53,48.214,64.53c-16.907,0-33.015-3.24-45.354-9.123c-0.77-0.367-1.688-0.205-2.284,0.4c-0.599,0.606-0.747,1.526-0.369,2.29c5.606,11.351,25.349,19.277,48.008,19.277c22.668,0,42.412-7.929,48.012-19.279C96.603,57.332,96.453,56.411,95.855,55.806z&#39;,
+      },
+    },
+  ],
+  attrs: {
+    lip: {
+      fill: &#39;#E0A31A&#39;,
+    },
+    eye: {
+      fill: &#39;#730000&#39;,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/native-node/polyline</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/native-node/polyline/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/native-node/polyline" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/native-node/polyline</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/native-node/polyline/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addNode({
+  shape: &#39;polyline&#39;,
+  x: 40,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polyline&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+      // 指定 refPoints 属性，顶点随图形大小自动缩放
+      // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
+      refPoints: &#39;0,0 0,10 10,10 10,0&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polyline&#39;,
+  x: 180,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polyline&#39;,
+  // 使用 points 属性指定顶点，相当于指定 refPoints 属性
+  // https://x6.antv.antgroup.com/api/registry/attr#refpointsresetoffset
+  points: &#39;0,0 0,10 10,10 10,0&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polyline&#39;,
+  x: 320,
+  y: 40,
+  width: 80,
+  height: 80,
+  label: &#39;polyline&#39;,
+  // 使用 points 属性指定顶点数组
+  points: [
+    [0, 0],
+    [0, 10],
+    [10, 10],
+    [10, 0],
+  ],
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polyline&#39;,
+  x: 40,
+  y: 180,
+  width: 80,
+  height: 80,
+  label: &#39;polyline&#39;,
+  // 使用 points 属性指定顶点数组
+  points: [
+    { x: 0, y: 0 },
+    { x: 0, y: 10 },
+    { x: 10, y: 10 },
+    { x: 10, y: 0 },
+  ],
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polyline&#39;,
+  x: 180,
+  y: 210,
+  width: 80,
+  height: 80,
+  label: &#39;polyline&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+      // 直接指定 points 属性，多边形顶点不随随图形大小自动缩放
+      points: &#39;0,10 10,0 20,10 10,20&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;polyline&#39;,
+  x: 320,
+  y: 180,
+  width: 80,
+  height: 80,
+  attrs: {
+    body: {
+      fill: &#39;none&#39;,
+      stroke: &#39;#ffa940&#39;,
+      refPoints: &#39;0,40 40,40 40,80 80,80 80,120 120,120 120,160&#39;,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

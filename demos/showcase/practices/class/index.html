@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/class</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/class/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="showcase/practices/class" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>showcase/practices/class</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/showcase/practices/class/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import exampleData from &#39;../../../data/class.json&#39;
+import { Graph, ObjectExt, Cell } from &#39;@antv/x6&#39;
+
+// #region 注册基础图形
+Graph.registerNode(
+  &#39;class&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    markup: [
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;body&#39;,
+      },
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;name-rect&#39;,
+      },
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;attrs-rect&#39;,
+      },
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;methods-rect&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;name-text&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;attrs-text&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;methods-text&#39;,
+      },
+    ],
+    attrs: {
+      rect: {
+        width: 160,
+      },
+      body: {
+        stroke: &#39;#fff&#39;,
+      },
+      &#39;name-rect&#39;: {
+        fill: &#39;#5f95ff&#39;,
+        stroke: &#39;#fff&#39;,
+        strokeWidth: 0.5,
+      },
+      &#39;attrs-rect&#39;: {
+        fill: &#39;#eff4ff&#39;,
+        stroke: &#39;#fff&#39;,
+        strokeWidth: 0.5,
+      },
+      &#39;methods-rect&#39;: {
+        fill: &#39;#eff4ff&#39;,
+        stroke: &#39;#fff&#39;,
+        strokeWidth: 0.5,
+      },
+      &#39;name-text&#39;: {
+        ref: &#39;name-rect&#39;,
+        refY: 0.5,
+        refX: 0.5,
+        textAnchor: &#39;middle&#39;,
+        fontWeight: &#39;bold&#39;,
+        fill: &#39;#fff&#39;,
+        fontSize: 12,
+      },
+      &#39;attrs-text&#39;: {
+        ref: &#39;attrs-rect&#39;,
+        refY: 0.5,
+        refX: 5,
+        textAnchor: &#39;left&#39;,
+        fill: &#39;black&#39;,
+        fontSize: 10,
+      },
+      &#39;methods-text&#39;: {
+        ref: &#39;methods-rect&#39;,
+        refY: 0.5,
+        refX: 5,
+        textAnchor: &#39;left&#39;,
+        fill: &#39;black&#39;,
+        fontSize: 10,
+      },
+    },
+    propHooks(meta) {
+      const { name, attributes, methods, ...others } = meta
+
+      if (!(name &amp;&amp; attributes &amp;&amp; methods)) {
+        return meta
+      }
+
+      const rects = [
+        { type: &#39;name&#39;, text: name },
+        { type: &#39;attrs&#39;, text: attributes },
+        { type: &#39;methods&#39;, text: methods },
+      ]
+
+      let offsetY = 0
+      rects.forEach((rect) =&gt; {
+        const height = rect.text.length * 12 + 16
+        ObjectExt.setByPath(
+          others,
+          `attrs/${rect.type}-text/text`,
+          rect.text.join(&#39;\n&#39;),
+        )
+        ObjectExt.setByPath(others, `attrs/${rect.type}-rect/height`, height)
+        ObjectExt.setByPath(
+          others,
+          `attrs/${rect.type}-rect/transform`,
+          &#39;translate(0,&#39; + offsetY + &#39;)&#39;,
+        )
+        offsetY += height
+      })
+
+      others.size = { width: 160, height: offsetY }
+
+      return others
+    },
+  },
+  true,
+)
+
+// 继承
+Graph.registerEdge(
+  &#39;extends&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        strokeWidth: 1,
+        targetMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 20 0 L 0 10 L 20 20 z&#39;,
+          fill: &#39;white&#39;,
+          offsetX: -10,
+        },
+      },
+    },
+  },
+  true,
+)
+
+// 实现
+Graph.registerEdge(
+  &#39;implement&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        strokeWidth: 1,
+        strokeDasharray: &#39;3,3&#39;,
+        targetMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 20 0 L 0 10 L 20 20 z&#39;,
+          fill: &#39;white&#39;,
+          offsetX: -10,
+        },
+      },
+    },
+  },
+  true,
+)
+
+// 组合
+Graph.registerEdge(
+  &#39;composition&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        strokeWidth: 1,
+        sourceMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 30 10 L 20 16 L 10 10 L 20 4 z&#39;,
+          fill: &#39;black&#39;,
+          offsetX: -10,
+        },
+        targetMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 6 10 L 18 4 C 14.3333 6 10.6667 8 7 10 L 18 16 z&#39;,
+          fill: &#39;black&#39;,
+          offsetX: -5,
+        },
+      },
+    },
+  },
+  true,
+)
+
+// 聚合
+Graph.registerEdge(
+  &#39;aggregation&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        strokeWidth: 1,
+        sourceMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 30 10 L 20 16 L 10 10 L 20 4 z&#39;,
+          fill: &#39;white&#39;,
+          offsetX: -10,
+        },
+        targetMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 6 10 L 18 4 C 14.3333 6 10.6667 8 7 10 L 18 16 z&#39;,
+          fill: &#39;black&#39;,
+          offsetX: -5,
+        },
+      },
+    },
+  },
+  true,
+)
+
+// 关联
+Graph.registerEdge(
+  &#39;association&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: {
+        strokeWidth: 1,
+        targetMarker: {
+          name: &#39;path&#39;,
+          d: &#39;M 6 10 L 18 4 C 14.3333 6 10.6667 8 7 10 L 18 16 z&#39;,
+          fill: &#39;black&#39;,
+          offsetX: -5,
+        },
+      },
+    },
+  },
+  true,
+)
+// #endregion
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+})
+
+Promise.resolve(exampleData)
+  .then((data) =&gt; {
+    const cells: Cell[] = []
+    const edgeShapes = [
+      &#39;extends&#39;,
+      &#39;composition&#39;,
+      &#39;implement&#39;,
+      &#39;aggregation&#39;,
+      &#39;association&#39;,
+    ]
+    data.forEach((item: any) =&gt; {
+      if (edgeShapes.includes(item.shape)) {
+        cells.push(graph.createEdge(item))
+      } else {
+        cells.push(graph.createNode(item))
+      }
+    })
+    graph.resetCells(cells)
+    graph.zoomToFit({ padding: 10, maxScale: 1 })
+  })
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>edge/label/multi-labels</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/edge/label/multi-labels/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="edge/label/multi-labels" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>edge/label/multi-labels</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/edge/label/multi-labels/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addEdge({
+  source: [170, 160],
+  target: [550, 160],
+  attrs: {
+    line: {
+      stroke: &#39;#ccc&#39;,
+    },
+  },
+  labels: [
+    // label1
+    {
+      markup: [
+        {
+          tagName: &#39;rect&#39;,
+          selector: &#39;labelBody&#39;,
+        },
+        {
+          tagName: &#39;text&#39;,
+          selector: &#39;labelText&#39;,
+        },
+      ],
+      attrs: {
+        labelText: {
+          text: &#39;Label 1&#39;,
+          fill: &#39;#ffa940&#39;,
+          textAnchor: &#39;middle&#39;,
+          textVerticalAnchor: &#39;middle&#39;,
+        },
+        labelBody: {
+          ref: &#39;labelText&#39;,
+          refX: -8,
+          refY: -5,
+          refWidth: &#39;100%&#39;,
+          refHeight: &#39;100%&#39;,
+          refWidth2: 16,
+          refHeight2: 10,
+          stroke: &#39;#ffa940&#39;,
+          fill: &#39;#fff&#39;,
+          strokeWidth: 2,
+          rx: 5,
+          ry: 5,
+        },
+      },
+      position: {
+        distance: 0.3,
+        args: {
+          keepGradient: true,
+          ensureLegibility: true,
+        },
+      },
+    },
+    // label 2
+    {
+      markup: [
+        {
+          tagName: &#39;ellipse&#39;,
+          selector: &#39;labelBody&#39;,
+        },
+        {
+          tagName: &#39;text&#39;,
+          selector: &#39;labelText&#39;,
+        },
+      ],
+      attrs: {
+        labelText: {
+          text: &#39;Label 2&#39;,
+          fill: &#39;#31d0c6&#39;,
+          textAnchor: &#39;middle&#39;,
+          textVerticalAnchor: &#39;middle&#39;,
+        },
+        labelBody: {
+          ref: &#39;labelText&#39;,
+          refRx: &#39;80%&#39;,
+          refRy: &#39;80%&#39;,
+          stroke: &#39;#31d0c6&#39;,
+          fill: &#39;#fff&#39;,
+          strokeWidth: 2,
+        },
+      },
+      position: {
+        distance: 0.7,
+        angle: 45,
+      },
+    },
+  ],
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

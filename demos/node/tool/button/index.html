@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/tool/button</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/tool/button/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/tool/button" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/tool/button</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/tool/button/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Cell, Color } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+const source = graph.addNode({
+  x: 180,
+  y: 60,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      fill: &#39;#f5f5f5&#39;,
+      stroke: &#39;#d9d9d9&#39;,
+      strokeWidth: 1,
+    },
+  },
+  tools: [
+    {
+      name: &#39;button&#39;,
+      args: {
+        markup: [
+          {
+            tagName: &#39;circle&#39;,
+            selector: &#39;button&#39;,
+            attrs: {
+              r: 14,
+              stroke: &#39;#fe854f&#39;,
+              strokeWidth: 2,
+              fill: &#39;white&#39;,
+              cursor: &#39;pointer&#39;,
+            },
+          },
+          {
+            tagName: &#39;text&#39;,
+            textContent: &#39;Btn&#39;,
+            selector: &#39;icon&#39;,
+            attrs: {
+              fill: &#39;#fe854f&#39;,
+              fontSize: 10,
+              textAnchor: &#39;middle&#39;,
+              pointerEvents: &#39;none&#39;,
+              y: &#39;0.3em&#39;,
+            },
+          },
+        ],
+        x: &#39;100%&#39;,
+        y: &#39;100%&#39;,
+        offset: { x: -20, y: -20 },
+        onClick({ cell }: { cell: Cell }) {
+          const fill = Color.randomHex()
+          cell.attr({
+            body: {
+              fill,
+            },
+            label: {
+              fill: Color.invert(fill, true),
+            },
+          })
+        },
+      },
+    },
+  ],
+})
+
+const target = graph.addNode({
+  x: 320,
+  y: 250,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      fill: &#39;#f5f5f5&#39;,
+      stroke: &#39;#d9d9d9&#39;,
+      strokeWidth: 1,
+    },
+  },
+})
+
+graph.addEdge({
+  source,
+  target,
+  attrs: {
+    line: {
+      stroke: &#39;#a0a0a0&#39;,
+      strokeWidth: 1,
+      targetMarker: {
+        name: &#39;classic&#39;,
+        size: 7,
+      },
+    },
+  },
+})
+
+graph.on(&#39;node:mouseenter&#39;, ({ node }) =&gt; {
+  if (node === target) {
+    node.addTools({
+      name: &#39;button&#39;,
+      args: {
+        markup: [
+          {
+            tagName: &#39;circle&#39;,
+            selector: &#39;button&#39;,
+            attrs: {
+              r: 14,
+              stroke: &#39;#fe854f&#39;,
+              strokeWidth: 2,
+              fill: &#39;white&#39;,
+              cursor: &#39;pointer&#39;,
+            },
+          },
+          {
+            tagName: &#39;text&#39;,
+            textContent: &#39;Btn&#39;,
+            selector: &#39;icon&#39;,
+            attrs: {
+              fill: &#39;#fe854f&#39;,
+              fontSize: 10,
+              textAnchor: &#39;middle&#39;,
+              pointerEvents: &#39;none&#39;,
+              y: &#39;0.3em&#39;,
+            },
+          },
+        ],
+        x: 0,
+        y: 0,
+        offset: { x: 20, y: 20 },
+        onClick({ cell }: { cell: Cell }) {
+          cell.attr({
+            body: {
+              stroke: Color.randomHex(),
+              strokeDasharray: &#39;5, 1&#39;,
+              strokeDashoffset:
+                (cell.attr&lt;number&gt;(&#39;line/strokeDashoffset&#39;) | 0) + 20,
+            },
+          })
+        },
+      },
+    })
+  }
+})
+
+graph.on(&#39;node:mouseleave&#39;, ({ cell }) =&gt; {
+  if (cell === target) {
+    cell.removeTools()
+  }
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

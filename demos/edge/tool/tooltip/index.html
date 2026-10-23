@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>edge/tool/tooltip</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/edge/tool/tooltip/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="edge/tool/tooltip" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>edge/tool/tooltip</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/edge/tool/tooltip/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Edge, Graph, Shape } from &#39;@antv/x6&#39;
+import React from &#39;react&#39;
+import { createRoot } from &#39;react-dom/client&#39;
+import type { Root } from &#39;react-dom/client&#39;
+import { Tooltip } from &#39;antd&#39;
+
+// 2.x的使用可以参考2.x文档： https://x6-v2.antv.vision/examples/edge/tool/#tooltip
+
+Shape.Rect.config({
+  attrs: {
+    body: {
+      fill: &#39;#f5f5f5&#39;,
+      stroke: &#39;#d9d9d9&#39;,
+      strokeWidth: 1,
+    },
+  },
+  ports: {
+    groups: {
+      in: {
+        position: { name: &#39;top&#39; },
+      },
+      out: {
+        position: { name: &#39;bottom&#39; },
+      },
+    },
+  },
+  portMarkup: [
+    {
+      tagName: &#39;circle&#39;,
+      selector: &#39;portBody&#39;,
+      attrs: {
+        r: 5,
+        magnet: true,
+        stroke: &#39;#31d0c6&#39;,
+        fill: &#39;#fff&#39;,
+        strokeWidth: 2,
+      },
+    },
+  ],
+})
+
+const magnetAvailabilityHighlighter = {
+  name: &#39;stroke&#39;,
+  args: {
+    padding: 3,
+    attrs: {
+      strokeWidth: 3,
+      stroke: &#39;#52c41a&#39;,
+    },
+  },
+}
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+  highlighting: {
+    magnetAvailable: magnetAvailabilityHighlighter,
+  },
+  connecting: {
+    snap: true,
+    allowBlank: false,
+    allowLoop: false,
+    allowNode: false,
+    highlight: true,
+    validateMagnet({ magnet }) {
+      return magnet.getAttribute(&#39;port-group&#39;) !== &#39;in&#39;
+    },
+
+    validateConnection({ sourceMagnet, targetMagnet }) {
+      // 只能从输出连接桩创建连接
+      if (!sourceMagnet || sourceMagnet.getAttribute(&#39;port-group&#39;) === &#39;in&#39;) {
+        return false
+      }
+
+      // 只能连接到输入连接桩
+      if (!targetMagnet || targetMagnet.getAttribute(&#39;port-group&#39;) !== &#39;in&#39;) {
+        return false
+      }
+
+      return true
+    },
+  },
+})
+
+const source = graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  ports: [{ id: &#39;out-2&#39;, group: &#39;out&#39; }],
+})
+
+const target = graph.addNode({
+  x: 140,
+  y: 240,
+  width: 100,
+  height: 40,
+  ports: [{ id: &#39;in-1&#39;, group: &#39;in&#39; }],
+})
+
+graph.addEdge({
+  source: { cell: source.id, port: &#39;out-2&#39; },
+  target: { cell: target.id, port: &#39;in-1&#39; },
+})
+
+let tooltipRoot: Root | null = null
+let tooltipContainer: HTMLDivElement | null = null
+let currentEdgeId: string | null = null
+
+// 显示 Tooltip
+function showTooltip(cell: Edge, x: number, y: number) {
+  // 如果是同一条边，只更新位置
+  if (currentEdgeId === cell.id &amp;&amp; tooltipContainer) {
+    tooltipContainer.style.left = `${x + 6}px`
+    tooltipContainer.style.top = `${y - 6}px`
+    return
+  }
+
+  // 隐藏之前的 tooltip
+  hideTooltip()
+
+  currentEdgeId = cell.id
+
+  // 创建 tooltip 容器
+  tooltipContainer = document.createElement(&#39;div&#39;)
+  tooltipContainer.style.cssText = `
+    position: fixed;
+    left: ${x + 6}px;
+    top: ${y - 6}px;
+    z-index: 9999;
+    pointer-events: none;
+  `
+  document.body.appendChild(tooltipContainer)
+
+  // 获取边的信息
+  const sourceNode = graph.getCellById(cell.getSourceCellId())
+  const targetNode = graph.getCellById(cell.getTargetCellId())
+
+  // Tooltip 内容
+  const tooltipContent = (
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;strong&gt;边信息&lt;/strong&gt;
+      &lt;/div&gt;
+      &lt;div&gt;ID: {cell.id}&lt;/div&gt;
+      &lt;div&gt;源节点: {sourceNode?.id || &#39;Unknown&#39;}&lt;/div&gt;
+      &lt;div&gt;目标节点: {targetNode?.id || &#39;Unknown&#39;}&lt;/div&gt;
+    &lt;/div&gt;
+  )
+
+  // 渲染 Tooltip
+  tooltipRoot = createRoot(tooltipContainer)
+  tooltipRoot.render(
+    React.createElement(
+      Tooltip,
+      {
+        open: true,
+        title: tooltipContent,
+        placement: &#39;right&#39;,
+      },
+      React.createElement(&#39;span&#39;, {
+        style: { display: &#39;inline-block&#39;, width: 0, height: 0 },
+      }),
+    ),
+  )
+}
+
+// 隐藏 Tooltip
+function hideTooltip() {
+  if (tooltipRoot) {
+    tooltipRoot.unmount()
+    tooltipRoot = null
+  }
+  if (tooltipContainer &amp;&amp; tooltipContainer.parentNode) {
+    tooltipContainer.parentNode.removeChild(tooltipContainer)
+    tooltipContainer = null
+  }
+  currentEdgeId = null
+}
+
+// 监听边的 hover 事件
+graph.on(&#39;edge:mouseenter&#39;, ({ cell, e }: { cell: Edge; e: MouseEvent }) =&gt; {
+  showTooltip(cell, e.clientX, e.clientY)
+})
+
+graph.on(&#39;edge:mouseleave&#39;, () =&gt; {
+  hideTooltip()
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

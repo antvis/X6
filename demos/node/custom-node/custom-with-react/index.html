@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/custom-node/custom-with-react</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/custom-node/custom-with-react/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/custom-node/custom-with-react" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/custom-node/custom-with-react</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/custom-node/custom-with-react/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import React from &#39;react&#39;
+import { Graph, Color } from &#39;@antv/x6&#39;
+import { register } from &#39;@antv/x6-react-shape&#39;
+
+const MyComponent = ({ node }) =&gt; {
+  const color = node.prop(&#39;color&#39;)
+  return (
+    &lt;div
+      style={{
+        color: &#39;#fff&#39;,
+        width: &#39;100%&#39;,
+        height: &#39;100%&#39;,
+        textAlign: &#39;center&#39;,
+        lineHeight: &#39;50px&#39;,
+        borderRadius: 4,
+        background: color,
+      }}
+    &gt;
+      {color}
+    &lt;/div&gt;
+  )
+}
+
+register({
+  shape: &#39;custom-node&#39;,
+  width: 120,
+  height: 50,
+  effect: [&#39;color&#39;],
+  component: MyComponent,
+})
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+const source = graph.addNode({
+  x: 120,
+  y: 50,
+  shape: &#39;custom-node&#39;,
+})
+
+const target = graph.addNode({
+  x: 320,
+  y: 260,
+  shape: &#39;custom-node&#39;,
+})
+
+graph.addEdge({
+  source,
+  target,
+})
+
+const update = () =&gt; {
+  source.prop(&#39;color&#39;, Color.randomHex())
+  target.prop(&#39;color&#39;, Color.randomHex())
+  setTimeout(update, 1000)
+}
+
+update()
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

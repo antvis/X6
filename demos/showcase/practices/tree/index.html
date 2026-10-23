@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/tree</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/tree/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="showcase/practices/tree" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>showcase/practices/tree</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/showcase/practices/tree/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import exampleData from &#39;../../../data/mindmap.json&#39;
+import { Graph, Node, Edge, Shape } from &#39;@antv/x6&#39;
+
+// 定义节点
+class TreeNode extends Node {
+  private collapsed: boolean = false
+
+  protected postprocess() {
+    this.toggleCollapse(false)
+  }
+
+  isCollapsed() {
+    return this.collapsed
+  }
+
+  toggleButtonVisibility(visible: boolean) {
+    this.attr(&#39;buttonGroup&#39;, {
+      display: visible ? &#39;block&#39; : &#39;none&#39;,
+    })
+  }
+
+  toggleCollapse(collapsed?: boolean) {
+    const target = collapsed == null ? !this.collapsed : collapsed
+    if (!target) {
+      this.attr(&#39;buttonSign&#39;, {
+        d: &#39;M 1 5 9 5 M 5 1 5 9&#39;,
+        strokeWidth: 1.6,
+      })
+    } else {
+      this.attr(&#39;buttonSign&#39;, {
+        d: &#39;M 2 5 8 5&#39;,
+        strokeWidth: 1.8,
+      })
+    }
+    this.collapsed = target
+  }
+}
+
+TreeNode.config({
+  zIndex: 2,
+  markup: [
+    {
+      tagName: &#39;g&#39;,
+      selector: &#39;buttonGroup&#39;,
+      children: [
+        {
+          tagName: &#39;rect&#39;,
+          selector: &#39;button&#39;,
+          attrs: {
+            &#39;pointer-events&#39;: &#39;visiblePainted&#39;,
+          },
+        },
+        {
+          tagName: &#39;path&#39;,
+          selector: &#39;buttonSign&#39;,
+          attrs: {
+            fill: &#39;none&#39;,
+            &#39;pointer-events&#39;: &#39;none&#39;,
+          },
+        },
+      ],
+    },
+    {
+      tagName: &#39;rect&#39;,
+      selector: &#39;body&#39;,
+    },
+    {
+      tagName: &#39;text&#39;,
+      selector: &#39;label&#39;,
+    },
+  ],
+  attrs: {
+    body: {
+      refWidth: &#39;100%&#39;,
+      refHeight: &#39;100%&#39;,
+      strokeWidth: 1,
+      fill: &#39;#EFF4FF&#39;,
+      stroke: &#39;#5F95FF&#39;,
+    },
+    label: {
+      textWrap: {
+        ellipsis: true,
+        width: -10,
+      },
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;middle&#39;,
+      refX: &#39;50%&#39;,
+      refY: &#39;50%&#39;,
+      fontSize: 12,
+    },
+    buttonGroup: {
+      refX: &#39;100%&#39;,
+      refY: &#39;50%&#39;,
+    },
+    button: {
+      fill: &#39;#5F95FF&#39;,
+      stroke: &#39;none&#39;,
+      x: -10,
+      y: -10,
+      height: 20,
+      width: 30,
+      rx: 10,
+      ry: 10,
+      cursor: &#39;pointer&#39;,
+      event: &#39;node:collapse&#39;,
+    },
+    buttonSign: {
+      refX: 5,
+      refY: -5,
+      stroke: &#39;#FFFFFF&#39;,
+      strokeWidth: 1.6,
+    },
+  },
+})
+
+// 定义边
+class TreeEdge extends Shape.Edge {
+  isHidden() {
+    const node = this.getTargetNode() as TreeNode
+    return !node || !node.isVisible()
+  }
+}
+
+TreeEdge.config({
+  zIndex: 1,
+  attrs: {
+    line: {
+      stroke: &#39;#A2B1C3&#39;,
+      strokeWidth: 1,
+      targetMarker: null,
+    },
+  },
+})
+
+// 注册
+Node.registry.register(&#39;tree-node&#39;, TreeNode, true)
+Edge.registry.register(&#39;tree-edge&#39;, TreeEdge, true)
+
+// 初始化画布
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+  panning: true,
+  interacting: false,
+  connecting: {
+    anchor: &#39;orth&#39;,
+    connector: &#39;rounded&#39;,
+    connectionPoint: &#39;boundary&#39;,
+    router: {
+      name: &#39;er&#39;,
+      args: {
+        offset: 24,
+        direction: &#39;H&#39;,
+      },
+    },
+  },
+})
+
+graph.on(&#39;node:collapse&#39;, ({ node }: { node: TreeNode }) =&gt; {
+  node.toggleCollapse()
+  const collapsed = node.isCollapsed()
+  const run = (pre: TreeNode) =&gt; {
+    const succ = graph.getSuccessors(pre, { distance: 1 })
+    if (succ) {
+      succ.forEach((node: TreeNode) =&gt; {
+        node.toggleVisible(!collapsed)
+        if (!node.isCollapsed()) {
+          run(node)
+        }
+      })
+    }
+  }
+  run(node)
+})
+
+Promise.resolve(exampleData)
+  .then((data) =&gt; {
+    const nodes = data.nodes.map(({ leaf, ...metadata }: any) =&gt; {
+      const node = new TreeNode(metadata)
+      if (leaf) {
+        node.toggleButtonVisibility(leaf === false)
+      }
+      return node
+    })
+    const edges = data.edges.map(
+      (edge: any) =&gt;
+        new TreeEdge({
+          source: edge.source,
+          target: edge.target,
+        }),
+    )
+
+    graph.resetCells([...nodes, ...edges])
+    graph.zoomToFit({ padding: 24 })
+  })
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

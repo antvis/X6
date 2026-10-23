@@ -1,0 +1,422 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/case/oscp</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/case/oscp/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="animation/case/oscp" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>animation/case/oscp</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/animation/case/oscp/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Shape } from &#39;@antv/x6&#39;
+
+Graph.registerNode(
+  &#39;custom-node&#39;,
+  {
+    width: 150,
+    height: 60,
+    attrs: {
+      body: {
+        stroke: &#39;#000&#39;,
+        strokeWidth: 2,
+        fill: &#39;#fff&#39;,
+        refWidth: 1,
+        refHeight: 1,
+        rx: 10,
+      },
+      image: {
+        width: 16,
+        height: 16,
+        ref: &#39;body&#39;,
+      },
+      icon: {
+        ref: &#39;body&#39;,
+        fill: &#39;#fff&#39;,
+      },
+      icon2: {
+        ref: &#39;body&#39;,
+        fill: &#39;#fff&#39;,
+      },
+      title: {
+        text: &#39;Node&#39;,
+        refX: 45,
+        refY: 14,
+        fill: &#39;#fff&#39;,
+        fontSize: 14,
+        &#39;text-anchor&#39;: &#39;start&#39;,
+        fontWeight: &#39;bold&#39;,
+      },
+      text: {
+        refX: 45,
+        refY: 38,
+        fontSize: 12,
+        fill: &#39;#fff&#39;,
+        &#39;text-anchor&#39;: &#39;start&#39;,
+      },
+    },
+    markup: [
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;body&#39;,
+      },
+      {
+        tagName: &#39;image&#39;,
+        selector: &#39;image&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;title&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;text&#39;,
+      },
+      {
+        tagName: &#39;path&#39;,
+        selector: &#39;icon&#39;,
+      },
+      {
+        tagName: &#39;path&#39;,
+        selector: &#39;icon2&#39;,
+      },
+    ],
+  },
+  true,
+)
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+  connecting: {
+    snap: true,
+    connector: { name: &#39;smooth&#39; },
+  },
+  background: {
+    color: &#39;#fff&#39;,
+  },
+})
+
+const mainNode = graph.addNode({
+  shape: &#39;custom-node&#39;,
+  x: 300,
+  y: 100,
+  width: 300,
+  height: 150,
+  attrs: {
+    body: {
+      fill: &#39;#FBEAD4&#39;,
+      stroke: &#39;#D7CEA9&#39;,
+      strokeWidth: 2,
+      rx: 20,
+    },
+    image: {
+      &#39;xlink:href&#39;:
+        &#39;https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*A-lcQbVTpjwAAAAAAAAAAAAADmJ7AQ/original&#39;,
+      width: 100,
+      height: 100,
+      refX: 0.5,
+      refX2: -50,
+      y: 0,
+    },
+    title: {
+      text: &#39;OSCP&#39;,
+      fontSize: 20,
+      refX: 0.5,
+      refX2: -25,
+      y: 90,
+      fontWeight: 800,
+      fill: &#39;rgba(0,0,0,0.85)&#39;,
+    },
+    text: {
+      text: &#39;&#39;,
+    },
+  },
+})
+
+const issueNode = graph.addNode({
+  shape: &#39;custom-node&#39;,
+  x: 800,
+  y: 140,
+  attrs: {
+    body: {
+      fill: &#39;#4CAF50&#39;,
+      stroke: &#39;&#39;,
+    },
+    title: {
+      text: &#39;主线任务&#39;,
+    },
+    text: {
+      text: &#39;issue修复&#39;,
+    },
+    icon: {
+      d: &#39;M20 40 L20 30 L15 30 L20 25 L20 15 L30 15 L30 25 L35 30 L30 30 L30 40 ZM22 30 L28 30 M25 22 L25 28&#39;,
+      refY: 0,
+      refX: 0,
+    },
+  },
+  animation: [
+    [
+      { &#39;attrs/icon/refY&#39;: -5 },
+      {
+        duration: 800,
+        iterations: Infinity,
+        direction: &#39;alternate&#39;,
+      },
+    ],
+  ],
+})
+
+const docNode = graph.addNode({
+  shape: &#39;custom-node&#39;,
+  x: 650,
+  y: 260,
+  attrs: {
+    body: {
+      fill: &#39;#4994EC&#39;,
+      stroke: &#39;&#39;,
+    },
+    title: {
+      text: &#39;支线任务&#39;,
+    },
+    text: {
+      text: &#39;文档捉&quot;虫&quot;&#39;,
+    },
+    icon: {
+      d: &#39;M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z&#39;,
+      refX: 10,
+      refY: 10,
+    },
+  },
+  animation: [
+    [
+      { &#39;attrs/icon/refY&#39;: 15 },
+      {
+        duration: 600,
+        iterations: Infinity,
+        direction: &#39;alternate&#39;,
+      },
+    ],
+    [
+      { &#39;attrs/icon/refX&#39;: 20 },
+      {
+        duration: 700,
+        iterations: Infinity,
+        direction: &#39;alternate&#39;,
+      },
+    ],
+  ],
+})
+
+const prNode = graph.addNode({
+  shape: &#39;custom-node&#39;,
+  x: 800,
+  y: 400,
+  attrs: {
+    body: {
+      fill: &#39;#FF9800&#39;,
+      stroke: &#39;&#39;,
+    },
+    title: {
+      text: &#39;提交PR&#39;,
+    },
+    text: {
+      text: &#39;一对一指导&#39;,
+    },
+    icon: {
+      d: &#39;M20 35 L25 30 L30 35 M25 30 L25 40&#39;,
+      strokeWidth: 2,
+      refY: -5,
+    },
+    icon2: {
+      d: &#39;M15 25 L35 25 L35 15 L15 15 Z&#39;,
+      opacity: 0.6,
+    },
+  },
+  animation: [
+    [
+      { &#39;attrs/icon/refY&#39;: 0 },
+      {
+        duration: 600,
+        iterations: Infinity,
+        direction: &#39;alternate&#39;,
+      },
+    ],
+  ],
+})
+
+const rewardNode = graph.addNode({
+  shape: &#39;custom-node&#39;,
+  x: 350,
+  y: 400,
+  attrs: {
+    body: {
+      fill: &#39;#9C27B0&#39;,
+      stroke: &#39;&#39;,
+      filter: {
+        name: &#39;highlight&#39;,
+        args: {
+          color: &#39;#9C27B0&#39;,
+          blur: 1,
+          width: 8,
+          opacity: 0.1,
+        },
+      },
+    },
+    title: {
+      text: &#39;获得奖励&#39;,
+    },
+    text: {
+      text: &#39;各种精美奖品&#39;,
+    },
+    icon: {
+      d: &#39;M20 35 L15 35 L15 25 L25 25 L25 35 L20 35 ZM18 25 L18 20 C18 18 19 16 20 16 C21 16 22 18 22 20 L22 25&#39;,
+      strokeWidth: 2,
+      strokeLinecap: &#39;round&#39;,
+      strokeLinejoin: &#39;round&#39;,
+    },
+  },
+  animation: [
+    [
+      {
+        &#39;attrs/body/opacity&#39;: [1, 0.85],
+      },
+      { duration: 1000, iterations: Infinity, direction: &#39;alternate&#39; },
+    ],
+  ],
+})
+
+const chatNode = graph.addNode({
+  shape: &#39;custom-node&#39;,
+  x: 0,
+  y: 240,
+  attrs: {
+    body: {
+      fill: &#39;#00BCD4&#39;,
+      stroke: &#39;&#39;,
+    },
+    title: {
+      text: &#39;加入交流群&#39;,
+    },
+    text: {
+      text: &#39;获取第一手资讯&#39;,
+    },
+    icon: {
+      refX: 10,
+      refY: 10,
+      d: &#39;M20 2H4C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H12L16 22V18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z&#39;,
+      strokeWidth: 2,
+      strokeLinecap: &#39;round&#39;,
+      strokeLinejoin: &#39;round&#39;,
+    },
+  },
+})
+
+const edges = [
+  {
+    source: mainNode,
+    target: issueNode,
+  },
+  {
+    source: mainNode,
+    target: docNode,
+    attrs: {
+      line: {
+        stroke: &#39;#C7D5F6&#39;,
+        strokeWidth: 2,
+        strokeDasharray: 5,
+        strokeDashoffset: 0,
+      },
+    },
+  },
+  {
+    source: mainNode,
+    target: chatNode,
+    markup: [
+      {
+        tagName: &#39;circle&#39;,
+        selector: &#39;marker&#39;,
+        attrs: {
+          stroke: &#39;none&#39;,
+          r: 5,
+        },
+      },
+      ...Shape.Edge.getMarkup(),
+    ],
+    attrs: {
+      line: {
+        stroke: &#39;#A3B1BF&#39;,
+        strokeWidth: 2,
+        strokeDasharray: 5,
+        strokeDashoffset: 0,
+      },
+      marker: {
+        fill: &#39;#C7D5F6&#39;,
+        atConnectionRatio: 0,
+      },
+    },
+    animation: [
+      [
+        { &#39;attrs/marker/atConnectionRatio&#39;: 1 },
+        {
+          duration: 2000,
+          iterations: Infinity,
+        },
+      ],
+    ],
+  },
+  {
+    source: issueNode,
+    target: prNode,
+  },
+  {
+    source: docNode,
+    target: prNode,
+    attrs: {
+      line: {
+        stroke: &#39;#C7D5F6&#39;,
+        strokeWidth: 2,
+        strokeDasharray: 5,
+        strokeDashoffset: 0,
+      },
+    },
+  },
+  {
+    source: prNode,
+    target: rewardNode,
+  },
+]
+
+graph.addEdges(
+  edges.map((edge) =&gt; {
+    return {
+      connector: { name: &#39;smooth&#39; },
+      attrs: {
+        line: {
+          stroke: &#39;#A3B1BF&#39;,
+          strokeWidth: 2,
+          strokeDasharray: 5,
+          strokeDashoffset: 0,
+        },
+      },
+      animation: [
+        [
+          { &#39;attrs/line/strokeDashoffset&#39;: -20 },
+          {
+            duration: 600,
+            iterations: Infinity,
+          },
+        ],
+      ],
+      ...edge,
+    }
+  }),
+)
+
+graph.centerContent()
+graph.zoomToFit()
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

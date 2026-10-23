@@ -1,0 +1,628 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/agentflow</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/agentflow/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="showcase/practices/agentflow" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>showcase/practices/agentflow</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/showcase/practices/agentflow/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import exampleData from &#39;../../../data/agent-flow.json&#39;
+import { type Edge, Graph, type Node, Snapline, Stencil } from &#39;@antv/x6&#39;
+import { register } from &#39;@antv/x6-react-shape&#39;
+import insertCss from &#39;insert-css&#39;
+import React from &#39;react&#39;
+
+// 为了协助代码演示
+preWork()
+
+const CARD_WIDTH = 260
+const CARD_HEIGHT = 96
+const PORT_DOT_RADIUS = 3
+const COLOR_PORT_GRAY = &#39;#C2C8D5&#39;
+const COLOR_PORT_BLUE = &#39;#5F95FF&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;graph-container&#39;) as HTMLElement,
+  grid: true,
+  mousewheel: {
+    enabled: true,
+    minScale: 0.5,
+    maxScale: 3,
+  },
+  connecting: {
+    connector: { name: &#39;smooth&#39; },
+    connectionPoint: &#39;anchor&#39;,
+    allowBlank: false,
+    snap: { radius: 20 },
+    allowEdge: false,
+    allowLoop: false,
+    highlight: true,
+    createEdge(): Edge {
+      return graph.createEdge({ shape: &#39;agent-edge&#39; })
+    },
+    validateConnection({
+      targetMagnet,
+    }: {
+      targetMagnet?: Element | null
+    }): boolean {
+      return !!targetMagnet
+    },
+  },
+  highlighting: {
+    magnetAdsorbed: {
+      name: &#39;stroke&#39;,
+      args: {
+        attrs: {
+          fill: COLOR_PORT_BLUE,
+          stroke: COLOR_PORT_BLUE,
+        },
+      },
+    },
+  },
+})
+
+graph.use(new Snapline())
+
+Graph.registerEdge(
+  &#39;agent-edge&#39;,
+  {
+    inherit: &#39;edge&#39;,
+    attrs: {
+      line: { stroke: COLOR_PORT_BLUE, strokeWidth: 2, targetMarker: &#39;block&#39; },
+    },
+  },
+  true,
+)
+
+const stencil = new Stencil({
+  title: &#39;智能体流程编排&#39;,
+  target: graph,
+  stencilGraphWidth: 240,
+  stencilGraphHeight: 480,
+  stencilGraphOptions: { panning: true },
+  collapsable: true,
+  groups: [
+    {
+      title: &#39;业务逻辑&#39;,
+      name: &#39;biz&#39;,
+      graphHeight: 380,
+      layoutOptions: { rowHeight: 88 },
+    },
+    {
+      title: &#39;知识库&amp;数据&#39;,
+      name: &#39;data&#39;,
+      graphHeight: 300,
+      layoutOptions: { rowHeight: 88 },
+    },
+  ],
+  layoutOptions: { columns: 1, columnWidth: 230, rowHeight: 88, dx: 8 },
+})
+document
+  .getElementById(&#39;stencil&#39;)
+  ?.appendChild(stencil.container as HTMLElement)
+
+const basePortAttrs = {
+  r: PORT_DOT_RADIUS,
+  magnet: true,
+  stroke: COLOR_PORT_GRAY,
+  strokeWidth: 1,
+  fill: COLOR_PORT_GRAY,
+  style: { visibility: &#39;hidden&#39; },
+}
+const createPortGroup = (position: &#39;top&#39; | &#39;right&#39; | &#39;bottom&#39; | &#39;left&#39;) =&gt; ({
+  position,
+  attrs: { circle: { ...basePortAttrs } },
+})
+const ports = {
+  groups: {
+    top: createPortGroup(&#39;top&#39;),
+    right: createPortGroup(&#39;right&#39;),
+    bottom: createPortGroup(&#39;bottom&#39;),
+    left: createPortGroup(&#39;left&#39;),
+  },
+  items: [
+    { id: &#39;top&#39;, group: &#39;top&#39; },
+    { id: &#39;right&#39;, group: &#39;right&#39; },
+    { id: &#39;bottom&#39;, group: &#39;bottom&#39; },
+    { id: &#39;left&#39;, group: &#39;left&#39; },
+  ],
+}
+
+const isPortConnected = (node: Node, portId: string): boolean =&gt; {
+  const edges = graph.getConnectedEdges(node)
+  return edges.some(
+    (e) =&gt;
+      (e.getSourceCellId() === node.id &amp;&amp; e.getSourcePortId() === portId) ||
+      (e.getTargetCellId() === node.id &amp;&amp; e.getTargetPortId() === portId),
+  )
+}
+const setPortVisible = (node: Node, portId: string, visible: boolean) =&gt; {
+  node.setPortProp(
+    portId,
+    &#39;attrs/circle/style/visibility&#39;,
+    visible ? &#39;visible&#39; : &#39;hidden&#39;,
+  )
+}
+const setPortColor = (node: Node, portId: string, color: string) =&gt; {
+  node.setPortProp(portId, &#39;attrs/circle/fill&#39;, color)
+  node.setPortProp(portId, &#39;attrs/circle/stroke&#39;, color)
+}
+const setPortDot = (
+  node: Node,
+  portId: string,
+  visible: boolean,
+  color?: string,
+) =&gt; {
+  setPortVisible(node, portId, visible)
+  if (color) setPortColor(node, portId, color)
+}
+const withNodePort = (
+  cellId?: string | null,
+  portId?: string | null,
+  fn?: (node: Node, portId: string) =&gt; void,
+) =&gt; {
+  if (!cellId || !portId || !fn) return
+  const cell = graph.getCellById(cellId)
+  if (cell &amp;&amp; cell.isNode()) fn(cell as Node, portId)
+}
+const showNodePorts = (node: Node, show: boolean) =&gt; {
+  const ps = node.getPorts()
+  for (let i = 0; i &lt; ps.length; i += 1) {
+    const id = ps[i].id as string
+    if (show) {
+      setPortVisible(node, id, true)
+    } else {
+      const connected = isPortConnected(node, id)
+      setPortVisible(node, id, connected)
+      setPortColor(node, id, connected ? COLOR_PORT_BLUE : COLOR_PORT_GRAY)
+    }
+  }
+}
+graph.on(&#39;node:mouseenter&#39;, ({ node }: { node: Node }) =&gt; {
+  showNodePorts(node, true)
+})
+graph.on(&#39;node:mouseleave&#39;, ({ node }: { node: Node }) =&gt; {
+  showNodePorts(node, false)
+})
+graph.on(&#39;edge:mouseenter&#39;, ({ edge }: { edge: Edge }) =&gt; {
+  edge.addTools({ name: &#39;button-remove&#39;, args: { distance: -40 } })
+})
+graph.on(&#39;edge:mouseleave&#39;, ({ edge }: { edge: Edge }) =&gt; {
+  edge.removeTools()
+})
+
+graph.on(
+  &#39;edge:connected&#39;,
+  ({
+    currentCell,
+    currentPort,
+  }: {
+    currentCell: Node
+    currentPort?: string
+  }) =&gt; {
+    if (!currentPort) return
+    setPortDot(currentCell, currentPort, true, COLOR_PORT_BLUE)
+  },
+)
+
+graph.on(&#39;edge:added&#39;, ({ edge }: { edge: Edge }) =&gt; {
+  withNodePort(edge.getSourceCellId(), edge.getSourcePortId(), (node, port) =&gt;
+    setPortDot(node, port, true, COLOR_PORT_BLUE),
+  )
+  withNodePort(edge.getTargetCellId(), edge.getTargetPortId(), (node, port) =&gt;
+    setPortDot(node, port, true, COLOR_PORT_BLUE),
+  )
+})
+
+graph.on(&#39;edge:removed&#39;, ({ edge }: { edge: Edge }) =&gt; {
+  withNodePort(edge.getSourceCellId(), edge.getSourcePortId(), (node, port) =&gt; {
+    const stillConnected = isPortConnected(node, port)
+    if (!stillConnected) setPortDot(node, port, false, COLOR_PORT_GRAY)
+  })
+  withNodePort(edge.getTargetCellId(), edge.getTargetPortId(), (node, port) =&gt; {
+    const stillConnected = isPortConnected(node, port)
+    if (!stillConnected) setPortDot(node, port, false, COLOR_PORT_GRAY)
+  })
+})
+
+type AgentCardConfig = {
+  key: string
+  iconText: string
+  title: string
+  desc: string
+  theme?: &#39;blue&#39; | &#39;green&#39; | &#39;orange&#39; | &#39;red&#39;
+  inputPlaceholder?: string
+}
+
+const AgentReactCard = ({ node }: { node: Node }) =&gt; {
+  const raw = node.getData() as AgentCardConfig | null | undefined
+  const data: AgentCardConfig = {
+    key: raw?.key ?? &#39;unknown&#39;,
+    iconText: raw?.iconText ?? &#39;&#39;,
+    title: raw?.title ?? &#39;&#39;,
+    desc: raw?.desc ?? &#39;&#39;,
+    theme: raw?.theme ?? &#39;blue&#39;,
+    inputPlaceholder: raw?.inputPlaceholder,
+  }
+  const theme = data.theme ?? &#39;blue&#39;
+  return React.createElement(&#39;div&#39;, { className: `agent-card ${theme}` }, [
+    React.createElement(&#39;div&#39;, { className: &#39;header&#39;, key: &#39;header&#39; }, [
+      React.createElement(
+        &#39;div&#39;,
+        { className: &#39;icon&#39;, key: &#39;icon&#39; },
+        data.iconText,
+      ),
+      React.createElement(
+        &#39;div&#39;,
+        { className: &#39;title&#39;, key: &#39;title&#39; },
+        data.title,
+      ),
+      React.createElement(&#39;div&#39;, { className: &#39;actions&#39;, key: &#39;actions&#39; }, [
+        React.createElement(
+          &#39;span&#39;,
+          {
+            className: &#39;op&#39;,
+            key: &#39;delete&#39;,
+            onClick: (e: React.MouseEvent) =&gt; {
+              e.stopPropagation()
+              const cfg = (node.getData() as AgentCardConfig | null) || null
+              const k = cfg?.key
+              if (k === &#39;start&#39; || k === &#39;end&#39;) return
+              node.remove()
+            },
+            title: &#39;删除节点&#39;,
+          },
+          &#39;✖️&#39;,
+        ),
+      ]),
+    ]),
+
+    data.inputPlaceholder
+      ? React.createElement(&#39;div&#39;, { className: &#39;body&#39;, key: &#39;body&#39; }, [
+          React.createElement(
+            &#39;span&#39;,
+            { className: &#39;section&#39;, key: &#39;sec&#39; },
+            &#39;节点内容&#39;,
+          ),
+          React.createElement(&#39;input&#39;, {
+            type: &#39;text&#39;,
+            placeholder: data.inputPlaceholder,
+          }),
+        ])
+      : React.createElement(
+          &#39;div&#39;,
+          { className: &#39;desc&#39;, key: &#39;desc&#39; },
+          data.desc,
+        ),
+  ])
+}
+
+register({
+  shape: &#39;agent-react-card&#39;,
+  width: CARD_WIDTH,
+  height: CARD_HEIGHT,
+  effect: [&#39;data&#39;],
+  component: AgentReactCard,
+})
+
+const createAgentCard = (cfg: AgentCardConfig) =&gt;
+  graph.createNode({
+    shape: &#39;agent-react-card&#39;,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    data: cfg,
+    ports,
+  })
+
+type FlowData = {
+  title: string
+  badge?: string
+}
+
+const FlowCard = ({ node }: { node: Node }) =&gt; {
+  const data = node.getData() as FlowData
+  const shape = node.shape
+  const type = shape === &#39;agent-end-card&#39; ? &#39;end&#39; : &#39;start&#39;
+  return React.createElement(&#39;div&#39;, { className: `flow-card ${type}` }, [
+    React.createElement(&#39;div&#39;, { className: &#39;header&#39;, key: &#39;h&#39; }, [
+      React.createElement(
+        &#39;div&#39;,
+        { className: &#39;icon&#39;, key: &#39;i&#39; },
+        type === &#39;end&#39; ? &#39;E&#39; : &#39;S&#39;,
+      ),
+      React.createElement(&#39;div&#39;, { className: &#39;title&#39;, key: &#39;t&#39; }, data.title),
+      data.badge
+        ? React.createElement(
+            &#39;div&#39;,
+            { className: &#39;badge&#39;, key: &#39;b&#39; },
+            data.badge,
+          )
+        : null,
+    ]),
+    type === &#39;start&#39;
+      ? React.createElement(&#39;div&#39;, { className: &#39;body&#39;, key: &#39;body&#39; }, [
+          React.createElement(
+            &#39;span&#39;,
+            { className: &#39;section&#39;, key: &#39;s&#39; },
+            &#39;Agent 开始节点&#39;,
+          ),
+        ])
+      : React.createElement(&#39;div&#39;, { className: &#39;footer&#39;, key: &#39;f&#39; }, [
+          React.createElement(
+            &#39;span&#39;,
+            { className: &#39;section&#39;, key: &#39;s2&#39; },
+            &#39;Agent 结束节点&#39;,
+          ),
+        ]),
+  ])
+}
+
+const registerFlowShape = (shape: string) =&gt; {
+  register({
+    shape,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    effect: [&#39;data&#39;],
+    component: FlowCard,
+  })
+}
+
+registerFlowShape(&#39;agent-start-card&#39;)
+registerFlowShape(&#39;agent-end-card&#39;)
+
+const createFlowCard = (kind: &#39;start&#39; | &#39;end&#39;, data: FlowData) =&gt;
+  graph.createNode({
+    shape: kind === &#39;start&#39; ? &#39;agent-start-card&#39; : &#39;agent-end-card&#39;,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    data,
+    ports,
+  })
+
+const createStartCard = () =&gt;
+  createFlowCard(&#39;start&#39;, {
+    title: &#39;开始&#39;,
+    badge: &#39;触发器&#39;,
+  })
+
+const createEndCard = () =&gt;
+  createFlowCard(&#39;end&#39;, {
+    title: &#39;结束&#39;,
+    badge: &#39;输出器&#39;,
+  })
+
+Graph.registerNode(
+  &#39;agent-stencil-card&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: 220,
+    height: 66,
+    markup: [
+      { tagName: &#39;rect&#39;, selector: &#39;body&#39; },
+      { tagName: &#39;rect&#39;, selector: &#39;iconRect&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;iconLabel&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;title&#39; },
+      { tagName: &#39;text&#39;, selector: &#39;desc&#39; },
+    ],
+    attrs: {
+      body: { stroke: &#39;#5F95FF&#39;, strokeWidth: 1, fill: &#39;#fff&#39;, rx: 8, ry: 8 },
+      iconRect: {
+        width: 32,
+        height: 32,
+        rx: 8,
+        ry: 8,
+        refX: 12,
+        refY: 20,
+        fill: &#39;#F0F5FF&#39;,
+      },
+      iconLabel: {
+        refX: 28,
+        refY: 36,
+        textAnchor: &#39;middle&#39;,
+        textVerticalAnchor: &#39;middle&#39;,
+        fontSize: 12,
+        fontWeight: 600,
+        fill: &#39;#1D39C4&#39;,
+      },
+      title: {
+        refX: 60,
+        refY: 26,
+        textAnchor: &#39;start&#39;,
+        textVerticalAnchor: &#39;middle&#39;,
+        fontSize: 14,
+        fontWeight: 600,
+        fill: &#39;#141414&#39;,
+        textWrap: { width: 170, height: 20, ellipsis: &#39;…&#39; },
+      },
+      desc: {
+        refX: 60,
+        refY: 46,
+        textAnchor: &#39;start&#39;,
+        textVerticalAnchor: &#39;middle&#39;,
+        fontSize: 12,
+        fill: &#39;rgba(0,0,0,0.65)&#39;,
+        textWrap: { width: 170, height: 32, ellipsis: &#39;…&#39; },
+      },
+    },
+    ports,
+  },
+  true,
+)
+
+const createAgentStencilCard = (cfg: AgentCardConfig) =&gt; {
+  const themeMap = {
+    blue: { rectFill: &#39;#F0F5FF&#39;, textFill: &#39;#1D39C4&#39; },
+    green: { rectFill: &#39;#E6FFFB&#39;, textFill: &#39;#08979C&#39; },
+    orange: { rectFill: &#39;#FFF7E6&#39;, textFill: &#39;#FA8C16&#39; },
+    red: { rectFill: &#39;#FFF1F0&#39;, textFill: &#39;#CF1322&#39; },
+  } as const
+  const theme = cfg.theme ?? &#39;blue&#39;
+  const colors = themeMap[theme]
+  return graph.createNode({
+    shape: &#39;agent-stencil-card&#39;,
+    attrs: {
+      iconRect: { fill: colors.rectFill },
+      iconLabel: { text: cfg.iconText, fill: colors.textFill },
+      title: { text: cfg.title },
+      desc: { text: cfg.desc },
+    },
+    data: { type: cfg.key },
+    ports,
+  })
+}
+
+let AGENT_CONFIGS: Record&lt;string, AgentCardConfig&gt; | null = null
+
+const getAgentConfig = (type: string): AgentCardConfig | null =&gt; {
+  return AGENT_CONFIGS ? (AGENT_CONFIGS[type] ?? null) : null
+}
+
+graph.on(&#39;node:added&#39;, ({ node }: { node: Node }) =&gt; {
+  const data = node.getData() as { type?: string } | undefined
+  const type = data?.type
+  if (type &amp;&amp; node.shape !== &#39;agent-react-card&#39;) {
+    const cfg = getAgentConfig(type)
+    if (cfg) {
+      const { x, y } = node.position()
+      const newNode = createAgentCard(cfg).position(x, y)
+      node.remove()
+      graph.addNode(newNode)
+    }
+  }
+})
+;(async () =&gt; {
+  AGENT_CONFIGS = await Promise.resolve(exampleData)
+
+  stencil.load(
+    [
+      createAgentStencilCard(getAgentConfig(&#39;llm&#39;)!),
+      createAgentStencilCard(getAgentConfig(&#39;code&#39;)!),
+      createAgentStencilCard(getAgentConfig(&#39;branch&#39;)!),
+      createAgentStencilCard(getAgentConfig(&#39;loop&#39;)!),
+    ],
+    &#39;biz&#39;,
+  )
+
+  stencil.load(
+    [
+      createAgentStencilCard(getAgentConfig(&#39;kb&#39;)!),
+      createAgentStencilCard(getAgentConfig(&#39;mcp&#39;)!),
+      createAgentStencilCard(getAgentConfig(&#39;db&#39;)!),
+    ],
+    &#39;data&#39;,
+  )
+
+  const start = graph.addNode(createStartCard().position(60, 60))
+
+  const llm = graph.addNode(
+    createAgentCard(getAgentConfig(&#39;llm&#39;)!).position(220, 220),
+  )
+
+  const end = graph.addNode(createEndCard().position(360, 380))
+
+  graph.addEdge({
+    shape: &#39;agent-edge&#39;,
+    source: { cell: start.id, port: &#39;bottom&#39; },
+    target: { cell: llm.id, port: &#39;top&#39; },
+  })
+  graph.addEdge({
+    shape: &#39;agent-edge&#39;,
+    source: { cell: llm.id, port: &#39;bottom&#39; },
+    target: { cell: end.id, port: &#39;top&#39; },
+  })
+})().catch((err) =&gt; {
+  console.error(err)
+})
+
+function preWork() {
+  const container = document.getElementById(&#39;container&#39;) as HTMLElement
+  if (!container) {
+    return
+  }
+  const stencilContainer = document.createElement(&#39;div&#39;)
+  stencilContainer.id = &#39;stencil&#39;
+  const graphContainer = document.createElement(&#39;div&#39;)
+  graphContainer.id = &#39;graph-container&#39;
+  container.appendChild(stencilContainer)
+  container.appendChild(graphContainer)
+
+  insertCss(`
+    #container {
+      display: flex;
+      border: 1px solid #dfe3e8;
+      height: 480px;
+    }
+    #stencil {
+      width: 260px;
+      height: 100%;
+      position: relative;
+      border-right: 1px solid #dfe3e8;
+      background: #fff;
+    }
+    #graph-container {
+      width: calc(100% - 260px);
+      height: 100%;
+      background: #fff;
+    }
+    .x6-widget-stencil  { background-color: #fff; }
+    .x6-widget-stencil-title { background-color: #fff; }
+    .x6-widget-stencil-group-title { background-color: #fff !important; }
+
+    /* agent card */
+    .agent-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #5F95FF;
+      border-radius: 8px;
+      box-sizing: border-box;
+      padding: 12px;
+      width: 260px;
+      height: 96px;
+      background: #fff;
+      gap: 8px;
+    }
+
+    .agent-card .header { display: flex; align-items: center; gap: 12px; }
+    .agent-card .icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: #F0F5FF; color: #1D39C4; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; font-family: Inter, PingFang SC, Arial;
+    }
+    .agent-card.green .icon { background: #E6FFFB; color: #08979C; }
+    .agent-card.orange .icon { background: #FFF7E6; color: #FA8C16; }
+    .agent-card.red .icon { background: #FFF1F0; color: #CF1322; }
+
+    .agent-card .title { font-size: 16px; color: #141414; font-weight: 600; line-height: 20px; }
+    .agent-card .desc { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 18px; }
+    .agent-card .body { display: flex; align-items: center; gap: 8px; }
+    .agent-card .section { font-size: 12px; color: #8c8c8c; flex: 0 0 auto; white-space: nowrap; min-width: max-content; }
+    .agent-card .body input {
+      flex: 1; min-width: 0; height: 30px; border: 1px solid #5F95FF; border-radius: 6px; padding: 4px 8px; background: #FAFAFA; color: #141414;
+    }
+    .agent-card .actions { margin-left: auto; color: #8c8c8c; display: flex; gap: 8px; }
+    .agent-card .actions .op { font-size: 14px; cursor: pointer; }
+
+    /* start/end flow cards */
+    .flow-card { display: flex; flex-direction: column; border: 1px solid #5F95FF; border-radius: 12px; background: #fff; width: 260px; height: 96px; box-sizing: border-box; padding: 12px; gap: 8px; }
+    .flow-card .header { display: flex; align-items: center; gap: 12px; }
+    .flow-card .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+    .flow-card.start .icon { background: #EEF2FF; color: #5F95FF; }
+    .flow-card.end .icon { background: #FFF1F0; color: #FF7875; }
+    .flow-card .title { font-size: 16px; color: #141414; font-weight: 600; }
+    .flow-card .badge { margin-left: auto; font-size: 12px; color: #8c8c8c; background: #F5F5F5; border-radius: 8px; padding: 2px 8px; }
+    .flow-card .body { display: flex; align-items: center; gap: 8px; }
+    .flow-card .section { font-size: 12px; color: #8c8c8c; }
+    .flow-card .chips { display: flex; align-items: center; gap: 6px; flex: 1; flex-wrap: wrap; }
+    .flow-card .chip { font-size: 12px; color: #595959; background: #FAFAFA; border: 1px solid #5F95FF; border-radius: 6px; padding: 2px 8px; }
+    .flow-card .actions { margin-left: auto; color: #8c8c8c; }
+    .flow-card .footer { display: flex; align-items: center; gap: 8px; }
+  `)
+}
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/usage/control</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/usage/control/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="animation/usage/control" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>animation/usage/control</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/animation/usage/control/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+const cancelNode = graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 60,
+  label: &#39;点击取消动画&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#9254de&#39;,
+      stroke: &#39;none&#39;,
+      rx: 10,
+    },
+    text: {
+      fill: &#39;#fff&#39;,
+    },
+  },
+  animation: [
+    [
+      { &#39;position/x&#39;: 50 },
+      { duration: 1000, direction: &#39;alternate&#39;, iterations: Infinity },
+    ],
+  ],
+})
+
+const rateNode = graph.addNode({
+  x: 200,
+  y: 40,
+  width: 100,
+  height: 60,
+  label: &#39;点击2倍速动画&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#DB655C&#39;,
+      stroke: &#39;none&#39;,
+      rx: 10,
+    },
+  },
+  animation: [
+    [
+      {
+        &#39;attrs/body/opacity&#39;: [1, 0.7],
+      },
+      {
+        duration: 1000,
+        direction: &#39;alternate&#39;,
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+const pauseNode = graph.addNode({
+  x: 360,
+  y: 40,
+  width: 100,
+  height: 60,
+  label: &#39;点击暂停动画&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;none&#39;,
+      rx: 10,
+    },
+  },
+  animation: [
+    [
+      {
+        &#39;attrs/text/fontSize&#39;: [10, 16],
+      },
+      {
+        duration: 1000,
+        direction: &#39;alternate&#39;,
+        iterations: Infinity,
+      },
+    ],
+  ],
+})
+
+graph.on(&#39;node:click&#39;, ({ cell }) =&gt; {
+  if (cell === cancelNode) {
+    const [ani] = cell.getAnimations()
+    ani.cancel()
+  }
+
+  if (cell === rateNode) {
+    const [ani] = cell.getAnimations()
+    ani.updatePlaybackRate(2)
+  }
+
+  if (cell === pauseNode) {
+    const label = cell.getPropByPath(&#39;attrs/text/text&#39;)
+    const [ani] = cell.getAnimations()
+    if (label === &#39;点击暂停动画&#39;) {
+      ani.pause()
+      cell.setPropByPath(&#39;attrs/text/text&#39;, &#39;点击继续动画&#39;)
+    } else {
+      ani.play()
+      cell.setPropByPath(&#39;attrs/text/text&#39;, &#39;点击暂停动画&#39;)
+    }
+  }
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

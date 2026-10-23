@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/org</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/org/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="showcase/practices/org" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>showcase/practices/org</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/showcase/practices/org/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Node, Point } from &#39;@antv/x6&#39;
+
+Graph.registerNode(
+  &#39;org-node&#39;,
+  {
+    width: 180,
+    height: 60,
+    markup: [
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;body&#39;,
+      },
+      {
+        tagName: &#39;image&#39;,
+        selector: &#39;avatar&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;rank&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;name&#39;,
+      },
+    ],
+    attrs: {
+      body: {
+        refWidth: &#39;100%&#39;,
+        refHeight: &#39;100%&#39;,
+        fill: &#39;#5F95FF&#39;,
+        stroke: &#39;#5F95FF&#39;,
+        strokeWidth: 1,
+        rx: 10,
+        ry: 10,
+        pointerEvents: &#39;visiblePainted&#39;,
+      },
+      avatar: {
+        width: 48,
+        height: 48,
+        refX: 8,
+        refY: 6,
+      },
+      rank: {
+        refX: 0.9,
+        refY: 0.2,
+        fill: &#39;#fff&#39;,
+        fontFamily: &#39;Courier New&#39;,
+        fontSize: 14,
+        textAnchor: &#39;end&#39;,
+        textDecoration: &#39;underline&#39;,
+      },
+      name: {
+        refX: 0.9,
+        refY: 0.6,
+        fill: &#39;#fff&#39;,
+        fontFamily: &#39;Courier New&#39;,
+        fontSize: 14,
+        fontWeight: &#39;800&#39;,
+        textAnchor: &#39;end&#39;,
+      },
+    },
+  },
+  true,
+)
+
+Graph.registerEdge(
+  &#39;org-edge&#39;,
+  {
+    zIndex: -1,
+    attrs: {
+      line: {
+        fill: &#39;none&#39;,
+        strokeLinejoin: &#39;round&#39;,
+        strokeWidth: 2,
+        stroke: &#39;#A2B1C3&#39;,
+        sourceMarker: null,
+        targetMarker: null,
+      },
+    },
+  },
+  true,
+)
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+  connecting: {
+    anchor: &#39;orth&#39;,
+  },
+})
+
+function member(
+  x: number,
+  y: number,
+  rank: string,
+  name: string,
+  image: string,
+) {
+  return graph.addNode({
+    x,
+    y,
+    shape: &#39;org-node&#39;,
+    attrs: {
+      avatar: {
+        opacity: 0.7,
+        &#39;xlink:href&#39;: image,
+      },
+      rank: {
+        text: rank,
+        wordSpacing: &#39;-5px&#39;,
+        letterSpacing: 0,
+      },
+      name: {
+        text: name,
+        fontSize: 13,
+        fontFamily: &#39;Arial&#39;,
+        letterSpacing: 0,
+      },
+    },
+  })
+}
+
+function link(source: Node, target: Node, vertices: Point.PointLike[]) {
+  return graph.addEdge({
+    vertices,
+    source: {
+      cell: source,
+    },
+    target: {
+      cell: target,
+    },
+    shape: &#39;org-edge&#39;,
+  })
+}
+
+const male =
+  &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kUy8SrEDp6YAAAAAAAAAAAAAARQnAQ&#39;
+const female =
+  &#39;https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*f6hhT75YjkIAAAAAAAAAAAAAARQnAQ&#39;
+
+const bart = member(300, 70, &#39;CEO&#39;, &#39;Bart Simpson&#39;, male)
+const homer = member(90, 200, &#39;VP Marketing&#39;, &#39;Homer Simpson&#39;, male)
+const marge = member(300, 200, &#39;VP Sales&#39;, &#39;Marge Simpson&#39;, female)
+const lisa = member(500, 200, &#39;VP Production&#39;, &#39;Lisa Simpson&#39;, female)
+const maggie = member(400, 350, &#39;Manager&#39;, &#39;Maggie Simpson&#39;, female)
+const lenny = member(190, 350, &#39;Manager&#39;, &#39;Lenny Leonard&#39;, male)
+const carl = member(190, 500, &#39;Manager&#39;, &#39;Carl Carlson&#39;, male)
+
+link(bart, marge, [
+  {
+    x: 385,
+    y: 180,
+  },
+])
+link(bart, homer, [
+  {
+    x: 385,
+    y: 180,
+  },
+  {
+    x: 175,
+    y: 180,
+  },
+])
+link(bart, lisa, [
+  {
+    x: 385,
+    y: 180,
+  },
+  {
+    x: 585,
+    y: 180,
+  },
+])
+link(homer, lenny, [
+  {
+    x: 175,
+    y: 380,
+  },
+])
+link(homer, carl, [
+  {
+    x: 175,
+    y: 530,
+  },
+])
+link(marge, maggie, [
+  {
+    x: 385,
+    y: 380,
+  },
+])
+
+graph.zoomToFit({ padding: 20, maxScale: 1 })
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

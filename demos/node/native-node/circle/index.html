@@ -1,0 +1,335 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/native-node/circle</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/native-node/circle/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/native-node/circle" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/native-node/circle</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/native-node/circle/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+// row 1
+// -----
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 40,
+  y: 40,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 200,
+  y: 40,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 360,
+  y: 40,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#237804&#39;,
+      fill: &#39;#73d13d&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 520,
+  y: 40,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#ffa940&#39;,
+      fill: &#39;#ffd591&#39;,
+    },
+  },
+})
+
+// row 2
+// -----
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 40,
+  y: 140,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    label: {
+      refX: 16,
+      refY: 16,
+      textAnchor: &#39;start&#39;,
+      textVerticalAnchor: &#39;top&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 200,
+  y: 140,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+    label: {
+      refX: 16,
+      refY: 0.5,
+      textAnchor: &#39;start&#39;,
+      textVerticalAnchor: &#39;middle&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 360,
+  y: 140,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#237804&#39;,
+      fill: &#39;#73d13d&#39;,
+    },
+    label: {
+      refX: 16,
+      refY: &#39;100%&#39;,
+      refY2: -16,
+      textAnchor: &#39;start&#39;,
+      textVerticalAnchor: &#39;bottom&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 520,
+  y: 140,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#ffa940&#39;,
+      fill: &#39;#ffd591&#39;,
+    },
+    label: {
+      refX: 0.5,
+      refY: -4,
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;bottom&#39;,
+    },
+  },
+})
+
+// row 3
+// -----
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 40,
+  y: 240,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    label: {
+      refX: 0.5,
+      refY: 16,
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;top&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 200,
+  y: 240,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+    label: {
+      refX: 0.5,
+      refY: 0.5,
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;middle&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 360,
+  y: 240,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#237804&#39;,
+      fill: &#39;#73d13d&#39;,
+    },
+    label: {
+      refX: 0.5,
+      refY: &#39;100%&#39;,
+      refY2: -16,
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;bottom&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 520,
+  y: 240,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#ffa940&#39;,
+      fill: &#39;#ffd591&#39;,
+    },
+    label: {
+      refX: &#39;100%&#39;,
+      refX2: 4,
+      refY: 0.5,
+      textAnchor: &#39;start&#39;,
+      textVerticalAnchor: &#39;middle&#39;,
+    },
+  },
+})
+
+// row 4
+// -----
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 40,
+  y: 340,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    label: {
+      refX: &#39;100%&#39;,
+      refX2: -16,
+      refY: 16,
+      textAnchor: &#39;end&#39;,
+      textVerticalAnchor: &#39;top&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 200,
+  y: 340,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      fill: &#39;#efdbff&#39;,
+      stroke: &#39;#9254de&#39;,
+    },
+    label: {
+      refX: &#39;100%&#39;,
+      refX2: -16,
+      refY: 0.5,
+      textAnchor: &#39;end&#39;,
+      textVerticalAnchor: &#39;middle&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 360,
+  y: 340,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#237804&#39;,
+      fill: &#39;#73d13d&#39;,
+    },
+    label: {
+      refX: &#39;100%&#39;,
+      refX2: -16,
+      refY: &#39;100%&#39;,
+      refY2: -16,
+      textAnchor: &#39;end&#39;,
+      textVerticalAnchor: &#39;bottom&#39;,
+    },
+  },
+})
+
+graph.addNode({
+  shape: &#39;circle&#39;,
+  x: 520,
+  y: 340,
+  width: 60,
+  height: 60,
+  label: &#39;circle&#39;,
+  attrs: {
+    body: {
+      stroke: &#39;#ffa940&#39;,
+      fill: &#39;#ffd591&#39;,
+    },
+    label: {
+      refX: 0.5,
+      refY: &#39;100%&#39;,
+      refY2: 4,
+      textAnchor: &#39;middle&#39;,
+      textVerticalAnchor: &#39;top&#39;,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

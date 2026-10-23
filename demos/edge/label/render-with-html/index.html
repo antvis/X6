@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>edge/label/render-with-html</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/edge/label/render-with-html/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="edge/label/render-with-html" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>edge/label/render-with-html</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/edge/label/render-with-html/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Markup } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+  onEdgeLabelRendered: (args) =&gt; {
+    const { selectors } = args
+    const content = selectors.foContent as HTMLDivElement
+    if (content) {
+      const btn = document.createElement(&#39;button&#39;)
+      btn.appendChild(document.createTextNode(&#39;HTML Button&#39;))
+      btn.style.width = &#39;100%&#39;
+      btn.style.height = &#39;100%&#39;
+      btn.style.lineHeight = &#39;1&#39;
+      btn.style.borderRadius = &#39;4px&#39;
+      btn.style.textAlign = &#39;center&#39;
+      btn.style.color = &#39;#000&#39;
+      btn.style.background = &#39;#ffd591&#39;
+      btn.style.border = &#39;2px solid #ffa940&#39;
+      btn.addEventListener(&#39;click&#39;, () =&gt; {
+        alert(&#39;clicked&#39;)
+      })
+      content.appendChild(btn)
+    }
+  },
+})
+
+graph.addEdge({
+  source: [170, 160],
+  target: [550, 160],
+  defaultLabel: {
+    markup: Markup.getForeignObjectMarkup(),
+    attrs: {
+      fo: {
+        width: 120,
+        height: 30,
+        x: 60,
+        y: -15,
+      },
+    },
+  },
+  label: {
+    position: 0.25,
+  },
+  attrs: {
+    line: {
+      stroke: &#39;#ccc&#39;,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

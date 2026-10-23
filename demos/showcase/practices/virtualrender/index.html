@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/virtualrender</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/virtualrender/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="showcase/practices/virtualrender" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>showcase/practices/virtualrender</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/showcase/practices/virtualrender/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, type Node, Scroller } from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+
+const host = document.getElementById(&#39;container&#39;)!
+host.classList.add(&#39;virtual-render&#39;)
+
+const graph = new Graph({
+  container: host,
+  mousewheel: true,
+  // 开启虚拟渲染
+  virtual: true,
+  grid: true,
+})
+
+graph.use(new Scroller({ enabled: true, pannable: true }))
+
+const nodes: Node[] = []
+const nodeWidth = 80
+const nodeHeight = 30
+const cols = 20
+const spacingX = 120
+const spacingY = 50
+const count = 1000
+const statuses = [&#39;加载中…&#39;, &#39;同步中…&#39;, &#39;处理任务…&#39;, &#39;拉取数据…&#39;, &#39;发布中…&#39;]
+const loaderVariants = [
+  &#39;loader-dots&#39;,
+  &#39;loader-bar&#39;,
+  &#39;loader-wave&#39;,
+  &#39;loader-glow&#39;,
+  &#39;loader-ants&#39;,
+]
+
+for (let i = 0; i &lt; count; i++) {
+  const row = Math.floor(i / cols)
+  const col = i % cols
+  const x = 50 + col * spacingX
+  const y = 50 + row * spacingY
+
+  const node = graph.addNode({
+    x,
+    y,
+    width: nodeWidth,
+    height: nodeHeight,
+    position: { x, y },
+    attrs: {
+      label: {
+        text: statuses[i % statuses.length],
+        fill: &#39;#0958D9&#39;,
+        fontSize: 12,
+      },
+      body: {
+        fill: i % 2 === 0 ? &#39;#E6F4FF&#39; : &#39;#FFFFFF&#39;,
+        stroke: &#39;#5f95ff&#39;,
+        strokeWidth: 1,
+        rx: 4,
+        ry: 4,
+        class: loaderVariants[i % loaderVariants.length],
+      },
+    },
+  })
+  nodes.push(node)
+}
+
+for (let i = 0; i &lt; count; i++) {
+  const col = i % cols
+  if (col &lt; cols - 1 &amp;&amp; i + 1 &lt; nodes.length) {
+    graph.addEdge({
+      source: nodes[i],
+      target: nodes[i + 1],
+      attrs: {
+        line: {
+          stroke: &#39;#91CAFF&#39;,
+          strokeWidth: 1,
+          strokeDasharray: &#39;6 4&#39;,
+          class: &#39;marching-line&#39;,
+        },
+      },
+    })
+  }
+
+  const bottomIndex = i + cols
+  if (bottomIndex &lt; nodes.length) {
+    graph.addEdge({
+      source: nodes[i],
+      target: nodes[bottomIndex],
+      attrs: {
+        line: {
+          stroke: &#39;#91CAFF&#39;,
+          strokeWidth: 1,
+          strokeDasharray: &#39;6 4&#39;,
+          class: &#39;marching-line&#39;,
+        },
+      },
+    })
+  }
+}
+
+insertCss(`
+@keyframes ants { to { stroke-dashoffset: -100; } }
+@keyframes dotsFlow { to { stroke-dashoffset: -24; } }
+@keyframes progressSweep { to { stroke-dashoffset: -220; } }
+@keyframes waveWidth {
+  0%, 100% { stroke-width: 1; }
+  50% { stroke-width: 2.2; }
+}
+@keyframes glowFade {
+  0%, 100% { stroke-opacity: 0.8; }
+  50% { stroke-opacity: 0.45; }
+}
+
+.virtual-render .x6-edge path.marching-line {
+  animation: ants 6s linear infinite;
+}
+.virtual-render .x6-edge:hover path.marching-line {
+  stroke: #5f95ff;
+  stroke-width: 1.3px;
+}
+.virtual-render .x6-edge-selected path.marching-line {
+  stroke: #5f95ff;
+  stroke-width: 1.8px !important;
+}
+
+.virtual-render .x6-node rect.loader-dots {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke-dasharray: 2 6;
+  animation: dotsFlow 2.4s linear infinite;
+}
+.virtual-render .x6-node rect.loader-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke-dasharray: 80 140;
+  animation: progressSweep 4.8s linear infinite;
+}
+.virtual-render .x6-node rect.loader-wave {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: waveWidth 3s ease-in-out infinite;
+}
+.virtual-render .x6-node rect.loader-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: glowFade 2.8s ease-in-out infinite;
+}
+.virtual-render .x6-node rect.loader-ants {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke-dasharray: 6 4;
+  animation: ants 6s linear infinite;
+}
+
+.virtual-render .x6-node-selected rect {
+  stroke: #5f95ff;
+  stroke-width: 2px;
+}
+`)
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

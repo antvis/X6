@@ -1,0 +1,62 @@
+---
+title: "Use Group to Custom Port Style"
+language: "en"
+canonical: "https://x6.antv.antgroup.com/en/examples/node/port/group/"
+version: "3.x"
+---
+
+# Use Group to Custom Port Style
+
+[Live example](https://x6.antv.antgroup.com/en/examples/node/port/group/)
+
+[Resource index](/llms.txt)
+
+Provide a DOM element with `id="container"`. The original example source follows.
+
+## Source
+
+```ts
+import { Graph } from '@antv/x6'
+
+const graph = new Graph({
+  container: document.getElementById('container'),
+  grid: true,
+})
+
+// 文档：https://x6.antv.antgroup.com/tutorial/basic/port
+
+const rect = graph.addNode({
+  x: 240,
+  y: 60,
+  width: 100,
+  height: 180,
+  attrs: {
+    body: {
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+      strokeWidth: 1,
+    },
+  },
+  ports: {
+    groups: {
+      group1: {
+        attrs: {
+          circle: {
+            r: 6,
+            magnet: true,
+            stroke: '#31d0c6',
+            fill: '#fff',
+            strokeWidth: 2,
+          },
+        },
+      },
+    },
+    items: [
+      { id: 'port1', group: 'group1' },
+      { id: 'port2', group: 'group1' },
+    ],
+  },
+})
+
+rect.addPort({ id: 'port3', group: 'group1' })
+```

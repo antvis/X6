@@ -1,0 +1,4 @@
+import{g as e}from"./src.DTJrlHdG.js";var t=new e({container:document.getElementById(`container`),grid:!0}),n=t.addNode({x:40,y:40,width:240,height:160,zIndex:1,label:`Parent
+(try to move me)`,attrs:{label:{refY:120,fontSize:12},body:{fill:`#fffbe6`,stroke:`#ffe7ba`}}}),r=t.addNode({x:110,y:80,width:100,height:50,label:`Child
+(inside)`,zIndex:10,attrs:{body:{stroke:`none`,fill:`#3199FF`},label:{fill:`#fff`,fontSize:12}}}),i=t.createNode({x:360,y:80,width:100,height:50,label:`Child
+(outside)`,zIndex:10,attrs:{body:{stroke:`none`,fill:`#47C769`},label:{fill:`#fff`,fontSize:12}}});n.addChild(r),n.addChild(i);

@@ -1,0 +1,1 @@
+import{g as e}from"./src.DTJrlHdG.js";new e({container:document.getElementById(`container`),grid:!0}).addNode({shape:`image`,x:320,y:120,width:94,height:28,imageUrl:`https://gw.alipayobjects.com/os/s/prod/antv/assets/image/logo-with-text-73b8a.svg`});

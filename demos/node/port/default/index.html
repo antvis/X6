@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/port/default</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/port/default/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/port/default" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/port/default</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/port/default/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+// 文档：https://x6.antv.antgroup.com/tutorial/basic/port
+
+const rect = graph.addNode({
+  x: 240,
+  y: 60,
+  width: 100,
+  height: 180,
+  attrs: {
+    body: {
+      fill: &#39;#f5f5f5&#39;,
+      stroke: &#39;#d9d9d9&#39;,
+      strokeWidth: 1,
+    },
+  },
+  ports: [
+    // 默认样式
+    { id: &#39;port1&#39; },
+    // 自定义连接桩样式
+    {
+      id: &#39;port2&#39;,
+      attrs: {
+        circle: {
+          magnet: true,
+          r: 8,
+          stroke: &#39;#31d0c6&#39;,
+          fill: &#39;#fff&#39;,
+          strokeWidth: 2,
+        },
+      },
+    },
+  ],
+})
+
+rect.addPort({
+  id: &#39;port3&#39;,
+  attrs: {
+    circle: {
+      r: 6,
+      magnet: true,
+      stroke: &#39;#31d0c6&#39;,
+      fill: &#39;#fff&#39;,
+      strokeWidth: 2,
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

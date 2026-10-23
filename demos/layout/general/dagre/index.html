@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>layout/general/dagre</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/layout/general/dagre/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="layout/general/dagre" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>layout/general/dagre</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/layout/general/dagre/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Model } from &#39;@antv/x6&#39;
+import { DagreLayout } from &#39;@antv/layout&#39;
+
+const data: Model.FromJSONData = {
+  nodes: [],
+  edges: [],
+}
+const edges = [
+  [&#39;1&#39;, &#39;2&#39;],
+  [&#39;2&#39;, &#39;3&#39;],
+  [&#39;2&#39;, &#39;4&#39;],
+  [&#39;4&#39;, &#39;5&#39;],
+  [&#39;4&#39;, &#39;6&#39;],
+  [&#39;4&#39;, &#39;7&#39;],
+  [&#39;4&#39;, &#39;8&#39;],
+  [&#39;5&#39;, &#39;9&#39;],
+  [&#39;6&#39;, &#39;10&#39;],
+  [&#39;7&#39;, &#39;11&#39;],
+  [&#39;8&#39;, &#39;12&#39;],
+]
+
+for (let i = 1; i &lt;= 12; i++) {
+  data.nodes!.push({
+    id: `${i}`,
+    shape: &#39;circle&#39;,
+    width: 32,
+    height: 32,
+    label: i,
+    attrs: {
+      body: {
+        fill: &#39;#5F95FF&#39;,
+        stroke: &#39;transparent&#39;,
+      },
+      label: {
+        fill: &#39;#ffffff&#39;,
+      },
+    },
+  })
+}
+
+edges.forEach((edge: [string, string]) =&gt; {
+  data.edges!.push({
+    source: edge[0],
+    target: edge[1],
+    attrs: {
+      line: {
+        stroke: &#39;#A2B1C3&#39;,
+        strokeWidth: 2,
+      },
+    },
+  })
+})
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+})
+
+const dagreLayout = new DagreLayout({
+  type: &#39;dagre&#39;,
+  rankdir: &#39;LR&#39;,
+  align: &#39;UR&#39;,
+  ranksep: 35,
+  nodesep: 15,
+})
+const model = dagreLayout.layout(data)
+
+graph.fromJSON(model)
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

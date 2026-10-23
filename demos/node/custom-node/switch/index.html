@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>node/custom-node/switch</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/node/custom-node/switch/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="node/custom-node/switch" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>node/custom-node/switch</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/node/custom-node/switch/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+const switchCenter = {
+  x: 35,
+  y: -2,
+}
+const switchOpen = `rotate(-30, ${switchCenter.x}, ${switchCenter.y})`
+const switchClose = `rotate(-12, ${switchCenter.x}, ${switchCenter.y})`
+
+graph.addNode({
+  x: 320,
+  y: 120,
+  markup: [
+    {
+      tagName: &#39;g&#39;,
+      selector: &#39;left-group&#39;,
+      children: [
+        {
+          tagName: &#39;rect&#39;,
+          selector: &#39;left&#39;,
+          groupSelector: &#39;line&#39;,
+          attrs: {
+            x: 0,
+            y: 0,
+          },
+        },
+        {
+          tagName: &#39;circle&#39;,
+          selector: &#39;lco&#39;,
+          groupSelector: &#39;co&#39;,
+          attrs: {
+            cx: 30,
+          },
+        },
+        {
+          tagName: &#39;circle&#39;,
+          selector: &#39;lci&#39;,
+          groupSelector: &#39;ci&#39;,
+          attrs: {
+            cx: 30,
+          },
+        },
+      ],
+    },
+    {
+      tagName: &#39;rect&#39;,
+      selector: &#39;switch&#39;,
+      groupSelector: &#39;line&#39;,
+    },
+    {
+      tagName: &#39;g&#39;,
+      selector: &#39;right-group&#39;,
+      children: [
+        {
+          tagName: &#39;rect&#39;,
+          selector: &#39;right&#39;,
+          groupSelector: &#39;line&#39;,
+          attrs: {
+            x: 70,
+            y: 0,
+          },
+        },
+        {
+          tagName: &#39;circle&#39;,
+          selector: &#39;rco&#39;,
+          groupSelector: &#39;co&#39;,
+          attrs: {
+            cx: 70,
+          },
+        },
+        {
+          tagName: &#39;circle&#39;,
+          selector: &#39;rci&#39;,
+          groupSelector: &#39;ci&#39;,
+          attrs: {
+            cx: 70,
+          },
+        },
+      ],
+    },
+  ],
+  attrs: {
+    line: {
+      width: 30,
+      height: 2,
+      fill: &#39;#000&#39;,
+      stroke: &#39;#000&#39;,
+    },
+    co: {
+      r: 8,
+      fill: &#39;#000&#39;,
+    },
+    ci: {
+      r: 4,
+      fill: &#39;#fff&#39;,
+    },
+    switch: {
+      ...switchCenter,
+      width: 35,
+      transform: switchOpen,
+    },
+  },
+})
+
+graph.on(&#39;node:click&#39;, ({ node }) =&gt; {
+  const attrPath = &#39;attrs/switch/transform&#39;
+  const current = node.prop(attrPath)
+
+  node.animate(
+    {
+      &#39;attrs/switch/transform&#39;:
+        current === switchOpen ? switchClose : switchOpen,
+    },
+    {
+      duration: 100,
+      fill: &#39;forwards&#39;,
+    },
+  )
+})
+
+// 我们用 insert-css 插入自定义样式，实际使用时请使用自己的样式定义方式
+insertCss(`
+  .x6-node {
+    cursor: pointer;
+  }
+`)
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

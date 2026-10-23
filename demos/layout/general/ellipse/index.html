@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>layout/general/ellipse</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/layout/general/ellipse/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="layout/general/ellipse" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>layout/general/ellipse</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/layout/general/ellipse/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Node, Point } from &#39;@antv/x6&#39;
+
+const nodes: Node.Metadata[] = []
+
+for (let i = 1; i &lt;= 20; i++) {
+  nodes!.push({
+    id: `${i}`,
+    shape: &#39;path&#39;,
+    width: 26,
+    height: 26,
+    attrs: {
+      body: {
+        d: &#39;M0,-9.898961565145173L2.222455340918111,-3.0589473502942863L9.41447190108659,-3.058947350294287L3.596008280084239,1.1684139180159865L5.818463621002351,8.008428132866873L4.440892098500626e-16,3.7810668645565997L-5.8184636210023495,8.008428132866873L-3.5960082800842383,1.1684139180159867L-9.41447190108659,-3.058947350294285L-2.2224553409181116,-3.058947350294286Z&#39;,
+        fill: &#39;#EFF4FF&#39;,
+        stroke: &#39;#5F95FF&#39;,
+      },
+    },
+  })
+}
+
+function layout(nodes: Node.Metadata[]) {
+  const cx = 320
+  const cy = 180
+  const rx = 200
+  const ry = 120
+  const ratio = rx / ry
+  const center = new Point(cx, cy)
+  const start = new Point(cx, cy - ry)
+  const stepAngle = 360 / nodes.length
+
+  nodes.forEach((node: Node.Metadata, index: number) =&gt; {
+    const angle = stepAngle * index
+    const p = start
+      .clone()
+      .rotate(-angle, center)
+      .scale(ratio, 1, center)
+      .round()
+    node.x = p.x
+    node.y = p.y
+  })
+
+  return nodes
+}
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+})
+
+graph.fromJSON(layout(nodes))
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

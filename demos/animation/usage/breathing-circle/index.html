@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>animation/usage/breathing-circle</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/animation/usage/breathing-circle/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="animation/usage/breathing-circle" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>animation/usage/breathing-circle</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/animation/usage/breathing-circle/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+const palette = [&#39;#3875f6&#39;, &#39;#efb041&#39;, &#39;#ec5b56&#39;, &#39;#72c240&#39;]
+const radius = 30
+
+palette.forEach((color, index) =&gt; {
+  graph.addNode({
+    shape: &#39;circle&#39;,
+    width: radius * 2,
+    height: radius * 2,
+    x: index % 2 === 0 ? 0 : 300,
+    y: index &lt; 2 ? 0 : 260,
+    markup: [
+      {
+        tagName: &#39;circle&#39;,
+        selector: &#39;wrapper&#39;,
+      },
+      {
+        tagName: &#39;circle&#39;,
+        selector: &#39;body&#39;,
+      },
+    ],
+    attrs: {
+      body: {
+        fill: color,
+        strokeWidth: 0,
+      },
+      wrapper: {
+        r: radius,
+        cx: radius,
+        cy: radius,
+        fill: color,
+        opacity: 0.4,
+        strokeWidth: 0,
+      },
+    },
+    animation: [
+      [
+        {
+          &#39;attrs/wrapper/r&#39;: radius + 10,
+        },
+        {
+          duration: 1000,
+          direction: &#39;alternate&#39;,
+          iterations: Infinity,
+        },
+      ],
+    ],
+  })
+})
+
+graph.centerContent()
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

@@ -1,0 +1,587 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>showcase/practices/flowchart</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/showcase/practices/flowchart/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="showcase/practices/flowchart" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>showcase/practices/flowchart</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/showcase/practices/flowchart/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import {
+  Clipboard,
+  Graph,
+  History,
+  Keyboard,
+  Selection,
+  Shape,
+  Snapline,
+  Stencil,
+  Transform,
+} from &#39;@antv/x6&#39;
+import insertCss from &#39;insert-css&#39;
+
+// 为了协助代码演示
+preWork()
+
+// #region 初始化画布
+const graph = new Graph({
+  container: document.getElementById(&#39;graph-container&#39;) as HTMLElement,
+  grid: true,
+  mousewheel: {
+    enabled: true,
+    zoomAtMousePosition: true,
+    modifiers: &#39;ctrl&#39;,
+    minScale: 0.5,
+    maxScale: 3,
+  },
+  connecting: {
+    router: &#39;manhattan&#39;,
+    connector: {
+      name: &#39;rounded&#39;,
+      args: {
+        radius: 8,
+      },
+    },
+    anchor: &#39;center&#39;,
+    connectionPoint: &#39;anchor&#39;,
+    allowBlank: false,
+    snap: {
+      radius: 20,
+    },
+    createEdge() {
+      return new Shape.Edge({
+        attrs: {
+          line: {
+            stroke: &#39;#A2B1C3&#39;,
+            strokeWidth: 2,
+            targetMarker: {
+              name: &#39;block&#39;,
+              width: 12,
+              height: 8,
+            },
+          },
+        },
+        zIndex: 0,
+      })
+    },
+    validateConnection({ targetMagnet }) {
+      return !!targetMagnet
+    },
+  },
+  highlighting: {
+    magnetAdsorbed: {
+      name: &#39;stroke&#39;,
+      args: {
+        attrs: {
+          fill: &#39;#5F95FF&#39;,
+          stroke: &#39;#5F95FF&#39;,
+        },
+      },
+    },
+  },
+})
+// #endregion
+
+// #region 使用插件
+graph
+  .use(
+    new Transform({
+      resizing: true,
+      rotating: true,
+    }),
+  )
+  .use(
+    new Selection({
+      rubberband: true,
+      showNodeSelectionBox: true,
+    }),
+  )
+  .use(new Snapline())
+  .use(new Keyboard())
+  .use(new Clipboard())
+  .use(new History())
+// #endregion
+
+// #region 初始化 stencil
+const stencil = new Stencil({
+  title: &#39;流程图&#39;,
+  target: graph,
+  stencilGraphWidth: 200,
+  stencilGraphHeight: 180,
+  stencilGraphOptions: { panning: true },
+  collapsable: true,
+  groups: [
+    {
+      title: &#39;基础流程图&#39;,
+      name: &#39;group1&#39;,
+    },
+    {
+      title: &#39;系统设计图&#39;,
+      name: &#39;group2&#39;,
+      graphHeight: 250,
+      layoutOptions: {
+        rowHeight: 70,
+      },
+    },
+  ],
+  layoutOptions: {
+    columns: 2,
+    columnWidth: 80,
+    rowHeight: 55,
+  },
+})
+document
+  .getElementById(&#39;stencil&#39;)
+  ?.appendChild(stencil.container as HTMLElement)
+// #endregion
+
+// #region 快捷键与事件
+graph.bindKey([&#39;meta+c&#39;, &#39;ctrl+c&#39;], () =&gt; {
+  const cells = graph.getSelectedCells()
+  if (cells.length) {
+    graph.copy(cells)
+  }
+  return false
+})
+graph.bindKey([&#39;meta+x&#39;, &#39;ctrl+x&#39;], () =&gt; {
+  const cells = graph.getSelectedCells()
+  if (cells.length) {
+    graph.cut(cells)
+  }
+  return false
+})
+graph.bindKey([&#39;meta+v&#39;, &#39;ctrl+v&#39;], () =&gt; {
+  if (!graph.isClipboardEmpty()) {
+    const cells = graph.paste({ offset: 32 })
+    graph.cleanSelection()
+    graph.select(cells)
+  }
+  return false
+})
+
+// undo redo
+graph.bindKey([&#39;meta+z&#39;, &#39;ctrl+z&#39;], () =&gt; {
+  if (graph.canUndo()) {
+    graph.undo()
+  }
+  return false
+})
+graph.bindKey([&#39;meta+shift+z&#39;, &#39;ctrl+shift+z&#39;], () =&gt; {
+  if (graph.canRedo()) {
+    graph.redo()
+  }
+  return false
+})
+
+// select all
+graph.bindKey([&#39;meta+a&#39;, &#39;ctrl+a&#39;], () =&gt; {
+  const nodes = graph.getNodes()
+  if (nodes) {
+    graph.select(nodes)
+  }
+})
+
+// delete
+graph.bindKey(&#39;backspace&#39;, () =&gt; {
+  const cells = graph.getSelectedCells()
+  if (cells.length) {
+    graph.removeCells(cells)
+  }
+})
+
+// zoom
+graph.bindKey([&#39;ctrl+1&#39;, &#39;meta+1&#39;], () =&gt; {
+  const zoom = graph.zoom()
+  if (zoom &lt; 1.5) {
+    graph.zoom(0.1)
+  }
+})
+graph.bindKey([&#39;ctrl+2&#39;, &#39;meta+2&#39;], () =&gt; {
+  const zoom = graph.zoom()
+  if (zoom &gt; 0.5) {
+    graph.zoom(-0.1)
+  }
+})
+
+// 控制连接桩显示/隐藏
+const showPorts = (ports: NodeListOf&lt;SVGElement&gt;, show: boolean) =&gt; {
+  for (let i = 0, len = ports.length; i &lt; len; i += 1) {
+    ports[i].style.visibility = show ? &#39;visible&#39; : &#39;hidden&#39;
+  }
+}
+graph.on(&#39;node:mouseenter&#39;, () =&gt; {
+  const container = document.getElementById(&#39;graph-container&#39;) as HTMLElement
+  const ports = container.querySelectorAll(
+    &#39;.x6-port-body&#39;,
+  ) as NodeListOf&lt;SVGElement&gt;
+  showPorts(ports, true)
+})
+graph.on(&#39;node:mouseleave&#39;, () =&gt; {
+  const container = document.getElementById(&#39;graph-container&#39;) as HTMLElement
+  const ports = container.querySelectorAll(
+    &#39;.x6-port-body&#39;,
+  ) as NodeListOf&lt;SVGElement&gt;
+  showPorts(ports, false)
+})
+// #endregion
+
+// #region 初始化图形
+const ports = {
+  groups: {
+    top: {
+      position: &#39;top&#39;,
+      attrs: {
+        circle: {
+          r: 4,
+          magnet: true,
+          stroke: &#39;#5F95FF&#39;,
+          strokeWidth: 1,
+          fill: &#39;#fff&#39;,
+          style: {
+            visibility: &#39;hidden&#39;,
+          },
+        },
+      },
+    },
+    right: {
+      position: &#39;right&#39;,
+      attrs: {
+        circle: {
+          r: 4,
+          magnet: true,
+          stroke: &#39;#5F95FF&#39;,
+          strokeWidth: 1,
+          fill: &#39;#fff&#39;,
+          style: {
+            visibility: &#39;hidden&#39;,
+          },
+        },
+      },
+    },
+    bottom: {
+      position: &#39;bottom&#39;,
+      attrs: {
+        circle: {
+          r: 4,
+          magnet: true,
+          stroke: &#39;#5F95FF&#39;,
+          strokeWidth: 1,
+          fill: &#39;#fff&#39;,
+          style: {
+            visibility: &#39;hidden&#39;,
+          },
+        },
+      },
+    },
+    left: {
+      position: &#39;left&#39;,
+      attrs: {
+        circle: {
+          r: 4,
+          magnet: true,
+          stroke: &#39;#5F95FF&#39;,
+          strokeWidth: 1,
+          fill: &#39;#fff&#39;,
+          style: {
+            visibility: &#39;hidden&#39;,
+          },
+        },
+      },
+    },
+  },
+  items: [
+    {
+      group: &#39;top&#39;,
+    },
+    {
+      group: &#39;right&#39;,
+    },
+    {
+      group: &#39;bottom&#39;,
+    },
+    {
+      group: &#39;left&#39;,
+    },
+  ],
+}
+
+Graph.registerNode(
+  &#39;custom-rect&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: 66,
+    height: 36,
+    attrs: {
+      body: {
+        strokeWidth: 1,
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#EFF4FF&#39;,
+      },
+      text: {
+        fontSize: 12,
+        fill: &#39;#262626&#39;,
+      },
+    },
+    ports: { ...ports },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;custom-polygon&#39;,
+  {
+    inherit: &#39;polygon&#39;,
+    width: 66,
+    height: 36,
+    attrs: {
+      body: {
+        strokeWidth: 1,
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#EFF4FF&#39;,
+      },
+      text: {
+        fontSize: 12,
+        fill: &#39;#262626&#39;,
+      },
+    },
+    ports: {
+      ...ports,
+      items: [
+        {
+          group: &#39;top&#39;,
+        },
+        {
+          group: &#39;bottom&#39;,
+        },
+      ],
+    },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;custom-circle&#39;,
+  {
+    inherit: &#39;circle&#39;,
+    width: 45,
+    height: 45,
+    attrs: {
+      body: {
+        strokeWidth: 1,
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#EFF4FF&#39;,
+      },
+      text: {
+        fontSize: 12,
+        fill: &#39;#262626&#39;,
+      },
+    },
+    ports: { ...ports },
+  },
+  true,
+)
+
+Graph.registerNode(
+  &#39;custom-image&#39;,
+  {
+    inherit: &#39;rect&#39;,
+    width: 52,
+    height: 52,
+    markup: [
+      {
+        tagName: &#39;rect&#39;,
+        selector: &#39;body&#39;,
+      },
+      {
+        tagName: &#39;image&#39;,
+      },
+      {
+        tagName: &#39;text&#39;,
+        selector: &#39;label&#39;,
+      },
+    ],
+    attrs: {
+      body: {
+        stroke: &#39;#5F95FF&#39;,
+        fill: &#39;#5F95FF&#39;,
+      },
+      image: {
+        width: 26,
+        height: 26,
+        refX: 13,
+        refY: 16,
+      },
+      label: {
+        refX: 3,
+        refY: 2,
+        textAnchor: &#39;left&#39;,
+        textVerticalAnchor: &#39;top&#39;,
+        fontSize: 12,
+        fill: &#39;#fff&#39;,
+      },
+    },
+    ports: { ...ports },
+  },
+  true,
+)
+
+const r1 = graph.createNode({
+  shape: &#39;custom-rect&#39;,
+  label: &#39;开始&#39;,
+  attrs: {
+    body: {
+      rx: 20,
+      ry: 26,
+    },
+  },
+})
+const r2 = graph.createNode({
+  shape: &#39;custom-rect&#39;,
+  label: &#39;过程&#39;,
+})
+const r3 = graph.createNode({
+  shape: &#39;custom-rect&#39;,
+  attrs: {
+    body: {
+      rx: 6,
+      ry: 6,
+    },
+  },
+  label: &#39;可选过程&#39;,
+})
+const r4 = graph.createNode({
+  shape: &#39;custom-polygon&#39;,
+  attrs: {
+    body: {
+      refPoints: &#39;0,10 10,0 20,10 10,20&#39;,
+    },
+  },
+  label: &#39;决策&#39;,
+})
+const r5 = graph.createNode({
+  shape: &#39;custom-polygon&#39;,
+  attrs: {
+    body: {
+      refPoints: &#39;10,0 40,0 30,20 0,20&#39;,
+    },
+  },
+  label: &#39;数据&#39;,
+})
+const r6 = graph.createNode({
+  shape: &#39;custom-circle&#39;,
+  label: &#39;连接&#39;,
+})
+stencil.load([r1, r2, r3, r4, r5, r6], &#39;group1&#39;)
+
+const imageShapes = [
+  {
+    label: &#39;Client&#39;,
+    image:
+      &#39;https://gw.alipayobjects.com/zos/bmw-prod/687b6cb9-4b97-42a6-96d0-34b3099133ac.svg&#39;,
+  },
+  {
+    label: &#39;Http&#39;,
+    image:
+      &#39;https://gw.alipayobjects.com/zos/bmw-prod/dc1ced06-417d-466f-927b-b4a4d3265791.svg&#39;,
+  },
+  {
+    label: &#39;Api&#39;,
+    image:
+      &#39;https://gw.alipayobjects.com/zos/bmw-prod/c55d7ae1-8d20-4585-bd8f-ca23653a4489.svg&#39;,
+  },
+  {
+    label: &#39;Sql&#39;,
+    image:
+      &#39;https://gw.alipayobjects.com/zos/bmw-prod/6eb71764-18ed-4149-b868-53ad1542c405.svg&#39;,
+  },
+  {
+    label: &#39;Clound&#39;,
+    image:
+      &#39;https://gw.alipayobjects.com/zos/bmw-prod/c36fe7cb-dc24-4854-aeb5-88d8dc36d52e.svg&#39;,
+  },
+  {
+    label: &#39;Mq&#39;,
+    image:
+      &#39;https://gw.alipayobjects.com/zos/bmw-prod/2010ac9f-40e7-49d4-8c4a-4fcf2f83033b.svg&#39;,
+  },
+]
+const imageNodes = imageShapes.map((item) =&gt;
+  graph.createNode({
+    shape: &#39;custom-image&#39;,
+    label: item.label,
+    attrs: {
+      image: {
+        &#39;xlink:href&#39;: item.image,
+      },
+    },
+  }),
+)
+stencil.load(imageNodes, &#39;group2&#39;)
+// #endregion
+
+function preWork() {
+  // 这里协助演示的代码，在实际项目中根据实际情况进行调整
+  const container = document.getElementById(&#39;container&#39;) as HTMLElement
+  const stencilContainer = document.createElement(&#39;div&#39;)
+  stencilContainer.id = &#39;stencil&#39;
+  const graphContainer = document.createElement(&#39;div&#39;)
+  graphContainer.id = &#39;graph-container&#39;
+  container.appendChild(stencilContainer)
+  container.appendChild(graphContainer)
+
+  insertCss(`
+    #container {
+      display: flex;
+      border: 1px solid #dfe3e8;
+    }
+    #stencil {
+      width: 180px;
+      height: 100%;
+      position: relative;
+      border-right: 1px solid #dfe3e8;
+    }
+    #graph-container {
+      width: calc(100% - 180px);
+      height: 100%;
+    }
+    .x6-widget-stencil  {
+      background-color: #fff;
+    }
+    .x6-widget-stencil-title {
+      background-color: #fff;
+    }
+    .x6-widget-stencil-group-title {
+      background-color: #fff !important;
+    }
+    .x6-widget-transform {
+      margin: -1px 0 0 -1px;
+      padding: 0px;
+      border: 1px solid #239edd;
+    }
+    .x6-widget-transform &gt; div {
+      border: 1px solid #239edd;
+    }
+    .x6-widget-transform &gt; div:hover {
+      background-color: #3dafe4;
+    }
+    .x6-widget-transform-active-handle {
+      background-color: #3dafe4;
+    }
+    .x6-widget-transform-resize {
+      border-radius: 0;
+    }
+    .x6-widget-selection-inner {
+      border: 1px solid #239edd;
+    }
+    .x6-widget-selection-box {
+      opacity: 0;
+    }
+  `)
+}
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

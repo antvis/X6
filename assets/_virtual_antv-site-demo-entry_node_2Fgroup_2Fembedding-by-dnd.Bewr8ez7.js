@@ -1,0 +1,4 @@
+import{g as e}from"./src.DTJrlHdG.js";var t=new e({container:document.getElementById(`container`),grid:!0,embedding:{enabled:!0,findParent({node:e}){let t=e.getBBox();return this.getNodes().filter(e=>{let n=e.getData();if(n&&n.parent){let n=e.getBBox();return t.isIntersectWithRect(n)}return!1})}},highlighting:{embedding:{name:`stroke`,args:{padding:-1,attrs:{stroke:`#73d13d`}}}}});t.addNode({x:40,y:140,width:100,height:50,label:`Child
+(unembed)`,zIndex:10,attrs:{body:{stroke:`none`,fill:`#3199FF`},label:{fill:`#fff`,fontSize:12}}}),t.addNode({x:500,y:100,width:100,height:50,label:`Child
+(unembed)`,zIndex:10,attrs:{body:{stroke:`none`,fill:`#47C769`},label:{fill:`#fff`,fontSize:12}}}),t.addNode({x:200,y:80,width:240,height:160,zIndex:1,label:`Parent`,attrs:{body:{fill:`#fffbe6`,stroke:`#ffe7ba`},label:{fontSize:12}},data:{parent:!0}}),t.on(`node:change:parent`,({node:e})=>{e.attr({label:{text:`Child
+(embed)`}})});

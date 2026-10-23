@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>edge/tool/segments</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/edge/tool/segments/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="edge/tool/segments" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>edge/tool/segments</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/edge/tool/segments/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph } from &#39;@antv/x6&#39;
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;),
+  grid: true,
+})
+
+graph.addEdge({
+  source: { x: 40, y: 40 },
+  target: { x: 380, y: 40 },
+  vertices: [
+    { x: 40, y: 80 },
+    { x: 200, y: 80 },
+    { x: 200, y: 40 },
+  ],
+  attrs: {
+    line: {
+      stroke: &#39;#3c4260&#39;,
+      strokeWidth: 2,
+      targetMarker: &#39;classic&#39;,
+    },
+  },
+  tools: {
+    name: &#39;segments&#39;,
+    args: {
+      snapRadius: 20,
+      attrs: {
+        fill: &#39;#444&#39;,
+      },
+    },
+  },
+})
+
+graph.addEdge({
+  source: { x: 40, y: 160 },
+  target: { x: 380, y: 160 },
+  vertices: [
+    { x: 40, y: 200 },
+    { x: 200, y: 200 },
+    { x: 200, y: 160 },
+  ],
+  attrs: {
+    line: {
+      stroke: &#39;#3c4260&#39;,
+      strokeWidth: 2,
+      targetMarker: &#39;classic&#39;,
+    },
+  },
+  connector: &#39;smooth&#39;,
+  tools: {
+    name: &#39;segments&#39;,
+    args: {
+      snapRadius: 20,
+      attrs: {
+        fill: &#39;#444&#39;,
+      },
+    },
+  },
+})
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>

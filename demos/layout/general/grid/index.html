@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-kuqocuzv><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>layout/general/grid</title><link rel="canonical" href="https://x6.antv.antgroup.com/zh/examples/layout/general/grid/"><script>
+      // Set the embedded layout before parsing the readable source below.
+      if (window.parent !== window) document.documentElement.classList.add('embedded-demo');
+    </script><style>/* Shared by initial previews, edited previews and exported projects.
+ * Keep this unscoped: demo nodes are created after the Astro document renders. */
+:root { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #1d2129;
+  font: 14px/1.5715 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#container canvas, #container svg { display: block; }
+</style><link rel="stylesheet" href="/assets/_..CZIkmZ7S.css"></head><body data-demo-key="layout/general/grid" data-astro-cid-kuqocuzv><section id="demo-source" data-astro-cid-kuqocuzv><h1 data-astro-cid-kuqocuzv>layout/general/grid</h1><p data-astro-cid-kuqocuzv><a href="/zh/examples/layout/general/grid/" data-astro-cid-kuqocuzv>Example page</a></p><pre data-astro-cid-kuqocuzv><code data-astro-cid-kuqocuzv>import { Graph, Model } from &#39;@antv/x6&#39;
+import { GridLayout } from &#39;@antv/layout&#39;
+
+const data: Model.FromJSONData = {
+  nodes: [],
+  edges: [],
+}
+const keyPoints = [
+  20, 12, 12, 4, 18, 12, 12, 6, 16, 17, 17, 10, 10, 3, 3, 2, 2, 9, 9, 10,
+]
+
+for (let i = 1; i &lt;= 21; i++) {
+  data.nodes!.push({
+    id: `${i}`,
+    shape: &#39;circle&#39;,
+    width: 32,
+    height: 32,
+    attrs: {
+      body: {
+        fill: &#39;#5F95FF&#39;,
+        stroke: &#39;transparent&#39;,
+      },
+      label: {
+        fill: &#39;#ffffff&#39;,
+      },
+    },
+    label: i,
+  })
+}
+
+for (let i = 0; i &lt; keyPoints.length; i += 2) {
+  data.edges!.push({
+    source: `${keyPoints[i]}`,
+    target: `${keyPoints[i + 1]}`,
+    attrs: {
+      line: {
+        stroke: &#39;#A2B1C3&#39;,
+        strokeWidth: 2,
+        targetMarker: null,
+      },
+    },
+  })
+}
+
+const graph = new Graph({
+  container: document.getElementById(&#39;container&#39;)!,
+})
+
+const gridLayout = new GridLayout({
+  type: &#39;grid&#39;,
+  width: 738,
+  height: 360,
+  sortBy: &#39;label&#39;,
+  rows: 3,
+  cols: 7,
+})
+
+const model = gridLayout.layout(data)
+graph.fromJSON(model)
+</code></pre></section><div id="container" data-astro-cid-kuqocuzv></div><pre id="demo-error" hidden data-astro-cid-kuqocuzv></pre><script type="module" src="/assets/_...key_.astro_astro_type_script_index_0_lang.BjNsOyMF.js"></script></body></html>
