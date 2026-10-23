@@ -16,6 +16,8 @@ const config = defineConfig({
     },
     locales: ['zh', 'en'],
     defaultLocale: 'zh',
+    favicon:
+      'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*7svFR6wkPMoAAAAAAAAAAAAADmJ7AQ/original',
     logo: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*A-lcQbVTpjwAAAAAAAAAAAAADmJ7AQ/original',
   },
   content: {
