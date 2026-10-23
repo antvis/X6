@@ -1175,6 +1175,7 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
   }
 
   protected updateContainer() {
+    const { movable, pointerEvents } = this.options
     const origin = { x: Infinity, y: Infinity }
     const corner = { x: 0, y: 0 }
     const cells = this.collection
@@ -1196,8 +1197,11 @@ export class SelectionImpl extends View<SelectionImplEventArgs> {
 
     Dom.css(this.selectionContainer, {
       position: 'absolute',
-      pointerEvents: this.options.movable ? 'auto' : 'none',
-      cursor: this.options.movable ? 'move' : 'default',
+      pointerEvents:
+        movable && !this.isEmpty()
+          ? this.getPointerEventsValue(pointerEvents ?? 'auto')
+          : 'none',
+      cursor: movable ? 'move' : 'default',
       left: origin.x,
       top: origin.y,
       width: corner.x - origin.x,
