@@ -81,5 +81,42 @@ describe('Path', () => {
       const reconstructedPath3 = Path.parse(path3).serialize()
       expect(normalizedPath3).toEqual(reconstructedPath3)
     })
+
+    it('should parse arcs whose flags have no separators', () => {
+      const pairs: [string, string][] = [
+        // the exact case from the issue
+        ['M0 0 a5 5 0 015 5', 'M0 0 a5 5 0 0 1 5 5'],
+        // flags 1 and 0, then a two-digit number
+        ['M0 0a5 5 0 1010 0', 'M0 0a5 5 0 1 0 10 0'],
+        // flags followed by a negative number
+        ['M0 0a1 1 0 01-1 1', 'M0 0a1 1 0 0 1 -1 1'],
+        // flags followed by decimals with no leading zero
+        ['M0 0a1 1 0 01.5.5', 'M0 0a1 1 0 0 1 .5 .5'],
+        // absolute A, not just relative a
+        ['M0 0A5 5 0 0110 10', 'M0 0A5 5 0 0 1 10 10'],
+        // two arcs in a row, command letter written once
+        ['M0 0a5 5 0 015 5 5 5 0 015 5', 'M0 0a5 5 0 0 1 5 5 5 5 0 0 1 5 5'],
+        // only the second flag is glued to the next number
+        ['M0 0a5 5 0 0 15 5', 'M0 0a5 5 0 0 1 5 5'],
+        // another command right after the arc
+        ['M0 0a5 5 0 015 5L10 10', 'M0 0a5 5 0 0 1 5 5L10 10'],
+      ]
+
+      pairs.forEach(([compact, spaced]) => {
+        // the spaced form must really produce an arc, or the comparison proves nothing
+        expect(normalizePathData(spaced)).not.toBe('M 0 0')
+        expect(normalizePathData(compact)).toEqual(normalizePathData(spaced))
+      })
+    })
+
+    it('should keep the known result for the compact arc from the issue', () => {
+      expect(normalizePathData('M0 0 a5 5 0 015 5')).toEqual(
+        'M 0 0 C 2.76 0 5 2.24 5 5',
+      )
+    })
+
+    it('should not throw on an invalid arc flag', () => {
+      expect(() => normalizePathData('M0 0a5 5 0 25 5 5')).not.toThrow()
+    })
   })
 })
