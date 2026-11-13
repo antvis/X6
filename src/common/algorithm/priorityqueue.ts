@@ -130,6 +130,10 @@ export class PriorityQueue<T> {
 
   protected heapify() {
     for (let i = 0; i < this.data.length; i += 1) {
+      const id = this.data[i].id
+      if (id != null) {
+        this.index[id] = i
+      }
       this.bubbleUp(i)
     }
   }

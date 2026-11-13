@@ -39,6 +39,77 @@ describe('PriorityQueue', () => {
       queue.updatePriority('low', 5)
       expect(queue.peek()).toBe('medium')
     })
+
+    it('should update every initial id in an already ordered heap', () => {
+      const queue = new PriorityQueue({
+        data: [
+          { priority: 1, value: 'first', id: 'first' },
+          { priority: 2, value: 'second', id: 'second' },
+          { priority: 3, value: 'third', id: 'third' },
+        ],
+      })
+
+      queue.updatePriority('first', 5)
+      expect(queue.peek()).toBe('second')
+      queue.updatePriority('third', 0)
+      expect(queue.remove()).toBe('third')
+      queue.updatePriority('second', 6)
+      expect(queue.remove()).toBe('first')
+      expect(queue.remove()).toBe('second')
+      expect(() => queue.updatePriority('third', 1)).toThrow(
+        "Node with id 'third' was not found in the heap.",
+      )
+    })
+
+    it('should index initial items that do not move while other items are heapified', () => {
+      const queue = new PriorityQueue({
+        data: [
+          { priority: 2, value: 'medium', id: 'medium' },
+          { priority: 1, value: 'low', id: 'low' },
+          { priority: 3, value: 'high', id: 'high' },
+        ],
+      })
+
+      queue.updatePriority('high', 0)
+      expect(queue.remove()).toBe('high')
+      expect(queue.remove()).toBe('low')
+      expect(queue.remove()).toBe('medium')
+    })
+
+    it('should update initial ids with a max-heap comparator', () => {
+      const queue = new PriorityQueue({
+        comparator: (a, b) => b - a,
+        data: [
+          { priority: 3, value: 'high', id: 'high' },
+          { priority: 2, value: 'medium', id: 'medium' },
+          { priority: 1, value: 'low', id: 'low' },
+        ],
+      })
+
+      queue.updatePriority('low', 4)
+      expect(queue.remove()).toBe('low')
+      queue.updatePriority('high', 0)
+      expect(queue.remove()).toBe('medium')
+      expect(queue.remove()).toBe('high')
+    })
+
+    it('should index singleton data while allowing items without ids', () => {
+      const singleton = new PriorityQueue({
+        data: [{ priority: 1, value: 'only', id: 'only' }],
+      })
+      singleton.updatePriority('only', 5)
+      expect(singleton.peekPriority()).toBe(5)
+
+      const mixed = new PriorityQueue({
+        data: [
+          { priority: 1, value: 'anonymous' },
+          { priority: 2, value: 'named', id: 'named' },
+        ],
+      })
+      mixed.updatePriority('named', 0)
+      expect(mixed.remove()).toBe('named')
+      expect(mixed.remove()).toBe('anonymous')
+    })
   })
 
   describe('isEmpty', () => {
