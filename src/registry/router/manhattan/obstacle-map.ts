@@ -1,7 +1,27 @@
-import { ArrayExt, type KeyValue } from '../../../common'
+import type { KeyValue } from '../../../common'
 import { Point, type Rectangle } from '../../../geometry'
-import type { Cell, Edge, Model, TerminalCellData } from '../../../model'
+import type { Edge, Model, TerminalCellData } from '../../../model'
 import type { ResolvedOptions } from './options'
+
+function getExcludedCells(model: Model, edge: Edge, options: ResolvedOptions) {
+  const excluded = new Set<string>()
+  options.excludeTerminals.forEach((type) => {
+    const terminal = edge[type] as TerminalCellData
+    const cell = terminal && model.getCell(terminal.cell)
+    if (cell) {
+      excluded.add(cell.id)
+    }
+  })
+  ;[edge.getSourceCellId(), edge.getTargetCellId()].forEach((id) => {
+    const cell = model.getCell(id)
+    if (cell) {
+      cell.getAncestors().forEach((ancestor) => {
+        excluded.add(ancestor.id)
+      })
+    }
+  })
+  return excluded
+}
 
 /**
  * Helper structure to identify whether a point lies inside an obstacle.
@@ -30,39 +50,7 @@ export class ObstacleMap {
    */
   build(model: Model, edge: Edge) {
     const options = this.options
-    // source or target node could be excluded from set of obstacles
-    const excludedTerminals = options.excludeTerminals.reduce<Cell[]>(
-      (memo, type) => {
-        const terminal = edge[type]
-        if (terminal) {
-          const cell = model.getCell((terminal as TerminalCellData).cell)
-          if (cell) {
-            memo.push(cell)
-          }
-        }
-
-        return memo
-      },
-      [],
-    )
-
-    let excludedAncestors: string[] = []
-
-    const source = model.getCell(edge.getSourceCellId())
-    if (source) {
-      excludedAncestors = ArrayExt.union(
-        excludedAncestors,
-        source.getAncestors().map((cell) => cell.id),
-      )
-    }
-
-    const target = model.getCell(edge.getTargetCellId())
-    if (target) {
-      excludedAncestors = ArrayExt.union(
-        excludedAncestors,
-        target.getAncestors().map((cell) => cell.id),
-      )
-    }
+    const excludedCells = getExcludedCells(model, edge, options)
 
     // The graph is divided into smaller cells, where each holds information
     // about which node belong to it. When we query whether a point lies
@@ -71,9 +59,6 @@ export class ObstacleMap {
     const mapGridSize = this.mapGridSize
 
     model.getNodes().reduce((map, node) => {
-      const excludedTerminal = excludedTerminals.some(
-        (cell) => cell.id === node.id,
-      )
       const excludedShape = node.shape
         ? options.excludeShapes.includes(node.shape)
         : false
@@ -83,9 +68,8 @@ export class ObstacleMap {
         }
         return item === node
       })
-      const excludedAncestor = excludedAncestors.includes(node.id)
       const excluded =
-        excludedShape || excludedTerminal || excludedNode || excludedAncestor
+        excludedShape || excludedNode || excludedCells.has(node.id)
 
       if (node.isVisible() && !excluded) {
         const bbox = node.getBBox().moveAndExpand(options.paddingBox)
@@ -140,6 +124,8 @@ function install(model: Model) {
   model.on('cell:removed', () => markDirty(model))
   model.on('cell:change:position', () => markDirty(model))
   model.on('cell:change:size', () => markDirty(model))
+  model.on('cell:change:visible', () => markDirty(model))
+  model.on('cell:change:shape', () => markDirty(model))
   model.on('edge:change:source', () => markDirty(model))
   model.on('edge:change:target', () => markDirty(model))
   state.installed = true
@@ -148,23 +134,25 @@ function install(model: Model) {
 /**
  * 生成与障碍图相关的选项 key，当 key 变化时触发重建，避免不同配置共用缓存
  */
-function getOptionsKey(options: ResolvedOptions) {
+function getOptionsKey(model: Model, edge: Edge, options: ResolvedOptions) {
   const padding = options.paddingBox
   const pad =
     padding == null
-      ? 'none'
-      : `${padding.x},${padding.y},${padding.width},${padding.height}`
-  const terms = (options.excludeTerminals || [])
-    .map((t) => t)
+      ? null
+      : [padding.x, padding.y, padding.width, padding.height]
+  const shapes = options.excludeShapes.slice().sort()
+  const nodes = options.excludeNodes
+    .map((node) =>
+      typeof node === 'string'
+        ? node
+        : model.getCell(node.id) === node
+          ? node.id
+          : null,
+    )
+    .filter((id) => id != null)
     .sort()
-    .join('|')
-  const shapes = (options.excludeShapes || []).slice().sort().join('|')
-  const nodes = (options.excludeNodes || [])
-    .map((n) => (typeof n === 'string' ? n : (n as any)?.id || 'node'))
-    .slice()
-    .sort()
-    .join('|')
-  return `${pad}#${terms}#${shapes}#${nodes}`
+  const cells = Array.from(getExcludedCells(model, edge, options)).sort()
+  return JSON.stringify([pad, shapes, nodes, cells])
 }
 
 /**
@@ -182,13 +170,13 @@ export function getSharedObstacleMap(
       map,
       dirty: false,
       installed: false,
-      optionsKey: getOptionsKey(options),
+      optionsKey: getOptionsKey(model, edge, options),
     }
     CACHE.set(model, state)
     install(model)
     return map
   }
-  const key = getOptionsKey(options)
+  const key = getOptionsKey(model, edge, options)
   if (state.dirty || state.optionsKey !== key) {
     state.map = new ObstacleMap(options).build(model, edge)
     state.dirty = false
