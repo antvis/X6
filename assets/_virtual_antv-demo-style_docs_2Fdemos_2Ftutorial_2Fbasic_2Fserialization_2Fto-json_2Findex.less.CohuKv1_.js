@@ -1,0 +1,1 @@
+var e=`.to-json-app{border:1px solid #f0f0f0;padding:16px 8px;font-family:sans-serif;display:flex}.to-json-app .app-side{width:320px;height:280px;overflow:auto}.to-json-app .app-content{flex:1;margin-left:8px;margin-right:8px;box-shadow:0 0 10px 1px #e9e9e9}`,t=document.createElement(`style`);t.textContent=e,document.head.appendChild(t);var n=e;export{n as default};
