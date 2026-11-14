@@ -186,6 +186,12 @@ function parse(pathData: string) {
     'ig',
   )
 
+  // For arc ("a") arguments only. The two arc flags are single "0"/"1"
+  // characters that may be written without separators ("a5 5 0 015 5"),
+  // so the general number regex can't find them.
+  const separatorReg = new RegExp(`[${spaces},]*`, 'y')
+  const numberReg = /-?\d*\.?\d*(?:e[-+]?\d+)?/iy
+
   const paramsCount = {
     a: 7,
     c: 6,
@@ -205,12 +211,42 @@ function parse(pathData: string) {
     const params: number[] = []
     let command = cmd.toLowerCase()
 
-    args.replace(commandParamReg, (a: string, b: string) => {
-      if (b) {
-        params.push(+b)
+    if (command === 'a') {
+      // An arc takes 7 numbers; the 4th and 5th (index 3 and 4) are flags.
+      // params.length % 7 is the position within the current arc, so this
+      // also works when several arcs share one command letter.
+      let i = 0
+      while (i < args.length) {
+        separatorReg.lastIndex = i
+        const sep = separatorReg.exec(args)
+        i += sep ? sep[0].length : 0
+        if (i >= args.length) {
+          break
+        }
+
+        const pos = params.length % 7
+        if ((pos === 3 || pos === 4) && (args[i] === '0' || args[i] === '1')) {
+          params.push(+args[i])
+          i += 1
+          continue
+        }
+
+        numberReg.lastIndex = i
+        const num = numberReg.exec(args)
+        const text = num ? num[0] : ''
+        if (text) {
+          params.push(+text)
+        }
+        i += text.length || 1
       }
-      return a
-    })
+    } else {
+      args.replace(commandParamReg, (a: string, b: string) => {
+        if (b) {
+          params.push(+b)
+        }
+        return a
+      })
+    }
 
     if (command === 'm' && params.length > 2) {
       segmetns.push([cmd, ...params.splice(0, 2)])
