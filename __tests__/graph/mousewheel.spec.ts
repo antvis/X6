@@ -104,4 +104,59 @@ describe('MouseWheel', () => {
     expect(mockGraph.options.mousewheel.enabled).toBe(false)
     expect(mockMouseWheelHandle.disable).toHaveBeenCalled()
   })
+
+  describe('factorByDelta', () => {
+    const targetScaleOf = (deltaY: number, accumulated?: number) => {
+      mockGraph.zoom.mockClear()
+      const e = new WheelEvent('wheel', { deltaY, clientX: 0, clientY: 0 })
+      mouseWheel['onMouseWheel'](e, 0, accumulated)
+      return mockGraph.zoom.mock.calls[0]?.[0] as number
+    }
+
+    beforeEach(() => {
+      mouseWheel.widgetOptions.factorByDelta = true
+      mouseWheel.widgetOptions.factor = 1.2
+    })
+
+    it('scales the zoom step proportionally to the wheel delta', () => {
+      // currentScale = 1, factor = 1.2 → targetScale = 1.2 ** (-delta / 100)
+      expect(targetScaleOf(-100)).toBeCloseTo(1.2, 5) // one full notch = one factor
+      expect(targetScaleOf(-10)).toBeCloseTo(1.2 ** 0.1, 5) // a small delta = a small step
+    })
+
+    it('makes a large delta zoom more than a small delta', () => {
+      const big = targetScaleOf(-100)
+      const small = targetScaleOf(-10)
+      expect(big).toBeGreaterThan(small)
+      expect(small).toBeGreaterThan(1) // still zooms in
+    })
+
+    it('zooms out on positive delta', () => {
+      expect(targetScaleOf(100)).toBeCloseTo(1.2 ** -1, 5)
+    })
+
+    it('prefers the accumulated deltaY batched by MouseWheelHandle', () => {
+      // event carries -10 but the frame accumulated -100 → the accumulated wins
+      expect(targetScaleOf(-10, -100)).toBeCloseTo(1.2, 5)
+    })
+
+    it('leaves the quantized path untouched when disabled', () => {
+      mouseWheel.widgetOptions.factorByDelta = false
+      // classic path: a single event zooms by the fixed >= 5% step, not delta-scaled
+      expect(targetScaleOf(-10)).toBeCloseTo(1.2, 5)
+    })
+
+    it('does not zoom on a non-finite delta (never calls zoom(NaN))', () => {
+      // a malformed event yields cumulatedFactor 1 → targetScale === currentScale → no zoom
+      mockGraph.zoom.mockClear()
+      const e = new WheelEvent('wheel', { clientX: 0, clientY: 0 })
+      mouseWheel['onMouseWheel'](e, 0, Number.NaN)
+      expect(mockGraph.zoom).not.toHaveBeenCalled()
+    })
+
+    it('falls back to the default factor when misconfigured negative', () => {
+      mouseWheel.widgetOptions.factor = -2
+      expect(targetScaleOf(-100)).toBeCloseTo(1.2, 5) // uses 1.2, not NaN
+    })
+  })
 })
