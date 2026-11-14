@@ -66,7 +66,10 @@ export class Clipboard
   }
 
   isEmpty(options: ClipboardOptions = {}) {
-    return this.clipboardImpl.isEmpty(options)
+    return this.clipboardImpl.isEmpty({
+      ...this.commonOptions,
+      ...options,
+    })
   }
 
   getCellsInClipboard() {
