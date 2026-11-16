@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Cell, Dom, type Graph, Rectangle } from '../../src'
-import { DefaultOptions, Selection } from '../../src/plugin/selection'
+import {
+  DefaultOptions,
+  Selection,
+  type SelectionOptions,
+} from '../../src/plugin/selection'
 import { createTestGraph } from '../utils/graph-helpers'
 import { sleep } from '../utils/sleep'
 
@@ -1188,6 +1192,155 @@ describe('Selection plugin', () => {
   })
 
   describe('outer selection container interactions', () => {
+    const pointerEventsCases: {
+      name: string
+      pointerEvents: SelectionOptions['pointerEvents']
+      expected: 'auto' | 'none'
+    }[] = [
+      { name: 'default', pointerEvents: undefined, expected: 'auto' },
+      { name: 'auto', pointerEvents: 'auto', expected: 'auto' },
+      { name: 'none', pointerEvents: 'none', expected: 'none' },
+      {
+        name: 'function returning auto',
+        pointerEvents: () => 'auto',
+        expected: 'auto',
+      },
+      {
+        name: 'function returning none',
+        pointerEvents: () => 'none',
+        expected: 'none',
+      },
+    ]
+
+    describe.each([true, false])('movable: %s', (movable) => {
+      it.each(pointerEventsCases)(
+        'should respect $name pointer events on the outer container',
+        async ({ pointerEvents, expected }) => {
+          graph.disposePlugins('selection')
+          graph.use(
+            new Selection({
+              multiple: true,
+              movable,
+              showNodeSelectionBox: true,
+              ...(pointerEvents === undefined ? {} : { pointerEvents }),
+            }),
+          )
+          selection = graph.getPlugin('selection') as Selection
+          const nodes = [
+            { id: 'n1', x: 10, y: 10, width: 80, height: 40 },
+            { id: 'n2', x: 120, y: 10, width: 80, height: 40 },
+          ].map((node) => graph.addNode(node))
+
+          selection.select(nodes)
+          await sleep(20)
+
+          const container = graph.container.querySelector<HTMLElement>(
+            '.x6-widget-selection-inner',
+          )
+          expect(container?.getAttribute('data-selection-length')).toBe('2')
+          expect(container?.style.pointerEvents).toBe(
+            movable ? expected : 'none',
+          )
+          expect(container?.style.cursor).toBe(movable ? 'move' : 'default')
+        },
+      )
+    })
+
+    it('should reevaluate outer pointer events when the selected cells change', async () => {
+      const pointerEvents = vi.fn((cells: Cell[]) =>
+        cells.length > 1 ? 'none' : 'auto',
+      )
+      graph.disposePlugins('selection')
+      graph.use(
+        new Selection({
+          multiple: true,
+          showNodeSelectionBox: true,
+          pointerEvents,
+        }),
+      )
+      selection = graph.getPlugin('selection') as Selection
+      const [n1, n2] = [
+        { id: 'n1', x: 10, y: 10, width: 80, height: 40 },
+        { id: 'n2', x: 120, y: 10, width: 80, height: 40 },
+      ].map((node) => graph.addNode(node))
+
+      selection.select(n1)
+      await sleep(20)
+      const container = graph.container.querySelector<HTMLElement>(
+        '.x6-widget-selection-inner',
+      )
+      expect(container?.style.pointerEvents).toBe('auto')
+      expect(pointerEvents).toHaveBeenLastCalledWith([n1])
+
+      selection.select(n2)
+      await sleep(20)
+      expect(container?.style.pointerEvents).toBe('none')
+      expect(pointerEvents).toHaveBeenLastCalledWith([n1, n2])
+
+      selection.unselect(n2)
+      await sleep(20)
+      expect(container?.style.pointerEvents).toBe('auto')
+      expect(pointerEvents).toHaveBeenLastCalledWith([n1])
+
+      selection.reset([n1, n2], { batch: true })
+      await sleep(20)
+      expect(container?.style.pointerEvents).toBe('none')
+      expect(pointerEvents).toHaveBeenLastCalledWith([n1, n2])
+    })
+
+    it.each(['unselect', 'clean', 'reset'] as const)(
+      'should not evaluate pointer events with an empty selection on %s',
+      (action) => {
+        const pointerEvents = vi.fn((cells: Cell[]) =>
+          cells[0].isNode() ? 'none' : 'auto',
+        )
+        graph.disposePlugins('selection')
+        selection = new Selection({
+          showNodeSelectionBox: true,
+          pointerEvents,
+        })
+        graph.use(selection)
+        const node = graph.addNode({ width: 80, height: 40 })
+        selection.select(node)
+        expect(pointerEvents).toHaveBeenCalledWith([node])
+        pointerEvents.mockClear()
+
+        expect(() => {
+          if (action === 'unselect') selection.unselect(node)
+          else if (action === 'clean') selection.clean()
+          else selection.reset([])
+        }).not.toThrow()
+
+        expect(selection.getSelectedCells()).toEqual([])
+        expect(pointerEvents).not.toHaveBeenCalled()
+      },
+    )
+
+    it('should not reevaluate outer pointer events when selection is not movable', () => {
+      const pointerEvents = vi.fn(() => 'none' as const)
+      graph.disposePlugins('selection')
+      selection = new Selection({
+        movable: false,
+        showNodeSelectionBox: true,
+        pointerEvents,
+      })
+      graph.use(selection)
+      const nodes = [
+        { id: 'n1', x: 10, y: 10, width: 80, height: 40 },
+        { id: 'n2', x: 120, y: 10, width: 80, height: 40 },
+      ].map((node) => graph.addNode(node))
+      selection.select(nodes)
+      pointerEvents.mockClear()
+
+      selection.reset(nodes)
+
+      expect(pointerEvents).not.toHaveBeenCalled()
+      const container = graph.container.querySelector<HTMLElement>(
+        '.x6-widget-selection-inner',
+      )
+      expect(container?.style.pointerEvents).toBe('none')
+    })
+
     it('should set pointerEvents and cursor on outer container when movable', async () => {
       graph.use(
         new Selection({
