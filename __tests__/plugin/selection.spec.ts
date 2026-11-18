@@ -850,6 +850,40 @@ describe('Selection plugin', () => {
     })
   })
 
+  describe('modifier click after unselecting from the selection box', () => {
+    it('should select the cell again on the next modifier click', () => {
+      const n1 = graph.addNode({
+        id: 'n1',
+        width: 100,
+        height: 100,
+      })
+      selection.select([n1])
+
+      const mockEl = document.createElement('g')
+      mockEl.setAttribute('data-cell-id', 'n1')
+      const down = new Dom.EventObject(new MouseEvent('mousedown'))
+      Object.defineProperty(down, 'clientX', { value: 10 })
+      Object.defineProperty(down, 'clientY', { value: 10 })
+      Object.defineProperty(down, 'target', { value: mockEl })
+      Object.defineProperty(down, 'ctrlKey', { value: true })
+      selection['selectionImpl']['onSelectionBoxMouseDown'](down as any)
+      expect(selection.isSelected(n1)).toBe(false)
+
+      // The box press stopped propagation, so no cell:mouseup follows it.
+      // The next modifier click lands on the node itself.
+      const view = graph.renderer.findViewByCell(n1)
+      const e = {
+        ctrlKey: true,
+        metaKey: false,
+        shiftKey: false,
+        altKey: false,
+      }
+      graph.trigger('cell:mousedown', { e, cell: n1, view })
+      graph.trigger('cell:mouseup', { e, cell: n1, view })
+      expect(selection.isSelected(n1)).toBe(true)
+    })
+  })
+
   describe('box events', () => {
     const createMouseEvent = (
       type: 'mousedown' | 'mousemove' | 'mouseup',

@@ -346,6 +346,7 @@ export class Selection
   protected startListening() {
     this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
     this.graph.on('blank:click', this.onBlankClick, this)
+    this.graph.on('cell:mousedown', this.onCellMouseDown, this)
     this.graph.on('cell:mousemove', this.onCellMouseMove, this)
     this.graph.on('cell:mouseup', this.onCellMouseUp, this)
     this.selectionImpl.on('box:mousedown', this.onBoxMouseDown, this)
@@ -354,6 +355,7 @@ export class Selection
   protected stopListening() {
     this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
     this.graph.off('blank:click', this.onBlankClick, this)
+    this.graph.off('cell:mousedown', this.onCellMouseDown, this)
     this.graph.off('cell:mousemove', this.onCellMouseMove, this)
     this.graph.off('cell:mouseup', this.onCellMouseUp, this)
     this.selectionImpl.off('box:mousedown', this.onBoxMouseDown, this)
@@ -444,6 +446,13 @@ export class Selection
       this.isMultiple() &&
       isModifierKeyMatch(e, this.options.multipleSelectionModifiers)
     )
+  }
+
+  protected onCellMouseDown({ cell }: EventArgs['cell:mousedown']) {
+    // A press on the selection box stops propagation, so no `cell:mouseup`
+    // follows it. Without this, the mark set in `onBoxMouseDown` would swallow
+    // the next modifier click on the cell.
+    this.unselectMap.delete(cell)
   }
 
   protected onCellMouseMove({ cell }: EventArgs['cell:mousemove']) {
