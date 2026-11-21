@@ -85,8 +85,10 @@ function a2c(
     cx = (k * rx * y) / ry + (x1 + x2) / 2
     cy = (k * -ry * x) / rx + (y1 + y2) / 2
 
-    f1 = Math.asin((y1 - cy) / ry)
-    f2 = Math.asin((y2 - cy) / ry)
+    // For a half circle (y - cy) / ry is 1 or -1 at the ends, and rounding can
+    // push it just past that, where Math.asin returns NaN
+    f1 = Math.asin(Math.max(-1, Math.min(1, (y1 - cy) / ry)))
+    f2 = Math.asin(Math.max(-1, Math.min(1, (y2 - cy) / ry)))
 
     f1 = x1 < cx ? Math.PI - f1 : f1
     f2 = x2 < cx ? Math.PI - f2 : f2
@@ -420,8 +422,9 @@ function normalize(path: string) {
       while (pi.length) {
         // if created multiple 'C's, their original seg is saved
         commands[i] = 'A'
-        i += 1 // eslint-disable-line
+        // insert each 'C' before the original segment, which is removed below
         pp.splice(i, 0, ['C'].concat(pi.splice(0, 6)))
+        i += 1 // eslint-disable-line
       }
 
       pp.splice(i, 1)
