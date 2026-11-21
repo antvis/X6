@@ -64,6 +64,26 @@ describe('Path', () => {
       })
     })
 
+    it('should keep every curve of an arc larger than 120 degrees', () => {
+      // a half circle from (0, 0) to (20, 0) is split into two curves
+      expect(normalizePathData('M 0 0 A 10 10 0 0 1 20 0')).toEqual(
+        'M 0 0 C 0 -7.7 8.33 -12.51 15 -8.66 C 18.09 -6.87 20 -3.57 20 0',
+      )
+      expect(normalizePathData('M 0 0 A 10 10 0 0 1 20 0 L 30 0')).toEqual(
+        'M 0 0 C 0 -7.7 8.33 -12.51 15 -8.66 C 18.09 -6.87 20 -3.57 20 0 L 30 0',
+      )
+    })
+
+    it('should not produce NaN for a half circle whose radius is scaled up', () => {
+      // The radius 5 is too small for endpoints 93 apart, so it is scaled up to
+      // 46.5. (y - cy) / ry then rounds to just past -1 and 1 at the two ends,
+      // where Math.asin returns NaN.
+      const normalized = normalizePathData('M 0 0 A 5 5 0 0 1 0 93')
+      expect(normalized).not.toContain('NaN')
+      expect(normalized.startsWith('M 0 0 C')).toBe(true)
+      expect(normalized.endsWith(' 0 93')).toBe(true)
+    })
+
     it('should parsed by Path', () => {
       const path1 = 'M 10 10'
       const normalizedPath1 = normalizePathData(path1)
